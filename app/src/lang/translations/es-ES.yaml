@@ -941,7 +941,7 @@ interfaces:
   select-radio:
     radio-buttons: Botones de Radio
     description: Seleccionar una de las opciones múltiples
-  repeater:
+  list:
     repeater: Repetidor
     description: Crear múltiples entradas para la misma estructura
     edit_fields: Editar Campos

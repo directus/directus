@@ -983,7 +983,7 @@ interfaces:
   select-radio:
     radio-buttons: Przyciski jednokrotnego wyboru
     description: Wybierz jeden lub wiele obiektów
-  repeater:
+  list:
     repeater: Powtarzaj
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola

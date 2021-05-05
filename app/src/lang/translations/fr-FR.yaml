@@ -970,7 +970,7 @@ interfaces:
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés
-  repeater:
+  list:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs

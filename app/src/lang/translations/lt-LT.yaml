@@ -842,7 +842,7 @@ interfaces:
     interface-options: Sąsajos nustatymai
   select-dropdown-m2o:
     display_template: Rodymo šablonas
-  repeater:
+  list:
     field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos

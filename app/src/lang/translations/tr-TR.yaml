@@ -708,7 +708,7 @@ interfaces:
     one-to-many: Bire Çok
   select-radio:
     radio-buttons: Radyo Düğmeleri
-  repeater:
+  list:
     repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı

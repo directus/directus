@@ -929,7 +929,7 @@ interfaces:
   select-radio:
     radio-buttons: ตัวเลือกแบบเรดิโอ
     description: เลือกได้ 1 จากหลายตัวเลือก
-  repeater:
+  list:
     repeater: การทำซ้ำ
     description: สร้างหลายรายการโดคใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์

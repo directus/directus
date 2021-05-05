@@ -6,12 +6,12 @@
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
+			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
 			<v-input class="input" v-model="addLabel" :placeholder="$t('create_new')" />
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
+			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
 			<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
 		</div>
 	</div>
@@ -64,7 +64,7 @@ export default defineComponent({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
+						placeholder: i18n.t('interfaces.list.field_name_placeholder'),
 					},
 				},
 				schema: null,
@@ -129,7 +129,7 @@ export default defineComponent({
 					width: 'full',
 					sort: 6,
 					options: {
-						placeholder: i18n.t('interfaces.repeater.field_note_placeholder'),
+						placeholder: i18n.t('interfaces.list.field_note_placeholder'),
 					},
 				},
 				schema: null,

@@ -750,7 +750,7 @@ interfaces:
     no_collection: Impossibile trovare la raccolta
   select-radio:
     radio-buttons: Pulsanti di scelta
-  repeater:
+  list:
     repeater: Ripetitore
     edit_fields: Modifica Campi
     field_name_placeholder: Inserisci il nome del campo...

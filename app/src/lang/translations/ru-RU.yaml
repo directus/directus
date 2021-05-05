@@ -943,7 +943,7 @@ interfaces:
   select-radio:
     radio-buttons: Радио кнопки
     description: Выберите один из нескольких вариантов
-  repeater:
+  list:
     repeater: Репитер
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать Поля

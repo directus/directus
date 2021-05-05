@@ -748,7 +748,7 @@ interfaces:
     numeric: Numbriline
   select-radio:
     radio-buttons: Raadionupud
-  repeater:
+  list:
     repeater: Kordaja
   slider:
     slider: Liugur

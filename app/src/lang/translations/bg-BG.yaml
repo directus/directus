@@ -985,7 +985,7 @@ interfaces:
   select-radio:
     radio-buttons: Радио бутон
     description: Един или няколко избора
-  repeater:
+  list:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета

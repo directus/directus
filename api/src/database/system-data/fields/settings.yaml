@@ -111,7 +111,7 @@ fields:
     width: full
 
   - field: storage_asset_presets
-    interface: repeater
+    interface: list
     options:
       fields:
         - field: key

@@ -65,7 +65,7 @@ export default defineDisplay({
 			name: '$t:choices',
 			type: 'json',
 			meta: {
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					template: '{{text}}',
 					fields: [

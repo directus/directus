@@ -631,7 +631,7 @@ interfaces:
     one-to-many: Quan hệ một - nhiều
   select-radio:
     radio-buttons: Ô chọn tròn
-  repeater:
+  list:
     repeater: Vòng lặp
   slider:
     slider: Thanh trượt

@@ -307,7 +307,7 @@ interfaces:
     icon: Ikona
   numeric:
     numeric: Číselné
-  repeater:
+  list:
     edit_fields: Upravit pole
   tags:
     tags: Štítky

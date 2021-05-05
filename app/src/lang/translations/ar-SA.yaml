@@ -476,7 +476,7 @@ interfaces:
     one-to-many: واحد للكثيرين
   select-radio:
     radio-buttons: أزرار الراديو
-  repeater:
+  list:
     repeater: كرر
     field_name_placeholder: أدخل اسم الحقل...
     field_note_placeholder: أدخل ملاحظة للحقل...

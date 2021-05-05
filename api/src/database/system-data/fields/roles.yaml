@@ -55,7 +55,7 @@ fields:
     width: full
 
   - field: module_list
-    interface: repeater
+    interface: list
     options:
       template: '{{ name }}'
       addLabel: Add New Module...
@@ -88,7 +88,7 @@ fields:
     width: full
 
   - field: collection_list
-    interface: repeater
+    interface: list
     options:
       template: '{{ group_name }}'
       addLabel: Add New Group...
@@ -124,7 +124,7 @@ fields:
           field: collections
           type: JSON
           meta:
-            interface: repeater
+            interface: list
             options:
               addLabel: Add New Collection...
               template: '{{ collection }}'

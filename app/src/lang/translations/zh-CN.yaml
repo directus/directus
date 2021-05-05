@@ -751,7 +751,7 @@ interfaces:
     one-to-many: 一对多
   select-radio:
     radio-buttons: 单选按钮
-  repeater:
+  list:
     repeater: 中继器
   slider:
     slider: 滑块

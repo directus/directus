@@ -18,7 +18,7 @@ export default defineInterface({
 			name: '$t:interfaces.presentation-links.links',
 			meta: {
 				width: 'full',
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					placeholder: '$t:title',
 					template: '{{ label }}',

@@ -989,7 +989,7 @@ interfaces:
   select-radio:
     radio-buttons: Radio Buttons
     description: Eine von mehreren Optionen auswählen
-  repeater:
+  list:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten

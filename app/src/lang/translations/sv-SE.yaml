@@ -962,7 +962,7 @@ interfaces:
   select-radio:
     radio-buttons: Radioknappar
     description: Välj ett av flera val
-  repeater:
+  list:
     repeater: Repeterare
     description: Skapa flera poster av samma struktur
     edit_fields: Redigera fält

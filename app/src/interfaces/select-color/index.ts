@@ -16,7 +16,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					addLabel: '$t:interfaces.select-color.preset_colors_add_label',
 					template: '{{ name }} - {{ color }}',

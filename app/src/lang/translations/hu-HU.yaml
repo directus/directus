@@ -704,7 +704,7 @@ interfaces:
   select-radio:
     radio-buttons: Választó gombok
     description: Válasszon ki egy vagy több elemet
-  repeater:
+  list:
     repeater: Ismétlés
     edit_fields: Mezők szerkesztése
     field_name_placeholder: Név megadása...

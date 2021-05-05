@@ -930,7 +930,7 @@ interfaces:
   select-radio:
     radio-buttons: Keuzerondjes
     description: Selecteer een van de meerdere keuzes
-  repeater:
+  list:
     repeater: Herhaler
     description: Meerdere invoergegevens van dezelfde structuur aanmaken
     edit_fields: Velden bewerken

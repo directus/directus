@@ -28,7 +28,7 @@ export default defineInterface({
 			meta: {
 				note: '$t:interfaces.input-rich-text-md.customSyntax_label',
 				width: 'full',
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					addLabel: '$t:interfaces.input-rich-text-md.customSyntax_add',
 					template: '{{ name }}',

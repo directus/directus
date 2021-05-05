@@ -51,7 +51,7 @@ fields:
 
   - field: translations
     special: json
-    interface: repeater
+    interface: list
     options:
       template: '{{ translation }} ({{ language }})'
       fields:

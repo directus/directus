@@ -655,7 +655,7 @@ interfaces:
     no_collection: 找不到該集合
   select-radio:
     radio-buttons: 單選按鈕
-  repeater:
+  list:
     repeater: 重複者
     edit_fields: 編輯欄位
     field_name_placeholder: 輸入欄位名稱...

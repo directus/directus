@@ -985,7 +985,7 @@ interfaces:
   select-radio:
     radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
-  repeater:
+  list:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä

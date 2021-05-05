@@ -15,7 +15,7 @@ export default defineInterface({
 			name: '$t:choices',
 			meta: {
 				width: 'full',
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					template: '{{ text }}',
 					fields: [
