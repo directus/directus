@@ -842,7 +842,6 @@ template: Template
 translation: Tradução
 value: Valor
 view_project: Visualizar projeto
-weeks: { }
 report_error: Relatar erro
 interfaces:
   button-links:

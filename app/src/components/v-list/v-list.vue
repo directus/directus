@@ -16,7 +16,7 @@ export default defineComponent({
 	props: {
 		activeItems: {
 			type: Array as PropType<(number | string)[]>,
-			default: () => [],
+			default: null,
 		},
 		large: {
 			type: Boolean,
@@ -33,6 +33,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const { activeItems, multiple, mandatory } = toRefs(props);
+
 		useGroupableParent(
 			{
 				selection: activeItems,

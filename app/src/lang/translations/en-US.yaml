@@ -1149,3 +1149,7 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+  calendar:
+    calendar: Calendar
+    start_date_field: Start Date Field
+    end_date_field: End Date Field
