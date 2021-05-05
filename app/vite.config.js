@@ -35,17 +35,40 @@ export default defineConfig({
 function moduleRelativeResolve() {
 	const MODULE_REGEX = /@vite-module!(@[^/]+\/[^/]+|[^@/]+)/g;
 
-	return {
-		name: 'module-relative-resolve',
-		transform(code) {
-			if (code.indexOf('@vite-module!') !== -1) {
-				return {
-					code: code.replace(MODULE_REGEX, (_, module) => `./${path.relative('.', require.resolve(module))}`),
-					map: null,
-				};
-			}
+	return [
+		{
+			name: 'module-relative-resolve',
+			apply: 'serve',
+			transform(code, id) {
+				if (code.indexOf('@vite-module!') !== -1) {
+					return {
+						code: code.replace(MODULE_REGEX, (_, module) => {
+							return `./${path.relative(path.dirname(id), '.')}/@fs${path.dirname(
+								require.resolve(`${module}/package.json`)
+							)}`;
+						}),
+						map: null,
+					};
+				}
 
-			return null;
+				return null;
+			},
 		},
-	};
+		{
+			name: 'module-relative-resolve',
+			apply: 'build',
+			transform(code, id) {
+				if (code.indexOf('@vite-module!') !== -1) {
+					return {
+						code: code.replace(MODULE_REGEX, (_, module) => {
+							return `./${path.relative(path.dirname(id), path.dirname(require.resolve(`${module}/package.json`)))}`;
+						}),
+						map: null,
+					};
+				}
+
+				return null;
+			},
+		},
+	];
 }
