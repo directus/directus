@@ -4,7 +4,7 @@
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
+			<p class="type-label">{{ $t('interfaces.select-dropdown-m2o.display_template') }}</p>
 			<v-field-template :collection="collection" v-model="template" :depth="1"></v-field-template>
 		</div>
 

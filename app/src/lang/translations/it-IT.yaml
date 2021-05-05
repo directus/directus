@@ -734,7 +734,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi correlati di giunzione
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Molti a Uno
     display_template: Display Template
   markdown:

@@ -951,7 +951,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template

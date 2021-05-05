@@ -198,7 +198,7 @@ interfaces:
     files: Arxius
   interface-options:
     interface-options: Opcions d'Interfície
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Mostra la plantilla
   one-to-many:
     one-to-many: Un a Molts

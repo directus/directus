@@ -955,7 +955,7 @@ interfaces:
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързани записи
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Много към един
     description: Избор на един свързан запис
     display_template: Шаблон при показване

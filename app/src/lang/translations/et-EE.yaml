@@ -739,7 +739,7 @@ interfaces:
     interface-options: Kasutajaliidese valikud
   list-m2m:
     many-to-many: Mitu mitmele
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Mitu ühele
     display_template: Vaate mall
   markdown:

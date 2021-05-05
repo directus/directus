@@ -262,7 +262,7 @@ interfaces:
     files: Файли
   icon:
     icon: Іконка
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Багато до одного
   numeric:
     numeric: Цифровий

@@ -458,7 +458,7 @@ interfaces:
     interface-options: خيارات الواجهة
   list-m2m:
     many-to-many: العديد للكثيرين
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: العديد إلى واحد
     display_template: عرض القالب
   markdown:

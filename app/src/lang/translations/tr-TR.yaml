@@ -696,7 +696,7 @@ interfaces:
     interface-options: Arayüz Ayarları
   list-m2m:
     many-to-many: Çoktan Çoka
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Çoktan Bire
     display_template: Görüntüleme Şablonu
   markdown:

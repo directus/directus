@@ -620,7 +620,7 @@ interfaces:
     interface-options: Tùy chọn giao diện
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Quan hệ nhiều - một
     display_template: Mẫu hiển thị
   markdown:

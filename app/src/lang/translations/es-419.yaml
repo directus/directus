@@ -911,7 +911,7 @@ interfaces:
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación

@@ -584,7 +584,7 @@ interfaces:
     interface-options: Opsi Antarmuka
   list-m2m:
     many-to-many: Banyak ke banyak
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Banyak ke Satu
     display_template: Tampilan Template
   numeric:

@@ -932,7 +932,7 @@ interfaces:
   list-m2m:
     many-to-many: Många till många
     description: Välj flera relaterade kopplingsobjekt
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Många till en
     description: Välj ett relaterat objekt
     display_template: Visningsmall

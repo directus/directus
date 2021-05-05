@@ -1,13 +1,13 @@
 import { defineInterface } from '../define';
-import InterfaceManyToOne from './many-to-one.vue';
+import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import Options from './options.vue';
 
 export default defineInterface({
-	id: 'many-to-one',
-	name: '$t:interfaces.many-to-one.many-to-one',
-	description: '$t:interfaces.many-to-one.description',
+	id: 'select-dropdown-m2o',
+	name: '$t:interfaces.select-dropdown-m2o.many-to-one',
+	description: '$t:interfaces.select-dropdown-m2o.description',
 	icon: 'arrow_right_alt',
-	component: InterfaceManyToOne,
+	component: InterfaceSelectDropdownM2O,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
 	relational: true,
 	groups: ['m2o'],

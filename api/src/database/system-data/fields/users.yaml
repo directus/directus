@@ -119,7 +119,7 @@ fields:
     width: half
 
   - field: role
-    interface: many-to-one
+    interface: select-dropdown-m2o
     options:
       template: '{{ name }}'
     special: m2o

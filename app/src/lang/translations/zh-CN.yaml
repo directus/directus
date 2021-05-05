@@ -740,7 +740,7 @@ interfaces:
     interface-options: 界面选项
   list-m2m:
     many-to-many: 多对多
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: 多对一
     display_template: 显示模板
   markdown:

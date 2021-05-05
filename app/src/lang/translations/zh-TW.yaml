@@ -631,7 +631,7 @@ interfaces:
     interface-options: 介面選項
   list-m2m:
     many-to-many: 多對多
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: 多對一
     display_template: 顯示模板
   markdown:

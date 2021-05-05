@@ -956,7 +956,7 @@ interfaces:
   list-m2m:
     many-to-many: Muitos-para-muitos (N para N)
     description: Selecione vários itens relacionados
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Muitos-para-um (N para 1)
     description: Selecione um único item relacionado
     display_template: Modelo de exibição

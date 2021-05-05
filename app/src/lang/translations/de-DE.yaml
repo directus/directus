@@ -959,7 +959,7 @@ interfaces:
   list-m2m:
     many-to-many: n:n-Beziehung
     description: Mehrere verwandte Elemente auswählen
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: n:1-Beziehung
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage

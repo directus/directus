@@ -955,7 +955,7 @@ interfaces:
   list-m2m:
     many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
     display_template: Esitysmalli

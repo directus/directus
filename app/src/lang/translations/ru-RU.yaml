@@ -917,7 +917,7 @@ interfaces:
   list-m2m:
     many-to-many: Многие ко многим
     description: Выберите несколько связанных элементов
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Многие к одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения

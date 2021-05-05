@@ -900,7 +900,7 @@ interfaces:
   list-m2m:
     many-to-many: Veel op Veel
     description: Selecteer meerdere gerelateerde items
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Veel op één
     description: Selecteer één gerelateerd item
     display_template: Weergavesjabloon

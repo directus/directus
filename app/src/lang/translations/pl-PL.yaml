@@ -953,7 +953,7 @@ interfaces:
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
     display_template: Wyświetl szablon

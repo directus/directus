@@ -940,7 +940,7 @@ interfaces:
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage

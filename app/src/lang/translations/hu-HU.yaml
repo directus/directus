@@ -687,7 +687,7 @@ interfaces:
     interface: Kezelőfelület
   interface-options:
     interface-options: Kinézet beállításai
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Megjelenítési sablon
   markdown:
     customSyntax: Egyéni blokkok

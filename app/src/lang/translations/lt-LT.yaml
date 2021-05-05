@@ -840,7 +840,7 @@ interfaces:
     placeholder: Pasirinkti sąsają...
   interface-options:
     interface-options: Sąsajos nustatymai
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Rodymo šablonas
   repeater:
     field_note_placeholder: Įvesti lauko pastabą...
