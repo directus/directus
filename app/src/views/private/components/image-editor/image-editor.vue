@@ -1,5 +1,11 @@
 <template>
-	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent @cancel="_active = false">
+	<v-drawer
+		v-model="internalActive"
+		class="modal"
+		:title="$t('editing_image')"
+		persistent
+		@cancel="internalActive = false"
+	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -139,7 +145,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const localActive = ref(false);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
 				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
@@ -163,7 +169,7 @@ export default defineComponent({
 			cropping,
 		} = useCropper();
 
-		watch(_active, (isActive) => {
+		watch(internalActive, (isActive) => {
 			if (isActive === true) {
 				fetchImage();
 			} else {
@@ -182,7 +188,7 @@ export default defineComponent({
 		});
 
 		return {
-			_active,
+			internalActive,
 			loading,
 			error,
 			imageData,
@@ -256,7 +262,7 @@ export default defineComponent({
 						try {
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
-							_active.value = false;
+							internalActive.value = false;
 						} catch (err) {
 							unexpectedError(err);
 						} finally {

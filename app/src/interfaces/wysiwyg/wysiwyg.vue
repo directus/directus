@@ -5,7 +5,7 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			v-model="_value"
+			v-model="internalValue"
 			@change="onChange"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
@@ -262,7 +262,7 @@ export default defineComponent({
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
-		const _value = computed({
+		const internalValue = computed({
 			get() {
 				return props.value;
 			},
@@ -318,7 +318,7 @@ export default defineComponent({
 		return {
 			editorElement,
 			editorOptions,
-			_value,
+			internalValue,
 			setFocus,
 			onImageSelect,
 			saveImage,

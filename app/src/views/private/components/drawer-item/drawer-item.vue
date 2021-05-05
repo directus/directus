@@ -1,5 +1,5 @@
 <template>
-	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
+	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
 		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
@@ -34,7 +34,7 @@
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:edits="_edits[junctionField]"
+					:edits="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					autofocus
 					@input="setJunctionEdits"
@@ -48,8 +48,8 @@
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
-				:edits="_edits"
-				@input="_edits = $event"
+				:edits="internalEdits"
+				@input="internalEdits = $event"
 			/>
 		</div>
 	</v-drawer>
@@ -112,14 +112,14 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const { _active } = useActiveState();
+		const { internalActive } = useActiveState();
 		const {
 			junctionFieldInfo,
 			junctionRelatedCollection,
 			junctionRelatedCollectionInfo,
 			setJunctionEdits,
 		} = useJunction();
-		const { _edits, loading, item } = useItem();
+		const { internalEdits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
 		const { collection } = toRefs(props);
@@ -191,8 +191,8 @@ export default defineComponent({
 		const { file, isDirectusFiles } = useFile();
 
 		return {
-			_active,
-			_edits,
+			internalActive,
+			internalEdits,
 			loading,
 			item,
 			save,
@@ -234,7 +234,7 @@ export default defineComponent({
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -244,13 +244,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useItem() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -284,7 +284,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { _edits, loading, item, fetchItem };
+			return { internalEdits, loading, item, fetchItem };
 
 			async function fetchItem() {
 				loading.value = true;
@@ -370,8 +370,8 @@ export default defineComponent({
 			function setJunctionEdits(edits: any) {
 				if (!props.junctionField) return;
 
-				_edits.value = {
-					..._edits.value,
+				internalEdits.value = {
+					...internalEdits.value,
 					[props.junctionField]: edits,
 				};
 			}
@@ -381,14 +381,14 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _edits.value);
-				_active.value = false;
-				_edits.value = {};
+				emit('input', internalEdits.value);
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

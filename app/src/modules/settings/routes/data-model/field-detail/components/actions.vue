@@ -52,7 +52,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _currentTab = useSync(props, 'current', emit);
+		const internalCurrentTab = useSync(props, 'current', emit);
 
 		const currentTabIndex = computed(() => props.tabs.findIndex((tab) => tab.value === props.current[0]));
 
@@ -70,13 +70,13 @@ export default defineComponent({
 			return true;
 		});
 
-		return { _currentTab, previousDisabled, previousTab, nextDisabled, nextTab, currentTabIndex };
+		return { internalCurrentTab, previousDisabled, previousTab, nextDisabled, nextTab, currentTabIndex };
 
 		function previousTab() {
 			const previousTab = props.tabs[currentTabIndex.value - 1];
 
 			if (previousTab) {
-				_currentTab.value = [previousTab.value];
+				internalCurrentTab.value = [previousTab.value];
 			}
 		}
 
@@ -84,7 +84,7 @@ export default defineComponent({
 			const nextTab = props.tabs[currentTabIndex.value + 1];
 
 			if (nextTab) {
-				_currentTab.value = [nextTab.value];
+				internalCurrentTab.value = [nextTab.value];
 			}
 		}
 	},

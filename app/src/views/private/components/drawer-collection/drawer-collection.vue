@@ -1,5 +1,5 @@
 <template>
-	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
+	<v-drawer v-model="internalActive" :title="$t('select_item')" @cancel="cancel">
 		<template #subtitle>
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
@@ -17,7 +17,7 @@
 		<component
 			:is="`layout-${localLayout}`"
 			:collection="collection"
-			:selection="_selection"
+			:selection="internalSelection"
 			:filters="filters"
 			v-model:layout-query="localQuery"
 			v-model:layout-options="localOptions"
@@ -72,8 +72,8 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const { save, cancel } = useActions();
-		const { _active } = useActiveState();
-		const { _selection, localSelection, onSelect } = useSelection();
+		const { internalActive } = useActiveState();
+		const { internalSelection, localSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
@@ -89,8 +89,8 @@ export default defineComponent({
 		return {
 			save,
 			cancel,
-			_active,
-			_selection,
+			internalActive,
+			internalSelection,
 			localSelection,
 			onSelect,
 			localLayout,
@@ -103,7 +103,7 @@ export default defineComponent({
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -113,13 +113,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useSelection() {
 			const localSelection = ref<(string | number)[] | null>(null);
 
-			const _selection = computed({
+			const internalSelection = computed({
 				get() {
 					if (localSelection.value === null) {
 						return props.selection;
@@ -139,7 +139,7 @@ export default defineComponent({
 				}
 			);
 
-			return { _selection, localSelection, onSelect };
+			return { internalSelection, localSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {
@@ -159,12 +159,12 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _selection.value);
-				_active.value = false;
+				emit('input', internalSelection.value);
+				internalActive.value = false;
 			}
 
 			function cancel() {
-				_active.value = false;
+				internalActive.value = false;
 			}
 		}
 	},

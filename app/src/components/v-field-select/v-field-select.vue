@@ -83,7 +83,7 @@ export default defineComponent({
 		const { info } = useCollection(collection);
 		const { tree } = useFieldTree(collection, false, inject);
 
-		const _value = computed({
+		const internalValue = computed({
 			get() {
 				return props.value || [];
 			},
@@ -94,13 +94,13 @@ export default defineComponent({
 
 		const selectedFields = computed({
 			get() {
-				return _value.value.map((field) => ({
+				return internalValue.value.map((field) => ({
 					field,
 					name: findTree(tree.value, field.split('.'))?.name as string,
 				}));
 			},
 			set(newVal: { field: string; name: string }[]) {
-				_value.value = newVal.map((field) => field.field);
+				internalValue.value = newVal.map((field) => field.field);
 			},
 		});
 
@@ -137,7 +137,7 @@ export default defineComponent({
 					name: field.name,
 					field: field.field,
 					key: field.key,
-					disabled: _value.value.includes(prefix + field.field),
+					disabled: internalValue.value.includes(prefix + field.field),
 					children: parseTree(field.children, prefix + field.field + '.'),
 				};
 			});
@@ -146,13 +146,13 @@ export default defineComponent({
 		}
 
 		function removeField(field: string) {
-			_value.value = _value.value.filter((f) => f !== field);
+			internalValue.value = internalValue.value.filter((f) => f !== field);
 		}
 
 		function addField(field: string) {
-			const newArray = _value.value;
+			const newArray = internalValue.value;
 			newArray.push(field);
-			_value.value = [...new Set(newArray)];
+			internalValue.value = [...new Set(newArray)];
 		}
 	},
 });

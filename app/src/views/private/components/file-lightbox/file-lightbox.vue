@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="_active" @esc="_active = false">
+	<v-dialog v-model="internalActive" @esc="internalActive = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -14,10 +14,10 @@
 			:height="file.height"
 			:title="file.title"
 			in-modal
-			@click="_active = false"
+			@click="internalActive = false"
 		/>
 
-		<v-button class="close" @click="_active = false" icon rounded>
+		<v-button class="close" @click="internalActive = false" icon rounded>
 			<v-icon name="close" />
 		</v-button>
 	</v-dialog>
@@ -56,7 +56,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const localActive = ref(false);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
 				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
@@ -84,7 +84,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _active, cacheBuster, loading, file, fileSrc };
+		return { internalActive, cacheBuster, loading, file, fileSrc };
 
 		async function fetchFile() {
 			cacheBuster.value = nanoid();

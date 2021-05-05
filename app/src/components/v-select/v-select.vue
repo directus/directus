@@ -43,7 +43,7 @@
 				<v-divider />
 			</template>
 
-			<template v-for="(item, index) in _items" :key="index">
+			<template v-for="(item, index) in internalItems" :key="index">
 				<v-divider v-if="item.divider === true" />
 
 				<v-list-item
@@ -193,19 +193,19 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { _items } = useItems();
+		const { internalItems } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
 		// @TODO3 This emits "input" instead of "update:modelValue"
-		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, _items, emit);
+		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, emit);
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 			modelValue as Ref<string[]>,
-			_items,
+			internalItems,
 			emit
 		);
 
 		return {
-			_items,
+			internalItems,
 			displayValue,
 			otherValue,
 			usesOtherValue,
@@ -215,7 +215,7 @@ export default defineComponent({
 		};
 
 		function useItems() {
-			const _items = computed(() => {
+			const internalItems = computed(() => {
 				const items = props.items.map((item) => {
 					if (typeof item === 'string') {
 						return {
@@ -237,7 +237,7 @@ export default defineComponent({
 				return items;
 			});
 
-			return { _items };
+			return { internalItems };
 		}
 
 		function useDisplayValue() {
@@ -250,7 +250,7 @@ export default defineComponent({
 							})
 							.join(', ');
 					} else {
-						const itemCount = _items.value.length + otherValues.value.length;
+						const itemCount = internalItems.value.length + otherValues.value.length;
 						const selectionCount = props.modelValue.length;
 
 						if (itemCount === selectionCount) {
@@ -267,7 +267,7 @@ export default defineComponent({
 			return { displayValue };
 
 			function getTextForValue(value: string | number) {
-				return _items.value.find((item) => item.value === value)?.['text'];
+				return internalItems.value.find((item) => item.value === value)?.['text'];
 			}
 		}
 	},

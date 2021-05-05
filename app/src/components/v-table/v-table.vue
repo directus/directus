@@ -1,14 +1,14 @@
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table
-			:summary="_headers.map((header) => header.text).join(', ')"
+			:summary="internalHeaders.map((header) => header.text).join(', ')"
 			:style="{
 				'--grid-columns': columnStyle,
 			}"
 		>
 			<table-header
-				v-model:headers="_headers"
-				v-model:sort="_sort"
+				v-model:headers="internalHeaders"
+				v-model:sort="internalSort"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
@@ -20,7 +20,7 @@
 				:manual-sort-key="manualSortKey"
 				@toggle-select-all="onToggleSelectAll"
 			>
-				<template v-for="header in _headers" #[`header.${header.value}`]>
+				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
 					<slot :header="header" :name="`header.${header.value}`" />
 				</template>
 			</table-header>
@@ -42,23 +42,23 @@
 			<draggable
 				:force-fallback="true"
 				v-else
-				v-model="_items"
+				v-model="internalItems"
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
-				:disabled="disabled || _sort.by !== manualSortKey"
+				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
 					<table-row
-						:headers="_headers"
+						:headers="internalHeaders"
 						:item="element"
 						:show-select="!disabled && showSelect"
 						:show-manual-sort="!disabled && showManualSort"
 						:is-selected="getSelectedState(element)"
 						:subdued="loading"
-						:sorted-manually="_sort.by === manualSortKey"
+						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
 						@click="clickable ? $emit('click:row', element) : null"
@@ -69,7 +69,7 @@
 							})
 						"
 					>
-						<template v-for="header in _headers" #[`item.${header.value}`]>
+						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
 							<slot :item="element" :name="`item.${header.value}`" />
 						</template>
 
@@ -200,7 +200,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit, slots }) {
-		const _headers = computed({
+		const internalHeaders = computed({
 			get: () => {
 				return props.headers
 					.map((header: HeaderRaw) => ({
@@ -239,23 +239,23 @@ export default defineComponent({
 
 		// In case the sort prop isn't used, we'll use this local sort state as a fallback.
 		// This allows the table to allow inline sorting on column ootb without the need for
-		const _localSort = ref<Sort>({
+		const internalLocalSort = ref<Sort>({
 			by: null,
 			desc: false,
 		});
 
-		const _sort = computed({
-			get: () => props.sort || _localSort.value,
+		const internalSort = computed({
+			get: () => props.sort || internalLocalSort.value,
 			set: (newSort: Sort) => {
 				emit('update:sort', newSort);
-				_localSort.value = newSort;
+				internalLocalSort.value = newSort;
 			},
 		});
 
 		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
 
 		const fullColSpan = computed<string>(() => {
-			let length = _headers.value.length + 1; // +1 account for spacer
+			let length = internalHeaders.value.length + 1; // +1 account for spacer
 			if (props.showSelect) length++;
 			if (props.showManualSort) length++;
 			if (hasItemAppendSlot.value) length++;
@@ -263,16 +263,16 @@ export default defineComponent({
 			return `1 / span ${length}`;
 		});
 
-		const _items = computed({
+		const internalItems = computed({
 			get: () => {
-				if (props.serverSort === true || _sort.value.by === props.manualSortKey) {
+				if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
 					return props.items;
 				}
 
-				if (_sort.value.by === null) return props.items;
+				if (internalSort.value.by === null) return props.items;
 
-				const itemsSorted = sortBy(props.items, [_sort.value.by]);
-				if (_sort.value.desc === true) return itemsSorted.reverse();
+				const itemsSorted = sortBy(props.items, [internalSort.value.by]);
+				if (internalSort.value.desc === true) return itemsSorted.reverse();
 				return itemsSorted;
 			},
 			set: (value: Record<string, any>) => {
@@ -289,7 +289,7 @@ export default defineComponent({
 		});
 
 		const columnStyle = computed<string>(() => {
-			let gridTemplateColumns = _headers.value
+			let gridTemplateColumns = internalHeaders.value
 				.map((header) => {
 					return header.width ? `${header.width}px` : '160px';
 				})
@@ -306,9 +306,9 @@ export default defineComponent({
 		});
 
 		return {
-			_headers,
-			_items,
-			_sort,
+			internalHeaders,
+			internalItems,
+			internalSort,
 			allItemsSelected,
 			getSelectedState,
 			onItemSelected,
@@ -379,8 +379,8 @@ export default defineComponent({
 		function onSortChange(event: EndEvent) {
 			if (props.disabled) return;
 
-			const item = _items.value[event.oldIndex][props.itemKey];
-			const to = _items.value[event.newIndex][props.itemKey];
+			const item = internalItems.value[event.oldIndex][props.itemKey];
+			const to = internalItems.value[event.newIndex][props.itemKey];
 
 			emit('manual-sort', { item, to });
 		}

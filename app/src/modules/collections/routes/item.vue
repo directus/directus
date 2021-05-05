@@ -176,17 +176,17 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
 				:collection="collection"
-				:primary-key="_primaryKey"
+				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
 				ref="revisionsDrawerDetail"
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && _primaryKey"
+				v-if="isNew === false && internalPrimaryKey"
 				:collection="collection"
-				:primary-key="_primaryKey"
+				:primary-key="internalPrimaryKey"
 			/>
 		</template>
 	</private-view>
@@ -354,7 +354,7 @@ export default defineComponent({
 			isNew
 		);
 
-		const _primaryKey = computed(() => {
+		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
 
 			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
@@ -404,7 +404,7 @@ export default defineComponent({
 			form,
 			fields,
 			isSingleton,
-			_primaryKey,
+			internalPrimaryKey,
 			revisionsAllowed,
 			revert,
 			accountabilityScope,

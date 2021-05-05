@@ -112,7 +112,7 @@ export function useGroupableParent(
 
 	// Internal copy of the selection. This allows the composition to work without the state option
 	// being passed
-	const _selection = ref<(number | string)[]>([]);
+	const internalSelection = ref<(number | string)[]>([]);
 
 	// Uses either the internal state, or the passed in state. Will call the onSelectionChange
 	// handler if it's passed
@@ -122,14 +122,14 @@ export function useGroupableParent(
 				return state.selection.value;
 			}
 
-			return _selection.value;
+			return internalSelection.value;
 		},
 		set(newSelection) {
 			if (notEmpty(state.onSelectionChange)) {
 				state.onSelectionChange(newSelection);
 			}
 
-			_selection.value = [...newSelection];
+			internalSelection.value = [...newSelection];
 		},
 	});
 
@@ -159,7 +159,7 @@ export function useGroupableParent(
 
 	// These aren't exported with any particular use in mind. It's mostly for testing purposes.
 	// Treat them as readonly.
-	return { items, selection, _selection, getValueForItem, updateChildren };
+	return { items, selection, internalSelection, getValueForItem, updateChildren };
 
 	// Register a child within the context of this group
 	function register(item: GroupableInstance) {

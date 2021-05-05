@@ -1,5 +1,5 @@
 <template>
-	<v-tabs vertical v-model="_currentTab">
+	<v-tabs vertical v-model="internalCurrentTab">
 		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tab.disabled">
 			{{ tab.text }}
 		</v-tab>
@@ -27,9 +27,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _currentTab = useSync(props, 'current', emit);
+		const internalCurrentTab = useSync(props, 'current', emit);
 
-		return { _currentTab };
+		return { internalCurrentTab };
 	},
 });
 </script>

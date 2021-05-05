@@ -21,7 +21,7 @@
 
 			<form-field-menu
 				:field="field"
-				:value="_value"
+				:value="internalValue"
 				:initial-value="initialValue"
 				@input="emitValue($event)"
 				@unset="$emit('unset', $event)"
@@ -32,7 +32,7 @@
 
 		<form-field-interface
 			:autofocus="autofocus"
-			:value="_value"
+			:value="internalValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"
@@ -134,7 +134,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const _value = computed(() => {
+		const internalValue = computed(() => {
 			if (props.value !== undefined) return props.value;
 			if (props.initialValue !== undefined) return props.initialValue;
 			return defaultValue.value;
@@ -156,7 +156,7 @@ export default defineComponent({
 			}
 		});
 
-		return { isDisabled, marked, _value, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { isDisabled, marked, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (
@@ -181,12 +181,12 @@ export default defineComponent({
 				get() {
 					switch (type.value) {
 						case 'object':
-							return JSON.stringify(_value.value, null, '\t');
+							return JSON.stringify(internalValue.value, null, '\t');
 						case 'string':
 						case 'number':
 						case 'boolean':
 						default:
-							return _value.value;
+							return internalValue.value;
 					}
 				},
 				set(newRawValue: string) {

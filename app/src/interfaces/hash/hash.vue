@@ -1,6 +1,6 @@
 <template>
 	<v-input
-		:placeholder="_placeholder"
+		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
 		:modelValue="localValue"
@@ -41,7 +41,7 @@ export default defineComponent({
 		const isHashed = ref(false);
 		const localValue = ref<string | null>(null);
 
-		const _placeholder = computed(() => {
+		const internalPlaceholder = computed(() => {
 			return isHashed.value ? i18n.global.t('value_hashed') : props.placeholder;
 		});
 
@@ -53,7 +53,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _placeholder, isHashed, localValue, emitValue };
+		return { internalPlaceholder, isHashed, localValue, emitValue };
 
 		function emitValue(newValue: string) {
 			emit('input', newValue);

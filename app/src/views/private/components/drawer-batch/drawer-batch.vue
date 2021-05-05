@@ -1,6 +1,6 @@
 <template>
 	<v-drawer
-		v-model="_active"
+		v-model="internalActive"
 		:title="$t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
@@ -14,8 +14,8 @@
 		<div class="drawer-batch-content">
 			<v-form
 				:collection="collection"
-				:edits="_edits"
-				@input="_edits = $event"
+				:edits="internalEdits"
+				@input="internalEdits = $event"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"
@@ -52,15 +52,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { _edits } = useEdits();
-		const { _active } = useActiveState();
+		const { internalEdits } = useEdits();
+		const { internalActive } = useActiveState();
 		const { save, cancel, saving, validationErrors } = useActions();
 
 		const { collection } = toRefs(props);
 
 		return {
-			_active,
-			_edits,
+			internalActive,
+			internalEdits,
 			save,
 			saving,
 			cancel,
@@ -70,7 +70,7 @@ export default defineComponent({
 		function useEdits() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -86,13 +86,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _edits };
+			return { internalEdits };
 		}
 
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -102,7 +102,7 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useActions() {
@@ -123,13 +123,13 @@ export default defineComponent({
 				try {
 					await api.patch(endpoint.value, {
 						keys: props.primaryKeys,
-						data: _edits.value,
+						data: internalEdits.value,
 					});
 
 					emit('refresh');
 
-					_active.value = false;
-					_edits.value = {};
+					internalActive.value = false;
+					internalEdits.value = {};
 				} catch (err) {
 					validationErrors.value = err.response.data.errors
 						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -150,8 +150,8 @@ export default defineComponent({
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

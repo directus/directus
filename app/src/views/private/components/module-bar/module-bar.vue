@@ -3,7 +3,7 @@
 		<module-bar-logo />
 		<div class="modules">
 			<v-button
-				v-for="module in _modules"
+				v-for="module in internalModules"
 				v-tooltip.right="module.name"
 				:key="module.id"
 				icon
@@ -45,7 +45,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const { modules } = getModules();
 
-		const _modules = computed(() => {
+		const internalModules = computed(() => {
 			const customModuleListing = userStore.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
@@ -87,7 +87,7 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-		return { _modules, modules };
+		return { internalModules, modules };
 	},
 });
 </script>

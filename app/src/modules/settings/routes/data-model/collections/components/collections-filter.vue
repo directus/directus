@@ -1,10 +1,10 @@
 <template>
 	<sidebar-detail class="collections-filter" icon="filter_list" :title="$t('collection', 2)">
 		<div class="type-label label">{{ $t('collections_shown') }}</div>
-		<v-checkbox value="visible" v-model="_value" :label="$t('visible_collections')" />
-		<v-checkbox value="unmanaged" v-model="_value" :label="$t('unmanaged_collections')" />
-		<v-checkbox value="hidden" v-model="_value" :label="$t('hidden_collections')" />
-		<v-checkbox value="system" v-model="_value" :label="$t('system_collections')" />
+		<v-checkbox value="visible" v-model="internalValue" :label="$t('visible_collections')" />
+		<v-checkbox value="unmanaged" v-model="internalValue" :label="$t('unmanaged_collections')" />
+		<v-checkbox value="hidden" v-model="internalValue" :label="$t('hidden_collections')" />
+		<v-checkbox value="system" v-model="internalValue" :label="$t('system_collections')" />
 	</sidebar-detail>
 </template>
 
@@ -20,7 +20,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed({
+		const internalValue = computed({
 			get() {
 				return props.modelValue;
 			},
@@ -29,7 +29,7 @@ export default defineComponent({
 			},
 		});
 
-		return { _value };
+		return { internalValue };
 	},
 });
 </script>

@@ -1,10 +1,10 @@
 <template>
 	<div class="v-dialog">
-		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
+		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
 		<teleport to="#target-dialog-outlet">
 			<transition-dialog appear>
-				<div v-if="_active" class="container" :class="[className, placement]">
+				<div v-if="internalActive" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
 				</div>
@@ -37,7 +37,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		useShortcut('escape', (event, cancelNext) => {
-			if (_active.value) {
+			if (internalActive.value) {
 				emit('esc');
 				cancelNext();
 			}
@@ -48,7 +48,7 @@ export default defineComponent({
 		const className = ref<string | null>(null);
 		const id = computed(() => nanoid());
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
 				return props.modelValue !== undefined ? props.modelValue : localActive.value;
 			},
@@ -58,7 +58,7 @@ export default defineComponent({
 			},
 		});
 
-		return { emitToggle, className, nudge, id, _active };
+		return { emitToggle, className, nudge, id, internalActive };
 
 		function emitToggle() {
 			if (props.persistent === false) {

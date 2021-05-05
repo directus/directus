@@ -13,7 +13,7 @@
 		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
-			<input @click.stop class="custom-input" v-else v-model="_value" />
+			<input @click.stop class="custom-input" v-else v-model="internalValue" />
 		</span>
 		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</component>
@@ -68,7 +68,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = useSync(props, 'value', emit);
+		const internalValue = useSync(props, 'value', emit);
 
 		const isChecked = computed<boolean>(() => {
 			if (props.modelValue instanceof Array) {
@@ -83,7 +83,7 @@ export default defineComponent({
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
-		return { isChecked, toggleInput, icon, _value };
+		return { isChecked, toggleInput, icon, internalValue };
 
 		function toggleInput(): void {
 			if (props.indeterminate === true) {

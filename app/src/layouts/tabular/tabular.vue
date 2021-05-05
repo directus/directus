@@ -52,7 +52,7 @@
 		<!-- </teleport> -->
 
 		<!-- <teleport to="#target-sidebar"> -->
-		<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<filter-sidebar-detail v-model="internalFilters" :collection="collection" :loading="loading" />
 		<!-- </teleport> -->
 
 		<!-- <teleport to="#target-actions:prepend"> -->
@@ -64,7 +64,7 @@
 		<!-- </teleport> -->
 
 		<v-table
-			v-model="_selection"
+			v-model="internalSelection"
 			v-if="loading || itemCount > 0"
 			class="table"
 			ref="table"
@@ -218,11 +218,11 @@ export default defineComponent({
 		const table = ref<ComponentPublicInstance>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
-		const _selection = useSync(props, 'selection', emit);
-		const _layoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
-		const _layoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
-		const _filters = useSync(props, 'filters', emit);
-		const _searchQuery = useSync(props, 'searchQuery', emit);
+		const internalSelection = useSync(props, 'selection', emit);
+		const internalLayoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
+		const internalLayoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
+		const internalFilters = useSync(props, 'filters', emit);
+		const internalSearchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
@@ -236,8 +236,8 @@ export default defineComponent({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				filters: _filters,
-				searchQuery: _searchQuery,
+				filters: internalFilters,
+				searchQuery: internalSearchQuery,
 			}
 		);
 
@@ -273,7 +273,7 @@ export default defineComponent({
 		});
 
 		const activeFilterCount = computed(() => {
-			let count = _filters.value.filter((filter) => !filter.locked).length;
+			let count = internalFilters.value.filter((filter) => !filter.locked).length;
 
 			if (searchQuery.value && searchQuery.value.length > 0) count++;
 
@@ -287,13 +287,13 @@ export default defineComponent({
 		useShortcut(
 			'meta+a',
 			() => {
-				_selection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
+				internalSelection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
 			},
 			table
 		);
 
 		return {
-			_selection,
+			internalSelection,
 			table,
 			tableHeaders,
 			items,
@@ -314,7 +314,7 @@ export default defineComponent({
 			activeFields,
 			tableSpacing,
 			primaryKeyField,
-			_filters,
+			internalFilters,
 			info,
 			showingCount,
 			sortField,
@@ -346,11 +346,11 @@ export default defineComponent({
 		function useItemOptions() {
 			const page = computed({
 				get() {
-					return _layoutQuery.value?.page || 1;
+					return internalLayoutQuery.value?.page || 1;
 				},
 				set(newPage: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: newPage,
 					};
 				},
@@ -358,11 +358,11 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					return _layoutQuery.value?.sort || primaryKeyField.value?.field;
+					return internalLayoutQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: 1,
 						sort: newSort,
 					};
@@ -371,11 +371,11 @@ export default defineComponent({
 
 			const limit = computed({
 				get() {
-					return _layoutQuery.value?.limit || 25;
+					return internalLayoutQuery.value?.limit || 25;
 				},
 				set(newLimit: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: 1,
 						limit: newLimit,
 					};
@@ -384,18 +384,18 @@ export default defineComponent({
 
 			const fields = computed({
 				get() {
-					if (_layoutQuery.value?.fields) {
+					if (internalLayoutQuery.value?.fields) {
 						// This shouldn't be the case, but double check just in case it's stored
 						// differently in the DB from previous versions
-						if (typeof _layoutQuery.value.fields === 'string') {
-							return (_layoutQuery.value.fields as string).split(',');
+						if (typeof internalLayoutQuery.value.fields === 'string') {
+							return (internalLayoutQuery.value.fields as string).split(',');
 						}
 
-						if (Array.isArray(_layoutQuery.value.fields)) return _layoutQuery.value.fields;
+						if (Array.isArray(internalLayoutQuery.value.fields)) return internalLayoutQuery.value.fields;
 					}
 
 					const fields =
-						_layoutQuery.value?.fields ||
+						internalLayoutQuery.value?.fields ||
 						fieldsInCollection.value
 							.filter((field: Field) => !!field.meta?.hidden === false)
 							.slice(0, 4)
@@ -409,8 +409,8 @@ export default defineComponent({
 					return fields;
 				},
 				set(newFields: string[]) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						fields: newFields,
 					};
 				},
@@ -433,15 +433,15 @@ export default defineComponent({
 			const localWidths = ref<{ [field: string]: number }>({});
 
 			watch(
-				() => _layoutOptions.value,
+				() => internalLayoutOptions.value,
 				() => {
 					localWidths.value = {};
 				}
 			);
 
 			const saveWidthsTolayoutOptions = debounce(() => {
-				_layoutOptions.value = {
-					...(_layoutOptions.value || {}),
+				internalLayoutOptions.value = {
+					...(internalLayoutOptions.value || {}),
 					widths: localWidths.value,
 				};
 			}, 350);
@@ -462,7 +462,7 @@ export default defineComponent({
 					return activeFields.value.map((field) => ({
 						text: field.name,
 						value: field.field,
-						width: localWidths.value[field.field] || _layoutOptions.value?.widths?.[field.field] || null,
+						width: localWidths.value[field.field] || internalLayoutOptions.value?.widths?.[field.field] || null,
 						field: {
 							display: field.meta?.display,
 							displayOptions: field.meta?.display_options,
@@ -494,11 +494,11 @@ export default defineComponent({
 
 			const tableSpacing = computed({
 				get() {
-					return _layoutOptions.value?.spacing || 'cozy';
+					return internalLayoutOptions.value?.spacing || 'cozy';
 				},
 				set(newSpacing: 'compact' | 'cozy' | 'comfortable') {
-					_layoutOptions.value = {
-						...(_layoutOptions.value || {}),
+					internalLayoutOptions.value = {
+						...(internalLayoutOptions.value || {}),
 						spacing: newSpacing,
 					};
 				},
@@ -530,10 +530,10 @@ export default defineComponent({
 			function onRowClick(item: Item) {
 				if (props.readonly === true) return;
 
-				if (props.selectMode || _selection.value?.length > 0) {
+				if (props.selectMode || internalSelection.value?.length > 0) {
 					(table.value as any).onItemSelected({
 						item,
-						value: _selection.value?.includes(item[primaryKeyField.value.field]) === false,
+						value: internalSelection.value?.includes(item[primaryKeyField.value.field]) === false,
 					});
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

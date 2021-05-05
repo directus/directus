@@ -31,15 +31,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const validation = computed({
 			get() {
-				return _permission.value.validation;
+				return internalPermission.value.validation;
 			},
 			set(newValidation: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
+				internalPermission.value = {
+					...internalPermission.value,
 					validation: newValidation,
 				};
 			},

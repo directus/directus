@@ -45,7 +45,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 
-		const _permission = useSync(props, 'permission', emit);
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const fieldsInCollection = computed(() => {
 			const fields = fieldsStore.getFieldsForCollection(props.permission.collection);
@@ -60,30 +60,30 @@ export default defineComponent({
 
 		const fields = computed({
 			get() {
-				if (!_permission.value.fields) return [];
+				if (!internalPermission.value.fields) return [];
 
-				if (_permission.value.fields.includes('*')) {
+				if (internalPermission.value.fields.includes('*')) {
 					return fieldsInCollection.value.map(({ value }: { value: string }) => value);
 				}
 
-				return _permission.value.fields;
+				return internalPermission.value.fields;
 			},
 			set(newFields: string[] | null) {
 				if (newFields && newFields.length > 0) {
 					if (newFields.length === fieldsInCollection.value.length) {
-						_permission.value = {
-							..._permission.value,
+						internalPermission.value = {
+							...internalPermission.value,
 							fields: ['*'],
 						};
 					} else {
-						_permission.value = {
-							..._permission.value,
+						internalPermission.value = {
+							...internalPermission.value,
 							fields: newFields,
 						};
 					}
 				} else {
-					_permission.value = {
-						..._permission.value,
+					internalPermission.value = {
+						...internalPermission.value,
 						fields: null,
 					};
 				}

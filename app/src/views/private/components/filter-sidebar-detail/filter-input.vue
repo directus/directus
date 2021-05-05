@@ -46,12 +46,12 @@
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="_value" :disabled="disabled" />
+			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="internalValue" :disabled="disabled" />
 			<v-input
 				:disabled="disabled"
 				v-else
 				autofocus
-				v-model="_value"
+				v-model="internalValue"
 				:nullable="false"
 				:type="type"
 				:placeholder="$t('enter_a_value')"
@@ -85,7 +85,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed<string | string[] | boolean | number>({
+		const internalValue = computed<string | string[] | boolean | number>({
 			get() {
 				return props.modelValue;
 			},
@@ -99,11 +99,11 @@ export default defineComponent({
 				return typeof props.modelValue === 'string' ? props.modelValue.split(',') : [];
 			},
 			set(newVal: string[]) {
-				_value.value = newVal.join(',');
+				internalValue.value = newVal.join(',');
 			},
 		});
 
-		return { _value, csvValue, setCSV, removeCSV, addCSV };
+		return { internalValue, csvValue, setCSV, removeCSV, addCSV };
 
 		function setCSV(index: number, value: string) {
 			const newValue = Object.assign([], csvValue.value, { [index]: value });

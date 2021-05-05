@@ -30,15 +30,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const presets = computed({
 			get() {
-				return _permission.value.presets;
+				return internalPermission.value.presets;
 			},
 			set(newPresets: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
+				internalPermission.value = {
+					...internalPermission.value,
 					presets: newPresets,
 				};
 			},

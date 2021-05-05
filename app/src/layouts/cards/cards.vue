@@ -47,7 +47,7 @@
 		<!-- </teleport> -->
 
 		<!-- <teleport to="#target-sidebar"> -->
-		<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<filter-sidebar-detail v-model="internalFilters" :collection="collection" :loading="loading" />
 		<!-- </teleport> -->
 
 		<!-- <teleport to="#target-actions:prepend"> -->
@@ -61,7 +61,7 @@
 				@select-all="selectAll"
 				:fields="fieldsInCollection"
 				v-model:size="size"
-				v-model:selection="_selection"
+				v-model:selection="internalSelection"
 				v-model:sort="sort"
 			/>
 
@@ -79,10 +79,10 @@
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
 					:item="item"
-					:select-mode="selectMode || (_selection && _selection.length > 0)"
+					:select-mode="selectMode || (internalSelection && internalSelection.length > 0)"
 					:to="getLinkForItem(item)"
 					:readonly="readonly"
-					v-model="_selection"
+					v-model="internalSelection"
 				>
 					<template #title v-if="title">
 						<render-template :collection="collection" :item="item" :template="title" />
@@ -219,11 +219,11 @@ export default defineComponent({
 		const layoutElement = ref<HTMLElement>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
-		const _selection = useSync(props, 'selection', emit);
-		const _layoutOptions = useSync(props, 'layoutOptions', emit);
-		const _layoutQuery = useSync(props, 'layoutQuery', emit);
-		const _filters = useSync(props, 'filters', emit);
-		const _searchQuery = useSync(props, 'searchQuery', emit);
+		const internalSelection = useSync(props, 'selection', emit);
+		const internalLayoutOptions = useSync(props, 'layoutOptions', emit);
+		const internalLayoutQuery = useSync(props, 'layoutQuery', emit);
+		const internalFilters = useSync(props, 'filters', emit);
+		const internalSearchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
@@ -252,8 +252,8 @@ export default defineComponent({
 			limit,
 			page,
 			fields: fields,
-			filters: _filters,
-			searchQuery: _searchQuery as any,
+			filters: internalFilters,
+			searchQuery: internalSearchQuery as any,
 		});
 
 		const newLink = computed(() => {
@@ -289,11 +289,11 @@ export default defineComponent({
 		});
 
 		const activeFilterCount = computed(() => {
-			return _filters.value.filter((filter) => !filter.locked).length;
+			return internalFilters.value.filter((filter) => !filter.locked).length;
 		});
 
 		return {
-			_selection,
+			internalSelection,
 			items,
 			loading,
 			error,
@@ -314,7 +314,7 @@ export default defineComponent({
 			getLinkForItem,
 			imageFit,
 			sort,
-			_filters,
+			internalFilters,
 			newLink,
 			info,
 			showingCount,
@@ -357,11 +357,11 @@ export default defineComponent({
 			function createViewOption<T>(key: keyof layoutOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
-						return _layoutOptions.value?.[key] !== undefined ? _layoutOptions.value?.[key] : defaultValue;
+						return internalLayoutOptions.value?.[key] !== undefined ? internalLayoutOptions.value?.[key] : defaultValue;
 					},
 					set(newValue: T) {
-						_layoutOptions.value = {
-							..._layoutOptions.value,
+						internalLayoutOptions.value = {
+							...internalLayoutOptions.value,
 							[key]: newValue,
 						};
 					},
@@ -372,11 +372,11 @@ export default defineComponent({
 		function uselayoutQuery() {
 			const page = computed({
 				get() {
-					return _layoutQuery.value?.page || 1;
+					return internalLayoutQuery.value?.page || 1;
 				},
 				set(newPage: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: newPage,
 					};
 				},
@@ -384,11 +384,11 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					return _layoutQuery.value?.sort || primaryKeyField.value.field;
+					return internalLayoutQuery.value?.sort || primaryKeyField.value.field;
 				},
 				set(newSort: string) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: 1,
 						sort: newSort,
 					};
@@ -397,11 +397,11 @@ export default defineComponent({
 
 			const limit = computed({
 				get() {
-					return _layoutQuery.value?.limit || 25;
+					return internalLayoutQuery.value?.limit || 25;
 				},
 				set(newLimit: number) {
-					_layoutQuery.value = {
-						...(_layoutQuery.value || {}),
+					internalLayoutQuery.value = {
+						...(internalLayoutQuery.value || {}),
 						page: 1,
 						limit: newLimit,
 					};

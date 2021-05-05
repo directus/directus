@@ -12,8 +12,8 @@
 				v-for="option in options"
 				:key="option.value"
 				clickable
-				@click="_current = option.value"
-				:active="_current === option.value"
+				@click="internalCurrent = option.value"
+				:active="internalCurrent === option.value"
 			>
 				<v-icon name="commit_node" />
 				<v-list-item-content>{{ option.text }}</v-list-item-content>
@@ -48,7 +48,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _current = useSync(props, 'current', emit);
+		const internalCurrent = useSync(props, 'current', emit);
 
 		const options = ref<Option[] | null>(null);
 
@@ -77,10 +77,10 @@ export default defineComponent({
 		);
 
 		const selectedOption = computed(() => {
-			return options.value?.find((option) => option.value === _current.value);
+			return options.value?.find((option) => option.value === internalCurrent.value);
 		});
 
-		return { _current, options, selectedOption };
+		return { internalCurrent, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
 			const date = await localizedFormat(

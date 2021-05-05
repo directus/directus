@@ -93,7 +93,7 @@
 			v-model:selection="selection"
 			v-model:layout-options="layoutOptions"
 			v-model:layout-query="layoutQuery"
-			:filters="_filters"
+			:filters="internalFilters"
 			:search-query="searchQuery"
 			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
@@ -182,7 +182,7 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const _filters = computed(() => {
+		const internalFilters = computed(() => {
 			if (props.queryFilters !== null) {
 				const urlFilters = [];
 
@@ -220,7 +220,7 @@ export default defineComponent({
 
 		return {
 			canInviteUsers,
-			_filters,
+			internalFilters,
 			addNewLink,
 			breadcrumb,
 			title,

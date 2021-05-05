@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<v-drawer
-			v-model="_active"
+			v-model="internalActive"
 			:title="$t('item_revision')"
-			@cancel="_active = false"
+			@cancel="internalActive = false"
 			:sidebar-label="$t(currentTab[0])"
 		>
 			<template #subtitle>
-				<revisions-drawer-picker :revisions="revisions" v-model:current="_current" />
+				<revisions-drawer-picker :revisions="revisions" v-model:current="internalCurrent" />
 			</template>
 
 			<template #sidebar>
@@ -31,7 +31,7 @@
 				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
 					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="_active = false" icon rounded v-tooltip.bottom="$t('done')">
+				<v-button @click="internalActive = false" icon rounded v-tooltip.bottom="$t('done')">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -67,8 +67,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _active = useSync(props, 'active', emit);
-		const _current = useSync(props, 'current', emit);
+		const internalActive = useSync(props, 'active', emit);
+		const internalCurrent = useSync(props, 'current', emit);
 
 		const currentTab = ref(['revision_preview']);
 
@@ -95,8 +95,8 @@ export default defineComponent({
 		];
 
 		return {
-			_active,
-			_current,
+			internalActive,
+			internalCurrent,
 			currentRevision,
 			currentTab,
 			tabs,
@@ -116,7 +116,7 @@ export default defineComponent({
 
 			emit('revert', revertToValues);
 
-			_active.value = false;
+			internalActive.value = false;
 		}
 	},
 });

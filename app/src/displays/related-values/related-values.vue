@@ -18,7 +18,7 @@
 		<v-list class="links">
 			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
 				<v-list-item-content>
-					<render-template :template="_template" :item="item" :collection="relatedCollection" />
+					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
 					<v-icon name="launch" small />
@@ -26,7 +26,7 @@
 			</v-list-item>
 		</v-list>
 	</v-menu>
-	<render-template v-else :template="_template" :item="value" :collection="relatedCollection" />
+	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <script lang="ts">
@@ -72,7 +72,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const _template = computed(() => {
+		const internalTemplate = computed(() => {
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
@@ -96,7 +96,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template, unit };
+		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;

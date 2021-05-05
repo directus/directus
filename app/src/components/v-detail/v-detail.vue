@@ -1,11 +1,11 @@
 <template>
 	<div class="v-detail" :class="{ disabled }">
-		<v-divider @click="_active = !_active">
-			<v-icon v-if="!disabled" :name="_active ? 'unfold_less' : 'unfold_more'" small />
+		<v-divider @click="internalActive = !internalActive">
+			<v-icon v-if="!disabled" :name="internalActive ? 'unfold_less' : 'unfold_more'" small />
 			<slot name="title">{{ label }}</slot>
 		</v-divider>
 		<transition-expand>
-			<div v-if="_active">
+			<div v-if="internalActive">
 				<slot />
 			</div>
 		</transition-expand>
@@ -39,7 +39,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const localActive = ref(props.startOpen);
-		const _active = computed({
+		const internalActive = computed({
 			get() {
 				if (props.modelValue !== undefined) {
 					return props.modelValue;
@@ -52,7 +52,7 @@ export default defineComponent({
 			},
 		});
 
-		return { _active };
+		return { internalActive };
 	},
 });
 </script>

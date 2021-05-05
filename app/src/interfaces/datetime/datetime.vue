@@ -87,7 +87,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { _value, year, month, date, hours, minutes, seconds, period } = useLocalValue();
+		const { internalValue, year, month, date, hours, minutes, seconds, period } = useLocalValue();
 		const { yearItems, monthItems, dateItems, hourItems, minutesSecondItems } = useOptions();
 		const { displayValue } = useDisplayValue();
 
@@ -114,7 +114,7 @@ export default defineComponent({
 		}
 
 		function useLocalValue() {
-			const _value = computed({
+			const internalValue = computed({
 				get() {
 					if (!props.value) return null;
 
@@ -147,44 +147,44 @@ export default defineComponent({
 
 			const year = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getFullYear();
+					if (!internalValue.value) return null;
+					return internalValue.value.getFullYear();
 				},
 				set(newYear: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setFullYear(newYear || 0);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const month = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getMonth();
+					if (!internalValue.value) return null;
+					return internalValue.value.getMonth();
 				},
 				set(newMonth: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setMonth(newMonth || 0);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const date = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getDate();
+					if (!internalValue.value) return null;
+					return internalValue.value.getDate();
 				},
 				set(newDate: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setDate(newDate || 1);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const hours = computed({
 				get() {
-					if (!_value.value) return null;
-					const hours = _value.value.getHours();
+					if (!internalValue.value) return null;
+					const hours = internalValue.value.getHours();
 
 					if (props.use24 === false) {
 						return hours % 12;
@@ -193,43 +193,43 @@ export default defineComponent({
 					return hours;
 				},
 				set(newHours: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setHours(newHours || 0);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const minutes = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getMinutes();
+					if (!internalValue.value) return null;
+					return internalValue.value.getMinutes();
 				},
 				set(newMinutes: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setMinutes(newMinutes || 0);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const seconds = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getSeconds();
+					if (!internalValue.value) return null;
+					return internalValue.value.getSeconds();
 				},
 				set(newSeconds: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setSeconds(newSeconds || 0);
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
 			const period = computed({
 				get() {
-					if (!_value.value) return null;
-					return _value.value.getHours() >= 12 ? 'pm' : 'am';
+					if (!internalValue.value) return null;
+					return internalValue.value.getHours() >= 12 ? 'pm' : 'am';
 				},
 				set(newAMPM: 'am' | 'pm' | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					const current = newValue.getHours() >= 12 ? 'pm' : 'am';
 
 					if (current !== newAMPM) {
@@ -240,26 +240,26 @@ export default defineComponent({
 						}
 					}
 
-					_value.value = newValue;
+					internalValue.value = newValue;
 				},
 			});
 
-			return { _value, year, month, date, hours, minutes, seconds, period };
+			return { internalValue, year, month, date, hours, minutes, seconds, period };
 		}
 
 		function setToNow() {
-			_value.value = new Date();
+			internalValue.value = new Date();
 		}
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
 
-			watch(_value, setDisplayValue, { immediate: true });
+			watch(internalValue, setDisplayValue, { immediate: true });
 
 			return { displayValue };
 
 			async function setDisplayValue() {
-				if (!props.value || !_value.value) {
+				if (!props.value || !internalValue.value) {
 					displayValue.value = null;
 					return;
 				}
@@ -271,13 +271,13 @@ export default defineComponent({
 				if (props.type === 'date') format = String(i18n.global.t('date-fns_date'));
 				if (props.type === 'time') format = String(i18n.global.t(timeFormat));
 
-				displayValue.value = await formatLocalized(_value.value, format);
+				displayValue.value = await formatLocalized(internalValue.value, format);
 			}
 		}
 
 		function useOptions() {
 			const yearItems = computed(() => {
-				const current = _value.value?.getFullYear() || new Date().getFullYear();
+				const current = internalValue.value?.getFullYear() || new Date().getFullYear();
 				const years = [];
 
 				for (let i = current - 5; i <= current + 5; i++) {

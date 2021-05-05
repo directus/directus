@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="_active" @esc="$emit('cancel')" :persistent="persistent" placement="right">
+	<v-dialog v-model="internalActive" @esc="$emit('cancel')" :persistent="persistent" placement="right">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
@@ -103,7 +103,7 @@ export default defineComponent({
 
 		provide('main-element', mainEl);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
 				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
@@ -113,7 +113,7 @@ export default defineComponent({
 			},
 		});
 
-		return { _active, mainEl };
+		return { internalActive, mainEl };
 	},
 });
 </script>
