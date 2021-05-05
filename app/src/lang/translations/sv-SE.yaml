@@ -955,7 +955,7 @@ interfaces:
     minimum_value: Minsta värde
     maximum_value: Högsta värde
     step_interval: Steg intervall
-  one-to-many:
+  list-o2m:
     one-to-many: One to Many
     description: Välj flera relaterade objekt
     no_collection: Kollektionen kunde inte hittas

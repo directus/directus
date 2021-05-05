@@ -978,7 +978,7 @@ interfaces:
     minimum_value: Минимална стойност
     maximum_value: Максимална стойност
     step_interval: Интервал на стъпка
-  one-to-many:
+  list-o2m:
     one-to-many: Един към много
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена

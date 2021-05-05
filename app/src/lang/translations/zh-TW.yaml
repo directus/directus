@@ -649,7 +649,7 @@ interfaces:
     description: 輸入一個數字
     minimum_value: 最小值
     maximum_value: 最大值
-  one-to-many:
+  list-o2m:
     one-to-many: 一對多
     description: 選擇多個關聯項目
     no_collection: 找不到該集合

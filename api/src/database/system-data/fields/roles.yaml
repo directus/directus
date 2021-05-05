@@ -46,7 +46,7 @@ fields:
     width: half
 
   - field: users
-    interface: one-to-many
+    interface: list-o2m
     special: o2m
     options:
       fields:

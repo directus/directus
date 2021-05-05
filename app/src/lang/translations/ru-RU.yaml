@@ -936,7 +936,7 @@ interfaces:
     minimum_value: Минимальное Значение
     maximum_value: Максимальное Значение
     step_interval: Интервал Шага
-  one-to-many:
+  list-o2m:
     one-to-many: Один ко многим
     description: Выберите несколько связанных элементов
     no_collection: Коллекция не найдена

@@ -963,7 +963,7 @@ interfaces:
     minimum_value: Valeur minimale
     maximum_value: Valeur maximale
     step_interval: Intervalle
-  one-to-many:
+  list-o2m:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable

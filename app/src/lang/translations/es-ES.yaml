@@ -934,7 +934,7 @@ interfaces:
     minimum_value: Valor Mínimo
     maximum_value: Valor Máximo
     step_interval: Intervalo de Pasos
-  one-to-many:
+  list-o2m:
     one-to-many: Uno a Muchos
     description: Seleccionar múltiples elementos relacionados
     no_collection: No se encontró la colección

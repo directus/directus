@@ -704,7 +704,7 @@ interfaces:
   numeric:
     numeric: Sayısal
     description: Bir sayı girin
-  one-to-many:
+  list-o2m:
     one-to-many: Bire Çok
   radio-buttons:
     radio-buttons: Radyo Düğmeleri

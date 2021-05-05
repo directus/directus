@@ -266,7 +266,7 @@ interfaces:
     many-to-one: Багато до одного
   numeric:
     numeric: Цифровий
-  one-to-many:
+  list-o2m:
     one-to-many: Один до багатьох
   tags:
     tags: Теги

@@ -974,7 +974,7 @@ interfaces:
     minimum_value: Minimum Value
     maximum_value: Maximum Value
     step_interval: Step Interval
-  one-to-many:
+  list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found

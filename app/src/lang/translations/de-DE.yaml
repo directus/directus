@@ -982,7 +982,7 @@ interfaces:
     minimum_value: Minimalwert
     maximum_value: Maximalwert
     step_interval: Schrittintervall
-  one-to-many:
+  list-o2m:
     one-to-many: 1 zu n
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden

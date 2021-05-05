@@ -627,7 +627,7 @@ interfaces:
     markdown: Gạch nhớ
   numeric:
     numeric: Kiểu số
-  one-to-many:
+  list-o2m:
     one-to-many: Quan hệ một - nhiều
   radio-buttons:
     radio-buttons: Ô chọn tròn

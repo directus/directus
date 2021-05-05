@@ -922,7 +922,7 @@ interfaces:
     minimum_value: ค่าน้อยสุด
     maximum_value: ค่ามากสุด
     step_interval: ขั้นในการเพิ่มลดค่า
-  one-to-many:
+  list-o2m:
     one-to-many: One to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบคอลเลกชัน

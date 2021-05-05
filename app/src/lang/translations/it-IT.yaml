@@ -744,7 +744,7 @@ interfaces:
     description: Inserisci un numero
     minimum_value: Valore Minimo
     maximum_value: Valore Massimo
-  one-to-many:
+  list-o2m:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta

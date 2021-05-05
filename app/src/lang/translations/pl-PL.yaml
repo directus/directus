@@ -976,7 +976,7 @@ interfaces:
     minimum_value: Wartość minimalna
     maximum_value: Wartość maksymalna
     step_interval: Czas kroku
-  one-to-many:
+  list-o2m:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona

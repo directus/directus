@@ -1,13 +1,13 @@
 import { defineInterface } from '../define';
-import InterfaceOneToMany from './one-to-many.vue';
+import InterfaceListO2M from './list-o2m.vue';
 import Options from './options.vue';
 
 export default defineInterface({
-	id: 'one-to-many',
-	name: '$t:interfaces.one-to-many.one-to-many',
-	description: '$t:interfaces.one-to-many.description',
+	id: 'list-o2m',
+	name: '$t:interfaces.list-o2m.one-to-many',
+	description: '$t:interfaces.list-o2m.description',
 	icon: 'arrow_right_alt',
-	component: InterfaceOneToMany,
+	component: InterfaceListO2M,
 	types: ['alias'],
 	groups: ['o2m'],
 	relational: true,

@@ -978,7 +978,7 @@ interfaces:
     minimum_value: Vähimmäisarvo
     maximum_value: Enimmäisarvo
     step_interval: Askelväli
-  one-to-many:
+  list-o2m:
     one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt

@@ -1,6 +1,6 @@
 <template>
 	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.one-to-many.no_collection') }}
+		{{ $t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">

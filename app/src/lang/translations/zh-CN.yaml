@@ -747,7 +747,7 @@ interfaces:
     markdown: Markdown
   numeric:
     numeric: 数字
-  one-to-many:
+  list-o2m:
     one-to-many: 一对多
   radio-buttons:
     radio-buttons: 单选按钮

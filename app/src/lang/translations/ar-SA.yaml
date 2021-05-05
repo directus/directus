@@ -472,7 +472,7 @@ interfaces:
     description: أدخل رقماً
     minimum_value: الحد الأدنى للقيمة
     maximum_value: الحد الأقصى للقيمة
-  one-to-many:
+  list-o2m:
     one-to-many: واحد للكثيرين
   radio-buttons:
     radio-buttons: أزرار الراديو

@@ -200,7 +200,7 @@ interfaces:
     interface-options: Opcions d'Interfície
   select-dropdown-m2o:
     display_template: Mostra la plantilla
-  one-to-many:
+  list-o2m:
     one-to-many: Un a Molts
   radio-buttons:
     radio-buttons: Botons de selecció

@@ -923,7 +923,7 @@ interfaces:
     minimum_value: Minimale Waarde
     maximum_value: Maximale waarde
     step_interval: Stap Interval
-  one-to-many:
+  list-o2m:
     one-to-many: Één op veel
     description: Selecteer meerdere gerelateerde items
     no_collection: De collectie kon niet worden gevonden

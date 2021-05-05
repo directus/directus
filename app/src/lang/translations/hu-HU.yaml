@@ -699,7 +699,7 @@ interfaces:
     minimum_value: Minimum érték
     maximum_value: Maximum érték
     step_interval: Lépésköz
-  one-to-many:
+  list-o2m:
     no_collection: A gyűjtemény nem található
   radio-buttons:
     radio-buttons: Választó gombok
