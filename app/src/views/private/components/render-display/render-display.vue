@@ -10,7 +10,7 @@
 		v-else
 		:is="`display-${display}`"
 		v-bind="options"
-		:interface="$props.interface"
+		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
 		:type="type"

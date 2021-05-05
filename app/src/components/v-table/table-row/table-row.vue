@@ -1,33 +1,33 @@
 <template>
 	<tr
 		class="table-row"
-		:class="{ subdued: $props.subdued, clickable: $props.hasClickListener }"
+		:class="{ subdued: subdued, clickable: hasClickListener }"
 		@click="$emit('click')"
 		:style="{
-			'--table-row-height': $props.height + 2 + 'px',
+			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
 	>
-		<td v-if="$props.showManualSort" class="manual cell" @click.stop>
-			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': $props.sortedManually }" />
+		<td v-if="showManualSort" class="manual cell" @click.stop>
+			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="$props.showSelect" class="select cell" @click.stop>
-			<v-checkbox :modelValue="$props.isSelected" @update:modelValue="$emit('item-selected', $event)" />
+		<td v-if="showSelect" class="select cell" @click.stop>
+			<v-checkbox :modelValue="isSelected" @update:modelValue="$emit('item-selected', $event)" />
 		</td>
 
-		<td class="cell" :class="`align-${header.align}`" v-for="header in $props.headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="$props.item">
+		<td class="cell" :class="`align-${header.align}`" v-for="header in headers" :key="header.value">
+			<slot :name="`item.${header.value}`" :item="item">
 				<v-text-overflow
 					v-if="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
-						}, $props.item)
+						}, item)
 					"
 					:text="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
-						}, $props.item)
+						}, item)
 					"
 				/>
 				<value-null v-else />
