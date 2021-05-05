@@ -1,5 +1,5 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr, { ListrTask } from 'listr';
 import { getDBsToTest } from '../get-dbs-to-test';
@@ -8,27 +8,18 @@ import globby from 'globby';
 import path from 'path';
 import { GlobalConfigTsJest } from 'ts-jest/dist/types';
 import { writeFileSync } from 'fs';
-
-declare module global {
-	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
-	let directusContainers: { vendor: string; container: Dockerode.Container }[];
-	let knexInstances: { vendor: string; knex: Knex }[];
-}
+import global from './global';
 
 const docker = new Dockerode();
 let started = false;
 
-export default async (jestConfig: GlobalConfigTsJest) => {
+export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 	if (started) return;
 	started = true;
 
 	console.log('\n\n');
 
 	console.log(`👮‍♀️ Starting tests!\n`);
-
-	global.databaseContainers = [];
-	global.directusContainers = [];
-	global.knexInstances = [];
 
 	const vendors = getDBsToTest();
 

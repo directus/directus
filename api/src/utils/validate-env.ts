@@ -1,7 +1,7 @@
-import logger from '../logger';
 import env from '../env';
+import logger from '../logger';
 
-export function validateEnv(requiredKeys: string[]) {
+export function validateEnv(requiredKeys: string[]): void {
 	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
 		requiredKeys.push('DB_FILENAME');
 	} else if (env.DB_CLIENT && env.DB_CLIENT === 'oracledb') {
@@ -17,7 +17,7 @@ export function validateEnv(requiredKeys: string[]) {
 	}
 
 	for (const requiredKey of requiredKeys) {
-		if (env.hasOwnProperty(requiredKey) === false) {
+		if (requiredKey in env === false) {
 			logger.error(`"${requiredKey}" Environment Variable is missing.`);
 			process.exit(1);
 		}

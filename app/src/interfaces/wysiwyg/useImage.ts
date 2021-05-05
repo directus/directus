@@ -1,7 +1,7 @@
-import { Ref, ref } from '@vue/composition-api';
-import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import i18n from '@/lang';
+import { getPublicURL } from '@/utils/get-root-path';
+import { Ref, ref } from '@vue/composition-api';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -10,7 +10,7 @@ type ImageSelection = {
 	height?: number;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string>) {
+export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -46,7 +46,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>) {
 
 			editor.value.on('NodeChange', onImageNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onImageNodeSelect);
 			};
 		},

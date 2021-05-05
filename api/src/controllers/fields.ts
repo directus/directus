@@ -1,14 +1,13 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { FieldsService } from '../services/fields';
-import validateCollection from '../middleware/collection-exists';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
-import { types, Field } from '../types';
-import useCollection from '../middleware/use-collection';
-import { respond } from '../middleware/respond';
 import { ALIAS_TYPES } from '../constants';
-import { reduceSchema } from '../utils/reduce-schema';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import validateCollection from '../middleware/collection-exists';
+import { respond } from '../middleware/respond';
+import useCollection from '../middleware/use-collection';
+import { FieldsService } from '../services/fields';
+import { Field, types } from '../types';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
@@ -94,7 +93,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+		const field: Partial<Field> & { field: string; type: typeof types[number] | null } = req.body;
 
 		await service.createField(req.params.collection, field);
 
@@ -132,7 +131,7 @@ router.patch(
 		}
 
 		try {
-			let results: any = [];
+			const results: any = [];
 			for (const field of req.body) {
 				const updatedField = await service.readOne(req.params.collection, field.field);
 				results.push(updatedField);

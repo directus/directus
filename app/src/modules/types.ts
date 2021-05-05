@@ -1,6 +1,6 @@
-import { RouteConfig } from 'vue-router';
+import { Permission, User } from '@/types';
 import { Ref } from '@vue/composition-api';
-import { User, Permission } from '@/types';
+import { RouteConfig } from 'vue-router';
 
 export interface ModuleConfig {
 	id: string;
@@ -15,6 +15,6 @@ export interface ModuleConfig {
 	persistent?: boolean;
 }
 
-export type ModuleContext = {};
+export type ModuleContext = Record<string, unknown>;
 
 export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);

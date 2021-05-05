@@ -307,7 +307,6 @@ fields:
     note: 備考
     hidden: 非表示
     singleton: シングルトン
-    translations: コレクション名の翻訳
     sort_field: フィールドの並べ替え
   directus_files:
     title: タイトル

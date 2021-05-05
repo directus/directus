@@ -21,7 +21,7 @@ data:
   - collection: directus_files
     icon: folder
     note: Metadata for all managed file assets
-    display_template: '{{ title }}'
+    display_template: '{{ $thumbnail }} {{ title }}'
   - collection: directus_folders
     note: Provides virtual directories for files
     display_template: '{{ name }}'

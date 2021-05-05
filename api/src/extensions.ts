@@ -1,19 +1,18 @@
-import listFolders from './utils/list-folders';
-import path from 'path';
-import env from './env';
-import { ServiceUnavailableException } from './exceptions';
 import express, { Router } from 'express';
-import emitter from './emitter';
-import logger from './logger';
-import { HookRegisterFunction, EndpointRegisterFunction } from './types';
 import { ensureDir } from 'fs-extra';
-import { getSchema } from './utils/get-schema';
-
-import * as exceptions from './exceptions';
-import * as services from './services';
+import path from 'path';
 import database from './database';
+import emitter from './emitter';
+import env from './env';
+import * as exceptions from './exceptions';
+import { ServiceUnavailableException } from './exceptions';
+import logger from './logger';
+import * as services from './services';
+import { EndpointRegisterFunction, HookRegisterFunction } from './types';
+import { getSchema } from './utils/get-schema';
+import listFolders from './utils/list-folders';
 
-export async function ensureFoldersExist() {
+export async function ensureFoldersExist(): Promise<void> {
 	const folders = ['endpoints', 'hooks', 'interfaces', 'modules', 'layouts', 'displays'];
 
 	for (const folder of folders) {
@@ -26,11 +25,11 @@ export async function ensureFoldersExist() {
 	}
 }
 
-export async function initializeExtensions() {
+export async function initializeExtensions(): Promise<void> {
 	await ensureFoldersExist();
 }
 
-export async function listExtensions(type: string) {
+export async function listExtensions(type: string): Promise<string[]> {
 	const extensionsPath = env.EXTENSIONS_PATH as string;
 	const location = path.join(extensionsPath, type);
 
@@ -46,12 +45,12 @@ export async function listExtensions(type: string) {
 	}
 }
 
-export async function registerExtensions(router: Router) {
+export async function registerExtensions(router: Router): Promise<void> {
 	await registerExtensionHooks();
 	await registerExtensionEndpoints(router);
 }
 
-export async function registerExtensionEndpoints(router: Router) {
+export async function registerExtensionEndpoints(router: Router): Promise<void> {
 	let endpoints: string[] = [];
 	try {
 		endpoints = await listExtensions('endpoints');
@@ -61,7 +60,7 @@ export async function registerExtensionEndpoints(router: Router) {
 	}
 }
 
-export async function registerExtensionHooks() {
+export async function registerExtensionHooks(): Promise<void> {
 	let hooks: string[] = [];
 	try {
 		hooks = await listExtensions('hooks');
@@ -94,7 +93,7 @@ function registerHooks(hooks: string[]) {
 			}
 		}
 
-		let events = register({ services, exceptions, env, database, getSchema });
+		const events = register({ services, exceptions, env, database, getSchema });
 		for (const [event, handler] of Object.entries(events)) {
 			emitter.on(event, handler);
 		}

@@ -644,7 +644,6 @@ fields:
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
-    translations: การแปลชื่อคอลเลกชัน
     archive_app_filter: เก็บตัวกรองแอป
     archive_value: เก็บค่า
     unarchive_value: ยกเลิกการเก็บค่า

@@ -1,11 +1,11 @@
+import { nanoid } from 'nanoid';
+import runMigrations from '../../../database/migrations/run';
+import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
 import logger from '../../../logger';
-import installDatabase from '../../../database/seeds/run';
-import runMigrations from '../../../database/migrations/run';
 import { getSchema } from '../../../utils/get-schema';
-import { nanoid } from 'nanoid';
 
-export default async function bootstrap() {
+export default async function bootstrap(): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
 	if ((await isDatabaseAvailable()) === false) {
@@ -71,7 +71,7 @@ async function isDatabaseAvailable() {
 	const tries = 5;
 	const secondsBetweenTries = 5;
 
-	for (var i = 0; i < tries; i++) {
+	for (let i = 0; i < tries; i++) {
 		if (await hasDatabaseConnection()) {
 			return true;
 		}

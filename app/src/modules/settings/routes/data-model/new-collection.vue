@@ -74,7 +74,12 @@
 				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
-					<div class="field" v-for="(info, field, index) in systemFields" :key="field" :class="index % 2 === 0 ? 'half':'half-right'">
+					<div
+						class="field"
+						v-for="(info, field, index) in systemFields"
+						:key="field"
+						:class="index % 2 === 0 ? 'half' : 'half-right'"
+					>
 						<div class="type-label">{{ $t(info.label) }}</div>
 						<v-input
 							v-model="info.name"

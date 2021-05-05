@@ -1,14 +1,14 @@
-import { Ref, ref, computed } from '@vue/composition-api';
-import { RelationInfo } from './use-relation';
-import { get } from 'lodash';
 import { Filter } from '@/types';
+import { computed, Ref, ref } from '@vue/composition-api';
+import { get } from 'lodash';
+import { RelationInfo } from './use-relation';
 
 export default function useSelection(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
-) {
+): Record<string, any> {
 	const selectModalActive = ref(false);
 
 	const selectedPrimaryKeys = computed(() => {

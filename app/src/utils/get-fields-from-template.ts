@@ -1,6 +1,6 @@
 import adjustFieldsForTranslations from '@/utils/adjust-fields-for-translations';
 
-export function getFieldsFromTemplate(template: string | null, collection: string | undefined = undefined) {
+export function getFieldsFromTemplate(template: string | null, collection: string | undefined = undefined): string[] {
 	if (template === null) return [];
 
 	const regex = /{{(.*?)}}/g;

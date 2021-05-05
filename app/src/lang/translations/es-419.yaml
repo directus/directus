@@ -151,7 +151,7 @@ refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
 refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
 refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
-auto_generate: Auto Generado
+auto_generate: Auto-Generado
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
 to_manually_setup_translations: configurar manualmente las traducciones.
@@ -651,7 +651,6 @@ fields:
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
-    translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor

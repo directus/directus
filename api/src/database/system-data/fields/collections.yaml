@@ -64,7 +64,23 @@ fields:
             interface: system-language
             width: half
         - field: translation
-          name: translation
+          name: Collection Name
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+        - field: singular
+          name: Singular Unit
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+        - field: plural
+          name: Plural Unit
           type: string
           meta:
             interface: text-input

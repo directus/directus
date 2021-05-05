@@ -1,6 +1,7 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Collection } from '@/types';
 
-export default function getRelatedCollection(collection: string, field: string) {
+export default function getRelatedCollection(collection: string, field: string): Collection {
 	const relationsStore = useRelationsStore();
 	const fieldsStore = useFieldsStore();
 

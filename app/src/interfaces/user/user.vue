@@ -301,7 +301,7 @@ export default defineComponent({
 						...newEdits,
 					});
 				} else {
-					if (newEdits.hasOwnProperty('id') && newEdits.id === '+') {
+					if ('id' in newEdits && newEdits.id === '+') {
 						delete newEdits.id;
 					}
 

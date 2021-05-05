@@ -122,6 +122,7 @@ body {
 
 .v-checkbox {
 	--v-icon-color-hover: var(--primary);
+
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -166,24 +167,14 @@ body {
 		}
 	}
 
-	&:not(:disabled):hover {
-		.checkbox {
-			--v-icon-color: var(--primary);
-		}
-		&.block {
-			border-color: var(--border-normal-alt);
-			background-color: var(--background-subdued);
-		}
-	}
-
 	&.block {
-		transition: all var(--fast) var(--transition);
 		position: relative;
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		border: 2px solid var(--border-normal);
 		border-radius: var(--border-radius);
+		transition: all var(--fast) var(--transition);
 
 		&::before {
 			position: absolute;
@@ -198,6 +189,16 @@ body {
 
 		> * {
 			z-index: 1;
+		}
+	}
+
+	&:not(:disabled):hover {
+		.checkbox {
+			--v-icon-color: var(--primary);
+		}
+		&.block {
+			background-color: var(--background-subdued);
+			border-color: var(--border-normal-alt);
 		}
 	}
 

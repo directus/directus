@@ -1,14 +1,14 @@
 import api from '@/api';
-import { Ref, ref, watch, computed } from '@vue/composition-api';
-import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
-import { AxiosResponse } from 'axios';
+import { VALIDATION_TYPES } from '@/constants';
+import i18n from '@/lang';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { VALIDATION_TYPES } from '@/constants';
+import { computed, Ref, ref, watch } from '@vue/composition-api';
+import { AxiosResponse } from 'axios';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Record<string, any> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);
@@ -144,7 +144,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		};
 
 		// Make sure to delete the primary key
-		if (primaryKeyField.value && newItem.hasOwnProperty(primaryKeyField.value.field)) {
+		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			delete newItem[primaryKeyField.value.field];
 		}
 

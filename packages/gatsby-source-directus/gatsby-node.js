@@ -1,7 +1,7 @@
 const invariant = require('invariant');
 const Directus = require('@directus/sdk-js');
 const { sourceNodes } = require('@lnfusion/gatsby-source-graphql');
-const { createRemoteFileNode } = require("gatsby-source-filesystem");
+const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
 const ms = require('ms');
 const chalk = require('chalk');
@@ -33,7 +33,7 @@ function normalizeEndpoint(endpoint, query = {}) {
 	}
 
 	Object.entries(query)
-		.filter(([key, value]) => value !== undefined)
+		.filter(([, value]) => value !== undefined)
 		.forEach(([key, value]) => url.searchParams.set(key, value));
 
 	try {
@@ -164,38 +164,31 @@ exports.sourceNodes = async (gatsby, options) => {
 /**
  * Gatsby file implementation.
  */
- exports.createResolvers = async ({
-	actions,
-	cache,
-	createNodeId,
-	createResolvers,
-	store,
-	reporter,
-  }, options) => {
+exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, options) => {
 	const { createNode } = actions;
-	
+
 	const { url } = options;
 
 	let endpoints = normalizeEndpoint(url);
-  
+
 	await createResolvers({
-	  DirectusData_directus_files: {
-		imageFile: {
-		  type: "File",
-		  async resolve(source) {
-			if (!source || !source.id) {
-			  return null;
-			}
-			return await createRemoteFileNode({
-			  url: `${endpoints.base}assets/${source.id}`,
-			  store,
-			  cache,
-			  createNode,
-			  createNodeId,
-			  reporter,
-			});
-		  },
+		DirectusData_directus_files: {
+			imageFile: {
+				type: 'File',
+				async resolve(source) {
+					if (!source || !source.id) {
+						return null;
+					}
+					return await createRemoteFileNode({
+						url: `${endpoints.base}assets/${source.id}`,
+						store,
+						cache,
+						createNode,
+						createNodeId,
+						reporter,
+					});
+				},
+			},
 		},
-	  },
 	});
-  };
+};

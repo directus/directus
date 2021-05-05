@@ -10,7 +10,7 @@
 
 		<v-dialog persistent v-model="enableActive" @esc="enableActive = false">
 			<v-card>
-				<template v-if="tfaEnabled === false" v-show="loading === false">
+				<template v-if="tfaEnabled === false && loading === false">
 					<v-card-title>
 						{{ $t('enter_password_to_enable_tfa') }}
 					</v-card-title>

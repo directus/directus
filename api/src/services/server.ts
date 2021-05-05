@@ -1,21 +1,21 @@
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { Knex } from 'knex';
-import database from '../database';
+import { merge } from 'lodash';
+import macosRelease from 'macos-release';
+import { nanoid } from 'nanoid';
 import os from 'os';
-import logger from '../logger';
+import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
-import macosRelease from 'macos-release';
-import { SettingsService } from './settings';
-import mailer from './mailer';
-import env from '../env';
-import { performance } from 'perf_hooks';
 import cache from '../cache';
+import database from '../database';
+import env from '../env';
+import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { nanoid } from 'nanoid';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
-import { merge } from 'lodash';
+import mailer from './mailer';
+import { SettingsService } from './settings';
 
 export class ServerService {
 	knex: Knex;
@@ -30,7 +30,7 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
-	async serverInfo() {
+	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 
 		const projectInfo = await this.settingsService.readSingleton({
@@ -70,7 +70,7 @@ export class ServerService {
 		return info;
 	}
 
-	async health() {
+	async health(): Promise<Record<string, any>> {
 		const checkID = nanoid(5);
 
 		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype

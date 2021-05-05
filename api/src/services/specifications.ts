@@ -1,3 +1,12 @@
+import formatTitle from '@directus/format-title';
+import openapi from '@directus/specs';
+import { Knex } from 'knex';
+import { cloneDeep, mergeWith } from 'lodash';
+import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
+// @ts-ignore
+import { version } from '../../package.json';
+import database from '../database';
+import env from '../env';
 import {
 	AbstractServiceOptions,
 	Accountability,
@@ -8,22 +17,11 @@ import {
 	SchemaOverview,
 	types,
 } from '../types';
+import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
-import formatTitle from '@directus/format-title';
-import { cloneDeep, mergeWith } from 'lodash';
-import { RelationsService } from './relations';
-import env from '../env';
-import { OpenAPIObject, PathItemObject, OperationObject, TagObject, SchemaObject } from 'openapi3-ts';
-
-// @ts-ignore
-import { version } from '../../package.json';
-import openapi from '@directus/specs';
-
-import { Knex } from 'knex';
-import database from '../database';
-import { getRelationType } from '../utils/get-relation-type';
 import { GraphQLService } from './graphql';
+import { RelationsService } from './relations';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -164,7 +162,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = tag.hasOwnProperty('x-collection') === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
@@ -176,7 +174,7 @@ class OASSpecsService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								tag.hasOwnProperty('x-collection') === false ||
+								'x-collection' in tag === false ||
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&

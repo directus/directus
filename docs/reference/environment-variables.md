@@ -160,6 +160,40 @@ Alternatively, you can provide the individual connection parameters:
 | ---------------- | ---------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
 
+## Sessions
+
+Sessions are only used in the oAuth authentication flow.
+
+| Variable        | Description                                                               | Default Value |
+| --------------- | ------------------------------------------------------------------------- | ------------- |
+| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, or `memcache`. | `memory`      |
+
+Based on the `SESSION_STORE` used, you must also provide the following configurations:
+
+### Memory
+
+No additional configuration required.
+
+### Redis
+
+| Variable        | Description                                                           | Default Value |
+| --------------- | --------------------------------------------------------------------- | ------------- |
+| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+
+Alternatively, you can provide the individual connection parameters:
+
+| Variable                 | Description                      | Default Value |
+| ------------------------ | -------------------------------- | ------------- |
+| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
+| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
+| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
+
+### Memcache
+
+| Variable           | Description                        | Default Value |
+| ------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+
 ## File Storage
 
 | Variable            | Description                                                                                                           | Default Value |
