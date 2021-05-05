@@ -75,7 +75,7 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item @click="hiddenShown = !hiddenShown">
+				<v-list-item clickable @click="hiddenShown = !hiddenShown">
 					<v-list-item-icon>
 						<v-icon :name="hiddenShown ? 'visibility_off' : 'visibility'" />
 					</v-list-item-icon>

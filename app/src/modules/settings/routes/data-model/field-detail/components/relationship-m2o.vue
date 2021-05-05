@@ -33,6 +33,7 @@
 									v-for="collection in availableCollections"
 									:key="collection.collection"
 									:active="relations[0].one_collection === collection.collection"
+									clickable
 									@click="relations[0].one_collection = collection.collection"
 								>
 									<v-list-item-content>
@@ -48,6 +49,7 @@
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[0].one_collection === collection.collection"
+										clickable
 										@click="relations[0].one_collection = collection.collection"
 									>
 										<v-list-item-content>

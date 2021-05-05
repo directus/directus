@@ -10,7 +10,7 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item @click="renameActive = true" :disabled="isMine === false">
+				<v-list-item clickable @click="renameActive = true" :disabled="isMine === false">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
@@ -18,7 +18,7 @@
 						<v-text-overflow :text="$t('rename_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="deleteActive = true" class="danger" :disabled="isMine === false">
+				<v-list-item clickable @click="deleteActive = true" class="danger" :disabled="isMine === false">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>

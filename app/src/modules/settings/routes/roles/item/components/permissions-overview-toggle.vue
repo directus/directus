@@ -22,7 +22,7 @@
 			</template>
 
 			<v-list>
-				<v-list-item :disabled="permissionLevel === 'all'" @click="setFullAccess(action)">
+				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="setFullAccess(action)">
 					<v-list-item-icon>
 						<v-icon name="check" />
 					</v-list-item-icon>
@@ -34,6 +34,7 @@
 				<v-list-item
 					v-if="!!appMinimalLevel === false"
 					:disabled="permissionLevel === 'none'"
+					clickable
 					@click="setNoAccess(action)"
 				>
 					<v-list-item-icon>
@@ -46,7 +47,7 @@
 
 				<v-divider />
 
-				<v-list-item @click="openPermissions">
+				<v-list-item clickable @click="openPermissions">
 					<v-list-item-icon>
 						<v-icon name="rule" />
 					</v-list-item-icon>

@@ -40,7 +40,13 @@
 				</template>
 
 				<template v-else>
-					<v-list-item v-for="item in users" :key="item.id" :active="value === item.id" @click="setCurrent(item)">
+					<v-list-item
+						v-for="item in users"
+						:key="item.id"
+						:active="value === item.id"
+						clickable
+						@click="setCurrent(item)"
+					>
 						<v-list-item-content>
 							{{ userName(item) }}
 						</v-list-item-content>

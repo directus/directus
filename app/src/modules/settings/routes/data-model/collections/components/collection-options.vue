@@ -5,7 +5,7 @@
 				<v-icon name="more_vert" clickable @click="toggle" class="ctx-toggle" />
 			</template>
 			<v-list>
-				<v-list-item @click="deleteActive = true" class="danger">
+				<v-list-item clickable @click="deleteActive = true" class="danger">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>

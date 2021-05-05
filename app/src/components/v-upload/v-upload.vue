@@ -36,14 +36,14 @@
 						<v-icon clickable @click="toggle" class="options" name="more_vert" />
 					</template>
 					<v-list>
-						<v-list-item @click="activeDialog = 'choose'" v-if="fromLibrary">
+						<v-list-item clickable @click="activeDialog = 'choose'" v-if="fromLibrary">
 							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 							<v-list-item-content>
 								{{ $t('choose_from_library') }}
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item @click="activeDialog = 'url'" v-if="fromUrl">
+						<v-list-item clickable @click="activeDialog = 'url'" v-if="fromUrl">
 							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 							<v-list-item-content>
 								{{ $t('import_from_url') }}

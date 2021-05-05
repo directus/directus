@@ -5,6 +5,7 @@
 			class="activator"
 			:to="to"
 			:exact="exact"
+			clickable
 			@click="onClick"
 			:disabled="disabled"
 			:dense="dense"

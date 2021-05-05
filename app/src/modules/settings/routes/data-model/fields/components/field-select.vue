@@ -35,7 +35,7 @@
 
 						<v-divider />
 
-						<v-list-item @click="deleteActive = true" class="danger">
+						<v-list-item clickable @click="deleteActive = true" class="danger">
 							<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 							<v-list-item-content>
 								{{ $t('delete_field') }}
@@ -99,14 +99,14 @@
 								</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item v-if="duplicable" @click="duplicateActive = true">
+							<v-list-item v-if="duplicable" clickable @click="duplicateActive = true">
 								<v-list-item-icon>
 									<v-icon name="content_copy" />
 								</v-list-item-icon>
 								<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="toggleVisibility">
+							<v-list-item clickable @click="toggleVisibility">
 								<template v-if="hidden === false">
 									<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
 									<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
@@ -119,17 +119,17 @@
 
 							<v-divider />
 
-							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
+							<v-list-item clickable @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
+							<v-list-item clickable @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
+							<v-list-item clickable @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 							</v-list-item>
@@ -137,6 +137,7 @@
 							<v-divider />
 
 							<v-list-item
+								clickable
 								@click="deleteActive = true"
 								class="danger"
 								:disabled="(field.schema && field.schema.is_primary_key === true) || false"

@@ -1,6 +1,7 @@
 <template>
 	<v-list-item
 		v-if="folder.children.length === 0"
+		clickable
 		@click="clickHandler(folder.id)"
 		:active="currentFolder === folder.id"
 		:disabled="disabled"

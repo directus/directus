@@ -5,17 +5,17 @@
 		</template>
 
 		<v-list>
-			<v-list-item :disabled="disabled" @click="$emit('save-and-stay')">
+			<v-list-item :disabled="disabled" clickable @click="$emit('save-and-stay')">
 				<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('save_and_stay') }}</v-list-item-content>
 				<v-list-item-hint>{{ translateShortcut(['meta', 's']) }}</v-list-item-hint>
 			</v-list-item>
-			<v-list-item :disabled="disabled" @click="$emit('save-and-add-new')">
+			<v-list-item :disabled="disabled" clickable @click="$emit('save-and-add-new')">
 				<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('save_and_create_new') }}</v-list-item-content>
 				<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
 			</v-list-item>
-			<v-list-item :disabled="disabled" @click="$emit('save-as-copy')">
+			<v-list-item :disabled="disabled" clickable @click="$emit('save-as-copy')">
 				<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
 				<v-list-item-content>{{ $t('save_as_copy') }}</v-list-item-content>
 			</v-list-item>

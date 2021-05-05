@@ -54,6 +54,7 @@
 						v-for="item in items"
 						:key="item[relatedPrimaryKeyField.field]"
 						:active="value === item[relatedPrimaryKeyField.field]"
+						clickable
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>

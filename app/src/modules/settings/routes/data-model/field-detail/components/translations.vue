@@ -32,6 +32,7 @@
 									v-for="collection in availableCollections"
 									:key="collection.collection"
 									:active="relations[0].many_collection === collection.collection"
+									clickable
 									@click="relations[0].many_collection = collection.collection"
 								>
 									<v-list-item-content>
@@ -47,6 +48,7 @@
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[0].many_collection === collection.collection"
+										clickable
 										@click="relations[0].many_collection = collection.collection"
 									>
 										<v-list-item-content>
@@ -87,6 +89,7 @@
 									v-for="collection in availableCollections"
 									:key="collection.collection"
 									:active="relations[1].one_collection === collection.collection"
+									clickable
 									@click="relations[1].one_collection = collection.collection"
 								>
 									<v-list-item-content>
@@ -102,6 +105,7 @@
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[1].one_collection === collection.collection"
+										clickable
 										@click="relations[1].one_collection = collection.collection"
 									>
 										<v-list-item-content>
@@ -141,6 +145,7 @@
 								:key="item.value"
 								:active="relations[0].many_field === item.value"
 								:disabled="item.disabled"
+								clickable
 								@click="relations[0].many_field = item.value"
 							>
 								<v-list-item-content>
@@ -179,6 +184,7 @@
 								:key="item.value"
 								:active="relations[1].many_field === item.value"
 								:disabled="item.disabled"
+								clickable
 								@click="relations[1].many_field = item.value"
 							>
 								<v-list-item-content>

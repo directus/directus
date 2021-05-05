@@ -7,6 +7,7 @@
 		<v-list-item
 			v-for="languageItem in languages"
 			:key="languageItem[languagesPrimaryKeyField]"
+			clickable
 			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 			class="language-row"
 			block

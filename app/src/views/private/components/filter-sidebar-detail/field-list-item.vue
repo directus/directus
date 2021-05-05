@@ -1,5 +1,9 @@
 <template>
-	<v-list-item v-if="field.children === undefined" @click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)">
+	<v-list-item
+		v-if="field.children === undefined"
+		clickable
+		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
+	>
 		<v-list-item-content>{{ field.name }}</v-list-item-content>
 	</v-list-item>
 	<v-list-group v-else>

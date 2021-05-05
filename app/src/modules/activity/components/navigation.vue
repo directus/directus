@@ -1,6 +1,6 @@
 <template>
 	<v-list large>
-		<v-list-item @click="clearNavFilter" :active="!activeFilter">
+		<v-list-item clickable @click="clearNavFilter" :active="!activeFilter">
 			<v-list-item-icon>
 				<v-icon name="access_time" />
 			</v-list-item-icon>
@@ -10,6 +10,7 @@
 		</v-list-item>
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('user', currentUserID)"
 			:active="activeFilter && activeFilter.field === 'user' && activeFilter.value === currentUserID"
 		>
@@ -24,6 +25,7 @@
 		<v-divider />
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('action', 'create')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'create'"
 		>
@@ -36,6 +38,7 @@
 		</v-list-item>
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('action', 'update')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'update'"
 		>
@@ -48,6 +51,7 @@
 		</v-list-item>
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('action', 'delete')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'delete'"
 		>
@@ -60,6 +64,7 @@
 		</v-list-item>
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('action', 'comment')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'comment'"
 		>
@@ -72,6 +77,7 @@
 		</v-list-item>
 
 		<v-list-item
+			clickable
 			@click="setNavFilter('action', 'authenticate')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'authenticate'"
 		>

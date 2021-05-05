@@ -29,7 +29,7 @@
 
 		<v-list class="list">
 			<template v-if="showDeselect">
-				<v-list-item @click="$emit('update:modelValue', null)" :disabled="modelValue === null">
+				<v-list-item clickable @click="$emit('update:modelValue', null)" :disabled="modelValue === null">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -50,6 +50,7 @@
 					v-else
 					:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
 					:disabled="item.disabled"
+					clickable
 					@click="multiple ? null : $emit('update:modelValue', item.value)"
 				>
 					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">

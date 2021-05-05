@@ -32,6 +32,7 @@
 						:key="field.field"
 						:disabled="field.disabled"
 						:active="field.field === sortKey"
+						clickable
 						@click="_sort = field.field"
 					>
 						<v-list-item-content>{{ field.name }}</v-list-item-content>

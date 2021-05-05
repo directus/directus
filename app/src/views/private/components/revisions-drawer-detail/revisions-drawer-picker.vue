@@ -11,6 +11,7 @@
 			<v-list-item
 				v-for="option in options"
 				:key="option.value"
+				clickable
 				@click="_current = option.value"
 				:active="_current === option.value"
 			>

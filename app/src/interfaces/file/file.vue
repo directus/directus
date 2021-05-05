@@ -48,21 +48,21 @@
 
 					<v-divider />
 				</template>
-				<v-list-item @click="activeDialog = 'upload'">
+				<v-list-item clickable @click="activeDialog = 'upload'">
 					<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
 					</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="activeDialog = 'choose'">
+				<v-list-item clickable @click="activeDialog = 'choose'">
 					<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
 					</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="activeDialog = 'url'">
+				<v-list-item clickable @click="activeDialog = 'url'">
 					<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 					<v-list-item-content>
 						{{ $t(file ? 'replace_from_url' : 'import_from_url') }}

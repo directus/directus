@@ -18,6 +18,7 @@
 						:active="operator === activeOperator"
 						v-for="operator in parsedField.operators"
 						:key="operator"
+						clickable
 						@click="activeOperator = operator"
 					>
 						<v-list-item-content>{{ $t(`operators.${operator}`) }}</v-list-item-content>

@@ -29,11 +29,11 @@
 				</template>
 
 				<v-list>
-					<v-list-item @click="$emit('edit')">
+					<v-list-item clickable @click="$emit('edit')">
 						<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>
 					</v-list-item>
-					<v-list-item @click="confirmDelete = true">
+					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
 					</v-list-item>

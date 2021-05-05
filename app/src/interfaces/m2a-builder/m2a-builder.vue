@@ -75,6 +75,7 @@
 
 				<v-list>
 					<v-list-item
+						clickable
 						@click="createNew(collection.collection)"
 						v-for="collection of collections"
 						:key="collection.collection"
@@ -95,6 +96,7 @@
 
 				<v-list>
 					<v-list-item
+						clickable
 						@click="selectingFrom = collection.collection"
 						v-for="collection of collections"
 						:key="collection.collection"

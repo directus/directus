@@ -9,7 +9,7 @@
 		:class="{
 			active,
 			dense,
-			link: isClickable,
+			link: isLink,
 			disabled,
 			dashed,
 			block,
@@ -50,6 +50,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: false,
+		},
 		active: {
 			type: Boolean,
 			default: false,
@@ -75,7 +79,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { attrs }) {
+	setup(props) {
 		const component = computed<string>(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
@@ -86,9 +90,9 @@ export default defineComponent({
 			value: props.value,
 		});
 
-		const isClickable = computed(() => Boolean(props.to || props.href || attrs.onClick !== undefined));
+		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
 
-		return { component, isClickable };
+		return { component, isLink };
 	},
 });
 </script>
