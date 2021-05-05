@@ -1045,7 +1045,7 @@ interfaces:
       auto: Automático
       dropdown: Seleção
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas

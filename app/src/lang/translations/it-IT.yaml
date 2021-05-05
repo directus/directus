@@ -778,7 +778,7 @@ interfaces:
     modes:
       dropdown: Menu a tendina
       modal: Modale
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     custom_formats: Formati personalizzati
 displays:

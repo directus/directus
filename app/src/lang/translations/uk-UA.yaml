@@ -277,7 +277,7 @@ interfaces:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: Власне форматування
 displays:
   collection:

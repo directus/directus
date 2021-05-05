@@ -1040,7 +1040,7 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar

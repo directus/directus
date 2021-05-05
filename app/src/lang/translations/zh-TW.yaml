@@ -694,7 +694,7 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  wysiwyg:
+  input-rich-text-html:
     toolbar: 工具列
     custom_formats: 自訂格式
 displays:

@@ -997,7 +997,7 @@ interfaces:
       auto: Авто
       dropdown: Выпадающий список
       modal: Модальный
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Расширенный редактор, создающий HTML содержимое
     toolbar: Панель инструментов

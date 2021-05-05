@@ -1044,7 +1044,7 @@ interfaces:
       auto: Автоматичен
       dropdown: Падащо меню
       modal: Модал
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Редактор на текст с допълнения в HTML формат
     toolbar: Лента с инструменти

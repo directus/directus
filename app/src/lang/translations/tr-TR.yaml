@@ -736,7 +736,7 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     toolbar: Araç Çubuğu
     custom_formats: Özel Biçimler

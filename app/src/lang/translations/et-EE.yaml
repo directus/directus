@@ -766,7 +766,7 @@ interfaces:
     user: Kasutaja
     modes:
       dropdown: Rippmenüü
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: Kohandatud vormingud
 displays:
   boolean:

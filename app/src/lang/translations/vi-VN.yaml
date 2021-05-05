@@ -650,7 +650,7 @@ interfaces:
     user: Người dùng
     modes:
       dropdown: Tuỳ chọn dạng thả xuống
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: Tuỳ chỉnh định dạng
 displays:
   boolean:

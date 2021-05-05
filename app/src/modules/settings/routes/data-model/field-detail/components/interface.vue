@@ -61,7 +61,7 @@ export default defineComponent({
 
 			const recommendedInterfacesPerType: { [type: string]: string[] } = {
 				string: ['input', 'dropdown'],
-				text: ['wysiwyg'],
+				text: ['input-rich-text-html'],
 				boolean: ['toggle'],
 				integer: ['numeric'],
 				bigInteger: ['numeric'],

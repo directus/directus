@@ -739,7 +739,7 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     toolbar: Eszköztár
     custom_formats: Egyéni formátum

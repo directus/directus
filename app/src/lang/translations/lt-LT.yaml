@@ -883,7 +883,7 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Formatuoto teksto redaktorius
     toolbar: Įrankių juosta

@@ -497,7 +497,7 @@ interfaces:
     modes:
       auto: تلقائي
       dropdown: قائمة منسدلة
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: ما تراه هو ما تحصل عليه
     toolbar: شريط الأدوات
 displays:

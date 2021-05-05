@@ -997,7 +997,7 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Un editor de texto enriquecido para escribir contenido HTML
     toolbar: Barra de Herramientas

@@ -985,7 +985,7 @@ interfaces:
       auto: อัตโนมัติ
       dropdown: ตัวเลือกแบบดรอปดาวน์
       modal: กล่อง
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
     toolbar: แถบเครื่องมือ

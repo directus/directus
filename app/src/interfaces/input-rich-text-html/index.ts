@@ -2,19 +2,19 @@ import { defineInterface } from '@/interfaces/define';
 import { AsyncComponent } from 'vue';
 
 const InterfaceWYSIWYG = () =>
-	import(/* webpackChunkName: 'interface-wysiwyg', webpackPrefetch: true */ './wysiwyg.vue');
+	import(/* webpackChunkName: 'interface-input-rich-text-html', webpackPrefetch: true */ './input-rich-text-html.vue');
 
 export default defineInterface({
-	id: 'wysiwyg',
-	name: '$t:interfaces.wysiwyg.wysiwyg',
-	description: '$t:interfaces.wysiwyg.description',
+	id: 'input-rich-text-html',
+	name: '$t:interfaces.input-rich-text-html.wysiwyg',
+	description: '$t:interfaces.input-rich-text-html.description',
 	icon: 'format_quote',
 	component: InterfaceWYSIWYG as AsyncComponent,
 	types: ['text'],
 	options: [
 		{
 			field: 'toolbar',
-			name: '$t:interfaces.wysiwyg.toolbar',
+			name: '$t:interfaces.input-rich-text-html.toolbar',
 			type: 'json',
 			schema: {
 				default_value: [
@@ -242,7 +242,7 @@ export default defineInterface({
 		},
 		{
 			field: 'customFormats',
-			name: '$t:interfaces.wysiwyg.custom_formats',
+			name: '$t:interfaces.input-rich-text-html.custom_formats',
 			type: 'json',
 			meta: {
 				interface: 'code',
@@ -266,7 +266,7 @@ export default defineInterface({
 		},
 		{
 			field: 'tinymceOverrides',
-			name: '$t:interfaces.wysiwyg.options_override',
+			name: '$t:interfaces.input-rich-text-html.options_override',
 			type: 'json',
 			meta: {
 				interface: 'code',

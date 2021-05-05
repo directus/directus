@@ -1044,7 +1044,7 @@ interfaces:
       auto: Automaattinen
       dropdown: Pudotusvalikko
       modal: Modaali
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki

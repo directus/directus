@@ -983,7 +983,7 @@ interfaces:
       auto: Automatisch
       dropdown: Keuzemenu
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Een tekstverwerker die HTML-inhoud schrijft
     toolbar: Werkbalk

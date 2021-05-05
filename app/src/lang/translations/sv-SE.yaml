@@ -1019,7 +1019,7 @@ interfaces:
       auto: Automatisk
       dropdown: Rullgardinsmeny
       modal: Popup
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: En textredigerare som skriver HTML-innehåll
     toolbar: Verktygsfält

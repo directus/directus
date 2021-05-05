@@ -771,7 +771,7 @@ interfaces:
     user: 用户
     modes:
       dropdown: 下拉列表
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: 自定义格式
 displays:
   boolean:
