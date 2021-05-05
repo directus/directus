@@ -922,8 +922,8 @@ interfaces:
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
-  dropdown-multiselect:
-    dropdown-multiselect: Rozwijanie menu listy (Wielokrotnego wyboru)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
     description: Wybierz wiele wartości z listy rozwijanej
   file:
     file: Plik

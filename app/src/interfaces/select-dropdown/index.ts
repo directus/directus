@@ -1,13 +1,13 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceDropdownMultiselect from './dropdown-multiselect.vue';
+import InterfaceSelectDropdown from './select-dropdown.vue';
 
 export default defineInterface({
-	id: 'dropdown-multiselect',
-	name: '$t:interfaces.dropdown-multiselect.dropdown-multiselect',
-	description: '$t:interfaces.dropdown-multiselect.description',
+	id: 'dropdown',
+	name: '$t:dropdown',
+	description: '$t:interfaces.dropdown.description',
 	icon: 'arrow_drop_down_circle',
-	component: InterfaceDropdownMultiselect,
-	types: ['json', 'csv'],
+	component: InterfaceSelectDropdown,
+	types: ['string'],
 	options: [
 		{
 			field: 'choices',
@@ -25,8 +25,8 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:text',
 							meta: {
-								width: 'half',
 								interface: 'text-input',
+								width: 'half',
 								options: {
 									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
 								},
@@ -37,12 +37,12 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:value',
 							meta: {
-								width: 'half',
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
 									placeholder: '$t:interfaces.dropdown.choices_value_placeholder',
 								},
+								width: 'half',
 							},
 						},
 					],
@@ -80,6 +80,15 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'icon',
+			name: '$t:icon',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'icon',
+			},
+		},
+		{
 			field: 'placeholder',
 			name: '$t:placeholder',
 			type: 'string',
@@ -89,15 +98,6 @@ export default defineInterface({
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
-			},
-		},
-		{
-			field: 'icon',
-			name: '$t:icon',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'icon',
 			},
 		},
 	],

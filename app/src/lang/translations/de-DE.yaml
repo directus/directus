@@ -928,8 +928,8 @@ interfaces:
     allow_none_label: Keine Auswahl zulassen
     choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Mehrfachauswahl)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Mehrfachauswahl)
     description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei

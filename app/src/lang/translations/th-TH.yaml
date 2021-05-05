@@ -868,8 +868,8 @@ interfaces:
     allow_none_label: อนุญาตให้ไม่เลือกอะไรเลย
     choices_name_placeholder: กรอกชื่อ...
     choices_value_placeholder: กรุณาใส่ค่า
-  dropdown-multiselect:
-    dropdown-multiselect: ตัวเลือกแบบดรอปดาวน์ (เลือกได้มากกว่า 1 ค่า)
+  select-multiple-dropdown:
+    select-multiple-dropdown: ตัวเลือกแบบดรอปดาวน์ (เลือกได้มากกว่า 1 ค่า)
     description: เลือกได้มากกว่า 1 ค่าจากตัวเลือกแบบดรอปดาวน์
   file:
     file: ไฟล์

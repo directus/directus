@@ -722,8 +722,8 @@ interfaces:
     allow_none_label: 允许不选择
     choices_name_placeholder: 输入一个名称...
     choices_value_placeholder: 输入值...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉(多次)
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉(多次)
     description: 从下拉列表中选择多个值
   file:
     file: 文件

@@ -924,8 +924,8 @@ interfaces:
     allow_none_label: Salli ei valintaa
     choices_name_placeholder: Syötä nimi...
     choices_value_placeholder: Syötä arvo...
-  dropdown-multiselect:
-    dropdown-multiselect: Pudotusvalikko (useampi)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Pudotusvalikko (useampi)
     description: Valitse useita arvoja pudotusvalikosta
   file:
     file: Tiedosto

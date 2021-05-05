@@ -924,8 +924,8 @@ interfaces:
     allow_none_label: Празен избор
     choices_name_placeholder: Въвеждане на името...
     choices_value_placeholder: Въвеждане на стойност...
-  dropdown-multiselect:
-    dropdown-multiselect: Падащо меню (множествен избор)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Падащо меню (множествен избор)
     description: Избор на множество стойности от падащо меню
   file:
     file: Файл

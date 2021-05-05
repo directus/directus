@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceButtonLinks from './presentation-links.vue';
+import InterfacePresentationLinks from './presentation-links.vue';
 
 export default defineInterface({
 	id: 'presentation-links',
 	name: '$t:interfaces.presentation-links.presentation-links',
 	description: '$t:interfaces.presentation-links.description',
 	icon: 'smart_button',
-	component: InterfaceButtonLinks,
+	component: InterfacePresentationLinks,
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],

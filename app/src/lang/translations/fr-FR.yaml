@@ -909,8 +909,8 @@ interfaces:
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
-  dropdown-multiselect:
-    dropdown-multiselect: Liste déroulante (choix multiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier

@@ -813,8 +813,8 @@ interfaces:
     allow_none_label: Leisti nepasirinkti nieko
     choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
-  dropdown-multiselect:
-    dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Išskleidžiamasis sąrašas (kelios reikšmės)
     description: Pasirinkite kelias reikšmes iš sąrašo
   file:
     file: Failas

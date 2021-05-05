@@ -604,8 +604,8 @@ interfaces:
     allow_other_label: 允許其他值
     choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉 (多個)
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉 (多個)
     description: 從下拉選單選擇多個值
   file:
     file: 檔案

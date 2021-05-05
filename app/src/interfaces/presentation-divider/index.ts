@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceDivider from './presentation-divider.vue';
+import InterfacePresentationDivider from './presentation-divider.vue';
 
 export default defineInterface({
 	id: 'presentation-divider',
 	name: '$t:interfaces.presentation-divider.divider',
 	description: '$t:interfaces.presentation-divider.description',
 	icon: 'remove',
-	component: InterfaceDivider,
+	component: InterfacePresentationDivider,
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],

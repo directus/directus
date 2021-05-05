@@ -38,7 +38,7 @@ export default defineInterface({
 			},
 			meta: {
 				width: 'half',
-				interface: 'dropdown-multiselect',
+				interface: 'select-multiple-dropdown',
 				options: {
 					choices: [
 						{

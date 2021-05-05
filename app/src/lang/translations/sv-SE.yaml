@@ -901,8 +901,8 @@ interfaces:
     allow_none_label: Tillåt inga val
     choices_name_placeholder: Ange ett namn...
     choices_value_placeholder: Ange ett värde...
-  dropdown-multiselect:
-    dropdown-multiselect: Flervalslista (flera)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Flervalslista (flera)
     description: Välj flera värden från en flervalslista
   file:
     file: Fil

@@ -920,8 +920,8 @@ interfaces:
     allow_none_label: Allow No Selection
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Multiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
   file:
     file: File

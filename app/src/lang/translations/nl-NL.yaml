@@ -869,8 +869,8 @@ interfaces:
     allow_none_label: Geen selectie toestaan
     choices_name_placeholder: Naam invoeren...
     choices_value_placeholder: Voer een waarde in...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (meerdere)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (meerdere)
     description: Selecteer meerdere waarden uit een dropdown
   file:
     file: Bestand

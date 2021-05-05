@@ -668,8 +668,8 @@ interfaces:
     description: Válasszon elemet a listából
     choices_placeholder: Új lehetőség hozzáadása
     choices_name_placeholder: Adjon meg egy nevet...
-  dropdown-multiselect:
-    dropdown-multiselect: Lenyíló lista (többválasztós)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Lenyíló lista (többválasztós)
     description: Válasszon elemeket a listából
   file:
     file: File

@@ -1,11 +1,11 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceCheckboxes from './select-multiple-checkbox.vue';
+import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
 
 export default defineInterface({
 	id: 'select-multiple-checkbox',
 	name: '$t:interfaces.select-multiple-checkbox.checkboxes',
 	icon: 'check_box',
-	component: InterfaceCheckboxes,
+	component: InterfaceSelectMultipleCheckboxes,
 	description: '$t:interfaces.select-multiple-checkbox.description',
 	types: ['json', 'csv'],
 	options: [

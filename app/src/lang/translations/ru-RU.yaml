@@ -886,8 +886,8 @@ interfaces:
     allow_none_label: Разрешить Отсутствие Выбора
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
-  dropdown-multiselect:
-    dropdown-multiselect: Выпадающий Список (Несколько)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Выпадающий Список (Несколько)
     description: Выберите несколько значений из выпадающего списка
   file:
     file: Файл

@@ -880,8 +880,8 @@ interfaces:
     allow_none_label: Permitir No Selección
     choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
-  dropdown-multiselect:
-    dropdown-multiselect: Lista Desplegable (Múltiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Lista Desplegable (Múltiple)
     description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
