@@ -177,7 +177,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Caselles
     allow_other: Permet altres
-  code:
+  input-code:
     code: Codi
     line_number: Número de línia
   collection:

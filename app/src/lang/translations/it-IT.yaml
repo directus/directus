@@ -678,7 +678,7 @@ interfaces:
     allow_other: Permetti Altro
     show_more: 'Mostra altri {count}'
     items_shown: Elementi Visualizzati
-  code:
+  input-code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga

@@ -692,7 +692,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: 复选框
     allow_other: 允许其他选项
-  code:
+  input-code:
     code: 代码
     line_number: 行号
   collection:

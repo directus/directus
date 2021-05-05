@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
-import InterfaceCode from './code.vue';
+import InterfaceCode from './input-code.vue';
 
 const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
 	if (['JSON', 'JSON-LD'].includes(choice.name)) {
@@ -28,9 +28,9 @@ const choices = Object.entries(choicesMap).map(([key, value]) => ({
 }));
 
 export default defineInterface({
-	id: 'code',
-	name: '$t:interfaces.code.code',
-	description: '$t:interfaces.code.description',
+	id: 'input-code',
+	name: '$t:interfaces.input-code.code',
+	description: '$t:interfaces.input-code.description',
 	icon: 'code',
 	component: InterfaceCode,
 	types: ['string', 'json', 'text'],
@@ -47,7 +47,7 @@ export default defineInterface({
 		},
 		{
 			field: 'lineNumber',
-			name: '$t:interfaces.code.line_number',
+			name: '$t:interfaces.input-code.line_number',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -63,9 +63,9 @@ export default defineInterface({
 			type: 'text',
 			meta: {
 				width: 'full',
-				interface: 'code',
+				interface: 'input-code',
 				options: {
-					placeholder: '$t:interfaces.code.placeholder',
+					placeholder: '$t:interfaces.input-code.placeholder',
 				},
 			},
 			schema: {

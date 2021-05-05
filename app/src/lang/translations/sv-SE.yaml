@@ -852,7 +852,7 @@ interfaces:
     allow_other: Tillåt annan
     show_more: 'Visa {count} till'
     items_shown: Objekt som visas
-  code:
+  input-code:
     code: Kod
     description: Skriv eller dela kod-snippets
     line_number: Radnummer

@@ -764,7 +764,7 @@ interfaces:
     allow_other: Leisti kita
     show_more: 'Rodyti dar {count}'
     items_shown: Rodomi elementai
-  code:
+  input-code:
     code: Kodas
     description: Rašyti arba pasidalinti kodo elementais
     line_number: Eilutės numeris

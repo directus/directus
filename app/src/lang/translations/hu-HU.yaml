@@ -637,7 +637,7 @@ interfaces:
     checkboxes: Jelölőnégyzetek
     show_more: '{count} további mutatása'
     items_shown: Megjelenített elemek
-  code:
+  input-code:
     code: Kód
     line_number: Sorszám
   collection:

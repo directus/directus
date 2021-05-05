@@ -871,7 +871,7 @@ interfaces:
     allow_other: Allow Other
     show_more: 'Show {count} more'
     items_shown: Items Shown
-  code:
+  input-code:
     code: Code
     description: Write or share code snippets
     line_number: Line Number

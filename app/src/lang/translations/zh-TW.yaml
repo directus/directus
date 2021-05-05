@@ -583,7 +583,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: 複選框
     allow_other: 允許其他選項
-  code:
+  input-code:
     code: 程式碼
     line_number: 行號
   collection:

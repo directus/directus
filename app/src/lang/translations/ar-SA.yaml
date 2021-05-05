@@ -426,7 +426,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: مربع الاختيار
     allow_other: السماح لآخرين
-  code:
+  input-code:
     code: نص برمجي
     line_number: أرقام الأسطر
   collection:

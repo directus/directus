@@ -132,7 +132,7 @@ template: Шаблон
 interfaces:
   select-multiple-checkbox:
     checkboxes: Поља за потврду
-  code:
+  input-code:
     code: Код
     line_number: Број линија
   collection:

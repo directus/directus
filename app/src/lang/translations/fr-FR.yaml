@@ -860,7 +860,7 @@ interfaces:
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
-  code:
+  input-code:
     code: Code
     description: Écrire ou partager des extraits de code
     line_number: Numéro de ligne

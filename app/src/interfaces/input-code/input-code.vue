@@ -1,5 +1,5 @@
 <template>
-	<div class="interface-code codemirror-custom-styles" :class="{ disabled }">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
 		<textarea ref="codemirrorEl" :value="stringValue" />
 
 		<v-button small icon secondary v-if="template" v-tooltip.left="$t('fill_template')" @click="fillTemplate">
@@ -289,7 +289,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '~codemirror/addon/lint/lint.css';
 
-.interface-code {
+.input-code {
 	position: relative;
 	width: 100%;
 	font-size: 14px;

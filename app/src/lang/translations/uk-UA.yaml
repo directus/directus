@@ -243,7 +243,7 @@ value: Значення
 interfaces:
   select-multiple-checkbox:
     checkboxes: Прапорці
-  code:
+  input-code:
     code: Код
     line_number: Номери рядків
   collection:

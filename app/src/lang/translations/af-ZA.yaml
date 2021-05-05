@@ -93,7 +93,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Keuse Boksies
     allow_other: Laat Ander Toe
-  code:
+  input-code:
     code: Kode
     line_number: Lyn Nommer
   collection:

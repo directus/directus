@@ -554,7 +554,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Kotak Centang
     allow_other: Izinkan lainnya
-  code:
+  input-code:
     code: Kode
     line_number: Nomor Baris
   collection:

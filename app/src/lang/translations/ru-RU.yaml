@@ -837,7 +837,7 @@ interfaces:
     allow_other: Разрешить другие
     show_more: 'Показать еще {count}'
     items_shown: Показано Элементов
-  code:
+  input-code:
     code: Код
     description: Написать или поделиться фрагментами кода
     line_number: Номер строки

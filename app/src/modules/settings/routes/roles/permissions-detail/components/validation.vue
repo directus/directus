@@ -9,7 +9,7 @@
 			}}
 		</v-notice>
 
-		<interface-code v-model="validation" language="json" type="json" />
+		<interface-input-code v-model="validation" language="json" type="json" />
 	</div>
 </template>
 

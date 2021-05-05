@@ -873,7 +873,7 @@ interfaces:
     allow_other: Zezwól na inne
     show_more: 'Pokaż {count} więcej'
     items_shown: Wyświetlane elementy
-  code:
+  input-code:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii

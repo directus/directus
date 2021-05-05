@@ -819,7 +819,7 @@ interfaces:
     allow_other: อนุญาตคนอื่น
     show_more: 'แสดงเพิ่มอีก {count}'
     items_shown: ไอเท็มที่ถูกแสดง
-  code:
+  input-code:
     code: โค้ด
     description: เขียนหรือแชร์โค้ดสั้นๆ
     line_number: เลขบรรทัด

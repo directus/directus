@@ -830,7 +830,7 @@ interfaces:
     allow_other: Permitir Otro
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
-  code:
+  input-code:
     code: Código
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea

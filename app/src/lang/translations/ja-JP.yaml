@@ -409,7 +409,7 @@ value: 値
 interfaces:
   select-multiple-checkbox:
     checkboxes: チェックボックス
-  code:
+  input-code:
     description: コードスニペットでコードを共有
   collections:
     collections: コレクション

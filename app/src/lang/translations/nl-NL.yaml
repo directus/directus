@@ -820,7 +820,7 @@ interfaces:
     allow_other: Andere toestaan
     show_more: 'Toon {count} meer'
     items_shown: Items weergegeven
-  code:
+  input-code:
     code: Code
     description: Schrijf of deel code snippets
     line_number: Regelnummer

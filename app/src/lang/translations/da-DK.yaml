@@ -356,7 +356,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Afkrydsningsfelter
     allow_other: Tillad Andre
-  code:
+  input-code:
     code: Kode
     line_number: Linjenummer
   collection:

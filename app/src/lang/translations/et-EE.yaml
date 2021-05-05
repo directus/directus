@@ -707,7 +707,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Märkeruudud
     allow_other: Luba muud
-  code:
+  input-code:
     code: Kood
     line_number: Reanumbrid
   collection:

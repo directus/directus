@@ -876,7 +876,7 @@ interfaces:
     allow_other: Permitir Outros
     show_more: 'Exibir mais {count}'
     items_shown: Itens mostrados
-  code:
+  input-code:
     code: Código
     description: Escreva ou compartilhe trechos de código
     line_number: Número da Linha

@@ -660,7 +660,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Onay Kutuları
     allow_other: Diğerlerine İzin Ver
-  code:
+  input-code:
     code: Kod
     line_number: Satır Numarası
   collection:

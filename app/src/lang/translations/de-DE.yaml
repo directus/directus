@@ -879,7 +879,7 @@ interfaces:
     allow_other: Andere erlauben
     show_more: 'Zeige {count} mehr'
     items_shown: Angezeigte Elemente
-  code:
+  input-code:
     code: Code
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer

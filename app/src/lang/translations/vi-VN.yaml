@@ -586,7 +586,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Ô tích
     allow_other: Cho phép những đối tượng khác
-  code:
+  input-code:
     code: Mã nguồn
     line_number: Dòng số
   collection:

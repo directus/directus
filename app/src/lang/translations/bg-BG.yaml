@@ -875,7 +875,7 @@ interfaces:
     allow_other: Позволи други
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
-  code:
+  input-code:
     code: Код
     description: Писане или споделяне на кодови откъси
     line_number: Номер на ред

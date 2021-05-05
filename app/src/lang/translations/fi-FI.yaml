@@ -875,7 +875,7 @@ interfaces:
     allow_other: Salli muut
     show_more: 'Näytä {count} lisää'
     items_shown: Näytettävät kohteet
-  code:
+  input-code:
     code: Koodi
     description: Kirjoita tai jaa koodipätkä
     line_number: Rivinumero
