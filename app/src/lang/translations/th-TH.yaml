@@ -877,7 +877,7 @@ interfaces:
   files:
     files: ไฟล์
     description: เลือกหรืออัพโหลดทีละหลายไฟล์
-  hash:
+  input-hash:
     hash: ค่าแฮช
     description: กรอกค่าที่ต้องการแฮช
     masked: Masked

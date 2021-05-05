@@ -918,7 +918,7 @@ interfaces:
   files:
     files: Fichiers
     description: Sélectionner ou Transférer plusieurs fichiers
-  hash:
+  input-hash:
     hash: Hash
     description: Entrer une valeur pour hachage
     masked: Masqué

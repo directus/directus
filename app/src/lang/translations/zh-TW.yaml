@@ -613,7 +613,7 @@ interfaces:
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  hash:
+  input-hash:
     hash: 哈希
     masked_label: 隱藏真實值
   icon:

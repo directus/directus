@@ -929,7 +929,7 @@ interfaces:
   files:
     files: Files
     description: Select or upload multiple files
-  hash:
+  input-hash:
     hash: Hash
     description: Enter a value to be hashed
     masked: Masked

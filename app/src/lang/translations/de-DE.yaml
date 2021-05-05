@@ -937,7 +937,7 @@ interfaces:
   files:
     files: Dateien
     description: Mehrere Dateien auswählen oder hochladen
-  hash:
+  input-hash:
     hash: Hash
     description: Den zu hashenden Wert eingeben
     masked: Maskiert

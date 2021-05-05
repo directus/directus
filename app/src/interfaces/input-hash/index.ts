@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceHash from './hash.vue';
+import InterfaceInputHash from './hash.vue';
 
 export default defineInterface({
-	id: 'hash',
-	name: '$t:interfaces.hash.hash',
-	description: '$t:interfaces.hash.description',
+	id: 'input-hash',
+	name: '$t:interfaces.input-hash.hash',
+	description: '$t:interfaces.input-hash.description',
 	icon: 'fingerprint',
-	component: InterfaceHash,
+	component: InterfaceInputHash,
 	types: ['hash'],
 	options: [
 		{
@@ -23,13 +23,13 @@ export default defineInterface({
 		},
 		{
 			field: 'masked',
-			name: '$t:interfaces.hash.masked',
+			name: '$t:interfaces.input-hash.masked',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.hash.masked_label',
+					label: '$t:interfaces.input-hash.masked_label',
 				},
 			},
 			schema: {

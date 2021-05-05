@@ -424,7 +424,7 @@ interfaces:
     file: ファイル
   files:
     files: ファイル
-  hash:
+  input-hash:
     hash: ハッシュ値
     description: 入力した値をハッシュ値に変換します
     masked: 入力値を非表示にします（暗号化する値など）

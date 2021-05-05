@@ -933,7 +933,7 @@ interfaces:
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
-  hash:
+  input-hash:
     hash: Tiiviste
     description: Syötä arvo, josta luodaan tiiviste
     masked: Maskeerattu

@@ -21,7 +21,7 @@ fields:
 
   - field: password
     special: hash,conceal
-    interface: hash
+    interface: input-hash
     options:
       iconRight: lock
       masked: true

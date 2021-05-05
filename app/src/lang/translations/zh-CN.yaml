@@ -731,7 +731,7 @@ interfaces:
   files:
     files: 多个文件
     description: 选择或上传多个文件
-  hash:
+  input-hash:
     hash: Hash
     description: 输入一个经过hash的值
   icon:

@@ -683,7 +683,7 @@ interfaces:
     file: Dosya
   files:
     files: Dosyalar
-  hash:
+  input-hash:
     hash: Hash
     masked: Maskeli
   icon:

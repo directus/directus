@@ -719,7 +719,7 @@ interfaces:
   files:
     files: File
     description: Seleziona o carica più file
-  hash:
+  input-hash:
     hash: Hash
   icon:
     icon: Icon

@@ -677,7 +677,7 @@ interfaces:
   files:
     files: Fájlok
     description: Válasszon vagy töltsön fel fájlokat
-  hash:
+  input-hash:
     hash: Hash
   icon:
     icon: Ikon

@@ -910,7 +910,7 @@ interfaces:
   files:
     files: Filer
     description: Välj eller ladda upp flera filer
-  hash:
+  input-hash:
     hash: Hash
     description: Ange ett värde som ska hashas
     masked: Maskerad

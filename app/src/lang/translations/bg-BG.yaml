@@ -933,7 +933,7 @@ interfaces:
   files:
     files: Файлове
     description: Избор или качване на множество файлове
-  hash:
+  input-hash:
     hash: Хеш
     description: Въвеждане на стойност за хеширане
     masked: Маскиране

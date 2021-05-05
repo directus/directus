@@ -889,7 +889,7 @@ interfaces:
   files:
     files: Archivos
     description: Seleccionar o subir múltiples archivos
-  hash:
+  input-hash:
     hash: Hash
     description: Ingresar un valor para ser "Hasheado"
     masked: Enmascarado

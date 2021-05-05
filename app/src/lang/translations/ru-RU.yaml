@@ -895,7 +895,7 @@ interfaces:
   files:
     files: Файлы
     description: Выбрать или загрузить несколько файлов
-  hash:
+  input-hash:
     hash: Хэш
     description: Введите значение для хэширования
     masked: Маскированный

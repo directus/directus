@@ -878,7 +878,7 @@ interfaces:
   files:
     files: Bestanden
     description: Selecteer of upload meerdere bestanden
-  hash:
+  input-hash:
     hash: Hash
     description: Voer een waarde in om te hashen
     masked: Gemaskeerd

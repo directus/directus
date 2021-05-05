@@ -822,7 +822,7 @@ interfaces:
   files:
     files: Failai
     description: Pasirinkite arba įkelkite kelis failus
-  hash:
+  input-hash:
     hash: Maiša
     description: Įveskite reikšmę išmaišymui
     masked: Paslėptas
