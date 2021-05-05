@@ -929,7 +929,7 @@ interfaces:
   interface-options:
     interface-options: Alternativ för gränssnitt
     description: En popup för att välja alternativ för ett gränssnitt
-  many-to-many:
+  list-m2m:
     many-to-many: Många till många
     description: Välj flera relaterade kopplingsobjekt
   many-to-one:

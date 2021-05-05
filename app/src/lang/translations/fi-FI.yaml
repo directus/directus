@@ -952,7 +952,7 @@ interfaces:
   interface-options:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
-  many-to-many:
+  list-m2m:
     many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
   many-to-one:

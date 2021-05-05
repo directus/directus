@@ -582,7 +582,7 @@ interfaces:
     interface: Antarmuka
   interface-options:
     interface-options: Opsi Antarmuka
-  many-to-many:
+  list-m2m:
     many-to-many: Banyak ke banyak
   many-to-one:
     many-to-one: Banyak ke Satu

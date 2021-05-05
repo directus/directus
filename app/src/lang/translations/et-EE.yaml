@@ -737,7 +737,7 @@ interfaces:
     interface: Kasutajaliides
   interface-options:
     interface-options: Kasutajaliidese valikud
-  many-to-many:
+  list-m2m:
     many-to-many: Mitu mitmele
   many-to-one:
     many-to-one: Mitu ühele

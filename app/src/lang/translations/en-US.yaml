@@ -948,7 +948,7 @@ interfaces:
   interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
-  many-to-many:
+  list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
   many-to-one:

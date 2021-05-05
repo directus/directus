@@ -456,7 +456,7 @@ interfaces:
     icon: أيقونة
   interface-options:
     interface-options: خيارات الواجهة
-  many-to-many:
+  list-m2m:
     many-to-many: العديد للكثيرين
   many-to-one:
     many-to-one: العديد إلى واحد

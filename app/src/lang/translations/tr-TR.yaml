@@ -694,7 +694,7 @@ interfaces:
     placeholder: Arayüz seçin...
   interface-options:
     interface-options: Arayüz Ayarları
-  many-to-many:
+  list-m2m:
     many-to-many: Çoktan Çoka
   many-to-one:
     many-to-one: Çoktan Bire

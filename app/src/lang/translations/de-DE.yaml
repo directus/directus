@@ -956,7 +956,7 @@ interfaces:
   interface-options:
     interface-options: Schnittstellenoptionen
     description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
-  many-to-many:
+  list-m2m:
     many-to-many: n:n-Beziehung
     description: Mehrere verwandte Elemente auswählen
   many-to-one:

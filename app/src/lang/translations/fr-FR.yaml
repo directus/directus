@@ -937,7 +937,7 @@ interfaces:
   interface-options:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
-  many-to-many:
+  list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
   many-to-one:

@@ -907,7 +907,7 @@ interfaces:
   interface-options:
     interface-options: Opciones de Interfaz
     description: Un diálogo para seleccionar opciones de una interfaz
-  many-to-many:
+  list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
   many-to-one:

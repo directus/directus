@@ -914,7 +914,7 @@ interfaces:
   interface-options:
     interface-options: Настройки интерфейса
     description: Окно выбора параметров интерфейса
-  many-to-many:
+  list-m2m:
     many-to-many: Многие ко многим
     description: Выберите несколько связанных элементов
   many-to-one:

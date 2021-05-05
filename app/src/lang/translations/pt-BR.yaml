@@ -953,7 +953,7 @@ interfaces:
   interface-options:
     interface-options: Opções de Interface
     description: Um modal para selecionar opções de uma interface
-  many-to-many:
+  list-m2m:
     many-to-many: Muitos-para-muitos (N para N)
     description: Selecione vários itens relacionados
   many-to-one:

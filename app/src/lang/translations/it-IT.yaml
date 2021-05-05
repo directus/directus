@@ -731,7 +731,7 @@ interfaces:
     interface: Interfaccia
   interface-options:
     interface-options: Opzioni interfaccia
-  many-to-many:
+  list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi correlati di giunzione
   many-to-one:

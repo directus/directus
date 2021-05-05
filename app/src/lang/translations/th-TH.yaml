@@ -896,7 +896,7 @@ interfaces:
   interface-options:
     interface-options: ตัวเลือกอินเทอร์เฟส
     description: กล่องข้อความสำหรับเลือกตัวเลือกของอินเทอร์เฟส
-  many-to-many:
+  list-m2m:
     many-to-many: Many to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้องกัน
   many-to-one:

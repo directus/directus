@@ -950,7 +950,7 @@ interfaces:
   interface-options:
     interface-options: Opcje interfejsu
     description: Okno do wyboru opcji interfejsu
-  many-to-many:
+  list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
   many-to-one:

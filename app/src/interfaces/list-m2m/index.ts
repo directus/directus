@@ -1,13 +1,13 @@
 import { defineInterface } from '../define';
-import InterfaceManyToMany from './many-to-many.vue';
+import InterfaceListM2M from './list-m2m.vue';
 import Options from './options.vue';
 
 export default defineInterface({
-	id: 'many-to-many',
-	name: '$t:interfaces.many-to-many.many-to-many',
-	description: '$t:interfaces.many-to-many.description',
+	id: 'list-m2m',
+	name: '$t:interfaces.list-m2m.many-to-many',
+	description: '$t:interfaces.list-m2m.description',
 	icon: 'note_add',
-	component: InterfaceManyToMany,
+	component: InterfaceListM2M,
 	relational: true,
 	types: ['alias'],
 	groups: ['m2m', 'files'],

@@ -629,7 +629,7 @@ interfaces:
     placeholder: 選擇一個介面...
   interface-options:
     interface-options: 介面選項
-  many-to-many:
+  list-m2m:
     many-to-many: 多對多
   many-to-one:
     many-to-one: 多對一

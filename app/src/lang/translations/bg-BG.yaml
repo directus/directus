@@ -952,7 +952,7 @@ interfaces:
   interface-options:
     interface-options: Опции за интерфейса
     description: Модал за избор на интефейс
-  many-to-many:
+  list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързани записи
   many-to-one:
