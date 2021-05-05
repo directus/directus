@@ -14,7 +14,8 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           c.column_name,
           c.column_default as default_value,
           c.is_nullable,
-          c.data_type
+          c.data_type,
+          c.is_identity
         FROM
           information_schema.columns c
         LEFT JOIN information_schema.tables t
@@ -64,9 +65,10 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value: column.default_value?.startsWith('nextval(')
-					? 'AUTO_INCREMENT'
-					: this.parseDefaultValue(column.default_value),
+				default_value:
+					column.is_identity === 'YES' || column.default_value?.startsWith('nextval(')
+						? 'AUTO_INCREMENT'
+						: this.parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
