@@ -640,7 +640,7 @@ interfaces:
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
     imageToken: 圖像權杖
-  notice:
+  presentation-notice:
     notice: 通知
     description: 顯示簡短通知
     text: 在此輸入通知內容...

@@ -913,7 +913,7 @@ interfaces:
     box: Blok / Inline
     imageToken: Afbeeldingstoken
     imageToken_label: Welke (statische) token toe te voegen aan afbeeldingsbronnen
-  notice:
+  presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
     text: Voer melding bericht hier in...

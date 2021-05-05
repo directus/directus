@@ -972,7 +972,7 @@ interfaces:
     box: Block / Inline
     imageToken: Bild-Token
     imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
-  notice:
+  presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...

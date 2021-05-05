@@ -968,7 +968,7 @@ interfaces:
     box: Lohko / rivillä
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
-  notice:
+  presentation-notice:
     notice: Ilmoitus
     description: Näytä lyhyt ilmoitus
     text: Syötä ilmoituksen sisältö tähän...

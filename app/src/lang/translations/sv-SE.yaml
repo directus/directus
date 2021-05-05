@@ -945,7 +945,7 @@ interfaces:
     box: Block / Infogad
     imageToken: Bildnyckel
     imageToken_label: Vilken (statisk) nyckel att lägga till på bildkällor
-  notice:
+  presentation-notice:
     notice: Notis
     description: Visa en kort notis
     text: Ange notisens innehåll här...

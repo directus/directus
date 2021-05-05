@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceNotice from './notice.vue';
+import InterfacePresentationNotice from './presentation-notice.vue';
 
 export default defineInterface({
 	id: 'notice',
-	name: '$t:interfaces.notice.notice',
-	description: '$t:interfaces.notice.description',
+	name: '$t:interfaces.presentation-notice.notice',
+	description: '$t:interfaces.presentation-notice.description',
 	icon: 'info',
-	component: InterfaceNotice,
+	component: InterfacePresentationNotice,
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
@@ -50,7 +50,7 @@ export default defineInterface({
 				width: 'full',
 				interface: 'textarea',
 				options: {
-					placeholder: '$t:interfaces.notice.text',
+					placeholder: '$t:interfaces.presentation-notice.text',
 				},
 			},
 		},

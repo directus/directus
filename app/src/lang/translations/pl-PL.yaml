@@ -966,7 +966,7 @@ interfaces:
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazu
-  notice:
+  presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
     text: Wprowadź zawartość informacji...

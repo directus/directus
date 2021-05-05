@@ -463,7 +463,7 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     markdown: Markdown
-  notice:
+  presentation-notice:
     notice: ملاحظة
     description: عرض ملاحظة قصيرة
     text: أدخل محتوى الملاحظة هنا...

@@ -923,7 +923,7 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
-  notice:
+  presentation-notice:
     notice: Aviso
     description: Presentar un aviso corto
     text: Ingresar contenido del aviso aquí...

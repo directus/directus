@@ -964,7 +964,7 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
-  notice:
+  presentation-notice:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...

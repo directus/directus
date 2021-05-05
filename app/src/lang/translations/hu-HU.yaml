@@ -691,7 +691,7 @@ interfaces:
     display_template: Megjelenítési sablon
   input-rich-text-md:
     customSyntax: Egyéni blokkok
-  notice:
+  presentation-notice:
     notice: Megjegyzés
   numeric:
     numeric: Szám

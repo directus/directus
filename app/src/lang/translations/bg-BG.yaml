@@ -968,7 +968,7 @@ interfaces:
     box: Блоков / Вложен
     imageToken: Токън за изображенията
     imageToken_label: Какъв (статичен) токън да се добави към адресите на изображенията
-  notice:
+  presentation-notice:
     notice: Бележка
     description: Показване на кратка бележка
     text: Въвеждане на бележката...

@@ -953,7 +953,7 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
-  notice:
+  presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
     text: Entrez le contenu de la remarque ici...

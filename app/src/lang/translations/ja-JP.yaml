@@ -432,7 +432,7 @@ interfaces:
   icon:
     icon: アイコン
     description: ドロップダウンからアイコンを選択
-  notice:
+  presentation-notice:
     notice: 補足
     description: 入力に関する簡単な補足を表示できます
     text: 補足の内容を入力してください

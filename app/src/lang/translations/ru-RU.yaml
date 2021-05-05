@@ -926,7 +926,7 @@ interfaces:
     description: Ввод и предпросмотр markdown
     customSyntax_label: Добавить пользовательский тип синтаксиса
     customSyntax_add: Добавить пользовательский синтаксис
-  notice:
+  presentation-notice:
     notice: Примечание
     description: Показать короткое примечание
     text: Введите содержимое примечания здесь...
