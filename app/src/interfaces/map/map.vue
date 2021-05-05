@@ -24,10 +24,10 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from '@vue/composition-api';
 import maplibre, { LngLatBoundsLike, AnimationOptions, CameraOptions, Map, IControl } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString, BBox } from 'geojson';
+import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
 import { ButtonControl, BasemapSelectControl } from '@/layouts/map/controls';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
-import { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
+import { GeometryFormat } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
 import drawStyle from './style';
 import i18n from '@/lang';
@@ -39,10 +39,6 @@ type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiP
 type _SimpleGeometry = Point | Polygon | LineString;
 type _MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
 type _Geometry = _SimpleGeometry | _MultiGeometry;
-
-function bboxCenter(bbox: BBox) {
-	return [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
-}
 
 export default defineComponent({
 	props: {
@@ -157,7 +153,7 @@ export default defineComponent({
 			}
 
 			map.on('load', async () => {
-				await addMarkerImage().catch(() => {});
+				await addMarkerImage().catch();
 				map.on('basemapselect', () => {
 					map.removeControl(draw);
 					map.on('sourcedata', reloadDraw);
@@ -191,7 +187,11 @@ export default defineComponent({
 			}
 
 			function addInitialValue() {
-				if (!props.value) return;
+				if (!props.value) {
+					// @ts-ignore
+					draw.changeMode(`draw_${snakeGeometryType}`);
+					return;
+				}
 				try {
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
