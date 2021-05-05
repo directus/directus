@@ -17,7 +17,7 @@
 				active: isActive($route, item.path),
 			}"
 			:to="item.path"
-			@click="$emit('toggle')"
+			@click.native="$emit('toggle')"
 		>
 			<span>{{ item.title }}</span>
 			<span v-if="collapsable" class="arrow" :class="open ? 'down' : 'right'" />
