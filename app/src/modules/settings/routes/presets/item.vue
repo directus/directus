@@ -440,7 +440,7 @@ export default defineComponent({
 					name: i18n.t('name'),
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						width: 'half',
 						options: {
 							placeholder: i18n.t('preset_name_placeholder'),

@@ -38,7 +38,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:name',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 							},
 						},
@@ -56,7 +56,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:prefix',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 							},
 						},
@@ -65,7 +65,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:suffix',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 							},
 						},
@@ -104,7 +104,7 @@ export default defineInterface({
 			meta: {
 				note: '$t:interfaces.input-rich-text-md.imageToken_label',
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 			},
 		},
 	],

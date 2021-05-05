@@ -639,7 +639,7 @@ interfaces:
     slug: Viết tắt
   tags:
     tags: Tags
-  text-input:
+  input:
     text-input: Văn bản đầu vào
     trim: Rút gọn
   toggle:

@@ -675,7 +675,7 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  text-input:
+  input:
     text-input: 文字輸入
     description: 輸入單行文本
     trim: 去除內容前後空格

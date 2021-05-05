@@ -1013,7 +1013,7 @@ interfaces:
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
-  text-input:
+  input:
     text-input: Tekstinsyöttö
     description: Syötä yhden rivin teksti
     trim: Leikkaa

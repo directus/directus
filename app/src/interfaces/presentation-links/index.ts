@@ -29,7 +29,7 @@ export default defineInterface({
 							name: '$t:label',
 							meta: {
 								width: 'full',
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									placeholder: '$t:label',
 								},
@@ -73,7 +73,7 @@ export default defineInterface({
 							name: '$t:url',
 							meta: {
 								width: 'full',
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									font: 'monospace',
 									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',

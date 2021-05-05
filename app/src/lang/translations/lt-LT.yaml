@@ -857,7 +857,7 @@ interfaces:
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
-  text-input:
+  input:
     text-input: Tekstinė įvestis
     description: Įveskite vieną teksto eilutę
     trim: Apkarpyti

@@ -719,7 +719,7 @@ interfaces:
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
-  text-input:
+  input:
     text-input: Metin Girişi
     trim: Kırp
     mask: Maskeli

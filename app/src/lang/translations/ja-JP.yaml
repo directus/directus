@@ -444,7 +444,7 @@ interfaces:
     description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
   tags:
     tags: タグ
-  text-input:
+  input:
     text-input: テキスト入力
     description: 単一行での文字列入力
     mask: 入力値を非表示にします（暗号化する値など）

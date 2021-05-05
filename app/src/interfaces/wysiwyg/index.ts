@@ -282,7 +282,7 @@ export default defineInterface({
 			meta: {
 				note: '$t:interfaces.input-rich-text-md.imageToken_label',
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 			},
 		},
 	],

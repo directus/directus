@@ -10,9 +10,9 @@ it's name and options.
 
 ```js
 export default defineInterface({
-	id: 'text-input',
+	id: 'input',
 	register: ({ i18n }) => ({
-		name: i18n.t('text-input'),
+		name: i18n.t('input'),
 		icon: 'box',
 		component: InterfaceTextInput,
 	}),

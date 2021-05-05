@@ -270,7 +270,7 @@ interfaces:
     one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
+  input:
     text-input: Текстове поле
     trim: Обрізувати пробіли
   user:

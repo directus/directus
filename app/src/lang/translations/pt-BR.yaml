@@ -1014,7 +1014,7 @@ interfaces:
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
     add_tags: Adicionar tags...
-  text-input:
+  input:
     text-input: Entrada de texto
     description: Digite um texto de linha única
     trim: Aparar

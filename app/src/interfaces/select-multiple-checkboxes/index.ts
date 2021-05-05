@@ -25,7 +25,7 @@ export default defineInterface({
 							name: '$t:text',
 							meta: {
 								width: 'half',
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
 								},
@@ -37,7 +37,7 @@ export default defineInterface({
 							name: '$t:value',
 							meta: {
 								width: 'half',
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									font: 'monospace',
 									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',

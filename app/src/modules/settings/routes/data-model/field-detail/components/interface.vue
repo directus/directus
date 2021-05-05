@@ -60,7 +60,7 @@ export default defineComponent({
 			const type: string = state.fieldData?.type || 'alias';
 
 			const recommendedInterfacesPerType: { [type: string]: string[] } = {
-				string: ['text-input', 'dropdown'],
+				string: ['input', 'dropdown'],
 				text: ['wysiwyg'],
 				boolean: ['toggle'],
 				integer: ['numeric'],
@@ -72,7 +72,7 @@ export default defineComponent({
 				date: ['datetime'],
 				time: ['datetime'],
 				json: ['select-multiple-checkbox', 'tags'],
-				uuid: ['text-input'],
+				uuid: ['input'],
 				csv: ['tags'],
 			};
 

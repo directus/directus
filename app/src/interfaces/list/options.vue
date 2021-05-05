@@ -58,7 +58,7 @@ export default defineComponent({
 				field: 'field',
 				type: 'string',
 				meta: {
-					interface: 'text-input',
+					interface: 'input',
 					width: 'half',
 					sort: 2,
 					options: {
@@ -125,7 +125,7 @@ export default defineComponent({
 				field: 'note',
 				type: 'string',
 				meta: {
-					interface: 'text-input',
+					interface: 'input',
 					width: 'full',
 					sort: 6,
 					options: {

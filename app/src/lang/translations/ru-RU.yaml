@@ -970,7 +970,7 @@ interfaces:
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
     add_tags: Добавить метки...
-  text-input:
+  input:
     text-input: Text Input
     description: Введите текст в одну строку
     trim: Обрезать

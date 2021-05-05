@@ -1011,7 +1011,7 @@ interfaces:
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
-  text-input:
+  input:
     text-input: Pole tekstowe
     description: Wprowadź pojedynczą linię tekstu
     trim: Przytnij

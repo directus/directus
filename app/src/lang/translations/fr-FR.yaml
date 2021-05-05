@@ -997,7 +997,7 @@ interfaces:
     alphabetize: Alphabétiser
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
-  text-input:
+  input:
     text-input: Champ de texte
     description: Entrer un texte d'une seule ligne
     trim: Espaces aux extrêmités

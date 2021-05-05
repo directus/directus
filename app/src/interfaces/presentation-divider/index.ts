@@ -36,7 +36,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
 				},

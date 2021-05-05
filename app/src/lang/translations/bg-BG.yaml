@@ -1013,7 +1013,7 @@ interfaces:
     alphabetize: По азбучен ред
     alphabetize_label: Винаги в азбучен ред
     add_tags: Добавяне на етикет...
-  text-input:
+  input:
     text-input: Поле за текст
     description: Въвеждане на един ред
     trim: Почистване

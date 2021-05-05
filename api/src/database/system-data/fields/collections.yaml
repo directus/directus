@@ -12,7 +12,7 @@ fields:
     width: full
 
   - field: collection
-    interface: text-input
+    interface: input
     options:
       font: monospace
     readonly: true
@@ -24,7 +24,7 @@ fields:
     width: half
 
   - field: note
-    interface: text-input
+    interface: input
     options:
       placeholder: A description of this collection...
     width: full
@@ -67,7 +67,7 @@ fields:
           name: Collection Name
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -75,7 +75,7 @@ fields:
           name: Singular Unit
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -83,7 +83,7 @@ fields:
           name: Plural Unit
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -115,7 +115,7 @@ fields:
     width: half
 
   - field: archive_value
-    interface: text-input
+    interface: input
     options:
       font: monospace
       iconRight: archive
@@ -123,7 +123,7 @@ fields:
     width: half
 
   - field: unarchive_value
-    interface: text-input
+    interface: input
     options:
       font: monospace
       iconRight: unarchive

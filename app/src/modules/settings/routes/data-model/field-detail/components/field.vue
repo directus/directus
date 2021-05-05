@@ -44,7 +44,7 @@
 							type: 'string',
 							name: $t('translation'),
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: 'Enter a translation...',

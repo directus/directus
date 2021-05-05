@@ -764,7 +764,7 @@ interfaces:
     description: Seleziona o aggiungi tag
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
-  text-input:
+  input:
     text-input: Text Input
     trim: Trim
   toggle:

@@ -989,7 +989,7 @@ interfaces:
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
-  text-input:
+  input:
     text-input: Textfält
     description: Ange en rad text
     trim: Beskär

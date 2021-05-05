@@ -754,7 +754,7 @@ interfaces:
     slider: Liugur
   tags:
     tags: Sildid
-  text-input:
+  input:
     text-input: Tekstisisestus
     trim: Kärbi
   toggle:

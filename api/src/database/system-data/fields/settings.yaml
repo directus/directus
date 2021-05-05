@@ -5,7 +5,7 @@ fields:
     hidden: true
 
   - field: project_name
-    interface: text-input
+    interface: input
     options:
       iconRight: title
       placeholder: My project...
@@ -15,7 +15,7 @@ fields:
     width: half
 
   - field: project_url
-    interface: text-input
+    interface: input
     options:
       iconRight: link
       placeholder: https://example.com

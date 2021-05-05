@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceTextInput from './text-input.vue';
+import InterfaceInput from './input.vue';
 
 export default defineInterface({
-	id: 'text-input',
-	name: '$t:interfaces.text-input.text-input',
-	description: '$t:interfaces.text-input.description',
+	id: 'input',
+	name: '$t:interfaces.input.text-input',
+	description: '$t:interfaces.input.description',
 	icon: 'text_fields',
-	component: InterfaceTextInput,
+	component: InterfaceInput,
 	types: ['string', 'uuid'],
 	options: [
 		{
@@ -14,7 +14,7 @@ export default defineInterface({
 			name: '$t:placeholder',
 			meta: {
 				width: 'half',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
@@ -59,13 +59,13 @@ export default defineInterface({
 		},
 		{
 			field: 'trim',
-			name: '$t:interfaces.text-input.trim',
+			name: '$t:interfaces.input.trim',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.trim_label',
+					label: '$t:interfaces.input.trim_label',
 				},
 			},
 			schema: {
@@ -74,13 +74,13 @@ export default defineInterface({
 		},
 		{
 			field: 'masked',
-			name: '$t:interfaces.text-input.mask',
+			name: '$t:interfaces.input.mask',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.mask_label',
+					label: '$t:interfaces.input.mask_label',
 				},
 			},
 			schema: {
@@ -89,13 +89,13 @@ export default defineInterface({
 		},
 		{
 			field: 'clear',
-			name: '$t:interfaces.text-input.clear',
+			name: '$t:interfaces.input.clear',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.clear_label',
+					label: '$t:interfaces.input.clear_label',
 				},
 			},
 			schema: {

@@ -720,7 +720,7 @@ interfaces:
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
-  text-input:
+  input:
     text-input: Szövegmező
     trim: Vágás
   textarea:

@@ -2,19 +2,19 @@ table: directus_users
 
 fields:
   - field: first_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: last_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: email
-    interface: text-input
+    interface: input
     options:
       iconRight: email
     width: half
@@ -33,13 +33,13 @@ fields:
     display: image
 
   - field: location
-    interface: text-input
+    interface: input
     options:
       iconRight: place
     width: half
 
   - field: title
-    interface: text-input
+    interface: input
     options:
       iconRight: work
     width: half
@@ -137,7 +137,7 @@ fields:
 
   - field: id
     special: uuid
-    interface: text-input
+    interface: input
     options:
       iconRight: vpn_key
     width: full

@@ -74,7 +74,7 @@ export default defineDisplay({
 							name: '$t:text',
 							type: 'string',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: '$t:displays.labels.choices_text_placeholder',
@@ -86,7 +86,7 @@ export default defineDisplay({
 							name: '$t:value',
 							type: 'string',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									font: 'monospace',
 									placeholder: '$t:displays.labels.choices_value_placeholder',

@@ -1009,7 +1009,7 @@ interfaces:
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
     add_tags: Add tags...
-  text-input:
+  input:
     text-input: Text Input
     description: Enter a single line text
     trim: Trim

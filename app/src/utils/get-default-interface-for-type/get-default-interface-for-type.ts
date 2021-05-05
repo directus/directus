@@ -1,9 +1,9 @@
 import { types } from '@/types';
 
 const defaultInterfaceMap: Record<typeof types[number], string> = {
-	alias: 'text-input',
+	alias: 'input',
 	bigInteger: 'numeric',
-	binary: 'text-input',
+	binary: 'input',
 	boolean: 'toggle',
 	date: 'datetime',
 	dateTime: 'datetime',
@@ -11,12 +11,12 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	float: 'numeric',
 	integer: 'numeric',
 	json: 'input-code',
-	string: 'text-input',
+	string: 'input',
 	text: 'textarea',
 	time: 'datetime',
 	timestamp: 'datetime',
-	uuid: 'text-input',
-	unknown: 'text-input',
+	uuid: 'input',
+	unknown: 'input',
 	csv: 'tags',
 	hash: 'hash',
 };
@@ -26,5 +26,5 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
  */
 
 export default function getDefaultInterfaceForType(type: typeof types[number]): string {
-	return defaultInterfaceMap[type] || 'text-input';
+	return defaultInterfaceMap[type] || 'input';
 }

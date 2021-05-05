@@ -45,7 +45,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},

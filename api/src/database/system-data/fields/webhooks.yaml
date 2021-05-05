@@ -5,7 +5,7 @@ fields:
     hidden: true
 
   - field: name
-    interface: text-input
+    interface: input
     options:
       iconRight: title
     width: full
@@ -25,7 +25,7 @@ fields:
     width: half
 
   - field: url
-    interface: text-input
+    interface: input
     options:
       iconRight: link
     width: half

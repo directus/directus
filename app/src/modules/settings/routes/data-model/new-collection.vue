@@ -253,7 +253,7 @@ export default defineComponent({
 					meta: {
 						hidden: true,
 						readonly: true,
-						interface: 'text-input',
+						interface: 'input',
 						special: ['uuid'],
 					},
 					schema: {
@@ -267,7 +267,7 @@ export default defineComponent({
 					field: primaryKeyFieldName.value,
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						readonly: false,
 						hidden: false,
 					},

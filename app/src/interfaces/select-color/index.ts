@@ -26,7 +26,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:name',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: '$t:interfaces.select-color.name_placeholder',

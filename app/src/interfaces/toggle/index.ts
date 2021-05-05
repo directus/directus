@@ -40,7 +40,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '$t:interfaces.toggle.label_placeholder',
 				},

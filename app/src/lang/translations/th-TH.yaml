@@ -956,7 +956,7 @@ interfaces:
     alphabetize: เรียงตามตัวอักษร
     alphabetize_label: บังคับเรียงตามตัวอักษร
     add_tags: เพิ่มแท็ก...
-  text-input:
+  input:
     text-input: การป้อนข้อความ
     description: กรอกข้อความบรรทัดเดียว
     trim: ตัดขอบ

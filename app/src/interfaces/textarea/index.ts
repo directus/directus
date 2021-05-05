@@ -15,7 +15,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},
@@ -23,13 +23,13 @@ export default defineInterface({
 		},
 		{
 			field: 'trim',
-			name: '$t:interfaces.text-input.trim',
+			name: '$t:interfaces.input.trim',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.trim_label',
+					label: '$t:interfaces.input.trim_label',
 				},
 			},
 			schema: {
@@ -57,13 +57,13 @@ export default defineInterface({
 		},
 		{
 			field: 'clear',
-			name: '$t:interfaces.text-input.clear',
+			name: '$t:interfaces.input.clear',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.clear_label',
+					label: '$t:interfaces.input.clear_label',
 				},
 			},
 			schema: {

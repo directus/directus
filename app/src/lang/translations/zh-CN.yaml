@@ -759,7 +759,7 @@ interfaces:
     slug: 别名
   tags:
     tags: 标签
-  text-input:
+  input:
     text-input: 文本输入
     trim: 修剪
   toggle:
