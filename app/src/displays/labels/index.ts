@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.labels.default_foreground',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.labels.default_background',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -99,7 +99,7 @@ export default defineDisplay({
 							name: '$t:foreground_color',
 							type: 'string',
 							meta: {
-								interface: 'color',
+								interface: 'select-color',
 								width: 'half',
 							},
 						},
@@ -108,7 +108,7 @@ export default defineDisplay({
 							name: '$t:background_color',
 							type: 'string',
 							meta: {
-								interface: 'color',
+								interface: 'select-color',
 								width: 'half',
 							},
 						},

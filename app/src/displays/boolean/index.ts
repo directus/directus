@@ -62,7 +62,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_on',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -74,7 +74,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_off',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {

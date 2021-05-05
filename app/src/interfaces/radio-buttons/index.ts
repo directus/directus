@@ -75,7 +75,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'color',
+				interface: 'select-color',
 			},
 		},
 		{

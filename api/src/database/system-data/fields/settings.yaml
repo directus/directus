@@ -25,7 +25,7 @@ fields:
     width: half
 
   - field: project_color
-    interface: color
+    interface: select-color
     note: Login & Logo Background
     translations:
       language: en-US
@@ -207,7 +207,7 @@ fields:
     width: full
 
   - field: custom_css
-    interface: code
+    interface: input-code
     options:
       language: css
       lineNumber: true

@@ -73,7 +73,7 @@ fields:
     width: full
 
   - field: actions
-    interface: checkboxes
+    interface: select-multiple-checkbox
     options:
       choices:
         - text: Create

@@ -44,7 +44,7 @@ export default defineDisplay({
 			name: '$t:color',
 			meta: {
 				width: 'half',
-				interface: 'color',
+				interface: 'select-color',
 			},
 		},
 		{

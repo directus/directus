@@ -884,7 +884,7 @@ interfaces:
     collections: Collections
     description: Select between existing collections
     include_system_collections: Include System Collections
-  color:
+  select-color:
     color: Color
     description: Enter or select a color value
     placeholder: Choose a color...
