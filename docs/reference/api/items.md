@@ -95,6 +95,10 @@ GET /items/articles
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Query {
 	<collection>: [<collection>]
@@ -151,6 +155,10 @@ GET /items/articles/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Query {
@@ -216,6 +224,10 @@ POST /items/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -288,6 +300,10 @@ POST /items/articles
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Mutation {
 	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
@@ -356,6 +372,10 @@ PATCH /items/articles/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -428,6 +448,10 @@ PATCH /items/articles
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Mutation {
 	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
@@ -477,6 +501,10 @@ DELETE /items/articles/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -534,6 +562,10 @@ DELETE /items/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
