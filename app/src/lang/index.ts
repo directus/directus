@@ -1,11 +1,9 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
 import { RequestError } from '@/api';
-
+import Vue from 'vue';
+import VueI18n, { TranslateResult } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
-
-import enUSBase from './translations/en-US.yaml';
 import dateFormats from './date-formats.yaml';
+import enUSBase from './translations/en-US.yaml';
 
 Vue.use(VueI18n);
 
@@ -23,30 +21,9 @@ export type Language = keyof typeof availableLanguages;
 
 export const loadedLanguages: Language[] = ['en-US'];
 
-export async function setLanguage(lang: Language): Promise<boolean> {
-	if (Object.keys(availableLanguages).includes(lang) === false) {
-		return false;
-	}
-
-	if (i18n.locale === lang) {
-		return true;
-	}
-
-	if (loadedLanguages.includes(lang) === false) {
-		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
-		i18n.mergeLocaleMessage(lang, translations);
-		loadedLanguages.push(lang);
-	}
-
-	i18n.locale = lang;
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
-
-	return true;
-}
-
 export default i18n;
 
-export function translateAPIError(error: RequestError | string) {
+export function translateAPIError(error: RequestError | string): TranslateResult {
 	const defaultMsg = i18n.t('unexpected_error');
 
 	let code = error;

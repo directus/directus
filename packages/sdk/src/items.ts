@@ -5,7 +5,7 @@ export type Field = string;
 export type Item = Record<string, any>;
 
 export type PartialItem<T> = {
-	[P in keyof T]?: T[P] extends {} ? PartialItem<T[P]> : T[P];
+	[P in keyof T]?: T[P] extends Record<string, any> ? PartialItem<T[P]> : T[P];
 };
 
 export type OneItem<T extends Item> = PartialItem<T> | null | undefined;
@@ -67,7 +67,7 @@ export type FilterOperator<T, K extends keyof T> = {
 };
 
 export type Filter<T> = {
-	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | object;
+	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | Record<string, any>;
 };
 
 /**

@@ -77,7 +77,10 @@ data will be an empty array.
 
 ```
 GET /folders
+SEARCH /folders
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

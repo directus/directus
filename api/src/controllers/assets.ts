@@ -1,17 +1,17 @@
-import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import database from '../database';
-import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constants';
-import { InvalidQueryException, ForbiddenException, RangeNotSatisfiableException } from '../exceptions';
-import validate from 'uuid-validate';
-import { pick } from 'lodash';
-import { Transformation } from '../types/assets';
-import storage from '../storage';
-import { PayloadService, AssetsService } from '../services';
-import useCollection from '../middleware/use-collection';
-import env from '../env';
-import ms from 'ms';
 import { Range } from '@directus/drive';
+import { Router } from 'express';
+import { pick } from 'lodash';
+import ms from 'ms';
+import validate from 'uuid-validate';
+import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
+import database from '../database';
+import env from '../env';
+import { ForbiddenException, InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
+import useCollection from '../middleware/use-collection';
+import { AssetsService, PayloadService } from '../services';
+import storage from '../storage';
+import { Transformation } from '../types/assets';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
@@ -22,7 +22,11 @@ router.get(
 
 	// Check if file exists and if you have permission to read it
 	asyncHandler(async (req, res, next) => {
-		const id = req.params.pk;
+		/**
+		 * We ignore everything in the id after the first 36 characters (uuid length). This allows the
+		 * user to add an optional extension, or other identifier for use in external software (#4067)
+		 */
+		const id = req.params.pk?.substring(0, 36);
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -47,7 +51,7 @@ router.get(
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
-		let savedAssetSettings = await database
+		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')
 			.first();
@@ -60,13 +64,10 @@ router.get(
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
-		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
+		if ('key' in transformation && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
-		if (
-			transformation.hasOwnProperty('quality') &&
-			(Number(transformation.quality) < 1 || Number(transformation.quality) > 100)
-		) {
+		if ('quality' in transformation && (Number(transformation.quality) < 1 || Number(transformation.quality) > 100)) {
 			throw new InvalidQueryException(`"quality" Parameter has to between 1 to 100`);
 		}
 
@@ -98,6 +99,8 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
+		const id = req.params.pk?.substring(0, 36);
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -125,14 +128,14 @@ router.get(
 			}
 		}
 
-		const { stream, file, stat } = await service.getAsset(req.params.pk, transformation, range);
+		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		const access = !!req.accountability?.role ? 'private' : 'public';
+		const access = req.accountability?.role ? 'private' : 'public';
 
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string)}`);
+		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
@@ -142,7 +145,7 @@ router.get(
 			res.setHeader('Content-Length', stat.size);
 		}
 
-		if (req.query.hasOwnProperty('download') === false) {
+		if ('download' in req.query === false) {
 			res.removeHeader('Content-Disposition');
 		}
 

@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
@@ -36,11 +35,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state, availableInterfaces } from '../store';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -53,8 +53,8 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
-		const interfaces = getInterfaces();
+	setup() {
+		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
 			const type: string = state.fieldData?.type || 'alias';
@@ -113,7 +113,7 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);

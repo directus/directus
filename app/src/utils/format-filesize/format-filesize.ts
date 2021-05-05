@@ -1,4 +1,4 @@
-export default function formatFilesize(bytes = 0, decimal = true) {
+export default function formatFilesize(bytes = 0, decimal = true): string {
 	const threshold = decimal ? 1000 : 1024;
 
 	if (Boolean(bytes) === false) {

@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="to">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>

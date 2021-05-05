@@ -136,7 +136,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '@/types';
+import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
@@ -228,8 +228,8 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const fileFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => {
-				if (field.field === '$file') return true;
+			return fieldsInCollection.value.filter((field: FieldMeta) => {
+				if (field.field === '$thumbnail') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
 					return (
@@ -419,7 +419,7 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.id`);
 				}
 
-				if (props.collection === 'directus_files' && imageSource.value === '$file') {
+				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
 				}
@@ -450,7 +450,7 @@ export default defineComponent({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${item[primaryKeyField.value!.field]}`;
+			return `/collections/${props.collection}/${encodeURIComponent(item[primaryKeyField.value!.field])}`;
 		}
 
 		function selectAll() {

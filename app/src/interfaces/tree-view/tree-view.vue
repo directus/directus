@@ -10,6 +10,7 @@
 			:tree="stagedValues || []"
 			:primary-key-field="primaryKeyField.field"
 			:children-field="relation.one_field"
+			:parent-field="relation.many_field"
 			:disabled="disabled"
 			root
 			@change="onDraggableChange"
@@ -17,8 +18,8 @@
 		/>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="addNewActive = true">{{ $t('create_new') }}</v-button>
-			<v-button class="existing" @click="selectDrawer = true">
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" @click="selectDrawer = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
@@ -29,6 +30,7 @@
 			:collection="collection"
 			:primary-key="'+'"
 			:edits="{}"
+			:circular-field="relation.many_field"
 			@input="addNew"
 			@update:active="addNewActive = false"
 		/>
@@ -51,7 +53,6 @@ import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
 import { Filter } from '@/types';
@@ -60,7 +61,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
-	components: { draggable, NestedDraggable, DrawerCollection, DrawerItem },
+	components: { NestedDraggable, DrawerCollection, DrawerItem },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[]>,
@@ -85,6 +86,14 @@ export default defineComponent({
 		primaryKey: {
 			type: [String, Number],
 			default: undefined,
+		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {
@@ -147,7 +156,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${props.collection}/${props.primaryKey}`, {
+					const response = await api.get(`/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`, {
 						params: {
 							fields: getFieldsToFetch(),
 						},
@@ -328,6 +337,10 @@ export default defineComponent({
 
 .actions {
 	margin-top: 12px;
+
+	.v-button + .v-button {
+		margin-left: 12px;
+	}
 }
 
 .existing {

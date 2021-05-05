@@ -55,6 +55,7 @@ archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限为：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
+the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 recommended_defaults: 推荐的默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
@@ -205,7 +206,6 @@ item_delete_success: 项目已删除 | 项目已删除
 this_collection: 此集合
 related_collection: 相关集合
 related_collections: 相关集合
-translations_collection: 翻译集合
 languages_collection: 语言集合
 export_data: 导出数据
 format: 格式
@@ -323,7 +323,6 @@ users: 用户
 activity: 活动
 webhooks: Webhook
 field_width: 字段宽度
-add_a_new_item: 添加新项目...
 add_filter: 添加过滤器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -477,6 +476,8 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+width: 宽
+height: 高度
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -493,10 +494,7 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
-  link: 链接
   unlink: 移除链接
-  media: 添加媒体
-  image: 添加图片
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -517,7 +515,6 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
-  code: 查看源代码
   fullscreen: 全屏显示
 dropdown: 下拉列表
 choices: 选择项
@@ -561,6 +558,7 @@ fields:
     comment: 注释
     user_agent: 用户代理（User Agent）
     ip: IP 地址
+    revisions: 修订版本
   directus_collections:
     collection: 集合
     icon: 图标
@@ -568,7 +566,6 @@ fields:
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
-    translations: 集合名称翻译
     sort_field: 排序字段
   directus_files:
     title: 标题
@@ -673,6 +670,7 @@ permissions: 权限
 relationship: 关联
 reset: 重置
 reset_password: 重置密码
+revisions: 修订版本
 revert: 还原
 save: 保存
 schema: Schema

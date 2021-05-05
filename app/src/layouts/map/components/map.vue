@@ -148,6 +148,7 @@ export default defineComponent({
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
 			);
+			setTimeout(() => map.resize(), 300);
 		}
 
 		function fitDataBounds() {

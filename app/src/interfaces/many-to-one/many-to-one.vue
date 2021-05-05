@@ -69,6 +69,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
+			:circular-field="relation.one_field"
 			@input="stageEdits"
 		/>
 
@@ -207,7 +208,7 @@ export default defineComponent({
 					return props.value;
 				}
 
-				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
+				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in props.value) {
 					return props.value[relatedPrimaryKeyField.value.field];
 				}
 
@@ -233,7 +234,7 @@ export default defineComponent({
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
 						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${props.value}`;
+						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -370,7 +371,7 @@ export default defineComponent({
 			const selection = computed<(number | string)[]>(() => {
 				if (!props.value) return [];
 
-				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
+				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in props.value) {
 					return [props.value[relatedPrimaryKeyField.value.field]];
 				}
 
@@ -414,10 +415,7 @@ export default defineComponent({
 						...newEdits,
 					});
 				} else {
-					if (
-						newEdits.hasOwnProperty(relatedPrimaryKeyField.value.field) &&
-						newEdits[relatedPrimaryKeyField.value.field] === '+'
-					) {
+					if (relatedPrimaryKeyField.value.field in newEdits && newEdits[relatedPrimaryKeyField.value.field] === '+') {
 						delete newEdits[relatedPrimaryKeyField.value.field];
 					}
 

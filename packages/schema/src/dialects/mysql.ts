@@ -3,7 +3,7 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class MySQL extends KnexMySQL implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const columns = await this.knex.raw(
 			`
 			SELECT

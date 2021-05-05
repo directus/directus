@@ -7,14 +7,15 @@
 
 ## General
 
-| Variable           | Description                                                                                         | Default Value |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
-| `PORT`             | What port to run the API under.                                                                     | `8055`        |
-| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                       | `/`           |
-| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
-| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
-| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.          | `100kb`       |
+| Variable           | Description                                                                                                | Default Value |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`             | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 
 ## Database
 
@@ -158,6 +159,40 @@ Alternatively, you can provide the individual connection parameters:
 | Variable         | Description                        | Default Value |
 | ---------------- | ---------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
+
+## Sessions
+
+Sessions are only used in the oAuth authentication flow.
+
+| Variable        | Description                                                               | Default Value |
+| --------------- | ------------------------------------------------------------------------- | ------------- |
+| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, or `memcache`. | `memory`      |
+
+Based on the `SESSION_STORE` used, you must also provide the following configurations:
+
+### Memory
+
+No additional configuration required.
+
+### Redis
+
+| Variable        | Description                                                           | Default Value |
+| --------------- | --------------------------------------------------------------------- | ------------- |
+| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+
+Alternatively, you can provide the individual connection parameters:
+
+| Variable                 | Description                      | Default Value |
+| ------------------------ | -------------------------------- | ------------- |
+| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
+| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
+| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
+
+### Memcache
+
+| Variable           | Description                        | Default Value |
+| ------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
 
 ## File Storage
 

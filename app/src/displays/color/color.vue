@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import Color from 'color';
 import { isHex } from '@/utils/color';
 
@@ -28,8 +28,8 @@ export default defineComponent({
 		});
 
 		const styles = computed(() => {
-			const defaultColor = props.defaultColor.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
-			const value = props.value && props.value.startsWith('var(') ? getVar(props.value) : props.value;
+			const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
+			const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
 
 			const style: Record<string, any> = { 'background-color': defaultColor };
 
@@ -62,9 +62,9 @@ export default defineComponent({
 	.dot {
 		display: inline-block;
 		flex-shrink: 0;
-		width: 12px;
-		height: 12px;
-		border-radius: 6px;
+		width: 10px;
+		height: 10px;
+		border-radius: 5px;
 	}
 }
 </style>

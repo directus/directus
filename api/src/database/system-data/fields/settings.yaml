@@ -90,12 +90,14 @@ fields:
           text: Weak – Minimum 8 Characters
         - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
           text: Strong – Upper / Lowercase / Numbers / Special
+      allowOther: true
     width: half
 
   - field: auth_login_attempts
     interface: numeric
     options:
       iconRight: lock
+      placeholder: $t:unlimited
     width: half
 
   - field: files_divider

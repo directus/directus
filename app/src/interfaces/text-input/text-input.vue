@@ -1,7 +1,8 @@
 <template>
 	<v-input
+		:autofocus="autofocus"
 		:value="value"
-		:nullable="nullable"
+		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:trim="trim"
@@ -40,9 +41,9 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		nullable: {
+		clear: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		disabled: {
 			type: Boolean,
@@ -77,6 +78,10 @@ export default defineComponent({
 			default: null,
 		},
 		dbSafe: {
+			type: Boolean,
+			default: false,
+		},
+		autofocus: {
 			type: Boolean,
 			default: false,
 		},

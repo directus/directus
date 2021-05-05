@@ -161,7 +161,7 @@ export default defineComponent({
 					return _value.value.getMonth();
 				},
 				set(newMonth: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setMonth(newMonth || 0);
 					_value.value = newValue;
 				},
@@ -173,7 +173,7 @@ export default defineComponent({
 					return _value.value.getDate();
 				},
 				set(newDate: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setDate(newDate || 1);
 					_value.value = newValue;
 				},
@@ -191,7 +191,7 @@ export default defineComponent({
 					return hours;
 				},
 				set(newHours: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setHours(newHours || 0);
 					_value.value = newValue;
 				},
@@ -203,7 +203,7 @@ export default defineComponent({
 					return _value.value.getMinutes();
 				},
 				set(newMinutes: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setMinutes(newMinutes || 0);
 					_value.value = newValue;
 				},
@@ -215,7 +215,7 @@ export default defineComponent({
 					return _value.value.getSeconds();
 				},
 				set(newSeconds: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setSeconds(newSeconds || 0);
 					_value.value = newValue;
 				},

@@ -39,7 +39,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const S3 = require('aws-sdk/clients/s3');
 
 		this.$driver = new S3({
@@ -56,8 +55,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	/**

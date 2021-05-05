@@ -66,11 +66,11 @@
 	font-feature-settings: 'liga';
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon svg {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon svg {
 	display: none;
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon::after {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
 	color: var(--foreground-normal);

@@ -218,6 +218,7 @@ import useCollection from '@/composables/use-collection/';
 import useSync from '@/composables/use-sync/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import type { Field } from '@/types';
 
 import i18n from '@/lang';
 import { cloneDeep, merge } from 'lodash';
@@ -344,7 +345,7 @@ export default defineComponent({
 
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			const fields = fieldsInCollection.value;
+			const fields: Field[] = fieldsInCollection.value;
 			return fields
 				.slice(0, 3)
 				.map((f) => `{{${f.field}}}`)
@@ -491,7 +492,7 @@ export default defineComponent({
 
 		const availableFieldsForFormat = computed(() => {
 			const types = availableTypesForFormat(geometryFormat.value);
-			return fieldsInCollection.value
+			return (fieldsInCollection.value as Field[])
 				.filter(({ type, meta }) => types.includes(type) && !meta?.special?.includes('no-data'))
 				.map(({ name, field }) => ({ text: name, value: field }));
 		});

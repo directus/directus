@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler';
 import database from '../database';
 import { InvalidIPException } from '../exceptions';
+import asyncHandler from '../utils/async-handler';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
 	const role = await database

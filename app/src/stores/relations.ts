@@ -1,7 +1,7 @@
-import { createStore } from 'pinia';
-import { Relation } from '@/types';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
+import { Relation } from '@/types';
+import { createStore } from 'pinia';
 
 export const useRelationsStore = createStore({
 	id: 'relationsStore',
@@ -26,30 +26,6 @@ export const useRelationsStore = createStore({
 			const fieldInfo = fieldsStore.getField(collection, field);
 
 			if (!fieldInfo) return [];
-
-			if (fieldInfo.type === 'file') {
-				return [
-					{
-						many_collection: collection,
-						many_field: field,
-						one_collection: 'directus_files',
-						one_field: null,
-						junction_field: null,
-					},
-				] as Relation[];
-			}
-
-			if (['user', 'user_created', 'user_updated', 'owner'].includes(fieldInfo.type)) {
-				return [
-					{
-						many_collection: collection,
-						many_field: field,
-						one_collection: 'directus_users',
-						one_field: null,
-						junction_field: null,
-					},
-				] as Relation[];
-			}
 
 			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {
 				return (

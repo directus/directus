@@ -146,6 +146,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
+auto_refresh: Actualización automática
+refresh_interval: Intervalo de actualización
+no_refresh: No actualizar
+refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
+refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
 auto_generate: Auto-generar
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
@@ -153,6 +158,7 @@ to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
+no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
@@ -220,7 +226,6 @@ item_delete_success: Elemento Eliminado | Elementos Eliminados
 this_collection: Esta Colección
 related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
-translations_collection: Colección de Traducciones
 languages_collection: Colección de Idiomas
 export_data: Exportar Datos
 format: Formato
@@ -345,7 +350,6 @@ users: Usuarios
 activity: Actividad
 webhooks: Webhooks
 field_width: Ancho de Campo
-add_a_new_item: Agregar un nuevo Elemento...
 add_filter: Agregar Filtro
 upper_limit: Límite Superior...
 lower_limit: Límite Inferior...
@@ -512,6 +516,8 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+width: Ancho
+height: Alto
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -531,10 +537,7 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Enlace
   unlink: Remover Enlace
-  media: Agregar Multimedia
-  image: Agregar Imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -556,7 +559,6 @@ wysiwyg_options:
   selectall: Seleccionar Todo
   table: Tabla
   visualaid: Ver elementos invisibles
-  code: Ver Fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
 dropdown: Lista Desplegable
@@ -580,7 +582,6 @@ scope: Alcance
 layout: Diseño
 tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
-preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
@@ -650,7 +651,6 @@ fields:
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
-    translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
@@ -798,7 +798,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   button-links:
@@ -930,7 +929,6 @@ interfaces:
     repeater: Repetidor
     description: Crear múltiples entradas para la misma estructura
     edit_fields: Editar Campos
-    add_label: 'Etiqueta "Agregar Nueva Fila"'
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Ingrese la nota del campo...
   slider:
@@ -961,8 +959,6 @@ interfaces:
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
-    nullable: Nulo
-    nullable_label: Guardar valor vacío como NULL
   textarea:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea

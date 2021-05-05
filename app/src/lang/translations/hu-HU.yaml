@@ -155,7 +155,6 @@ leave_comment: Hozzászólás írása...
 this_collection: Ez a gyűjtemény
 related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
-translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
 format: Formátum
@@ -263,7 +262,6 @@ users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
 field_width: Mező szélessége
-add_a_new_item: Új elem hozzáadása...
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
 lower_limit: Alsó határ...
@@ -412,6 +410,8 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+width: Szélesség
+height: Magasság
 wysiwyg_options:
   aligncenter: Középre igazítás
   alignjustify: Sorkizárt
@@ -430,10 +430,7 @@ wysiwyg_options:
   bullist: Felsorolás lista
   numlist: Számozott lista
   hr: Vízszintes vonal
-  link: Hivatkozás
   unlink: Hivatkozás törlése
-  media: Média hozzáadása
-  image: Kép hozzáadása
   copy: Másolás
   cut: Kivágás
   paste: Beillesztés
@@ -455,7 +452,6 @@ wysiwyg_options:
   selectall: Összes kijelölése
   table: Táblázat
   visualaid: Láthatatlan elemek mutatása
-  code: Forrás megtekintése
   fullscreen: Teljes képernyő
 dropdown: Legördülő lista
 choices: Lehetőségek

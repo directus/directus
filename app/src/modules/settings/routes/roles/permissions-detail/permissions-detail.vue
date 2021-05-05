@@ -169,7 +169,7 @@ export default defineComponent({
 		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
 
 		function close() {
-			router.push(`/settings/roles/${props.roleKey}`);
+			router.push(`/settings/roles/${props.roleKey || 'public'}`);
 		}
 
 		async function load() {

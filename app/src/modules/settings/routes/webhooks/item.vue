@@ -78,10 +78,6 @@ import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
 import i18n from '@/lang';
 
-type Values = {
-	[field: string]: any;
-};
-
 export default defineComponent({
 	name: 'webhooks-item',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },

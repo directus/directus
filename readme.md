@@ -27,8 +27,6 @@ certain features might be missing or broken. You can follow along with
 [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the
 following notable features still under development:
 
-- [ ] MS SQL Support
-- [ ] OracleDB Support
 - [ ] Import/Export Endpoints
 
 <br>
@@ -84,7 +82,8 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 #### Supported Databases
 
 - PostgreSQL 10+
-- MySQL 5.7.8+
+- MySQL 5.7.8+ (8.\* with mysql_native_password
+  [here](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
 - MariaDB 10.2+
 - SQLite 3+
 - MS-SQL X.X+
@@ -96,7 +95,8 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 - CentOS / RHEL 8
 - macOS Catalina or newer
 - Windows 10
-- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) + [Dockerfile](https://github.com/directus/directus/blob/43f4e63179b7c370ceee721c0a5ca0f616f30c58/.github/actions/build-images/Dockerfile))
+- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
+  [Dockerfile](https://github.com/directus/directus/blob/43f4e63179b7c370ceee721c0a5ca0f616f30c58/.github/actions/build-images/Dockerfile))
 
 _Other operating systems may also work, but are not officially supported._
 

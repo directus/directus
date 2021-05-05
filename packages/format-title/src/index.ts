@@ -44,9 +44,5 @@ function decamelize(string: string): string {
 
 export default function formatTitle(title: string, separator?: RegExp): string {
 	if (!separator) separator = new RegExp('/s|-|_| ', 'g');
-	return decamelize(title)
-		.split(separator)
-		.map(capitalize)
-		.map(handleSpecialWords)
-		.reduce(combine);
+	return decamelize(title).split(separator).map(capitalize).map(handleSpecialWords).reduce(combine);
 }

@@ -1,5 +1,5 @@
-import InterfaceTextarea from './textarea.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceTextarea from './textarea.vue';
 
 export default defineInterface({
 	id: 'textarea',
@@ -53,6 +53,21 @@ export default defineInterface({
 			},
 			schema: {
 				default_value: 'sans-serif',
+			},
+		},
+		{
+			field: 'clear',
+			name: '$t:interfaces.text-input.clear',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: '$t:interfaces.text-input.clear_label',
+				},
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 	],

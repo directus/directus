@@ -67,7 +67,7 @@ export default defineComponent({
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				collapsed.value = e.intersectionRatio < 1;
+				collapsed.value = e.boundingClientRect.y === -1;
 			},
 			{ threshold: [1] }
 		);

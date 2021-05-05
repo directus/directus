@@ -5,14 +5,14 @@
 			<p v-html="$t('continue_as', { name })" />
 			<div class="actions">
 				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
-				<v-button large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
+				<v-button autofocus large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
 			</div>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 
 import api from '@/api';
 import { hydrate } from '@/hydrate';

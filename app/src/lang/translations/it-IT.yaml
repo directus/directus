@@ -206,7 +206,6 @@ item_delete_success: Elemento Eliminato| Elementi Eliminati
 this_collection: Questa Raccolta
 related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
-translations_collection: Raccolta di Traduzioni
 languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
@@ -323,7 +322,6 @@ users: Utenti
 activity: Attività
 webhooks: Webhooks
 field_width: Larghezza del Campo
-add_a_new_item: Aggiungi nuovo elemento...
 add_filter: Aggiungi Filtro
 upper_limit: Limite superiore...
 lower_limit: Limite inferiore...
@@ -460,6 +458,8 @@ select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
 label: Etichetta
+width: Larghezza
+height: Altezza
 wysiwyg_options:
   forecolor: Colore di primo piano
   backcolor: Colore dello sfondo
@@ -468,7 +468,6 @@ wysiwyg_options:
   underline: Sottolineato
   strikethrough: Barrato
   codeblock: Codice
-  link: Link
   unlink: Rimuovi link
   copy: Copia
   cut: Taglia
@@ -479,7 +478,6 @@ wysiwyg_options:
   removeformat: Rimuovi Formato
   selectall: Seleziona tutto
   table: Tabella
-  code: Visualizza Sorgente
   fullscreen: Schermo Intero
 dropdown: Menu a tendina
 choices: Scelta multipla
@@ -495,7 +493,6 @@ settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 layout: Layout
-preset_name_placeholder: Nome del segnalibro...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
@@ -540,7 +537,6 @@ fields:
     note: Nota
     display_template: Display Template
     hidden: Nascosto
-    translations: Traduzioni del Nome della Raccolta
     sort_field: Ordina per
   directus_files:
     title: Titolo

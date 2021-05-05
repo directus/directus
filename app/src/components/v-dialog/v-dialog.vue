@@ -37,8 +37,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const dialog = ref<HTMLElement | null>(null);
-
 		useShortcut('escape', (event, cancelNext) => {
 			if (_active.value) {
 				emit('esc');
@@ -134,34 +132,39 @@ export default defineComponent({
 		}
 
 		.v-card-actions {
-			flex-wrap: wrap;
 			flex-direction: column-reverse;
-			& > .v-button + .v-button {
-				margin-left: 0;
-				margin-bottom: 20px;
-			}
+			flex-wrap: wrap;
+
 			.v-button {
 				width: 100%;
+
 				.button {
 					width: 100%;
 				}
+			}
+
+			& > .v-button + .v-button {
+				margin-bottom: 20px;
+				margin-left: 0;
 			}
 		}
 
 		@include breakpoint(small) {
 			--v-card-min-width: 540px;
 			.v-card-actions {
-				flex-wrap: nowrap;
 				flex-direction: inherit;
-				& > .v-button + .v-button {
-					margin-left: 12px;
-					margin-bottom: 0;
-				}
+				flex-wrap: nowrap;
+
 				.v-button {
 					width: auto;
 					.button {
 						width: auto;
 					}
+				}
+
+				& > .v-button + .v-button {
+					margin-bottom: 0;
+					margin-left: 12px;
 				}
 			}
 		}

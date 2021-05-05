@@ -1,9 +1,10 @@
 import { defineModule } from '@/modules/define';
-import Overview from './routes/overview.vue';
+import { addQueryToPath } from '@/utils/add-query-to-path';
+import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
-import { NavigationGuard } from 'vue-router';
+import Overview from './routes/overview.vue';
 
 const checkForSystem: NavigationGuard = (to, from, next) => {
 	if (!to.params?.collection) return next();
@@ -38,6 +39,15 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		} else {
 			return next('/settings/webhooks');
 		}
+	}
+
+	if (
+		'bookmark' in from.query &&
+		typeof from.query.bookmark === 'string' &&
+		'bookmark' in to.query === false &&
+		to.params.collection === from.params.collection
+	) {
+		return next(addQueryToPath(to.fullPath, { bookmark: from.query.bookmark }));
 	}
 
 	return next();
