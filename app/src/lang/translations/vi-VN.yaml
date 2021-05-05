@@ -623,7 +623,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Quan hệ nhiều - một
     display_template: Mẫu hiển thị
-  markdown:
+  input-rich-text-md:
     markdown: Gạch nhớ
   numeric:
     numeric: Kiểu số

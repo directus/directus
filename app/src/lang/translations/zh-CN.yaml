@@ -743,7 +743,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: 多对一
     display_template: 显示模板
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
   numeric:
     numeric: 数字

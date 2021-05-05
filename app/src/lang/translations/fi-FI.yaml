@@ -959,7 +959,7 @@ interfaces:
     many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
     display_template: Esitysmalli
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Syötä ja esikatsele markdown
     customSyntax: Mukautetut lohkot

@@ -915,7 +915,7 @@ interfaces:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
     customSyntax: Bloques personalizados

@@ -959,7 +959,7 @@ interfaces:
     many-to-one: Много към един
     description: Избор на един свързан запис
     display_template: Шаблон при показване
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
     customSyntax: Персонализирани блокове

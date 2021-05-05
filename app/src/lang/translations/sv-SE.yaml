@@ -936,7 +936,7 @@ interfaces:
     many-to-one: Många till en
     description: Välj ett relaterat objekt
     display_template: Visningsmall
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Ange och förhandsgranska markdown
     customSyntax: Anpassade block

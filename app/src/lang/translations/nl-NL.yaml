@@ -904,7 +904,7 @@ interfaces:
     many-to-one: Veel op één
     description: Selecteer één gerelateerd item
     display_template: Weergavesjabloon
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Markdown invoeren en bekijken
     customSyntax: Aangepaste blokken

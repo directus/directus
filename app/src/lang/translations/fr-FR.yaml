@@ -944,7 +944,7 @@ interfaces:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Saisir et prévisualiser le markdown
     customSyntax: Blocs personnalisés

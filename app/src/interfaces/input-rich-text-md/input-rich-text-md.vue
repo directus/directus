@@ -1,5 +1,5 @@
 <template>
-	<div class="interface-markdown" :class="view[0]" ref="markdownInterface">
+	<div class="interface-input-rich-text-md" :class="view[0]" ref="markdownInterface">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
@@ -308,7 +308,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.interface-markdown {
+.interface-input-rich-text-md {
 	--v-button-background-color: transparent;
 	--v-button-color: var(--foreground-normal);
 	--v-button-background-color-hover: var(--border-normal);
@@ -324,7 +324,7 @@ textarea {
 	display: none;
 }
 
-.interface-markdown ::v-deep .CodeMirror {
+.interface-input-rich-text-md ::v-deep .CodeMirror {
 	border: none;
 	border-radius: 0;
 
@@ -345,7 +345,7 @@ textarea {
 	}
 }
 
-.interface-markdown.preview {
+.interface-input-rich-text-md.preview {
 	::v-deep .CodeMirror {
 		display: none;
 	}

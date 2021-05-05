@@ -903,7 +903,7 @@ interfaces:
     many-to-one: Many to One
     description: เลือก 1 ไอเท็มที่เกี่ยวข้อง
     display_template: แม่แบบการแสดงผล
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: กรอกและดู Markdown ล่วงหน้าก่อน
     customSyntax: บล็อกที่ออกแบบเอง

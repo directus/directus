@@ -461,7 +461,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: العديد إلى واحد
     display_template: عرض القالب
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
   notice:
     notice: ملاحظة

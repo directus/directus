@@ -634,7 +634,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: 多對一
     display_template: 顯示模板
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: 輸入和預覽 Markdown
     customSyntax_label: 新增自訂語法類型

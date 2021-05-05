@@ -689,7 +689,7 @@ interfaces:
     interface-options: Kinézet beállításai
   select-dropdown-m2o:
     display_template: Megjelenítési sablon
-  markdown:
+  input-rich-text-md:
     customSyntax: Egyéni blokkok
   notice:
     notice: Megjegyzés

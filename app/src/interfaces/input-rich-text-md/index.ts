@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceMarkdown from './markdown.vue';
+import InterfaceInputRichTextMD from './input-rich-text-md.vue';
 
 export default defineInterface({
 	id: 'markdown',
-	name: '$t:interfaces.markdown.markdown',
-	description: '$t:interfaces.markdown.description',
+	name: '$t:interfaces.input-rich-text-md.markdown',
+	description: '$t:interfaces.input-rich-text-md.description',
 	icon: 'functions',
-	component: InterfaceMarkdown,
+	component: InterfaceInputRichTextMD,
 	types: ['text'],
 	options: [
 		{
@@ -23,14 +23,14 @@ export default defineInterface({
 		},
 		{
 			field: 'customSyntax',
-			name: '$t:interfaces.markdown.customSyntax',
+			name: '$t:interfaces.input-rich-text-md.customSyntax',
 			type: 'json',
 			meta: {
-				note: '$t:interfaces.markdown.customSyntax_label',
+				note: '$t:interfaces.input-rich-text-md.customSyntax_label',
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					addLabel: '$t:interfaces.markdown.customSyntax_add',
+					addLabel: '$t:interfaces.input-rich-text-md.customSyntax_add',
 					template: '{{ name }}',
 					fields: [
 						{
@@ -72,7 +72,7 @@ export default defineInterface({
 						{
 							field: 'box',
 							type: 'string',
-							name: '$t:interfaces.markdown.box',
+							name: '$t:interfaces.input-rich-text-md.box',
 							meta: {
 								interface: 'radio-buttons',
 								width: 'half',
@@ -99,10 +99,10 @@ export default defineInterface({
 		},
 		{
 			field: 'imageToken',
-			name: '$t:interfaces.markdown.imageToken',
+			name: '$t:interfaces.input-rich-text-md.imageToken',
 			type: 'string',
 			meta: {
-				note: '$t:interfaces.markdown.imageToken_label',
+				note: '$t:interfaces.input-rich-text-md.imageToken_label',
 				width: 'full',
 				interface: 'text-input',
 			},

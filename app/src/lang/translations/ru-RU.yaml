@@ -921,7 +921,7 @@ interfaces:
     many-to-one: Многие к одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
     customSyntax_label: Добавить пользовательский тип синтаксиса

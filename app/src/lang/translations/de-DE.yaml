@@ -963,7 +963,7 @@ interfaces:
     many-to-one: n:1-Beziehung
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
     customSyntax: Benutzerdefinierte Blöcke

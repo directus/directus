@@ -957,7 +957,7 @@ interfaces:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
     display_template: Wyświetl szablon
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
     customSyntax: Niestandardowe bloki

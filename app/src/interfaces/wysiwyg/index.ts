@@ -277,10 +277,10 @@ export default defineInterface({
 		},
 		{
 			field: 'imageToken',
-			name: '$t:interfaces.markdown.imageToken',
+			name: '$t:interfaces.input-rich-text-md.imageToken',
 			type: 'string',
 			meta: {
-				note: '$t:interfaces.markdown.imageToken_label',
+				note: '$t:interfaces.input-rich-text-md.imageToken_label',
 				width: 'full',
 				interface: 'text-input',
 			},

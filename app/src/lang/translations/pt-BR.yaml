@@ -960,7 +960,7 @@ interfaces:
     many-to-one: Muitos-para-um (N para 1)
     description: Selecione um único item relacionado
     display_template: Modelo de exibição
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
     customSyntax: Blocos Personalizados

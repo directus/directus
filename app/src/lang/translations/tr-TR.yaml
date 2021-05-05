@@ -699,7 +699,7 @@ interfaces:
   select-dropdown-m2o:
     many-to-one: Çoktan Bire
     display_template: Görüntüleme Şablonu
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
   numeric:
     numeric: Sayısal
