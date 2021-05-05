@@ -903,7 +903,7 @@ interfaces:
     collection_field: Collection field
     collection_field_not_setup: The collection field option is misconfigured
     select_a_collection: Select a Collection
-  divider:
+  presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
     title_placeholder: Enter a title...

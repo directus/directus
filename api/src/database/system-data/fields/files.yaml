@@ -46,7 +46,7 @@ fields:
     readonly: true
 
   - field: storage_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: insert_drive_file
       title: File Naming

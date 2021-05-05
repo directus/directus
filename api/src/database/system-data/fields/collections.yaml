@@ -5,7 +5,7 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: box
       title: Collection Setup
@@ -93,7 +93,7 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: archive
       title: Archive
@@ -134,7 +134,7 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: sort
       title: Sort
@@ -156,7 +156,7 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: admin_panel_settings
       title: Accountability

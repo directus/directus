@@ -41,7 +41,7 @@ fields:
     width: half
 
   - field: public_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: public
       title: Public Pages
@@ -71,7 +71,7 @@ fields:
     width: full
 
   - field: security_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: security
       title: Security
@@ -101,7 +101,7 @@ fields:
     width: half
 
   - field: files_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: storage
       title: Files & Thumbnails
@@ -197,7 +197,7 @@ fields:
     width: half
 
   - field: overrides_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: brush
       title: App Overrides

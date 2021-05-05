@@ -452,7 +452,7 @@ export default defineComponent({
 					name: i18n.t('divider'),
 					type: 'alias',
 					meta: {
-						interface: 'divider',
+						interface: 'presentation-divider',
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),

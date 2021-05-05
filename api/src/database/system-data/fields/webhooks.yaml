@@ -63,7 +63,7 @@ fields:
     display: boolean
 
   - field: triggers_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: api
       title: Triggers

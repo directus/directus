@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceDivider from './divider.vue';
+import InterfaceDivider from './presentation-divider.vue';
 
 export default defineInterface({
-	id: 'divider',
-	name: '$t:interfaces.divider.divider',
-	description: '$t:interfaces.divider.description',
+	id: 'presentation-divider',
+	name: '$t:interfaces.presentation-divider.divider',
+	description: '$t:interfaces.presentation-divider.description',
 	icon: 'remove',
 	component: InterfaceDivider,
 	hideLabel: true,
@@ -38,19 +38,19 @@ export default defineInterface({
 				width: 'full',
 				interface: 'text-input',
 				options: {
-					placeholder: '$t:interfaces.divider.title_placeholder',
+					placeholder: '$t:interfaces.presentation-divider.title_placeholder',
 				},
 			},
 		},
 		{
 			field: 'marginTop',
-			name: '$t:interfaces.divider.margin_top',
+			name: '$t:interfaces.presentation-divider.margin_top',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.divider.margin_top_label',
+					label: '$t:interfaces.presentation-divider.margin_top_label',
 				},
 			},
 			schema: {
@@ -59,13 +59,13 @@ export default defineInterface({
 		},
 		{
 			field: 'inlineTitle',
-			name: '$t:interfaces.divider.inline_title',
+			name: '$t:interfaces.presentation-divider.inline_title',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.divider.inline_title_label',
+					label: '$t:interfaces.presentation-divider.inline_title_label',
 				},
 			},
 			schema: {

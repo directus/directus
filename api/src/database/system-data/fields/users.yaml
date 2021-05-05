@@ -61,7 +61,7 @@ fields:
       format: false
 
   - field: preferences_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: face
       title: User Preferences
@@ -92,7 +92,7 @@ fields:
     width: half
 
   - field: admin_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: verified_user
       title: Admin Options
