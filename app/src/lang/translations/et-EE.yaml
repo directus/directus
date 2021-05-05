@@ -329,7 +329,7 @@ interface_not_found: '"{interface}" liidest ei leitud.'
 reset_interface: Nulli liides
 display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
-m2a_builder: M2A koostamine
+list-m2a: M2A koostamine
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
 no_items_copy: Selles kogus pole veel ühtegi kiret.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'

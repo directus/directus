@@ -299,7 +299,7 @@ interface_not_found: '未找到接口 "{interface}"。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
-m2a_builder: 构建器 (M2A)
+list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
 no_items_copy: 此集合中没有项目。
 file_count: '没有文件 | 一个文件 | {count} 个文件'

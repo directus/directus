@@ -341,7 +341,7 @@ interface_not_found: 'Interface "{interface}" not found.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
-m2a_builder: Builder (M2A)
+list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'

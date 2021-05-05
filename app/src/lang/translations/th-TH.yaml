@@ -323,7 +323,7 @@ interface_not_found: 'ไม่พบอินเทอร์เฟส "{interfa
 reset_interface: ล้างการตั้งค่าอินเทอร์เฟส
 display_not_found: 'ไม่พบการแสดงผล "{display}"'
 reset_display: ล้างค่าการแสดงผล
-m2a_builder: สร้างความสัมพัพธ์ (M2A)
+list-m2a: สร้างความสัมพัพธ์ (M2A)
 item_count: 'ไม่พบไอเท็ม|1 ไอเท็ม|{count} ไอเท็ม'
 no_items_copy: ไม่มีรายการในคอลเล็กชันนี้
 file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์'

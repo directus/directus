@@ -1,11 +1,11 @@
 import { defineInterface } from '../define';
-import InterfaceManyToAny from './m2a-builder.vue';
+import InterfaceListM2A from './list-m2a.vue';
 
 export default defineInterface({
-	id: 'm2a-builder',
-	name: '$t:m2a_builder',
+	id: 'list-m2a',
+	name: '$t:list-m2a',
 	icon: 'note_add',
-	component: InterfaceManyToAny,
+	component: InterfaceListM2A,
 	relational: true,
 	types: ['alias'],
 	groups: ['m2a'],

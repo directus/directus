@@ -331,7 +331,7 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
-m2a_builder: Pembangun (M2A)
+list-m2a: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'

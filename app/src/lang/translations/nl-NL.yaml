@@ -324,7 +324,7 @@ interface_not_found: 'Interface "{interface}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
-m2a_builder: Bouwer (M2A)
+list-m2a: Bouwer (M2A)
 item_count: 'Geen items | Één item | {count} items'
 no_items_copy: Er zijn nog geen items in deze collectie.
 file_count: 'Geen bestanden | Één Bestand | {count} bestanden'

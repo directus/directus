@@ -294,7 +294,7 @@ interface_not_found: 'Sąsaja "{interface}" nerasta.'
 reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
-m2a_builder: Redaktorius (M2A)
+list-m2a: Redaktorius (M2A)
 item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'

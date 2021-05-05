@@ -343,7 +343,7 @@ interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
-m2a_builder: Rakentaja (M2A, useampi kaikkiin)
+list-m2a: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'

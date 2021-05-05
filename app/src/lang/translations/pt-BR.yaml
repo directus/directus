@@ -343,7 +343,7 @@ interface_not_found: 'Interface "{interface}" não encontrada.'
 reset_interface: Redefinir interface
 display_not_found: 'Exibição "{display}" não foi encontrada.'
 reset_display: Redefinir Exibição
-m2a_builder: Construtor (M2A)
+list-m2a: Construtor (M2A)
 item_count: 'Sem Itens | Um Item | {count} Itens'
 no_items_copy: Ainda não há itens nesta coleção.
 file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'

@@ -232,7 +232,7 @@ interface_not_found: 'Interface "{interface}" não encontrada.'
 reset_interface: Restaurar interface
 display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
-m2a_builder: Construtor (muitos para alguns)
+list-m2a: Construtor (muitos para alguns)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
 no_items_copy: Aind não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'

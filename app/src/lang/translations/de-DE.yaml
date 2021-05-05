@@ -344,7 +344,7 @@ interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
-m2a_builder: Builder (Many-to-Any)
+list-m2a: Builder (Many-to-Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'

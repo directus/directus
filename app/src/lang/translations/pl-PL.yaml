@@ -341,7 +341,7 @@ interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 reset_interface: Resetuj interfejs
 display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
-m2a_builder: Konstruktor (M2A)
+list-m2a: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'

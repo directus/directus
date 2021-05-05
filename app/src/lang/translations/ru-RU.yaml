@@ -324,7 +324,7 @@ interface_not_found: 'Интерфейс "{interface}" не найден.'
 reset_interface: Сбросить Интерфейс
 display_not_found: 'Отображение "{display}" не найдено.'
 reset_display: Сбросить Отображение
-m2a_builder: Строитель (M2A)
+list-m2a: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет Файлов | Один Файл | {count} Файлов'

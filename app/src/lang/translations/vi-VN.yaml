@@ -274,7 +274,7 @@ interface_not_found: 'Giao diện "{interface}" không tồn tại.'
 reset_interface: Cài đặt lại Giao diện
 display_not_found: 'Hiển thị "{display}" không tồn tại.'
 reset_display: Cài đặt lại Hiển thị
-m2a_builder: Xây dựng (Nhiều-Bất Kỳ)
+list-m2a: Xây dựng (Nhiều-Bất Kỳ)
 item_count: 'Không có bản ghi | Có 1 bản ghi | Có {count} bản ghi'
 no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'

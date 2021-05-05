@@ -305,7 +305,7 @@ report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
-m2a_builder: Costruttore (M2A)
+list-m2a: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
