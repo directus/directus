@@ -5,6 +5,7 @@
 			<v-item-group scope="folder-picker" multiple v-model="openFolders">
 				<v-list-group
 					disable-groupable-parent
+					clickable
 					@click="$emit('update:modelValue', null)"
 					:active="modelValue === null"
 					scope="folder-picker"
