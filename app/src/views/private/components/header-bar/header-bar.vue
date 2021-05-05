@@ -1,6 +1,6 @@
 <template>
 	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')" v-if="$attrs.onPrimary">
+		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
