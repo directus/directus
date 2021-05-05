@@ -36,7 +36,7 @@ npm install
 npm run build
 ```
 
-If you are on a node version lower than 15 or run into trouble with `npm run build` try running `lerna bootstrap`.
+If you are on a node version lower than 15 or run into trouble with `npm run build` try running `lerna bootstrap` first.
 
 ## 5. Create a `.env` file
 
