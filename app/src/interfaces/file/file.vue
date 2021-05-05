@@ -6,6 +6,7 @@
 					<v-skeleton-loader type="input" v-if="loading" />
 					<v-input
 						v-else
+						clickable
 						@click="toggle"
 						readonly
 						:placeholder="$t('no_file_selected')"

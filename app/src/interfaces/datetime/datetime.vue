@@ -3,6 +3,7 @@
 		<template #activator="{ toggle, active }">
 			<v-input
 				:active="active"
+				clickable
 				@click="toggle"
 				readonly
 				:modelValue="displayValue"

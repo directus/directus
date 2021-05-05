@@ -8,6 +8,7 @@
 					v-else
 					:placeholder="$t('select_an_item')"
 					:disabled="disabled"
+					clickable
 					@click="onPreviewClick"
 				>
 					<template #input v-if="currentUser">

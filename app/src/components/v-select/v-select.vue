@@ -16,6 +16,7 @@
 				:full-width="fullWidth"
 				readonly
 				:modelValue="displayValue"
+				clickable
 				@click="toggle"
 				:placeholder="placeholder"
 				:disabled="disabled"

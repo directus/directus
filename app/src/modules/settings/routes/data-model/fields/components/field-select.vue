@@ -54,7 +54,7 @@
 			</router-link>
 		</div>
 
-		<v-input v-else class="field" :class="{ hidden }" readonly @click="openFieldDetail">
+		<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
 			<template #prepend>
 				<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 			</template>

@@ -85,6 +85,7 @@
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
+							clickable
 							@click="info.enabled = true"
 						>
 							<template #prepend>

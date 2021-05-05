@@ -11,6 +11,7 @@
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input
 					:active="active"
+					clickable
 					@click="onPreviewClick"
 					v-else
 					:placeholder="$t('select_an_item')"

@@ -2,7 +2,7 @@
 	<div
 		class="v-input"
 		@click="$emit('click', $event)"
-		:class="{ 'full-width': fullWidth, 'has-click': hasClick, disabled: disabled }"
+		:class="{ 'full-width': fullWidth, 'has-click': clickable, disabled: disabled }"
 	>
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
@@ -73,6 +73,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: false,
+		},
 		prefix: {
 			type: String,
 			default: null,
@@ -139,7 +143,7 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const input = ref<HTMLInputElement | null>(null);
 
 		const listeners = computed(() => ({
@@ -147,10 +151,6 @@ export default defineComponent({
 			keydown: processValue,
 			blur: trimIfEnabled,
 		}));
-
-		const hasClick = computed(() => {
-			return attrs.onClick !== undefined;
-		});
 
 		const isStepUpAllowed = computed(() => {
 			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
@@ -160,7 +160,7 @@ export default defineComponent({
 			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
 		});
 
-		return { listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
+		return { listeners, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
