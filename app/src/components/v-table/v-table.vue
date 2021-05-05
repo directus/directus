@@ -69,7 +69,7 @@
 							})
 						"
 					>
-						<template v-for="header in _headers" #[`element.${header.value}`]>
+						<template v-for="header in _headers" #[`item.${header.value}`]>
 							<slot :item="element" :name="`item.${header.value}`" />
 						</template>
 
