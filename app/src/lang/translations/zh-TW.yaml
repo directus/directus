@@ -683,7 +683,7 @@ interfaces:
   input-multiline:
     textarea: 文本區
     description: 輸入多行純文本
-  toggle:
+  boolean:
     toggle: 切換
     label_default: 已啟用
   translations:

@@ -24,12 +24,12 @@ fields:
     width: full
 
   - field: app_access
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 
   - field: admin_access
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 
@@ -41,7 +41,7 @@ fields:
     width: full
 
   - field: enforce_tfa
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 

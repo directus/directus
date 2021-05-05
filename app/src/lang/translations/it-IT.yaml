@@ -767,7 +767,7 @@ interfaces:
   input:
     text-input: Text Input
     trim: Trim
-  toggle:
+  boolean:
     label_default: Abilitato
   translations:
     display_template: Display Template

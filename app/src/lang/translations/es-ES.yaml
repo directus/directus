@@ -978,7 +978,7 @@ interfaces:
   input-multiline:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea
-  toggle:
+  boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
     label_placeholder: Ingresar una etiqueta...

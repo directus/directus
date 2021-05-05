@@ -757,7 +757,7 @@ interfaces:
   input:
     text-input: Tekstisisestus
     trim: Kärbi
-  toggle:
+  boolean:
     toggle: Lülita
     label_default: lubatud
   translations:

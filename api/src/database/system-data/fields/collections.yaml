@@ -37,14 +37,14 @@ fields:
 
   - field: hidden
     special: boolean
-    interface: toggle
+    interface: boolean
     options:
       label: Hide within the App
     width: half
 
   - field: singleton
     special: boolean
-    interface: toggle
+    interface: boolean
     options:
       label: Treat as single object
     width: half
@@ -108,7 +108,7 @@ fields:
     width: half
 
   - field: archive_app_filter
-    interface: toggle
+    interface: boolean
     special: boolean
     options:
       label: Enable App Archive Filter

@@ -55,7 +55,7 @@ fields:
     width: half
 
   - field: data
-    interface: toggle
+    interface: boolean
     options:
       label: Send Event Data
     special: boolean

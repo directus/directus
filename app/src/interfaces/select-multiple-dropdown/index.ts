@@ -55,7 +55,7 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:interfaces.select-dropdown.allow_other_label',
 				},
@@ -70,7 +70,7 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:interfaces.select-dropdown.allow_none_label',
 				},

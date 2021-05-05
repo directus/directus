@@ -1023,7 +1023,7 @@ interfaces:
   input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy tekst
-  toggle:
+  boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
     label_placeholder: Wprowadź etykietę...

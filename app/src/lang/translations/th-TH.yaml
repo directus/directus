@@ -966,7 +966,7 @@ interfaces:
   input-multiline:
     textarea: พื้นที่ข้อความ
     description: กรอกข้อความได้แบบหลายบรรทัด
-  toggle:
+  boolean:
     toggle: สลับ
     description: สลับระหว่าง เปิด และ ปิด
     label_placeholder: กรอกป้ายชื่อ...

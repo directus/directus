@@ -967,7 +967,7 @@ interfaces:
   input-multiline:
     textarea: Tekstvlak
     description: Voer multiline tekst in
-  toggle:
+  boolean:
     toggle: Schakel
     description: Schakel tussen aan en uit
     label_placeholder: Voer een label in...

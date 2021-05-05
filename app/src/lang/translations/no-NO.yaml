@@ -485,7 +485,7 @@ interfaces:
     numeric: Nummerisk
   tags:
     tags: Etiketter
-  toggle:
+  boolean:
     label_default: Aktivert
 displays:
   boolean:

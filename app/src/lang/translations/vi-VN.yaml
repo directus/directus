@@ -642,7 +642,7 @@ interfaces:
   input:
     text-input: Văn bản đầu vào
     trim: Rút gọn
-  toggle:
+  boolean:
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị

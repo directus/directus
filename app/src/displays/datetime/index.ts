@@ -34,7 +34,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.datetime.relative_label',
 				},

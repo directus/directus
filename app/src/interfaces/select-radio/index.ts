@@ -84,7 +84,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:interfaces.dropdown.allow_other_label',
 				},

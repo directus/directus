@@ -867,7 +867,7 @@ interfaces:
   input-multiline:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą
-  toggle:
+  boolean:
     toggle: Perjungti
     description: Pasirinkti tarp įjungta/išjungta
     label_placeholder: Įveskite žymą...

@@ -1000,7 +1000,7 @@ interfaces:
   input-multiline:
     textarea: Textfält
     description: Ange fritext på flera rader
-  toggle:
+  boolean:
     toggle: Växla
     description: Växla mellan på och av
     label_placeholder: Ange en etikett...

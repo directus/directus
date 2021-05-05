@@ -1009,7 +1009,7 @@ interfaces:
   input-multiline:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
-  toggle:
+  boolean:
     toggle: Activer/Désactiver
     description: Basculer entre sélectionné et désélectionné
     label_placeholder: Entrer un libellé...

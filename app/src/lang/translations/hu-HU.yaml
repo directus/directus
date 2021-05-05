@@ -725,7 +725,7 @@ interfaces:
     trim: Vágás
   input-multiline:
     textarea: Szövegdoboz
-  toggle:
+  boolean:
     toggle: Váltás
     label_placeholder: Írja be a címkét...
     label_default: Engedélyezve

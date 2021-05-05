@@ -725,7 +725,7 @@ interfaces:
     mask: Maskeli
   input-multiline:
     textarea: Metin Alanı
-  toggle:
+  boolean:
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu

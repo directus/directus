@@ -1025,7 +1025,7 @@ interfaces:
   input-multiline:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
-  toggle:
+  boolean:
     toggle: Превключване
     description: Превключване между вкл. и изкл.
     label_placeholder: Въвеждане на етикет...

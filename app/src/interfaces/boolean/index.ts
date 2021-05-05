@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceToggle from './toggle.vue';
+import InterfaceBoolean from './boolean.vue';
 
 export default defineInterface({
-	id: 'toggle',
-	name: '$t:interfaces.toggle.toggle',
-	description: '$t:interfaces.toggle.description',
+	id: 'boolean',
+	name: '$t:interfaces.boolean.toggle',
+	description: '$t:interfaces.boolean.description',
 	icon: 'check_box',
-	component: InterfaceToggle,
+	component: InterfaceBoolean,
 	types: ['boolean'],
 	recommendedDisplays: ['boolean'],
 	options: [
@@ -42,11 +42,11 @@ export default defineInterface({
 				width: 'half',
 				interface: 'input',
 				options: {
-					placeholder: '$t:interfaces.toggle.label_placeholder',
+					placeholder: '$t:interfaces.boolean.label_placeholder',
 				},
 			},
 			schema: {
-				default_value: '$t:interfaces.toggle.label_default',
+				default_value: '$t:interfaces.boolean.label_default',
 			},
 		},
 		{

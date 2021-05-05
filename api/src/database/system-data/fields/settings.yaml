@@ -176,7 +176,7 @@ fields:
           schema:
             default_value: false
           meta:
-            interface: toggle
+            interface: boolean
             width: half
             options:
               label: Don't upscale images

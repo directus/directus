@@ -1029,7 +1029,7 @@ interfaces:
   input-multiline:
     textarea: Textfeld
     description: Mehrzeiligen Klartext eingeben
-  toggle:
+  boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
     label_placeholder: Label eingeben...

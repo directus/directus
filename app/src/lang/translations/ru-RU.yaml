@@ -981,7 +981,7 @@ interfaces:
   input-multiline:
     textarea: Текстовое поле
     description: Введите простой текст в несколько строк
-  toggle:
+  boolean:
     toggle: Переключить
     description: Переключение между вкл и выкл
     label_placeholder: Введите метку...

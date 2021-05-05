@@ -589,7 +589,7 @@ interfaces:
     display_template: Tampilan Template
   numeric:
     numeric: Numerik
-  toggle:
+  boolean:
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template

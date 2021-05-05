@@ -1025,7 +1025,7 @@ interfaces:
   input-multiline:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
-  toggle:
+  boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
     label_placeholder: Syötä otsikko...

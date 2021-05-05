@@ -1021,7 +1021,7 @@ interfaces:
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
-  toggle:
+  boolean:
     toggle: Toggle
     description: Switch between on and off
     label_placeholder: Enter a label...
