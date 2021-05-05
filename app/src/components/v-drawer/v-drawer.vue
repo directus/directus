@@ -6,7 +6,7 @@
 
 		<article class="v-drawer">
 			<v-button
-				v-if="showCancel"
+				v-if="cancelable"
 				class="cancel"
 				@click="$emit('cancel')"
 				icon
@@ -91,8 +91,12 @@ export default defineComponent({
 			type: String,
 			default: i18n.global.t('sidebar'),
 		},
+		cancelable: {
+			type: Boolean,
+			default: true,
+		},
 	},
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const localActive = ref(false);
 
 		const mainEl = ref<Element>();
@@ -109,11 +113,7 @@ export default defineComponent({
 			},
 		});
 
-		const showCancel = computed(() => {
-			return 'onCancel' in attrs;
-		});
-
-		return { _active, mainEl, showCancel };
+		return { _active, mainEl };
 	},
 });
 </script>
