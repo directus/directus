@@ -938,7 +938,7 @@ interfaces:
     icon: Icon
     description: Select an icon from a dropdown
     search_for_icon: Search for icon...
-  image:
+  file-image:
     image: Image
     description: Select or upload an image
   interface:
