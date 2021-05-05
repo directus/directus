@@ -31,7 +31,7 @@
 		"@types/node": "^15.0.1",
 		"@types/supertest": "^2.0.11",
 		"@typescript-eslint/eslint-plugin": "^4.22.0",
-		"@typescript-eslint/parser": "^4.22.0",
+		"@typescript-eslint/parser": "^4.22.1",
 		"axios": "^0.21.1",
 		"dockerode": "^3.2.1",
 		"eslint": "^7.22.0",
