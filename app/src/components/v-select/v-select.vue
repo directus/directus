@@ -104,7 +104,7 @@
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" @click="setOtherValue(otherValue.key, null)" />
+						<v-icon name="close" clickable @click="setOtherValue(otherValue.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 

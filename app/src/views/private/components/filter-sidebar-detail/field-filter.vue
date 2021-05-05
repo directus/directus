@@ -25,7 +25,13 @@
 				</v-list>
 			</v-menu>
 			<div class="spacer" />
-			<v-icon class="remove" name="close" @click="$emit('remove')" v-tooltip.left="$t('delete_advanced_filter')" />
+			<v-icon
+				class="remove"
+				name="close"
+				clickable
+				@click="$emit('remove')"
+				v-tooltip.left="$t('delete_advanced_filter')"
+			/>
 		</div>
 		<div class="field">
 			<filter-input v-model="value" :type="parsedField.type" :operator="activeOperator" :disabled="disabled" />

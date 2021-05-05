@@ -7,6 +7,7 @@
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"
+			clickable
 			@click="copyError"
 		/>
 	</div>

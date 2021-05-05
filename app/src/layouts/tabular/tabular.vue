@@ -1,67 +1,67 @@
 <template>
 	<div class="layout-tabular">
-		<teleport to="#target-layout-options">
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
-				<v-select
-					v-model="tableSpacing"
-					:items="[
-						{
-							text: $t('layouts.tabular.compact'),
-							value: 'compact',
-						},
-						{
-							text: $t('layouts.tabular.cozy'),
-							value: 'cozy',
-						},
-						{
-							text: $t('layouts.tabular.comfortable'),
-							value: 'comfortable',
-						},
-					]"
-				/>
-			</div>
+		<!-- <teleport to="#target-layout-options"> -->
+		<div class="field">
+			<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
+			<v-select
+				v-model="tableSpacing"
+				:items="[
+					{
+						text: $t('layouts.tabular.compact'),
+						value: 'compact',
+					},
+					{
+						text: $t('layouts.tabular.cozy'),
+						value: 'cozy',
+					},
+					{
+						text: $t('layouts.tabular.comfortable'),
+						value: 'comfortable',
+					},
+				]"
+			/>
+		</div>
 
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable
-					v-model="activeFields"
-					item-key="field"
-					handle=".drag-handle"
-					:set-data="hideDragImage"
-					:force-fallback="true"
-				>
-					<template #item="{ element }">
-						<v-checkbox v-model="fields" :value="element.field" :label="element.name">
-							<template #append>
-								<div class="spacer" />
-								<v-icon @click.stop name="drag_handle" class="drag-handle" />
-							</template>
-						</v-checkbox>
-					</template>
-				</draggable>
+		<div class="field">
+			<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
+			<draggable
+				v-model="activeFields"
+				item-key="field"
+				handle=".drag-handle"
+				:set-data="hideDragImage"
+				:force-fallback="true"
+			>
+				<template #item="{ element }">
+					<v-checkbox v-model="fields" :value="element.field" :label="element.name">
+						<template #append>
+							<div class="spacer" />
+							<v-icon @click.stop name="drag_handle" class="drag-handle" />
+						</template>
+					</v-checkbox>
+				</template>
+			</draggable>
 
-				<v-checkbox
-					v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
-					v-model="fields"
-					:key="field.field"
-					:value="field.field"
-					:label="field.name"
-				/>
-			</div>
-		</teleport>
+			<v-checkbox
+				v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
+				v-model="fields"
+				:key="field.field"
+				:value="field.field"
+				:label="field.name"
+			/>
+		</div>
+		<!-- </teleport> -->
 
-		<teleport to="#target-sidebar">
-			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
-		</teleport>
+		<!-- <teleport to="#target-sidebar"> -->
+		<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<!-- </teleport> -->
 
-		<teleport to="#target-actions:prepend">
-			<transition name="fade">
-				<span class="item-count" v-if="itemCount">
-					{{ showingCount }}
-				</span>
-			</transition>
-		</teleport>
+		<!-- <teleport to="#target-actions:prepend"> -->
+		<transition name="fade">
+			<span class="item-count" v-if="itemCount">
+				{{ showingCount }}
+			</span>
+		</transition>
+		<!-- </teleport> -->
 
 		<v-table
 			v-model="_selection"

@@ -33,7 +33,7 @@
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<v-menu showArrow placement="bottom-end">
 					<template #activator="{ toggle }">
-						<v-icon @click="toggle" class="options" name="more_vert" />
+						<v-icon clickable @click="toggle" class="options" name="more_vert" />
 					</template>
 					<v-list>
 						<v-list-item @click="activeDialog = 'choose'" v-if="fromLibrary">

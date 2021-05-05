@@ -11,7 +11,13 @@
 			</button>
 		</div>
 		<div class="end">
-			<v-icon class="size-selector" :name="`grid_${7 - size}`" v-tooltip.top="$t('card_size')" @click="toggleSize" />
+			<v-icon
+				class="size-selector"
+				:name="`grid_${7 - size}`"
+				v-tooltip.top="$t('card_size')"
+				clickable
+				@click="toggleSize"
+			/>
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
@@ -37,6 +43,7 @@
 				:class="{ descending }"
 				name="sort"
 				v-tooltip.top="$t('sort_direction')"
+				clickable
 				@click="toggleDescending"
 			/>
 		</div>

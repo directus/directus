@@ -1,10 +1,10 @@
 <template>
 	<span
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && hasClick, left, right }]"
-		:role="hasClick ? 'button' : null"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:role="clickable ? 'button' : null"
 		@click="emitClick"
-		:tabindex="hasClick ? 0 : null"
+		:tabindex="clickable ? 0 : null"
 	>
 		<component v-if="customIconName" :is="customIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
@@ -99,10 +99,14 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: false,
+		},
 		...sizeProps,
 	},
 
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const sizeClass = computed<string | null>(() => {
 			if (props.sup) return 'sup';
 			return useSizeClass(props).value;
@@ -113,12 +117,9 @@ export default defineComponent({
 			return null;
 		});
 
-		const hasClick = computed<boolean>(() => 'onClick' in attrs);
-
 		return {
 			sizeClass,
 			customIconName,
-			hasClick,
 			emitClick,
 		};
 

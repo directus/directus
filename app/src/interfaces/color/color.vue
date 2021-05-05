@@ -25,7 +25,7 @@
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" @click="unsetColor" />
+					<v-icon :name="isValidColor ? 'close' : 'palette'" clickable @click="unsetColor" />
 				</template>
 			</v-input>
 		</template>

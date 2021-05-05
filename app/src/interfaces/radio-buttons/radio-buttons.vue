@@ -31,7 +31,7 @@
 				disabled,
 			}"
 		>
-			<v-icon :disabled="disabled" :name="customIcon" @click="$emit('input', otherValue)" />
+			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
 			<input v-model="otherValue" :placeholder="$t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
 		</div>
 	</div>

@@ -18,7 +18,13 @@
 					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									clickable
+									@click="toggle"
+									v-tooltip="$t('select_existing')"
+									:disabled="isExisting"
+								/>
 							</template>
 
 							<v-list class="monospace">
@@ -73,7 +79,7 @@
 				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">
@@ -125,7 +131,7 @@
 				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">

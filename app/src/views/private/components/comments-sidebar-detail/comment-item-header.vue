@@ -22,7 +22,7 @@
 		<div class="header-right">
 			<v-menu show-arrow placement="bottom-end">
 				<template #activator="{ toggle, active }">
-					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
+					<v-icon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
 					<div class="time">
 						{{ formattedTime }}
 					</div>

@@ -22,14 +22,26 @@
 					:saving="creatingBookmark"
 				>
 					<template #activator="{ on }">
-						<v-icon class="toggle" @click="on" name="bookmark_outline" v-tooltip.right="$t('create_bookmark')" />
+						<v-icon
+							class="toggle"
+							clickable
+							@click="on"
+							name="bookmark_outline"
+							v-tooltip.right="$t('create_bookmark')"
+						/>
 					</template>
 				</bookmark-add>
 
 				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
 
 				<template v-else-if="bookmarkIsMine">
-					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
+					<v-icon
+						class="save"
+						clickable
+						@click="savePreset()"
+						name="bookmark_save"
+						v-tooltip.bottom="$t('update_bookmark')"
+					/>
 				</template>
 
 				<bookmark-add
@@ -40,13 +52,14 @@
 					:saving="creatingBookmark"
 				>
 					<template #activator="{ on }">
-						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+						<v-icon class="toggle" name="bookmark_outline" clickable @click="on" />
 					</template>
 				</bookmark-add>
 
 				<v-icon
 					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
 					name="settings_backup_restore"
+					clickable
 					@click="clearLocalSave"
 					class="clear"
 					v-tooltip.bottom="$t('reset_bookmark')"

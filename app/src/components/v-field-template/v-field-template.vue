@@ -10,7 +10,7 @@
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline @click="toggle" :disabled="disabled" />
+					<v-icon name="add_box" outline clickable @click="toggle" :disabled="disabled" />
 				</template>
 			</v-input>
 		</template>

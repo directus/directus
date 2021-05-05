@@ -29,15 +29,20 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
+				<v-icon name="rotate_90_degrees_ccw" clickable @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
 
-				<v-icon name="flip_horizontal" @click="flip('horizontal')" v-tooltip.top.inverted="$t('flip_horizontal')" />
+				<v-icon
+					name="flip_horizontal"
+					clickable
+					@click="flip('horizontal')"
+					v-tooltip.top.inverted="$t('flip_horizontal')"
+				/>
 
-				<v-icon name="flip_vertical" @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
+				<v-icon name="flip_vertical" clickable @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon :name="aspectRatioIcon" @click="toggle" v-tooltip.top.inverted="$t('aspect_ratio')" />
+						<v-icon :name="aspectRatioIcon" clickable @click="toggle" v-tooltip.top.inverted="$t('aspect_ratio')" />
 					</template>
 
 					<v-list>

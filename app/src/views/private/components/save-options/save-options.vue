@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow :disabled="disabled">
 		<template #activator="{ toggle }">
-			<v-icon :class="{ disabled }" name="more_vert" @click="toggle" />
+			<v-icon :class="{ disabled }" name="more_vert" clickable @click="toggle" />
 		</template>
 
 		<v-list>

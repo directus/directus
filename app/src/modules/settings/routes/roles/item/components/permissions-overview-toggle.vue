@@ -10,13 +10,14 @@
 			<template #activator="{ toggle }">
 				<div>
 					<v-progress-circular indeterminate v-if="loading || saving" small />
-					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" />
+					<v-icon v-else-if="permissionLevel === 'all'" clickable @click="toggle" name="check" />
 					<v-icon
 						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
+						clickable
 						@click="toggle"
 						name="rule"
 					/>
-					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" />
+					<v-icon v-else-if="permissionLevel === 'none'" clickable @click="toggle" name="block" />
 				</div>
 			</template>
 

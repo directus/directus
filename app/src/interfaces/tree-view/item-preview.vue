@@ -3,8 +3,8 @@
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
 		<div class="actions" v-if="!disabled">
-			<v-icon v-tooltip="$t('edit')" name="launch" @click="editActive = true" />
-			<v-icon v-tooltip="$t('deselect')" name="clear" @click="$emit('deselect')" />
+			<v-icon v-tooltip="$t('edit')" name="launch" clickable @click="editActive = true" />
+			<v-icon v-tooltip="$t('deselect')" name="clear" clickable @click="$emit('deselect')" />
 		</div>
 
 		<drawer-item

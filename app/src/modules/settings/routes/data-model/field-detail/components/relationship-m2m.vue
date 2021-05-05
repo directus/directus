@@ -20,6 +20,7 @@
 							<template #activator="{ toggle }">
 								<v-icon
 									name="list_alt"
+									clickable
 									@click="toggle"
 									v-tooltip="$t('select_existing')"
 									:disabled="autoFill || isExisting"
@@ -78,6 +79,7 @@
 							<template #activator="{ toggle }" v-if="!isExisting">
 								<v-icon
 									name="list_alt"
+									clickable
 									@click="toggle"
 									v-tooltip="$t('select_existing')"
 									:disabled="type === 'files' || isExisting"
@@ -134,6 +136,7 @@
 						<template #activator="{ toggle }">
 							<v-icon
 								name="list_alt"
+								clickable
 								@click="toggle"
 								v-tooltip="$t('select_existing')"
 								:disabled="autoFill || isExisting"
@@ -175,6 +178,7 @@
 						<template #activator="{ toggle }">
 							<v-icon
 								name="list_alt"
+								clickable
 								@click="toggle"
 								v-tooltip="$t('select_existing')"
 								:disabled="autoFill || isExisting"
@@ -245,7 +249,7 @@
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="$t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">

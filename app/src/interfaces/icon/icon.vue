@@ -10,12 +10,19 @@
 				:nullable="false"
 			>
 				<template #prepend>
-					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />
+					<v-icon v-if="value" clickable @click="activate" :name="value" :class="{ active: value }" />
 				</template>
 
 				<template #append>
-					<v-icon v-if="value !== null" @click="setIcon(null)" name="close" />
-					<v-icon v-else @click="activate" name="expand_more" class="open-indicator" :class="{ open: active }" />
+					<v-icon v-if="value !== null" clickable @click="setIcon(null)" name="close" />
+					<v-icon
+						v-else
+						clickable
+						@click="activate"
+						name="expand_more"
+						class="open-indicator"
+						:class="{ open: active }"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -28,6 +35,7 @@
 						:key="icon"
 						:name="icon"
 						:class="{ active: icon === value }"
+						clickable
 						@click="setIcon(icon)"
 					/>
 				</div>
