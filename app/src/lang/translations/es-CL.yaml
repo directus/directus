@@ -985,7 +985,7 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
-  tree-view:
+  list-o2m-tree-view:
     description: Vista en árbol para elementos anidados recursivos uno-a-muchos
     recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:

@@ -1034,7 +1034,7 @@ interfaces:
   translations:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
-  tree-view:
+  list-o2m-tree-view:
     description: Visualização de árvore para itens recursivos aninhados um-para-muitos
     recursive_only: A interface de exibição em árvore só funciona para relações recursivas.
   user:

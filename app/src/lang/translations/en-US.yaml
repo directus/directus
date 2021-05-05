@@ -1029,7 +1029,7 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
-  tree-view:
+  list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
   user:

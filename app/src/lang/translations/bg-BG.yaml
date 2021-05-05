@@ -1033,7 +1033,7 @@ interfaces:
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
-  tree-view:
+  list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
     recursive_only: Дървовидния интерфейс работи само за рекурсивни релации.
   user:

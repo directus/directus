@@ -1037,7 +1037,7 @@ interfaces:
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
-  tree-view:
+  list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Abhängigkeiten.
   user:

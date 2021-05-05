@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="relation.many_collection !== relation.one_collection">
-		{{ $t('interfaces.tree-view.recursive_only') }}
+		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
 	<div v-else class="tree-view">

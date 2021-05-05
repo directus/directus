@@ -1031,7 +1031,7 @@ interfaces:
   translations:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
-  tree-view:
+  list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:

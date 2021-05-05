@@ -1008,7 +1008,7 @@ interfaces:
   translations:
     display_template: Visningsmall
     no_collection: Ingen kollektion
-  tree-view:
+  list-o2m-tree-view:
     description: Trädvy för kapslade rekursiva en-till-många objekt
     recursive_only: Trädvyns gränssnitt fungerar bara för rekursiva relationer.
   user:

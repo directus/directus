@@ -1033,7 +1033,7 @@ interfaces:
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
-  tree-view:
+  list-o2m-tree-view:
     description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
     recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:

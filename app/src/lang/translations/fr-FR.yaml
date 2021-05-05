@@ -1017,7 +1017,7 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
-  tree-view:
+  list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "un vers plusieurs"
     recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
   user:
