@@ -2,14 +2,14 @@ import { types } from '@/types';
 
 const defaultInterfaceMap: Record<typeof types[number], string> = {
 	alias: 'input',
-	bigInteger: 'numeric',
+	bigInteger: 'input',
 	binary: 'input',
 	boolean: 'toggle',
 	date: 'datetime',
 	dateTime: 'datetime',
-	decimal: 'numeric',
-	float: 'numeric',
-	integer: 'numeric',
+	decimal: 'input',
+	float: 'input',
+	integer: 'input',
 	json: 'input-code',
 	string: 'input',
 	text: 'input-multiline',
@@ -18,7 +18,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	uuid: 'input',
 	unknown: 'input',
 	csv: 'tags',
-	hash: 'hash',
+	hash: 'input-hash',
 };
 
 /**

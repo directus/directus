@@ -60,13 +60,13 @@ export default defineComponent({
 			const type: string = state.fieldData?.type || 'alias';
 
 			const recommendedInterfacesPerType: { [type: string]: string[] } = {
-				string: ['input', 'dropdown'],
+				string: ['input', 'select-dropdown'],
 				text: ['input-rich-text-html'],
 				boolean: ['toggle'],
-				integer: ['numeric'],
-				bigInteger: ['numeric'],
-				float: ['numeric'],
-				decimal: ['numeric'],
+				integer: ['input'],
+				bigInteger: ['input'],
+				float: ['input'],
+				decimal: ['input'],
 				timestamp: ['datetime'],
 				datetime: ['datetime'],
 				date: ['datetime'],
