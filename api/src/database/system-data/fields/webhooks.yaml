@@ -11,7 +11,7 @@ fields:
     width: full
 
   - field: method
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'
@@ -31,7 +31,7 @@ fields:
     width: half
 
   - field: status
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'

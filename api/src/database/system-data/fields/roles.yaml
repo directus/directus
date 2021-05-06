@@ -111,7 +111,7 @@ fields:
             default_value: always_open
           meta:
             width: half
-            interface: dropdown
+            interface: select-dropdown
             options:
               choices:
                 - value: always_open

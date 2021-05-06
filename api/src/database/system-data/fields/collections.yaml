@@ -163,7 +163,7 @@ fields:
     width: full
 
   - field: accountability
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - text: '$t:field_options.directus_collections.track_activity_revisions'
