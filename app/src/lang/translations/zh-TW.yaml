@@ -588,7 +588,7 @@ interfaces:
     line_number: 行號
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 資料集
   color:
     color: 顏色

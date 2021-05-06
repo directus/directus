@@ -559,7 +559,7 @@ interfaces:
     line_number: Nomor Baris
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Pengumpulan
   color:
     color: Warna

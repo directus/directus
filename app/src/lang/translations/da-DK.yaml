@@ -361,7 +361,7 @@ interfaces:
     line_number: Linjenummer
   collection:
     collection: Samling
-  collections:
+  system-collections:
     collections: Samlinger
   color:
     color: Farve

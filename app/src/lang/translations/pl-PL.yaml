@@ -882,7 +882,7 @@ interfaces:
     collection: Kolekcja
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  collections:
+  system-collections:
     collections: Kolekcje
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe

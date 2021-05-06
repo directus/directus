@@ -248,7 +248,7 @@ interfaces:
     line_number: Номери рядків
   collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
   color:
     color: Колір

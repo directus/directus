@@ -665,7 +665,7 @@ interfaces:
     line_number: Satır Numarası
   collection:
     collection: Koleksiyon
-  collections:
+  system-collections:
     collections: Koleksiyonlar
   color:
     color: Renk

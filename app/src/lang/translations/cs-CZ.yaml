@@ -293,7 +293,7 @@ interfaces:
     line_number: Číslo řádku
   collection:
     collection: Kategorie
-  collections:
+  system-collections:
     collections: Kategorie
   color:
     color: Barva

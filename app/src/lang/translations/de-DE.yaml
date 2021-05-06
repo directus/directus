@@ -888,7 +888,7 @@ interfaces:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  collections:
+  system-collections:
     collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen

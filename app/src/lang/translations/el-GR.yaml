@@ -228,7 +228,7 @@ interfaces:
     primary: Κυρίως
   collection:
     collection: Συλλογή
-  collections:
+  system-collections:
     collections: Συλλογές
   file:
     file: Αρχείο

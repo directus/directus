@@ -182,7 +182,7 @@ interfaces:
     line_number: Número de línia
   collection:
     collection: Coŀlecció
-  collections:
+  system-collections:
     collections: Col·leccions
   color:
     color: Color

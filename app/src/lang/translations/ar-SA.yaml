@@ -431,7 +431,7 @@ interfaces:
     line_number: أرقام الأسطر
   collection:
     collection: المجموعة
-  collections:
+  system-collections:
     collections: مجموعات
   color:
     color: لون

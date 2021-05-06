@@ -840,7 +840,7 @@ interfaces:
     collection: Colección
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
-  collections:
+  system-collections:
     collections: Colecciones
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema

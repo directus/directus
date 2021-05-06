@@ -869,7 +869,7 @@ interfaces:
     collection: Collection
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
-  collections:
+  system-collections:
     collections: Collections
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système

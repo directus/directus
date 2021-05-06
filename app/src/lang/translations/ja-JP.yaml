@@ -411,7 +411,7 @@ interfaces:
     checkboxes: チェックボックス
   input-code:
     description: コードスニペットでコードを共有
-  collections:
+  system-collections:
     collections: コレクション
   color:
     color: 色

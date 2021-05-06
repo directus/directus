@@ -861,7 +861,7 @@ interfaces:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner
-  collections:
+  system-collections:
     collections: Kollektioner
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner

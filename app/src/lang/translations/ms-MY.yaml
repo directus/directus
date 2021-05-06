@@ -164,7 +164,7 @@ interfaces:
     primary: Utama
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail

@@ -884,7 +884,7 @@ interfaces:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  collections:
+  system-collections:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat

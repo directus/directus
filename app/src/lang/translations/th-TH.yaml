@@ -828,7 +828,7 @@ interfaces:
     collection: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ
-  collections:
+  system-collections:
     collections: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ

@@ -466,7 +466,7 @@ interfaces:
     primary: Primær
   collection:
     collection: Kolleksjon
-  collections:
+  system-collections:
     collections: Kolleksjoner
   display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert

@@ -884,7 +884,7 @@ interfaces:
     collection: Колекция
     description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции
-  collections:
+  system-collections:
     collections: Колекции
     description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции

@@ -829,7 +829,7 @@ interfaces:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  collections:
+  system-collections:
     collections: Collecties
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties

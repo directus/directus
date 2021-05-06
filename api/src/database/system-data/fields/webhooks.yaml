@@ -107,7 +107,7 @@ fields:
           background: 'var(--purple-25)'
 
   - field: collections
-    interface: collections
+    interface: system-collections
     special: csv
     width: full
     display: labels

@@ -687,7 +687,7 @@ interfaces:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema
-  collections:
+  system-collections:
     collections: Raccolte
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema

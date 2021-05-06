@@ -885,7 +885,7 @@ interfaces:
     collection: Coleção
     description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
-  collections:
+  system-collections:
     collections: Coleções
     description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema

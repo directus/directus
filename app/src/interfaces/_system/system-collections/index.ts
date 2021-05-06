@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceCollections from './collections.vue';
+import InterfaceSystemCollections from './collections.vue';
 
 export default defineInterface({
-	id: 'collections',
-	name: '$t:interfaces.collections.collections',
-	description: '$t:interfaces.collections.description',
+	id: 'system-collections',
+	name: '$t:interfaces.system-collections.collections',
+	description: '$t:interfaces.system-collections.description',
 	icon: 'featured_play_list',
-	component: InterfaceCollections,
+	component: InterfaceSystemCollections,
 	types: ['json', 'csv'],
 	options: [
 		{
@@ -17,7 +17,7 @@ export default defineInterface({
 				width: 'half',
 				interface: 'boolean',
 				options: {
-					label: '$t:interfaces.collections.include_system_collections',
+					label: '$t:interfaces.system-collections.include_system_collections',
 				},
 			},
 			schema: {

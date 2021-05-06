@@ -773,7 +773,7 @@ interfaces:
     collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas
-  collections:
+  system-collections:
     collections: Kolekcijos
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas

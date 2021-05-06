@@ -642,7 +642,7 @@ interfaces:
     line_number: Sorszám
   collection:
     collection: Gyűjtemény
-  collections:
+  system-collections:
     collections: Gyűjtemények
   color:
     color: Szín

@@ -697,7 +697,7 @@ interfaces:
     line_number: 行号
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 集合
   color:
     color: 颜色

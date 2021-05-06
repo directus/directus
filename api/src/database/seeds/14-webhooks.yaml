@@ -29,7 +29,7 @@ columns:
     type: string
     length: 100
     nullable: false
-  collections:
+  system-collections:
     type: string
     length: 255
     nullable: false

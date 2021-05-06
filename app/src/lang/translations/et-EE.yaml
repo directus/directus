@@ -712,7 +712,7 @@ interfaces:
     line_number: Reanumbrid
   collection:
     collection: Kogud
-  collections:
+  system-collections:
     collections: Kogud
   color:
     color: Värv

@@ -880,7 +880,7 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
-  collections:
+  system-collections:
     collections: Collections
     description: Select between existing collections
     include_system_collections: Include System Collections
