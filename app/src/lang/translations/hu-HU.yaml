@@ -626,86 +626,43 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
-  button-links:
-    button-links: Gomb hivatkozás
+  presentation-links:
     primary: Elsődleges
-    button: Gombok
-  checkboxes:
-    checkboxes: Jelölőnégyzetek
-    show_more: '{count} további mutatása'
-    items_shown: Megjelenített elemek
-  code:
+  input-code:
     code: Kód
-    line_number: Sorszám
   collection:
     collection: Gyűjtemény
-  collections:
+  system-collections:
     collections: Gyűjtemények
-  color:
+  select-color:
     color: Szín
-    placeholder: Szín választása...
-    preset_colors_add_label: Új szín hozzáadása...
-    name_placeholder: Szín elnevezése...
   datetime:
     datetime: Dátum és idő
     description: Dátum és idő beállítása
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
-  display-template:
+  system-display-template:
     display-template: Megjelenítési sablon
-    collection_field: Gyűjtemény mező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
-  divider:
+  presentation-divider:
     divider: Elválasztó
-    title_placeholder: Írja be a címet...
-    margin_top: Felső margó
-    margin_top_label: Felső margó növelése
-  dropdown:
-    description: Válasszon elemet a listából
-    choices_placeholder: Új lehetőség hozzáadása
-    choices_name_placeholder: Adjon meg egy nevet...
-  dropdown-multiselect:
-    dropdown-multiselect: Lenyíló lista (többválasztós)
-    description: Válasszon elemeket a listából
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
   files:
     files: Fájlok
     description: Válasszon vagy töltsön fel fájlokat
-  hash:
+  input-hash:
     hash: Hash
-  icon:
+  select-icon:
     icon: Ikon
-  image:
+  file-image:
     image: Kép
-  interface:
+  system-interface:
     interface: Kezelőfelület
-  interface-options:
-    interface-options: Kinézet beállításai
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Megjelenítési sablon
-  markdown:
-    customSyntax: Egyéni blokkok
-  notice:
-    notice: Megjegyzés
-  numeric:
-    numeric: Szám
-    description: Szám megadása
-    minimum_value: Minimum érték
-    maximum_value: Maximum érték
-    step_interval: Lépésköz
-  one-to-many:
-    no_collection: A gyűjtemény nem található
-  radio-buttons:
-    radio-buttons: Választó gombok
-    description: Válasszon ki egy vagy több elemet
-  repeater:
-    repeater: Ismétlés
-    edit_fields: Mezők szerkesztése
-    field_name_placeholder: Név megadása...
-    field_note_placeholder: Megjegyzés megadása...
   slider:
     slider: Csúszka
   tags:
@@ -717,14 +674,8 @@ interfaces:
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
-  text-input:
-    text-input: Szövegmező
-    trim: Vágás
-  textarea:
-    textarea: Szövegdoboz
-  toggle:
+  boolean:
     toggle: Váltás
-    label_placeholder: Írja be a címkét...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
@@ -736,11 +687,6 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    toolbar: Eszköztár
-    custom_formats: Egyéni formátum
-    options_override: Beállítás felülírása
 displays:
   boolean:
     boolean: Logikai
