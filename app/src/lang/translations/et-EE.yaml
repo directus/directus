@@ -326,7 +326,6 @@ interface_not_found: '"{interface}" liidest ei leitud.'
 reset_interface: Nulli liides
 display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
-m2a_builder: M2A koostamine
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
 no_items_copy: Selles kogus pole veel ühtegi kiret.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'
@@ -698,62 +697,41 @@ template: Mall
 translation: Tõlkija
 value: Väärtus
 interfaces:
-  button-links:
+  presentation-links:
     primary: Peamine
-  checkboxes:
-    checkboxes: Märkeruudud
-    allow_other: Luba muud
-  code:
+  input-code:
     code: Kood
-    line_number: Reanumbrid
   collection:
     collection: Kogud
-  collections:
+  system-collections:
     collections: Kogud
-  color:
+  select-color:
     color: Värv
   datetime:
     datetime: Kuupäev-kellaaeg
-  display-template:
+  system-display-template:
     display-template: Vaate mall
     collection_field_not_setup: Andmekogu väli on valesti seadistatud
     select_a_collection: Vali andmekogu
-  divider:
+  presentation-divider:
     divider: Eraldaja
-  dropdown:
-    allow_other: Luba muud
+  select-dropdown:
     choices_value_placeholder: Sisesta väärtus...
   file:
     file: Fail
   files:
     files: Failid
-  icon:
+  select-icon:
     icon: Ikoon
-  interface:
+  system-interface:
     interface: Kasutajaliides
-  interface-options:
-    interface-options: Kasutajaliidese valikud
-  many-to-many:
-    many-to-many: Mitu mitmele
-  many-to-one:
-    many-to-one: Mitu ühele
+  select-dropdown-m2o:
     display_template: Vaate mall
-  markdown:
-    markdown: Markdown
-  numeric:
-    numeric: Numbriline
-  radio-buttons:
-    radio-buttons: Raadionupud
-  repeater:
-    repeater: Kordaja
   slider:
     slider: Liugur
   tags:
     tags: Sildid
-  text-input:
-    text-input: Tekstisisestus
-    trim: Kärbi
-  toggle:
+  boolean:
     toggle: Lülita
     label_default: lubatud
   translations:
@@ -762,8 +740,6 @@ interfaces:
     user: Kasutaja
     modes:
       dropdown: Rippmenüü
-  wysiwyg:
-    custom_formats: Kohandatud vormingud
 displays:
   boolean:
     boolean: Boolean
