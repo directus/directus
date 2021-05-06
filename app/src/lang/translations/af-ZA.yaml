@@ -89,16 +89,10 @@ email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
-  checkboxes:
-    checkboxes: Keuse Boksies
-    allow_other: Laat Ander Toe
-  code:
+  input-code:
     code: Kode
-    line_number: Lyn Nommer
   collection:
     collection: Versameling
-  dropdown:
-    allow_other: Laat Ander Toe
   files:
     files: Lêers
   tags:
