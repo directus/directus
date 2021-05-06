@@ -842,6 +842,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -1136,3 +1137,7 @@ layouts:
     comfortable: Mukava
     compact: Kompakti
     cozy: Kodikas
+  calendar:
+    calendar: Kalenteri
+    start_date_field: Aloituspäivämäärän kenttä
+    end_date_field: Päättymispäivämäärän kenttä
