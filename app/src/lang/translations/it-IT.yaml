@@ -299,7 +299,6 @@ report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
-m2a_builder: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
@@ -658,47 +657,32 @@ translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
 interfaces:
-  button-links:
+  presentation-links:
     primary: Principale
-  checkboxes:
-    checkboxes: Checkbox
-    allow_other: Permetti Altro
-    show_more: 'Mostra altri {count}'
-    items_shown: Elementi Visualizzati
-  code:
+  input-code:
     code: Codice
-    description: Scrivi o condividi frammenti di codice
-    line_number: Numero di riga
-    placeholder: Inserisci il codice qui...
   collection:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema
-  collections:
+  system-collections:
     collections: Raccolte
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema
-  color:
+  select-color:
     color: Colore
-    placeholder: Scegli un colore...
-    preset_colors_add_label: Aggiungi nuovo colore...
-    name_placeholder: Inserisci il nome del colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
     include_seconds: Includi Secondi
     use_24: Usa Formato 24 Ore
-  display-template:
+  system-display-template:
     display-template: Display Template
-    collection_field: Campo Raccolta
     collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
     select_a_collection: Seleziona una Raccolta
-  divider:
+  presentation-divider:
     divider: Separatore
-    title_placeholder: Inserisci un titolo...
-  dropdown:
-    allow_other: Permetti Altro
-    choices_name_placeholder: Inserisci un nome...
+  select-dropdown:
     choices_value_placeholder: Inserisci un valore...
   file:
     file: File
@@ -706,55 +690,25 @@ interfaces:
   files:
     files: File
     description: Seleziona o carica più file
-  hash:
+  input-hash:
     hash: Hash
-  icon:
+  select-icon:
     icon: Icon
-    search_for_icon: Cerca un'icona...
-  image:
+  file-image:
     image: Immagine
-    description: Seleziona o carica un'immagine
-  interface:
+  system-interface:
     interface: Interfaccia
-  interface-options:
-    interface-options: Opzioni interfaccia
-  many-to-many:
-    many-to-many: Molti a Molti
-    description: Seleziona più elementi correlati di giunzione
-  many-to-one:
-    many-to-one: Molti a Uno
+  select-dropdown-m2o:
     display_template: Display Template
-  markdown:
-    markdown: Markdown
-  numeric:
-    numeric: Numerico
-    description: Inserisci un numero
-    minimum_value: Valore Minimo
-    maximum_value: Valore Massimo
-  one-to-many:
-    one-to-many: Uno a Molti
-    description: Seleziona più elementi correlati
-    no_collection: Impossibile trovare la raccolta
-  radio-buttons:
-    radio-buttons: Pulsanti di scelta
-  repeater:
-    repeater: Ripetitore
-    edit_fields: Modifica Campi
-    field_name_placeholder: Inserisci il nome del campo...
   slider:
     slider: Cursore
     always_show_value: Mostra sempre il valore
-  slug:
-    slug: Slug
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
-  text-input:
-    text-input: Text Input
-    trim: Trim
-  toggle:
+  boolean:
     label_default: Abilitato
   translations:
     display_template: Display Template
@@ -765,9 +719,6 @@ interfaces:
     modes:
       dropdown: Menu a tendina
       modal: Modale
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    custom_formats: Formati personalizzati
 displays:
   boolean:
     boolean: Boolean
