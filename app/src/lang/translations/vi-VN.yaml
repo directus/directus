@@ -269,7 +269,6 @@ interface_not_found: 'Giao diện "{interface}" không tồn tại.'
 reset_interface: Cài đặt lại Giao diện
 display_not_found: 'Hiển thị "{display}" không tồn tại.'
 reset_display: Cài đặt lại Hiển thị
-m2a_builder: Xây dựng (Nhiều-Bất Kỳ)
 item_count: 'Không có bản ghi | Có 1 bản ghi | Có {count} bản ghi'
 no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
@@ -574,68 +573,41 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
-  button-links:
+  presentation-links:
     primary: Khóa chính
-  checkboxes:
-    checkboxes: Ô tích
-    allow_other: Cho phép những đối tượng khác
-  code:
+  input-code:
     code: Mã nguồn
-    line_number: Dòng số
   collection:
     collection: Danh mục
-  collections:
+  system-collections:
     collections: Danh mục
-  color:
+  select-color:
     color: Màu sắc
   datetime:
     datetime: Ngày giờ
     use_24: Sử dụng Định dạng 24-giờ
-  display-template:
+  system-display-template:
     display-template: Mẫu hiển thị
     select_a_collection: Chọn Bảng
-  divider:
+  presentation-divider:
     divider: Bộ chia
-  dropdown:
-    allow_other: Cho phép những đối tượng khác
+  select-dropdown:
     choices_value_placeholder: Nhập vào một giá trị...
   file:
     file: Tệp
   files:
     files: Tệp
-  icon:
+  select-icon:
     icon: Biểu tượng
-    description: Chọn một biểu tượng từ danh sách
-    search_for_icon: Tìm kiếm biểu tượng...
-  interface:
+  system-interface:
     interface: Giao diện
-  interface-options:
-    interface-options: Tùy chọn giao diện
-  many-to-many:
-    many-to-many: Quan hệ nhiều - nhiều
-  many-to-one:
-    many-to-one: Quan hệ nhiều - một
+  select-dropdown-m2o:
     display_template: Mẫu hiển thị
-  markdown:
-    markdown: Gạch nhớ
-  numeric:
-    numeric: Kiểu số
-  one-to-many:
-    one-to-many: Quan hệ một - nhiều
-  radio-buttons:
-    radio-buttons: Ô chọn tròn
-  repeater:
-    repeater: Vòng lặp
   slider:
     slider: Thanh trượt
-  slug:
-    slug: Viết tắt
   tags:
     tags: Tags
-  text-input:
-    text-input: Văn bản đầu vào
-    trim: Rút gọn
-  toggle:
+  boolean:
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị
@@ -643,8 +615,6 @@ interfaces:
     user: Người dùng
     modes:
       dropdown: Tuỳ chọn dạng thả xuống
-  wysiwyg:
-    custom_formats: Tuỳ chỉnh định dạng
 displays:
   boolean:
     boolean: Boolean
