@@ -617,6 +617,7 @@ settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
+one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 select: Select...
 layout: Layout
@@ -1042,6 +1043,13 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    trigger: Trigger
+    rate: Rate
 displays:
   boolean:
     boolean: Boolean

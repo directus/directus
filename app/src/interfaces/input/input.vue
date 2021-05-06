@@ -9,13 +9,16 @@
 		:type="inputType"
 		:class="font"
 		:db-safe="dbSafe"
-		@input="$listeners.input"
 		:slug="slug"
+		:min="min"
+		:max="max"
+		:step="step"
+		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>
 			<span
-				v-if="percentageRemaining <= 20"
+				v-if="percentageRemaining && percentageRemaining <= 20"
 				class="remaining"
 				:class="{
 					warning: percentageRemaining < 10,
@@ -39,7 +42,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		type: {
@@ -90,19 +93,36 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+
 		slug: {
 			type: Boolean,
 			default: false,
 		},
+		min: {
+			type: Number,
+			default: null,
+		},
+		max: {
+			type: Number,
+			default: null,
+		},
+		step: {
+			type: Number,
+			default: 1,
+		},
 	},
 	setup(props) {
 		const charsRemaining = computed(() => {
+			if (typeof props.value === 'number') return null;
+
 			if (!props.length) return null;
 			if (!props.value) return null;
 			return +props.length - props.value.length;
 		});
 
 		const percentageRemaining = computed(() => {
+			if (typeof props.value === 'number') return null;
+
 			if (!props.length) return false;
 			if (!props.value) return false;
 			return 100 - (props.value.length / +props.length) * 100;
