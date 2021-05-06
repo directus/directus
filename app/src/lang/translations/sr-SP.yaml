@@ -129,11 +129,8 @@ my_activity: Моја активност
 password: Лозинка
 template: Шаблон
 interfaces:
-  checkboxes:
-    checkboxes: Поља за потврду
-  code:
+  input-code:
     code: Код
-    line_number: Број линија
   collection:
     collection: Колекција
   files:
