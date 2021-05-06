@@ -328,7 +328,6 @@ interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
-m2a_builder: Builder (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
@@ -826,144 +825,54 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 interfaces:
-  button-links:
-    button-links: Bouton de liens
-    links: Liens
-    description: Boutons de liens configurables pour lancer des URL
-    style: Style
+  presentation-links:
     primary: Primaire
-    link: Liens
-    button: Boutons
-    error: Impossible d’effectuer cette action
-  checkboxes:
-    checkboxes: Cases à cocher
-    description: Choisissez entre plusieurs options via les cases à cocher
-    allow_other: Autoriser d'autres valeurs
-    show_more: 'Afficher {count} de plus'
-    items_shown: Éléments affichés
-  code:
+  input-code:
     code: Code
-    description: Écrire ou partager des extraits de code
-    line_number: Numéro de ligne
-    placeholder: Entrez le code ici...
   collection:
     collection: Collection
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
-  collections:
+  system-collections:
     collections: Collections
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
-  color:
+  select-color:
     color: Couleur
-    description: Saisir ou choisir une couleur
-    placeholder: Choisir une couleur...
-    preset_colors: Couleurs prédéfinies
-    preset_colors_add_label: Ajouter une nouvelle couleur...
-    name_placeholder: Entrer le nom de la couleur...
   datetime:
     datetime: Date / Heure
     description: Saisir des dates et des heures
     include_seconds: Inclure les secondes
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
-  display-template:
+  system-display-template:
     display-template: Modèle d'affichage
-    description: Mélanger du texte statique et des valeurs de champs dynamiques
-    collection_field: Champ de collection
     collection_field_not_setup: L'option de champ de collection est mal configurée
     select_a_collection: Sélectionner une collection
-  divider:
+  presentation-divider:
     divider: Séparateur
-    description: Étiqueter et diviser les champs en sections
-    title_placeholder: Entrez un titre...
-    inline_title: Titre en ligne
-    inline_title_label: Afficher le titre à l'intérieur de la ligne
-    margin_top: Marge supérieure
-    margin_top_label: Augmenter la marge supérieure
-  dropdown:
-    description: Sélectionner une valeur à partir d'une liste déroulante
-    choices_placeholder: Ajouter un nouveau choix
-    allow_other: Autoriser d'autres valeurs
-    allow_other_label: Autoriser d'autres valeurs
-    allow_none: Autoriser une valeur vide
-    allow_none_label: Autoriser aucune sélection
-    choices_name_placeholder: Entrez un nom...
+  select-dropdown:
     choices_value_placeholder: Saisissez une valeur...
-  dropdown-multiselect:
-    dropdown-multiselect: Liste déroulante (choix multiple)
-    description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier
     description: Sélectionner ou Transférer un fichier
   files:
     files: Fichiers
     description: Sélectionner ou Transférer plusieurs fichiers
-  hash:
+  input-hash:
     hash: Hash
-    description: Entrer une valeur pour hachage
-    masked: Masqué
-    masked_label: Cacher les valeurs marquées "vrai"
-  icon:
+  select-icon:
     icon: Icône
-    description: Sélectionner une icône dans la liste déroulante
-    search_for_icon: Rechercher une icône...
-  image:
+  file-image:
     image: Image
-    description: Sélectionner ou envoyer une image
-  interface:
+  system-interface:
     interface: Interface
-    description: Sélectionner une interface existante
-    placeholder: Sélectionner une interface...
-  interface-options:
-    interface-options: Options d'interface
-    description: Une popup pour sélectionner les options d'une interface
-  many-to-many:
-    many-to-many: Plusieurs à plusieurs
-    description: Sélectionner plusieurs éléments de jonction liés
-  many-to-one:
-    many-to-one: Plusieurs à un
-    description: Sélectionner un seul élément lié
+  select-dropdown-m2o:
     display_template: Modèle d'affichage
-  markdown:
-    markdown: Markdown
-    description: Saisir et prévisualiser le markdown
-    customSyntax: Blocs personnalisés
-    customSyntax_label: Ajouter des types de syntaxe personnalisés
-    customSyntax_add: Ajouter une syntaxe personnalisée
-    box: Bloc / Inline
-    imageToken: Token d'image
-    imageToken_label: Quel token (statique) ajouter aux sources d'images
-  notice:
-    notice: Remarque
-    description: Afficher une courte remarque
-    text: Entrez le contenu de la remarque ici...
-  numeric:
-    numeric: Numérique
-    description: Entrez un nombre
-    minimum_value: Valeur minimale
-    maximum_value: Valeur maximale
-    step_interval: Intervalle
-  one-to-many:
-    one-to-many: Un à plusieurs
-    description: Sélectionner plusieurs éléments liés
-    no_collection: La collection est introuvable
-  radio-buttons:
-    radio-buttons: Boutons radio
-    description: Sélectionner l'un des choix proposés
-  repeater:
-    repeater: Répéteur
-    description: Créer plusieurs entrées de la même structure
-    edit_fields: Modifier les champs
-    field_name_placeholder: Entrez le nom du champ...
-    field_note_placeholder: Entrez la note du champ...
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
     always_show_value: Toujours afficher la valeur
-  slug:
-    slug: Slug
-    description: Saisir des mots reliés par des tirets
   tags:
     tags: Étiquettes
     description: Sélectionner ou ajouter des tags
@@ -978,29 +887,12 @@ interfaces:
     alphabetize: Alphabétiser
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
-  text-input:
-    text-input: Champ de texte
-    description: Entrer un texte d'une seule ligne
-    trim: Espaces aux extrêmités
-    trim_label: Enlever les espaces en première et dernière position
-    mask: Masqué
-    mask_label: Cacher la valeur réelle
-    clear: Valeur effacée
-    clear_label: Enregistrer en tant que chaîne vide
-  textarea:
-    textarea: Zone de texte
-    description: Entrez le texte brut en multiligne
-  toggle:
+  boolean:
     toggle: Activer/Désactiver
-    description: Basculer entre sélectionné et désélectionné
-    label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
-  tree-view:
-    description: Arborescence pour les éléments récursifs imbriqués de type "un vers plusieurs"
-    recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
   user:
     user: Utilisateur
     description: Sélectionner un utilisateur directus existant
@@ -1009,12 +901,6 @@ interfaces:
       auto: Auto
       dropdown: Liste déroulante
       modal: Modal
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Un éditeur de texte enrichi pouvant contenir du HTML
-    toolbar: Barre d’outils
-    custom_formats: Formats personnalisés
-    options_override: Remplacement des options
 displays:
   boolean:
     boolean: Booléen
