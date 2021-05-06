@@ -322,7 +322,6 @@ interface_not_found: 'Интерфейс "{interface}" не найден.'
 reset_interface: Сбросить Интерфейс
 display_not_found: 'Отображение "{display}" не найдено.'
 reset_display: Сбросить Отображение
-m2a_builder: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет Файлов | Один Файл | {count} Файлов'
@@ -813,138 +812,54 @@ value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 interfaces:
-  button-links:
-    button-links: Ссылки на кнопки
-    links: Ссылки
-    style: Стиль
+  presentation-links:
     primary: Первичный
-    link: Ссылки
-    button: Кнопки
-  checkboxes:
-    checkboxes: Флажки
-    description: Выбрать из нескольких опций с помощью флажков
-    allow_other: Разрешить другие
-    show_more: 'Показать еще {count}'
-    items_shown: Показано Элементов
-  code:
+  input-code:
     code: Код
-    description: Написать или поделиться фрагментами кода
-    line_number: Номер строки
-    placeholder: Введите код здесь...
   collection:
     collection: Коллекция
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  collections:
+  system-collections:
     collections: Коллекции
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  color:
+  select-color:
     color: Цвет
-    description: Введите или выберите значение цвета
-    placeholder: Выберите цвет...
-    preset_colors: Цвета Пресета
-    preset_colors_add_label: Добавить новый цвет...
-    name_placeholder: Введите название цвета...
   datetime:
     datetime: Дата и время
     description: Введите даты и время
     include_seconds: Включать Секунды
     set_to_now: Установить Сейчас
     use_24: Использовать 24-Часовой Формат
-  display-template:
+  system-display-template:
     display-template: Шаблон отображения
-    description: Смешивать статический текст и динамические значения полей
-    collection_field: Поле коллекции
     collection_field_not_setup: Опция поля коллекции настроена некорректно
     select_a_collection: Выберите Коллекцию
-  divider:
+  presentation-divider:
     divider: Разделитель
-    description: Разметить и разделить поля на разделы
-    title_placeholder: Введите название...
-    inline_title: Встроенный Заголовок
-    inline_title_label: Показать заголовок внутри строки
-    margin_top: Отступ сверху
-    margin_top_label: Увеличить верхний отступ
-  dropdown:
-    description: Выберите значение из выпадающего списка
-    choices_placeholder: Добавить новый выбор
-    allow_other: Разрешить другие
-    allow_other_label: Разрешить Другие Значения
-    allow_none: Не Разрешать
-    allow_none_label: Разрешить Отсутствие Выбора
-    choices_name_placeholder: Введите название...
+  select-dropdown:
     choices_value_placeholder: Введите значение...
-  dropdown-multiselect:
-    dropdown-multiselect: Выпадающий Список (Несколько)
-    description: Выберите несколько значений из выпадающего списка
   file:
     file: Файл
     description: Выберите или загрузите файл
   files:
     files: Файлы
     description: Выбрать или загрузить несколько файлов
-  hash:
+  input-hash:
     hash: Хэш
-    description: Введите значение для хэширования
-    masked: Маскированный
-    masked_label: Скрыть настоящие значения
-  icon:
+  select-icon:
     icon: Иконка
-    description: Выберите значок из выпадающего списка
-    search_for_icon: Найти значок...
-  image:
+  file-image:
     image: Изображение
-    description: Выберите или загрузите изображение
-  interface:
+  system-interface:
     interface: Интерфейс
-    description: Выберите существующий интерфейс
-    placeholder: Выберите интерфейс...
-  interface-options:
-    interface-options: Настройки интерфейса
-    description: Окно выбора параметров интерфейса
-  many-to-many:
-    many-to-many: Многие ко многим
-    description: Выберите несколько связанных элементов
-  many-to-one:
-    many-to-one: Многие к одному
-    description: Выберите один связанный элемент
+  select-dropdown-m2o:
     display_template: Шаблон отображения
-  markdown:
-    markdown: Markdown
-    description: Ввод и предпросмотр markdown
-    customSyntax_label: Добавить пользовательский тип синтаксиса
-    customSyntax_add: Добавить пользовательский синтаксис
-  notice:
-    notice: Примечание
-    description: Показать короткое примечание
-    text: Введите содержимое примечания здесь...
-  numeric:
-    numeric: Числовой
-    description: Введите число
-    minimum_value: Минимальное Значение
-    maximum_value: Максимальное Значение
-    step_interval: Интервал Шага
-  one-to-many:
-    one-to-many: Один ко многим
-    description: Выберите несколько связанных элементов
-    no_collection: Коллекция не найдена
-  radio-buttons:
-    radio-buttons: Радио кнопки
-    description: Выберите один из нескольких вариантов
-  repeater:
-    repeater: Репитер
-    description: Создать несколько записей одной структуры
-    edit_fields: Редактировать Поля
-    field_name_placeholder: Введите название поля...
-    field_note_placeholder: Введите примечание к полю...
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
     always_show_value: Всегда показывать значение
-  slug:
-    slug: Слаг
-    description: Введите слово, связанное дефисами
   tags:
     tags: Теги
     description: Выбрать или добавить теги
@@ -959,21 +874,8 @@ interfaces:
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
     add_tags: Добавить метки...
-  text-input:
-    text-input: Text Input
-    description: Введите текст в одну строку
-    trim: Обрезать
-    trim_label: Обрезать начало и конец
-    mask: Маскированный
-    mask_label: Скрыть настоящее значение
-    clear_label: Сохранить как пустую строку
-  textarea:
-    textarea: Текстовое поле
-    description: Введите простой текст в несколько строк
-  toggle:
+  boolean:
     toggle: Переключить
-    description: Переключение между вкл и выкл
-    label_placeholder: Введите метку...
     label_default: Включен
   translations:
     display_template: Шаблон отображения
@@ -986,12 +888,6 @@ interfaces:
       auto: Авто
       dropdown: Выпадающий список
       modal: Модальный
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Расширенный редактор, создающий HTML содержимое
-    toolbar: Панель инструментов
-    custom_formats: Пользовательские форматы
-    options_override: Переопределение Параметров
 displays:
   boolean:
     boolean: Логическое
