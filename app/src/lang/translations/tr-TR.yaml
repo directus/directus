@@ -645,83 +645,45 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
-  button-links:
-    button-links: Buton Linki
-    links: Linkler
-    style: Stil
+  presentation-links:
     primary: Birincil
-    link: Linkler
-    button: Butonlar
-    error: İşlem gerçekleştirilemiyor
-  checkboxes:
-    checkboxes: Onay Kutuları
-    allow_other: Diğerlerine İzin Ver
-  code:
+  input-code:
     code: Kod
-    line_number: Satır Numarası
   collection:
     collection: Koleksiyon
-  collections:
+  system-collections:
     collections: Koleksiyonlar
-  color:
+  select-color:
     color: Renk
   datetime:
     datetime: Tarih/Saat
-  display-template:
+  system-display-template:
     display-template: Görüntüleme Şablonu
     select_a_collection: Koleksiyon Seç
-  divider:
+  presentation-divider:
     divider: Ayırıcı
-  dropdown:
-    allow_other: Diğerlerine İzin Ver
+  select-dropdown:
     choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
   files:
     files: Dosyalar
-  hash:
+  input-hash:
     hash: Hash
-    masked: Maskeli
-  icon:
+  select-icon:
     icon: İkon
-    search_for_icon: Simge ara...
-  interface:
+  system-interface:
     interface: Arayüz
-    placeholder: Arayüz seçin...
-  interface-options:
-    interface-options: Arayüz Ayarları
-  many-to-many:
-    many-to-many: Çoktan Çoka
-  many-to-one:
-    many-to-one: Çoktan Bire
+  select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
-  markdown:
-    markdown: Markdown
-  numeric:
-    numeric: Sayısal
-    description: Bir sayı girin
-  one-to-many:
-    one-to-many: Bire Çok
-  radio-buttons:
-    radio-buttons: Radyo Düğmeleri
-  repeater:
-    repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı
-  slug:
-    slug: Slug
   tags:
     tags: Etiketler
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
-  text-input:
-    text-input: Metin Girişi
-    trim: Kırp
-    mask: Maskeli
-  textarea:
-    textarea: Metin Alanı
-  toggle:
+  boolean:
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
@@ -732,10 +694,6 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    toolbar: Araç Çubuğu
-    custom_formats: Özel Biçimler
 displays:
   boolean:
     boolean: Evet/Hayır
