@@ -87,7 +87,7 @@ fields:
     width: half
 
   - field: tfa_secret
-    interface: tfa-setup
+    interface: mfa-setup
     special: conceal
     width: half
 

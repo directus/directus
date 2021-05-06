@@ -1,11 +1,11 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceTFASetup from './tfa-setup.vue';
+import InterfaceSystemMFASetup from './system-mfa-setup.vue';
 
 export default defineInterface({
-	id: 'tfa-setup',
-	name: 'tfa-setup',
+	id: 'system-mfa-setup',
+	name: 'mfa-setup',
 	icon: 'box',
-	component: InterfaceTFASetup,
+	component: InterfaceSystemMFASetup,
 	types: ['text'],
 	options: [],
 	system: true,
