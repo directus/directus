@@ -159,18 +159,16 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
-  button-links:
+  presentation-links:
     primary: Utama
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:
