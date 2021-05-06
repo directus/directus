@@ -425,11 +425,9 @@ export class CollectionsService {
 	/**
 	 * @deprecated Use `createOne` or `createMany` instead
 	 */
-	create(data: (Partial<Collection> & { collection: string })[]): Promise<string[]>;
-	create(data: Partial<Collection> & { collection: string }): Promise<string>;
-	async create(
-		data: (Partial<Collection> & { collection: string }) | (Partial<Collection> & { collection: string })[]
-	): Promise<string | string[]> {
+	create(data: RawCollection[]): Promise<string[]>;
+	create(data: RawCollection): Promise<string>;
+	async create(data: RawCollection | RawCollection[]): Promise<string | string[]> {
 		logger.warn(
 			'CollectionsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
 		);
