@@ -222,17 +222,17 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
-  button-links:
+  presentation-links:
     primary: Κυρίως
   collection:
     collection: Συλλογή
-  collections:
+  system-collections:
     collections: Συλλογές
   file:
     file: Αρχείο
   files:
     files: Αρχεία
-  icon:
+  select-icon:
     icon: Εικονίδιο
   tags:
     tags: Ετικέτες
