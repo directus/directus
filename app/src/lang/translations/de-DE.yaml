@@ -337,7 +337,6 @@ interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
-m2a_builder: Builder (Many-to-Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
@@ -842,148 +841,56 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 interfaces:
-  button-links:
-    button-links: Button-Links
-    links: Links
-    description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
-    style: Style
+  presentation-links:
     primary: Primär
-    link: Links
-    button: Buttons
-    error: Aktion kann nicht ausgeführt werden
-  checkboxes:
-    checkboxes: Kontrollkästchen
-    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
-    allow_other: Andere erlauben
-    show_more: 'Zeige {count} mehr'
-    items_shown: Angezeigte Elemente
-  code:
+  input-code:
     code: Code
-    description: Code-Snippets schreiben oder teilen
-    line_number: Zeilennummer
-    placeholder: Code hier eingeben...
   collection:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  collections:
+  system-collections:
     collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  color:
+  select-color:
     color: Farbe
-    description: Farbwert eingeben oder auswählen
-    placeholder: Farbe wählen...
-    preset_colors: Preset-Farben
-    preset_colors_add_label: Farbe hinzufügen...
-    name_placeholder: Farbnamen eingeben...
   datetime:
     datetime: Datum & Uhrzeit
     description: Datum und Uhrzeit eingeben
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
-  display-template:
+  system-display-template:
     display-template: Anzeigevorlage
-    description: Statische Text- und dynamische Feldwerte mischen
-    collection_field: Sammlungsfeld
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
-  divider:
+  presentation-divider:
     divider: Divider
-    description: Felder beschriften und in Abschnitte teilen
-    title_placeholder: Titel eingeben...
-    inline_title: Inline-Titel
-    inline_title_label: Titel in Zeile anzeigen
-    margin_top: Oberer Rand
-    margin_top_label: Oberen Rand erhöhen
-  dropdown:
-    description: Wert aus einer Dropdown-Liste auswählen
-    choices_placeholder: Neue Auswahl hinzufügen
-    allow_other: Andere erlauben
-    allow_other_label: Andere Werte erlauben
-    allow_none: Keine Auswahl zulassen
-    allow_none_label: Keine Auswahl zulassen
-    choices_name_placeholder: Namen eingeben...
+  select-dropdown:
     choices_value_placeholder: Gib einen Wert ein...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Mehrfachauswahl)
-    description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei
     description: Datei auswählen oder hochladen
   files:
     files: Dateien
     description: Mehrere Dateien auswählen oder hochladen
-  hash:
+  input-hash:
     hash: Hash
-    description: Den zu hashenden Wert eingeben
-    masked: Maskiert
-    masked_label: Wahre Werte ausblenden
-  icon:
+  select-icon:
     icon: Symbol
-    description: Icon aus einer Dropdown-Liste auswählen
-    search_for_icon: Nach Icon suchen...
-  image:
+  file-image:
     image: Bild
-    description: Bild auswählen oder hochladen
-  interface:
+  system-interface:
     interface: Benutzeroberfläche
-    description: Vorhandene Schnittstelle auswählen
-    placeholder: Schnittstelle auswählen...
-  interface-options:
-    interface-options: Schnittstellenoptionen
-    description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
-  many-to-many:
-    many-to-many: n:n-Beziehung
-    description: Mehrere verwandte Elemente auswählen
-  many-to-one:
-    many-to-one: n:1-Beziehung
-    description: Ein einzelnes verwandtes Element auswählen
+  select-dropdown-m2o:
     display_template: Anzeigevorlage
-  markdown:
-    markdown: Markdown
-    description: Markdown eingeben und Vorschau anzeigen
-    customSyntax: Benutzerdefinierte Blöcke
-    customSyntax_label: Eigene Syntaxtypen hinzufügen
-    customSyntax_add: Eigene Syntax hinzufügen
-    box: Block / Inline
-    imageToken: Bild-Token
-    imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
-  notice:
-    notice: Anmerkung
-    description: Kurze Anmerkung anzeigen
-    text: Inhalt der Anmerkung eingeben...
-  numeric:
-    numeric: Numerisch
-    description: Nummer eingeben
-    minimum_value: Minimalwert
-    maximum_value: Maximalwert
-    step_interval: Schrittintervall
-  one-to-many:
-    one-to-many: 1 zu n
-    description: Mehrere verwandte Elemente auswählen
-    no_collection: Die Sammlung konnte nicht gefunden werden
-  radio-buttons:
-    radio-buttons: Radio Buttons
-    description: Eine von mehreren Optionen auswählen
-  repeater:
-    repeater: Repeater
-    description: Mehrere Einträge derselben Struktur erstellen
-    edit_fields: Felder bearbeiten
-    add_label: 'Neues Element erstellen'
-    field_name_placeholder: Feldnamen eingeben...
-    field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
-  slug:
-    slug: Slug
-    description: Wort eingeben, das mit Bindestrichen verbunden ist
   tags:
     tags: Stichwörter
     description: Tags auswählen oder hinzufügen
@@ -998,29 +905,12 @@ interfaces:
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
     add_tags: Tags hinzufügen...
-  text-input:
-    text-input: Texteingabe
-    description: Einen einzeiligen Text eingeben
-    trim: Beschneiden
-    trim_label: Anfang und Ende kürzen
-    mask: Maskiert
-    mask_label: Tatsächlichen Wert ausblenden
-    clear: Gelöschter Wert
-    clear_label: Als leeren String abspeichern
-  textarea:
-    textarea: Textfeld
-    description: Mehrzeiligen Klartext eingeben
-  toggle:
+  boolean:
     toggle: Umschalten
-    description: Zwischen Ein und Aus wechseln
-    label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
-  tree-view:
-    description: Baumansicht für verschachtelte rekursive 1:n-Elemente
-    recursive_only: Die Baumansicht funktioniert nur für rekursive Abhängigkeiten.
   user:
     user: Benutzer
     description: Bestehenden Benutzer auswählen
@@ -1029,12 +919,6 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Rich-Text-Editor, der HTML-Inhalte erzeugt
-    toolbar: Symbolleiste
-    custom_formats: Benutzerdefiniertes Format
-    options_override: Optionen überschreiben
 displays:
   boolean:
     boolean: Boolean
