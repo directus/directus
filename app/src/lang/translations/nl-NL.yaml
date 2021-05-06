@@ -319,7 +319,6 @@ interface_not_found: 'Interface "{interface}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
-m2a_builder: Bouwer (M2A)
 item_count: 'Geen items | Één item | {count} items'
 no_items_copy: Er zijn nog geen items in deze collectie.
 file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
@@ -791,144 +790,54 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
-  button-links:
-    button-links: Knopkoppelingen
-    links: Koppelingen
-    description: Configureerbare linkknoppen voor het openen van dynamische URL's
-    style: Stijl
+  presentation-links:
     primary: Primair
-    link: Koppelingen
-    button: Knoppen
-    error: Kan actie niet uitvoeren
-  checkboxes:
-    checkboxes: Vinkjes
-    description: Kies tussen meerdere opties via selectievakjes
-    allow_other: Andere toestaan
-    show_more: 'Toon {count} meer'
-    items_shown: Items weergegeven
-  code:
+  input-code:
     code: Code
-    description: Schrijf of deel code snippets
-    line_number: Regelnummer
-    placeholder: Voer code in...
   collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  collections:
+  system-collections:
     collections: Collecties
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  color:
+  select-color:
     color: Kleur
-    description: Voer in of selecteer een kleurwaarde
-    placeholder: Kies een kleur...
-    preset_colors: Voorafbepaalde kleuren
-    preset_colors_add_label: Nieuwe kleur toevoegen...
-    name_placeholder: Voer kleurnaam in...
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
-  display-template:
+  system-display-template:
     display-template: Weergavesjabloon
-    description: Mix statische tekst en dynamische veld waarden
-    collection_field: Collectie veld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
-  divider:
+  presentation-divider:
     divider: Scheidingslijn
-    description: Label en verdeel velden in secties
-    title_placeholder: Voer een titel in...
-    inline_title: Inline titel
-    inline_title_label: Toon titel binnen regel
-    margin_top: Marge boven
-    margin_top_label: Verhoog Top Marge
-  dropdown:
-    description: Selecteer een waarde uit een dropdown
-    choices_placeholder: Voeg een nieuwe keuze toe
-    allow_other: Andere toestaan
-    allow_other_label: Andere waarden toestaan
-    allow_none: Niets toestaan
-    allow_none_label: Geen selectie toestaan
-    choices_name_placeholder: Naam invoeren...
+  select-dropdown:
     choices_value_placeholder: Voer een waarde in...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (meerdere)
-    description: Selecteer meerdere waarden uit een dropdown
   file:
     file: Bestand
     description: Selecteer of upload een bestand
   files:
     files: Bestanden
     description: Selecteer of upload meerdere bestanden
-  hash:
+  input-hash:
     hash: Hash
-    description: Voer een waarde in om te hashen
-    masked: Gemaskeerd
-    masked_label: Verberg de waarde
-  icon:
+  select-icon:
     icon: Icoon
-    description: Selecteer een icoon uit een dropdown
-    search_for_icon: Zoek naar een icoon...
-  image:
+  file-image:
     image: Afbeelding
-    description: Selecteer of upload een afbeelding
-  interface:
+  system-interface:
     interface: Interface
-    description: Selecteer een bestaande interface
-    placeholder: Selecteer een interface...
-  interface-options:
-    interface-options: Interface opties
-    description: Een modal voor het selecteren van opties van een interface
-  many-to-many:
-    many-to-many: Veel op Veel
-    description: Selecteer meerdere gerelateerde items
-  many-to-one:
-    many-to-one: Veel op één
-    description: Selecteer één gerelateerd item
+  select-dropdown-m2o:
     display_template: Weergavesjabloon
-  markdown:
-    markdown: Markdown
-    description: Markdown invoeren en bekijken
-    customSyntax: Aangepaste blokken
-    customSyntax_label: Voeg aangepaste syntaxistypes toe
-    customSyntax_add: Aangepaste syntax toevoegen
-    box: Blok / Inline
-    imageToken: Afbeeldingstoken
-    imageToken_label: Welke (statische) token toe te voegen aan afbeeldingsbronnen
-  notice:
-    notice: Melding
-    description: Een korte melding weergeven
-    text: Voer melding bericht hier in...
-  numeric:
-    numeric: Nummer
-    description: Voer een nummer in
-    minimum_value: Minimale Waarde
-    maximum_value: Maximale waarde
-    step_interval: Stap Interval
-  one-to-many:
-    one-to-many: Één op veel
-    description: Selecteer meerdere gerelateerde items
-    no_collection: De collectie kon niet worden gevonden
-  radio-buttons:
-    radio-buttons: Keuzerondjes
-    description: Selecteer een van de meerdere keuzes
-  repeater:
-    repeater: Herhaler
-    description: Meerdere invoergegevens van dezelfde structuur aanmaken
-    edit_fields: Velden bewerken
-    field_name_placeholder: Voer een veldnaam in...
-    field_note_placeholder: Veldnotitie invoeren...
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
     always_show_value: Waarde altijd weergeven
-  slug:
-    slug: Url
-    description: Voer een woord in dat is verbonden met streepjes
   tags:
     tags: Tags
     description: Selecteer of voeg tags toe
@@ -943,20 +852,8 @@ interfaces:
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
     add_tags: Tags toevoegen...
-  text-input:
-    text-input: Tekstinvoer
-    description: Voer een tekst van een enkele regel in
-    trim: Bijsnijden
-    trim_label: Begin en einde bijsnijden
-    mask: Gemaskeerd
-    mask_label: De echte waarde verbergen
-  textarea:
-    textarea: Tekstvlak
-    description: Voer multiline tekst in
-  toggle:
+  boolean:
     toggle: Schakel
-    description: Schakel tussen aan en uit
-    label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
     display_template: Weergavesjabloon
@@ -969,12 +866,6 @@ interfaces:
       auto: Automatisch
       dropdown: Keuzemenu
       modal: Modal
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Een tekstverwerker die HTML-inhoud schrijft
-    toolbar: Werkbalk
-    custom_formats: Aangepaste formaten
-    options_override: Opties overschrijven
 displays:
   boolean:
     boolean: Boolean
