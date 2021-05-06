@@ -319,7 +319,6 @@ interface_not_found: 'ไม่พบอินเทอร์เฟส "{interfa
 reset_interface: ล้างการตั้งค่าอินเทอร์เฟส
 display_not_found: 'ไม่พบการแสดงผล "{display}"'
 reset_display: ล้างค่าการแสดงผล
-m2a_builder: สร้างความสัมพัพธ์ (M2A)
 item_count: 'ไม่พบไอเท็ม|1 ไอเท็ม|{count} ไอเท็ม'
 no_items_copy: ไม่มีรายการในคอลเล็กชันนี้
 file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์'
@@ -793,144 +792,54 @@ value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 interfaces:
-  button-links:
-    button-links: ลิงก์ปุ่ม
-    links: ลิ้งก์
-    description: ลิงก์ปุ่มที่สามารถตั้งค่าได้เพื่อเปิด URLs
-    style: รูปแบบ
+  presentation-links:
     primary: หลัก
-    link: ลิ้งก์
-    button: ปุ่ม
-    error: ไม่สามารถดำเนินการได้
-  checkboxes:
-    checkboxes: ตัวเลือกแบบกล่อง
-    description: เลือกได้มากกว่าครั้งละ 1 ตัวเลือก ด้วยตัวเลือกแบบกล่อง
-    allow_other: อนุญาตคนอื่น
-    show_more: 'แสดงเพิ่มอีก {count}'
-    items_shown: ไอเท็มที่ถูกแสดง
-  code:
+  input-code:
     code: โค้ด
-    description: เขียนหรือแชร์โค้ดสั้นๆ
-    line_number: เลขบรรทัด
-    placeholder: กรอกโค้ดที่นี่
   collection:
     collection: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ
-  collections:
+  system-collections:
     collections: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ
-  color:
+  select-color:
     color: สี
-    description: กรอกหรือเลือกค่าของสี
-    placeholder: เลือกสี...
-    preset_colors: สีที่กำหนดไว้ล่วงหน้า
-    preset_colors_add_label: เพิ่มสีใหม่...
-    name_placeholder: กรอกชื่อสี
   datetime:
     datetime: วันที่และเวลา
     description: กรอกวันที่และเวลา
     include_seconds: รวมวินาทีด้วย
     set_to_now: ตั้งค่าเป็นตอนนี้
     use_24: ใช้รูปแบบ 24 ชั่วโมง
-  display-template:
+  system-display-template:
     display-template: แม่แบบการแสดงผล
-    description: ผสมระหว่างข้อความและค่าของฟิลด์
-    collection_field: ฟิลด์คอลเลกชัน
     collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
     select_a_collection: เลือกคอลเลกชัน
-  divider:
+  presentation-divider:
     divider: ตัวแบ่ง
-    description: แบ่งฟิลด์ออกเป็นส่วนๆ
-    title_placeholder: ระบุชื่อ...
-    inline_title: ชื่อเรื่องแบบอินไลน์
-    inline_title_label: แสดงชื่อในเส้นแบ่ง
-    margin_top: ระยะห่างด้านบน
-    margin_top_label: เพิ่มระยะห่างด้านบน
-  dropdown:
-    description: เลือกค่าจากตัวเลือกแบบดรอปดาวน์
-    choices_placeholder: เพิ่มตัวเลือกใหม่
-    allow_other: อนุญาตคนอื่น
-    allow_other_label: อนุญาตให้เพิ่มค่าอื่นได้
-    allow_none: ไม่อนุญาตเลย
-    allow_none_label: อนุญาตให้ไม่เลือกอะไรเลย
-    choices_name_placeholder: กรอกชื่อ...
+  select-dropdown:
     choices_value_placeholder: กรุณาใส่ค่า
-  dropdown-multiselect:
-    dropdown-multiselect: ตัวเลือกแบบดรอปดาวน์ (เลือกได้มากกว่า 1 ค่า)
-    description: เลือกได้มากกว่า 1 ค่าจากตัวเลือกแบบดรอปดาวน์
   file:
     file: ไฟล์
     description: เลือกหรืออัพโหลดไฟล์
   files:
     files: ไฟล์
     description: เลือกหรืออัพโหลดทีละหลายไฟล์
-  hash:
+  input-hash:
     hash: ค่าแฮช
-    description: กรอกค่าที่ต้องการแฮช
-    masked: Masked
-    masked_label: ซ่อนค่าจริง
-  icon:
+  select-icon:
     icon: ไอคอน
-    description: เลือกไอคอนจากดรอปดาวน์
-    search_for_icon: ค้นหาไอคอน...
-  image:
+  file-image:
     image: รูปภาพ
-    description: เลือกหรืออัพโหลดรูปภาพ
-  interface:
+  system-interface:
     interface: อินเทอร์เฟซ
-    description: เลือกอินเทอเฟสที่มีอยู่แล้ว
-    placeholder: เลือกอินเทอร์เฟส...
-  interface-options:
-    interface-options: ตัวเลือกอินเทอร์เฟส
-    description: กล่องข้อความสำหรับเลือกตัวเลือกของอินเทอร์เฟส
-  many-to-many:
-    many-to-many: Many to Many
-    description: เลือกหลายไอเท็มที่เกี่ยวข้องกัน
-  many-to-one:
-    many-to-one: Many to One
-    description: เลือก 1 ไอเท็มที่เกี่ยวข้อง
+  select-dropdown-m2o:
     display_template: แม่แบบการแสดงผล
-  markdown:
-    markdown: Markdown
-    description: กรอกและดู Markdown ล่วงหน้าก่อน
-    customSyntax: บล็อกที่ออกแบบเอง
-    customSyntax_label: เพิ่มชนิด syntax ที่ออกแบบเอง
-    customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง
-    box: กล่อง/บรรทัดเดียวกัน
-    imageToken: Image Token
-    imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
-  notice:
-    notice: แจ้งให้ทราบ
-    description: แสดงการแจ้งให้ทราบแบบย่อ
-    text: กรอกเนื้อหาการแจ้งให้ทราบที่นี่...
-  numeric:
-    numeric: ตัวเลข
-    description: กรอกตัวเลข
-    minimum_value: ค่าน้อยสุด
-    maximum_value: ค่ามากสุด
-    step_interval: ขั้นในการเพิ่มลดค่า
-  one-to-many:
-    one-to-many: One to Many
-    description: เลือกหลายไอเท็มที่เกี่ยวข้อง
-    no_collection: ไม่พบคอลเลกชัน
-  radio-buttons:
-    radio-buttons: ตัวเลือกแบบเรดิโอ
-    description: เลือกได้ 1 จากหลายตัวเลือก
-  repeater:
-    repeater: การทำซ้ำ
-    description: สร้างหลายรายการโดคใช้โครงสร้างเดียวกัน
-    edit_fields: แก้ไขฟิลด์
-    field_name_placeholder: กรอกชื่อฟิลด์
-    field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
     always_show_value: แสดงค่าเสมอ
-  slug:
-    slug: หมุด
-    description: กรอกคำที่เชื่อมโยงกันด้วยเครื่องหมายขีดกลาง
   tags:
     tags: แท็ก
     description: เลือกหรือเพิ่มแท็ก
@@ -945,27 +854,12 @@ interfaces:
     alphabetize: เรียงตามตัวอักษร
     alphabetize_label: บังคับเรียงตามตัวอักษร
     add_tags: เพิ่มแท็ก...
-  text-input:
-    text-input: การป้อนข้อความ
-    description: กรอกข้อความบรรทัดเดียว
-    trim: ตัดขอบ
-    trim_label: ตัดช่องว่างหน้าหลัง
-    mask: Masked
-    mask_label: ซ่อนค่าจริง
-  textarea:
-    textarea: พื้นที่ข้อความ
-    description: กรอกข้อความได้แบบหลายบรรทัด
-  toggle:
+  boolean:
     toggle: สลับ
-    description: สลับระหว่าง เปิด และ ปิด
-    label_placeholder: กรอกป้ายชื่อ...
     label_default: เปิดใช้งาน
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
-  tree-view:
-    description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
-    recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
   user:
     user: ผู้ใช้
     description: เลือกผู้ใช้ของ directus ที่มีอยู่แล้ว
@@ -974,12 +868,6 @@ interfaces:
       auto: อัตโนมัติ
       dropdown: ตัวเลือกแบบดรอปดาวน์
       modal: กล่อง
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
-    toolbar: แถบเครื่องมือ
-    custom_formats: รูปแบบที่กำหนดเอง
-    options_override: กำหนดตัวเลือกเอง
 displays:
   boolean:
     boolean: ค่าบูลีน
