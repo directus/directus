@@ -1,11 +1,11 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceField from './field.vue';
+import InterfaceSystemField from './field.vue';
 
 export default defineInterface({
-	id: 'field',
+	id: 'system-field',
 	name: '$t:field',
 	icon: 'box',
-	component: InterfaceField,
+	component: InterfaceSystemField,
 	types: ['string'],
 	options: [],
 	system: true,

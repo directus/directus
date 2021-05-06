@@ -100,7 +100,7 @@ fields:
     width: full
 
   - field: archive_field
-    interface: field
+    interface: system-field
     options:
       collectionField: collection
       allowNone: true
@@ -141,7 +141,7 @@ fields:
     width: full
 
   - field: sort_field
-    interface: field
+    interface: system-field
     options:
       collectionField: collection
       placeholder: Choose a field...
