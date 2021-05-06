@@ -440,7 +440,7 @@ interfaces:
     name_placeholder: أدخل اسم اللون...
   datetime:
     datetime: التاريخ والوقت
-  display-template:
+  system-display-template:
     display-template: عرض القالب
   divider:
     divider: الفاصل

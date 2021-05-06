@@ -1,18 +1,18 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceDisplayTemplate from './display-template.vue';
+import InterfaceSystemDisplayTemplate from './system-display-template.vue';
 
 export default defineInterface({
 	id: 'display-template',
-	name: '$t:interfaces.display-template.display-template',
-	description: '$t:interfaces.display-template.description',
+	name: '$t:interfaces.system-display-template.display-template',
+	description: '$t:interfaces.system-display-template.description',
 	icon: 'arrow_drop_down_circle',
-	component: InterfaceDisplayTemplate,
+	component: InterfaceSystemDisplayTemplate,
 	types: ['string'],
 	system: true,
 	options: [
 		{
 			field: 'collectionField',
-			name: '$t:interfaces.display-template.collection_field',
+			name: '$t:interfaces.system-display-template.collection_field',
 			type: 'string',
 			meta: {
 				width: 'full',

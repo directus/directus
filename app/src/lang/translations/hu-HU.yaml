@@ -654,7 +654,7 @@ interfaces:
     description: Dátum és idő beállítása
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
-  display-template:
+  system-display-template:
     display-template: Megjelenítési sablon
     collection_field: Gyűjtemény mező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva

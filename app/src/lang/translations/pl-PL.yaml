@@ -899,7 +899,7 @@ interfaces:
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
-  display-template:
+  system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
     collection_field: Pole kolekcji

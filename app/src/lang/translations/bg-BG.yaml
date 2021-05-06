@@ -901,7 +901,7 @@ interfaces:
     include_seconds: Вклчване на секундите
     set_to_now: Задаване като сега
     use_24: Използване на 24 часов формат
-  display-template:
+  system-display-template:
     display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
     collection_field: Поле на колекцията

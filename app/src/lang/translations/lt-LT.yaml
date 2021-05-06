@@ -790,7 +790,7 @@ interfaces:
     include_seconds: Įtraukti sekundes
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
-  display-template:
+  system-display-template:
     display-template: Rodymo šablonas
     description: Maišyti statinį tekstą ir dinamines laukų reikšmes
     collection_field: Kolekcijos laukas

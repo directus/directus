@@ -902,7 +902,7 @@ interfaces:
     include_seconds: Incluir segundos
     set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
-  display-template:
+  system-display-template:
     display-template: Modelo de exibição
     description: Misturar texto estático e valores dos campos dinâmicos
     collection_field: Campo da coleção

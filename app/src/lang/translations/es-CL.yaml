@@ -856,7 +856,7 @@ interfaces:
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
-  display-template:
+  system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
     collection_field: Campo Colección

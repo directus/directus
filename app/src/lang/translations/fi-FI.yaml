@@ -901,7 +901,7 @@ interfaces:
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
-  display-template:
+  system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
     collection_field: Kokoeilmakenttä

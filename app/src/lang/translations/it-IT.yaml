@@ -701,7 +701,7 @@ interfaces:
     description: Inserisci date e orari
     include_seconds: Includi Secondi
     use_24: Usa Formato 24 Ore
-  display-template:
+  system-display-template:
     display-template: Display Template
     collection_field: Campo Raccolta
     collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente

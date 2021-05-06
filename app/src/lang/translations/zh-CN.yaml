@@ -703,7 +703,7 @@ interfaces:
     color: 颜色
   datetime:
     datetime: 日期时间
-  display-template:
+  system-display-template:
     display-template: 显示模板
     collection_field_not_setup: 集合的字段选项配置错误
     select_a_collection: 选择一个集合

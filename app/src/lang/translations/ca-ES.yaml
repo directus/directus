@@ -188,7 +188,7 @@ interfaces:
     color: Color
   datetime:
     datetime: Data i hora
-  display-template:
+  system-display-template:
     display-template: Mostra la plantilla
   divider:
     divider: Separador

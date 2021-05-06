@@ -30,7 +30,7 @@ fields:
     width: full
 
   - field: display_template
-    interface: display-template
+    interface: system-display-template
     options:
       collectionField: collection
     width: full

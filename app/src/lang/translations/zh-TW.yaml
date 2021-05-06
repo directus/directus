@@ -594,7 +594,7 @@ interfaces:
     color: 顏色
   datetime:
     datetime: 日期時間
-  display-template:
+  system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
   divider:

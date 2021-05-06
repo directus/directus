@@ -905,7 +905,7 @@ interfaces:
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
-  display-template:
+  system-display-template:
     display-template: Anzeigevorlage
     description: Statische Text- und dynamische Feldwerte mischen
     collection_field: Sammlungsfeld

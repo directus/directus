@@ -565,7 +565,7 @@ interfaces:
     color: Warna
   datetime:
     datetime: Datetime
-  display-template:
+  system-display-template:
     display-template: Tampilan Template
   divider:
     divider: Pembagi/Pemecah

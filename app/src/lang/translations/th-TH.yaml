@@ -845,7 +845,7 @@ interfaces:
     include_seconds: รวมวินาทีด้วย
     set_to_now: ตั้งค่าเป็นตอนนี้
     use_24: ใช้รูปแบบ 24 ชั่วโมง
-  display-template:
+  system-display-template:
     display-template: แม่แบบการแสดงผล
     description: ผสมระหว่างข้อความและค่าของฟิลด์
     collection_field: ฟิลด์คอลเลกชัน

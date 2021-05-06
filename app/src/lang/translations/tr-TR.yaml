@@ -671,7 +671,7 @@ interfaces:
     color: Renk
   datetime:
     datetime: Tarih/Saat
-  display-template:
+  system-display-template:
     display-template: Görüntüleme Şablonu
     select_a_collection: Koleksiyon Seç
   divider:

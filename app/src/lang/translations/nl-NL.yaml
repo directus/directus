@@ -846,7 +846,7 @@ interfaces:
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
-  display-template:
+  system-display-template:
     display-template: Weergavesjabloon
     description: Mix statische tekst en dynamische veld waarden
     collection_field: Collectie veld

@@ -886,7 +886,7 @@ interfaces:
     include_seconds: Inclure les secondes
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
-  display-template:
+  system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
     collection_field: Champ de collection

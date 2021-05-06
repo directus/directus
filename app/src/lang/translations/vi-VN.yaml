@@ -598,7 +598,7 @@ interfaces:
   datetime:
     datetime: Ngày giờ
     use_24: Sử dụng Định dạng 24-giờ
-  display-template:
+  system-display-template:
     display-template: Mẫu hiển thị
     select_a_collection: Chọn Bảng
   divider:

@@ -347,7 +347,7 @@ interfaces:
     checkboxes: Caixas de seleção
   collection:
     collection: Coleção
-  display-template:
+  system-display-template:
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
   files:

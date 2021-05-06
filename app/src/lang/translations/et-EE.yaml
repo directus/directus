@@ -718,7 +718,7 @@ interfaces:
     color: Värv
   datetime:
     datetime: Kuupäev-kellaaeg
-  display-template:
+  system-display-template:
     display-template: Vaate mall
     collection_field_not_setup: Andmekogu väli on valesti seadistatud
     select_a_collection: Vali andmekogu

@@ -878,7 +878,7 @@ interfaces:
     include_seconds: Inkludera sekunder
     set_to_now: Ställ in till nu
     use_24: Använd 24-timmars format
-  display-template:
+  system-display-template:
     display-template: Visningsmall
     description: Blanda statisk text och dynamiska fältvärden
     collection_field: Kollektionens fält

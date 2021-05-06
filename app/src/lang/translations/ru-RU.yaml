@@ -863,7 +863,7 @@ interfaces:
     include_seconds: Включать Секунды
     set_to_now: Установить Сейчас
     use_24: Использовать 24-Часовой Формат
-  display-template:
+  system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей
     collection_field: Поле коллекции
