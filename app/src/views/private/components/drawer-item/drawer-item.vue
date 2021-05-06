@@ -1,12 +1,17 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
-		<template #title v-if="template !== null">
+		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
 			<h1 class="type-title" v-else>
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -15,12 +20,23 @@
 
 		<div class="drawer-item-content">
 			<template v-if="junctionField">
+				<file-preview
+					v-if="file"
+					:src="file.src"
+					:mime="file.type"
+					:width="file.width"
+					:height="file.height"
+					:title="file.title"
+					:inModal="true"
+				/>
+
 				<v-form
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:edits="_edits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
+					autofocus
 					@input="setJunctionEdits"
 				/>
 
@@ -34,7 +50,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import FilePreview from '@/views/private/components/file-preview';
 
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
@@ -45,6 +63,8 @@ import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
+	components: { FilePreview },
+
 	model: {
 		prop: 'edits',
 	},
@@ -103,15 +123,18 @@ export default defineComponent({
 		const { info: collectionInfo } = useCollection(collection);
 
 		const title = computed(() => {
-			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', {
-					collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-				});
+			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
+			const isNew = props.primaryKey === '+';
+
+			if (i18n.te(`collection_names_singular.${collection.collection}`)) {
+				return isNew
+					? i18n.t('creating_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) })
+					: i18n.t('editing_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) });
 			}
 
-			return i18n.t('editing_in', {
-				collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-			});
+			return isNew
+				? i18n.t('creating_in', { collection: collection.name })
+				: i18n.t('editing_in', { collection: collection.name });
 		});
 
 		const showDivider = computed(() => {
@@ -135,7 +158,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.filter((field) => {
+				return fieldsWithPermissions.value.filter((field: Field) => {
 					return field.field !== props.circularField;
 				});
 			} else {
@@ -157,6 +180,8 @@ export default defineComponent({
 				null
 		);
 
+		const { file, isDirectusFiles } = useFile();
+
 		return {
 			_active,
 			_edits,
@@ -176,7 +201,27 @@ export default defineComponent({
 			templatePrimaryKey,
 			templateData,
 			templateDataLoading,
+			collectionInfo,
+			file,
+			isDirectusFiles,
 		};
+
+		function useFile() {
+			const isDirectusFiles = computed(() => {
+				return junctionRelatedCollection.value === 'directus_files';
+			});
+
+			const file = computed(() => {
+				if (isDirectusFiles.value === false || !item.value) return null;
+				const fileData = item.value?.[props.junctionField];
+				if (!fileData) return null;
+
+				const src = addTokenToURL(getRootPath() + `assets/${fileData.id}?key=system-large-contain`);
+				return { ...fileData, src };
+			});
+
+			return { file, isDirectusFiles };
+		}
 
 		function useActiveState() {
 			const localActive = ref(false);

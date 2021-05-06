@@ -84,6 +84,10 @@ SEARCH /folders
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	folders: directus_folders
@@ -136,6 +140,10 @@ GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -197,6 +205,10 @@ POST /folders
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -265,6 +277,10 @@ POST /folders
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
@@ -326,6 +342,10 @@ PATCH /folders/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -403,6 +423,10 @@ PATCH /folders
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_folders_items(ids: [ID!]!, data: update_directus_folders_input): [directus_folders]
@@ -461,6 +485,10 @@ DELETE /folders/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -522,6 +550,10 @@ DELETE /folders
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

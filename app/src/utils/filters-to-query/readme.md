@@ -35,13 +35,12 @@ filtersToQuery(multipleFilters);
 //   ]
 // }
 
-
 const singleFilter: Filter[] = [
 	{
 		field: 'title',
 		operator: 'contains',
 		value: 'directus',
-	}
+	},
 ];
 
 filtersToQuery(singleFilter);

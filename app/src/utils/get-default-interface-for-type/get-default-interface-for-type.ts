@@ -26,6 +26,6 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
  * @todo default to correct interfaces for uuid / enum
  */
 
-export default function getDefaultInterfaceForType(type: typeof types[number]) {
+export default function getDefaultInterfaceForType(type: typeof types[number]): string {
 	return defaultInterfaceMap[type] || 'text-input';
 }

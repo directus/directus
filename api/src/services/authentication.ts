@@ -1,16 +1,23 @@
-import database from '../database';
-import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
-import { nanoid } from 'nanoid';
-import ms from 'ms';
-import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
-import { Session, Accountability, AbstractServiceOptions, Action, SchemaOverview } from '../types';
+import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { ActivityService } from '../services/activity';
-import env from '../env';
-import { authenticator } from 'otplib';
-import emitter, { emitAsyncSafe } from '../emitter';
 import { omit } from 'lodash';
+import ms from 'ms';
+import { nanoid } from 'nanoid';
+import { authenticator } from 'otplib';
+import database from '../database';
+import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import {
+	InvalidCredentialsException,
+	InvalidOTPException,
+	InvalidPayloadException,
+	UserSuspendedException,
+} from '../exceptions';
+import { createRateLimiter } from '../rate-limiter';
+import { ActivityService } from '../services/activity';
+import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
+import { SettingsService } from './settings';
 
 type AuthenticateOptions = {
 	email: string;
@@ -20,6 +27,8 @@ type AuthenticateOptions = {
 	otp?: string;
 	[key: string]: any;
 };
+
+const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
 export class AuthenticationService {
 	knex: Knex;
@@ -40,7 +49,14 @@ export class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate(options: AuthenticateOptions) {
+	async authenticate(
+		options: AuthenticateOptions
+	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
 		const { email, password, ip, userAgent, otp } = options;
 
 		const hookPayload = omit(options, 'password', 'otp');
@@ -77,7 +93,31 @@ export class AuthenticationService {
 
 		if (!user || user.status !== 'active') {
 			emitStatus('fail');
-			throw new InvalidCredentialsException();
+
+			if (user?.status === 'suspended') {
+				throw new UserSuspendedException();
+			} else {
+				throw new InvalidCredentialsException();
+			}
+		}
+
+		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
+			fields: ['auth_login_attempts'],
+		});
+
+		if (allowedAttempts !== null) {
+			// @ts-ignore - See https://github.com/animir/node-rate-limiter-flexible/issues/109
+			loginAttemptsLimiter.points = allowedAttempts;
+
+			try {
+				await loginAttemptsLimiter.consume(user.id);
+			} catch (err) {
+				await database('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+				user.status = 'suspended';
+
+				// This means that new attempts after the user has been re-activated will be accepted
+				await loginAttemptsLimiter.set(user.id, 0, 0);
+			}
 		}
 
 		if (password !== undefined) {
@@ -145,6 +185,10 @@ export class AuthenticationService {
 
 		emitStatus('success');
 
+		if (allowedAttempts !== null) {
+			await loginAttemptsLimiter.set(user.id, 0, 0);
+		}
+
 		return {
 			accessToken,
 			refreshToken,
@@ -153,7 +197,7 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string) {
+	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}
@@ -192,16 +236,16 @@ export class AuthenticationService {
 		};
 	}
 
-	async logout(refreshToken: string) {
+	async logout(refreshToken: string): Promise<void> {
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
 	}
 
-	generateTFASecret() {
+	generateTFASecret(): string {
 		const secret = authenticator.generateSecret();
 		return secret;
 	}
 
-	async generateOTPAuthURL(pk: string, secret: string) {
+	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
 		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
 		const name = `${user.first_name} ${user.last_name}`;
 		return authenticator.keyuri(name, 'Directus', secret);
@@ -218,7 +262,7 @@ export class AuthenticationService {
 		return authenticator.check(otp, secret);
 	}
 
-	async verifyPassword(pk: string, password: string) {
+	async verifyPassword(pk: string, password: string): Promise<boolean> {
 		const userRecord = await this.knex.select('password').from('directus_users').where({ id: pk }).first();
 
 		if (!userRecord || !userRecord.password) {

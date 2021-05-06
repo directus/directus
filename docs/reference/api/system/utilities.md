@@ -60,6 +60,10 @@ POST /utils/hash/generate
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	utils_hash_generate(string: String!): String
@@ -124,6 +128,10 @@ POST /utils/hash/verify
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	utils_hash_verify(hash: String!, string: String!): Boolean
@@ -179,6 +187,10 @@ POST /utils/sort/:collection
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

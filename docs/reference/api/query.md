@@ -370,7 +370,7 @@ Skip the first `n` items in the response. Can be used for pagination.
 
 ### Examples
 
-Get items 100—200\
+Get items 101—200\
 `100`
 
 </div>

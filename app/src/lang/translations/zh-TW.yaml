@@ -273,7 +273,6 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
-add_a_new_item: 添加新項目
 add_filter: 新增篩選器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -460,7 +459,6 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
-    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題

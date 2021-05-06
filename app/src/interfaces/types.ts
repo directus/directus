@@ -1,6 +1,6 @@
+import { Field, localTypes, types } from '@/types';
+import { AsyncComponent, Component } from 'vue';
 import VueI18n from 'vue-i18n';
-import { Component, AsyncComponent } from 'vue';
-import { Field, types, localTypes } from '@/types';
 
 export interface InterfaceConfig {
 	id: string;

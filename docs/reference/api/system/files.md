@@ -75,7 +75,7 @@ Description of the file.
 `location` **string**\
 Location of the file.
 
-`tags` **csv**\
+`tags` **array**\
 Tags for the file.
 
 `metadata` **object**\
@@ -104,7 +104,7 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"duration": null,
 	"description": null,
 	"location": null,
-	"tags": null,
+	"tags": ["photo", "pretty"],
 	"metadata": {
 		"icc": {
 			"version": "2.1",
@@ -156,6 +156,10 @@ SEARCH /files
 [Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -210,6 +214,10 @@ GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -374,6 +382,10 @@ POST /files/import
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	import_file(url: String!, data: create_directus_files_input!): directus_files
@@ -436,6 +448,10 @@ PATCH /files/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -503,12 +519,16 @@ PATCH /files
 {
 	"keys": ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"],
 	"data": {
-		"tags": "cities"
+		"tags": ["cities"]
 	}
 }
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -522,7 +542,7 @@ type Mutation {
 mutation {
 	update_files_items(
 		ids: ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"]
-		data: { tags: "cities" }
+		data: { tags: ["cities"] }
 	)
 }
 ```
@@ -569,6 +589,10 @@ DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -628,6 +652,10 @@ DELETE /files
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

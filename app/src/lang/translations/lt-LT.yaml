@@ -319,7 +319,6 @@ users: Vartotojai
 activity: Veiksmas
 webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
-add_a_new_item: Pridėti naują elementą...
 add_filter: Pridėti filtrą
 upper_limit: Viršutinis limitas...
 lower_limit: Apatinis limitas...
@@ -610,7 +609,6 @@ fields:
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
-    translations: Kolekcijos pavadinimų vertimai
     sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas

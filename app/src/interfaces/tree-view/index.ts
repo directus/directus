@@ -1,6 +1,6 @@
 import { defineInterface } from '../define';
-import InterfaceTreeView from './tree-view.vue';
 import Options from './options.vue';
+import InterfaceTreeView from './tree-view.vue';
 
 export default defineInterface({
 	id: 'tree-view',

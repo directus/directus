@@ -74,14 +74,12 @@ The following operators are **only available in validation permissions**:
 | `_submitted`            | Field has to be submitted |
 | `_regex` <sup>[1]</sup> | Field has to match regex  |
 
-<sup>[1]</sup> JavaScript "flavor" regex. Save the regex without leading/trailing `/` character, and make sure to escape
-backslashes.
+<sup>[1]</sup> JavaScript "flavor" regex. Make sure to escape backslashes.
 
 ## Relational
 
-You can target related values by nesting field names. For example, if you have a relational
-[Many-to-One](/guides/field-types/many-to-one-field) `author` field, you can set a rule for the `author.name` field
-using the following syntax.
+You can target related values by nesting field names. For example, if you have a relational Many-to-One `author` field,
+you can set a rule for the `author.name` field using the following syntax.
 
 ```json
 {

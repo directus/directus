@@ -1,5 +1,5 @@
-import InterfaceSystemLanguage from './system-language.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceSystemLanguage from './system-language.vue';
 
 export default defineInterface({
 	id: 'system-language',

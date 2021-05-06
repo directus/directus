@@ -1,5 +1,5 @@
-import InterfaceHash from './hash.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceHash from './hash.vue';
 
 export default defineInterface({
 	id: 'hash',

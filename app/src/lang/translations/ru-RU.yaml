@@ -348,7 +348,6 @@ users: Пользователи
 activity: Активность
 webhooks: Webhooks
 field_width: Ширина поля
-add_a_new_item: Добавить новый элемент...
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
@@ -665,7 +664,6 @@ fields:
     display_template: Шаблон отображения
     hidden: Скрыто
     singleton: Синглтон
-    translations: Переводы Названия Коллекции
     archive_value: Заархивировать содержимое
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
@@ -940,7 +938,6 @@ interfaces:
     repeater: Репитер
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать Поля
-    add_label: 'Метка "Добавить Новую Строку"'
     field_name_placeholder: Введите название поля...
     field_note_placeholder: Введите примечание к полю...
   slider:

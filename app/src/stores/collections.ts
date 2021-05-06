@@ -1,12 +1,12 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import { Collection, CollectionRaw } from '@/types';
 import i18n from '@/lang/';
+import { Collection, CollectionRaw } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
-import VueI18n from 'vue-i18n';
-import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { createStore } from 'pinia';
+import VueI18n from 'vue-i18n';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
@@ -37,11 +37,17 @@ export const useCollectionsStore = createStore({
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
 					for (let i = 0; i < collection.meta.translations.length; i++) {
-						const { language, translation } = collection.meta.translations[i];
+						const { language, translation, singular, plural } = collection.meta.translations[i];
 
 						i18n.mergeLocaleMessage(language, {
 							collection_names: {
 								[collection.collection]: translation,
+							},
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+							collection_names_plural: {
+								[collection.collection]: plural,
 							},
 						});
 					}

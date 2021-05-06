@@ -1,4 +1,6 @@
-export default function getAvailableOperatorsForType(type: string) {
+import { OperatorType } from './types';
+
+export default function getAvailableOperatorsForType(type: string): OperatorType {
 	/**
 	 * @NOTE
 	 * In the filter, you can't filter on the relational field itself, so we don't have to account
@@ -15,7 +17,6 @@ export default function getAvailableOperatorsForType(type: string) {
 		case 'lang':
 		case 'uuid':
 		case 'hash':
-		case 'array':
 		case 'string':
 			return {
 				type: 'text',
@@ -25,7 +26,7 @@ export default function getAvailableOperatorsForType(type: string) {
 		case 'boolean':
 			return {
 				type: 'checkbox',
-				operators: ['eq', 'empty', 'nempty'],
+				operators: ['eq', 'neq', 'empty', 'nempty'],
 			};
 		// Numbers
 		case 'integer':

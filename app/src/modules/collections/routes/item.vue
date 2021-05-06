@@ -42,7 +42,7 @@
 				secondary
 				exact
 				v-tooltip.bottom="$t('back')"
-				:to="'/collections/' + collection"
+				@click="$router.back()"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -299,6 +299,12 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const title = computed(() => {
+			if (i18n.te(`collection_names_singular.${props.collection}`)) {
+				return isNew.value
+					? i18n.t('creating_unit', { unit: i18n.t(`collection_names_singular.${props.collection}`) })
+					: i18n.t('editing_unit', { unit: i18n.t(`collection_names_singular.${props.collection}`) });
+			}
+
 			return isNew.value
 				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });

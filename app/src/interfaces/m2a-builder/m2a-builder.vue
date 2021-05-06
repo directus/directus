@@ -4,54 +4,71 @@
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
-		<draggable
-			v-else
-			:force-fallback="true"
-			:value="previewValues"
-			handle=".drag-handle"
-			@input="onSort"
-			:set-data="hideDragImage"
-			:disabled="!o2mRelation.sort_field"
-		>
-			<template v-for="item of previewValues">
-				<div
-					:key="item.$index"
-					v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
-					class="m2a-row"
-					@click="editExisting((value || [])[item.$index])"
-				>
-					<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-					<span
-						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
-					>
-						{{ item[anyRelation.many_field] }}
-					</span>
-					<render-template
-						v-else
-						:collection="item[anyRelation.one_collection_field]"
-						:template="templates[item[anyRelation.one_collection_field]]"
-						:item="item[anyRelation.many_field]"
-					/>
-					<div class="spacer" />
-					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-					<v-icon class="launch-icon" name="launch" />
-				</div>
+		<v-list v-else>
+			<v-notice v-if="previewValues.length === 0">
+				{{ $t('no_items') }}
+			</v-notice>
 
-				<div v-else class="m2a-row invalid" :key="item.$index">
-					<v-icon class="invalid-icon" name="warning" left />
-					<span>{{ $t('invalid_item') }}</span>
-					<div class="spacer" />
-					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-				</div>
-			</template>
-		</draggable>
+			<draggable
+				:force-fallback="true"
+				:value="previewValues"
+				@input="onSort"
+				:set-data="hideDragImage"
+				:disabled="!o2mRelation.sort_field"
+			>
+				<template v-for="item of previewValues">
+					<v-list-item
+						:key="item.$index"
+						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+						block
+						:dense="previewValues.length > 4"
+						@click="editExisting((value || [])[item.$index])"
+					>
+						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
+						<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+						<span
+							v-if="
+								typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
+							"
+						>
+							{{ item[anyRelation.many_field] }}
+						</span>
+						<render-template
+							v-else
+							:collection="item[anyRelation.one_collection_field]"
+							:template="templates[item[anyRelation.one_collection_field]]"
+							:item="item[anyRelation.many_field]"
+						/>
+						<div class="spacer" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
+					</v-list-item>
+
+					<v-list-item v-else :key="item.$index" block>
+						<v-icon class="invalid-icon" name="warning" left />
+						<span>{{ $t('invalid_item') }}</span>
+						<div class="spacer" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
 
 		<div class="buttons">
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button @click="toggle">
 						{{ $t('create_new') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -67,10 +84,11 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button @click="toggle" class="existing">
 						{{ $t('add_existing') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -311,7 +329,6 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
-						} else {
 						}
 
 						return val;
@@ -320,10 +337,10 @@ export default defineComponent({
 				if (o2mRelation.value?.sort_field) {
 					return [
 						...values
-							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val)
 							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
 						...values
-							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val === false)
 							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {
@@ -633,19 +650,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.m2a-row {
-	display: flex;
-	align-items: center;
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-subdued);
-	border-radius: var(--border-radius);
-	cursor: pointer;
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
 
-	& + .m2a-row {
-		margin-top: 12px;
-	}
-
+.v-list-item {
 	.collection {
 		margin-right: 1ch;
 		color: var(--primary);
@@ -663,19 +672,15 @@ export default defineComponent({
 }
 
 .buttons {
-	display: grid;
-	grid-gap: var(--form-horizontal-gap);
-	grid-template-columns: 1fr 1fr;
-	margin-top: 12px;
+	margin-top: 8px;
 }
 
-.spacer {
-	flex-grow: 1;
+.existing {
+	margin-left: 8px;
 }
 
 .drag-handle {
-	margin-right: 8px;
-	cursor: grab !important;
+	cursor: grab;
 }
 
 .invalid {

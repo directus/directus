@@ -78,7 +78,7 @@ nullifying the field:
 }
 ```
 
-#### One-to-Many (/ Many-to-Many / Many-to-Any)
+#### One-to-Many (/ Many-to-Many)
 
 One-to-Many, and therefore Many-to-Many and Many-to-Any, relationships can be updated in one of two ways:
 
@@ -146,6 +146,73 @@ orphaned items.
 
 :::
 
+#### Many-to-Any (Union Types)
+
+Many-to-Any fields work very similar to a "regular" many-to-many, with the exception that the related field can pull in
+the fields from any of the related collections, for example:
+
+```json
+{
+	"sections": [
+		{
+			"collection": "headings",
+			"item": {
+				/* headings fields */
+			}
+		},
+		{
+			"collection": "paragraphs",
+			"item": {
+				/* paragraphs fields */
+			}
+		}
+	]
+}
+```
+
+##### REST API
+
+To scope the fields that are returned per collection type, you can use the `<field>:<scope>` syntax in the fields
+parameter as follows:
+
+```
+GET /items/pages
+	?fields[]=sections.item:headings.id
+	&fields[]=sections.item:headings.title
+	&fields[]=sections.item:paragraphs.body
+	&fields[]=sections.item:paragraphs.background_color
+```
+
+##### GraphQL
+
+In GraphQL, you can use nested fragments on the Union Type to select the fields:
+
+```graphql
+query {
+	pages {
+		sections {
+			item {
+				... on headings {
+					id
+					title
+				}
+
+				... on paragraphs {
+					body
+					background_color
+				}
+			}
+		}
+	}
+}
+```
+
+::: tip Updating
+
+Updating records in a many-to-any is identical to the other relationship types.
+
+:::
+
 ## SEARCH HTTP Method
 
 When using the REST API to read multiple items by (very) advanced filters, you might run into the issue where the URL
@@ -189,3 +256,11 @@ Useful reading:
 - [_HTTP GET with request body_ (StackOverflow, 2009 and ongoing)](https://stackoverflow.com/questions/978061/http-get-with-request-body)
 - [_Elastic Search GET body usage_ (elastic, n.d.)](https://www.elastic.co/guide/en/elasticsearch/guide/current/_empty_search.html)
 - [_Dropbox starts using POST, and why this is poor API design._ (Evert Pot, 2015)](https://evertpot.com/dropbox-post-api/)
+
+## System data in GraphQL
+
+Due to restrictions in GraphQL itself, it's impossible to properly scope/namespace system functionality from regular
+data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access to
+the two into two endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints share
+the same underlying schema, so **nested relations will work as expected** regardless if they "cross over" between user
+and system data. The only difference in the two endpoints are the root query and mutation fields available.

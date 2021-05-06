@@ -1,8 +1,11 @@
 # Layouts <small></small>
 
-> Layouts determine how you view or interact with a Collection's Items. In most cases, they offer a way to browse items based on a specific type of data, but can also be used to interact with data.
+> Layouts determine how you view or interact with a Collection's Items. In most cases, they offer a way to browse items
+> based on a specific type of data, but can also be used to interact with data.
 
-Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown on Collection Detail pages and contextual drawers for item selection. Directus includes several Layout options out-of-the-box, each with different features and configuration options.
+Layouts provide different ways for presenting, browsing, visualizing, or even managing sets of data. Most commonly shown
+on Collection Detail pages and contextual drawers for item selection. Directus includes several Layout options
+out-of-the-box, each with different features and configuration options.
 
 ## Table Layout
 
@@ -41,7 +44,8 @@ This temporal layout is ideal for collections that prioritize a date and/or time
 
 ## Custom Layout Extensions
 
-In addition to these core layouts, custom layouts allow for creating more tailored or proprietary ways to experience data within the App, such as charts, seating charts, or Maps.
+In addition to these core layouts, custom layouts allow for creating more tailored or proprietary ways to experience
+data within the App, such as charts, seating charts, or Maps.
 
 #### Relevant Guides
 

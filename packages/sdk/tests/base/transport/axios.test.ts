@@ -77,11 +77,11 @@ describe('axios transport', function () {
 			} catch (err) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
-				expect(terr.response!.status).toBe(403);
+				expect(terr.response?.status).toBe(403);
 				expect(terr.message).toBe('You don\'t have permission access to "contacts" collection.');
 				expect(terr.errors.length).toBe(1);
-				expect(terr.errors[0]!.message).toBe('You don\'t have permission access to "contacts" collection.');
-				expect(terr.errors[0]!.extensions?.code).toBe('FORBIDDEN');
+				expect(terr.errors[0]?.message).toBe('You don\'t have permission access to "contacts" collection.');
+				expect(terr.errors[0]?.extensions?.code).toBe('FORBIDDEN');
 			}
 		});
 
@@ -101,7 +101,7 @@ describe('axios transport', function () {
 				expect(terr.response).toBeUndefined();
 				expect(terr.message).toBe('Random error');
 				expect(terr.parent).not.toBeUndefined();
-				expect(terr.parent!.message).toBe('Random error');
+				expect(terr.parent?.message).toBe('Random error');
 			}
 		});
 	});
@@ -115,7 +115,7 @@ describe('axios transport', function () {
 	it('non axios errors are set in parent', async function () {
 		const storage = new MemoryStorage();
 		const transport = new AxiosTransport(URL, storage);
-		const mock = jest.spyOn(transport.axios, 'get');
+		const mock = jest.spyOn(transport.axios, 'request');
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');
 		});
@@ -129,7 +129,7 @@ describe('axios transport', function () {
 			expect(terr.response).toBeUndefined();
 			expect(terr.message).toBe('this is not an axios error');
 			expect(terr.parent).not.toBeUndefined();
-			expect(terr.parent!.message).toBe('this is not an axios error');
+			expect(terr.parent?.message).toBe('this is not an axios error');
 		}
 	});
 

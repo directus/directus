@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs, computed, provide, ref } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs, provide, ref } from '@vue/composition-api';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({

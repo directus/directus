@@ -9,10 +9,7 @@
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button
-						secondary
-						v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'"
-					>
+					<v-button secondary v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'">
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
 							{{ $t('report_error') }}
 						</a>
@@ -25,17 +22,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import SidebarButton from '../sidebar-button';
-import NotificationItem from '../notification-item';
+import { defineComponent, computed } from '@vue/composition-api';
 import { useNotificationsStore, useUserStore } from '@/stores/';
-import router from '@/router';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
 export default defineComponent({
-	components: { SidebarButton, NotificationItem },
-	setup(props) {
+	setup() {
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();

@@ -4,7 +4,7 @@ import { LayoutConfig } from './types';
 let layoutsRaw: Ref<LayoutConfig[]>;
 let layouts: Ref<LayoutConfig[]>;
 
-export function getLayouts() {
+export function getLayouts(): Record<string, Ref<LayoutConfig[]>> {
 	if (!layoutsRaw) {
 		layoutsRaw = ref([]);
 	}

@@ -1,18 +1,17 @@
 import { Router } from 'express';
-import session from 'express-session';
-import asyncHandler from '../utils/async-handler';
-import Joi from 'joi';
 import grant from 'grant';
-import getEmailFromProfile from '../utils/get-email-from-profile';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import Joi from 'joi';
 import ms from 'ms';
-import env from '../env';
-import { UsersService, AuthenticationService } from '../services';
-import grantConfig from '../grant';
-import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { toArray } from '../utils/to-array';
 import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import grantConfig from '../grant';
+import { respond } from '../middleware/respond';
+import { AuthenticationService, UsersService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import getEmailFromProfile from '../utils/get-email-from-profile';
+import { toArray } from '../utils/to-array';
 
 const router = Router();
 
@@ -219,8 +218,6 @@ router.get(
 	respond
 );
 
-router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
-
 router.get(
 	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
@@ -237,7 +234,7 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		let hookPayload = {
+		const hookPayload = {
 			provider: req.params.provider,
 			redirect: req.query?.redirect,
 		};
@@ -284,7 +281,7 @@ router.get(
 
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
-		let hookPayload = req.session.grant.response;
+		const hookPayload = req.session.grant.response;
 
 		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
 			event: `oauth.${req.params.provider}.login.before`,
@@ -311,7 +308,9 @@ router.get(
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
-			req.session?.destroy(() => {});
+			req.session?.destroy(() => {
+				// Do nothing
+			});
 
 			authResponse = await authenticationService.authenticate({
 				email,

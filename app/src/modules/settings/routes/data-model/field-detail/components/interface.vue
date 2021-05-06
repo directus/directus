@@ -35,11 +35,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state, availableInterfaces } from '../store';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -52,7 +53,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
@@ -112,7 +113,7 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);

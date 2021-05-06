@@ -9,10 +9,11 @@ An individual notification. Shouldn't be used outside of the notification group.
 ```
 
 ## Props
+
 | Prop      | Description                                                  | Default |
-|-----------|--------------------------------------------------------------|---------|
-| `id`*     | Unique identifier for the notification                       | --      |
-| `title`*  | What title to display in the notification                    | --      |
+| --------- | ------------------------------------------------------------ | ------- |
+| `id`\*    | Unique identifier for the notification                       | --      |
+| `title`\* | What title to display in the notification                    | --      |
 | `text`    | What body text to display in the notification                | --      |
 | `icon`    | Icon to render on the left of the notification               | --      |
 | `type`    | One of `info`, `success`, `warning`, `error`                 | `info`  |
@@ -21,10 +22,13 @@ An individual notification. Shouldn't be used outside of the notification group.
 | `dense`   | Render the notification densely (no body text, less spacing) | `false` |
 
 ## Events
+
 n/a
 
 ## Slots
+
 n/a
 
 ## CSS Variables
+
 n/a

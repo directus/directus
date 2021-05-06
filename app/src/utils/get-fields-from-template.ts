@@ -1,4 +1,4 @@
-export function getFieldsFromTemplate(template: string | null) {
+export function getFieldsFromTemplate(template: string | null): string[] {
 	if (template === null) return [];
 
 	const regex = /{{(.*?)}}/g;
@@ -11,5 +11,6 @@ export function getFieldsFromTemplate(template: string | null) {
 	fields = fields.map((field) => {
 		return field.replace(/{{/g, '').replace(/}}/g, '').trim();
 	});
+
 	return fields as string[];
 }

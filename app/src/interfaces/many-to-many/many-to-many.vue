@@ -3,47 +3,44 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<v-table
-			:loading="loading"
-			:items="sortedItems || items"
-			:headers.sync="tableHeaders"
-			show-resize
-			inline
-			:sort.sync="sort"
-			@update:items="sortItems($event)"
-			@click:row="editItem"
-			:disabled="disabled"
-			:show-manual-sort="relationInfo.sortField !== null"
-			:manual-sort-key="relationInfo.sortField"
-		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<render-display
-					:key="header.value"
-					:value="get(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.displayOptions"
-					:interface="header.field.interface"
-					:interface-options="header.field.interfaceOptions"
-					:type="header.field.type"
-					:collection="relationInfo.junctionCollection"
-					:field="header.field.field"
-				/>
-			</template>
+		<template v-if="loading">
+			<v-skeleton-loader
+				v-for="n in (value || []).length || 3"
+				:key="n"
+				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
 
-			<template #item-append="{ item }">
-				<v-icon
-					v-show="!disabled"
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item)"
-				/>
-			</template>
-		</v-table>
+		<v-notice v-else-if="sortedItems.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
+		<v-list v-else>
+			<draggable
+				:force-fallback="true"
+				:value="sortedItems"
+				@input="sortItems($event)"
+				handler=".drag-handle"
+				:disabled="!junction.sort_field"
+			>
+				<v-list-item
+					:dense="sortedItems.length > 4"
+					v-for="item in sortedItems"
+					:key="item.id"
+					block
+					@click="editItem(item)"
+				>
+					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
+					<div class="spacer" />
+					<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
-			<v-button class="existing" @click="selectModalActive = true">
+			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
@@ -70,14 +67,25 @@
 			@input="stageSelection"
 			multiple
 		/>
+
+		<v-dialog v-if="!disabled" v-model="showUpload">
+			<v-card>
+				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-text><v-upload @input="onUpload" multiple from-url /></v-card-text>
+				<v-card-actions>
+					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, PropType, toRefs, ref } from '@vue/composition-api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
+import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -85,9 +93,13 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -105,23 +117,57 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		template: {
+			type: String,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, fields } = toRefs(props);
+		const permissionsStore = usePermissionsStore();
+		const userStore = useUserStore();
 
-		function emitter(newVal: any[] | null) {
-			emit('input', newVal);
-		}
+		const { value, collection, field } = toRefs(props);
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+
+		const templateWithDefaults = computed(() => {
+			if (props.template) return props.template;
+			if (junctionCollection.value.meta?.display_template) return junctionCollection.value.meta.display_template;
+
+			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
+			if (relatedDisplayTemplate) {
+				const regex = /({{.*?}})/g;
+				const parts = relatedDisplayTemplate.split(regex).filter((p: DisplayConfig) => p);
+
+				for (const part of parts) {
+					if (part.startsWith('{{') === false) continue;
+					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+					const newPart = `{{${relation.value.many_field}.${key}}}`;
+
+					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
+				}
+
+				return relatedDisplayTemplate;
+			}
+
+			return `{{${relation.value.many_field}.${relationInfo.value.relationPkField}}}`;
+		});
+
+		const fields = computed(() =>
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
+		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
@@ -129,7 +175,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading, error } = usePreview(
+		const { tableHeaders, items, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -150,8 +196,11 @@ export default defineComponent({
 		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
-
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
+
+		const { createAllowed, selectAllowed } = usePermissions();
+
+		const { showUpload, onUpload } = useUpload();
 
 		return {
 			junction,
@@ -177,18 +226,92 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			templateWithDefaults,
+			createAllowed,
+			selectAllowed,
+			showEditModal,
+			onUpload,
+			showUpload,
 		};
+
+		function emitter(newVal: any[] | null) {
+			emit('input', newVal);
+		}
+
+		function usePermissions() {
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === junctionCollection.value.collection
+				);
+
+				const hasRelatedPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === relationCollection.value.collection
+				);
+
+				return hasJunctionPermissions && hasRelatedPermissions;
+			});
+
+			const selectAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === junctionCollection.value.collection
+				);
+
+				return hasJunctionPermissions;
+			});
+
+			return { createAllowed, selectAllowed };
+		}
+
+		function showEditModal() {
+			if (relationCollection.value.collection === 'directus_files') {
+				showUpload.value = true;
+			} else {
+				editModalActive.value = true;
+			}
+		}
+
+		function useUpload() {
+			const showUpload = ref(false);
+
+			return { showUpload, onUpload };
+
+			function onUpload(files: Record<string, any>[]) {
+				showUpload.value = false;
+				if (files.length === 0) return;
+				const { junctionField } = relationInfo.value;
+				const filesAsJunctionRows = files.map((file) => {
+					return {
+						[junctionField]: file.id,
+					};
+				});
+
+				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.actions {
-	margin-top: 12px;
+.v-list {
+	--v-list-padding: 0 0 4px;
 }
 
-.existing {
-	margin-left: 12px;
+.actions {
+	margin-top: 12px;
+
+	.v-button + .v-button {
+		margin-left: 12px;
+	}
 }
 
 .deselect {
