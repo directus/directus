@@ -111,7 +111,7 @@ export default defineComponent({
 				field: 'interface',
 				type: 'string',
 				meta: {
-					interface: 'interface',
+					interface: 'system-interface',
 					width: 'half',
 					sort: 5,
 					options: {

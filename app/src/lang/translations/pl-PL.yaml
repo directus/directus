@@ -943,7 +943,7 @@ interfaces:
   image:
     image: Obraz
     description: Wybierz lub prześlij plik
-  interface:
+  system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
     placeholder: Wybierz interfejs...

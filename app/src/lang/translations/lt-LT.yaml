@@ -834,7 +834,7 @@ interfaces:
   image:
     image: Paveikslėlis
     description: Pasirinkite arba įkelkite paveikslėlį
-  interface:
+  system-interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
     placeholder: Pasirinkti sąsają...

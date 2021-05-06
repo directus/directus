@@ -945,7 +945,7 @@ interfaces:
   image:
     image: Kuva
     description: Valitse tai lataa kuva
-  interface:
+  system-interface:
     interface: Käyttöliittymä
     description: Valitse olemassa oleva liittymä
     placeholder: Valitse liittymä...

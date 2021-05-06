@@ -479,7 +479,7 @@ interfaces:
     files: Filer
   icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Grensesnitt
   numeric:
     numeric: Nummerisk

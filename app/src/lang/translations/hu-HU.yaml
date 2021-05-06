@@ -683,7 +683,7 @@ interfaces:
     icon: Ikon
   image:
     image: Kép
-  interface:
+  system-interface:
     interface: Kezelőfelület
   interface-options:
     interface-options: Kinézet beállításai

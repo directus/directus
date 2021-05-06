@@ -727,7 +727,7 @@ interfaces:
   image:
     image: Immagine
     description: Seleziona o carica un'immagine
-  interface:
+  system-interface:
     interface: Interfaccia
   interface-options:
     interface-options: Opzioni interfaccia

@@ -890,7 +890,7 @@ interfaces:
   image:
     image: Afbeelding
     description: Selecteer of upload een afbeelding
-  interface:
+  system-interface:
     interface: Interface
     description: Selecteer een bestaande interface
     placeholder: Selecteer een interface...

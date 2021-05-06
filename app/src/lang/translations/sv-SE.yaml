@@ -922,7 +922,7 @@ interfaces:
   image:
     image: Bild
     description: Välj eller ladda upp en bild
-  interface:
+  system-interface:
     interface: Gränssnitt
     description: Välj ett befintligt gränssnitt
     placeholder: Välj ett gränssnitt...

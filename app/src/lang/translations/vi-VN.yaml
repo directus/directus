@@ -614,7 +614,7 @@ interfaces:
     icon: Biểu tượng
     description: Chọn một biểu tượng từ danh sách
     search_for_icon: Tìm kiếm biểu tượng...
-  interface:
+  system-interface:
     interface: Giao diện
   interface-options:
     interface-options: Tùy chọn giao diện

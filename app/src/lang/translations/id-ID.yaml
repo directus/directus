@@ -578,7 +578,7 @@ interfaces:
     files: Berkas
   icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Antarmuka
   interface-options:
     interface-options: Opsi Antarmuka

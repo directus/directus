@@ -949,7 +949,7 @@ interfaces:
   image:
     image: Bild
     description: Bild auswählen oder hochladen
-  interface:
+  system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
     placeholder: Schnittstelle auswählen...

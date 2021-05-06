@@ -689,7 +689,7 @@ interfaces:
   icon:
     icon: İkon
     search_for_icon: Simge ara...
-  interface:
+  system-interface:
     interface: Arayüz
     placeholder: Arayüz seçin...
   interface-options:

@@ -733,7 +733,7 @@ interfaces:
     files: Failid
   icon:
     icon: Ikoon
-  interface:
+  system-interface:
     interface: Kasutajaliides
   interface-options:
     interface-options: Kasutajaliidese valikud

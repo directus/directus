@@ -907,7 +907,7 @@ interfaces:
   image:
     image: Изображение
     description: Выберите или загрузите изображение
-  interface:
+  system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...

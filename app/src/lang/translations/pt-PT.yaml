@@ -352,7 +352,7 @@ interfaces:
     select_a_collection: Selecione uma coleção
   files:
     files: Ficheiros
-  interface:
+  system-interface:
     interface: Interface
   tags:
     tags: Etiquetas

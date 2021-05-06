@@ -7,7 +7,7 @@
 		:items="items"
 		@input="$listeners.input"
 		:value="value"
-		:placeholder="$t('interfaces.interface.placeholder')"
+		:placeholder="$t('interfaces.system-interface.placeholder')"
 	/>
 </template>
 

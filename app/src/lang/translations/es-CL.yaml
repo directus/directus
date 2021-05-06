@@ -900,7 +900,7 @@ interfaces:
   image:
     image: Imagen
     description: Seleccionar o subir una imagen
-  interface:
+  system-interface:
     interface: Interfaz
     description: Seleccionar una interfaz existente
     placeholder: Seleccionar una interfaz...

@@ -930,7 +930,7 @@ interfaces:
   image:
     image: Image
     description: Sélectionner ou envoyer une image
-  interface:
+  system-interface:
     interface: Interface
     description: Sélectionner une interface existante
     placeholder: Sélectionner une interface...

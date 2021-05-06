@@ -623,7 +623,7 @@ interfaces:
   image:
     image: 圖像
     description: 選擇或上傳圖像
-  interface:
+  system-interface:
     interface: 介面
     description: 選擇現有介面
     placeholder: 選擇一個介面...

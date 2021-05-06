@@ -941,7 +941,7 @@ interfaces:
   file-image:
     image: Image
     description: Select or upload an image
-  interface:
+  system-interface:
     interface: Interface
     description: Select an existing interface
     placeholder: Select an interface...

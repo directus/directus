@@ -945,7 +945,7 @@ interfaces:
   image:
     image: Изображение
     description: Избор или качване на изображение
-  interface:
+  system-interface:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
     placeholder: Избор на интерфейс...

@@ -889,7 +889,7 @@ interfaces:
   image:
     image: รูปภาพ
     description: เลือกหรืออัพโหลดรูปภาพ
-  interface:
+  system-interface:
     interface: อินเทอร์เฟซ
     description: เลือกอินเทอเฟสที่มีอยู่แล้ว
     placeholder: เลือกอินเทอร์เฟส...
