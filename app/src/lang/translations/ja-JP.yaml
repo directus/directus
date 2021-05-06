@@ -406,47 +406,22 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
-  checkboxes:
-    checkboxes: チェックボックス
-  code:
-    description: コードスニペットでコードを共有
-  collections:
+  system-collections:
     collections: コレクション
-  color:
+  select-color:
     color: 色
-    description: 色の入力または選択
-    preset_colors: プリセットカラー
-  dropdown:
-    description: ドロップダウンから値を選択
+  select-dropdown:
     choices_value_placeholder: 値を入力...
   file:
     file: ファイル
   files:
     files: ファイル
-  hash:
+  input-hash:
     hash: ハッシュ値
-    description: 入力した値をハッシュ値に変換します
-    masked: 入力値を非表示にします（暗号化する値など）
-    masked_label: 入力値を非表示にする
-  icon:
+  select-icon:
     icon: アイコン
-    description: ドロップダウンからアイコンを選択
-  notice:
-    notice: 補足
-    description: 入力に関する簡単な補足を表示できます
-    text: 補足の内容を入力してください
-  numeric:
-    numeric: 数値
-  radio-buttons:
-    description: 1つあるいは複数の値を選択できます
-  slug:
-    description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
   tags:
     tags: タグ
-  text-input:
-    text-input: テキスト入力
-    description: 単一行での文字列入力
-    mask: 入力値を非表示にします（暗号化する値など）
   translations:
     no_collection: コレクションがありません
   user:
