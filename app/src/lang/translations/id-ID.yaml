@@ -325,7 +325,6 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
-m2a_builder: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
@@ -542,47 +541,35 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primer
-  checkboxes:
-    checkboxes: Kotak Centang
-    allow_other: Izinkan lainnya
-  code:
+  input-code:
     code: Kode
-    line_number: Nomor Baris
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Pengumpulan
-  color:
+  select-color:
     color: Warna
   datetime:
     datetime: Datetime
-  display-template:
+  system-display-template:
     display-template: Tampilan Template
-  divider:
+  presentation-divider:
     divider: Pembagi/Pemecah
-  dropdown:
-    allow_other: Izinkan lainnya
+  select-dropdown:
     choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
   files:
     files: Berkas
-  icon:
+  select-icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Antarmuka
-  interface-options:
-    interface-options: Opsi Antarmuka
-  many-to-many:
-    many-to-many: Banyak ke banyak
-  many-to-one:
-    many-to-one: Banyak ke Satu
+  select-dropdown-m2o:
     display_template: Tampilan Template
-  numeric:
-    numeric: Numerik
-  toggle:
+  boolean:
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template
