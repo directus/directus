@@ -455,30 +455,28 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primær
   collection:
     collection: Kolleksjon
-  collections:
+  system-collections:
     collections: Kolleksjoner
-  display-template:
+  system-display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon
-  dropdown:
+  select-dropdown:
     choices_value_placeholder: Legg inn verdi...
   file:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Grensesnitt
-  numeric:
-    numeric: Nummerisk
   tags:
     tags: Etiketter
-  toggle:
+  boolean:
     label_default: Aktivert
 displays:
   boolean:
