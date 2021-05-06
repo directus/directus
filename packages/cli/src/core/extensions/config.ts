@@ -17,7 +17,6 @@ export const system = new YamlConfiguration<SystemConfiguration>({
 export const project = new StaticConfiguration<ProjectConfiguration>({
 	name: 'directus',
 	files: [
-		'.directus',
 		'.directus.yml',
 		'.directus.yaml',
 		'.directus.json',
