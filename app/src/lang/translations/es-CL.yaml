@@ -904,7 +904,7 @@ interfaces:
     interface: Interfaz
     description: Seleccionar una interfaz existente
     placeholder: Seleccionar una interfaz...
-  interface-options:
+  system-interface-options:
     interface-options: Opciones de Interfaz
     description: Un diálogo para seleccionar opciones de una interfaz
   list-m2m:

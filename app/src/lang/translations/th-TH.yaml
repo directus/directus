@@ -893,7 +893,7 @@ interfaces:
     interface: อินเทอร์เฟซ
     description: เลือกอินเทอเฟสที่มีอยู่แล้ว
     placeholder: เลือกอินเทอร์เฟส...
-  interface-options:
+  system-interface-options:
     interface-options: ตัวเลือกอินเทอร์เฟส
     description: กล่องข้อความสำหรับเลือกตัวเลือกของอินเทอร์เฟส
   list-m2m:

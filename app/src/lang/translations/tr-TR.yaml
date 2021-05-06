@@ -692,7 +692,7 @@ interfaces:
   system-interface:
     interface: Arayüz
     placeholder: Arayüz seçin...
-  interface-options:
+  system-interface-options:
     interface-options: Arayüz Ayarları
   list-m2m:
     many-to-many: Çoktan Çoka

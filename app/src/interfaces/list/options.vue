@@ -139,7 +139,7 @@ export default defineComponent({
 				field: 'options',
 				type: 'string',
 				meta: {
-					interface: 'interface-options',
+					interface: 'system-interface-options',
 					width: 'full',
 					sort: 7,
 					options: {

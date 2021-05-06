@@ -947,7 +947,7 @@ interfaces:
     interface: Interfejs
     description: Wybierz istniejący interfejs
     placeholder: Wybierz interfejs...
-  interface-options:
+  system-interface-options:
     interface-options: Opcje interfejsu
     description: Okno do wyboru opcji interfejsu
   list-m2m:

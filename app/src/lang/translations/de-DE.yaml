@@ -953,7 +953,7 @@ interfaces:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
     placeholder: Schnittstelle auswählen...
-  interface-options:
+  system-interface-options:
     interface-options: Schnittstellenoptionen
     description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
   list-m2m:

@@ -729,7 +729,7 @@ interfaces:
     description: Seleziona o carica un'immagine
   system-interface:
     interface: Interfaccia
-  interface-options:
+  system-interface-options:
     interface-options: Opzioni interfaccia
   list-m2m:
     many-to-many: Molti a Molti

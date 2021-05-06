@@ -735,7 +735,7 @@ interfaces:
     icon: Ikoon
   system-interface:
     interface: Kasutajaliides
-  interface-options:
+  system-interface-options:
     interface-options: Kasutajaliidese valikud
   list-m2m:
     many-to-many: Mitu mitmele

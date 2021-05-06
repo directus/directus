@@ -838,7 +838,7 @@ interfaces:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
     placeholder: Pasirinkti sąsają...
-  interface-options:
+  system-interface-options:
     interface-options: Sąsajos nustatymai
   select-dropdown-m2o:
     display_template: Rodymo šablonas

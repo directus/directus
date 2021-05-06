@@ -627,7 +627,7 @@ interfaces:
     interface: 介面
     description: 選擇現有介面
     placeholder: 選擇一個介面...
-  interface-options:
+  system-interface-options:
     interface-options: 介面選項
   list-m2m:
     many-to-many: 多對多

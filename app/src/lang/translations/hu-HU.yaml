@@ -685,7 +685,7 @@ interfaces:
     image: Kép
   system-interface:
     interface: Kezelőfelület
-  interface-options:
+  system-interface-options:
     interface-options: Kinézet beállításai
   select-dropdown-m2o:
     display_template: Megjelenítési sablon

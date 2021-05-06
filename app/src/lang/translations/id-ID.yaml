@@ -580,7 +580,7 @@ interfaces:
     icon: Ikon
   system-interface:
     interface: Antarmuka
-  interface-options:
+  system-interface-options:
     interface-options: Opsi Antarmuka
   list-m2m:
     many-to-many: Banyak ke banyak

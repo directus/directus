@@ -894,7 +894,7 @@ interfaces:
     interface: Interface
     description: Selecteer een bestaande interface
     placeholder: Selecteer een interface...
-  interface-options:
+  system-interface-options:
     interface-options: Interface opties
     description: Een modal voor het selecteren van opties van een interface
   list-m2m:

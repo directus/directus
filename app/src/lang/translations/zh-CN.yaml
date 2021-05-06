@@ -736,7 +736,7 @@ interfaces:
     description: 输入一个经过hash的值
   icon:
     icon: 图标
-  interface-options:
+  system-interface-options:
     interface-options: 界面选项
   list-m2m:
     many-to-many: 多对多

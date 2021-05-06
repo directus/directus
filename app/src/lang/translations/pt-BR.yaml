@@ -950,7 +950,7 @@ interfaces:
     interface: Interface
     description: Selecione uma interface existente
     placeholder: Selecione uma interface...
-  interface-options:
+  system-interface-options:
     interface-options: Opções de Interface
     description: Um modal para selecionar opções de uma interface
   list-m2m:

@@ -911,7 +911,7 @@ interfaces:
     interface: Интерфейс
     description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...
-  interface-options:
+  system-interface-options:
     interface-options: Настройки интерфейса
     description: Окно выбора параметров интерфейса
   list-m2m:

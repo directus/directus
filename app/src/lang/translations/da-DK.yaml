@@ -375,7 +375,7 @@ interfaces:
     files: Filer
   icon:
     icon: Ikon
-  interface-options:
+  system-interface-options:
     interface-options: Interface indstillinger
   numeric:
     numeric: Numerisk

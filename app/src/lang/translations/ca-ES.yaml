@@ -196,7 +196,7 @@ interfaces:
     allow_other: Permet altres
   files:
     files: Arxius
-  interface-options:
+  system-interface-options:
     interface-options: Opcions d'Interfície
   select-dropdown-m2o:
     display_template: Mostra la plantilla

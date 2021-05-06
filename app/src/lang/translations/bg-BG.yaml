@@ -949,7 +949,7 @@ interfaces:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
     placeholder: Избор на интерфейс...
-  interface-options:
+  system-interface-options:
     interface-options: Опции за интерфейса
     description: Модал за избор на интефейс
   list-m2m:

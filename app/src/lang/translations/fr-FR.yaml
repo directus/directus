@@ -934,7 +934,7 @@ interfaces:
     interface: Interface
     description: Sélectionner une interface existante
     placeholder: Sélectionner une interface...
-  interface-options:
+  system-interface-options:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
   list-m2m:

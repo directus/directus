@@ -949,7 +949,7 @@ interfaces:
     interface: Käyttöliittymä
     description: Valitse olemassa oleva liittymä
     placeholder: Valitse liittymä...
-  interface-options:
+  system-interface-options:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
   list-m2m:

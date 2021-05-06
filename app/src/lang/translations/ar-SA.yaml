@@ -454,7 +454,7 @@ interfaces:
     files: الملفات
   icon:
     icon: أيقونة
-  interface-options:
+  system-interface-options:
     interface-options: خيارات الواجهة
   list-m2m:
     many-to-many: العديد للكثيرين

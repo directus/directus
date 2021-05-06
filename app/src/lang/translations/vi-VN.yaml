@@ -616,7 +616,7 @@ interfaces:
     search_for_icon: Tìm kiếm biểu tượng...
   system-interface:
     interface: Giao diện
-  interface-options:
+  system-interface-options:
     interface-options: Tùy chọn giao diện
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều

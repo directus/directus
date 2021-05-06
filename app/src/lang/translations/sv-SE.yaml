@@ -926,7 +926,7 @@ interfaces:
     interface: Gränssnitt
     description: Välj ett befintligt gränssnitt
     placeholder: Välj ett gränssnitt...
-  interface-options:
+  system-interface-options:
     interface-options: Alternativ för gränssnitt
     description: En popup för att välja alternativ för ett gränssnitt
   list-m2m:
