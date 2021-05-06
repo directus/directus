@@ -986,9 +986,6 @@ interfaces:
     slider: Slider
     description: Select a number using a slider
     always_show_value: Always show value
-  slug:
-    slug: Slug
-    description: Enter a word connected with hyphens
   tags:
     tags: Tags
     description: Select or add tags
@@ -1015,6 +1012,8 @@ interfaces:
     minimum_value: Minimum Value
     maximum_value: Maximum Value
     step_interval: Step Interval
+    slug: Slugify
+    slug_label: Make entered value URL safe
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text

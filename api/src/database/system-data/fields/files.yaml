@@ -83,11 +83,13 @@ fields:
     readonly: true
 
   - field: modified_by
-    interface: user
+    interface: select-dropdown-m2o
     special: user-updated
     width: half
     display: user
     readonly: true
+    options:
+      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
 
   - field: modified_on
     interface: datetime

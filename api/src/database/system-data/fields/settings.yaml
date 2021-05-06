@@ -94,7 +94,7 @@ fields:
     width: half
 
   - field: auth_login_attempts
-    interface: numeric
+    interface: input
     options:
       iconRight: lock
       placeholder: $t:unlimited
@@ -120,8 +120,9 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: slug
+            interface: input
             options:
+              slug: true
               onlyOnCreate: false
             width: half
         - field: fit
@@ -148,7 +149,7 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: numeric
+            interface: input
             width: half
         - field: height
           name: Height
@@ -156,7 +157,7 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: numeric
+            interface: input
             width: half
         - field: quality
           type: integer

@@ -92,6 +92,7 @@ import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 /**
  * @NOTE
@@ -347,7 +348,10 @@ export default defineComponent({
 
 			const requiredFields = computed(() => {
 				if (!displayTemplate.value) return null;
-				return getFieldsFromTemplate(displayTemplate.value);
+				return adjustFieldsForDisplays(
+					getFieldsFromTemplate(displayTemplate.value),
+					relatedCollection.value.collection
+				);
 			});
 
 			return { onPreviewClick, displayTemplate, requiredFields };
@@ -449,6 +453,7 @@ export default defineComponent({
 .preview {
 	display: block;
 	flex-grow: 1;
+	height: calc(100% - 16px);
 	overflow: hidden;
 }
 

@@ -283,7 +283,7 @@ export default defineComponent({
 					type: 'integer',
 					meta: {
 						hidden: true,
-						interface: 'numeric',
+						interface: 'input',
 						readonly: true,
 					},
 					schema: {
@@ -357,7 +357,7 @@ export default defineComponent({
 					field: systemFields.sort.name,
 					type: 'integer',
 					meta: {
-						interface: 'numeric',
+						interface: 'input',
 						hidden: true,
 					},
 					schema: {},
@@ -372,9 +372,9 @@ export default defineComponent({
 					type: 'uuid',
 					meta: {
 						special: ['user-created'],
-						interface: 'user',
+						interface: 'select-dropdown-m2o',
 						options: {
-							display: 'both',
+							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
 						},
 						display: 'user',
 						readonly: true,
@@ -410,9 +410,9 @@ export default defineComponent({
 					type: 'uuid',
 					meta: {
 						special: ['user-updated'],
-						interface: 'user',
+						interface: 'select-dropdown-m2o',
 						options: {
-							display: 'both',
+							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
 						},
 						display: 'user',
 						readonly: true,

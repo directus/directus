@@ -31,7 +31,6 @@ export default defineComponent({
 		const src = computed(() => {
 			if (props.value === null) return null;
 			const url = getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
-
 			return addTokenToURL(url);
 		});
 

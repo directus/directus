@@ -10,6 +10,7 @@
 		:class="font"
 		:db-safe="dbSafe"
 		@input="$listeners.input"
+		:slug="slug"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>
@@ -86,6 +87,10 @@ export default defineComponent({
 			default: false,
 		},
 		autofocus: {
+			type: Boolean,
+			default: false,
+		},
+		slug: {
 			type: Boolean,
 			default: false,
 		},

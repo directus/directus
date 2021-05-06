@@ -1,5 +1,5 @@
 <template>
-	<v-form :fields="fields" :edits="options" />
+	<v-form :fields="fields" v-model="options" />
 </template>
 
 <script lang="ts">
@@ -121,6 +121,21 @@ export default defineComponent({
 					default_value: false,
 				},
 			},
+			{
+				field: 'slug',
+				name: '$t:interfaces.input.slug',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:interfaces.input.slug_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
 		];
 
 		const numberOptions = [
@@ -130,7 +145,7 @@ export default defineComponent({
 				type: 'integer',
 				meta: {
 					width: 'half',
-					interface: 'numeric',
+					interface: 'input',
 				},
 			},
 			{
@@ -139,7 +154,7 @@ export default defineComponent({
 				type: 'integer',
 				meta: {
 					width: 'half',
-					interface: 'numeric',
+					interface: 'input',
 				},
 			},
 			{
@@ -148,7 +163,7 @@ export default defineComponent({
 				type: 'integer',
 				meta: {
 					width: 'half',
-					interface: 'numeric',
+					interface: 'input',
 				},
 				schema: {
 					default_value: 1,

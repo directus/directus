@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 
-// [before, after]
-const changes = [
+// [before, after, after-option additions]
+const changes: [string, string, Record<string, any>?][] = [
 	['button-links', 'presentation-links'],
 	['checkboxes', 'select-multiple-checkbox'],
 	['code', 'input-code'],
@@ -24,14 +24,14 @@ const changes = [
 	['radio-buttons', 'select-radio'],
 	['repeater', 'list'],
 	['slider', 'slider'],
-	['slug', 'input'],
+	['slug', 'input', { slug: true }],
 	['tags', 'tags'],
 	['text-input', 'input'],
 	['textarea', 'input-multiline'],
 	['toggle', 'boolean'],
 	['translations', 'translations'],
 	['tree-view', 'list-o2m-tree-view'],
-	['user', 'select-dropdown-m2o'],
+	['user', 'select-dropdown-m2o', { template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}' }],
 	['wysiwyg', 'input-rich-text-html'],
 
 	// System:
@@ -47,8 +47,25 @@ const changes = [
 ];
 
 export async function up(knex: Knex): Promise<void> {
-	for (const [before, after] of changes) {
-		await knex('directus_fields').update({ interface: after }).where({ interface: before });
+	for (const [before, after, options] of changes) {
+		// If any options need to be added, update the fields one by one in order to update the pre-existing field options
+		if (options) {
+			const fields = await knex
+				.select<{ id: number; options: Record<string, unknown> }[]>('id', 'options')
+				.from('directus_fields')
+				.where({ interface: before });
+
+			for (const { id, options: existingOptions } of fields) {
+				const newOptions = {
+					...(existingOptions || {}),
+					...options,
+				};
+
+				await knex('directus_fields').update({ interface: after, options: newOptions }).where({ id });
+			}
+		} else {
+			await knex('directus_fields').update({ interface: after }).where({ interface: before });
+		}
 	}
 }
 
