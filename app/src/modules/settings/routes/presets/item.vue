@@ -416,7 +416,7 @@ export default defineComponent({
 					name: i18n.t('scope'),
 					type: 'string',
 					meta: {
-						interface: 'scope',
+						interface: 'system-scope',
 						width: 'half',
 					},
 				},

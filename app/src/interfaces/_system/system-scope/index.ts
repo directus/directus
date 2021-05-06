@@ -1,11 +1,11 @@
 import { defineInterface } from '@/interfaces/define';
-import Scope from './scope.vue';
+import InterfaceSystemScope from './system-scope.vue';
 
 export default defineInterface({
-	id: 'scope',
+	id: 'system-scope',
 	name: '$t:scope',
 	icon: 'arrow_drop_down_circle',
-	component: Scope,
+	component: InterfaceSystemScope,
 	types: ['string'],
 	options: [],
 });
