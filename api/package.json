@@ -101,6 +101,7 @@
 		"inquirer": "^8.0.0",
 		"joi": "^17.3.0",
 		"js-yaml": "^4.1.0",
+		"js2xmlparser": "^4.0.1",
 		"json2csv": "^5.0.3",
 		"jsonwebtoken": "^8.5.1",
 		"keyv": "^4.0.3",

@@ -146,6 +146,7 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Text
 time: Time
