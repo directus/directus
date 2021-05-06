@@ -161,11 +161,11 @@ password: Parolă
 interfaces:
   collection:
     collection: Colecție
-  collections:
+  system-collections:
     collections: Colecții
   files:
     files: Fişiere
-  icon:
+  select-icon:
     icon: Iconiță
   tags:
     tags: Etichete
