@@ -93,7 +93,7 @@ const url = 'http://api.example.com/';
 
 const isBrowser = typeof window !== 'undefined';
 
-// Storage adapter where refresh tokens are stored in JSON mode.
+// Storage adapter where authentication state (token & expiration) is stored.
 const storage = isBrowser ? new LocalStorage() : new MemoryStorage();
 
 // Transport used to communicate with the server.
@@ -117,7 +117,7 @@ const directus = new Directus(url, {
 
 ```js
 // Get the API base URL
-console.log(directus.url); // => https://api.example.com/
+console.log(directus.transport.url); // => https://api.example.com/
 
 // Set the API base URL
 directus.transport.url = 'https://api2.example.com';
@@ -230,53 +230,28 @@ await articles.readOne(15);
 Supports optional query:
 
 ```js
-// One
 await articles.readOne(15, { fields: ['title'] });
-```
-
-Supports optional query:
-
-```js
-await articles.updateOne(15, { title: 'An Updated title' }, { fields: ['title'] });
-
-await articles.updateMany(
-	[
-		/*...*/
-	],
-	{ fields: ['title'] }
-);
 ```
 
 ### Update Multiple Items
 
 ```js
-await articles.updateMany([
-	{
-		id: 15,
-		title: 'Article 15',
-	},
-	{
-		id: 42,
-		title: 'Article 42',
-	},
-]);
+await articles.updateMany([15, 42], {
+	title: 'Both articles now have the same title',
+});
 ```
 
 Supports optional query:
 
 ```js
 await articles.updateMany(
-	[
-		{
-			id: 15,
-			title: 'Article 15',
-		},
-		{
-			id: 42,
-			title: 'Article 42',
-		},
-	],
-	{ fields: ['title'] }
+	[15, 42],
+	{
+		title: 'Both articles now have the same title',
+	},
+	{
+		fields: ['title'],
+	}
 );
 ```
 
@@ -381,7 +356,9 @@ The storage responsible for storing authentication and sdk state.
 
 When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
 
-#### options.mode
+#### options
+
+##### options.mode
 
 Accepts `cookie` or `json`.
 
@@ -393,6 +370,10 @@ When you can't rely on cookies, or need more control over handling the storage o
 `storage` implementation.
 
 Defaults to `cookie` in browsers, `json` in node.js.
+
+##### options.refresh
+
+See [Refresh auth token](#refresh-auth-token).
 
 ### Get current token
 
@@ -430,7 +411,6 @@ await directus.auth.login(
 	{
 		refresh: {
 			auto: true,
-			time: 15000,
 		},
 	}
 );

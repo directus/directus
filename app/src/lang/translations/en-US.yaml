@@ -21,6 +21,7 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invite
+email_already_invited: Email "{email}" has already been invited
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -88,6 +89,9 @@ validationError:
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
+nullable: Nullable
+allow_null_value: Allow NULL value
+enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_file: Single File
@@ -329,6 +333,10 @@ save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_as_copy: Save as Copy
 add_existing: Add Existing
+creating_items: Creating Items
+enable_create_button: Enable Create Button
+selecting_items: Selecting Items
+enable_select_button: Enable Select Button
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
@@ -410,6 +418,8 @@ errors:
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
+  USER_SUSPENDED: User Suspended
+  CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -487,6 +497,8 @@ operators:
   has: Contains some of these keys
 loading: Loading...
 drop_to_upload: Drop to Upload
+item: Item
+items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
@@ -545,6 +557,7 @@ display_text: Display Text
 display_text_placeholder: Enter a display text...
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
+unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New tab
 current_tab: Current tab
@@ -605,6 +618,8 @@ adding_user: Adding User
 unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
+creating_unit: 'Creating {unit}'
+editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
@@ -693,7 +708,7 @@ fields:
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
-    translations: Collection Name Translations
+    translations: Collection Naming Translations
     archive_app_filter: Archive App Filter
     archive_value: Archive Value
     unarchive_value: Unarchive Value
@@ -1144,3 +1159,7 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+  calendar:
+    calendar: Calendar
+    start_date_field: Start Date Field
+    end_date_field: End Date Field

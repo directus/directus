@@ -1,5 +1,5 @@
-import { createStore } from 'pinia';
 import { nanoid } from 'nanoid';
+import { createStore } from 'pinia';
 
 export const useRequestsStore = createStore({
 	id: 'requestsStore',

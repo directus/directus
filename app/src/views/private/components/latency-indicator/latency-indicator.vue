@@ -51,10 +51,12 @@ export default defineComponent({
 					return `${i18n.t('connection_fair')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
 				case 1:
 					return `${i18n.t('connection_poor')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+				default:
+					return null;
 			}
 		});
 
-		const icon = computed<string>(() => {
+		const icon = computed(() => {
 			switch (connectionStrength.value) {
 				case 4:
 					return 'signal_wifi_4_bar';
@@ -64,6 +66,8 @@ export default defineComponent({
 					return 'signal_wifi_2_bar';
 				case 1:
 					return 'signal_wifi_1_bar';
+				default:
+					return null;
 			}
 		});
 

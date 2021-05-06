@@ -1,5 +1,5 @@
-import { createStore } from 'pinia';
 import api from '@/api';
+import { createStore } from 'pinia';
 
 type Info = {
 	project: null | {

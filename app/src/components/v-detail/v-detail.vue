@@ -71,6 +71,7 @@ export default defineComponent({
 	--v-divider-label-color: var(--foreground-subdued);
 	&:hover {
 		--v-divider-label-color: var(--foreground-normal-alt);
+
 		cursor: pointer;
 	}
 }

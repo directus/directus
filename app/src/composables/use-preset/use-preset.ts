@@ -1,11 +1,14 @@
-import { usePresetsStore, useUserStore } from '@/stores';
-import { ref, Ref, computed, watch } from '@vue/composition-api';
-import { debounce, isEqual } from 'lodash';
 import { useCollection } from '@/composables/use-collection';
-
+import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
+import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { debounce, isEqual } from 'lodash';
 
-export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null), temporary = false) {
+export function usePreset(
+	collection: Ref<string>,
+	bookmark: Ref<number | null> = ref(null),
+	temporary = false
+): Record<string, any> {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
@@ -269,7 +272,6 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 		if (data.id) delete data.id;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		data.user = userStore.state.currentUser!.id;
 
 		return await savePreset(data);

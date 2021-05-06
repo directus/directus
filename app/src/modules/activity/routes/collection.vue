@@ -49,12 +49,6 @@ import marked from 'marked';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
-import { nanoid } from 'nanoid';
-import { cloneDeep } from 'lodash';
-
-type Item = {
-	[field: string]: any;
-};
 
 export default defineComponent({
 	name: 'activity-collection',
@@ -65,7 +59,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 

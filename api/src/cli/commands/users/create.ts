@@ -1,7 +1,15 @@
 import { getSchema } from '../../../utils/get-schema';
 
-export default async function usersCreate({ email, password, role }: any) {
-	const { default: database, schemaInspector } = require('../../../database/index');
+export default async function usersCreate({
+	email,
+	password,
+	role,
+}: {
+	email?: string;
+	password?: string;
+	role?: string;
+}): Promise<void> {
+	const { default: database } = require('../../../database/index');
 	const { UsersService } = require('../../../services/users');
 
 	if (!email || !password || !role) {

@@ -104,6 +104,10 @@ SEARCH /webhooks
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	webhooks: [directus_webhooks]
@@ -151,6 +155,10 @@ GET /webhooks/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -219,6 +227,10 @@ POST /webhooks
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -297,6 +309,10 @@ POST /webhooks
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_webhooks_items(data: [create_directus_webhooks_input!]!): [directus_webhooks]
@@ -363,6 +379,10 @@ PATCH /webhooks/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -436,6 +456,10 @@ PATCH /webhooks
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_webhooks_items(ids: [ID!]!, data: update_directus_webhooks_input!): [directus_webhooks]
@@ -484,6 +508,10 @@ DELETE /webhooks/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -539,6 +567,10 @@ DELETE /webhooks
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

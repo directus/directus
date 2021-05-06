@@ -201,11 +201,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import i18n from '@/lang';
 
 import { state } from '../store';
 
@@ -224,7 +223,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 

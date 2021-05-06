@@ -1,6 +1,3 @@
-/* @tslint:disable */
-/* eslint-disable */
-
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 module.exports = {

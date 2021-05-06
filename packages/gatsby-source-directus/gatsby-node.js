@@ -33,7 +33,7 @@ function normalizeEndpoint(endpoint, query = {}) {
 	}
 
 	Object.entries(query)
-		.filter(([key, value]) => value !== undefined)
+		.filter(([, value]) => value !== undefined)
 		.forEach(([key, value]) => url.searchParams.set(key, value));
 
 	try {

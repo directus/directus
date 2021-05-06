@@ -1,17 +1,16 @@
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { Accountability, SchemaOverview, Permission, RelationRaw } from '../types';
-import logger from '../logger';
-import { mergePermissions } from './merge-permissions';
-import { Knex } from 'knex';
 import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
-import getLocalType from './get-local-type';
-import getDefaultValue from './get-default-value';
+import logger from '../logger';
+import { Accountability, Permission, RelationRaw, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
+import getDefaultValue from './get-default-value';
+import getLocalType from './get-local-type';
+import { mergePermissions } from './merge-permissions';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;

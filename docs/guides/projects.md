@@ -34,8 +34,8 @@ environment variables, each is explained in the following reference:
 
 ::: tip Browser FavIcon & Title
 
-The Project Color is also used to set a dynamic favicon, and the Project Name is used in the browser's page
-title. This makes it easier to identify different Directus projects in the browser.
+The Project Color is also used to set a dynamic favicon, and the Project Name is used in the browser's page title. This
+makes it easier to identify different Directus projects in the browser.
 
 :::
 

@@ -1,6 +1,7 @@
 # Command Line Interface
 
-> Directus ships with a command line interface (CLI) that you can use for various actions. All functionality can be accessed by running `npx directus <command>` in your project folder.
+> Directus ships with a command line interface (CLI) that you can use for various actions. All functionality can be
+> accessed by running `npx directus <command>` in your project folder.
 
 [[toc]]
 

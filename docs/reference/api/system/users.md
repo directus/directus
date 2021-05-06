@@ -128,6 +128,10 @@ SEARCH /users
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	users: [directus_users]
@@ -183,6 +187,10 @@ GET /users/72a1ce24-4748-47de-a05f-ce9af3033727
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	users_by_id(id: ID!): directus_users
@@ -231,6 +239,10 @@ GET /users/me
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -296,6 +308,10 @@ POST /users
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -372,6 +388,10 @@ POST /users
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_users_items(data: [create_directus_users_input!]!): [directus_users]
@@ -438,6 +458,10 @@ PATCH /users/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -512,6 +536,10 @@ PATCH /users
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
@@ -564,6 +592,10 @@ DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -618,6 +650,10 @@ DELETE /users
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -690,6 +726,10 @@ POST /users/invite
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	users_invite(email: String!, role: String!, invite_url: String): Boolean
@@ -755,6 +795,10 @@ POST /users/invite/accept
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -823,6 +867,10 @@ POST /users/me/tfa/enable
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	users_me_tfa_enable(password: String!): users_me_tfa_enable_data
@@ -885,6 +933,10 @@ POST /users/me/tfa/disable
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

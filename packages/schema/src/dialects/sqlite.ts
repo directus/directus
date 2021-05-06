@@ -12,7 +12,7 @@ type RawColumn = {
 };
 
 export default class SQLite extends KnexSQLite implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const tablesWithAutoIncrementPrimaryKeys = (
 			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 		).map(({ name }) => name);
@@ -25,7 +25,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 
 			if (table in overview === false) {
 				overview[table] = {
-					primary: columns.find((column) => column.pk == 1)?.name!,
+					primary: columns.find((column) => column.pk == 1)!.name!,
 					columns: {},
 				};
 			}

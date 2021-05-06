@@ -1,16 +1,16 @@
-import { RouteConfig } from 'vue-router';
-import { replaceRoutes } from '@/router';
-import { getModules } from './index';
-import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
+import { replaceRoutes } from '@/router';
+import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
+import { RouteConfig } from 'vue-router';
+import { getModules } from './index';
 
 const { modulesRaw } = getModules();
 
 let queuedModules: any = [];
 
-export async function loadModules() {
+export async function loadModules(): Promise<void> {
 	const context = require.context('.', true, /^.*index\.ts$/);
 
 	queuedModules = context
@@ -45,7 +45,7 @@ export async function loadModules() {
 	}
 }
 
-export async function register() {
+export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
@@ -75,7 +75,7 @@ export async function register() {
 	}
 }
 
-export function unregister() {
+export function unregister(): void {
 	replaceRoutes((routes) => routes);
 	modulesRaw.value = [];
 }

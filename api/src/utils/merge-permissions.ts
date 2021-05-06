@@ -1,5 +1,5 @@
+import { flatten, merge, omit } from 'lodash';
 import { Permission } from '../types';
-import { merge, omit, flatten } from 'lodash';
 
 export function mergePermissions(...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);

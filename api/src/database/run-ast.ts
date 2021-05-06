@@ -1,11 +1,11 @@
-import { AST, NestedCollectionNode, FieldNode } from '../types/ast';
-import { clone, cloneDeep, uniq, pick } from 'lodash';
-import database from './index';
-import { Query, Item, SchemaOverview } from '../types';
-import { PayloadService } from '../services/payload';
-import applyQuery from '../utils/apply-query';
 import { Knex } from 'knex';
+import { clone, cloneDeep, pick, uniq } from 'lodash';
+import { PayloadService } from '../services/payload';
+import { Item, Query, SchemaOverview } from '../types';
+import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
+import applyQuery from '../utils/apply-query';
 import { toArray } from '../utils/to-array';
+import database from './index';
 
 type RunASTOptions = {
 	/**
@@ -86,7 +86,7 @@ export default async function runAST(
 		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
+			const nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
@@ -160,7 +160,7 @@ function getDBQuery(
 	schema: SchemaOverview,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
+	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
 

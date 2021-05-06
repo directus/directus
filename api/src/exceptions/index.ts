@@ -13,3 +13,4 @@ export * from './range-not-satisfiable';
 export * from './route-not-found';
 export * from './service-unavailable';
 export * from './unprocessable-entity';
+export * from './user-suspended';

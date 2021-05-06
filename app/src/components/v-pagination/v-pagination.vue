@@ -32,10 +32,7 @@
 			{{ page }}
 		</v-button>
 
-		<span
-			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
-			class="gap"
-		>
+		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1" class="gap">
 			...
 		</span>
 

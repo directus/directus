@@ -6,7 +6,7 @@ function useSync<T, K extends keyof T>(
 	key: K,
 
 	emit: (event: string, ...args: any[]) => void
-): Ref<Readonly<T[K]>>
+): Ref<Readonly<T[K]>>;
 ```
 
 Small utility composition that allows you to easily setup the two-way binding with the prop:
@@ -20,7 +20,7 @@ const _options = computed({
 	},
 	set(val) {
 		emit('update:options', val);
-	}
+	},
 });
 ```
 

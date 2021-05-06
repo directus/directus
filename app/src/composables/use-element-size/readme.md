@@ -1,17 +1,16 @@
 # `useElementSize`
 
 ```ts
-function useElementSize(element: Element): { width: Ref<number>, height: Ref<number> }
+function useElementSize(element: Element): { width: Ref<number>; height: Ref<number> };
 ```
 
 Allows you to reactively watch an elements width and height.
 
 ## Usage
+
 ```vue
 <template>
-	<div ref="el">
-		My size is: {{ width }} x {{ height }}
-	</div>
+	<div ref="el">My size is: {{ width }} x {{ height }}</div>
 </template>
 
 <script lang="ts">
@@ -23,7 +22,7 @@ export default defineComponent({
 		const el = ref<Element>(null);
 		const { width, height } = useElementSize(el);
 		return { el, width, height };
-	}
+	},
 });
 </script>
 ```

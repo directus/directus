@@ -1,5 +1,5 @@
-import InterfaceTextInput from './text-input.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceTextInput from './text-input.vue';
 
 export default defineInterface({
 	id: 'text-input',

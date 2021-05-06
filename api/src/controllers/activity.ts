@@ -1,12 +1,12 @@
 import express from 'express';
-import asyncHandler from '../utils/async-handler';
+import Joi from 'joi';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { respond } from '../middleware/respond';
+import useCollection from '../middleware/use-collection';
+import { validateBatch } from '../middleware/validate-batch';
 import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import useCollection from '../middleware/use-collection';
-import { respond } from '../middleware/respond';
-import Joi from 'joi';
-import { validateBatch } from '../middleware/validate-batch';
+import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();
 

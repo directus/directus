@@ -1,6 +1,7 @@
 export function deepMap(
 	object: Record<string, any>,
 	iterator: (value: any, key: string | number) => any,
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	context?: any
 ): any {
 	if (Array.isArray(object)) {
@@ -10,8 +11,8 @@ export function deepMap(
 	} else if (typeof object === 'object') {
 		const res: Record<string, any> = {};
 
-		for (var key in object) {
-			var val = object[key];
+		for (const key in object) {
+			const val = object[key];
 
 			if (typeof val === 'object') {
 				res[key] = deepMap(val, iterator, context);

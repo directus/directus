@@ -22,6 +22,7 @@ create_webhook: Criar Webhook
 invite_users: Convidar Usuários
 email_examples: 'admin@example.com, usuário@example.com...'
 invite: Convidar
+email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
 connection_excellent: Conexão excelente
 connection_good: Conexão boa
@@ -85,6 +86,9 @@ validationError:
 all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
+nullable: Aceita nulos
+allow_null_value: Permitir valores NULL
+enter_value_to_replace_nulls: Por favor digite um novo valor que substituirá todos os NULLs presentes neste campo.
 field_standard: Padrão
 field_presentation: Apresentação e pseudônimos
 field_file: Arquivo único
@@ -230,6 +234,7 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
+translations_collection: Coleção de traduções
 languages_collection: Coleção de idiomas
 export_data: Exportar dados
 format: Formato
@@ -316,6 +321,10 @@ save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
 save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
+creating_items: Criando Itens
+enable_create_button: Habilitar botão de criação
+selecting_items: Selecionando Itens
+enable_select_button: Habilitar botão de seleção
 comments: Comentários
 no_comments: Nenhum comentário ainda
 click_to_expand: Clique para expandir
@@ -397,6 +406,8 @@ errors:
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
   RECORD_NOT_UNIQUE: Valor duplicado detectado
+  USER_SUSPENDED: Usuário suspenso
+  CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNKNOWN: Erro inesperado
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -473,6 +484,8 @@ operators:
   has: Contém algumas dessas chaves
 loading: Carregando...
 drop_to_upload: Solte para enviar
+item: Item
+items: Itens
 upload_file: Enviar arquivo
 upload_file_indeterminate: Enviando arquivo...
 upload_file_success: Arquivo enviado
@@ -531,6 +544,7 @@ display_text: Texto de Exibição
 display_text_placeholder: Digite um texto de exibição...
 tooltip: Dica
 tooltip_placeholder: Insira uma dica de ferramenta...
+unlimited: Ilimitado
 open_link_in: Abrir link em
 new_tab: Nova aba
 current_tab: Aba atual
@@ -591,6 +605,8 @@ adding_user: Adicionando usuário
 unknown_user: Usuário desconhecido
 creating_in: 'Criando Item em {collection}'
 editing_in: 'Editando Item em {collection}'
+creating_unit: 'Criando {unit}'
+editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
@@ -673,9 +689,14 @@ fields:
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
-    translations: Traduções de Nomes da Coleção
+    translations: Traduções do nome da coleção
+    archive_app_filter: Filtro de arquivados
+    archive_value: Valor quando arquivado
+    unarchive_value: Valor quando desarquivado
     sort_field: Campo de ordenação
+    accountability: Rastreamento de Atividades e Revisões
   directus_files:
+    $thumbnail: Miniatura
     title: Título
     description: Descrição
     tags: Tags
@@ -727,6 +748,7 @@ fields:
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
     storage_asset_presets: Predefinições de armazenamento
+    storage_asset_transform: Transformação de arquivos
     custom_css: CSS Personalizado
   directus_fields:
     collection: Nome da coleção
@@ -749,6 +771,7 @@ fields:
     collection_list: Navegação da Coleção
 field_options:
   directus_collections:
+    track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade
     do_not_track_anything: Não rastreie nada
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
@@ -867,12 +890,14 @@ interfaces:
   display-template:
     display-template: Modelo de exibição
     description: Misturar texto estático e valores dos campos dinâmicos
+    collection_field: Campo da coleção
     collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
     select_a_collection: Selecione uma coleção
   divider:
     divider: Divisor
     description: Rótulo e divisão de campos em seções
     title_placeholder: Insira um título...
+    inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
     margin_top_label: Aumentar margem superior
@@ -950,6 +975,7 @@ interfaces:
     repeater: Repetidor
     description: Criar múltiplas entradas da mesma estrutura
     edit_fields: Editar campos
+    add_label: 'Texto de "Criar Novo"'
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira uma nota pro campo...
   slider:
@@ -969,6 +995,7 @@ interfaces:
     capitalization: Capitalização
     uppercase: Converter em maiúsculas
     lowercase: Converter em minúsculas
+    auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
     add_tags: Adicionar tags...
@@ -1033,6 +1060,8 @@ displays:
     datetime: Data e Hora
     description: Exibir valores relacionados ao tempo
     format: Formato
+    format_note: >-
+      O formato personalizado aceita __[tabela de símbolos de campo de Data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Longo
     short: Curto
     relative: Relativo

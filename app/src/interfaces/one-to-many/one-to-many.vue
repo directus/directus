@@ -28,19 +28,22 @@
 					v-for="item in sortedItems"
 					:key="item.id"
 					block
+					:disabled="disabled || updateAllowed === false"
 					@click="editItem(item)"
 				>
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="relation.many_collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
-					<v-icon name="close" @click.stop="deleteItem(item)" />
+					<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
 			</draggable>
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
-			<v-button class="existing" @click="selectModalActive = true">
+			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="currentlyEditing = '+'">
+				{{ $t('create_new') }}
+			</v-button>
+			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
@@ -72,7 +75,7 @@
 import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
+import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field } from '@/types';
@@ -110,11 +113,21 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+		const permissionsStore = usePermissionsStore();
+		const userStore = useUserStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 
@@ -130,6 +143,8 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
+
+		const { createAllowed, updateAllowed } = usePermissions();
 
 		return {
 			relation,
@@ -151,6 +166,8 @@ export default defineComponent({
 			get,
 			getItemFromIndex,
 			templateWithDefaults,
+			createAllowed,
+			updateAllowed,
 		};
 
 		function getItemFromIndex(index: number) {
@@ -426,6 +443,28 @@ export default defineComponent({
 			const fields = fieldsStore.getFieldsForCollection(relatedCollection.value.collection);
 			return fields.slice(0, 3).map((field: Field) => field.field);
 		}
+
+		function usePermissions() {
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				return !!permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === relatedCollection.value.collection
+				);
+			});
+
+			const updateAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				return !!permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === relatedCollection.value.collection
+				);
+			});
+
+			return { createAllowed, updateAllowed };
+		}
 	},
 });
 </script>
@@ -437,10 +476,10 @@ export default defineComponent({
 
 .actions {
 	margin-top: 8px;
-}
 
-.existing {
-	margin-left: 8px;
+	.v-button + .v-button {
+		margin-left: 8px;
+	}
 }
 
 .deselect {

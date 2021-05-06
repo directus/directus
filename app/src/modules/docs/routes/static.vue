@@ -80,6 +80,8 @@ export default defineComponent({
 					return lines[i].substring(2).trim();
 				}
 			}
+
+			return null;
 		});
 
 		const markdownWithoutTitle = computed(() => {

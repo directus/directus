@@ -22,6 +22,7 @@ create_webhook: Създаване на уеб-кука
 invite_users: Покана към потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
+email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
 connection_excellent: Връзката е отлична
 connection_good: Връзката е добра
@@ -317,6 +318,10 @@ save_and_create_new: Запазване и преминаване към нов
 save_and_stay: Запазване и оставане
 save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
+creating_items: Създаване на записи
+enable_create_button: Включване на бутона за създаване
+selecting_items: Избор на записи
+enable_select_button: Включване на бутона за избор
 comments: Коментари
 no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
@@ -398,6 +403,7 @@ errors:
   ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
   RECORD_NOT_UNIQUE: Вече съществува такава стойност
+  USER_SUSPENDED: Потребителя е деактивиран
   UNKNOWN: Неочаквана грешка
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
@@ -474,6 +480,8 @@ operators:
   has: Съдържа някои от
 loading: Зареждане...
 drop_to_upload: Пускане за качване
+item: Запис
+items: Записи
 upload_file: Качване на файл
 upload_file_indeterminate: Файлът се качва...
 upload_file_success: Файлът е качен
@@ -532,6 +540,7 @@ display_text: Текст за показване
 display_text_placeholder: Въвеждане на текст за показване...
 tooltip: Подсказка
 tooltip_placeholder: Въвеждане на подсказка...
+unlimited: Неограничен
 open_link_in: Отваряне не връзката в
 new_tab: Нов таб
 current_tab: Текущ таб
@@ -592,6 +601,8 @@ adding_user: Добавяне на потребител
 unknown_user: Неизвестен потребител
 creating_in: 'Създаване на запис в {collection}'
 editing_in: 'Редактиране на запис от {collection}'
+creating_unit: 'Създаване {unit}'
+editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Масово редактиране {count} на записа'
 no_options_available: Не са налични опции
 settings_data_model: Модел на данни
@@ -681,6 +692,7 @@ fields:
     sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
   directus_files:
+    $thumbnail: Умалена картинка
     title: Заглавие
     description: Описание
     tags: Тагове
@@ -959,6 +971,7 @@ interfaces:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета
+    add_label: 'Текст за "Създаване"'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
   slider:

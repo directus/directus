@@ -1,5 +1,5 @@
-import InterfaceTFASetup from './tfa-setup.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceTFASetup from './tfa-setup.vue';
 
 export default defineInterface({
 	id: 'tfa-setup',

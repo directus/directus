@@ -1,6 +1,6 @@
-import { Relation } from './relation';
-import { Permission } from './permissions';
 import { types } from './field';
+import { Permission } from './permissions';
+import { Relation } from './relation';
 
 type CollectionsOverview = {
 	[name: string]: {
