@@ -842,6 +842,7 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 interfaces:
   button-links:
@@ -1136,3 +1137,7 @@ layouts:
     comfortable: Groß
     compact: Klein
     cozy: Mittel
+  calendar:
+    calendar: Kalender
+    start_date_field: Datumsfeld Start
+    end_date_field: Datumsfeld Ende
