@@ -33,7 +33,7 @@
 		"@typescript-eslint/eslint-plugin": "^4.22.0",
 		"@typescript-eslint/parser": "^4.22.1",
 		"axios": "^0.21.1",
-		"dockerode": "^3.2.1",
+		"dockerode": "^3.3.0",
 		"eslint": "^7.22.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^3.4.0",
