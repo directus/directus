@@ -293,7 +293,6 @@ interface_not_found: 'Sąsaja "{interface}" nerasta.'
 reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
-m2a_builder: Redaktorius (M2A)
 item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'
@@ -746,92 +745,48 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
-  checkboxes:
-    checkboxes: Žymimieji langeliai
-    description: Pasirinkite tarp kelių variantų naudodami žymimuosius langelius
-    allow_other: Leisti kita
-    show_more: 'Rodyti dar {count}'
-    items_shown: Rodomi elementai
-  code:
+  input-code:
     code: Kodas
-    description: Rašyti arba pasidalinti kodo elementais
-    line_number: Eilutės numeris
-    placeholder: Įveskite kodą čia...
   collection:
     collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas
-  collections:
+  system-collections:
     collections: Kolekcijos
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas
-  color:
+  select-color:
     color: Spalva
-    description: Įveskite arba pasirinkite spalvą
-    placeholder: Pasirinkte spalvą...
-    preset_colors: Ruošinių spalvos
-    preset_colors_add_label: Pridėti naują spalvą...
-    name_placeholder: Įvesti spalvos pavadinimą...
   datetime:
     datetime: Data ir laikas
     description: Įvesti datas ir laikus
     include_seconds: Įtraukti sekundes
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
-  display-template:
+  system-display-template:
     display-template: Rodymo šablonas
-    description: Maišyti statinį tekstą ir dinamines laukų reikšmes
-    collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
     select_a_collection: Pasirinkite kolekciją
-  divider:
+  presentation-divider:
     divider: Skyriklis
-    description: Aprašyti ir padalinti laukus į skiltis
-    title_placeholder: Įvesti pavadinimą...
-    inline_title: Pavadinimas toje pačioje eilutėje
-    inline_title_label: Rodyti pavadinimą virš linijos
-    margin_top: Atitraukimas nuo viršaus
-    margin_top_label: Padidinti atitraukimą nuo viršaus
-  dropdown:
-    description: Pasirinkite reikšmę iš sąrašo
-    choices_placeholder: Pridėti naują pasirinkimą
-    allow_other: Leisti kita
-    allow_other_label: Leisti kitas reikšmes
-    allow_none: Leisti tuščią reikšmę
-    allow_none_label: Leisti nepasirinkti nieko
-    choices_name_placeholder: Įveskite pavadinimą...
+  select-dropdown:
     choices_value_placeholder: Įveskite reikšmę...
-  dropdown-multiselect:
-    dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
-    description: Pasirinkite kelias reikšmes iš sąrašo
   file:
     file: Failas
     description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
     description: Pasirinkite arba įkelkite kelis failus
-  hash:
+  input-hash:
     hash: Maiša
-    description: Įveskite reikšmę išmaišymui
-    masked: Paslėptas
-    masked_label: Paslėpti tikrąsias reikšmes
-  icon:
+  select-icon:
     icon: Ikona
-    description: Pasirinkite ikonėlę iš sąrašo
-    search_for_icon: Ieškoti ikonėlių...
-  image:
+  file-image:
     image: Paveikslėlis
-    description: Pasirinkite arba įkelkite paveikslėlį
-  interface:
+  system-interface:
     interface: Sąsaja
-    description: Pasirinkti egzistuojančią sąsają
-    placeholder: Pasirinkti sąsają...
-  interface-options:
-    interface-options: Sąsajos nustatymai
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Rodymo šablonas
-  repeater:
-    field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
     whitespace: Matomi tarpai
@@ -845,20 +800,8 @@ interfaces:
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
-  text-input:
-    text-input: Tekstinė įvestis
-    description: Įveskite vieną teksto eilutę
-    trim: Apkarpyti
-    trim_label: Apkarpyti iš pradžios ir pabaigos
-    mask: Paslėptas
-    mask_label: Paslėpti tikrąją reikšmę
-  textarea:
-    textarea: Teksto sritis
-    description: Įveskite kelių eilučių neformatuotą tesktą
-  toggle:
+  boolean:
     toggle: Perjungti
-    description: Pasirinkti tarp įjungta/išjungta
-    label_placeholder: Įveskite žymą...
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas
@@ -871,12 +814,6 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Formatuoto teksto redaktorius
-    toolbar: Įrankių juosta
-    custom_formats: Pasirinktinis formatos
-    options_override: Parinkčių perrašymas
 displays:
   boolean:
     boolean: Loginis
