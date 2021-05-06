@@ -968,12 +968,6 @@ interfaces:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
-  numeric:
-    numeric: Numeric
-    description: Enter a number
-    minimum_value: Minimum Value
-    maximum_value: Maximum Value
-    step_interval: Step Interval
   list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
@@ -1010,14 +1004,17 @@ interfaces:
     alphabetize_label: Force Alphabetical Order
     add_tags: Add tags...
   input:
-    text-input: Text Input
-    description: Enter a single line text
+    input: Input
+    description: Manually enter a value
     trim: Trim
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
     clear: Cleared Value
     clear_label: Save as empty string
+    minimum_value: Minimum Value
+    maximum_value: Maximum Value
+    step_interval: Step Interval
   input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text

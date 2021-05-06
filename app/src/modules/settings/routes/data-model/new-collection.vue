@@ -320,7 +320,7 @@ export default defineComponent({
 								},
 							],
 						},
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						display: 'labels',
 						display_options: {
 							showAsDot: true,

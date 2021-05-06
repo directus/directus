@@ -66,7 +66,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					allowNone: true,
 					choices: [
@@ -83,7 +83,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					allowNone: true,
 					choices: [

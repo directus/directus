@@ -74,7 +74,7 @@ export default defineComponent({
 				field: 'width',
 				type: 'string',
 				meta: {
-					interface: 'dropdown',
+					interface: 'select-dropdown',
 					width: 'half',
 					sort: 3,
 					options: {
@@ -97,7 +97,7 @@ export default defineComponent({
 				field: 'type',
 				type: 'string',
 				meta: {
-					interface: 'dropdown',
+					interface: 'select-dropdown',
 					width: 'half',
 					sort: 4,
 					options: {

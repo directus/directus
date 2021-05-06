@@ -16,7 +16,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					choices: [
 						{ text: '$t:interfaces.user.modes.auto', value: 'auto' },

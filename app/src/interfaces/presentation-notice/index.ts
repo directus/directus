@@ -18,7 +18,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					choices: [
 						{ text: '$t:normal', value: 'normal' },

@@ -42,7 +42,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					choices: [
 						{ text: '$t:sans_serif', value: 'sans-serif' },

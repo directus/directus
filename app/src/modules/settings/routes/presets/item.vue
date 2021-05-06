@@ -395,7 +395,7 @@ export default defineComponent({
 					name: i18n.t('collection'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: collectionsStore.state.collections
 								.map((collection) => ({
@@ -425,7 +425,7 @@ export default defineComponent({
 					name: i18n.t('layout'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: layouts.value.map((layout) => ({
 								text: layout.name,
