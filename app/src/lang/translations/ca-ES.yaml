@@ -172,36 +172,24 @@ otp: Contrasenya d'un sol ús
 password: Contrasenya
 template: Plantilla
 interfaces:
-  checkboxes:
-    checkboxes: Caselles
-    allow_other: Permet altres
-  code:
+  input-code:
     code: Codi
-    line_number: Número de línia
   collection:
     collection: Coŀlecció
-  collections:
+  system-collections:
     collections: Col·leccions
-  color:
+  select-color:
     color: Color
   datetime:
     datetime: Data i hora
-  display-template:
+  system-display-template:
     display-template: Mostra la plantilla
-  divider:
+  presentation-divider:
     divider: Separador
-  dropdown:
-    allow_other: Permet altres
   files:
     files: Arxius
-  interface-options:
-    interface-options: Opcions d'Interfície
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Mostra la plantilla
-  one-to-many:
-    one-to-many: Un a Molts
-  radio-buttons:
-    radio-buttons: Botons de selecció
   tags:
     tags: Etiquetes
   translations:
