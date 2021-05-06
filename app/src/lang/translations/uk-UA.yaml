@@ -240,44 +240,30 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  checkboxes:
-    checkboxes: Прапорці
-  code:
+  input-code:
     code: Код
-    line_number: Номери рядків
   collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
-  many-to-one:
-    many-to-one: Багато до одного
-  numeric:
-    numeric: Цифровий
-  one-to-many:
-    one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
-    text-input: Текстове поле
-    trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
-    custom_formats: Власне форматування
 displays:
   collection:
     collection: Колекція
