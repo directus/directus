@@ -17,7 +17,7 @@ columns:
   special:
     type: string
     length: 64
-  system-interface:
+  interface:
     type: string
     length: 64
   options:
