@@ -337,7 +337,6 @@ interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 reset_interface: Resetuj interfejs
 display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
-m2a_builder: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'
@@ -844,145 +843,54 @@ value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
 interfaces:
-  button-links:
-    button-links: Linki przycisków
-    links: Linki
-    description: Konfigurowalne przyciski linków do uruchamiania dynamicznych adresów URL
-    style: Style
+  presentation-links:
     primary: Podstawowy
-    link: Linki
-    button: Przyciski
-    error: Nie można wykonać akcji
-  checkboxes:
-    checkboxes: Pola wyboru
-    description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
-    allow_other: Zezwól na inne
-    show_more: 'Pokaż {count} więcej'
-    items_shown: Wyświetlane elementy
-  code:
+  input-code:
     code: Kod
-    description: Zapisz lub udostępnij kod snippeta
-    line_number: Numer linii
-    placeholder: Wprowadź kod tutaj...
   collection:
     collection: Kolekcja
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  collections:
+  system-collections:
     collections: Kolekcje
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  color:
+  select-color:
     color: Kolor
-    description: Wprowadź lub wybierz kolor
-    placeholder: Wybierz kolor...
-    preset_colors: Ustawienia kolorów
-    preset_colors_add_label: Dodaj nowy kolor...
-    name_placeholder: Wprowadź nazwę koloru...
   datetime:
     datetime: Data i godzina
     description: Wprowadź daty i godziny
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
-  display-template:
+  system-display-template:
     display-template: Wyświetl szablon
-    description: Wymieszaj wartości pola statycznego i pola dynamicznego
-    collection_field: Pole kolekcji
     collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
     select_a_collection: Wybierz kolekcje
-  divider:
+  presentation-divider:
     divider: Separator
-    description: Etykietowanie i dzielenie pól na sekcje
-    title_placeholder: Wprowadź tytuł...
-    inline_title: Tytuł w linii
-    inline_title_label: Pokaż tytuł w linii
-    margin_top: Margines górny
-    margin_top_label: Zwiększ górny margines
-  dropdown:
-    description: Wybierz ikonę z rozwijanej listy
-    choices_placeholder: Dodaj nowy wybór
-    allow_other: Zezwól na inne
-    allow_other_label: Zezwalaj na inne wartości
-    allow_none: Zezwalaj na None
-    allow_none_label: Zezwól na brak zaznaczenia
-    choices_name_placeholder: Wprowadź nazwę...
+  select-dropdown:
     choices_value_placeholder: Wprowadź wartość...
-  dropdown-multiselect:
-    dropdown-multiselect: Rozwijanie menu listy (Wielokrotnego wyboru)
-    description: Wybierz wiele wartości z listy rozwijanej
   file:
     file: Plik
     description: Wybierz lub prześlij plik
   files:
     files: Pliki
     description: Wybierz lub prześlij wiele plików
-  hash:
+  input-hash:
     hash: Hash
-    description: Wprowadź wartość do hashowania
-    masked: Zamaskowany
-    masked_label: Ukryj rzeczywiste wartości
-  icon:
+  select-icon:
     icon: Ikona
-    description: Wybierz ikonę z listy rozwijanej
-    search_for_icon: Szukaj ikony...
-  image:
+  file-image:
     image: Obraz
-    description: Wybierz lub prześlij plik
-  interface:
+  system-interface:
     interface: Interfejs
-    description: Wybierz istniejący interfejs
-    placeholder: Wybierz interfejs...
-  interface-options:
-    interface-options: Opcje interfejsu
-    description: Okno do wyboru opcji interfejsu
-  many-to-many:
-    many-to-many: Wiele do wielu
-    description: Wybierz wiele powiązanych elementów
-  many-to-one:
-    many-to-one: Wiele do jednego
-    description: Wybierz pojedynczy powiązany element
+  select-dropdown-m2o:
     display_template: Wyświetl szablon
-  markdown:
-    markdown: Markdown
-    description: Wprowadź i zobacz markdown
-    customSyntax: Niestandardowe bloki
-    customSyntax_label: Dodaj własne typy składni
-    customSyntax_add: Dodaj własną składnię
-    box: Blok / Inline
-    imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazu
-  notice:
-    notice: Informacja
-    description: Wyświetl krótką informacje
-    text: Wprowadź zawartość informacji...
-  numeric:
-    numeric: Numeryczne
-    description: Wprowadź liczbę
-    minimum_value: Wartość minimalna
-    maximum_value: Wartość maksymalna
-    step_interval: Czas kroku
-  one-to-many:
-    one-to-many: Jeden do wielu
-    description: Wybierz wiele powiązanych elementów
-    no_collection: Kolekcja nie została znaleziona
-  radio-buttons:
-    radio-buttons: Przyciski jednokrotnego wyboru
-    description: Wybierz jeden lub wiele obiektów
-  repeater:
-    repeater: Powtarzaj
-    description: Utwórz wiele wpisów o tej samej strukturze
-    edit_fields: Edytuj pola
-    add_label: 'Utwórz nową etykietę'
-    field_name_placeholder: Wprowadź nazwę pola...
-    field_note_placeholder: Wprowadź opis pola...
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
     always_show_value: Zawsze pokazuj wartość
-  slug:
-    slug: Slug
-    description: Wpisz słowo połączone z myślnikami
   tags:
     tags: Etykiety
     description: Wybierz lub dodaj tagi
@@ -997,29 +905,12 @@ interfaces:
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
-  text-input:
-    text-input: Pole tekstowe
-    description: Wprowadź pojedynczą linię tekstu
-    trim: Przytnij
-    trim_label: Przytnij początek i koniec
-    mask: Zamaskowany
-    mask_label: Ukryj rzeczywistą wartość
-    clear: Wyczyść wartość
-    clear_label: Zapisz jako pusty ciąg
-  textarea:
-    textarea: Obszar tekstowy
-    description: Wprowadź wieloliniowy tekst
-  toggle:
+  boolean:
     toggle: Przełącz
-    description: Przełącz między włącz/wyłącz
-    label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
-  tree-view:
-    description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
-    recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:
     user: Użytkownik
     description: Wybierz istniejącego użytkownika
@@ -1028,12 +919,6 @@ interfaces:
       auto: Automatycznie
       dropdown: Lista rozwijana
       modal: Okno
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Edytor zawartość HTML
-    toolbar: Pasek narzędzi
-    custom_formats: Niestandardowe formaty
-    options_override: Zastąp opcje
 displays:
   boolean:
     boolean: Wartość logiczna
