@@ -345,34 +345,24 @@ template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primær
-  checkboxes:
-    checkboxes: Afkrydsningsfelter
-    allow_other: Tillad Andre
-  code:
+  input-code:
     code: Kode
-    line_number: Linjenummer
   collection:
     collection: Samling
-  collections:
+  system-collections:
     collections: Samlinger
-  color:
+  select-color:
     color: Farve
   datetime:
     datetime: Datotid
-  dropdown:
-    allow_other: Tillad Andre
   file:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
-  interface-options:
-    interface-options: Interface indstillinger
-  numeric:
-    numeric: Numerisk
   tags:
     tags: Tags
 displays:
