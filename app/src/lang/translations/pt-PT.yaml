@@ -228,7 +228,6 @@ interface_not_found: 'Interface "{interface}" não encontrada.'
 reset_interface: Restaurar interface
 display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
-m2a_builder: Construtor (muitos para alguns)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
 no_items_copy: Aind não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
@@ -333,18 +332,16 @@ comment: Comentário
 continue: Continuar
 description: Descrição
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primário
-  checkboxes:
-    checkboxes: Caixas de seleção
   collection:
     collection: Coleção
-  display-template:
+  system-display-template:
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
   files:
     files: Ficheiros
-  interface:
+  system-interface:
     interface: Interface
   tags:
     tags: Etiquetas
