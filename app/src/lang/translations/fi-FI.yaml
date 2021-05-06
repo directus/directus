@@ -337,7 +337,6 @@ interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
-m2a_builder: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
@@ -842,148 +841,56 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
-  button-links:
-    button-links: Painikkeen linkit
-    links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
-    style: Tyyli
+  presentation-links:
     primary: Ensisijainen
-    link: Linkit
-    button: Painikkeet
-    error: Toimintoa ei voi suorittaa
-  checkboxes:
-    checkboxes: Valintaruudut
-    description: Valitse useista vaihtoehdoista valintaruutujen kautta
-    allow_other: Salli muut
-    show_more: 'Näytä {count} lisää'
-    items_shown: Näytettävät kohteet
-  code:
+  input-code:
     code: Koodi
-    description: Kirjoita tai jaa koodipätkä
-    line_number: Rivinumero
-    placeholder: Syötä koodi tähän...
   collection:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  collections:
+  system-collections:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  color:
+  select-color:
     color: Väri
-    description: Syötä tai valitse väriarvo
-    placeholder: Valitse väri...
-    preset_colors: Esiasetuksen värit
-    preset_colors_add_label: Lisää uusi väri...
-    name_placeholder: Syötä värin nimi...
   datetime:
     datetime: Päivämäärä ja aika
     description: Syötä päivämäärät ja ajat
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
-  display-template:
+  system-display-template:
     display-template: Esitysmalli
-    description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
-    collection_field: Kokoeilmakenttä
     collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
     select_a_collection: Valitse kokoelma
-  divider:
+  presentation-divider:
     divider: Jakaja
-    description: Merkitse ja jaa kentät osiin
-    title_placeholder: Syötä otsikko...
-    inline_title: Rivitetty otsikko
-    inline_title_label: Näytä otsikko rivin sisällä
-    margin_top: Ylämarginaali
-    margin_top_label: Suurenna ylämarginaalia
-  dropdown:
-    description: Valitse arvo pudotusvalikosta
-    choices_placeholder: Lisää uusi valinta
-    allow_other: Salli muut
-    allow_other_label: Salli muut arvot
-    allow_none: Salli ei mitään
-    allow_none_label: Salli ei valintaa
-    choices_name_placeholder: Syötä nimi...
+  select-dropdown:
     choices_value_placeholder: Syötä arvo...
-  dropdown-multiselect:
-    dropdown-multiselect: Pudotusvalikko (useampi)
-    description: Valitse useita arvoja pudotusvalikosta
   file:
     file: Tiedosto
     description: Valitse tai lataa tiedosto
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
-  hash:
+  input-hash:
     hash: Tiiviste
-    description: Syötä arvo, josta luodaan tiiviste
-    masked: Maskeerattu
-    masked_label: Piilota todelliset arvot
-  icon:
+  select-icon:
     icon: Kuvake
-    description: Valitse kuvake pudotusvalikosta
-    search_for_icon: Etsi kuvakkeita...
-  image:
+  file-image:
     image: Kuva
-    description: Valitse tai lataa kuva
-  interface:
+  system-interface:
     interface: Käyttöliittymä
-    description: Valitse olemassa oleva liittymä
-    placeholder: Valitse liittymä...
-  interface-options:
-    interface-options: Liittymän asetukset
-    description: Modaali-ikkuna liittymän asetusten valintaan
-  many-to-many:
-    many-to-many: Monet monelle
-    description: Valitse useita liittyviä risteyskohteita
-  many-to-one:
-    many-to-one: Monet yhdelle
-    description: Valitse yksi liittyvä kohde
+  select-dropdown-m2o:
     display_template: Esitysmalli
-  markdown:
-    markdown: Markdown
-    description: Syötä ja esikatsele markdown
-    customSyntax: Mukautetut lohkot
-    customSyntax_label: Lisää mukautettuja syntaksityyppejä
-    customSyntax_add: Lisää mukautettu syntaksi
-    box: Lohko / rivillä
-    imageToken: Kuvatunnus
-    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
-  notice:
-    notice: Ilmoitus
-    description: Näytä lyhyt ilmoitus
-    text: Syötä ilmoituksen sisältö tähän...
-  numeric:
-    numeric: Numeerinen
-    description: Syötä numero
-    minimum_value: Vähimmäisarvo
-    maximum_value: Enimmäisarvo
-    step_interval: Askelväli
-  one-to-many:
-    one-to-many: Yksi monille
-    description: Valitse useita liittyviä kohteita
-    no_collection: Kokoelmaa ei löytynyt
-  radio-buttons:
-    radio-buttons: Valintanapit
-    description: Valitse yksi useista valinnoista
-  repeater:
-    repeater: Toistaja
-    description: Luo useita saman rakenteen merkintöjä
-    edit_fields: Muokkaa kenttiä
-    add_label: '"Luo uusi" tunniste'
-    field_name_placeholder: Syötä kentän nimi...
-    field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
     always_show_value: Näytä aina arvo
-  slug:
-    slug: Slug
-    description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
     description: Valitse tai lisää tunnisteita
@@ -998,29 +905,12 @@ interfaces:
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
-  text-input:
-    text-input: Tekstinsyöttö
-    description: Syötä yhden rivin teksti
-    trim: Leikkaa
-    trim_label: Leikkaa tyhjät merkit alusta ja lopusta
-    mask: Maskeerattu
-    mask_label: Piilota todellinen arvo
-    clear: Tyhjennetty arvo
-    clear_label: Tallenna tyhjänä merkkijonona
-  textarea:
-    textarea: Tekstialue
-    description: Syötä monirivinen tavallinen teksti
-  toggle:
+  boolean:
     toggle: Vaihda
-    description: Vaihda päälle ja pois päältä
-    label_placeholder: Syötä otsikko...
     label_default: Käytössä
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
-  tree-view:
-    description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
-    recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
     user: Käyttäjänimi
     description: Valitse olemassaoleva directus-käyttäjä
@@ -1029,12 +919,6 @@ interfaces:
       auto: Automaattinen
       dropdown: Pudotusvalikko
       modal: Modaali
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Rikastekstieditori HTML-sisällön kirjoitukseen
-    toolbar: Työkalupalkki
-    custom_formats: Mukautetut muodot
-    options_override: Ohita valinnat
 displays:
   boolean:
     boolean: Totuusarvo
