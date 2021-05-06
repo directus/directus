@@ -17,7 +17,7 @@ import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
 
-type RawField = Partial<Field> & { field: string; type: typeof types[number] };
+export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
 export class FieldsService {
 	knex: Knex;
