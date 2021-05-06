@@ -326,7 +326,6 @@ interface_not_found: 'Interfaz "{interface}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
-m2a_builder: Constructor (M2A)
 item_count: 'Sin Elementos | Un Elemento | {count} Elementos'
 no_items_copy: Aún no hay Elementos en esta colección.
 file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
@@ -800,144 +799,54 @@ value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 interfaces:
-  button-links:
-    button-links: Enlaces de botón
-    links: Enlaces
-    description: Botones de enlace configurables para lanzar URLs dinámicas
-    style: Estilo
+  presentation-links:
     primary: Principal
-    link: Enlaces
-    button: Botones
-    error: No se puede realizar la acción
-  checkboxes:
-    checkboxes: Casillas De Selección
-    description: Elegir entre múltiples opciones a través de casillas de selección
-    allow_other: Permitir Otro
-    show_more: 'Mostrar {count} más'
-    items_shown: Elementos Mostrados
-  code:
+  input-code:
     code: Código
-    description: Escribir o compartir fragmentos de código
-    line_number: Número de línea
-    placeholder: Ingrese el código aquí...
   collection:
     collection: Colección
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
-  collections:
+  system-collections:
     collections: Colecciones
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
-  color:
+  select-color:
     color: Color
-    description: Ingrese o seleccione un color
-    placeholder: Seleccionar un color...
-    preset_colors: Colores Predefinidos
-    preset_colors_add_label: Agregar nuevo color...
-    name_placeholder: Ingresar nombre del color...
   datetime:
     datetime: Fecha/hora
     description: Ingrese fechas y horas
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
-  display-template:
+  system-display-template:
     display-template: Plantilla de Presentación
-    description: Combinar texto estático y valores de campos dinámicos
-    collection_field: Campo Colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
-  divider:
+  presentation-divider:
     divider: Separador
-    description: Etiqueta y a la vez permite dividir los campos en secciones
-    title_placeholder: Ingresar un título...
-    inline_title: Titulo en línea
-    inline_title_label: Mostrar título en línea
-    margin_top: Margen Superior
-    margin_top_label: Aumentar Margen Superior
-  dropdown:
-    description: Seleccine un valor de la lista desplegable
-    choices_placeholder: Agregar una nueva opción
-    allow_other: Permitir Otro
-    allow_other_label: Permitir Otros Valores
-    allow_none: Permitir "Nada"
-    allow_none_label: Permitir No Selección
-    choices_name_placeholder: Ingrese un nombre...
+  select-dropdown:
     choices_value_placeholder: Ingrese un valor...
-  dropdown-multiselect:
-    dropdown-multiselect: Lista Desplegable (Múltiple)
-    description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
     description: Seleccionar o subir un archivo
   files:
     files: Archivos
     description: Seleccionar o subir múltiples archivos
-  hash:
+  input-hash:
     hash: Hash
-    description: Ingresar un valor para ser "Hasheado"
-    masked: Enmascarado
-    masked_label: Ocultar los verdaderos valores
-  icon:
+  select-icon:
     icon: Ícono
-    description: Seleccione un ícono de la lista
-    search_for_icon: Buscar un ícono...
-  image:
+  file-image:
     image: Imagen
-    description: Seleccionar o subir una imagen
-  interface:
+  system-interface:
     interface: Interfaz
-    description: Seleccionar una interfaz existente
-    placeholder: Seleccionar una interfaz...
-  interface-options:
-    interface-options: Opciones de Interfaz
-    description: Un diálogo para seleccionar opciones de una interfaz
-  many-to-many:
-    many-to-many: Muchos a Muchos
-    description: Seleccionar múltiples elementos de unión relacionados
-  many-to-one:
-    many-to-one: Muchos a Uno
-    description: Seleccionar un elemento único relacionado
+  select-dropdown-m2o:
     display_template: Plantilla de Presentación
-  markdown:
-    markdown: Markdown
-    description: Ingresar y previsualizar Markdown
-    customSyntax: Bloques personalizados
-    customSyntax_label: Añadir tipos de sintaxis personalizados
-    customSyntax_add: Añadir sintaxis personalizada
-    box: Bloque / Alineación
-    imageToken: Token de Imagen
-    imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
-  notice:
-    notice: Aviso
-    description: Presentar un aviso corto
-    text: Ingresar contenido del aviso aquí...
-  numeric:
-    numeric: Numérico
-    description: Ingresar un número
-    minimum_value: Valor Mínimo
-    maximum_value: Valor Máximo
-    step_interval: Intervalo de Pasos
-  one-to-many:
-    one-to-many: Uno a Muchos
-    description: Seleccionar múltiples elementos relacionados
-    no_collection: No se encontró la colección
-  radio-buttons:
-    radio-buttons: Botones de Radio
-    description: Seleccionar una de las opciones múltiples
-  repeater:
-    repeater: Repetidor
-    description: Crear múltiples entradas para la misma estructura
-    edit_fields: Editar Campos
-    field_name_placeholder: Ingrese el nombre del campo...
-    field_note_placeholder: Ingrese la nota del campo...
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
     always_show_value: Siemrpe presentar valor
-  slug:
-    slug: Slug
-    description: Ingresar una palabra conectada con guiones
   tags:
     tags: Etiquetas
     description: Seleccionar o agregar etiquetas
@@ -952,27 +861,12 @@ interfaces:
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
-  text-input:
-    text-input: Campo de Texto
-    description: Ingresar texto de una línea
-    trim: Eliminar Espacios en Blanco
-    trim_label: Eliminar espacios al inicio y al final
-    mask: Enmascarado
-    mask_label: Ocultar el valor real
-  textarea:
-    textarea: Área de Texto
-    description: Ingresar texto plano multi-línea
-  toggle:
+  boolean:
     toggle: Alternar
-    description: Alternar entre Activado y Desactivado
-    label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
-  tree-view:
-    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
-    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus
@@ -981,12 +875,6 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    description: Un editor de texto enriquecido para escribir contenido HTML
-    toolbar: Barra de Herramientas
-    custom_formats: Formatos Personalizados
-    options_override: Sobrescribir Opciones
 displays:
   boolean:
     boolean: Booleano
