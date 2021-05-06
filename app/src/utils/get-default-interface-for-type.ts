@@ -21,6 +21,6 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	hash: 'input-hash',
 };
 
-export default function getDefaultInterfaceForType(type: typeof types[number]): string {
+export function getDefaultInterfaceForType(type: typeof types[number]): string {
 	return defaultInterfaceMap[type] || 'input';
 }
