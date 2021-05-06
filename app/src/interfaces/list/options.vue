@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import Repeater from './repeater.vue';
+import Repeater from './list.vue';
 import { Field, FieldMeta } from '@/types';
 import i18n from '@/lang';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';

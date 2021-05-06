@@ -1,5 +1,5 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceSystemField from './field.vue';
+import InterfaceSystemField from './system-field.vue';
 
 export default defineInterface({
 	id: 'system-field',

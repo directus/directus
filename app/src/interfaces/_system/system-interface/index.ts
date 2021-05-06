@@ -1,5 +1,5 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceSystemInterface from './interface.vue';
+import InterfaceSystemInterface from './system-interface.vue';
 
 export default defineInterface({
 	id: 'system-interface',

@@ -1,5 +1,5 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceFileImage from './image.vue';
+import InterfaceFileImage from './file-image.vue';
 
 export default defineInterface({
 	id: 'file-image',

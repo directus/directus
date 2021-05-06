@@ -1,5 +1,5 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceInputHash from './hash.vue';
+import InterfaceInputHash from './input-hash.vue';
 
 export default defineInterface({
 	id: 'input-hash',

@@ -1,5 +1,5 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceSystemCollections from './collections.vue';
+import InterfaceSystemCollections from './system-collections.vue';
 
 export default defineInterface({
 	id: 'system-collections',
