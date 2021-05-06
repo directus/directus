@@ -416,75 +416,37 @@ translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
 interfaces:
-  button-links:
+  presentation-links:
     primary: الأساسي
-  checkboxes:
-    checkboxes: مربع الاختيار
-    allow_other: السماح لآخرين
-  code:
+  input-code:
     code: نص برمجي
-    line_number: أرقام الأسطر
   collection:
     collection: المجموعة
-  collections:
+  system-collections:
     collections: مجموعات
-  color:
+  select-color:
     color: لون
-    placeholder: اختر لون...
-    preset_colors_add_label: إضافة لون جديد...
-    name_placeholder: أدخل اسم اللون...
   datetime:
     datetime: التاريخ والوقت
-  display-template:
+  system-display-template:
     display-template: عرض القالب
-  divider:
+  presentation-divider:
     divider: الفاصل
-  dropdown:
-    allow_other: السماح لآخرين
-    choices_name_placeholder: أدخل اسم...
+  select-dropdown:
     choices_value_placeholder: أدخل قيمة...
   file:
     file: ملف
   files:
     files: الملفات
-  icon:
+  select-icon:
     icon: أيقونة
-  interface-options:
-    interface-options: خيارات الواجهة
-  many-to-many:
-    many-to-many: العديد للكثيرين
-  many-to-one:
-    many-to-one: العديد إلى واحد
+  select-dropdown-m2o:
     display_template: عرض القالب
-  markdown:
-    markdown: Markdown
-  notice:
-    notice: ملاحظة
-    description: عرض ملاحظة قصيرة
-    text: أدخل محتوى الملاحظة هنا...
-  numeric:
-    numeric: رقمي
-    description: أدخل رقماً
-    minimum_value: الحد الأدنى للقيمة
-    maximum_value: الحد الأقصى للقيمة
-  one-to-many:
-    one-to-many: واحد للكثيرين
-  radio-buttons:
-    radio-buttons: أزرار الراديو
-  repeater:
-    repeater: كرر
-    field_name_placeholder: أدخل اسم الحقل...
-    field_note_placeholder: أدخل ملاحظة للحقل...
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
-  slug:
-    slug: مقال
   tags:
     tags: الوسوم
-  text-input:
-    text-input: Text Input
-    trim: تقليم
   translations:
     display_template: عرض القالب
   user:
@@ -492,9 +454,6 @@ interfaces:
     modes:
       auto: تلقائي
       dropdown: قائمة منسدلة
-  wysiwyg:
-    wysiwyg: ما تراه هو ما تحصل عليه
-    toolbar: شريط الأدوات
 displays:
   boolean:
     boolean: نعم/لا
