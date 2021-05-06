@@ -713,7 +713,7 @@ interfaces:
     inline_title_label: 在行内显示标题
     margin_top: 上边距
     margin_top_label: 增加上边距
-  dropdown:
+  select-dropdown:
     description: 从下拉列表中选择一个值
     choices_placeholder: 添加一个新的选项
     allow_other: 允许其他选项

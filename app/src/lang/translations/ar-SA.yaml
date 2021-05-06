@@ -444,7 +444,7 @@ interfaces:
     display-template: عرض القالب
   divider:
     divider: الفاصل
-  dropdown:
+  select-dropdown:
     allow_other: السماح لآخرين
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...

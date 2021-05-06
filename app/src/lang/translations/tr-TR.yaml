@@ -676,7 +676,7 @@ interfaces:
     select_a_collection: Koleksiyon Seç
   divider:
     divider: Ayırıcı
-  dropdown:
+  select-dropdown:
     allow_other: Diğerlerine İzin Ver
     choices_value_placeholder: Bir değer girin...
   file:

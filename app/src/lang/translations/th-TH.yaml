@@ -859,7 +859,7 @@ interfaces:
     inline_title_label: แสดงชื่อในเส้นแบ่ง
     margin_top: ระยะห่างด้านบน
     margin_top_label: เพิ่มระยะห่างด้านบน
-  dropdown:
+  select-dropdown:
     description: เลือกค่าจากตัวเลือกแบบดรอปดาวน์
     choices_placeholder: เพิ่มตัวเลือกใหม่
     allow_other: อนุญาตคนอื่น

@@ -860,7 +860,7 @@ interfaces:
     inline_title_label: Toon titel binnen regel
     margin_top: Marge boven
     margin_top_label: Verhoog Top Marge
-  dropdown:
+  select-dropdown:
     description: Selecteer een waarde uit een dropdown
     choices_placeholder: Voeg een nieuwe keuze toe
     allow_other: Andere toestaan

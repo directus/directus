@@ -2,7 +2,7 @@ import { defineInterface } from '@/interfaces/define';
 import InterfaceInputRichTextMD from './input-rich-text-md.vue';
 
 export default defineInterface({
-	id: 'markdown',
+	id: 'input-rich-text-md',
 	name: '$t:interfaces.input-rich-text-md.markdown',
 	description: '$t:interfaces.input-rich-text-md.description',
 	icon: 'functions',

@@ -47,13 +47,13 @@ export default defineInterface({
 		},
 		{
 			field: 'allowCustom',
-			name: '$t:interfaces.dropdown.allow_other',
+			name: '$t:interfaces.select-dropdown.allow_other',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'boolean',
 				options: {
-					label: '$t:interfaces.dropdown.allow_other_label',
+					label: '$t:interfaces.select-dropdown.allow_other_label',
 				},
 			},
 			schema: {

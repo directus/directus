@@ -724,7 +724,7 @@ interfaces:
     select_a_collection: Vali andmekogu
   divider:
     divider: Eraldaja
-  dropdown:
+  select-dropdown:
     allow_other: Luba muud
     choices_value_placeholder: Sisesta väärtus...
   file:

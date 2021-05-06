@@ -919,7 +919,7 @@ interfaces:
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
     margin_top_label: Oberen Rand erhöhen
-  dropdown:
+  select-dropdown:
     description: Wert aus einer Dropdown-Liste auswählen
     choices_placeholder: Neue Auswahl hinzufügen
     allow_other: Andere erlauben

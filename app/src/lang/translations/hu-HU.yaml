@@ -664,7 +664,7 @@ interfaces:
     title_placeholder: Írja be a címet...
     margin_top: Felső margó
     margin_top_label: Felső margó növelése
-  dropdown:
+  select-dropdown:
     description: Válasszon elemet a listából
     choices_placeholder: Új lehetőség hozzáadása
     choices_name_placeholder: Adjon meg egy nevet...

@@ -569,7 +569,7 @@ interfaces:
     display-template: Tampilan Template
   divider:
     divider: Pembagi/Pemecah
-  dropdown:
+  select-dropdown:
     allow_other: Izinkan lainnya
     choices_value_placeholder: Masukkan sebuah nilai...
   file:

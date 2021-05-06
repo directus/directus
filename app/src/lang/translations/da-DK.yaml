@@ -367,7 +367,7 @@ interfaces:
     color: Farve
   datetime:
     datetime: Datotid
-  dropdown:
+  select-dropdown:
     allow_other: Tillad Andre
   file:
     file: Fil

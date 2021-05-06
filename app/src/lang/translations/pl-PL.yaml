@@ -913,7 +913,7 @@ interfaces:
     inline_title_label: Pokaż tytuł w linii
     margin_top: Margines górny
     margin_top_label: Zwiększ górny margines
-  dropdown:
+  select-dropdown:
     description: Wybierz ikonę z rozwijanej listy
     choices_placeholder: Dodaj nowy wybór
     allow_other: Zezwól na inne

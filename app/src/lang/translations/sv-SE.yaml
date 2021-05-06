@@ -892,7 +892,7 @@ interfaces:
     inline_title_label: Visa rubrik inuti raden
     margin_top: Marginal över
     margin_top_label: Öka övre marginal
-  dropdown:
+  select-dropdown:
     description: Välj ett värde från flervalslista
     choices_placeholder: Lägg till ett nytt alternativ
     allow_other: Tillåt annan

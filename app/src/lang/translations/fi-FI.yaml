@@ -915,7 +915,7 @@ interfaces:
     inline_title_label: Näytä otsikko rivin sisällä
     margin_top: Ylämarginaali
     margin_top_label: Suurenna ylämarginaalia
-  dropdown:
+  select-dropdown:
     description: Valitse arvo pudotusvalikosta
     choices_placeholder: Lisää uusi valinta
     allow_other: Salli muut

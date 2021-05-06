@@ -916,7 +916,7 @@ interfaces:
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
     margin_top_label: Aumentar margem superior
-  dropdown:
+  select-dropdown:
     description: Selecione um valor a partir de uma seleção
     choices_placeholder: Adicionar uma nova escolha
     allow_other: Permitir Outros

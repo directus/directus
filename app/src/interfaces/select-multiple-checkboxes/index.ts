@@ -27,7 +27,7 @@ export default defineInterface({
 								width: 'half',
 								interface: 'input',
 								options: {
-									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
+									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 								},
 							},
 						},
@@ -40,7 +40,7 @@ export default defineInterface({
 								interface: 'input',
 								options: {
 									font: 'monospace',
-									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
+									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 								},
 							},
 						},

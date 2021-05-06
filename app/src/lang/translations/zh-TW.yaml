@@ -599,7 +599,7 @@ interfaces:
     select_a_collection: 選擇一個集合
   divider:
     divider: 分隔線
-  dropdown:
+  select-dropdown:
     allow_other: 允許其他選項
     allow_other_label: 允許其他值
     choices_name_placeholder: 輸入名稱...

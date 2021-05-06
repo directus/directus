@@ -98,7 +98,7 @@ interfaces:
     line_number: Lyn Nommer
   collection:
     collection: Versameling
-  dropdown:
+  select-dropdown:
     allow_other: Laat Ander Toe
   files:
     files: Lêers

@@ -417,7 +417,7 @@ interfaces:
     color: 色
     description: 色の入力または選択
     preset_colors: プリセットカラー
-  dropdown:
+  select-dropdown:
     description: ドロップダウンから値を選択
     choices_value_placeholder: 値を入力...
   file:

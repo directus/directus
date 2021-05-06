@@ -900,7 +900,7 @@ interfaces:
     inline_title_label: Afficher le titre à l'intérieur de la ligne
     margin_top: Marge supérieure
     margin_top_label: Augmenter la marge supérieure
-  dropdown:
+  select-dropdown:
     description: Sélectionner une valeur à partir d'une liste déroulante
     choices_placeholder: Ajouter un nouveau choix
     allow_other: Autoriser d'autres valeurs

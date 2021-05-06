@@ -915,7 +915,7 @@ interfaces:
     inline_title_label: Показване на заглавията в реда
     margin_top: Горно отстояние
     margin_top_label: Увеличено горно отстояние
-  dropdown:
+  select-dropdown:
     description: Избор на стойност от падащо меню
     choices_placeholder: Добавяне на избор
     allow_other: Позволи други

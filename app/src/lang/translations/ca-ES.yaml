@@ -192,7 +192,7 @@ interfaces:
     display-template: Mostra la plantilla
   divider:
     divider: Separador
-  dropdown:
+  select-dropdown:
     allow_other: Permet altres
   files:
     files: Arxius

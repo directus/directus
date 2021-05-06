@@ -2,7 +2,7 @@ import { defineInterface } from '@/interfaces/define';
 import InterfacePresentationNotice from './presentation-notice.vue';
 
 export default defineInterface({
-	id: 'notice',
+	id: 'presentation-notice',
 	name: '$t:interfaces.presentation-notice.notice',
 	description: '$t:interfaces.presentation-notice.description',
 	icon: 'info',

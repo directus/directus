@@ -877,7 +877,7 @@ interfaces:
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
     margin_top_label: Увеличить верхний отступ
-  dropdown:
+  select-dropdown:
     description: Выберите значение из выпадающего списка
     choices_placeholder: Добавить новый выбор
     allow_other: Разрешить другие

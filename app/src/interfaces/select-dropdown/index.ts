@@ -2,9 +2,9 @@ import { defineInterface } from '@/interfaces/define';
 import InterfaceSelectDropdown from './select-dropdown.vue';
 
 export default defineInterface({
-	id: 'dropdown',
+	id: 'select-dropdown',
 	name: '$t:dropdown',
-	description: '$t:interfaces.dropdown.description',
+	description: '$t:interfaces.select-dropdown.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectDropdown,
 	types: ['string'],
@@ -17,7 +17,7 @@ export default defineInterface({
 				width: 'full',
 				interface: 'list',
 				options: {
-					placeholder: '$t:interfaces.dropdown.choices_placeholder',
+					placeholder: '$t:interfaces.select-dropdown.choices_placeholder',
 					template: '{{ text }}',
 					fields: [
 						{
@@ -28,7 +28,7 @@ export default defineInterface({
 								interface: 'input',
 								width: 'half',
 								options: {
-									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
+									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 								},
 							},
 						},
@@ -40,7 +40,7 @@ export default defineInterface({
 								interface: 'input',
 								options: {
 									font: 'monospace',
-									placeholder: '$t:interfaces.dropdown.choices_value_placeholder',
+									placeholder: '$t:interfaces.select-dropdown.choices_value_placeholder',
 								},
 								width: 'half',
 							},
@@ -51,13 +51,13 @@ export default defineInterface({
 		},
 		{
 			field: 'allowOther',
-			name: '$t:interfaces.dropdown.allow_other',
+			name: '$t:interfaces.select-dropdown.allow_other',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'boolean',
 				options: {
-					label: '$t:interfaces.dropdown.allow_other_label',
+					label: '$t:interfaces.select-dropdown.allow_other_label',
 				},
 			},
 			schema: {
@@ -66,13 +66,13 @@ export default defineInterface({
 		},
 		{
 			field: 'allowNone',
-			name: '$t:interfaces.dropdown.allow_none',
+			name: '$t:interfaces.select-dropdown.allow_none',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'boolean',
 				options: {
-					label: '$t:interfaces.dropdown.allow_none_label',
+					label: '$t:interfaces.select-dropdown.allow_none_label',
 				},
 			},
 			schema: {

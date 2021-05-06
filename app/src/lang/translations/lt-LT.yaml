@@ -804,7 +804,7 @@ interfaces:
     inline_title_label: Rodyti pavadinimą virš linijos
     margin_top: Atitraukimas nuo viršaus
     margin_top_label: Padidinti atitraukimą nuo viršaus
-  dropdown:
+  select-dropdown:
     description: Pasirinkite reikšmę iš sąrašo
     choices_placeholder: Pridėti naują pasirinkimą
     allow_other: Leisti kita

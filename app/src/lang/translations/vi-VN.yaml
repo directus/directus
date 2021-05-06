@@ -603,7 +603,7 @@ interfaces:
     select_a_collection: Chọn Bảng
   divider:
     divider: Bộ chia
-  dropdown:
+  select-dropdown:
     allow_other: Cho phép những đối tượng khác
     choices_value_placeholder: Nhập vào một giá trị...
   file:
