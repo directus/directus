@@ -21,10 +21,6 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	hash: 'input-hash',
 };
 
-/**
- * @todo default to correct interfaces for uuid / enum
- */
-
 export default function getDefaultInterfaceForType(type: typeof types[number]): string {
 	return defaultInterfaceMap[type] || 'input';
 }
