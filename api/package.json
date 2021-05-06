@@ -153,7 +153,7 @@
 		"@types/fs-extra": "^9.0.11",
 		"@types/inquirer": "^7.3.1",
 		"@types/js-yaml": "^4.0.1",
-		"@types/json2csv": "^5.0.1",
+		"@types/json2csv": "^5.0.2",
 		"@types/jsonwebtoken": "^8.5.1",
 		"@types/keyv": "^3.1.1",
 		"@types/lodash": "^4.14.168",
