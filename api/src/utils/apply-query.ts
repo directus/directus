@@ -221,11 +221,12 @@ export function applyFilter(
 			if (compareValue === undefined) return;
 
 			if (Array.isArray(compareValue)) {
-				// When using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
-				// reported as [undefined]. Seeing that SQL queries will fail when one or more of the
-				// bindings is undefined, we'll make sure here that invalid array values are ignored as
-				// well
-				if (compareValue.some((val) => val === undefined)) return;
+				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined].
+				// We need to remove any undefined values, as they are useless
+				compareValue = compareValue.filter((val) => val !== undefined);
+				// And ignore the result filter if there are no values in it
+				if (compareValue.length === 0) return;
 			}
 
 			if (operator === '_eq') {
@@ -275,6 +276,8 @@ export function applyFilter(
 			}
 
 			if (operator === '_between') {
+				if (compareValue.length !== 2) return;
+
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
@@ -282,6 +285,8 @@ export function applyFilter(
 			}
 
 			if (operator === '_nbetween') {
+				if (compareValue.length !== 2) return;
+
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
