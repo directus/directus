@@ -2,26 +2,26 @@ table: directus_users
 
 fields:
   - field: first_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: last_name
-    interface: text-input
+    interface: input
     options:
       iconRight: account_circle
     width: half
 
   - field: email
-    interface: text-input
+    interface: input
     options:
       iconRight: email
     width: half
 
   - field: password
     special: hash,conceal
-    interface: hash
+    interface: input-hash
     options:
       iconRight: lock
       masked: true
@@ -33,19 +33,19 @@ fields:
     display: image
 
   - field: location
-    interface: text-input
+    interface: input
     options:
       iconRight: place
     width: half
 
   - field: title
-    interface: text-input
+    interface: input
     options:
       iconRight: work
     width: half
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
 
   - field: tags
@@ -61,7 +61,7 @@ fields:
       format: false
 
   - field: preferences_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: face
       title: User Preferences
@@ -75,7 +75,7 @@ fields:
     width: half
 
   - field: theme
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - value: auto
@@ -87,12 +87,12 @@ fields:
     width: half
 
   - field: tfa_secret
-    interface: tfa-setup
+    interface: mfa-setup
     special: conceal
     width: half
 
   - field: admin_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: verified_user
       title: Admin Options
@@ -103,7 +103,7 @@ fields:
     width: full
 
   - field: status
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - text: Draft
@@ -119,7 +119,7 @@ fields:
     width: half
 
   - field: role
-    interface: many-to-one
+    interface: select-dropdown-m2o
     options:
       template: '{{ name }}'
     special: m2o
@@ -137,7 +137,7 @@ fields:
 
   - field: id
     special: uuid
-    interface: text-input
+    interface: input
     options:
       iconRight: vpn_key
     width: full

@@ -80,7 +80,8 @@ keep_editing: Terus Menyunting
 add_new: Tambah Baru
 all: Semua
 batch_delete_confirm: >-
-  Tiada benda dipilih | Adakah anda pasti ingin memadam benda ini? Tindakan ini tidak dapat dibatalkan. | Adakah anda pasti ingin memadam {count} benda ini? Tindakan ini tidak dapat dibatalkan.
+  Tiada benda dipilih | Adakah anda pasti ingin memadam benda ini? Tindakan ini tidak dapat dibatalkan. | Adakah anda
+  pasti ingin memadam {count} benda ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 collection: Koleksi
 collections: Koleksi-koleksi
@@ -159,11 +160,11 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
-  button-links:
+  presentation-links:
     primary: Utama
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail

@@ -1,30 +1,26 @@
 import { types } from '@/types';
 
 const defaultInterfaceMap: Record<typeof types[number], string> = {
-	alias: 'text-input',
-	bigInteger: 'numeric',
-	binary: 'text-input',
+	alias: 'input',
+	bigInteger: 'input',
+	binary: 'input',
 	boolean: 'toggle',
 	date: 'datetime',
 	dateTime: 'datetime',
-	decimal: 'numeric',
-	float: 'numeric',
-	integer: 'numeric',
-	json: 'code',
-	string: 'text-input',
-	text: 'textarea',
+	decimal: 'input',
+	float: 'input',
+	integer: 'input',
+	json: 'input-code',
+	string: 'input',
+	text: 'input-multiline',
 	time: 'datetime',
 	timestamp: 'datetime',
-	uuid: 'text-input',
-	unknown: 'text-input',
+	uuid: 'input',
+	unknown: 'input',
 	csv: 'tags',
-	hash: 'hash',
+	hash: 'input-hash',
 };
 
-/**
- * @todo default to correct interfaces for uuid / enum
- */
-
 export default function getDefaultInterfaceForType(type: typeof types[number]): string {
-	return defaultInterfaceMap[type] || 'text-input';
+	return defaultInterfaceMap[type] || 'input';
 }

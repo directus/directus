@@ -8,7 +8,7 @@
 				})
 			}}
 		</v-notice>
-		<interface-code v-model="presets" language="json" type="json" />
+		<interface-input-code v-model="presets" language="json" type="json" />
 	</div>
 </template>
 

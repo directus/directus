@@ -135,7 +135,8 @@ keep_editing: Продовжити редагування
 add_new: Створити
 all: Все
 batch_delete_confirm: >-
-  Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
+  Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені,
+  що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
 cancel: Скасувати
 collection: Колекція
 collections: Колекції
@@ -240,14 +241,14 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Прапорці
-  code:
+  input-code:
     code: Код
     line_number: Номери рядків
   collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
   color:
     color: Колір
@@ -261,22 +262,22 @@ interfaces:
     files: Файли
   icon:
     icon: Іконка
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Багато до одного
   numeric:
     numeric: Цифровий
-  one-to-many:
+  list-o2m:
     one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
+  input:
     text-input: Текстове поле
     trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: Власне форматування
 displays:
   collection:

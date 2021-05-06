@@ -5,7 +5,7 @@ fields:
     hidden: true
 
   - field: project_name
-    interface: text-input
+    interface: input
     options:
       iconRight: title
       placeholder: My project...
@@ -15,7 +15,7 @@ fields:
     width: half
 
   - field: project_url
-    interface: text-input
+    interface: input
     options:
       iconRight: link
       placeholder: https://example.com
@@ -25,7 +25,7 @@ fields:
     width: half
 
   - field: project_color
-    interface: color
+    interface: select-color
     note: Login & Logo Background
     translations:
       language: en-US
@@ -41,7 +41,7 @@ fields:
     width: half
 
   - field: public_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: public
       title: Public Pages
@@ -65,13 +65,13 @@ fields:
     width: half
 
   - field: public_note
-    interface: textarea
+    interface: input-multiline
     options:
       placeholder: A short, public message that supports markdown formatting...
     width: full
 
   - field: security_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: security
       title: Security
@@ -81,7 +81,7 @@ fields:
     width: full
 
   - field: auth_password_policy
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - value: null
@@ -94,14 +94,14 @@ fields:
     width: half
 
   - field: auth_login_attempts
-    interface: numeric
+    interface: input
     options:
       iconRight: lock
       placeholder: $t:unlimited
     width: half
 
   - field: files_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: storage
       title: Files & Thumbnails
@@ -111,7 +111,7 @@ fields:
     width: full
 
   - field: storage_asset_presets
-    interface: repeater
+    interface: list
     options:
       fields:
         - field: key
@@ -120,8 +120,9 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: slug
+            interface: input
             options:
+              slug: true
               onlyOnCreate: false
             width: half
         - field: fit
@@ -130,7 +131,7 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: dropdown
+            interface: select-dropdown
             options:
               choices:
                 - value: contain
@@ -148,7 +149,7 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: numeric
+            interface: input
             width: half
         - field: height
           name: Height
@@ -156,7 +157,7 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: numeric
+            interface: input
             width: half
         - field: quality
           type: integer
@@ -176,7 +177,7 @@ fields:
           schema:
             default_value: false
           meta:
-            interface: toggle
+            interface: boolean
             width: half
             options:
               label: Don't upscale images
@@ -185,7 +186,7 @@ fields:
     width: full
 
   - field: storage_asset_transform
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - value: all
@@ -197,7 +198,7 @@ fields:
     width: half
 
   - field: overrides_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: brush
       title: App Overrides
@@ -207,7 +208,7 @@ fields:
     width: full
 
   - field: custom_css
-    interface: code
+    interface: input-code
     options:
       language: css
       lineNumber: true

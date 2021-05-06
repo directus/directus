@@ -463,7 +463,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 										is_primary_key: true,
 									},
 									meta: {
-										interface: 'text-input',
+										interface: 'input',
 										options: {
 											iconLeft: 'vpn_key',
 										},
@@ -475,7 +475,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 									type: 'string',
 									schema: {},
 									meta: {
-										interface: 'text-input',
+										interface: 'input',
 										options: {
 											iconLeft: 'translate',
 										},

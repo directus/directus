@@ -408,7 +408,7 @@ export default defineComponent({
 								type: 'alias',
 								meta: {
 									special: 'm2m',
-									interface: 'many-to-many',
+									interface: 'list-m2m',
 								},
 							},
 						];

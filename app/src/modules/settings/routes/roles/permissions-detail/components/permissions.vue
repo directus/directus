@@ -9,7 +9,7 @@
 			}}
 		</v-notice>
 
-		<interface-code v-model="permissions" language="json" type="json" />
+		<interface-input-code v-model="permissions" language="json" type="json" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />

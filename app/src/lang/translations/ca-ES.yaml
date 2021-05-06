@@ -47,7 +47,8 @@ os_totalmem: Memòria del SO
 archive: Arxiu
 archive_confirm: Estàs segur de que vols arxivar aquest element?
 archive_confirm_count: >-
-  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
+  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count}
+  elements?
 unarchive: Desarxivar
 unarchive_confirm: Segur que voleu desarxivar aquest element?
 language: Idioma
@@ -104,7 +105,8 @@ editing_in_batch: 'Editant {count} elements'
 add_new: Afegir nou
 all: Tots
 batch_delete_confirm: >-
-  No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. | Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
+  No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. |
+  Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
 cancel: Cancel · la
 collection: Coŀlecció
 collections: Col·leccions
@@ -172,35 +174,35 @@ otp: Contrasenya d'un sol ús
 password: Contrasenya
 template: Plantilla
 interfaces:
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Caselles
     allow_other: Permet altres
-  code:
+  input-code:
     code: Codi
     line_number: Número de línia
   collection:
     collection: Coŀlecció
-  collections:
+  system-collections:
     collections: Col·leccions
   color:
     color: Color
   datetime:
     datetime: Data i hora
-  display-template:
+  system-display-template:
     display-template: Mostra la plantilla
   divider:
     divider: Separador
-  dropdown:
+  select-dropdown:
     allow_other: Permet altres
   files:
     files: Arxius
-  interface-options:
+  system-interface-options:
     interface-options: Opcions d'Interfície
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Mostra la plantilla
-  one-to-many:
+  list-o2m:
     one-to-many: Un a Molts
-  radio-buttons:
+  select-radio:
     radio-buttons: Botons de selecció
   tags:
     tags: Etiquetes

@@ -18,7 +18,7 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('field_name_translations') }}</div>
-				<interface-repeater
+				<interface-list
 					v-model="fieldData.meta.translations"
 					:template="'[{{ language }}] {{ translation }}'"
 					:fields="[
@@ -44,7 +44,7 @@
 							type: 'string',
 							name: $t('translation'),
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: 'Enter a translation...',
