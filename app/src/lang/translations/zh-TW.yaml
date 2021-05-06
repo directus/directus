@@ -580,92 +580,43 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  checkboxes:
-    checkboxes: 複選框
-    allow_other: 允許其他選項
-  code:
+  input-code:
     code: 程式碼
-    line_number: 行號
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 資料集
-  color:
+  select-color:
     color: 顏色
   datetime:
     datetime: 日期時間
-  display-template:
+  system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
-  divider:
+  presentation-divider:
     divider: 分隔線
-  dropdown:
-    allow_other: 允許其他選項
-    allow_other_label: 允許其他值
-    choices_name_placeholder: 輸入名稱...
+  select-dropdown:
     choices_value_placeholder: 請輸入...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉 (多個)
-    description: 從下拉選單選擇多個值
   file:
     file: 檔案
     description: 選擇或上傳檔案
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  hash:
+  input-hash:
     hash: 哈希
-    masked_label: 隱藏真實值
-  icon:
+  select-icon:
     icon: 圖示
-    description: 從下拉清單中選擇圖示
-    search_for_icon: 搜尋圖示...
-  image:
+  file-image:
     image: 圖像
-    description: 選擇或上傳圖像
-  interface:
+  system-interface:
     interface: 介面
-    description: 選擇現有介面
-    placeholder: 選擇一個介面...
-  interface-options:
-    interface-options: 介面選項
-  many-to-many:
-    many-to-many: 多對多
-  many-to-one:
-    many-to-one: 多對一
+  select-dropdown-m2o:
     display_template: 顯示模板
-  markdown:
-    markdown: Markdown
-    description: 輸入和預覽 Markdown
-    customSyntax_label: 新增自訂語法類型
-    customSyntax_add: 新增自訂語法
-    imageToken: 圖像權杖
-  notice:
-    notice: 通知
-    description: 顯示簡短通知
-    text: 在此輸入通知內容...
-  numeric:
-    numeric: 數字
-    description: 輸入一個數字
-    minimum_value: 最小值
-    maximum_value: 最大值
-  one-to-many:
-    one-to-many: 一對多
-    description: 選擇多個關聯項目
-    no_collection: 找不到該集合
-  radio-buttons:
-    radio-buttons: 單選按鈕
-  repeater:
-    repeater: 重複者
-    edit_fields: 編輯欄位
-    field_name_placeholder: 輸入欄位名稱...
-    field_note_placeholder: 輸入欄位備忘...
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
     always_show_value: 永遠顯示值
-  slug:
-    slug: 網址片段
   tags:
     tags: 標籤
     description: 選擇或新增標籤
@@ -675,15 +626,7 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  text-input:
-    text-input: 文字輸入
-    description: 輸入單行文本
-    trim: 去除內容前後空格
-    trim_label: 修剪開頭與結尾
-  textarea:
-    textarea: 文本區
-    description: 輸入多行純文本
-  toggle:
+  boolean:
     toggle: 切換
     label_default: 已啟用
   translations:
@@ -694,9 +637,6 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  wysiwyg:
-    toolbar: 工具列
-    custom_formats: 自訂格式
 displays:
   boolean:
     description: 顯示開關狀態
