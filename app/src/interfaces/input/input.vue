@@ -6,7 +6,7 @@
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:trim="trim"
-		:type="masked ? 'password' : 'text'"
+		:type="inputType"
 		:class="font"
 		:db-safe="dbSafe"
 		@input="$listeners.input"
@@ -38,6 +38,10 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
+			type: String,
+			default: null,
+		},
+		type: {
 			type: String,
 			default: null,
 		},
@@ -99,7 +103,13 @@ export default defineComponent({
 			return 100 - (props.value.length / +props.length) * 100;
 		});
 
-		return { charsRemaining, percentageRemaining };
+		const inputType = computed(() => {
+			if (props.masked) return 'password';
+			if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type)) return 'number';
+			return 'text';
+		});
+
+		return { inputType, charsRemaining, percentageRemaining };
 	},
 });
 </script>
