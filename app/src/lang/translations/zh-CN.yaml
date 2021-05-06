@@ -299,7 +299,6 @@ interface_not_found: '未找到接口 "{interface}"。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
-m2a_builder: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
 no_items_copy: 此集合中没有项目。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
@@ -687,82 +686,43 @@ template: 模板
 translation: 翻译
 value: 值
 interfaces:
-  button-links:
+  presentation-links:
     primary: 主要的
-  checkboxes:
-    checkboxes: 复选框
-    allow_other: 允许其他选项
-  code:
+  input-code:
     code: 代码
-    line_number: 行号
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 集合
-  color:
+  select-color:
     color: 颜色
   datetime:
     datetime: 日期时间
-  display-template:
+  system-display-template:
     display-template: 显示模板
     collection_field_not_setup: 集合的字段选项配置错误
     select_a_collection: 选择一个集合
-  divider:
+  presentation-divider:
     divider: 分隔线
-    inline_title: 内嵌标题
-    inline_title_label: 在行内显示标题
-    margin_top: 上边距
-    margin_top_label: 增加上边距
-  dropdown:
-    description: 从下拉列表中选择一个值
-    choices_placeholder: 添加一个新的选项
-    allow_other: 允许其他选项
-    allow_other_label: 允许其他值
-    allow_none: 允许 None
-    allow_none_label: 允许不选择
-    choices_name_placeholder: 输入一个名称...
+  select-dropdown:
     choices_value_placeholder: 输入值...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉(多次)
-    description: 从下拉列表中选择多个值
   file:
     file: 文件
     description: 选择或上传文件
   files:
     files: 多个文件
     description: 选择或上传多个文件
-  hash:
+  input-hash:
     hash: Hash
-    description: 输入一个经过hash的值
-  icon:
+  select-icon:
     icon: 图标
-  interface-options:
-    interface-options: 界面选项
-  many-to-many:
-    many-to-many: 多对多
-  many-to-one:
-    many-to-one: 多对一
+  select-dropdown-m2o:
     display_template: 显示模板
-  markdown:
-    markdown: Markdown
-  numeric:
-    numeric: 数字
-  one-to-many:
-    one-to-many: 一对多
-  radio-buttons:
-    radio-buttons: 单选按钮
-  repeater:
-    repeater: 中继器
   slider:
     slider: 滑块
-  slug:
-    slug: 别名
   tags:
     tags: 标签
-  text-input:
-    text-input: 文本输入
-    trim: 修剪
-  toggle:
+  boolean:
     toggle: 切换
     label_default: 已启用
   translations:
@@ -771,8 +731,6 @@ interfaces:
     user: 用户
     modes:
       dropdown: 下拉列表
-  wysiwyg:
-    custom_formats: 自定义格式
 displays:
   boolean:
     boolean: 布尔值
