@@ -1,20 +1,25 @@
 import { Knex } from 'knex';
 import env from '../../env';
+import { oracleForceAlterColumn } from '../../utils/oracle-schema';
 
 export async function up(knex: Knex): Promise<void> {
+	if (env.DB_CLIENT === 'oracledb') {
+		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'CLOB');
+		return;
+	}
+
 	await knex.schema.alterTable('directus_webhooks', (table) => {
-		// TODO: Temporary fix for Knex/Oracle not supporting string to text
-		if (env.DB_CLIENT !== 'oracledb') {
-			table.text('url').alter();
-		}
+		table.text('url').alter();
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
+	if (env.DB_CLIENT === 'oracledb') {
+		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'VARCHAR2(255)');
+		return;
+	}
+
 	await knex.schema.alterTable('directus_webhooks', (table) => {
-		// TODO: Temporary fix for Knex/Oracle not supporting string to text
-		if (env.DB_CLIENT !== 'oracledb') {
-			table.string('url').alter();
-		}
+		table.string('url').alter();
 	});
 }
