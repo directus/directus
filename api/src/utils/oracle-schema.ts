@@ -11,5 +11,8 @@ export async function oracleForceAlterColumn(
 	await knex.raw(`UPDATE "${table}" SET "${column}__temp"="${column}"`);
 	await knex.raw(`ALTER TABLE "${table}" DROP COLUMN "${column}"`);
 	await knex.raw(`ALTER TABLE "${table}" RENAME COLUMN "${column}__temp" TO "${column}"`);
-	await knex.raw(`ALTER TABLE "${table}" MODIFY "${column}"${notNull ? ' NOT NULL' : ''}`);
+
+	if (notNull) {
+		await knex.raw(`ALTER TABLE "${table}" MODIFY "${column}" NOT NULL`);
+	}
 }
