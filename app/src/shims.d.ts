@@ -1,18 +1,17 @@
-// @TODO3 Type of component is any
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 
 declare module '*.vue' {
-	import { defineComponent } from 'vue';
-	const component: ReturnType<typeof defineComponent>;
-	export default component;
+	import { ComponentOptions } from 'vue';
+	const Component: ComponentOptions;
+	export default Component;
 }
 
 // @TODO3 Is this still needed?
 declare module '*.svg' {
-	import { defineComponent } from 'vue';
-	const component: ReturnType<typeof defineComponent>;
-	export default component;
+	import { ComponentOptions } from 'vue';
+	const Component: ComponentOptions;
+	export default Component;
 }
 
 declare module '*.md' {
