@@ -21,11 +21,6 @@
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"
 	},
 	"devDependencies": {
-		"@fullcalendar/core": "^5.6.0",
-		"@fullcalendar/daygrid": "^5.6.0",
-		"@fullcalendar/interaction": "^5.6.0",
-		"@fullcalendar/list": "^5.6.0",
-		"@fullcalendar/timegrid": "^5.6.0",
 		"@types/dockerode": "^3.2.3",
 		"@types/jest": "^26.0.22",
 		"@types/listr": "^0.14.3",
