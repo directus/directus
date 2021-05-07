@@ -12,12 +12,13 @@
 	--fc-border-color: var(--border-normal);
 
 	.fc-more-popover {
-	    max-width: var(--form-column-width);
-	    max-height: 330px;
-	    .fc-popover-body {
-	    	max-height: 270px;
-	    	overflow: auto;
-	    }
+		max-width: var(--form-column-width);
+		max-height: 330px;
+
+		.fc-popover-body {
+			max-height: 270px;
+			overflow: auto;
+		}
 	}
 
 	.fc-list-empty {
@@ -25,13 +26,8 @@
 	}
 
 	.fc-daygrid-more-link {
-		font-weight: 600;
 		color: var(--primary);
-	}
-
-	.fc-daygrid-dot-event:hover,
-	.fc-daygrid-dot-event.fc-event-mirror {
-	    background: var(--primary-25);
+		font-weight: 600;
 	}
 
 	.fc-daygrid-day-bottom {
@@ -47,23 +43,27 @@
 		}
 	}
 
+	.fc-daygrid-dot-event:hover,
+	.fc-daygrid-dot-event.fc-event-mirror {
+		background: var(--primary-25);
+	}
+
 	.fc-daygrid-event-dot {
 		display: none;
 	}
 
 	.fc-button {
-		text-transform: capitalize !important;
-		font-size: inherit !important;
 		font-weight: inherit !important;
+		font-size: inherit !important;
+		text-transform: capitalize !important;
 
 		&-primary {
-
 			&.fc-prevYear-button,
 			&.fc-prev-button,
 			&.fc-next-button,
 			&.fc-nextYear-button {
-				padding-left: 4px;
 				padding-right: 4px;
+				padding-left: 4px;
 			}
 
 			&:focus {
@@ -99,12 +99,12 @@
 			height: 52px;
 			margin-bottom: 36px;
 			padding: 0 8px;
+			font-weight: inherit !important;
+			font-size: inherit !important;
 			background-color: var(--background-page);
 			border-top: 2px solid var(--border-subdued);
 			border-bottom: 2px solid var(--border-subdued);
 			box-shadow: 0 0 0 2px var(--background-page);
-			font-size: inherit !important;
-			font-weight: inherit !important;
 		}
 	}
 
