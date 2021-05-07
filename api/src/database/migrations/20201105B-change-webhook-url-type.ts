@@ -4,7 +4,7 @@ import { oracleForceAlterColumn } from '../../utils/oracle-schema';
 
 export async function up(knex: Knex): Promise<void> {
 	if (env.DB_CLIENT === 'oracledb') {
-		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'CLOB');
+		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'CLOB', true);
 		return;
 	}
 
@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	if (env.DB_CLIENT === 'oracledb') {
-		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'VARCHAR2(255)');
+		await oracleForceAlterColumn(knex, 'directus_webhooks', 'url', 'VARCHAR2(255)', true);
 		return;
 	}
 
