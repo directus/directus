@@ -1,10 +1,17 @@
 import { Knex } from 'knex';
 import env from '../../env';
-import { oracleForceAlterColumn } from '../../utils/oracle-schema';
+
+async function oracleAlterCollections(knex: Knex, type: string): Promise<void> {
+	await knex.raw('ALTER TABLE "directus_webhooks" ADD "collections__temp" ?', [knex.raw(type)]);
+	await knex.raw('UPDATE "directus_webhooks" SET "collections__temp"="collections"');
+	await knex.raw('ALTER TABLE "directus_webhooks" DROP COLUMN "collections"');
+	await knex.raw('ALTER TABLE "directus_webhooks" RENAME COLUMN "collections__temp" TO "collections"');
+	await knex.raw('ALTER TABLE "directus_webhooks" MODIFY "collections" NOT NULL');
+}
 
 export async function up(knex: Knex): Promise<void> {
 	if (env.DB_CLIENT === 'oracledb') {
-		await oracleForceAlterColumn(knex, 'directus_webhooks', 'collections', 'CLOB', true);
+		await oracleAlterCollections(knex, 'CLOB');
 		return;
 	}
 
@@ -15,7 +22,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	if (env.DB_CLIENT === 'oracledb') {
-		await oracleForceAlterColumn(knex, 'directus_webhooks', 'collections', 'VARCHAR2(255)', true);
+		await oracleAlterCollections(knex, 'VARCHAR2(255)');
 		return;
 	}
 
