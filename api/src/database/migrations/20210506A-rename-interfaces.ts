@@ -61,7 +61,9 @@ export async function up(knex: Knex): Promise<void> {
 					...options,
 				};
 
-				await knex('directus_fields').update({ interface: after, options: newOptions }).where({ id });
+				await knex('directus_fields')
+					.update({ interface: after, options: JSON.stringify(newOptions) })
+					.where({ id });
 			}
 		} else {
 			await knex('directus_fields').update({ interface: after }).where({ interface: before });
