@@ -16,10 +16,6 @@
 
 		<router-view v-else-if="!hydrating" />
 
-		<!-- @TODO3 Check if teleports and transitions work -->
-		<div id="target-dialog-outlet"></div>
-		<div id="target-menu-outlet"></div>
-
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>

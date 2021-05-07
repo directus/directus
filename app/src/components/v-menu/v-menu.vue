@@ -18,7 +18,7 @@
 			/>
 		</div>
 
-		<teleport to="#target-menu-outlet">
+		<teleport to="#menu-outlet">
 			<transition-bounce appear>
 				<div
 					v-if="isActive"

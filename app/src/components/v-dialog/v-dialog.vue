@@ -2,7 +2,7 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport to="#target-dialog-outlet">
+		<teleport to="#dialog-outlet">
 			<transition-dialog appear>
 				<div v-if="internalActive" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
