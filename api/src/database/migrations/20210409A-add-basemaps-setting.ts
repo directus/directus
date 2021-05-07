@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex) {
 	await knex.schema.alterTable('directus_settings', (table) => {
-		table.jsonb('basemaps');
+		table.json('basemaps');
 	});
 }
 
