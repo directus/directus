@@ -144,7 +144,9 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
+		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
+			emit('input', value)
+		);
 
 		return {
 			gridClass,

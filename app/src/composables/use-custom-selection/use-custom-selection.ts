@@ -1,12 +1,10 @@
 import { nanoid } from 'nanoid';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-type EmitFunction = (event: string, ...args: any[]) => void;
-
 export function useCustomSelection(
 	currentValue: Ref<string>,
 	items: Ref<any[]>,
-	emit: EmitFunction
+	emit: (event: string | null) => void
 ): Record<string, ComputedRef> {
 	const localOtherValue = ref('');
 
@@ -17,10 +15,10 @@ export function useCustomSelection(
 		set(newValue: string | null) {
 			if (newValue === null) {
 				localOtherValue.value = '';
-				emit('input', null);
+				emit(null);
 			} else {
 				localOtherValue.value = newValue;
-				emit('input', newValue);
+				emit(newValue);
 			}
 		},
 	});
@@ -41,7 +39,7 @@ export function useCustomSelection(
 export function useCustomSelectionMultiple(
 	currentValues: Ref<string[]>,
 	items: Ref<any[]>,
-	emit: EmitFunction
+	emit: (event: string[] | null) => void
 ): Record<string, any> {
 	type OtherValue = {
 		key: string;
@@ -94,9 +92,9 @@ export function useCustomSelectionMultiple(
 			otherValues.value = otherValues.value.filter((o) => o.key !== key);
 
 			if (valueWithoutPrevious.length === 0) {
-				emit('input', null);
+				emit(null);
 			} else {
-				emit('input', valueWithoutPrevious);
+				emit(valueWithoutPrevious);
 			}
 		} else {
 			otherValues.value = otherValues.value.map((otherValue) => {
@@ -106,7 +104,7 @@ export function useCustomSelectionMultiple(
 
 			const newEmitValue = [...valueWithoutPrevious, newValue];
 
-			emit('input', newEmitValue);
+			emit(newEmitValue);
 		}
 	}
 }

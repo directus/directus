@@ -104,7 +104,7 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, emit);
+		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => emit('input', value));
 
 		const customIcon = computed(() => {
 			if (!otherValue.value) return 'add';

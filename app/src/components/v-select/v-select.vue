@@ -196,12 +196,13 @@ export default defineComponent({
 		const { internalItems } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
-		// @TODO3 This emits "input" instead of "update:modelValue"
-		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, emit);
+		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
+			emit('update:modelValue', value)
+		);
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 			modelValue as Ref<string[]>,
 			internalItems,
-			emit
+			(value) => emit('update:modelValue', value)
 		);
 
 		return {
