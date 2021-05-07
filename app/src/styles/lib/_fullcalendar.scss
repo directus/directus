@@ -20,6 +20,10 @@
 	    }
 	}
 
+	.fc-list-empty {
+		background-color: var(--background-subdued) !important;
+	}
+
 	.fc-daygrid-more-link {
 		font-weight: 600;
 		color: var(--primary);
