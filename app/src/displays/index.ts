@@ -1,17 +1,9 @@
-import { ref, Ref } from 'vue';
+import { shallowRef, Ref } from 'vue';
 import { DisplayConfig } from './types';
 
-let displaysRaw: Ref<DisplayConfig[]>;
-let displays: Ref<DisplayConfig[]>;
+const displaysRaw: Ref<DisplayConfig[]> = shallowRef([]);
+const displays: Ref<DisplayConfig[]> = shallowRef([]);
 
 export function getDisplays(): Record<string, Ref> {
-	if (!displaysRaw) {
-		displaysRaw = ref([]);
-	}
-
-	if (!displays) {
-		displays = ref([]);
-	}
-
 	return { displays, displaysRaw };
 }

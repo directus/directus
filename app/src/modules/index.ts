@@ -1,17 +1,9 @@
-import { ref, Ref } from 'vue';
+import { shallowRef, Ref } from 'vue';
 import { ModuleConfig } from './types';
 
-let modulesRaw: Ref<ModuleConfig[]>;
-let modules: Ref<ModuleConfig[]>;
+const modulesRaw: Ref<ModuleConfig[]> = shallowRef([]);
+const modules: Ref<ModuleConfig[]> = shallowRef([]);
 
 export function getModules(): Record<string, any> {
-	if (!modulesRaw) {
-		modulesRaw = ref([]);
-	}
-
-	if (!modules) {
-		modules = ref([]);
-	}
-
 	return { modules, modulesRaw };
 }
