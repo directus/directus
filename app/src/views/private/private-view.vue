@@ -97,8 +97,8 @@ export default defineComponent({
 		const appStore = useAppStore();
 
 		const appAccess = computed(() => {
-			if (!userStore.state.currentUser) return true;
-			return userStore.state.currentUser?.role?.app_access || false;
+			if (!userStore.currentUser) return true;
+			return userStore.currentUser?.role?.app_access || false;
 		});
 
 		const notificationsPreviewActive = ref(false);
@@ -106,7 +106,7 @@ export default defineComponent({
 		const { sidebarOpen } = toRefs(appStore.state);
 
 		const theme = computed(() => {
-			return userStore.state.currentUser?.theme || 'auto';
+			return userStore.currentUser?.theme || 'auto';
 		});
 
 		provide('main-element', contentEl);

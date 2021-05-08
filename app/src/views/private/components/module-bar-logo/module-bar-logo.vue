@@ -31,9 +31,9 @@ export default defineComponent({
 		const settingsStore = useSettingsStore();
 
 		const customLogoPath = computed<string | null>(() => {
-			if (settingsStore.state.settings === null) return null;
-			if (!settingsStore.state.settings?.project_logo) return null;
-			return addTokenToURL(getRootPath() + `assets/${settingsStore.state.settings.project_logo}`);
+			if (settingsStore.settings === null) return null;
+			if (!settingsStore.settings?.project_logo) return null;
+			return addTokenToURL(getRootPath() + `assets/${settingsStore.settings.project_logo}`);
 		});
 
 		const showLoader = ref(false);
@@ -47,10 +47,10 @@ export default defineComponent({
 			}
 		);
 
-		const url = computed(() => settingsStore.state.settings?.project_url);
+		const url = computed(() => settingsStore.settings?.project_url);
 
 		const urlTooltip = computed(() => {
-			return settingsStore.state.settings?.project_url ? i18n.t('view_project') : false;
+			return settingsStore.settings?.project_url ? i18n.t('view_project') : false;
 		});
 
 		return {

@@ -13,7 +13,7 @@ export function isAllowed(
 
 	if (userStore.isAdmin.value === true) return true;
 
-	const permissions = permissionsStore.state.permissions;
+	const permissions = permissionsStore.permissions;
 
 	const permissionInfo = permissions.find(
 		(permission) => permission.action === action && permission.collection === collection

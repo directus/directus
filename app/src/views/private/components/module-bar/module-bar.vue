@@ -46,7 +46,7 @@ export default defineComponent({
 		const { modules } = getModules();
 
 		const _modules = computed(() => {
-			const customModuleListing = userStore.state.currentUser?.role.module_list;
+			const customModuleListing = userStore.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
 				modules.value

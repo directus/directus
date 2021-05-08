@@ -25,7 +25,7 @@ export function usePreset(
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
 
 	/**
 	 * Saves the preset to the database
@@ -272,7 +272,7 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		data.user = userStore.state.currentUser!.id;
+		data.user = userStore.currentUser!.id;
 
 		return await savePreset(data);
 	}

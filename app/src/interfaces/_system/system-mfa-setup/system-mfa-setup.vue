@@ -102,7 +102,7 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
-		const isCurrentUser = computed(() => userStore.state.currentUser?.id === props.primaryKey);
+		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
 
 		return {
 			tfaEnabled,

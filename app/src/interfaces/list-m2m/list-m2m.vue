@@ -243,12 +243,12 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+				const hasJunctionPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === junctionCollection.value.collection
 				);
 
-				const hasRelatedPermissions = !!permissionsStore.state.permissions.find(
+				const hasRelatedPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === relationCollection.value.collection
 				);
@@ -260,7 +260,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+				const hasJunctionPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === junctionCollection.value.collection
 				);

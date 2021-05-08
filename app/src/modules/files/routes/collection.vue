@@ -254,12 +254,12 @@ export default defineComponent({
 				}
 			}
 
-			if (props.special === 'mine' && userStore.state.currentUser) {
+			if (props.special === 'mine' && userStore.currentUser) {
 				filtersParsed.push({
 					locked: true,
 					operator: 'eq',
 					field: 'uploaded_by',
-					value: userStore.state.currentUser.id,
+					value: userStore.currentUser.id,
 				});
 			}
 
@@ -446,7 +446,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const updatePermissions = permissionsStore.state.permissions.find(
+				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
 				);
 				return !!updatePermissions;
@@ -456,7 +456,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const deletePermissions = permissionsStore.state.permissions.find(
+				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
 				);
 				return !!deletePermissions;
@@ -466,7 +466,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
 				);
 				return !!createPermissions;
@@ -476,7 +476,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
 				);
 				return !!createPermissions;

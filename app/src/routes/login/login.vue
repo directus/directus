@@ -44,7 +44,7 @@ export default defineComponent({
 	setup() {
 		const appStore = useAppStore();
 
-		const authenticated = computed(() => appStore.state.authenticated);
+		const authenticated = computed(() => appStore.authenticated);
 
 		return { authenticated };
 	},

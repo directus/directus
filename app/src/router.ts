@@ -101,13 +101,13 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		}
 	}
 
-	if (serverStore.state.info === null) {
+	if (serverStore.info === null) {
 		await serverStore.hydrate();
 	}
 
-	if (to.meta?.public !== true && appStore.state.hydrated === false) {
-		appStore.state.hydrating = false;
-		if (appStore.state.authenticated === true && appStore.state.hydrating === false) {
+	if (to.meta?.public !== true && appStore.hydrated === false) {
+		appStore.hydrating = false;
+		if (appStore.authenticated === true && appStore.hydrating === false) {
 			await hydrate();
 			return next(to.fullPath);
 		} else {

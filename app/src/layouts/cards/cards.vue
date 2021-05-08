@@ -231,7 +231,7 @@ export default defineComponent({
 			return fieldsInCollection.value.filter((field: FieldMeta) => {
 				if (field.field === '$thumbnail') return true;
 
-				const relation = relationsStore.state.relations.find((relation) => {
+				const relation = relationsStore.relations.find((relation) => {
 					return (
 						relation.many_collection === props.collection &&
 						relation.many_field === field.field &&

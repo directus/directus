@@ -288,7 +288,7 @@ export default defineComponent({
 		// Make sure to re-render the size of the calendar when the available space changes due to the
 		// sidebar being manipulated
 		watch(
-			() => appStore.state.sidebarOpen,
+			() => appStore.sidebarOpen,
 			() => setTimeout(() => calendar.value?.updateSize(), 300)
 		);
 

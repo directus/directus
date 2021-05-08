@@ -50,18 +50,18 @@ export default defineComponent({
 		const serverStore = useServerStore();
 
 		const isBranded = computed(() => {
-			return serverStore.state.info?.project?.project_color ? true : false;
+			return serverStore.info?.project?.project_color ? true : false;
 		});
 
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (serverStore.state.info?.project?.public_background) {
-				const url = getRootPath() + `assets/${serverStore.state.info.project?.public_background}`;
+			if (serverStore.info?.project?.public_background) {
+				const url = getRootPath() + `assets/${serverStore.info.project?.public_background}`;
 				return `url(${url})`;
 			}
 
-			return serverStore.state.info?.project?.project_color || defaultColor;
+			return serverStore.info?.project?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({
@@ -71,20 +71,20 @@ export default defineComponent({
 		}));
 
 		const foregroundURL = computed(() => {
-			if (!serverStore.state.info?.project?.public_foreground) return null;
-			return getRootPath() + `assets/${serverStore.state.info.project?.public_foreground}`;
+			if (!serverStore.info?.project?.public_foreground) return null;
+			return getRootPath() + `assets/${serverStore.info.project?.public_foreground}`;
 		});
 
 		const logoURL = computed<string | null>(() => {
-			if (!serverStore.state.info?.project?.project_logo) return null;
-			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
+			if (!serverStore.info?.project?.project_logo) return null;
+			return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
 		});
 
 		return {
 			version,
 			artStyles,
 			marked,
-			branding: serverStore.state.info?.project,
+			branding: serverStore.info?.project,
 			foregroundURL,
 			logoURL,
 			isBranded,

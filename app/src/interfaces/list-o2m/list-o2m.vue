@@ -449,7 +449,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === relatedCollection.value.collection
 				);
 			});
@@ -458,7 +458,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === relatedCollection.value.collection
 				);
 			});

@@ -44,15 +44,15 @@ export default defineComponent({
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.state.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
 		watch(
-			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
+			[() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo],
 			() => {
-				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
+				const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+				setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
 			}
 		);
 
@@ -74,7 +74,7 @@ export default defineComponent({
 		);
 
 		watch(
-			() => userStore.state.currentUser,
+			() => userStore.currentUser,
 			(newUser) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');
@@ -93,7 +93,7 @@ export default defineComponent({
 		);
 
 		watch(
-			() => serverStore.state.info?.project?.project_name,
+			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
 			}
@@ -103,7 +103,7 @@ export default defineComponent({
 			return serverStore.state?.info?.project?.custom_css || '';
 		});
 
-		const error = computed(() => appStore.state.error);
+		const error = computed(() => appStore.error);
 
 		/**
 		 * This allows custom extensions to use the apps internals

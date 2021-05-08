@@ -31,7 +31,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 		setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
-	appStore.state.authenticated = true;
+	appStore.authenticated = true;
 
 	await hydrate();
 }
@@ -58,7 +58,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
-		appStore.state.authenticated = true;
+		appStore.authenticated = true;
 
 		return accessToken;
 	} catch (error) {
@@ -96,7 +96,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		await api.post(`/auth/logout`);
 	}
 
-	appStore.state.authenticated = false;
+	appStore.authenticated = false;
 
 	await dehydrate();
 

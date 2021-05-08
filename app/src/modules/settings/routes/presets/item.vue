@@ -397,7 +397,7 @@ export default defineComponent({
 					meta: {
 						interface: 'select-dropdown',
 						options: {
-							choices: collectionsStore.state.collections
+							choices: collectionsStore.collections
 								.map((collection) => ({
 									text: collection.name,
 									value: collection.collection,

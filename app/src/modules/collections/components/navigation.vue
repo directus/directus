@@ -119,12 +119,12 @@ export default defineComponent({
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
-		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
-				presetsStore.state.collectionPresets
+				presetsStore.collectionPresets
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})

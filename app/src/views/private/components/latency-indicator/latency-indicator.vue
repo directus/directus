@@ -17,13 +17,13 @@ export default defineComponent({
 		const latencyStore = useLatencyStore();
 
 		const lastLatency = computed(() => {
-			const sorted = sortBy(latencyStore.state.latency, ['timestamp']);
+			const sorted = sortBy(latencyStore.latency, ['timestamp']);
 			return sorted[sorted.length - 1];
 		});
 
 		const avgLatency = computed(() => {
-			if (!latencyStore.state.latency || latencyStore.state.latency.length === 0) return 0;
-			const sorted = sortBy(latencyStore.state.latency, ['timestamp']);
+			if (!latencyStore.latency || latencyStore.latency.length === 0) return 0;
+			const sorted = sortBy(latencyStore.latency, ['timestamp']);
 			const lastFive = sorted.slice(Math.max(sorted.length - 5, 0));
 			let total = 0;
 

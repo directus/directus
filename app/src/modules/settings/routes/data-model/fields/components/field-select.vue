@@ -298,7 +298,7 @@ export default defineComponent({
 			const duplicateName = ref(props.field.field + '_copy');
 			const duplicating = ref(false);
 			const collections = computed(() =>
-				collectionsStore.state.collections
+				collectionsStore.collections
 					.map(({ collection }) => collection)
 					.filter((collection) => collection.startsWith('directus_') === false)
 			);
@@ -371,7 +371,7 @@ export default defineComponent({
 			const translationsCollection = computed(() => {
 				if (localType.value !== 'translations') return null;
 
-				const relation = relationsStore.state.relations.find((relation: Relation) => {
+				const relation = relationsStore.relations.find((relation: Relation) => {
 					return relation.one_collection === props.field.collection && relation.one_field === props.field.field;
 				});
 

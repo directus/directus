@@ -5,10 +5,10 @@ import { notEmpty } from '@/utils/is-empty/';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import VueI18n from 'vue-i18n';
 
-export const useCollectionsStore = createStore({
+export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
 	state: () => ({
 		collections: [] as Collection[],
@@ -31,7 +31,7 @@ export const useCollectionsStore = createStore({
 
 			const collections: CollectionRaw[] = response.data.data;
 
-			this.state.collections = collections.map((collection: CollectionRaw) => {
+			this.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
 				const name = formatTitle(collection.collection);
 
@@ -63,7 +63,7 @@ export const useCollectionsStore = createStore({
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
+			this.collections = this.collections.map((collection: CollectionRaw) => {
 				let name: string | VueI18n.TranslateResult;
 
 				if (i18n.te(`collection_names.${collection.collection}`)) {
@@ -106,7 +106,7 @@ export const useCollectionsStore = createStore({
 			}
 		},
 		getCollection(collectionKey: string): Collection | null {
-			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
+			return this.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},
 });

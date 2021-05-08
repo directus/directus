@@ -1,9 +1,9 @@
 import { Notification, NotificationRaw } from '@/types';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useNotificationsStore = createStore({
+export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
 	state: () => ({
 		dialogs: [] as Notification[],
@@ -18,8 +18,8 @@ export const useNotificationsStore = createStore({
 			if (notification.dialog === true) {
 				notification.persist = true;
 
-				this.state.dialogs = [
-					...this.state.dialogs,
+				this.dialogs = [
+					...this.dialogs,
 					{
 						...notification,
 						id,
@@ -27,8 +27,8 @@ export const useNotificationsStore = createStore({
 					},
 				];
 			} else {
-				this.state.queue = [
-					...this.state.queue,
+				this.queue = [
+					...this.queue,
 					{
 						...notification,
 						id,
@@ -46,28 +46,28 @@ export const useNotificationsStore = createStore({
 			return id;
 		},
 		hide(id: string) {
-			const queues = [...this.state.queue, ...this.state.dialogs];
+			const queues = [...this.queue, ...this.dialogs];
 			const toBeHidden = queues.find((n) => n.id === id);
 			if (!toBeHidden) return;
 
-			if (toBeHidden.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
-			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeHidden.dialog === true) this.dialogs = this.dialogs.filter((n) => n.id !== id);
+			else this.queue = this.queue.filter((n) => n.id !== id);
 
-			this.state.previous = [...this.state.previous, toBeHidden];
+			this.previous = [...this.previous, toBeHidden];
 		},
 		remove(id: string) {
-			const queues = [...this.state.queue, ...this.state.dialogs];
+			const queues = [...this.queue, ...this.dialogs];
 
 			const toBeRemoved = queues.find((n) => n.id === id);
 			if (!toBeRemoved) return;
 
-			if (toBeRemoved.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
-			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeRemoved.dialog === true) this.dialogs = this.dialogs.filter((n) => n.id !== id);
+			else this.queue = this.queue.filter((n) => n.id !== id);
 		},
 		update(id: string, updates: Partial<Notification>) {
-			this.state.queue = this.state.queue.map(updateIfNeeded);
-			this.state.dialogs = this.state.dialogs.map(updateIfNeeded);
-			this.state.previous = this.state.queue.map(updateIfNeeded);
+			this.queue = this.queue.map(updateIfNeeded);
+			this.dialogs = this.dialogs.map(updateIfNeeded);
+			this.previous = this.queue.map(updateIfNeeded);
 
 			function updateIfNeeded(notification: Notification) {
 				if (notification.id === id) {

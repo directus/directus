@@ -1,11 +1,11 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
 type Latency = {
 	latency: number;
 	timestamp: Date;
 };
 
-export const useLatencyStore = createStore({
+export const useLatencyStore = defineStore({
 	id: 'latencyStore',
 	state: () => ({
 		latency: [] as Latency[],
@@ -15,8 +15,8 @@ export const useLatencyStore = createStore({
 			this.reset();
 		},
 		save(latency: Latency) {
-			this.state.latency.push(latency);
-			this.state.latency = this.state.latency.slice(-20);
+			this.latency.push(latency);
+			this.latency = this.latency.slice(-20);
 		},
 	},
 });
