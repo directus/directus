@@ -83,6 +83,8 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
+nullable: Разрешить NULL значение
+allow_null_value: Разрешить NULL значение
 field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
@@ -520,6 +522,7 @@ display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
+unlimited: Без ограничения
 open_link_in: Открыть ссылку в
 new_tab: Новая вкладка
 current_tab: Текущая вкладка
@@ -813,9 +816,12 @@ view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 interfaces:
   presentation-links:
+    links: Ссылки
     primary: Первичный
+    link: Ссылки
   input-code:
     code: Код
+    placeholder: Введите код сюда...
   collection:
     collection: Коллекция
     description: Выбрать из существующих коллекций
@@ -826,6 +832,8 @@ interfaces:
     include_system_collections: Включить Системные Коллекции
   select-color:
     color: Цвет
+    description: Введите или выберите значение цвета
+    placeholder: Выберите цвет...
   datetime:
     datetime: Дата и время
     description: Введите даты и время
