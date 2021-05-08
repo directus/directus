@@ -18,6 +18,7 @@ export default async function start(): Promise<void> {
 
 	server
 		.listen(port, () => {
+			logger.info('RUNNING CUSTOM DIRECTUS BUILD! BY GRAFENE');
 			logger.info(`Server started at port ${port}`);
 			emitAsyncSafe('server.start');
 		})
