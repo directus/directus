@@ -16,7 +16,7 @@ const liquidEngine = new Liquid({
 export type EmailOptions = {
 	to: string | string[];
 	cc?: string | string[];
-	bcc?: to: string | string[];
+	bcc?: string | string[];
 	template?: {
 		name: string;
 		data: Record<string, any>;
