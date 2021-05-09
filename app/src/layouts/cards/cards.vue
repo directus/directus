@@ -48,6 +48,13 @@
 
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+			<export-sidebar-detail
+				:fields="fields"
+				:layout-query="layoutQuery"
+				:filters="_filters"
+				:search-query="searchQuery"
+				:collection="collection"
+			/>
 		</portal>
 
 		<portal to="actions:prepend">
@@ -140,6 +147,7 @@ import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import Card from './components/card.vue';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
@@ -169,7 +177,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
-	components: { Card, CardsHeader },
+	components: { Card, CardsHeader, ExportSidebarDetail },
 	props: {
 		collection: {
 			type: String,
@@ -302,6 +310,7 @@ export default defineComponent({
 			itemCount,
 			totalCount,
 			fieldsInCollection,
+			fields,
 			limit,
 			size,
 			primaryKeyField,

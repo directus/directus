@@ -33,55 +33,74 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Collection } from '@/types';
+import { defineComponent, ref, Ref, toRefs, PropType } from '@vue/composition-api';
+import { Field, Filter } from '@/types';
+import filtersToQuery from '@/utils/filters-to-query';
+import useSync from '@/composables/use-sync';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 
+type layoutQuery = {
+	fields?: string[];
+	sort?: string;
+};
+
 export default defineComponent({
 	props: {
+		fields: {
+			type: Array as PropType<Field[]>,
+			default: () => [],
+		},
 		layoutQuery: {
-			type: Object,
+			type: Object as PropType<layoutQuery>,
 			default: () => ({}),
 		},
+		filters: {
+			type: Array as PropType<Filter[]>,
+			default: () => [],
+		},
 		searchQuery: {
-			type: String,
+			type: String as PropType<string | null>,
 			default: null,
 		},
 		collection: {
-			type: Object as PropType<Collection>,
+			type: String,
 			required: true,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const format = ref('csv');
 		const useFilters = ref(true);
+
+		const { fields, searchQuery, filters } = toRefs(props);
+		const layoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
 
 		return { format, useFilters, exportData };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection.collection}`;
+			const url = getRootPath() + `items/${props.collection}`;
 
 			let params: Record<string, any> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
 			};
 
-			if (format.value === 'csv') {
-				params.export = 'csv';
-			} else if (format.value === 'xml') {
-				params.export = 'xml';
-			} else {
-				params.export = 'json';
-			}
+			if (format.value === 'csv' || format.value === 'xml' || format.value === 'json') params.export = format.value;
+			else params.export = 'json';
 
 			if (useFilters.value === true) {
-				params = {
-					...params,
-					...props.layoutQuery,
-				};
+				if (layoutQuery.value && layoutQuery.value.sort) params.sort = layoutQuery.value.sort;
+				if (fields.value) params.fields = [...fields.value];
+				if (searchQuery.value) params.search = searchQuery.value;
 
-				if (props.searchQuery) {
-					params.search = props.searchQuery;
+				if (filters.value) {
+					let parsed_filter = filtersToQuery(filters.value);
+					var filter = [] as any;
+
+					Object.keys(parsed_filter).forEach(function (item) {
+						filter.push(JSON.stringify(parsed_filter[item]));
+					});
+
+					params.filter = encodeURI(filter);
 				}
 			}
 
