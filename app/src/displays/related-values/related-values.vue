@@ -62,7 +62,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, te } = useI18n();
 
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
@@ -82,13 +82,13 @@ export default defineComponent({
 		const unit = computed(() => {
 			if (Array.isArray(props.value)) {
 				if (props.value.length === 1) {
-					if (i18n.global.te(`collection_names_singular.${relatedCollection.value}`)) {
+					if (te(`collection_names_singular.${relatedCollection.value}`)) {
 						return t(`collection_names_singular.${relatedCollection.value}`);
 					} else {
 						return t('item');
 					}
 				} else {
-					if (i18n.global.te(`collection_names_plural.${relatedCollection.value}`)) {
+					if (te(`collection_names_plural.${relatedCollection.value}`)) {
 						return t(`collection_names_plural.${relatedCollection.value}`);
 					} else {
 						return t('items');

@@ -238,7 +238,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, te } = useI18n();
 
 		const router = useRouter();
 
@@ -306,7 +306,7 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const title = computed(() => {
-			if (i18n.global.te(`collection_names_singular.${props.collection}`)) {
+			if (te(`collection_names_singular.${props.collection}`)) {
 				return isNew.value
 					? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
 					: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });

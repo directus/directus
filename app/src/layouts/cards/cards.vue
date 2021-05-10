@@ -215,7 +215,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { t } = useI18n();
+		const { t, n } = useI18n();
 
 		const relationsStore = useRelationsStore();
 
@@ -269,18 +269,18 @@ export default defineComponent({
 					return t('one_filtered_item');
 				}
 				return t('start_end_of_count_filtered_items', {
-					start: i18n.global.n((+page.value - 1) * limit.value + 1),
-					end: i18n.global.n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: i18n.global.n(itemCount.value || 0),
+					start: n((+page.value - 1) * limit.value + 1),
+					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
+					count: n(itemCount.value || 0),
 				});
 			}
 			if (itemCount.value === 1) {
 				return t('one_item');
 			}
 			return t('start_end_of_count_items', {
-				start: i18n.global.n((+page.value - 1) * limit.value + 1),
-				end: i18n.global.n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: i18n.global.n(itemCount.value || 0),
+				start: n((+page.value - 1) * limit.value + 1),
+				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
+				count: n(itemCount.value || 0),
 			});
 		});
 

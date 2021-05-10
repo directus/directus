@@ -225,7 +225,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, locale } = useI18n();
 
 		const router = useRouter();
 
@@ -437,7 +437,7 @@ export default defineComponent({
 
 			const newLang = user?.language;
 
-			if (newLang && newLang !== i18n.global.locale.value) {
+			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);
 
 				await fieldsStore.hydrate();

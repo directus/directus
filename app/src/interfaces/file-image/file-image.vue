@@ -82,7 +82,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { t } = useI18n();
+		const { t, n } = useI18n();
 
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
@@ -116,7 +116,7 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${i18n.global.n(width)}x${i18n.global.n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(

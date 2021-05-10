@@ -148,7 +148,7 @@ export default defineComponent({
 			if (!props.file) return null;
 			if (!props.file.filesize) return null;
 
-			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.global.locale.value.split('-')[0] }
+			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: locale.value.split('-')[0] }
 		});
 
 		const { creationDate, modificationDate } = useDates();

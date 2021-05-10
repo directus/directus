@@ -109,7 +109,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { t } = useI18n();
+		const { t, te } = useI18n();
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -128,7 +128,7 @@ export default defineComponent({
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
 			const isNew = props.primaryKey === '+';
 
-			if (i18n.global.te(`collection_names_singular.${collection.collection}`)) {
+			if (te(`collection_names_singular.${collection.collection}`)) {
 				return isNew
 					? t('creating_unit', {
 							unit: t(`collection_names_singular.${collection.collection}`),
