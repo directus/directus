@@ -36,7 +36,7 @@ export class MailService {
 	async send(options: EmailOptions): Promise<void> {
 		if (!mailer) return;
 
-		const { template, ... nodeMailerOptions } = options;
+		const { template, ...nodeMailerOptions } = options;
 		let { html } = options;
 
 		const from = options.from || (env.EMAIL_FROM as string);
