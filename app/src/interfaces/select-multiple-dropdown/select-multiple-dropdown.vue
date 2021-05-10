@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<v-select
 		v-else
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
 
 type Option = {
@@ -59,6 +60,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+	},
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>
