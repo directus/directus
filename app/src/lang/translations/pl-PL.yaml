@@ -143,6 +143,7 @@ decimal: Liczba dziesiętna
 float: Liczba zmiennoprzecinkowa
 integer: Liczba całkowita
 json: JSON
+xml: XML
 string: Ciąg znaków
 text: Tekst
 time: Czas
@@ -337,6 +338,7 @@ interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 reset_interface: Resetuj interfejs
 display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
+list-m2a: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'
@@ -611,6 +613,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
 layout: Układ
@@ -844,9 +847,25 @@ view_project: Zobacz projekt
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
+    presentation-links: Linki przycisków
+    links: Linki
+    description: Konfigurowalne przyciski linków do uruchamiania dynamicznych adresów URL
+    style: Style
     primary: Podstawowy
+    link: Linki
+    button: Przyciski
+    error: Nie można wykonać akcji
+  select-multiple-checkbox:
+    checkboxes: Pola wyboru
+    description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
+    allow_other: Zezwól na inne
+    show_more: 'Pokaż {count} więcej'
+    items_shown: Wyświetlane elementy
   input-code:
     code: Kod
+    description: Zapisz lub udostępnij kod snippeta
+    line_number: Numer linii
+    placeholder: Wprowadź kod tutaj...
   collection:
     collection: Kolekcja
     description: Wybierz pomiędzy istniejącymi kolekcjami
@@ -857,6 +876,11 @@ interfaces:
     include_system_collections: Dołącz kolekcje systemowe
   select-color:
     color: Kolor
+    description: Wprowadź lub wybierz kolor
+    placeholder: Wybierz kolor...
+    preset_colors: Ustawienia kolorów
+    preset_colors_add_label: Dodaj nowy kolor...
+    name_placeholder: Wprowadź nazwę koloru...
   datetime:
     datetime: Data i godzina
     description: Wprowadź daty i godziny
@@ -865,12 +889,30 @@ interfaces:
     use_24: Użyj 24-godzinnego formatu
   system-display-template:
     display-template: Wyświetl szablon
+    description: Wymieszaj wartości pola statycznego i pola dynamicznego
+    collection_field: Pole kolekcji
     collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
     select_a_collection: Wybierz kolekcje
   presentation-divider:
     divider: Separator
+    description: Etykietowanie i dzielenie pól na sekcje
+    title_placeholder: Wprowadź tytuł...
+    inline_title: Tytuł w linii
+    inline_title_label: Pokaż tytuł w linii
+    margin_top: Margines górny
+    margin_top_label: Zwiększ margines górny
   select-dropdown:
+    description: Wybierz wartość z listy rozwijanej
+    choices_placeholder: Dodaj nowy wybór
+    allow_other: Zezwól na inne
+    allow_other_label: Zezwalaj na inne wartości
+    allow_none: Zezwalaj na brak
+    allow_none_label: Zezwól na brak zaznaczenia
+    choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
+    description: Wybierz wiele wartości z listy rozwijanej
   file:
     file: Plik
     description: Wybierz lub prześlij plik
@@ -879,12 +921,26 @@ interfaces:
     description: Wybierz lub prześlij wiele plików
   input-hash:
     hash: Hash
+    description: Wprowadź wartość do hashowania
+    masked: Zamaskowany
+    masked_label: Ukryj rzeczywiste wartości
   select-icon:
     icon: Ikona
+    description: Wybierz ikonę z listy rozwijanej
+    search_for_icon: Szukaj ikony...
   file-image:
     image: Obraz
+    description: Wybierz lub prześlij plik
   system-interface:
     interface: Interfejs
+    description: Wybierz istniejący interfejs
+    placeholder: Wybierz interfejs...
+  system-interface-options:
+    interface-options: Opcje interfejsu
+    description: Okno do wyboru opcji interfejsu
+  list-m2m:
+    many-to-many: Wiele do wielu
+    description: Wybierz wiele powiązanych elementów
   select-dropdown-m2o:
     display_template: Wyświetl szablon
   slider:
@@ -905,6 +961,8 @@ interfaces:
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
+  input:
+    mask: Zamaskowany
   boolean:
     toggle: Przełącz
     label_default: Włączone
@@ -919,6 +977,10 @@ interfaces:
       auto: Automatycznie
       dropdown: Lista rozwijana
       modal: Okno
+  input-autocomplete-api:
+    value_path: Ścieżka bazowa
+    trigger: Wyzwalacz
+    rate: Oceń
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1021,3 +1083,7 @@ layouts:
     comfortable: Wygodny
     compact: Kompaktowy
     cozy: Przytulny
+  calendar:
+    calendar: Kalendarz
+    start_date_field: Pole daty rozpoczęcia
+    end_date_field: Pole daty zakończenia
