@@ -3,7 +3,7 @@
 		<!-- <teleport to="#target-layout-options"> -->
 		<div class="field">
 			<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
-			<v-select v-model="imageSource" show-deselect item-modelValue="field" item-text="name" :items="fileFields" />
+			<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
 		</div>
 
 		<div class="field">

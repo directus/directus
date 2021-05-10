@@ -71,7 +71,7 @@
 				<v-select
 					:placeholder="$t('collection') + '...'"
 					:items="availableCollections"
-					item-modelValue="collection"
+					item-value="collection"
 					item-text="name"
 					item-disabled="meta.singleton"
 					multiple
