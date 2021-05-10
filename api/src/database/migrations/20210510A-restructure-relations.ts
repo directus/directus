@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
-		table.dropColumns('many_collection', 'many_field', 'many_primary', 'one_collection', 'one_primary');
+		table.dropColumns('many_primary', 'one_primary');
 		table.string('one_deselect_action');
 		table.string('sort_field', 64).alter();
 	});
@@ -17,10 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.dropColumn('one_deselect_action');
-		table.string('many_collection', 64);
-		table.string('many_field', 64);
 		table.string('many_primary', 64);
-		table.string('one_collection', 64);
 		table.string('one_primary', 64);
 		table.string('sort_field', 255).alter();
 	});
