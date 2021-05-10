@@ -2,18 +2,18 @@
 	<v-list>
 		<v-list-item
 			v-if="defaultValue === null || !isRequired"
-			:disabled="value === null"
+			:disabled="modelValue === null"
 			clickable
-			@click="$emit('input', null)"
+			@click="$emit('update:modelValue', null)"
 		>
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
 			v-if="defaultValue !== null"
-			:disabled="value === defaultValue"
+			:disabled="modelValue === defaultValue"
 			clickable
-			@click="$emit('input', defaultValue)"
+			@click="$emit('update:modelValue', defaultValue)"
 		>
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
@@ -22,7 +22,7 @@
 		</v-list-item>
 		<v-list-item
 			v-if="initialValue"
-			:disabled="initialValue === undefined || value === initialValue"
+			:disabled="initialValue === undefined || modelValue === initialValue"
 			clickable
 			@click="$emit('unset', field)"
 		>
@@ -43,13 +43,13 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@/types';
 
 export default defineComponent({
-	emits: ['input', 'unset', 'edit-raw'],
+	emits: ['update:modelValue', 'unset', 'edit-raw'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},

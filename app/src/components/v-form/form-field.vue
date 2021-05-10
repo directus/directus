@@ -21,9 +21,9 @@
 
 			<form-field-menu
 				:field="field"
-				:value="internalValue"
+				:modelValue="internalValue"
 				:initial-value="initialValue"
-				@input="emitValue($event)"
+				@update:modelValue="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 			/>
