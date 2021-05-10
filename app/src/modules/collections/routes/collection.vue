@@ -232,7 +232,7 @@
 					"
 				/>
 			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
 			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />

@@ -20,9 +20,9 @@ import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: String,
 			default: 'tabular',
 		},
@@ -31,7 +31,7 @@ export default defineComponent({
 		const { layouts } = getLayouts();
 
 		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.value);
+			const layout = layouts.value.find((layout) => layout.id === props.modelValue);
 
 			if (layout === undefined) {
 				return layouts.value.find((layout) => layout.id === 'tabular');
@@ -42,10 +42,10 @@ export default defineComponent({
 
 		const layout = computed({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newType: string) {
-				emit('input', newType);
+				emit('update:modelValue', newType);
 			},
 		});
 

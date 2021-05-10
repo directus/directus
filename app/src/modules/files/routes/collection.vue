@@ -147,7 +147,7 @@
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
 			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
 		</template>
 
