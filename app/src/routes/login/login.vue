@@ -13,7 +13,7 @@
 		<template v-else #notice>
 			<v-icon name="lock_outlined" left />
 			{{
-				logoutReason && $te(`logoutReason.${logoutReason}`) ? t(`logoutReason.${logoutReason}`) : t('not_authenticated')
+				logoutReason && te(`logoutReason.${logoutReason}`) ? t(`logoutReason.${logoutReason}`) : t('not_authenticated')
 			}}
 		</template>
 	</public-view>
@@ -41,13 +41,13 @@ export default defineComponent({
 	},
 	components: { LoginForm, ContinueAs },
 	setup() {
-		const { t } = useI18n();
+		const { t, te } = useI18n();
 
 		const appStore = useAppStore();
 
 		const authenticated = computed(() => appStore.authenticated);
 
-		return { t, authenticated };
+		return { t, te, authenticated };
 	},
 });
 </script>
