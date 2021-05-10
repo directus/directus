@@ -14,8 +14,7 @@
 		<div class="drawer-batch-content">
 			<v-form
 				:collection="collection"
-				:edits="internalEdits"
-				@input="internalEdits = $event"
+				v-model="internalEdits"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"

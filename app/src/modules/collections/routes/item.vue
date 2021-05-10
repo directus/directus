@@ -154,8 +154,7 @@
 			:fields="fields"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
-			:edits="edits"
-			@input="edits = $event"
+			v-model="edits"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">

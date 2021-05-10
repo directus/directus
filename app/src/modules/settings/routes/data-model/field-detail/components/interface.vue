@@ -17,8 +17,7 @@
 				v-else-if="Array.isArray(selectedInterface.options)"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				:edits="fieldData.meta.options"
-				@input="fieldData.meta.options = $event"
+				v-model="fieldData.meta.options"
 			/>
 
 			<component

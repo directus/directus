@@ -34,10 +34,10 @@
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:edits="internalEdits[junctionField]"
+					:modelValue="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					autofocus
-					@input="setJunctionEdits"
+					@update:modelValue="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
@@ -48,8 +48,7 @@
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
-				:edits="internalEdits"
-				@input="internalEdits = $event"
+				v-model="internalEdits"
 			/>
 		</div>
 	</v-drawer>

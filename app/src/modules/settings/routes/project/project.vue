@@ -18,13 +18,7 @@
 		</template>
 
 		<div class="settings">
-			<v-form
-				:initial-values="initialValues"
-				:edits="edits"
-				@input="edits = $event"
-				:fields="fields"
-				:primary-key="1"
-			/>
+			<v-form :initial-values="initialValues" v-model="edits" :fields="fields" :primary-key="1" />
 		</div>
 
 		<template #sidebar>

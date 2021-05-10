@@ -70,8 +70,7 @@
 				:initial-values="item && item.meta"
 				:batch-mode="isBatch"
 				:primary-key="collection"
-				:edits="edits.meta"
-				@input="edits.meta = $event"
+				v-model="edits.meta"
 				:disabled="item && item.collection.startsWith('directus_')"
 			/>
 		</div>

@@ -22,7 +22,7 @@
 			:field="field"
 			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
-			:modelValue="(edits || {})[field.field]"
+			:modelValue="(modelValue || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
 			:disabled="disabled"
 			:batch-mode="batchMode"
@@ -54,7 +54,7 @@ type FieldValues = {
 };
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { FormField },
 	props: {
 		collection: {
@@ -69,7 +69,7 @@ export default defineComponent({
 			type: Object as PropType<FieldValues>,
 			default: null,
 		},
-		edits: {
+		modelValue: {
 			type: Object as PropType<FieldValues>,
 			default: null,
 		},
@@ -104,7 +104,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const values = computed(() => {
-			return Object.assign({}, props.initialValues, props.edits);
+			return Object.assign({}, props.initialValues, props.modelValue);
 		});
 
 		const { formFields, gridClass } = useForm();
@@ -203,16 +203,16 @@ export default defineComponent({
 		}
 
 		function setValue(field: Field, value: any) {
-			const edits = props.edits ? clone(props.edits) : {};
+			const edits = props.modelValue ? clone(props.modelValue) : {};
 			edits[field.field] = value;
-			emit('input', edits);
+			emit('update:modelValue', edits);
 		}
 
 		function unsetValue(field: Field) {
-			if (field.field in (props.edits || {})) {
-				const newEdits = { ...props.edits };
+			if (field.field in (props.modelValue || {})) {
+				const newEdits = { ...props.modelValue };
 				delete newEdits[field.field];
-				emit('input', newEdits);
+				emit('update:modelValue', newEdits);
 			}
 		}
 

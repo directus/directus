@@ -55,8 +55,7 @@
 			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
-			:edits="edits"
-			@input="edits = $event"
+			v-model="edits"
 		/>
 
 		<template #sidebar>

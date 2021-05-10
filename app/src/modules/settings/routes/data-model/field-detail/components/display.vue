@@ -17,8 +17,7 @@
 				v-else-if="Array.isArray(selectedDisplay.options)"
 				:fields="selectedDisplay.options"
 				primary-key="+"
-				:edits="fieldData.meta.display_options"
-				@input="fieldData.meta.display_options = $event"
+				v-model="fieldData.meta.display_options"
 			/>
 
 			<component

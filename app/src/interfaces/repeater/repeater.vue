@@ -43,9 +43,9 @@
 				<v-form
 					:disabled="disabled"
 					:fields="fields"
-					:edits="activeItem"
+					:modelValue="activeItem"
 					primary-key="+"
-					@input="updateValues(active, $event)"
+					@update:modelValue="updateValues(active, $event)"
 				/>
 			</div>
 		</v-drawer>
