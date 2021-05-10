@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
 import {
 	AbstractServiceOptions,
@@ -118,6 +118,66 @@ export class RelationsService {
 		}
 
 		return results[0];
+	}
+
+	/**
+	 * Create a new relationship / foreign key constraint
+	 */
+	async create(relation: Partial<Relation>): Promise<void> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		if (!relation.collection) {
+			throw new InvalidPayloadException('"collection" is required');
+		}
+
+		if (!relation.field) {
+			throw new InvalidPayloadException('"field" is required');
+		}
+
+		if (relation.collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${relation.collection}" doesn't exist`);
+		}
+
+		if (relation.field in this.schema.collections[relation.collection].fields === false) {
+			throw new InvalidPayloadException(
+				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
+			);
+		}
+
+		const existingRelation = this.schema.relations.find(
+			(existingRelation) =>
+				existingRelation.collection === relation.collection && existingRelation.field === relation.field
+		);
+
+		if (existingRelation) {
+			throw new InvalidPayloadException(
+				`Field "${relation.field}" in collection "${relation.collection}" already has an associated relationship`
+			);
+		}
+
+		const metaRow = {
+			...(relation.meta || {}),
+			many_collection: relation.collection,
+			many_field: relation.field,
+			one_collection: relation.related_collection || null,
+		};
+
+		await this.knex.transaction(async (trx) => {
+			if (relation.related_collection) {
+				await trx.schema.alterTable(relation.collection!, async (table) => {
+					table
+						.foreign(relation.field!)
+						.references(
+							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
+						)
+						.onDelete(relation.schema?.on_delete || 'NO ACTION');
+				});
+			}
+
+			await this.relationsItemService.createOne(metaRow);
+		});
 	}
 
 	/**
