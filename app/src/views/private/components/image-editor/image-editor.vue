@@ -91,10 +91,10 @@
 				<div class="spacer" />
 
 				<div class="dimensions" v-if="imageData">
-					{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
+					{{ n(imageData.width) }}x{{ n(imageData.height) }}
 					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 						->
-						{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
+						{{ n(newDimensions.width) }}x{{ n(newDimensions.height) }}
 					</template>
 				</div>
 
@@ -145,7 +145,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { t } = useI18n();
+		const { t, n } = useI18n();
 
 		const localActive = ref(false);
 
@@ -193,6 +193,7 @@ export default defineComponent({
 
 		return {
 			t,
+			n,
 			internalActive,
 			loading,
 			error,

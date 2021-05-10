@@ -8,12 +8,12 @@
 
 			<div v-if="file.width && file.height">
 				<dt>{{ t('dimensions') }}</dt>
-				<dd>{{ $n(file.width) }} × {{ $n(file.height) }}</dd>
+				<dd>{{ n(file.width) }} × {{ n(file.height) }}</dd>
 			</div>
 
 			<div v-if="file.duration">
 				<dt>{{ t('duration') }}</dt>
-				<dd>{{ $n(file.duration) }}</dd>
+				<dd>{{ n(file.duration) }}</dd>
 			</div>
 
 			<div v-if="file.filesize">
@@ -141,7 +141,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, n } = useI18n();
 
 		const size = computed(() => {
 			if (props.isNew) return null;
@@ -161,6 +161,7 @@ export default defineComponent({
 
 		return {
 			t,
+			n,
 			readableMimeType,
 			size,
 			creationDate,
