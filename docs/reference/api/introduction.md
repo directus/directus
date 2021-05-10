@@ -256,3 +256,11 @@ Useful reading:
 - [_HTTP GET with request body_ (StackOverflow, 2009 and ongoing)](https://stackoverflow.com/questions/978061/http-get-with-request-body)
 - [_Elastic Search GET body usage_ (elastic, n.d.)](https://www.elastic.co/guide/en/elasticsearch/guide/current/_empty_search.html)
 - [_Dropbox starts using POST, and why this is poor API design._ (Evert Pot, 2015)](https://evertpot.com/dropbox-post-api/)
+
+## System data in GraphQL
+
+Due to restrictions in GraphQL itself, it's impossible to properly scope/namespace system functionality from regular
+data access. In order to prevent any naming conflicts between user-created and system data, we've scoped the access to
+the two into two endpoints for user and system data respectively: `/graphql` and `/graphql/system`. Both endpoints share
+the same underlying schema, so **nested relations will work as expected** regardless if they "cross over" between user
+and system data. The only difference in the two endpoints are the root query and mutation fields available.

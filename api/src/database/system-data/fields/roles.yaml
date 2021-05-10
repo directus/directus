@@ -3,33 +3,33 @@ table: directus_roles
 fields:
   - field: id
     hidden: true
-    interface: text-input
+    interface: input
     special: uuid
 
   - field: name
-    interface: text-input
+    interface: input
     options:
       placeholder: The unique name for this role...
     width: half
 
   - field: icon
-    interface: icon
+    interface: select-icon
     display: icon
     width: half
 
   - field: description
-    interface: text-input
+    interface: input
     options:
       placeholder: A description of this role...
     width: full
 
   - field: app_access
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 
   - field: admin_access
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 
@@ -41,12 +41,12 @@ fields:
     width: full
 
   - field: enforce_tfa
-    interface: toggle
+    interface: boolean
     special: boolean
     width: half
 
   - field: users
-    interface: one-to-many
+    interface: list-o2m
     special: o2m
     options:
       fields:
@@ -55,7 +55,7 @@ fields:
     width: full
 
   - field: module_list
-    interface: repeater
+    interface: list
     options:
       template: '{{ name }}'
       addLabel: Add New Module...
@@ -64,13 +64,13 @@ fields:
           field: icon
           type: string
           meta:
-            interface: icon
+            interface: select-icon
             width: half
         - name: Name
           field: name
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               iconRight: title
@@ -79,7 +79,7 @@ fields:
           field: link
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: full
             options:
               iconRight: link
@@ -88,7 +88,7 @@ fields:
     width: full
 
   - field: collection_list
-    interface: repeater
+    interface: list
     options:
       template: '{{ group_name }}'
       addLabel: Add New Group...
@@ -98,7 +98,7 @@ fields:
           type: string
           meta:
             width: half
-            interface: text-input
+            interface: input
             options:
               iconRight: title
               placeholder: Label this group...
@@ -111,7 +111,7 @@ fields:
             default_value: always_open
           meta:
             width: half
-            interface: dropdown
+            interface: select-dropdown
             options:
               choices:
                 - value: always_open
@@ -124,7 +124,7 @@ fields:
           field: collections
           type: JSON
           meta:
-            interface: repeater
+            interface: list
             options:
               addLabel: Add New Collection...
               template: '{{ collection }}'

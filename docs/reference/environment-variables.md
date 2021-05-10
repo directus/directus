@@ -164,9 +164,9 @@ Alternatively, you can provide the individual connection parameters:
 
 Sessions are only used in the oAuth authentication flow.
 
-| Variable        | Description                                                               | Default Value |
-| --------------- | ------------------------------------------------------------------------- | ------------- |
-| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, or `memcache`. | `memory`      |
+| Variable        | Description                                                                          | Default Value |
+| --------------- | ------------------------------------------------------------------------------------ | ------------- |
+| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, `memcache` or `database`. | `memory`      |
 
 Based on the `SESSION_STORE` used, you must also provide the following configurations:
 
@@ -193,6 +193,10 @@ Alternatively, you can provide the individual connection parameters:
 | Variable           | Description                        | Default Value |
 | ------------------ | ---------------------------------- | ------------- |
 | `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+
+### Database
+
+No additional configuration required.
 
 ## File Storage
 

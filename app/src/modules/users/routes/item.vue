@@ -283,8 +283,14 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
+			ref('directus_users'),
+			item,
+			isNew
+		);
+
 		// These fields will be shown in the sidebar instead
-		const fieldsBlacklist = [
+		const fieldsDenyList = [
 			'id',
 			'external_id',
 			'last_page',
@@ -296,18 +302,10 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fieldsStore
-				.getFieldsForCollection('directus_users')
-				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
+			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
-
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed } = usePermissions(
-			ref('directus_users'),
-			item,
-			isNew
-		);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');

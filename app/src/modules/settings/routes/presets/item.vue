@@ -395,7 +395,7 @@ export default defineComponent({
 					name: i18n.t('collection'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: collectionsStore.state.collections
 								.map((collection) => ({
@@ -416,7 +416,7 @@ export default defineComponent({
 					name: i18n.t('scope'),
 					type: 'string',
 					meta: {
-						interface: 'scope',
+						interface: 'system-scope',
 						width: 'half',
 					},
 				},
@@ -425,7 +425,7 @@ export default defineComponent({
 					name: i18n.t('layout'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: layouts.value.map((layout) => ({
 								text: layout.name,
@@ -440,7 +440,7 @@ export default defineComponent({
 					name: i18n.t('name'),
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						width: 'half',
 						options: {
 							placeholder: i18n.t('preset_name_placeholder'),
@@ -452,7 +452,7 @@ export default defineComponent({
 					name: i18n.t('divider'),
 					type: 'alias',
 					meta: {
-						interface: 'divider',
+						interface: 'presentation-divider',
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),

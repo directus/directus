@@ -82,7 +82,8 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 #### Supported Databases
 
 - PostgreSQL 10+
-- MySQL 5.7.8+ (8.* with mysql_native_password [here](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
+- MySQL 5.7.8+ (8.\* with mysql_native_password
+  [here](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
 - MariaDB 10.2+
 - SQLite 3+
 - MS-SQL X.X+
@@ -106,7 +107,7 @@ _Other operating systems may also work, but are not officially supported._
 In addition to the [Directus Documentation](https://docs.directus.io), you can also request help via the following
 channels:
 
-- [Discord](http://discord.gg/directus) (Live Discussions)
+- [Discord](https://directus.chat) (Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
 - [GitHub Discussions](https://github.com/directus/directus/discussions/category_choices) (Questions, Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
