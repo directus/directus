@@ -147,4 +147,18 @@ router.patch(
 	respond
 );
 
+router.delete(
+	'/:collection/:field',
+	validateCollection,
+	asyncHandler(async (req, res, next) => {
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		await service.deleteOne(req.params.collection, req.params.field);
+		return next();
+	}),
+	respond
+);
+
 export default router;

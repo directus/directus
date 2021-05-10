@@ -207,8 +207,7 @@ export class RelationsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			// NOTE: on_delete is the only editable part
-			if (relation.schema?.on_delete) {
+			if (existingRelation.related_collection) {
 				await trx.schema.alterTable(collection, async (table) => {
 					// If the FK already exists in the DB, drop it first
 					if (existingRelation?.schema) {
@@ -237,6 +236,43 @@ export class RelationsService {
 						one_collection: existingRelation.related_collection || null,
 					});
 				}
+			}
+		});
+	}
+
+	/**
+	 * Delete an existing relationship
+	 */
+	async deleteOne(collection: string, field: string): Promise<void> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		if (collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
+		}
+
+		if (field in this.schema.collections[collection].fields === false) {
+			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
+		}
+
+		const existingRelation = this.schema.relations.find(
+			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
+		);
+
+		if (!existingRelation) {
+			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
+		}
+
+		await this.knex.transaction(async (trx) => {
+			if (existingRelation.schema) {
+				await trx.schema.alterTable(existingRelation.collection, (table) => {
+					table.dropForeign(existingRelation.field);
+				});
+			}
+
+			if (existingRelation.meta) {
+				await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 			}
 		});
 	}
