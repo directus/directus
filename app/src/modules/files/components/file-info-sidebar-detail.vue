@@ -129,7 +129,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
-	inheritAttrs: false,
 	props: {
 		file: {
 			type: Object,
