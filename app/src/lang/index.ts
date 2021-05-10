@@ -6,7 +6,6 @@ import enUSBase from './translations/en-US.yaml';
 
 export const i18n = createI18n({
 	legacy: false,
-	globalInjection: true,
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {
