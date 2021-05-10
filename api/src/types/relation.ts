@@ -1,14 +1,10 @@
+import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
+
 export type RelationRaw = {
 	id: number;
 
-	many_collection: string;
-	many_field: string;
-	many_primary: string;
-
-	one_collection: string | null;
 	one_field: string | null;
-	one_primary: string | null;
-
+	one_deselect_action: 'nullify' | 'delete';
 	one_collection_field: string | null;
 	one_allowed_collections: string | null;
 
@@ -17,19 +13,21 @@ export type RelationRaw = {
 };
 
 export type Relation = {
-	id: number;
+	collection: string;
+	field: string;
+	related_collection: string;
 
-	many_collection: string;
-	many_field: string;
-	many_primary: string;
+	schema: ForeignKey;
 
-	one_collection: string | null;
-	one_field: string | null;
-	one_primary: string | null;
+	meta?: {
+		id: number;
 
-	one_collection_field: string | null;
-	one_allowed_collections: string[] | null;
+		one_field: string | null;
+		one_collection_field: string | null;
+		one_allowed_collections: string[] | null;
+		one_deselect_action: 'nullify' | 'delete';
 
-	junction_field: string | null;
-	sort_field: string | null;
+		junction_field: string | null;
+		sort_field: string | null;
+	};
 };
