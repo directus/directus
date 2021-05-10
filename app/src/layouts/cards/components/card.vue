@@ -1,6 +1,6 @@
 <template>
 	<div class="card" :class="{ loading, readonly }" @click="handleClick">
-		<div class="header" :class="{ selected: item && value.includes(item[itemKey]) }">
+		<div class="header" :class="{ selected: item && modelValue.includes(item[itemKey]) }">
 			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
 				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
 			</div>
@@ -37,7 +37,7 @@ type File = {
 };
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		icon: {
 			type: String,
@@ -59,7 +59,7 @@ export default defineComponent({
 			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: () => [],
 		},
@@ -116,7 +116,7 @@ export default defineComponent({
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
-			return props.value.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
+			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
 		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick };
@@ -124,13 +124,13 @@ export default defineComponent({
 		function toggleSelection() {
 			if (!props.item) return null;
 
-			if (props.value.includes(props.item[props.itemKey])) {
+			if (props.modelValue.includes(props.item[props.itemKey])) {
 				emit(
-					'input',
-					props.value.filter((key) => key !== props.item[props.itemKey])
+					'update:modelValue',
+					props.modelValue.filter((key) => key !== props.item[props.itemKey])
 				);
 			} else {
-				emit('input', [...props.value, props.item[props.itemKey]]);
+				emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
 			}
 		}
 
