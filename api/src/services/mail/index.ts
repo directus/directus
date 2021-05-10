@@ -63,7 +63,7 @@ export class MailService {
 		}
 
 		try {
-			await mailer.sendMail({ to, cc, bcc from, subject, html, text });
+			await mailer.sendMail({ to, cc, bcc, from, subject, html, text });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);
