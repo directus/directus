@@ -39,7 +39,7 @@ export class MailService {
 		const { template, ... nodeMailerOptions } = options;
 		let { html } = options;
 
-		let from = options.from || (env.EMAIL_FROM as string);
+		const from = options.from || (env.EMAIL_FROM as string);
 
 		if (template) {
 			let templateData = template.data;
