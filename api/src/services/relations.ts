@@ -5,7 +5,6 @@ import { AbstractServiceOptions, PermissionsAction, PrimaryKey, Query, Relation,
 import { toArray } from '../utils/to-array';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
-import { applyQueryPost } from '../utils/apply-query-post';
 import SchemaInspector from '@directus/schema';
 
 export class RelationsService extends ItemsService {

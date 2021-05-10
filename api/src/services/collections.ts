@@ -345,11 +345,11 @@ export class CollectionsService {
 			schema: this.schema,
 		});
 
-		const fieldsService = new FieldsService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+		// const fieldsService = new FieldsService({
+		// 	knex: this.knex,
+		// 	accountability: this.accountability,
+		// 	schema: this.schema,
+		// });
 
 		const tablesInDatabase = Object.keys(this.schema.collections);
 
@@ -365,26 +365,27 @@ export class CollectionsService {
 		await this.knex('directus_activity').delete().where('collection', '=', collectionKey);
 		await this.knex('directus_permissions').delete().where('collection', '=', collectionKey);
 
-		const relations = this.schema.relations.filter((relation) => {
-			return relation.many_collection === collectionKey || relation.one_collection === collectionKey;
-		});
+		// @TODO RELATIONS
+		// const relations = this.schema.relations.filter((relation) => {
+		// 	return relation.collection === collectionKey || relation.related_collection === collectionKey;
+		// });
 
-		for (const relation of relations) {
-			const isM2O = relation.many_collection === collectionKey;
+		// for (const relation of relations) {
+		// 	const isM2O = relation.many_collection === collectionKey;
 
-			if (isM2O) {
-				await this.knex('directus_relations')
-					.delete()
-					.where({ many_collection: collectionKey, many_field: relation.many_field });
+		// 	if (isM2O) {
+		// 		await this.knex('directus_relations')
+		// 			.delete()
+		// 			.where({ many_collection: collectionKey, many_field: relation.many_field });
 
-				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else if (relation.one_collection) {
-				await this.knex('directus_relations')
-					.update({ one_field: null })
-					.where({ one_collection: collectionKey, one_field: relation.one_field });
-				await fieldsService.deleteField(relation.many_collection, relation.many_field);
-			}
-		}
+		// 		await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
+		// 	} else if (relation.one_collection) {
+		// 		await this.knex('directus_relations')
+		// 			.update({ one_field: null })
+		// 			.where({ one_collection: collectionKey, one_field: relation.one_field });
+		// 		await fieldsService.deleteField(relation.many_collection, relation.many_field);
+		// 	}
+		// }
 
 		await this.knex.schema.dropTable(collectionKey);
 

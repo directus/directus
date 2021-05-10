@@ -323,27 +323,28 @@ export class FieldsService {
 			});
 		}
 
-		const relations = this.schema.relations.filter((relation) => {
-			return (
-				(relation.many_collection === collection && relation.many_field === field) ||
-				(relation.one_collection === collection && relation.one_field === field)
-			);
-		});
+		// @TODO RELATIONS
+		// const relations = this.schema.relations.filter((relation) => {
+		// 	return (
+		// 		(relation.many_collection === collection && relation.many_field === field) ||
+		// 		(relation.one_collection === collection && relation.one_field === field)
+		// 	);
+		// });
 
-		for (const relation of relations) {
-			const isM2O = relation.many_collection === collection && relation.many_field === field;
+		// for (const relation of relations) {
+		// 	const isM2O = relation.many_collection === collection && relation.many_field === field;
 
-			/** @TODO M2A — Handle m2a case here */
+		// 	/** @TODO M2A — Handle m2a case here */
 
-			if (isM2O) {
-				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: field });
-				await this.deleteField(relation.one_collection!, relation.one_field!);
-			} else {
-				await this.knex('directus_relations')
-					.update({ one_field: null })
-					.where({ one_collection: collection, one_field: field });
-			}
-		}
+		// 	if (isM2O) {
+		// 		await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: field });
+		// 		await this.deleteField(relation.one_collection!, relation.one_field!);
+		// 	} else {
+		// 		await this.knex('directus_relations')
+		// 			.update({ one_field: null })
+		// 			.where({ one_collection: collection, one_field: field });
+		// 	}
+		// }
 
 		const collectionMeta = await this.knex
 			.select('archive_field', 'sort_field')
