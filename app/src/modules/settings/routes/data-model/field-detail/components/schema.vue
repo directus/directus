@@ -23,14 +23,14 @@
 					{{ $t('type') }}
 					<v-icon class="required" sup name="star" />
 				</div>
-				<v-input v-if="!fieldData.schema" :modelValue="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :model-value="$t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
-					:modelValue="fieldData.type"
+					:model-value="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@update:modelValue="fieldData.type = $event"
+					@update:model-value="fieldData.type = $event"
 				/>
 			</div>
 
@@ -74,8 +74,8 @@
 				<div class="label type-label">{{ $t('unique') }}</div>
 				<v-checkbox
 					:label="$t('value_unique')"
-					:modelValue="fieldData.schema.is_unique === false"
-					@update:modelValue="fieldData.schema.is_unique = !$event"
+					:model-value="fieldData.schema.is_unique === false"
+					@update:model-value="fieldData.schema.is_unique = !$event"
 					block
 				/>
 			</div> -->
@@ -132,8 +132,8 @@
 			<div class="field half-left" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('nullable') }}</div>
 				<v-checkbox
-					:modelValue="fieldData.schema.is_nullable"
-					@update:modelValue="fieldData.schema.is_nullable = $event"
+					:model-value="fieldData.schema.is_nullable"
+					@update:model-value="fieldData.schema.is_nullable = $event"
 					:label="$t('allow_null_value')"
 					block
 				/>
@@ -142,8 +142,8 @@
 			<div class="field half-right" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('unique') }}</div>
 				<v-checkbox
-					:modelValue="fieldData.schema.is_unique"
-					@update:modelValue="fieldData.schema.is_unique = $event"
+					:model-value="fieldData.schema.is_unique"
+					@update:model-value="fieldData.schema.is_unique = $event"
 					:label="$t('value_unique')"
 					block
 				/>

@@ -12,8 +12,8 @@
 			v-if="Array.isArray(selectedInterface.options)"
 			:fields="selectedInterface.options"
 			primary-key="+"
-			:modelValue="value"
-			@update:modelValue="$emit('input', $event)"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
 		/>
 
 		<component

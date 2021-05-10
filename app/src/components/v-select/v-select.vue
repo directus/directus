@@ -15,7 +15,7 @@
 				v-else
 				:full-width="fullWidth"
 				readonly
-				:modelValue="displayValue"
+				:model-value="displayValue"
 				clickable
 				@click="toggle"
 				:placeholder="placeholder"
@@ -60,11 +60,11 @@
 						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
 						<v-checkbox
 							v-else
-							:modelValue="modelValue || []"
+							:model-value="modelValue || []"
 							:label="item.text"
 							:value="item.value"
 							:disabled="item.disabled"
-							@update:modelValue="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-content>
 				</v-list-item>
@@ -90,9 +90,9 @@
 				>
 					<v-list-item-icon>
 						<v-checkbox
-							:modelValue="modelValue || []"
+							:model-value="modelValue || []"
 							:value="otherValue.value"
-							@update:modelValue="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>

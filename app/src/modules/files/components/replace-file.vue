@@ -1,7 +1,7 @@
 <template>
 	<v-dialog
-		:modelValue="modelValue"
-		@update:modelValue="$emit('update:modelValue', false)"
+		:model-value="modelValue"
+		@update:model-value="$emit('update:modelValue', false)"
 		@esc="$emit('update:modelValue', false)"
 	>
 		<v-card v-if="file">

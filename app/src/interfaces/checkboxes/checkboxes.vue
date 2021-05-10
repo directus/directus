@@ -19,14 +19,14 @@
 			:disabled="disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
-			:modelValue="value || []"
-			@update:modelValue="$emit('input', $event)"
+			:model-value="value || []"
+			@update:model-value="$emit('input', $event)"
 		/>
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
 			:label="$t(`interfaces.checkboxes.show_more`, { count: hiddenCount })"
-			@update:modelValue="showAll = true"
+			@update:model-value="showAll = true"
 		></v-detail>
 
 		<template v-if="allowOther">
@@ -39,9 +39,9 @@
 				:disabled="disabled"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
-				:modelValue="value || []"
+				:model-value="value || []"
 				@update:value="setOtherValue(otherValue.key, $event)"
-				@update:modelValue="$emit('input', $event)"
+				@update:model-value="$emit('input', $event)"
 			/>
 
 			<button

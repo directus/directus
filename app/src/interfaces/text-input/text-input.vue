@@ -1,7 +1,7 @@
 <template>
 	<v-input
 		:autofocus="autofocus"
-		:modelValue="value"
+		:model-value="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
@@ -9,7 +9,7 @@
 		:type="masked ? 'password' : 'text'"
 		:class="font"
 		:db-safe="dbSafe"
-		@update:modelValue="$emit('input', $event)"
+		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :modelValue="true" persistent @esc="router.push('/settings/roles')">
+	<v-dialog :model-value="true" persistent @esc="router.push('/settings/roles')">
 		<v-card>
 			<v-card-title>
 				{{ $t('create_role') }}

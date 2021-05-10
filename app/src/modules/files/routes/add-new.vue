@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :modelValue="true" @update:modelValue="close" @esc="close">
+	<v-dialog :model-value="true" @update:model-value="close" @esc="close">
 		<v-card>
 			<v-card-title>{{ $t('add_file') }}</v-card-title>
 			<v-card-text>

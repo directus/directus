@@ -6,12 +6,12 @@
 
 		<draggable
 			class="field-grid"
-			:modelValue="usableFields"
+			:model-value="usableFields"
 			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
-			@update:modelValue="setSort"
+			@update:model-value="setSort"
 			item-key="field"
 		>
 			<template #item="{ element }">

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :modelValue="value" @update:modelValue="onSelect" :items="options" />
+		<v-select v-else :model-value="value" @update:model-value="onSelect" :items="options" />
 		<drawer-collection
 			v-if="collection !== null"
 			:active="collection !== null"

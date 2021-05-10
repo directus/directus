@@ -13,7 +13,7 @@
 		</td>
 
 		<td v-if="showSelect" class="select cell" @click.stop>
-			<v-checkbox :modelValue="isSelected" @update:modelValue="$emit('item-selected', $event)" />
+			<v-checkbox :model-value="isSelected" @update:model-value="$emit('item-selected', $event)" />
 		</td>
 
 		<td class="cell" :class="`align-${header.align}`" v-for="header in headers" :key="header.value">

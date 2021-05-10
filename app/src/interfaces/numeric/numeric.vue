@@ -2,13 +2,13 @@
 	<v-input
 		type="number"
 		:class="font"
-		:modelValue="value"
+		:model-value="value"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:min="min"
 		:max="max"
 		:step="step"
-		@update:modelValue="$emit('input', $event)"
+		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend>
 			<v-icon :name="iconLeft" />

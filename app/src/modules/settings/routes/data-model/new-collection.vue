@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:title="$t('creating_new_collection')"
-		:modelValue="true"
+		:model-value="true"
 		class="new-collection"
 		persistent
 		@cancel="router.push('/settings/data-model')"

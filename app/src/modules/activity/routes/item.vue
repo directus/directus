@@ -1,5 +1,5 @@
 <template>
-	<v-drawer :modelValue="true" title="Activity Item" @update:modelValue="close" @cancel="close">
+	<v-drawer :model-value="true" title="Activity Item" @update:model-value="close" @cancel="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<div class="content" v-else-if="error">

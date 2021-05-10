@@ -11,8 +11,8 @@
 
 			<draggable
 				:force-fallback="true"
-				:modelValue="previewValues"
-				@update:modelValue="onSort"
+				:model-value="previewValues"
+				@update:model-value="onSort"
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"

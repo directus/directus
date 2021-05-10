@@ -34,10 +34,10 @@
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:modelValue="internalEdits[junctionField]"
+					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					autofocus
-					@update:modelValue="setJunctionEdits"
+					@update:model-value="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />

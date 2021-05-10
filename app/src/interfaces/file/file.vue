@@ -11,7 +11,7 @@
 						readonly
 						:placeholder="$t('no_file_selected')"
 						:disabled="disabled"
-						:modelValue="file && file.title"
+						:model-value="file && file.title"
 					>
 						<template #prepend>
 							<div
@@ -81,9 +81,9 @@
 		/>
 
 		<v-dialog
-			:modelValue="activeDialog === 'upload'"
+			:model-value="activeDialog === 'upload'"
 			@esc="activeDialog = null"
-			@update:modelValue="activeDialog = null"
+			@update:model-value="activeDialog = null"
 		>
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
@@ -104,8 +104,8 @@
 		/>
 
 		<v-dialog
-			:modelValue="activeDialog === 'url'"
-			@update:modelValue="activeDialog = null"
+			:model-value="activeDialog === 'url'"
+			@update:model-value="activeDialog = null"
 			@esc="activeDialog = null"
 			:persistent="urlLoading"
 		>

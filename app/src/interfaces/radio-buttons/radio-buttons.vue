@@ -19,8 +19,8 @@
 			:disabled="disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
-			:modelValue="value"
-			@update:modelValue="$emit('input', $event)"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
 		/>
 		<div
 			class="custom"

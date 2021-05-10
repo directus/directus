@@ -3,8 +3,8 @@
 		<template v-if="['between', 'nbetween'].includes(operator)">
 			<v-input
 				:type="type"
-				:modelValue="csvValue[0]"
-				@update:modelValue="setCSV(0, $event)"
+				:model-value="csvValue[0]"
+				@update:model-value="setCSV(0, $event)"
 				:disabled="disabled"
 				:placeholder="$t('lower_limit')"
 				autofocus
@@ -15,8 +15,8 @@
 			</v-input>
 			<v-input
 				:type="type"
-				:modelValue="csvValue[1]"
-				@update:modelValue="setCSV(1, $event)"
+				:model-value="csvValue[1]"
+				@update:model-value="setCSV(1, $event)"
 				:disabled="disabled"
 				:placeholder="$t('upper_limit')"
 			>
@@ -29,9 +29,9 @@
 			<v-input
 				v-for="(val, index) in csvValue"
 				:key="index"
-				:modelValue="val"
+				:model-value="val"
 				:type="type"
-				@update:modelValue="setCSV(index, $event)"
+				@update:model-value="setCSV(index, $event)"
 				:disabled="disabled"
 				:placeholder="$t('enter_a_value')"
 				autofocus

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" persistent @esc="cancel">
+	<v-dialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" persistent @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>

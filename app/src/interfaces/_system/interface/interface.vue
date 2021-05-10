@@ -5,8 +5,8 @@
 	<v-select
 		v-else
 		:items="items"
-		@update:modelValue="$emit('input', $event)"
-		:modelValue="value"
+		@update:model-value="$emit('input', $event)"
+		:model-value="value"
 		:placeholder="$t('interfaces.interface.placeholder')"
 	/>
 </template>

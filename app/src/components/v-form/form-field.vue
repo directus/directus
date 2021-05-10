@@ -21,9 +21,9 @@
 
 			<form-field-menu
 				:field="field"
-				:modelValue="internalValue"
+				:model-value="internalValue"
 				:initial-value="initialValue"
-				@update:modelValue="emitValue($event)"
+				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 			/>
@@ -32,14 +32,14 @@
 
 		<form-field-interface
 			:autofocus="autofocus"
-			:modelValue="internalValue"
+			:model-value="internalValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			@update:modelValue="emitValue($event)"
+			@update:model-value="emitValue($event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">

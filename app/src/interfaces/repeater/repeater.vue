@@ -7,8 +7,8 @@
 		<v-list v-if="value && value.length > 0">
 			<draggable
 				:force-fallback="true"
-				:modelValue="value"
-				@update:modelValue="$emit('input', $event)"
+				:model-value="value"
+				@update:model-value="$emit('input', $event)"
 				item-key="id"
 				handler=".drag-handle"
 			>
@@ -27,8 +27,8 @@
 		</v-button>
 
 		<v-drawer
-			:modelValue="drawerOpen"
-			@update:modelValue="closeDrawer()"
+			:model-value="drawerOpen"
+			@update:model-value="closeDrawer()"
 			:title="displayValue || headerPlaceholder"
 			persistent
 			@cancel="closeDrawer()"
@@ -43,9 +43,9 @@
 				<v-form
 					:disabled="disabled"
 					:fields="fields"
-					:modelValue="activeItem"
+					:model-value="activeItem"
 					primary-key="+"
-					@update:modelValue="updateValues(active, $event)"
+					@update:model-value="updateValues(active, $event)"
 				/>
 			</div>
 		</v-drawer>

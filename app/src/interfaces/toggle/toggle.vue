@@ -4,10 +4,10 @@
 		:icon-on="iconOn"
 		:icon-off="iconOff"
 		:label="label"
-		:modelValue="value"
+		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@update:modelValue="$emit('input', $event)"
+		@update:model-value="$emit('input', $event)"
 		:style="{
 			'--v-checkbox-color': color,
 		}"

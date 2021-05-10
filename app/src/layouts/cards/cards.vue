@@ -100,16 +100,16 @@
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
-						:modelValue="page"
-						@update:modelValue="toPage"
+						:model-value="page"
+						@update:model-value="toPage"
 					/>
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
 					<v-select
-						@update:modelValue="limit = +$event"
-						:modelValue="`${limit}`"
+						@update:model-value="limit = +$event"
+						:model-value="`${limit}`"
 						:items="['25', '50', '100', '250', '500', '1000']"
 						inline
 					/>

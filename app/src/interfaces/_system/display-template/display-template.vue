@@ -8,8 +8,8 @@
 	<v-field-template
 		v-else
 		:collection="collection"
-		@update:modelValue="$emit('input', $event)"
-		:modelValue="value"
+		@update:model-value="$emit('input', $event)"
+		:model-value="value"
 		:disabled="disabled"
 	/>
 </template>

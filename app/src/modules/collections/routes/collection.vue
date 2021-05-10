@@ -238,7 +238,7 @@
 			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
 		</template>
 
-		<v-dialog v-if="deleteError" :modelValue="true">
+		<v-dialog v-if="deleteError" :model-value="true">
 			<v-card>
 				<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
 				<v-card-text>

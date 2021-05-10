@@ -1,11 +1,11 @@
 <template>
 	<v-textarea
 		v-bind="{ placeholder, trim }"
-		:modelValue="value"
+		:model-value="value"
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
-		@update:modelValue="$emit('input', $event)"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 

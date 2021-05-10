@@ -5,8 +5,8 @@
 	<v-select
 		v-else
 		multiple
-		:modelValue="value"
-		@update:modelValue="$emit('input', $event)"
+		:model-value="value"
+		@update:model-value="$emit('input', $event)"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"

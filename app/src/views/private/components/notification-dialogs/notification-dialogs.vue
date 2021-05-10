@@ -1,6 +1,6 @@
 <template>
 	<div class="notification-dialogs">
-		<v-dialog :modelValue="true" v-for="notification in notifications" :key="notification.id" persist>
+		<v-dialog :model-value="true" v-for="notification in notifications" :key="notification.id" persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text">

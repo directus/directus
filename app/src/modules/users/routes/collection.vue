@@ -83,7 +83,7 @@
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
-		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:modelValue="refresh" />
+		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
 		<component
 			class="layout"

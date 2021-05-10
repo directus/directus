@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-checkbox block :modelValue="tfaEnabled" @click="toggle" :disabled="!isCurrentUser">
+		<v-checkbox block :model-value="tfaEnabled" @click="toggle" :disabled="!isCurrentUser">
 			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
 			<div class="spacer" />
 			<template #append>

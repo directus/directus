@@ -18,8 +18,8 @@
 		<v-list v-else>
 			<draggable
 				:force-fallback="true"
-				:modelValue="sortedItems"
-				@update:modelValue="sortItems($event)"
+				:model-value="sortedItems"
+				@update:model-value="sortItems($event)"
 				item-key="id"
 				handler=".drag-handle"
 				:disabled="!junction.sort_field"

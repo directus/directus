@@ -1,7 +1,7 @@
 <template>
 	<v-dialog
-		:modelValue="modelValue"
-		@update:modelValue="$emit('update:modelValue', $event)"
+		:model-value="modelValue"
+		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="$emit('update:modelValue', false)"
 	>
 		<v-card>

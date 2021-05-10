@@ -13,9 +13,9 @@
 
 			<th v-if="showSelect" class="select cell" scope="col">
 				<v-checkbox
-					:modelValue="allItemsSelected"
+					:model-value="allItemsSelected"
 					:indeterminate="someItemsSelected"
-					@update:modelValue="toggleSelectAll"
+					@update:model-value="toggleSelectAll"
 				/>
 			</th>
 

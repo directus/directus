@@ -19,7 +19,7 @@
 					@click="toggle"
 					:class="{ active }"
 					readonly
-					:modelValue="$t('add_filter')"
+					:model-value="$t('add_filter')"
 					:disabled="loading"
 				>
 					<template #prepend><v-icon name="add" /></template>

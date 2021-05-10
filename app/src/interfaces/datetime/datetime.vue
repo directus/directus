@@ -6,7 +6,7 @@
 				clickable
 				@click="toggle"
 				readonly
-				:modelValue="displayValue"
+				:model-value="displayValue"
 				:disabled="disabled"
 				:placeholder="$t('enter_a_value')"
 			>

@@ -3,8 +3,8 @@
 		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
-		:modelValue="localValue"
-		@update:modelValue="emitValue"
+		:model-value="localValue"
+		@update:model-value="emitValue"
 		:class="{ hashed: isHashed && !localValue }"
 	>
 		<template #append>

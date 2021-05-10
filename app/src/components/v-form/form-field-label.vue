@@ -2,9 +2,9 @@
 	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError }">
 		<v-checkbox
 			v-if="batchMode"
-			:modelValue="batchActive"
+			:model-value="batchActive"
 			:value="field.field"
-			@update:modelValue="$emit('toggle-batch', field)"
+			@update:model-value="$emit('toggle-batch', field)"
 		/>
 		<span @click="toggle" v-tooltip="edited ? $t('edited') : null">
 			{{ field.name }}

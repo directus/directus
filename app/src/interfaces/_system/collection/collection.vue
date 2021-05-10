@@ -1,5 +1,5 @@
 <template>
-	<v-select :modelValue="value" :disabled="disabled" :items="items" @update:modelValue="$emit('input', $event)" />
+	<v-select :model-value="value" :disabled="disabled" :items="items" @update:model-value="$emit('input', $event)" />
 </template>
 
 <script lang="ts">

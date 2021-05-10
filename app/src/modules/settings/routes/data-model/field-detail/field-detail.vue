@@ -1,7 +1,7 @@
 <template>
 	<v-dialog
 		persistent
-		:modelValue="true"
+		:model-value="true"
 		@esc="cancelField"
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
@@ -29,8 +29,8 @@
 
 	<v-drawer
 		v-else
-		:modelValue="true"
-		@update:modelValue="cancelField"
+		:model-value="true"
+		@update:model-value="cancelField"
 		@cancel="cancelField"
 		:title="title"
 		:subtitle="localType ? $t(`field_${localType}`) : null"

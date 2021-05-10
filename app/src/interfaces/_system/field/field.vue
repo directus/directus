@@ -8,8 +8,8 @@
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@update:modelValue="$emit('input', $event)"
-		:modelValue="value"
+		@update:model-value="$emit('input', $event)"
+		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
 		:placeholder="placeholder"
