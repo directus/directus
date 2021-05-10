@@ -48,7 +48,7 @@
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('rename_folder')" />
+						<v-text-overflow :text="t('rename_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item clickable @click="moveActive = true">
@@ -56,7 +56,7 @@
 						<v-icon name="folder_move" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('move_to_folder')" />
+						<v-text-overflow :text="t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item clickable @click="deleteActive = true">
@@ -64,7 +64,7 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('delete_folder')" />
+						<v-text-overflow :text="t('delete_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -72,14 +72,14 @@
 
 		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
 			<v-card>
-				<v-card-title>{{ $t('rename_folder') }}</v-card-title>
+				<v-card-title>{{ t('rename_folder') }}</v-card-title>
 				<v-card-text>
 					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -87,28 +87,28 @@
 
 		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
 			<v-card>
-				<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 				<v-card-text>
 					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="moveActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="moveSave" :loading="moveSaving">{{ $t('save') }}</v-button>
+					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
+					<v-button @click="moveSave" :loading="moveSaving">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_folder') }}</v-card-title>
+				<v-card-title>{{ t('delete_folder') }}</v-card-title>
 				<v-card-text>
 					<v-notice>
-						{{ $t('nested_files_folders_will_be_moved') }}
+						{{ t('nested_files_folders_will_be_moved') }}
 					</v-notice>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="deleteSave" :loading="deleteSaving">{{ $t('delete') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+					<v-button @click="deleteSave" :loading="deleteSaving">{{ t('delete') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -116,6 +116,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
 import useFolders, { Folder } from '../composables/use-folders';
 import api from '@/api';
@@ -141,6 +142,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const contextMenu = ref();
@@ -152,6 +155,7 @@ export default defineComponent({
 		const { fetchFolders } = useFolders();
 
 		return {
+			t,
 			renameActive,
 			renameValue,
 			renameSave,

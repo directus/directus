@@ -6,7 +6,7 @@
 				icon
 				class="add-new"
 				@click="on"
-				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
+				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
 				:disabled="disabled"
 			>
 				<v-icon name="create_new_folder" outline />
@@ -14,14 +14,14 @@
 		</template>
 
 		<v-card>
-			<v-card-title>{{ $t('create_folder') }}</v-card-title>
+			<v-card-title>{{ t('create_folder') }}</v-card-title>
 			<v-card-text>
-				<v-input autofocus @keyup.enter="addFolder" :placeholder="$t('folder_name')" v-model="newFolderName" />
+				<v-input autofocus @keyup.enter="addFolder" :placeholder="t('folder_name')" v-model="newFolderName" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="dialogActive = false">{{ t('cancel') }}</v-button>
 				<v-button :disabled="newFolderName === null" @click="addFolder" :loading="saving">
-					{{ $t('save') }}
+					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import useFolders from '../composables/use-folders';
 import api from '@/api';
@@ -47,6 +48,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const dialogActive = ref(false);
@@ -55,7 +58,7 @@ export default defineComponent({
 
 		const { fetchFolders } = useFolders();
 
-		return { addFolder, dialogActive, newFolderName, saving };
+		return { t, addFolder, dialogActive, newFolderName, saving };
 
 		async function addFolder() {
 			saving.value = true;

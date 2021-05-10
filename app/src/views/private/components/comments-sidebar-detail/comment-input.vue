@@ -1,7 +1,7 @@
 <template>
 	<v-textarea
 		class="new-comment"
-		:placeholder="$t('leave_comment')"
+		:placeholder="t('leave_comment')"
 		v-model="newCommentContent"
 		expand-on-focus
 		ref="textarea"
@@ -16,13 +16,14 @@
 				@click="postComment"
 				x-small
 			>
-				{{ $t('submit') }}
+				{{ t('submit') }}
 			</v-button>
 		</template>
 	</v-textarea>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
 import api from '@/api';
 import { i18n } from '@/lang';
@@ -46,12 +47,14 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
 		const saving = ref(false);
 
-		return { newCommentContent, postComment, saving, textarea };
+		return { t, newCommentContent, postComment, saving, textarea };
 
 		async function postComment() {
 			if (newCommentContent.value === null || newCommentContent.value.length === 0) return;

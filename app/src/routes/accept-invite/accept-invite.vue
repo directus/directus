@@ -1,12 +1,12 @@
 <template>
 	<public-view>
-		<h1 class="type-title">{{ $t('create_account') }}</h1>
+		<h1 class="type-title">{{ t('create_account') }}</h1>
 
 		<form @submit.prevent="onSubmit">
 			<v-input :model-value="email" disabled />
 
 			<v-input
-				:placeholder="$t('password')"
+				:placeholder="t('password')"
 				autofocus
 				autocomplete="password"
 				type="password"
@@ -14,24 +14,25 @@
 				:disabled="done"
 			/>
 
-			<v-notice type="success" v-if="done">{{ $t('account_created_successfully') }}</v-notice>
+			<v-notice type="success" v-if="done">{{ t('account_created_successfully') }}</v-notice>
 
 			<v-notice type="danger" v-if="error">
 				{{ errorFormatted }}
 			</v-notice>
 
-			<v-button v-if="!done" type="submit" :loading="creating" large>{{ $t('create') }}</v-button>
-			<v-button v-else large :to="signInLink">{{ $t('sign_in') }}</v-button>
+			<v-button v-if="!done" type="submit" :loading="creating" large>{{ t('create') }}</v-button>
+			<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
 		</form>
 
 		<template #notice>
 			<v-icon name="lock_outlined" left />
-			{{ $t('not_authenticated') }}
+			{{ t('not_authenticated') }}
 		</template>
 	</public-view>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import { translateAPIError } from '@/lang';
@@ -40,6 +41,8 @@ import jwtPayload from '@/utils/jwt-payload';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const route = useRoute();
 
 		const acceptToken = computed(() => route.query.token as string);
@@ -61,16 +64,7 @@ export default defineComponent({
 
 		const email = computed(() => jwtPayload(acceptToken.value).email);
 
-		return {
-			creating,
-			error,
-			done,
-			password,
-			onSubmit,
-			signInLink,
-			errorFormatted,
-			email,
-		};
+		return { t, creating, error, done, password, onSubmit, signInLink, errorFormatted, email };
 
 		async function onSubmit() {
 			creating.value = true;

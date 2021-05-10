@@ -15,7 +15,7 @@
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
-						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
+						<v-list-item-content>{{ t('file_library') }}</v-list-item-content>
 					</template>
 
 					<folder-picker-list-item
@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType } from 'vue';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
@@ -65,6 +66,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const loading = ref(false);
 		const folders = ref<FolderRaw[]>([]);
 		const tree = computed<Folder[]>(() => {
@@ -111,7 +114,7 @@ export default defineComponent({
 
 		fetchFolders();
 
-		return { loading, folders, tree, selectedFolder, openFolders };
+		return { t, loading, folders, tree, selectedFolder, openFolders };
 
 		async function fetchFolders() {
 			if (folders.value.length > 0) return;

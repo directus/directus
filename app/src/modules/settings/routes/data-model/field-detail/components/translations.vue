@@ -2,16 +2,16 @@
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
+				<div class="type-label">{{ t('this_collection') }}</div>
 				<v-input disabled :model-value="relations[0].one_collection" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('translations_collection') }}</div>
+				<div class="type-label">{{ t('translations_collection') }}</div>
 				<v-input
 					:class="{ matches: junctionCollectionExists }"
 					v-model="junctionCollection"
 					:nullable="false"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
@@ -22,7 +22,7 @@
 									name="list_alt"
 									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="autoFill || isExisting"
 								/>
 							</template>
@@ -43,7 +43,7 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
@@ -62,13 +62,13 @@
 				</v-input>
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('languages_collection') }}</div>
+				<div class="type-label">{{ t('languages_collection') }}</div>
 				<v-input
 					:autofocus="autoFill"
 					:class="{ matches: relatedCollectionExists }"
 					v-model="relations[1].one_collection"
 					:nullable="false"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 					:disabled="type === 'files' || isExisting"
 					db-safe
 				>
@@ -79,7 +79,7 @@
 									name="list_alt"
 									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="type === 'files' || isExisting"
 								/>
 							</template>
@@ -100,7 +100,7 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
@@ -123,7 +123,7 @@
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
 				:nullable="false"
-				:placeholder="$t('foreign_key') + '...'"
+				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
@@ -134,7 +134,7 @@
 								name="list_alt"
 								clickable
 								@click="toggle"
-								v-tooltip="$t('select_existing')"
+								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
 							/>
 						</template>
@@ -162,7 +162,7 @@
 				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
 				v-model="relations[1].many_field"
 				:nullable="false"
-				:placeholder="$t('foreign_key') + '...'"
+				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
@@ -173,7 +173,7 @@
 								name="list_alt"
 								clickable
 								@click="toggle"
-								v-tooltip="$t('select_existing')"
+								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
 							/>
 						</template>
@@ -200,10 +200,10 @@
 				:disabled="relatedCollectionExists"
 				v-model="relations[1].one_primary"
 				:nullable="false"
-				:placeholder="$t('primary_key') + '...'"
+				:placeholder="t('primary_key') + '...'"
 			/>
 			<div class="spacer" />
-			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
@@ -211,6 +211,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
@@ -234,6 +235,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -298,6 +301,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			relations: state.relations,
 			autoFill,
 			availableCollections,

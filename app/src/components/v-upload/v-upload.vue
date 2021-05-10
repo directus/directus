@@ -9,8 +9,8 @@
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging">
-			<p class="type-label">{{ $t('drop_to_upload') }}</p>
-			<p class="type-text">{{ $t('upload_pending') }}</p>
+			<p class="type-label">{{ t('drop_to_upload') }}</p>
+			<p class="type-text">{{ t('upload_pending') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -18,16 +18,16 @@
 			<p class="type-text">
 				{{
 					multiple && numberOfFiles > 1
-						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: $t('upload_file_indeterminate')
+						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: t('upload_file_indeterminate')
 				}}
 			</p>
 			<v-progress-linear :value="progress" rounded />
 		</template>
 
 		<template v-else>
-			<p class="type-label">{{ $t('drag_file_here') }}</p>
-			<p class="type-text">{{ $t('click_to_browse') }}</p>
+			<p class="type-label">{{ t('drag_file_here') }}</p>
+			<p class="type-text">{{ t('click_to_browse') }}</p>
 			<input class="browse" type="file" @input="onBrowseSelect" :multiple="multiple" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
@@ -39,14 +39,14 @@
 						<v-list-item clickable @click="activeDialog = 'choose'" v-if="fromLibrary">
 							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('choose_from_library') }}
+								{{ t('choose_from_library') }}
 							</v-list-item-content>
 						</v-list-item>
 
 						<v-list-item clickable @click="activeDialog = 'url'" v-if="fromUrl">
 							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('import_from_url') }}
+								{{ t('import_from_url') }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -66,16 +66,16 @@
 					:persistent="urlLoading"
 				>
 					<v-card>
-						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+						<v-card-title>{{ t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
+							<v-input :placeholder="t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
-								{{ $t('cancel') }}
+								{{ t('cancel') }}
 							</v-button>
 							<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-								{{ $t('import') }}
+								{{ t('import') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -86,6 +86,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
@@ -119,6 +120,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
@@ -126,6 +129,7 @@ export default defineComponent({
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
 		return {
+			t,
 			uploading,
 			progress,
 			onDragEnter,

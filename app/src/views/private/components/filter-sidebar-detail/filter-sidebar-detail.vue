@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="$t('advanced_filter')">
+	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="t('advanced_filter')">
 		<field-filter
 			v-for="filter in filters"
 			:key="filter.key"
@@ -19,7 +19,7 @@
 					@click="toggle"
 					:class="{ active }"
 					readonly
-					:model-value="$t('add_filter')"
+					:model-value="t('add_filter')"
 					:disabled="loading"
 				>
 					<template #prepend><v-icon name="add" /></template>
@@ -35,12 +35,13 @@
 		<template v-if="showArchiveToggle">
 			<v-divider />
 
-			<v-checkbox v-model="archived" :label="$t('show_archived_items')" />
+			<v-checkbox v-model="archived" :label="t('show_archived_items')" />
 		</template>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
 import { Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
@@ -70,6 +71,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const { collection } = toRefs(props);
@@ -136,7 +139,7 @@ export default defineComponent({
 			},
 		});
 
-		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
+		return { t, fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
 			const field = fieldsStore.getField(props.collection, fieldKey);

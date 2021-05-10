@@ -6,7 +6,7 @@
 				:model-value="csvValue[0]"
 				@update:model-value="setCSV(0, $event)"
 				:disabled="disabled"
-				:placeholder="$t('lower_limit')"
+				:placeholder="t('lower_limit')"
 				autofocus
 			>
 				<template #append>
@@ -18,7 +18,7 @@
 				:model-value="csvValue[1]"
 				@update:model-value="setCSV(1, $event)"
 				:disabled="disabled"
-				:placeholder="$t('upper_limit')"
+				:placeholder="t('upper_limit')"
 			>
 				<template #append>
 					<v-icon name="vertical_align_bottom" />
@@ -33,7 +33,7 @@
 				:type="type"
 				@update:model-value="setCSV(index, $event)"
 				:disabled="disabled"
-				:placeholder="$t('enter_a_value')"
+				:placeholder="t('enter_a_value')"
 				autofocus
 			>
 				<template #append>
@@ -42,11 +42,11 @@
 			</v-input>
 			<v-button outlined full-width dashed @click="addCSV" :disabled="disabled">
 				<v-icon name="add" />
-				{{ $t('add_new') }}
+				{{ t('add_new') }}
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="internalValue" :disabled="disabled" />
+			<v-checkbox block :label="t('active')" v-if="type === 'checkbox'" v-model="internalValue" :disabled="disabled" />
 			<v-input
 				:disabled="disabled"
 				v-else
@@ -54,13 +54,14 @@
 				v-model="internalValue"
 				:nullable="false"
 				:type="type"
-				:placeholder="$t('enter_a_value')"
+				:placeholder="t('enter_a_value')"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { FilterOperator } from '@/types';
 
@@ -85,6 +86,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const internalValue = computed<string | string[] | boolean | number>({
 			get() {
 				return props.modelValue;
@@ -103,7 +106,7 @@ export default defineComponent({
 			},
 		});
 
-		return { internalValue, csvValue, setCSV, removeCSV, addCSV };
+		return { t, internalValue, csvValue, setCSV, removeCSV, addCSV };
 
 		function setCSV(index: number, value: string) {
 			const newValue = Object.assign([], csvValue.value, { [index]: value });

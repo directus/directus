@@ -6,7 +6,7 @@
 
 		<v-list v-else>
 			<v-notice v-if="previewValues.length === 0">
-				{{ $t('no_items') }}
+				{{ t('no_items') }}
 			</v-notice>
 
 			<draggable
@@ -51,7 +51,7 @@
 
 					<v-list-item v-else block>
 						<v-icon class="invalid-icon" name="warning" left />
-						<span>{{ $t('invalid_item') }}</span>
+						<span>{{ t('invalid_item') }}</span>
 						<div class="spacer" />
 						<v-icon
 							v-if="!disabled"
@@ -68,7 +68,7 @@
 			<v-menu show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
-						{{ $t('create_new') }}
+						{{ t('create_new') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
@@ -89,7 +89,7 @@
 			<v-menu show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle" class="existing">
-						{{ $t('add_existing') }}
+						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
@@ -134,6 +134,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
 import { Relation, Collection } from '@/types/';
@@ -173,6 +174,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
@@ -181,20 +184,14 @@ export default defineComponent({
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
-		const {
-			currentlyEditing,
-			relatedPrimaryKey,
-			editsAtStart,
-			stageEdits,
-			cancelEdit,
-			editExisting,
-			createNew,
-		} = useEdits();
+		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
+			useEdits();
 		const { onSort } = useManualSort();
 
 		watch(props, fetchValues, { immediate: true, deep: true });
 
 		return {
+			t,
 			previewValues,
 			collections,
 			selectingFrom,

@@ -15,7 +15,7 @@
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('rename_bookmark')" />
+						<v-text-overflow :text="t('rename_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item clickable @click="deleteActive = true" class="danger" :disabled="isMine === false">
@@ -23,7 +23,7 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('delete_bookmark')" />
+						<v-text-overflow :text="t('delete_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -31,14 +31,14 @@
 
 		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
 			<v-card>
-				<v-card-title>{{ $t('rename_bookmark') }}</v-card-title>
+				<v-card-title>{{ t('rename_bookmark') }}</v-card-title>
 				<v-card-text>
 					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -46,11 +46,11 @@
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
+				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="deleteSave" :loading="deleteSaving" class="action-delete">
-						{{ $t('delete') }}
+						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
@@ -73,6 +74,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 		const route = useRoute();
 
@@ -86,6 +89,7 @@ export default defineComponent({
 		const { deleteActive, deleteValue, deleteSave, deleteSaving } = useDeleteBookmark();
 
 		return {
+			t,
 			contextMenu,
 			isMine,
 			renameActive,

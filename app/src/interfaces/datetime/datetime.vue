@@ -8,7 +8,7 @@
 				readonly
 				:model-value="displayValue"
 				:disabled="disabled"
-				:placeholder="$t('enter_a_value')"
+				:placeholder="t('enter_a_value')"
 			>
 				<template #append>
 					<v-icon v-if="!disabled" :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
@@ -18,13 +18,13 @@
 
 		<div class="date-selects" v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'">
 			<div class="month">
-				<v-select :placeholder="$t('month')" :items="monthItems" v-model="month" />
+				<v-select :placeholder="t('month')" :items="monthItems" v-model="month" />
 			</div>
 			<div class="date">
-				<v-select :placeholder="$t('date')" :items="dateItems" v-model="date" />
+				<v-select :placeholder="t('date')" :items="dateItems" v-model="date" />
 			</div>
 			<div class="year">
-				<v-select :placeholder="$t('year')" :items="yearItems" v-model="year" allow-other />
+				<v-select :placeholder="t('year')" :items="yearItems" v-model="year" allow-other />
 			</div>
 		</div>
 
@@ -51,11 +51,12 @@
 
 		<v-divider />
 
-		<button class="to-now" @click="setToNow">{{ $t('interfaces.datetime.set_to_now') }}</button>
+		<button class="to-now" @click="setToNow">{{ t('interfaces.datetime.set_to_now') }}</button>
 	</v-menu>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { i18n } from '@/lang';
@@ -87,11 +88,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { internalValue, year, month, date, hours, minutes, seconds, period } = useLocalValue();
 		const { yearItems, monthItems, dateItems, hourItems, minutesSecondItems } = useOptions();
 		const { displayValue } = useDisplayValue();
 
 		return {
+			t,
 			year,
 			month,
 			date,

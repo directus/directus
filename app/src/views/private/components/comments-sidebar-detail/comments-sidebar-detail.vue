@@ -1,11 +1,11 @@
 <template>
-	<sidebar-detail :title="$t('comments')" icon="chat_bubble_outline" :badge="count || null">
+	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
 		<v-progress-linear indeterminate v-if="loading" />
 
 		<div v-else-if="!activity || activity.length === 0" class="empty">
-			<div class="content">{{ $t('no_comments') }}</div>
+			<div class="content">{{ t('no_comments') }}</div>
 		</div>
 
 		<template v-else v-for="group in activity" :key="group.date.toString()">
@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 
 import api from '@/api';
@@ -44,15 +45,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
 
-		return {
-			activity,
-			loading,
-			error,
-			refresh,
-			count,
-		};
+		return { t, activity, loading, error, refresh, count };
 
 		function useActivity(collection: string, primaryKey: string | number) {
 			const activity = ref<ActivityByDate[] | null>(null);

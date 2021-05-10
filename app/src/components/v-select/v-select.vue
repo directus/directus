@@ -34,7 +34,7 @@
 						<v-icon name="close" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ multiple ? $t('deselect_all') : $t('deselect') }}
+						{{ multiple ? t('deselect_all') : t('deselect') }}
 					</v-list-item-content>
 					<v-list-item-icon v-if="multiple === false">
 						<v-icon name="close" />
@@ -76,7 +76,7 @@
 						class="other-input"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 						v-model="otherValue"
-						:placeholder="$t('other')"
+						:placeholder="t('other')"
 					/>
 				</v-list-item-content>
 			</v-list-item>
@@ -99,7 +99,7 @@
 						<input
 							class="other-input"
 							:value="otherValue.value"
-							:placeholder="$t('other')"
+							:placeholder="t('other')"
 							v-focus
 							@input="setOtherValue(otherValue.key, $event.target.value)"
 							@blur="otherValue.value.length === 0 && setOtherValue(otherValue.key, null)"
@@ -112,7 +112,7 @@
 
 				<v-list-item @click.stop="addOtherValue()">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
+					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>
 			</template>
 		</v-list>
@@ -120,6 +120,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import { i18n } from '@/lang';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
@@ -193,6 +194,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { internalItems } = useItems();
 		const { displayValue } = useDisplayValue();
 		const { modelValue } = toRefs(props);
@@ -205,15 +208,7 @@ export default defineComponent({
 			(value) => emit('update:modelValue', value)
 		);
 
-		return {
-			internalItems,
-			displayValue,
-			otherValue,
-			usesOtherValue,
-			otherValues,
-			addOtherValue,
-			setOtherValue,
-		};
+		return { t, internalItems, displayValue, otherValue, usesOtherValue, otherValues, addOtherValue, setOtherValue };
 
 		function useItems() {
 			const internalItems = computed(() => {

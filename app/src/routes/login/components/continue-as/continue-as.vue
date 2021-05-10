@@ -2,16 +2,17 @@
 	<div class="continue-as">
 		<v-progress-circular v-if="loading" indeterminate />
 		<template v-else>
-			<p v-html="$t('continue_as', { name })" />
+			<p v-html="t('continue_as', { name })" />
 			<div class="actions">
-				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
-				<v-button autofocus large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
+				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
+				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue') }}</v-button>
 			</div>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 
 import api from '@/api';
@@ -22,6 +23,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const loading = ref(false);
@@ -30,7 +33,7 @@ export default defineComponent({
 
 		fetchUser();
 
-		return { name, lastPage, loading, hydrateAndLogin };
+		return { t, name, lastPage, loading, hydrateAndLogin };
 
 		async function fetchUser() {
 			loading.value = true;

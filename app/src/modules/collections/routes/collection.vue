@@ -9,7 +9,7 @@
 
 		<template #headline>
 			<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-			<v-breadcrumb v-else :items="[{ name: $t('collections'), to: '/collections' }]" />
+			<v-breadcrumb v-else :items="[{ name: t('collections'), to: '/collections' }]" />
 		</template>
 
 		<template #title-outer:append>
@@ -27,7 +27,7 @@
 							clickable
 							@click="on"
 							name="bookmark_outline"
-							v-tooltip.right="$t('create_bookmark')"
+							v-tooltip.right="t('create_bookmark')"
 						/>
 					</template>
 				</bookmark-add>
@@ -40,7 +40,7 @@
 						clickable
 						@click="savePreset()"
 						name="bookmark_save"
-						v-tooltip.bottom="$t('update_bookmark')"
+						v-tooltip.bottom="t('update_bookmark')"
 					/>
 				</template>
 
@@ -62,7 +62,7 @@
 					clickable
 					@click="clearLocalSave"
 					class="clear"
-					v-tooltip.bottom="$t('reset_bookmark')"
+					v-tooltip.bottom="t('reset_bookmark')"
 				/>
 			</div>
 		</template>
@@ -82,21 +82,21 @@
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -114,21 +114,21 @@
 						icon
 						class="action-archive"
 						@click="on"
-						v-tooltip.bottom="batchArchiveAllowed ? $t('archive') : $t('not_allowed')"
+						v-tooltip.bottom="batchArchiveAllowed ? t('archive') : t('not_allowed')"
 					>
 						<v-icon name="archive" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('archive_confirm_count', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('archive_confirm_count', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="archive" class="action-archive" :loading="archiving">
-							{{ $t('archive') }}
+							{{ t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -141,7 +141,7 @@
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
 				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -150,7 +150,7 @@
 				rounded
 				icon
 				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -165,15 +165,15 @@
 		<v-info
 			type="warning"
 			v-if="bookmark && bookmarkExists === false"
-			:title="$t('bookmark_doesnt_exist')"
+			:title="t('bookmark_doesnt_exist')"
 			icon="bookmark"
 			center
 		>
-			{{ $t('bookmark_doesnt_exist_copy') }}
+			{{ t('bookmark_doesnt_exist_copy') }}
 
 			<template #append>
 				<v-button :to="currentCollectionLink">
-					{{ $t('bookmark_doesnt_exist_cta') }}
+					{{ t('bookmark_doesnt_exist_cta') }}
 				</v-button>
 			</template>
 		</v-info>
@@ -192,21 +192,21 @@
 			:reset-preset="resetPreset"
 		>
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
-					{{ $t('no_items_copy') }}
+				<v-info :title="t('item_count', 0)" :icon="currentCollection.icon" center>
+					{{ t('no_items_copy') }}
 
 					<template #append v-if="createAllowed">
-						<v-button :to="`/collections/${collection}/+`">{{ $t('create_item') }}</v-button>
+						<v-button :to="`/collections/${collection}/+`">{{ t('create_item') }}</v-button>
 					</template>
 				</v-info>
 			</template>
@@ -220,12 +220,12 @@
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div
 					class="page-description"
 					v-html="
 						marked(
-							$t('page_help_collections_collection', {
+							t('page_help_collections_collection', {
 								collection: currentCollection.name,
 							})
 						)
@@ -240,12 +240,12 @@
 
 		<v-dialog v-if="deleteError" :model-value="true">
 			<v-card>
-				<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
+				<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
 				<v-card-text>
 					<v-error :error="deleteError" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
+					<v-button @click="deleteError = null">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -253,6 +253,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
@@ -302,6 +303,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const userStore = useUserStore();
@@ -360,6 +363,7 @@ export default defineComponent({
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 		return {
+			t,
 			addNewLink,
 			batchDelete,
 			batchEditActive,

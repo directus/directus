@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title">
-		<template #headline>{{ $t('settings_webhooks') }}</template>
+		<template #headline>{{ t('settings_webhooks') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
@@ -17,14 +17,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -59,8 +59,8 @@
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_settings_webhooks_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
@@ -68,6 +68,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
@@ -88,6 +89,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const { primaryKey } = toRefs(props);
@@ -117,6 +120,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			item,
 			loading,
 			error,

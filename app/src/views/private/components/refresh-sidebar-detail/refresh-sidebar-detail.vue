@@ -1,8 +1,8 @@
 <template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
+	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('refresh_interval') }}</p>
+				<p class="type-label">{{ t('refresh_interval') }}</p>
 				<v-select :items="items" v-model="interval" />
 			</div>
 		</div>
@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { i18n } from '@/lang';
 import { computed, defineComponent, ref, watch } from 'vue';
 
@@ -22,6 +23,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const interval = computed<number | null>({
 			get() {
 				return props.modelValue;
@@ -72,7 +75,7 @@ export default defineComponent({
 
 		const active = computed(() => interval.value !== null);
 
-		return { active, interval, items };
+		return { t, active, interval, items };
 	},
 });
 </script>

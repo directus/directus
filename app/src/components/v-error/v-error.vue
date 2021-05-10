@@ -2,7 +2,7 @@
 	<div class="v-error selectable">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
-			v-tooltip="$t('copy_details')"
+			v-tooltip="t('copy_details')"
 			v-if="showCopy"
 			small
 			class="copy-error"
@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref } from 'vue';
 import { isPlainObject } from 'lodash';
 
@@ -25,6 +26,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const code = computed(() => {
 			return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
 		});
@@ -37,7 +40,7 @@ export default defineComponent({
 
 		const showCopy = computed(() => !!navigator.clipboard?.writeText);
 
-		return { code, copyError, showCopy, copied, message };
+		return { t, code, copyError, showCopy, copied, message };
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;

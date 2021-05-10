@@ -6,22 +6,22 @@
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
 		<v-card class="auto-translations">
-			<v-card-title>{{ $t('create_translations') }}</v-card-title>
+			<v-card-title>{{ t('create_translations') }}</v-card-title>
 			<v-card-text>
-				<v-input v-model="fieldData.field" :placeholder="$t('field_name') + '...'" />
+				<v-input v-model="fieldData.field" :placeholder="t('field_name') + '...'" />
 				<v-notice>
 					<div>
-						{{ $t('this_will_auto_setup_fields_relations') }}
-						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
-						{{ $t('to_manually_setup_translations') }}
+						{{ t('this_will_auto_setup_fields_relations') }}
+						<button class="manual-toggle" @click="translationsManual = true">{{ t('click_here') }}</button>
+						{{ t('to_manually_setup_translations') }}
 					</div>
 				</v-notice>
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="cancelField">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="cancelField">{{ t('cancel') }}</v-button>
 				<div class="spacer" />
 				<v-button :disabled="!fieldData.field" :loading="saving" @click="saveField">
-					{{ $t('auto_generate') }}
+					{{ t('auto_generate') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -33,7 +33,7 @@
 		@update:model-value="cancelField"
 		@cancel="cancelField"
 		:title="title"
-		:subtitle="localType ? $t(`field_${localType}`) : null"
+		:subtitle="localType ? t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
 	>
@@ -99,14 +99,14 @@
 
 		<v-dialog v-model="nullValuesDialog" @esc="nullValuesDialog = false">
 			<v-card>
-				<v-card-title>{{ $t('enter_value_to_replace_nulls') }}</v-card-title>
+				<v-card-title>{{ t('enter_value_to_replace_nulls') }}</v-card-title>
 				<v-card-text>
 					<v-input placeholder="NULL" v-model="nullValueOverride" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="nullValuesDialog = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="nullValuesDialog = false">{{ t('cancel') }}</v-button>
 					<v-button :disabled="nullValueOverride === null" @click="saveNullOverride" :loading="nullOverrideSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -115,6 +115,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
@@ -167,6 +168,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
@@ -212,6 +215,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			tabs,
 			currentTab,
 			fieldData: state.fieldData,

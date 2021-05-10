@@ -2,15 +2,15 @@
 	<div class="v-form" ref="el" :class="gridClass">
 		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
 			<div>
-				<p>{{ $t('unknown_validation_errors') }}</p>
+				<p>{{ t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
 						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ $t('validationError.unique', validationError) }}
+							{{ t('validationError.unique', validationError) }}
 						</template>
 						<template v-else>
-							{{ $t(`validationError.${validationError.code}`, validationError) }}
+							{{ t(`validationError.${validationError.code}`, validationError) }}
 						</template>
 					</li>
 				</ul>
@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw } from '@/types';
@@ -100,6 +101,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const el = ref<Element>();
 		const fieldsStore = useFieldsStore();
 
@@ -132,6 +135,7 @@ export default defineComponent({
 		provide('values', values);
 
 		return {
+			t,
 			el,
 			formFields,
 			gridClass,

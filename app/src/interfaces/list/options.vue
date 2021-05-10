@@ -1,17 +1,17 @@
 <template>
 	<div class="grid">
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('template') }}</p>
+			<p class="type-label">{{ t('template') }}</p>
 			<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="$t('create_new')" />
+			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
+			<v-input class="input" v-model="addLabel" :placeholder="t('create_new')" />
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
+			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
 			<repeater
 				:value="repeaterValue"
 				@input="repeaterValue = $event"
@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './list.vue';
 import { Field, FieldMeta } from '@/types';
@@ -39,6 +40,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const repeaterValue = computed({
 			get() {
 				return props.value?.fields?.map((field: Field) => field.meta);
@@ -179,7 +182,7 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, template, addLabel };
+		return { t, repeaterValue, repeaterFields, template, addLabel };
 	},
 });
 </script>

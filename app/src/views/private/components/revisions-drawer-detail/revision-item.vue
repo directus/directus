@@ -11,12 +11,13 @@
 				{{ user }}
 			</user-popover>
 
-			<span v-else>{{ $t('private_user') }}</span>
+			<span v-else>{{ t('private_user') }}</span>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
 import { i18n } from '@/lang';
@@ -36,6 +37,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const revisionCount = computed(() => {
 			return Object.keys(props.revision.delta).length;
 		});
@@ -67,7 +70,7 @@ export default defineComponent({
 			return i18n.global.t('private_user');
 		});
 
-		return { headerMessage, time, user };
+		return { t, headerMessage, time, user };
 	},
 });
 </script>

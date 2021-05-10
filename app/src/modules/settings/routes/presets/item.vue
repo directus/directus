@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('editing_preset')">
-		<template #headline>{{ $t('settings_presets') }}</template>
+	<private-view :title="t('editing_preset')">
+		<template #headline>{{ t('settings_presets') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="backLink">
 				<v-icon name="arrow_back" />
@@ -20,21 +20,21 @@
 						class="action-delete"
 						:disabled="preset === null || id === '+'"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
+						v-tooltip.bottom="t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -46,7 +46,7 @@
 				:disabled="hasEdits === false"
 				:loading="saving"
 				@click="save"
-				v-tooltip.bottom="$t('save')"
+				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -68,36 +68,36 @@
 					readonly
 				>
 					<template #no-results>
-						<v-info :title="$t('no_results')" icon="search" center>
-							{{ $t('no_results_copy') }}
+						<v-info :title="t('no_results')" icon="search" center>
+							{{ t('no_results_copy') }}
 						</v-info>
 					</template>
 
 					<template #no-items>
-						<v-info :title="$t('item_count', 0)" center>
-							{{ $t('no_items_copy') }}
+						<v-info :title="t('item_count', 0)" center>
+							{{ t('no_items_copy') }}
 						</v-info>
 					</template>
 				</component>
 
 				<v-notice v-else>
-					{{ $t('no_layout_collection_selected_yet') }}
+					{{ t('no_layout_collection_selected_yet') }}
 				</v-notice>
 			</div>
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_settings_presets_item'))" />
 			</sidebar-detail>
 
-			<sidebar-detail icon="search" :title="$t('search')" class="layout-sidebar">
-				<v-input v-model="searchQuery" :placeholder="$t('preset_search_placeholder')"></v-input>
+			<sidebar-detail icon="search" :title="t('search')" class="layout-sidebar">
+				<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
 			<div id="target-sidebar" class="layout-sidebar"></div>
 
-			<sidebar-detail class="layout-sidebar" icon="layers" :title="$t('layout_options')">
+			<sidebar-detail class="layout-sidebar" icon="layers" :title="t('layout_options')">
 				<div class="layout-options">
 					<div id="target-layout-options" class="teleport-contents"></div>
 				</div>
@@ -107,6 +107,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
@@ -142,6 +143,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
@@ -153,20 +156,13 @@ export default defineComponent({
 
 		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const {
-			edits,
-			hasEdits,
-			initialValues,
-			values,
-			layoutQuery,
-			layoutOptions,
-			updateFilters,
-			searchQuery,
-		} = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, searchQuery } =
+			useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
 		return {
+			t,
 			backLink,
 			loading,
 			preset,

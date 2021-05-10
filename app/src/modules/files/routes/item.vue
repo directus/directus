@@ -1,6 +1,6 @@
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
+	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
 				<v-icon name="arrow_back" />
@@ -20,21 +20,21 @@
 						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -48,14 +48,14 @@
 						:disabled="item === null"
 						@click="on"
 						class="folder"
-						v-tooltip.bottom="$t('move_to_folder')"
+						v-tooltip.bottom="t('move_to_folder')"
 					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 
 					<v-card-text>
 						<folder-picker v-model="selectedFolder" />
@@ -63,16 +63,16 @@
 
 					<v-card-actions>
 						<v-button @click="moveToDialogActive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="moveToFolder" :loading="moving">
-							{{ $t('move') }}
+							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="$t('download')">
+			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="t('download')">
 				<v-icon name="save_alt" />
 			</v-button>
 
@@ -82,7 +82,7 @@
 				icon
 				@click="editActive = true"
 				class="edit"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="tune" />
 			</v-button>
@@ -93,7 +93,7 @@
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 			>
 				<v-icon name="check" />
 
@@ -144,13 +144,13 @@
 
 		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -175,6 +175,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
@@ -231,6 +232,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const form = ref<HTMLElement>();
@@ -312,6 +315,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			router,
 			item,
 			loading,

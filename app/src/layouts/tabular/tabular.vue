@@ -2,20 +2,20 @@
 	<div class="layout-tabular">
 		<!-- <teleport to="#target-layout-options"> -->
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
+			<div class="type-label">{{ t('layouts.tabular.spacing') }}</div>
 			<v-select
 				v-model="tableSpacing"
 				:items="[
 					{
-						text: $t('layouts.tabular.compact'),
+						text: t('layouts.tabular.compact'),
 						value: 'compact',
 					},
 					{
-						text: $t('layouts.tabular.cozy'),
+						text: t('layouts.tabular.cozy'),
 						value: 'cozy',
 					},
 					{
-						text: $t('layouts.tabular.comfortable'),
+						text: t('layouts.tabular.comfortable'),
 						value: 'comfortable',
 					},
 				]"
@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
+			<div class="type-label">{{ t('layouts.tabular.fields') }}</div>
 			<draggable
 				v-model="activeFields"
 				item-key="field"
@@ -113,7 +113,7 @@
 					</div>
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
-						<span>{{ $t('per_page') }}</span>
+						<span>{{ t('per_page') }}</span>
 						<v-select
 							@update:model-value="limit = +$event"
 							:model-value="`${limit}`"
@@ -125,14 +125,14 @@
 			</template>
 		</v-table>
 
-		<v-info v-else-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
 
 				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
-					{{ $t('reset_page_preferences') }}
+					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>
 		</v-info>
@@ -143,6 +143,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch, ComponentPublicInstance } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
@@ -214,6 +215,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const table = ref<ComponentPublicInstance>();
@@ -242,15 +245,8 @@ export default defineComponent({
 			}
 		);
 
-		const {
-			tableSort,
-			tableHeaders,
-			tableRowHeight,
-			onRowClick,
-			onSortChange,
-			activeFields,
-			tableSpacing,
-		} = useTable();
+		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
+			useTable();
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {
@@ -294,6 +290,7 @@ export default defineComponent({
 		);
 
 		return {
+			t,
 			internalSelection,
 			table,
 			tableHeaders,

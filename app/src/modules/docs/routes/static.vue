@@ -19,14 +19,15 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_docs_global'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_docs_global'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, defineAsyncComponent, ref, computed } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
 import marked from 'marked';
@@ -70,6 +71,8 @@ export default defineComponent({
 		next();
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const path = ref<string | null>(null);
 		const markdown = ref('');
 		const title = computed(() => {
@@ -97,7 +100,7 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { markdown, title, markdownWithoutTitle, marked, path };
+		return { t, markdown, title, markdownWithoutTitle, marked, path };
 	},
 });
 </script>

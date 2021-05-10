@@ -3,8 +3,8 @@
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
 		<div class="actions" v-if="!disabled">
-			<v-icon v-tooltip="$t('edit')" name="launch" clickable @click="editActive = true" />
-			<v-icon v-tooltip="$t('deselect')" name="clear" clickable @click="$emit('deselect')" />
+			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
+			<v-icon v-tooltip="t('deselect')" name="clear" clickable @click="$emit('deselect')" />
 		</div>
 
 		<drawer-item
@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 
@@ -52,8 +53,10 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const editActive = ref(false);
-		return { editActive };
+		return { t, editActive };
 	},
 });
 </script>

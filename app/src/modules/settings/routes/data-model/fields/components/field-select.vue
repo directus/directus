@@ -2,7 +2,7 @@
 	<div :class="(field.meta && field.meta.width) || 'full'">
 		<v-input disabled v-if="disabled" class="field">
 			<template #prepend>
-				<v-icon name="lock" v-tooltip="$t('system_fields_locked')" />
+				<v-icon name="lock" v-tooltip="t('system_fields_locked')" />
 			</template>
 
 			<template #input>
@@ -17,7 +17,7 @@
 				<v-icon class="drag-handle" name="drag_indicator" />
 				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
 				<div class="spacer" />
-				<v-icon small name="group_work" v-tooltip="$t('fields_group')" />
+				<v-icon small name="group_work" v-tooltip="t('fields_group')" />
 				<v-menu show-arrow placement="bottom-end">
 					<template #activator="{ toggle }">
 						<span class="group-options" @click="toggle">
@@ -29,7 +29,7 @@
 						<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 							<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('edit_field') }}
+								{{ t('edit_field') }}
 							</v-list-item-content>
 						</v-list-item>
 
@@ -38,7 +38,7 @@
 						<v-list-item clickable @click="deleteActive = true" class="danger">
 							<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('delete_field') }}
+								{{ t('delete_field') }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -47,7 +47,7 @@
 
 			<router-link :to="`/settings/data-model/${translationsCollection}`">
 				<v-notice type="info" icon="translate">
-					<div>{{ $t('click_to_manage_translated_fields', translationsFieldsCount) }}</div>
+					<div>{{ t('click_to_manage_translated_fields', translationsFieldsCount) }}</div>
 					<div class="spacer" />
 					<v-icon name="launch" />
 				</v-notice>
@@ -66,7 +66,7 @@
 						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
 					</span>
 					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
+					<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
 				</div>
 			</template>
 
@@ -76,16 +76,16 @@
 						v-if="field.schema && field.schema.is_primary_key"
 						name="vpn_key"
 						small
-						v-tooltip="$t('primary_key')"
+						v-tooltip="t('primary_key')"
 					/>
 					<v-icon
 						v-if="!field.meta"
 						name="report_problem"
 						class="unmanaged"
 						small
-						v-tooltip="$t('db_only_click_to_configure')"
+						v-tooltip="t('db_only_click_to_configure')"
 					/>
-					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="$t('hidden_field')" small />
+					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon @click.stop="toggle" name="more_vert" />
@@ -95,7 +95,7 @@
 							<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 								<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
 								<v-list-item-content>
-									{{ $t('edit_field') }}
+									{{ t('edit_field') }}
 								</v-list-item-content>
 							</v-list-item>
 
@@ -103,17 +103,17 @@
 								<v-list-item-icon>
 									<v-icon name="content_copy" />
 								</v-list-item-icon>
-								<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
+								<v-list-item-content>{{ t('duplicate_field') }}</v-list-item-content>
 							</v-list-item>
 
 							<v-list-item clickable @click="toggleVisibility">
 								<template v-if="hidden === false">
 									<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-									<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
+									<v-list-item-content>{{ t('hide_field_on_detail') }}</v-list-item-content>
 								</template>
 								<template v-else>
 									<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-									<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
+									<v-list-item-content>{{ t('show_field_on_detail') }}</v-list-item-content>
 								</template>
 							</v-list-item>
 
@@ -121,17 +121,17 @@
 
 							<v-list-item clickable @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
+								<v-list-item-content>{{ t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
 							<v-list-item clickable @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
+								<v-list-item-content>{{ t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
 							<v-list-item clickable @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
+								<v-list-item-content>{{ t('fill_width') }}</v-list-item-content>
 							</v-list-item>
 
 							<v-divider />
@@ -144,7 +144,7 @@
 							>
 								<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 								<v-list-item-content>
-									{{ $t('delete_field') }}
+									{{ t('delete_field') }}
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
@@ -155,26 +155,26 @@
 
 		<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
 			<v-card class="duplicate">
-				<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
+				<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
 				<v-card-text>
 					<div class="form-grid">
 						<div class="field">
-							<span class="type-label">{{ $t('collection', 0) }}</span>
+							<span class="type-label">{{ t('collection', 0) }}</span>
 							<v-select class="monospace" :items="collections" v-model="duplicateTo" />
 						</div>
 
 						<div class="field">
-							<span class="type-label">{{ $t('field', 0) }}</span>
+							<span class="type-label">{{ t('field', 0) }}</span>
 							<v-input class="monospace" v-model="duplicateName" db-safe autofocus />
 						</div>
 					</div>
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="duplicateActive = false">
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button @click="saveDuplicate" :disabled="duplicateName === null" :loading="duplicating">
-						{{ $t('duplicate') }}
+						{{ t('duplicate') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -182,10 +182,10 @@
 
 		<v-dialog v-model="deleteActive" @esc="deleteActive = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
+				<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 				<v-card-actions>
-					<v-button @click="deleteActive = false" secondary>{{ $t('cancel') }}</v-button>
-					<v-button :loading="deleting" @click="deleteField" class="delete">{{ $t('delete') }}</v-button>
+					<v-button @click="deleteActive = false" secondary>{{ t('cancel') }}</v-button>
+					<v-button :loading="deleting" @click="deleteField" class="delete">{{ t('delete') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -193,6 +193,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { Field, Relation } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
@@ -217,6 +218,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const relationsStore = useRelationsStore();
@@ -227,15 +230,8 @@ export default defineComponent({
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const {
-			duplicateActive,
-			duplicateName,
-			collections,
-			duplicateTo,
-			saveDuplicate,
-			duplicating,
-			duplicable,
-		} = useDuplicate();
+		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating, duplicable } =
+			useDuplicate();
 
 		const interfaceName = computed(() => {
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
@@ -248,6 +244,7 @@ export default defineComponent({
 		const { translationsCollection, translationsFieldsCount } = useTranslations();
 
 		return {
+			t,
 			interfaceName,
 			editActive,
 			setWidth,

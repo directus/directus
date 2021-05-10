@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="!url || !resultsPath || !valuePath">
-		{{ $t('one_or_more_options_are_missing') }}
+		{{ t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">
@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
 import axios from 'axios';
 import { throttle, get, debounce } from 'lodash';
@@ -82,6 +83,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const results = ref<string[]>([]);
 
 		const fetchResultsRaw = async (value: string | null) => {
@@ -114,7 +117,7 @@ export default defineComponent({
 				? debounce(fetchResultsRaw, Number(props.rate))
 				: throttle(fetchResultsRaw, Number(props.rate));
 
-		return { results, onInput, emitValue };
+		return { t, results, onInput, emitValue };
 
 		function onInput(value: string) {
 			emitValue(value);

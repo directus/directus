@@ -3,7 +3,7 @@
 		<template #activator>
 			<v-input
 				:disabled="disabled"
-				:placeholder="$t('interfaces.color.placeholder')"
+				:placeholder="t('interfaces.color.placeholder')"
 				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
@@ -80,6 +80,7 @@
 	</v-menu>
 </template>
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, watch, ComponentPublicInstance } from 'vue';
 import { isHex } from '@/utils/color';
 import Color from 'color';
@@ -139,6 +140,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 		type ColorType = 'RGB' | 'HSL';
 
@@ -169,6 +172,7 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		return {
+			t,
 			colorTypes,
 			colorType,
 			rgb,

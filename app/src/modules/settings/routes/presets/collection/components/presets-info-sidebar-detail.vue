@@ -1,23 +1,24 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="$t('information')" close>
+	<sidebar-detail icon="info_outline" :title="t('information')" close>
 		<dl>
 			<div>
-				<dt>{{ $t('bookmarks') }}</dt>
+				<dt>{{ t('bookmarks') }}</dt>
 				<dd>{{ bookmarksCount }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('presets') }}</dt>
+				<dt>{{ t('presets') }}</dt>
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_settings_presets_collection'))" />
+		<div class="page-description" v-html="marked(t('page_help_settings_presets_collection'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import api from '@/api';
 import marked from 'marked';
@@ -25,13 +26,15 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const loading = ref(false);
 		const bookmarksCount = ref<number | null>(null);
 		const presetsCount = ref<number | null>(null);
 
 		fetchCounts();
 
-		return { bookmarksCount, presetsCount, marked };
+		return { t, bookmarksCount, presetsCount, marked };
 
 		async function fetchCounts() {
 			loading.value = true;

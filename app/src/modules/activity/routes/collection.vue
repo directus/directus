@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('activity_feed')">
+	<private-view :title="t('activity_feed')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="access_time" />
@@ -31,8 +31,8 @@
 		<router-view name="detail" :primary-key="primaryKey" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_activity_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_activity_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
@@ -60,18 +61,12 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
-		return {
-			breadcrumb,
-			marked,
-			layout,
-			layoutOptions,
-			layoutQuery,
-			searchQuery,
-			filters,
-		};
+		return { t, breadcrumb, marked, layout, layoutOptions, layoutQuery, searchQuery, filters };
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {

@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="relation.many_collection !== relation.one_collection">
-		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
+		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
 	<div v-else class="tree-view">
@@ -18,9 +18,9 @@
 		/>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect" @click="selectDrawer = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -48,6 +48,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
 import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
@@ -98,6 +99,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
 
@@ -118,6 +121,7 @@ export default defineComponent({
 		const dragging = ref(false);
 
 		return {
+			t,
 			relation,
 			openItems,
 			template,

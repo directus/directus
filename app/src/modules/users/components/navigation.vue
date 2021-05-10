@@ -2,7 +2,7 @@
 	<v-list large>
 		<v-list-item to="/users" exact :active="currentRole === null">
 			<v-list-item-icon><v-icon name="folder_shared" outline /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
+			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
 		</v-list-item>
 
 		<v-divider v-if="(roles && roles.length > 0) || loading" />
@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 
 import useNavigation from '../composables/use-navigation';
@@ -39,9 +40,11 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { roles, loading } = useNavigation();
 
-		return { roles, loading };
+		return { t, roles, loading };
 	},
 });
 </script>

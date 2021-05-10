@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_data_model')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_data_model')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="$t('create_collection')">
+			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="t('create_collection')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,11 +19,11 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info type="warning" icon="box" :title="$t('no_collections')" v-if="items.length === 0" center>
-				{{ $t('no_collections_copy_admin') }}
+			<v-info type="warning" icon="box" :title="t('no_collections')" v-if="items.length === 0" center>
+				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 				</template>
 			</v-info>
 
@@ -62,7 +62,7 @@
 
 				<template #[`item.note`]="{ item }">
 					<span v-if="item.meta === null" class="note">
-						{{ $t('db_only_click_to_configure') }}
+						{{ t('db_only_click_to_configure') }}
 					</span>
 					<span v-else class="note">
 						{{ item.meta.note }}
@@ -75,7 +75,7 @@
 						class="no-meta"
 						name="report_problem"
 						v-if="!item.meta && item.collection.startsWith('directus_') === false"
-						v-tooltip="$t('db_only_click_to_configure')"
+						v-tooltip="t('db_only_click_to_configure')"
 					/>
 					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
 				</template>
@@ -85,8 +85,8 @@
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_datamodel_collections'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_settings_datamodel_collections'))" />
 			</sidebar-detail>
 			<collections-filter v-model="activeTypes" />
 		</template>
@@ -94,6 +94,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
@@ -111,6 +112,8 @@ const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 export default defineComponent({
 	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
@@ -140,13 +143,7 @@ export default defineComponent({
 
 		const { items } = useItems();
 
-		return {
-			tableHeaders,
-			items,
-			openCollection,
-			activeTypes,
-			marked,
-		};
+		return { t, tableHeaders, items, openCollection, activeTypes, marked };
 
 		function useItems() {
 			const visible = computed(() => {

@@ -3,7 +3,7 @@
 		<template #activator="{ active, activate }">
 			<v-input
 				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
+				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
 				v-model="searchQuery"
 				@focus="activate"
 				:class="{ 'has-value': value }"
@@ -46,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
 import { defineComponent, ref, computed } from 'vue';
 import formatTitle from '@directus/format-title';
@@ -67,6 +68,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const searchQuery = ref('');
 
 		const filteredIcons = computed(() => {
@@ -83,13 +86,7 @@ export default defineComponent({
 			});
 		});
 
-		return {
-			icons,
-			setIcon,
-			searchQuery,
-			filteredIcons,
-			formatTitle,
-		};
+		return { t, icons, setIcon, searchQuery, filteredIcons, formatTitle };
 
 		function setIcon(icon: string | null) {
 			searchQuery.value = '';

@@ -1,9 +1,9 @@
 <template>
 	<v-notice v-if="!collectionField" type="warning">
-		{{ $t('interfaces.system-display-template.collection_field_not_setup') }}
+		{{ t('interfaces.system-display-template.collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="collection === null" type="warning">
-		{{ $t('interfaces.system-display-template.select_a_collection') }}
+		{{ t('interfaces.system-display-template.select_a_collection') }}
 	</v-notice>
 	<v-field-template
 		v-else
@@ -15,6 +15,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, inject, ref, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 
@@ -35,6 +36,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -49,7 +52,7 @@ export default defineComponent({
 			return collectionName;
 		});
 
-		return { collection };
+		return { t, collection };
 	},
 });
 </script>

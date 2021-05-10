@@ -3,7 +3,7 @@
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice class="disabled-placeholder" v-else-if="disabled && !image" center icon="block">
-			{{ $t('disabled') }}
+			{{ t('disabled') }}
 		</v-notice>
 
 		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
@@ -12,16 +12,16 @@
 			<div class="shadow" />
 
 			<div class="actions" v-if="!disabled">
-				<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
+				<v-button icon rounded @click="lightboxActive = true" v-tooltip="t('zoom')">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="$t('download')">
+				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="t('download')">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="$t('edit')">
+				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="t('edit')">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
+				<v-button icon rounded @click="deselect" v-tooltip="t('deselect')">
 					<v-icon name="close" />
 				</v-button>
 			</div>
@@ -47,6 +47,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
@@ -81,6 +82,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
@@ -135,6 +138,7 @@ export default defineComponent({
 		const { edits, stageEdits } = useEdits();
 
 		return {
+			t,
 			loading,
 			image,
 			src,

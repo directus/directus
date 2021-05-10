@@ -1,10 +1,10 @@
 <template>
 	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.translations.no_collection') }}
+		{{ t('interfaces.translations.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('display_template') }}</p>
+			<p class="type-label">{{ t('display_template') }}</p>
 			<v-field-template
 				:collection="relatedCollection"
 				v-model="template"
@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { Relation } from '@/types/relations';
@@ -44,6 +45,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const template = computed({
@@ -72,7 +75,7 @@ export default defineComponent({
 			return collectionsStore.getCollection(relatedCollection.value);
 		});
 
-		return { template, relatedCollection, relatedCollectionInfo };
+		return { t, template, relatedCollection, relatedCollectionInfo };
 	},
 });
 </script>

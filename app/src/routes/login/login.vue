@@ -1,6 +1,6 @@
 <template>
 	<public-view>
-		<h1 class="type-title">{{ $t('sign_in') }}</h1>
+		<h1 class="type-title">{{ t('sign_in') }}</h1>
 
 		<continue-as v-if="authenticated" />
 
@@ -8,20 +8,19 @@
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
-			{{ $t('authenticated') }}
+			{{ t('authenticated') }}
 		</template>
 		<template v-else #notice>
 			<v-icon name="lock_outlined" left />
 			{{
-				logoutReason && $te(`logoutReason.${logoutReason}`)
-					? $t(`logoutReason.${logoutReason}`)
-					: $t('not_authenticated')
+				logoutReason && $te(`logoutReason.${logoutReason}`) ? t(`logoutReason.${logoutReason}`) : t('not_authenticated')
 			}}
 		</template>
 	</public-view>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
@@ -42,11 +41,13 @@ export default defineComponent({
 	},
 	components: { LoginForm, ContinueAs },
 	setup() {
+		const { t } = useI18n();
+
 		const appStore = useAppStore();
 
 		const authenticated = computed(() => appStore.authenticated);
 
-		return { authenticated };
+		return { t, authenticated };
 	},
 });
 </script>

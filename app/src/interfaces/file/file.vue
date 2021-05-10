@@ -9,7 +9,7 @@
 						clickable
 						@click="toggle"
 						readonly
-						:placeholder="$t('no_file_selected')"
+						:placeholder="t('no_file_selected')"
 						:disabled="disabled"
 						:model-value="file && file.title"
 					>
@@ -30,8 +30,8 @@
 						</template>
 						<template #append>
 							<template v-if="file">
-								<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editDrawerActive = true" />
-								<v-icon class="deselect" name="close" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+								<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editDrawerActive = true" />
+								<v-icon class="deselect" name="close" @click.stop="$emit('input', null)" v-tooltip="t('deselect')" />
 							</template>
 							<v-icon v-else name="attach_file" />
 						</template>
@@ -43,7 +43,7 @@
 				<template v-if="file">
 					<v-list-item :download="file.filename_download" :href="assetURL">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
+						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
 					<v-divider />
@@ -51,21 +51,21 @@
 				<v-list-item clickable @click="activeDialog = 'upload'">
 					<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 					<v-list-item-content>
-						{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
+						{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-list-item clickable @click="activeDialog = 'choose'">
 					<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 					<v-list-item-content>
-						{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
+						{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-list-item clickable @click="activeDialog = 'url'">
 					<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 					<v-list-item-content>
-						{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
+						{{ t(file ? 'replace_from_url' : 'import_from_url') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -86,12 +86,12 @@
 			@update:model-value="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload @input="onUpload" from-url />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="activeDialog = null" secondary>{{ $t('cancel') }}</v-button>
+					<v-button @click="activeDialog = null" secondary>{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -110,16 +110,16 @@
 			:persistent="urlLoading"
 		>
 			<v-card>
-				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+				<v-card-title>{{ t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
+					<v-input :placeholder="t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-						{{ $t('import') }}
+						{{ t('import') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -128,6 +128,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
@@ -158,6 +159,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, file, fetchFile } = useFile();
 
@@ -186,6 +189,7 @@ export default defineComponent({
 		const editDrawerActive = ref(false);
 
 		return {
+			t,
 			activeDialog,
 			setSelection,
 			loading,

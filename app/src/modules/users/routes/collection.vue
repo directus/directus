@@ -25,21 +25,21 @@
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -52,7 +52,7 @@
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
 				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -62,7 +62,7 @@
 				rounded
 				icon
 				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
+				v-tooltip.bottom="t('invite_users')"
 				class="invite-user"
 			>
 				<v-icon name="person_add" />
@@ -72,7 +72,7 @@
 				rounded
 				icon
 				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -99,21 +99,21 @@
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$t('user_count', 0)" icon="people_alt" center>
-					{{ $t('no_users_copy') }}
+				<v-info :title="t('user_count', 0)" icon="people_alt" center>
+					{{ t('no_users_copy') }}
 
 					<template v-if="canInviteUsers" #append>
-						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
+						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ t('create_user') }}</v-button>
 					</template>
 				</v-info>
 			</template>
@@ -127,8 +127,8 @@
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_users_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
@@ -137,6 +137,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, PropType } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
@@ -167,6 +168,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { roles } = useNavigation();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const userInviteModalActive = ref(false);
@@ -219,6 +222,7 @@ export default defineComponent({
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 		return {
+			t,
 			canInviteUsers,
 			internalFilters,
 			addNewLink,

@@ -2,13 +2,14 @@
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
 		<textarea ref="codemirrorEl" :value="stringValue" />
 
-		<v-button small icon secondary v-if="template" v-tooltip.left="$t('fill_template')" @click="fillTemplate">
+		<v-button small icon secondary v-if="template" v-tooltip.left="t('fill_template')" @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import CodeMirror from 'codemirror';
 
 import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from 'vue';
@@ -64,6 +65,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
 		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
 
@@ -263,14 +266,7 @@ export default defineComponent({
 			}
 		);
 
-		return {
-			cmOptions,
-			lineCount,
-			codemirrorEl,
-			stringValue,
-			fillTemplate,
-			formatTitle,
-		};
+		return { t, cmOptions, lineCount, codemirrorEl, stringValue, fillTemplate, formatTitle };
 
 		function fillTemplate() {
 			if (props.type === 'json') {

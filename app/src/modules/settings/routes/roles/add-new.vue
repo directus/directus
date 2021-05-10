@@ -2,34 +2,35 @@
 	<v-dialog :model-value="true" persistent @esc="router.push('/settings/roles')">
 		<v-card>
 			<v-card-title>
-				{{ $t('create_role') }}
+				{{ t('create_role') }}
 			</v-card-title>
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="$t('role_name') + '...'" />
+						<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="t('role_name') + '...'" />
 					</div>
 
 					<div class="field half">
-						<p class="type-label">{{ $t('fields.directus_roles.app_access') }}</p>
-						<v-checkbox block v-model="appAccess" :label="$t('enabled')" />
+						<p class="type-label">{{ t('fields.directus_roles.app_access') }}</p>
+						<v-checkbox block v-model="appAccess" :label="t('enabled')" />
 					</div>
 
 					<div class="field half">
-						<p class="type-label">{{ $t('fields.directus_roles.admin_access') }}</p>
-						<v-checkbox block v-model="adminAccess" :label="$t('enabled')" />
+						<p class="type-label">{{ t('fields.directus_roles.admin_access') }}</p>
+						<v-checkbox block v-model="adminAccess" :label="t('enabled')" />
 					</div>
 				</div>
 			</v-card-text>
 			<v-card-actions>
-				<v-button to="/settings/roles" secondary>{{ $t('cancel') }}</v-button>
-				<v-button @click="save" :disabled="roleName === null" :loading="saving">{{ $t('save') }}</v-button>
+				<v-button to="/settings/roles" secondary>{{ t('cancel') }}</v-button>
+				<v-button @click="save" :disabled="roleName === null" :loading="saving">{{ t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import api from '@/api';
 import { useRouter } from 'vue-router';
@@ -38,6 +39,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const roleName = ref<string | null>(null);
@@ -46,7 +49,7 @@ export default defineComponent({
 
 		const { saving, save } = useSave();
 
-		return { router, roleName, saving, save, appAccess, adminAccess };
+		return { t, router, roleName, saving, save, appAccess, adminAccess };
 
 		function useSave() {
 			const saving = ref(false);

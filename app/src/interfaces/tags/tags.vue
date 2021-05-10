@@ -1,7 +1,7 @@
 <template>
 	<div class="interface-tags">
 		<v-input
-			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			@keydown="onInput"
 			:disabled="disabled"
 			v-if="allowCustom"
@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import formatTitle from '@directus/format-title';
 
@@ -90,6 +91,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const presetVals = computed<string[]>(() => {
 			if (props.presets !== null) return processArray(props.presets);
 			return [];
@@ -146,15 +149,7 @@ export default defineComponent({
 			return array;
 		}
 
-		return {
-			onInput,
-			addTag,
-			removeTag,
-			toggleTag,
-			presetVals,
-			customVals,
-			selectedVals,
-		};
+		return { t, onInput, addTag, removeTag, toggleTag, presetVals, customVals, selectedVals };
 
 		function onInput(event: KeyboardEvent) {
 			if (event.target && (event.key === 'Enter' || event.key === ',')) {

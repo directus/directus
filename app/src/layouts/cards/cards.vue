@@ -2,36 +2,36 @@
 	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
 		<!-- <teleport to="#target-layout-options"> -->
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
+			<div class="type-label">{{ t('layouts.cards.image_source') }}</div>
 			<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
 		</div>
 
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.cards.title') }}</div>
+			<div class="type-label">{{ t('layouts.cards.title') }}</div>
 			<v-field-template :collection="collection" v-model="title" />
 		</div>
 
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.cards.subtitle') }}</div>
+			<div class="type-label">{{ t('layouts.cards.subtitle') }}</div>
 			<v-field-template :collection="collection" v-model="subtitle" />
 		</div>
 
 		<v-detail class="field">
-			<template #title>{{ $t('layout_setup') }}</template>
+			<template #title>{{ t('layout_setup') }}</template>
 
 			<div class="nested-options">
 				<div class="field">
-					<div class="type-label">{{ $t('layouts.cards.image_fit') }}</div>
+					<div class="type-label">{{ t('layouts.cards.image_fit') }}</div>
 					<v-select
 						v-model="imageFit"
 						:disabled="imageSource === null"
 						:items="[
 							{
-								text: $t('layouts.cards.crop'),
+								text: t('layouts.cards.crop'),
 								value: 'crop',
 							},
 							{
-								text: $t('layouts.cards.contain'),
+								text: t('layouts.cards.contain'),
 								value: 'contain',
 							},
 						]"
@@ -39,7 +39,7 @@
 				</div>
 
 				<div class="field">
-					<div class="type-label">{{ $t('fallback_icon') }}</div>
+					<div class="type-label">{{ t('fallback_icon') }}</div>
 					<interface-select-icon :value="icon" @input="icon = $event" />
 				</div>
 			</div>
@@ -106,7 +106,7 @@
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ $t('per_page') }}</span>
+					<span>{{ t('per_page') }}</span>
 					<v-select
 						@update:model-value="limit = +$event"
 						:model-value="`${limit}`"
@@ -117,14 +117,14 @@
 			</div>
 		</template>
 
-		<v-info v-else-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
 
 				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
-					{{ $t('reset_page_preferences') }}
+					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>
 		</v-info>
@@ -135,6 +135,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, toRefs, inject, computed, ref } from 'vue';
 import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
@@ -214,6 +215,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 
 		const layoutElement = ref<HTMLElement>();
@@ -293,6 +296,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			internalSelection,
 			items,
 			loading,

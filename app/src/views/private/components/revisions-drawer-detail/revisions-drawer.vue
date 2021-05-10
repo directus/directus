@@ -2,9 +2,9 @@
 	<div>
 		<v-drawer
 			v-model="internalActive"
-			:title="$t('item_revision')"
+			:title="t('item_revision')"
 			@cancel="internalActive = false"
-			:sidebar-label="$t(currentTab[0])"
+			:sidebar-label="t(currentTab[0])"
 		>
 			<template #subtitle>
 				<revisions-drawer-picker :revisions="revisions" v-model:current="internalCurrent" />
@@ -28,10 +28,10 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
+				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="t('revert')">
 					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="internalActive = false" icon rounded v-tooltip.bottom="$t('done')">
+				<v-button @click="internalActive = false" icon rounded v-tooltip.bottom="t('done')">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
 import useSync from '@/composables/use-sync';
 import { Revision } from './types';
@@ -67,6 +68,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const internalActive = useSync(props, 'active', emit);
 		const internalCurrent = useSync(props, 'current', emit);
 
@@ -94,14 +97,7 @@ export default defineComponent({
 			},
 		];
 
-		return {
-			internalActive,
-			internalCurrent,
-			currentRevision,
-			currentTab,
-			tabs,
-			revert,
-		};
+		return { t, internalActive, internalCurrent, currentRevision, currentTab, tabs, revert };
 
 		function revert() {
 			if (!currentRevision.value) return;

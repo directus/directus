@@ -7,8 +7,8 @@
 			</div>
 			<v-menu show-arrow :disabled="disabled">
 				<template #activator="{ toggle }">
-					<div class="operator" @click="toggle" v-tooltip.top="$t('change_advanced_filter_operator')">
-						<span>{{ $t(`operators.${activeOperator}`) }}</span>
+					<div class="operator" @click="toggle" v-tooltip.top="t('change_advanced_filter_operator')">
+						<span>{{ t(`operators.${activeOperator}`) }}</span>
 						<v-icon name="expand_more" />
 					</div>
 				</template>
@@ -21,7 +21,7 @@
 						clickable
 						@click="activeOperator = operator"
 					>
-						<v-list-item-content>{{ $t(`operators.${operator}`) }}</v-list-item-content>
+						<v-list-item-content>{{ t(`operators.${operator}`) }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -31,7 +31,7 @@
 				name="close"
 				clickable
 				@click="$emit('remove')"
-				v-tooltip.left="$t('delete_advanced_filter')"
+				v-tooltip.left="t('delete_advanced_filter')"
 			/>
 		</div>
 		<div class="field">
@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
@@ -65,6 +66,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const activeOperator = computed({
@@ -94,7 +97,7 @@ export default defineComponent({
 			return getAvailableOperatorsForType(field.type);
 		});
 
-		return { activeOperator, value, name, parsedField };
+		return { t, activeOperator, value, name, parsedField };
 
 		function getFieldForKey(fieldKey: string) {
 			return fieldsStore.getField(props.collection, fieldKey);

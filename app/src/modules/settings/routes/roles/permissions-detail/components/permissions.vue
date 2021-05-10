@@ -2,9 +2,9 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('permissions_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('permissions_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public'),
 				})
 			}}
 		</v-notice>
@@ -13,13 +13,14 @@
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
-			<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
 			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
@@ -41,6 +42,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const permissions = computed({
@@ -55,7 +58,7 @@ export default defineComponent({
 			},
 		});
 
-		return { permissions };
+		return { t, permissions };
 	},
 });
 </script>

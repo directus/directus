@@ -2,14 +2,14 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('fields_for_role', {
-					role: role ? role.name : $t('public'),
-					action: $t(permission.action).toLowerCase(),
+				t('fields_for_role', {
+					role: role ? role.name : t('public'),
+					action: t(permission.action).toLowerCase(),
 				})
 			}}
 		</v-notice>
 
-		<p class="type-label">{{ $t('field', 0) }}</p>
+		<p class="type-label">{{ t('field', 0) }}</p>
 		<interface-select-multiple-checkbox
 			:value="fields"
 			@input="fields = $event"
@@ -19,13 +19,14 @@
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
-			<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
 			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Field, Role } from '@/types';
 import useSync from '@/composables/use-sync';
@@ -48,6 +49,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const internalPermission = useSync(props, 'permission', emit);
@@ -95,7 +98,7 @@ export default defineComponent({
 			},
 		});
 
-		return { fields, fieldsInCollection };
+		return { t, fields, fieldsInCollection };
 	},
 });
 </script>

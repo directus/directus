@@ -1,18 +1,19 @@
 <template>
-	<private-view :title="$t('page_not_found')">
+	<private-view :title="t('page_not_found')">
 		<template #navigation>
 			<docs-navigation :path="path" />
 		</template>
 
 		<div class="not-found">
-			<v-info :title="$t('page_not_found')" icon="not_interested">
-				{{ $t('page_not_found_body') }}
+			<v-info :title="t('page_not_found')" icon="not_interested">
+				{{ t('page_not_found_body') }}
 			</v-info>
 		</div>
 	</private-view>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
 
@@ -29,8 +30,10 @@ export default defineComponent({
 		next();
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const path = ref<string | null>(null);
-		return { path };
+		return { t, path };
 	},
 });
 </script>

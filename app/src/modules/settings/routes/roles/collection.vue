@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_permissions')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_permissions')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_role')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_role')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,8 +19,8 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_roles_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_settings_roles_collection'))" />
 			</sidebar-detail>
 		</template>
 
@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
@@ -80,6 +81,8 @@ export default defineComponent({
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const roles = ref<Role[]>([]);
@@ -122,7 +125,7 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
+		return { t, marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;

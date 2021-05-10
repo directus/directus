@@ -29,12 +29,13 @@
 		/>
 
 		<v-notice v-else type="warning">
-			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
+			{{ t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
@@ -78,13 +79,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
 			return !!interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'input');
 		});
 
-		return { interfaceExists, getDefaultInterfaceForType };
+		return { t, interfaceExists, getDefaultInterfaceForType };
 	},
 });
 </script>

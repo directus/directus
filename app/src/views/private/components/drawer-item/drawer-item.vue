@@ -13,7 +13,7 @@
 		</template>
 
 		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -108,16 +109,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
 		const { internalActive } = useActiveState();
-		const {
-			junctionFieldInfo,
-			junctionRelatedCollection,
-			junctionRelatedCollectionInfo,
-			setJunctionEdits,
-		} = useJunction();
+		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } =
+			useJunction();
 		const { internalEdits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
@@ -190,6 +189,7 @@ export default defineComponent({
 		const { file, isDirectusFiles } = useFile();
 
 		return {
+			t,
 			internalActive,
 			internalEdits,
 			loading,

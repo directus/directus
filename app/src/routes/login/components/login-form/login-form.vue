@@ -1,19 +1,19 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="$t('email')" />
-		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="$t('password')" />
+		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="t('email')" />
+		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="t('password')" />
 
 		<transition-expand>
-			<v-input type="text" :placeholder="$t('otp')" v-if="requiresTFA" v-model="otp" />
+			<v-input type="text" :placeholder="t('otp')" v-if="requiresTFA" v-model="otp" />
 		</transition-expand>
 
 		<v-notice type="warning" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ $t('sign_in') }}</v-button>
+			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
 			<router-link to="/reset-password" class="forgot-password">
-				{{ $t('forgot_password') }}
+				{{ t('forgot_password') }}
 			</router-link>
 		</div>
 
@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ssoLinks from '../sso-links.vue';
@@ -39,6 +40,8 @@ type Credentials = {
 export default defineComponent({
 	components: { ssoLinks },
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const loggingIn = ref(false);
@@ -60,17 +63,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return {
-			errorFormatted,
-			error,
-			email,
-			password,
-			onSubmit,
-			loggingIn,
-			translateAPIError,
-			otp,
-			requiresTFA,
-		};
+		return { t, errorFormatted, error, email, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
 
 		async function onSubmit() {
 			if (email.value === null || password.value === null) return;

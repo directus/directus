@@ -3,25 +3,25 @@
 		<div class="start">
 			<div class="selected" v-if="internalSelection.length > 0" @click="internalSelection = []">
 				<v-icon name="cancel" outline />
-				<span class="label">{{ $t('n_items_selected', internalSelection.length) }}</span>
+				<span class="label">{{ t('n_items_selected', internalSelection.length) }}</span>
 			</div>
 			<button class="select-all" v-else @click="$emit('select-all')">
 				<v-icon name="check_circle" outline />
-				<span class="label">{{ $t('select_all') }}</span>
+				<span class="label">{{ t('select_all') }}</span>
 			</button>
 		</div>
 		<div class="end">
 			<v-icon
 				class="size-selector"
 				:name="`grid_${7 - size}`"
-				v-tooltip.top="$t('card_size')"
+				v-tooltip.top="t('card_size')"
 				clickable
 				@click="toggleSize"
 			/>
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div class="sort-selector" v-tooltip.top="$t('sort_field')" @click="toggle">
+					<div class="sort-selector" v-tooltip.top="t('sort_field')" @click="toggle">
 						{{ sortField && sortField.name }}
 					</div>
 				</template>
@@ -43,7 +43,7 @@
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
-				v-tooltip.top="$t('sort_direction')"
+				v-tooltip.top="t('sort_direction')"
 				clickable
 				@click="toggleDescending"
 			/>
@@ -52,6 +52,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@/types';
 import useSync from '@/composables/use-sync';
@@ -77,6 +78,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const internalSize = useSync(props, 'size', emit);
 		const internalSort = useSync(props, 'sort', emit);
 		const internalSelection = useSync(props, 'selection', emit);
@@ -99,6 +102,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			toggleSize,
 			descending,
 			toggleDescending,

@@ -3,7 +3,7 @@
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
-					{{ $t('key') }}
+					{{ t('key') }}
 					<v-icon class="required" sup name="star" />
 				</div>
 				<v-input
@@ -13,17 +13,17 @@
 					v-model="fieldData.field"
 					:nullable="false"
 					db-safe
-					:placeholder="$t('a_unique_column_name')"
+					:placeholder="t('a_unique_column_name')"
 				/>
-				<small class="note" v-html="$t('schema_setup_key')" />
+				<small class="note" v-html="t('schema_setup_key')" />
 			</div>
 
 			<div class="field half">
 				<div class="label type-label">
-					{{ $t('type') }}
+					{{ t('type') }}
 					<v-icon class="required" sup name="star" />
 				</div>
-				<v-input v-if="!fieldData.schema" :model-value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :model-value="t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
@@ -36,10 +36,10 @@
 
 			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
 				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('length') }}</div>
+					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
 						type="number"
-						:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
+						:placeholder="fieldData.type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || fieldData.type !== 'string'"
 						v-model="fieldData.schema.max_length"
 					/>
@@ -48,7 +48,7 @@
 
 			<template v-else>
 				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('precision_scale') }}</div>
+					<div class="label type-label">{{ t('precision_scale') }}</div>
 					<div class="precision-scale">
 						<v-input type="number" :placeholder="10" v-model="fieldData.schema.numeric_precision" />
 						<v-input type="number" :placeholder="5" v-model="fieldData.schema.numeric_scale" />
@@ -58,12 +58,12 @@
 
 			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
-					<div class="label type-label">{{ $t('on_create') }}</div>
+					<div class="label type-label">{{ t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
 				</div>
 
 				<div class="field half-right">
-					<div class="label type-label">{{ $t('on_update') }}</div>
+					<div class="label type-label">{{ t('on_update') }}</div>
 					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
 				</div>
 			</template>
@@ -71,9 +71,9 @@
 			<!-- @TODO see https://github.com/directus/directus/issues/639
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('unique') }}</div>
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
-					:label="$t('value_unique')"
+					:label="t('value_unique')"
 					:model-value="fieldData.schema.is_unique === false"
 					@update:model-value="fieldData.schema.is_unique = !$event"
 					block
@@ -81,7 +81,7 @@
 			</div> -->
 
 			<div class="field full" v-if="fieldData.schema && fieldData.schema.is_primary_key !== true">
-				<div class="label type-label">{{ $t('default_value') }}</div>
+				<div class="label type-label">{{ t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
@@ -130,21 +130,21 @@
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('nullable') }}</div>
+				<div class="label type-label">{{ t('nullable') }}</div>
 				<v-checkbox
 					:model-value="fieldData.schema.is_nullable"
 					@update:model-value="fieldData.schema.is_nullable = $event"
-					:label="$t('allow_null_value')"
+					:label="t('allow_null_value')"
 					block
 				/>
 			</div>
 
 			<div class="field half-right" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('unique') }}</div>
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
 					:model-value="fieldData.schema.is_unique"
 					@update:model-value="fieldData.schema.is_unique = $event"
-					:label="$t('value_unique')"
+					:label="t('value_unique')"
 					block
 				/>
 			</div>
@@ -153,6 +153,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { i18n } from '@/lang';
 import { state } from '../store';
@@ -236,6 +237,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const typesWithLabels = computed(() => {
 			return fieldTypes;
 		});
@@ -265,6 +268,7 @@ export default defineComponent({
 		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
 
 		return {
+			t,
 			fieldData: state.fieldData,
 			typesWithLabels,
 			typeDisabled,

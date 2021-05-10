@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<v-checkbox block :model-value="tfaEnabled" @click="toggle" :disabled="!isCurrentUser">
-			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
+			{{ tfaEnabled ? t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
@@ -12,16 +12,16 @@
 			<v-card>
 				<template v-if="tfaEnabled === false && loading === false">
 					<v-card-title>
-						{{ $t('enter_password_to_enable_tfa') }}
+						{{ t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
+						<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" />
 
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="enableActive = false" secondary>{{ $t('cancel') }}</v-button>
-						<v-button @click="enableTFA" :loading="loading">{{ $t('next') }}</v-button>
+						<v-button @click="enableActive = false" secondary>{{ t('cancel') }}</v-button>
+						<v-button @click="enableTFA" :loading="loading">{{ t('next') }}</v-button>
 					</v-card-actions>
 				</template>
 
@@ -29,14 +29,14 @@
 
 				<div v-show="tfaEnabled && loading === false">
 					<v-card-title>
-						{{ $t('tfa_scan_code') }}
+						{{ t('tfa_scan_code') }}
 					</v-card-title>
 					<v-card-text>
 						<canvas class="qr" :id="canvasID" />
 						<output class="secret">{{ secret }}</output>
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="enableActive = false">{{ $t('done') }}</v-button>
+						<v-button @click="enableActive = false">{{ t('done') }}</v-button>
 					</v-card-actions>
 				</div>
 			</v-card>
@@ -45,15 +45,15 @@
 		<v-dialog v-model="disableActive">
 			<v-card>
 				<v-card-title>
-					{{ $t('enter_otp_to_disable_tfa') }}
+					{{ t('enter_otp_to_disable_tfa') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
+					<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button class="disable" :loading="loading" @click="disableTFA" :disabled="otp.length !== 6">
-						{{ $t('disable_tfa') }}
+						{{ t('disable_tfa') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -62,6 +62,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, onMounted, computed } from 'vue';
 import api from '@/api';
 import qrcode from 'qrcode';
@@ -80,6 +81,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const userStore = useUserStore();
 		const tfaEnabled = ref(!!props.value);
 		const enableActive = ref(false);
@@ -105,6 +108,7 @@ export default defineComponent({
 		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
 
 		return {
+			t,
 			tfaEnabled,
 			enableTFA,
 			toggle,

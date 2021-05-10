@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="!relation">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
 		<template v-if="loading">
@@ -12,7 +12,7 @@
 		</template>
 
 		<v-notice v-else-if="sortedItems.length === 0">
-			{{ $t('no_items') }}
+			{{ t('no_items') }}
 		</v-notice>
 
 		<v-list v-else>
@@ -42,10 +42,10 @@
 
 		<div class="actions" v-if="!disabled">
 			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="currentlyEditing = '+'">
-				{{ $t('create_new') }}
+				{{ t('create_new') }}
 			</v-button>
 			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -73,6 +73,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, PropType } from 'vue';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
@@ -125,6 +126,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -149,6 +152,7 @@ export default defineComponent({
 		const { createAllowed, updateAllowed } = usePermissions();
 
 		return {
+			t,
 			relation,
 			loading,
 			currentlyEditing,

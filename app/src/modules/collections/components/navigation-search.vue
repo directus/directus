@@ -1,23 +1,23 @@
 <template>
 	<div class="container" v-show="searchQuery !== null || visible > 20">
-		<v-input small class="search" v-model="searchQuery" :placeholder="$t('search_collection')">
+		<v-input small class="search" v-model="searchQuery" :placeholder="t('search_collection')">
 			<template #prepend><v-icon small name="search" /></template>
 		</v-input>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { visible, searchQuery } = useSearch();
 
-		return {
-			visible,
-			searchQuery,
-		};
+		return { t, visible, searchQuery };
 	},
 });
 </script>

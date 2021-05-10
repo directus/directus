@@ -3,13 +3,13 @@
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.heading')">
+					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.heading')">
 						<v-icon name="title" />
 					</v-button>
 				</template>
 				<v-list>
 					<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
-						<v-list-item-content><v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
+						<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
 						<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
 					</v-list-item>
 				</v-list>
@@ -19,7 +19,7 @@
 				small
 				icon
 				@click="edit('bold')"
-				v-tooltip="$t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 			>
 				<v-icon name="format_bold" />
 			</v-button>
@@ -27,7 +27,7 @@
 				small
 				icon
 				@click="edit('italic')"
-				v-tooltip="$t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 			>
 				<v-icon name="format_italic" />
 			</v-button>
@@ -35,21 +35,21 @@
 				small
 				icon
 				@click="edit('strikethrough')"
-				v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
-			<v-button small icon @click="edit('listBulleted')" v-tooltip="$t('wysiwyg_options.bullist')">
+			<v-button small icon @click="edit('listBulleted')" v-tooltip="t('wysiwyg_options.bullist')">
 				<v-icon name="format_list_bulleted" />
 			</v-button>
-			<v-button small icon @click="edit('listNumbered')" v-tooltip="$t('wysiwyg_options.numlist')">
+			<v-button small icon @click="edit('listNumbered')" v-tooltip="t('wysiwyg_options.numlist')">
 				<v-icon name="format_list_numbered" />
 			</v-button>
 			<v-button
 				small
 				icon
 				@click="edit('blockquote')"
-				v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 			>
 				<v-icon name="format_quote" />
 			</v-button>
@@ -57,7 +57,7 @@
 				small
 				icon
 				@click="edit('code')"
-				v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 			>
 				<v-icon name="code" />
 			</v-button>
@@ -65,14 +65,14 @@
 				small
 				icon
 				@click="edit('link')"
-				v-tooltip="$t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 			>
 				<v-icon name="insert_link" />
 			</v-button>
 
 			<v-menu show-arrow :close-on-content-click="false">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.table')">
+					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.table')">
 						<v-icon name="table_chart" />
 					</v-button>
 				</template>
@@ -80,11 +80,11 @@
 				<template #default="{ deactivate }">
 					<div class="table-options">
 						<div class="field half">
-							<p class="type-label">{{ $t('rows') }}</p>
+							<p class="type-label">{{ t('rows') }}</p>
 							<v-input :min="1" type="number" v-model="table.rows" />
 						</div>
 						<div class="field half">
-							<p class="type-label">{{ $t('columns') }}</p>
+							<p class="type-label">{{ t('columns') }}</p>
 							<v-input :min="1" type="number" v-model="table.columns" />
 						</div>
 						<div class="field full">
@@ -104,7 +104,7 @@
 				</template>
 			</v-menu>
 
-			<v-button @click="imageDialogOpen = true" small icon v-tooltip="$t('wysiwyg_options.image')">
+			<v-button @click="imageDialogOpen = true" small icon v-tooltip="t('wysiwyg_options.image')">
 				<v-icon name="insert_photo" />
 			</v-button>
 
@@ -133,12 +133,12 @@
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload @input="onImageUpload" from-url from-library />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="imageDialogOpen = null" secondary>{{ $t('cancel') }}</v-button>
+					<v-button @click="imageDialogOpen = null" secondary>{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -146,6 +146,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType } from 'vue';
 // @TODO3 It seems like the dompurify export isn't tree-shakable
 import dompurify from 'dompurify';
@@ -187,6 +188,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
 		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
@@ -269,6 +272,7 @@ export default defineComponent({
 		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
 		return {
+			t,
 			codemirrorEl,
 			edit,
 			view,

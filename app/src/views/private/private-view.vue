@@ -1,6 +1,6 @@
 <template>
-	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
-		{{ $t('no_app_access_copy') }}
+	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
+		{{ t('no_app_access_copy') }}
 
 		<template #append>
 			<v-button to="/logout">Switch User</v-button>
@@ -61,6 +61,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, provide, toRefs, computed } from 'vue';
 import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
@@ -90,6 +91,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const { title } = toRefs(props);
@@ -119,15 +122,7 @@ export default defineComponent({
 
 		useTitle(title);
 
-		return {
-			navOpen,
-			contentEl,
-			theme,
-			sidebarOpen,
-			openSidebar,
-			notificationsPreviewActive,
-			appAccess,
-		};
+		return { t, navOpen, contentEl, theme, sidebarOpen, openSidebar, notificationsPreviewActive, appAccess };
 
 		function openSidebar(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {

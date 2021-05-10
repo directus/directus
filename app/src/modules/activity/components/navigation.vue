@@ -5,7 +5,7 @@
 				<v-icon name="access_time" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('all_activity')" />
+				<v-text-overflow :text="t('all_activity')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -18,7 +18,7 @@
 				<v-icon name="face" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('my_activity')" />
+				<v-text-overflow :text="t('my_activity')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -33,7 +33,7 @@
 				<v-icon name="add" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('create')" />
+				<v-text-overflow :text="t('create')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -46,7 +46,7 @@
 				<v-icon name="check" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('update')" />
+				<v-text-overflow :text="t('update')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -59,7 +59,7 @@
 				<v-icon name="clear" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('delete')" />
+				<v-text-overflow :text="t('delete')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -72,7 +72,7 @@
 				<v-icon name="chat_bubble_outline" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('comment')" />
+				<v-text-overflow :text="t('comment')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -85,13 +85,14 @@
 				<v-icon name="login" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('login')" />
+				<v-text-overflow :text="t('login')" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
@@ -106,6 +107,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const userStore = useUserStore();
 		const currentUserID = computed(() => userStore.currentUser?.id);
 
@@ -113,7 +116,7 @@ export default defineComponent({
 			return props.filters.find((filter) => filter.locked === true);
 		});
 
-		return { currentUserID, setNavFilter, clearNavFilter, activeFilter };
+		return { t, currentUserID, setNavFilter, clearNavFilter, activeFilter };
 
 		function setNavFilter(key: string, value: any) {
 			emit('update:filters', [

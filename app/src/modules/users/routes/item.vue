@@ -17,7 +17,7 @@
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
@@ -26,14 +26,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -60,14 +60,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
-							{{ isArchived ? $t('unarchive') : $t('archive') }}
+							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -78,7 +78,7 @@
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -144,13 +144,13 @@
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -173,6 +173,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
@@ -224,6 +225,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const form = ref<HTMLElement>();
@@ -319,6 +322,7 @@ export default defineComponent({
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		return {
+			t,
 			router,
 			title,
 			item,

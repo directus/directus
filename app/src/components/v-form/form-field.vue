@@ -44,12 +44,12 @@
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
-				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
+				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea class="raw-value" v-model="rawValue" :placeholder="$t('enter_raw_value')" />
+					<v-textarea class="raw-value" v-model="rawValue" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="showRaw = false">{{ $t('done') }}</v-button>
+					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types/';
 import marked from 'marked';
@@ -120,6 +121,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
 			if (props.field?.meta?.readonly === true) return true;
@@ -156,7 +159,7 @@ export default defineComponent({
 			}
 		});
 
-		return { isDisabled, marked, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { t, isDisabled, marked, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (

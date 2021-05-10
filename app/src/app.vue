@@ -6,8 +6,8 @@
 			</div>
 		</transition>
 
-		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, watch, computed, provide } from 'vue';
 import * as stores from '@/stores';
 import api, { addTokenToURL } from '@/api';
@@ -31,6 +32,8 @@ import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { useAppStore, useUserStore, useServerStore } = stores;
 
 		const appStore = useAppStore();
@@ -109,7 +112,7 @@ export default defineComponent({
 			addTokenToURL,
 		});
 
-		return { hydrating, brandStyle, error, customCSS };
+		return { t, hydrating, brandStyle, error, customCSS };
 	},
 });
 </script>

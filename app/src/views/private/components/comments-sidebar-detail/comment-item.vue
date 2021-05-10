@@ -6,7 +6,7 @@
 			<template #append>
 				<div class="buttons">
 					<v-button class="cancel" @click="cancelEditing" secondary x-small>
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 
 					<v-button
@@ -16,7 +16,7 @@
 						x-small
 						:disabled="edits === activity.comment"
 					>
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</div>
 			</template>
@@ -27,13 +27,14 @@
 
 			<!-- @TODO: Dynamically add element below if the comment overflows -->
 			<!-- <div v-if="activity.id == 204" class="expand-text">
-				<span>{{ $t('click_to_expand') }}</span>
+				<span>{{ t('click_to_expand') }}</span>
 			</div> -->
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
@@ -56,6 +57,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const textarea = ref<ComponentPublicInstance>();
 		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 
@@ -63,7 +66,7 @@ export default defineComponent({
 
 		useShortcut('meta+enter', saveEdits, textarea);
 
-		return { htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);

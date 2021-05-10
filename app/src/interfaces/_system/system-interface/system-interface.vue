@@ -1,17 +1,18 @@
 <template>
 	<v-notice v-if="selectedType === undefined">
-		{{ $t('select_field_type') }}
+		{{ t('select_field_type') }}
 	</v-notice>
 	<v-select
 		v-else
 		:items="items"
 		@update:model-value="$emit('input', $event)"
 		:model-value="value"
-		:placeholder="$t('interfaces.system-interface.placeholder')"
+		:placeholder="t('interfaces.system-interface.placeholder')"
 	/>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, watch } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
@@ -29,6 +30,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -59,7 +62,7 @@ export default defineComponent({
 				});
 		});
 
-		return { items, selectedType, values };
+		return { t, items, selectedType, values };
 	},
 });
 </script>

@@ -2,7 +2,7 @@
 	<v-drawer
 		v-model="internalActive"
 		class="modal"
-		:title="$t('editing_image')"
+		:title="t('editing_image')"
 		persistent
 		@cancel="internalActive = false"
 	>
@@ -11,7 +11,7 @@
 		</template>
 
 		<template #subtitle>
-			<span class="warning">{{ $t('changes_are_permanent') }}</span>
+			<span class="warning">{{ t('changes_are_permanent') }}</span>
 		</template>
 
 		<div class="loader" v-if="loading">
@@ -27,7 +27,7 @@
 
 			<div class="toolbar">
 				<div
-					v-tooltip.top.inverted="$t('drag_mode')"
+					v-tooltip.top.inverted="t('drag_mode')"
 					class="drag-mode toolbar-button"
 					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
 				>
@@ -35,20 +35,20 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon name="rotate_90_degrees_ccw" clickable @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
+				<v-icon name="rotate_90_degrees_ccw" clickable @click="rotate" v-tooltip.top.inverted="t('rotate')" />
 
 				<v-icon
 					name="flip_horizontal"
 					clickable
 					@click="flip('horizontal')"
-					v-tooltip.top.inverted="$t('flip_horizontal')"
+					v-tooltip.top.inverted="t('flip_horizontal')"
 				/>
 
-				<v-icon name="flip_vertical" clickable @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
+				<v-icon name="flip_vertical" clickable @click="flip('vertical')" v-tooltip.top.inverted="t('flip_vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon :name="aspectRatioIcon" clickable @click="toggle" v-tooltip.top.inverted="$t('aspect_ratio')" />
+						<v-icon :name="aspectRatioIcon" clickable @click="toggle" v-tooltip.top.inverted="t('aspect_ratio')" />
 					</template>
 
 					<v-list>
@@ -70,11 +70,11 @@
 						</v-list-item>
 						<v-list-item clickable @click="aspectRatio = 1 / 1" :active="aspectRatio === 1 / 1">
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('square') }}</v-list-item-content>
+							<v-list-item-content>{{ t('square') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item clickable @click="aspectRatio = NaN" :active="aspectRatio === NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
+							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
 							v-if="imageData"
@@ -83,7 +83,7 @@
 							:active="aspectRatio === imageData.width / imageData.height"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
+							<v-list-item-content>{{ t('original') }}</v-list-item-content>
 						</v-list-item>
 					</v-list>
 				</v-menu>
@@ -99,13 +99,13 @@
 				</div>
 
 				<button class="toolbar-button cancel" v-show="cropping" @click="cropping = false">
-					{{ $t('cancel_crop') }}
+					{{ t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
 		<template #actions>
-			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -113,6 +113,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
 
@@ -144,6 +145,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const localActive = ref(false);
 
 		const internalActive = computed({
@@ -189,6 +192,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			internalActive,
 			loading,
 			error,

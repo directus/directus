@@ -2,7 +2,7 @@
 	<div
 		class="permissions-overview-toggle"
 		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
-		v-tooltip="appMinimal && $t('required_for_app_access')"
+		v-tooltip="appMinimal && t('required_for_app_access')"
 	>
 		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
 
@@ -27,7 +27,7 @@
 						<v-icon name="check" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('all_access') }}
+						{{ t('all_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -41,7 +41,7 @@
 						<v-icon name="block" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('no_access') }}
+						{{ t('no_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -52,7 +52,7 @@
 						<v-icon name="rule" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('use_custom') }}
+						{{ t('use_custom') }}
 					</v-list-item-content>
 					<v-list-item-icon>
 						<v-icon name="launch" />
@@ -64,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
@@ -98,6 +99,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const { collection, role, permissions } = toRefs(props);
@@ -131,7 +134,7 @@ export default defineComponent({
 			return 'partial';
 		});
 
-		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
+		return { t, permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
 
 		async function openPermissions() {
 			// If this collection isn't "managed" yet, make sure to add it to directus_collections first

@@ -2,14 +2,14 @@
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
+				<div class="type-label">{{ t('this_collection') }}</div>
 				<v-input disabled :model-value="collection" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('related_collection') }}</div>
+				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
 					db-safe
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 					v-model="relations[0].many_collection"
 					:nullable="false"
 					:disabled="isExisting"
@@ -22,7 +22,7 @@
 									name="list_alt"
 									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="isExisting"
 								/>
 							</template>
@@ -43,7 +43,7 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
@@ -75,13 +75,13 @@
 				v-model="relations[0].many_field"
 				:nullable="false"
 				:disabled="isExisting"
-				:placeholder="$t('foreign_key') + '...'"
+				:placeholder="t('foreign_key') + '...'"
 				:class="{ matches: relatedFieldExists }"
 			>
 				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">
@@ -108,33 +108,33 @@
 			<v-icon class="arrow" name="arrow_forward" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
 
 		<div class="corresponding" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_field') }}</div>
+				<div class="type-label">{{ t('create_field') }}</div>
 				<v-checkbox block :disabled="isExisting" :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('field_name') }}</div>
-				<v-input disabled v-model="relations[0].many_field" :placeholder="$t('field_name') + '...'" db-safe />
+				<div class="type-label">{{ t('field_name') }}</div>
+				<v-input disabled v-model="relations[0].many_field" :placeholder="t('field_name') + '...'" db-safe />
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 
 			<v-input
 				db-safe
 				v-model="relations[0].sort_field"
-				:placeholder="$t('add_sort_field') + '...'"
+				:placeholder="t('add_sort_field') + '...'"
 				:class="{ matches: sortFieldExists }"
 			>
 				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">
@@ -158,12 +158,12 @@
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
-				{{ $t('new_data_alert') }}
+				{{ t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+						({{ t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -172,6 +172,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
@@ -195,16 +196,13 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const {
-			availableCollections,
-			systemCollections,
-			fields,
-			currentCollectionPrimaryKey,
-			collectionMany,
-		} = useRelation();
+		const { availableCollections, systemCollections, fields, currentCollectionPrimaryKey, collectionMany } =
+			useRelation();
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
@@ -225,6 +223,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			relations: state.relations,
 			availableCollections,
 			systemCollections,

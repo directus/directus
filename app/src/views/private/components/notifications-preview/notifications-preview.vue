@@ -4,7 +4,7 @@
 			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
 					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
-						{{ $t('show_all_activity') }}
+						{{ t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
 						<notification-item v-for="notification in lastFour" :key="notification.id" v-bind="notification" />
@@ -16,16 +16,17 @@
 		<sidebar-button
 			:active="modelValue"
 			@click="$emit('update:modelValue', !modelValue)"
-			v-tooltip.left="$t('notifications')"
+			v-tooltip.left="t('notifications')"
 			class="toggle"
 			icon="notifications"
 		>
-			{{ $t('notifications') }}
+			{{ t('notifications') }}
 		</sidebar-button>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
@@ -45,8 +46,10 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const notificationsStore = useNotificationsStore();
-		return { lastFour: notificationsStore.lastFour };
+		return { t, lastFour: notificationsStore.lastFour };
 	},
 });
 </script>

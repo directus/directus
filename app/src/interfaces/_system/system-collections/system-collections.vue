@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="items.length === 0">
-		{{ $t('no_collections') }}
+		{{ t('no_collections') }}
 	</v-notice>
 	<interface-select-multiple-checkbox
 		v-else
@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
@@ -32,6 +33,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
@@ -49,7 +52,7 @@ export default defineComponent({
 			}));
 		});
 
-		return { items };
+		return { t, items };
 	},
 });
 </script>

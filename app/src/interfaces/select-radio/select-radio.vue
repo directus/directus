@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -32,12 +32,13 @@
 			}"
 		>
 			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
-			<input v-model="otherValue" :placeholder="$t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
+			<input v-model="otherValue" :placeholder="t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, PropType } from 'vue';
 import { useCustomSelection } from '@/composables/use-custom-selection';
 
@@ -83,6 +84,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { choices, value } = toRefs(props);
 
 		const gridClass = computed(() => {
@@ -112,7 +115,7 @@ export default defineComponent({
 			return props.iconOff;
 		});
 
-		return { gridClass, otherValue, usesOtherValue, customIcon };
+		return { t, gridClass, otherValue, usesOtherValue, customIcon };
 	},
 });
 </script>

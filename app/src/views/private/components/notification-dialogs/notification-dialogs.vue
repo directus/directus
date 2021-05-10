@@ -11,10 +11,10 @@
 				<v-card-actions>
 					<v-button secondary v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'">
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
-							{{ $t('report_error') }}
+							{{ t('report_error') }}
 						</a>
 					</v-button>
-					<v-button @click="done(notification.id)">{{ $t('dismiss') }}</v-button>
+					<v-button @click="done(notification.id)">{{ t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useNotificationsStore, useUserStore } from '@/stores/';
 import { Notification } from '@/types';
@@ -29,13 +30,15 @@ import { useProjectInfo } from '@/modules/settings/composables/use-project-info'
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();
 
 		const notifications = computed(() => notificationsStore.dialogs);
 
-		return { notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
+		return { t, notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
 
 		function getGitHubIssueLink(id: string, notification: Notification) {
 			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->

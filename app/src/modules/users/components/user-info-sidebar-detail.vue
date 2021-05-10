@@ -1,41 +1,42 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="$t('information')" close>
+	<sidebar-detail icon="info_outline" :title="t('information')" close>
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id">
-				<dt>{{ $t('key') }}</dt>
+				<dt>{{ t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
 			</div>
 			<div v-if="user.last_page">
-				<dt>{{ $t('last_page') }}</dt>
+				<dt>{{ t('last_page') }}</dt>
 				<dd>
 					<router-link :to="user.last_page">{{ user.last_page }}</router-link>
 				</dd>
 			</div>
 			<div v-if="user.last_access">
-				<dt>{{ $t('last_access') }}</dt>
+				<dt>{{ t('last_access') }}</dt>
 				<dd>{{ lastAccessDate }}</dd>
 			</div>
 			<div v-if="user.created_on">
-				<dt>{{ $t('created_on') }}</dt>
+				<dt>{{ t('created_on') }}</dt>
 				<dd>{{ user.created_on }}</dd>
 			</div>
 			<div v-if="user.created_by">
-				<dt>{{ $t('created_by') }}</dt>
+				<dt>{{ t('created_by') }}</dt>
 				<dd>{{ user.created_by }}</dd>
 			</div>
 			<div v-if="user.modified_on">
-				<dt>{{ $t('modified_on') }}</dt>
+				<dt>{{ t('modified_on') }}</dt>
 				<dd>{{ user.modified_on }}</dd>
 			</div>
 		</dl>
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_users_item'))" />
+		<div class="page-description" v-html="marked(t('page_help_users_item'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
 import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
@@ -53,6 +54,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const lastAccessDate = ref('');
 
 		watch(
@@ -67,7 +70,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { marked, lastAccessDate };
+		return { t, marked, lastAccessDate };
 	},
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<private-view class="collections-overview" :title="$t('collections')">
+	<private-view class="collections-overview" :title="t('collections')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="box" />
@@ -24,27 +24,28 @@
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="$t('no_collections')" v-else center>
+		<v-info icon="box" :title="t('no_collections')" v-else center>
 			<template v-if="isAdmin">
-				{{ $t('no_collections_copy_admin') }}
+				{{ t('no_collections_copy_admin') }}
 			</template>
 			<template v-else>
-				{{ $t('no_collections_copy') }}
+				{{ t('no_collections_copy') }}
 			</template>
 			<template #append v-if="isAdmin">
-				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 		</v-info>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_collections_overview'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_collections_overview'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
@@ -63,6 +64,8 @@ export default defineComponent({
 	},
 	props: {},
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const userStore = useUserStore();
@@ -90,13 +93,7 @@ export default defineComponent({
 
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return {
-			tableHeaders,
-			navItems,
-			navigateToCollection,
-			isAdmin,
-			marked,
-		};
+		return { t, tableHeaders, navItems, navigateToCollection, isAdmin, marked };
 
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);

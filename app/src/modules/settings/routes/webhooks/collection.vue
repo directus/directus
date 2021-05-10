@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('webhooks')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('webhooks')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -23,14 +23,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -42,12 +42,12 @@
 				class="action-batch"
 				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_webhook')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_webhook')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -65,29 +65,29 @@
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$t('webhooks_count', 0)" icon="anchor" center type="info">
-					{{ $t('no_webhooks_copy') }}
+				<v-info :title="t('webhooks_count', 0)" icon="anchor" center type="info">
+					{{ t('no_webhooks_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/settings/webhooks/+' }">{{ $t('create_webhook') }}</v-button>
+						<v-button :to="{ path: '/settings/webhooks/+' }">{{ t('create_webhook') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 		</component>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_settings_webhooks_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
 			<div id="target-sidebar"></div>
@@ -96,6 +96,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -113,6 +114,8 @@ export default defineComponent({
 	name: 'webhooks-collection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
 	setup() {
+		const { t } = useI18n();
+
 		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const selection = ref<Item[]>([]);
@@ -122,6 +125,7 @@ export default defineComponent({
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 		return {
+			t,
 			addNewLink,
 			batchDelete,
 			batchLink,

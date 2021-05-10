@@ -13,39 +13,39 @@
 
 		<v-dialog v-model="linkDrawerOpen">
 			<v-card>
-				<v-card-title class="card-title">{{ $t('wysiwyg_options.link') }}</v-card-title>
+				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
 						<div class="field">
-							<div class="type-label">{{ $t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="$t('url_placeholder')"></v-input>
+							<div class="type-label">{{ t('url') }}</div>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
 						</div>
 						<div class="field">
-							<div class="type-label">{{ $t('display_text') }}</div>
-							<v-input v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></v-input>
+							<div class="type-label">{{ t('display_text') }}</div>
+							<v-input v-model="linkSelection.displayText" :placeholder="t('display_text_placeholder')"></v-input>
 						</div>
 						<div class="field half">
-							<div class="type-label">{{ $t('tooltip') }}</div>
-							<v-input v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></v-input>
+							<div class="type-label">{{ t('tooltip') }}</div>
+							<v-input v-model="linkSelection.title" :placeholder="t('tooltip_placeholder')"></v-input>
 						</div>
 						<div class="field half-right">
-							<div class="type-label">{{ $t('open_link_in') }}</div>
+							<div class="type-label">{{ t('open_link_in') }}</div>
 							<v-checkbox
 								block
 								v-model="linkSelection.newTab"
-								:label="$t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
 							></v-checkbox>
 						</div>
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="closeLinkDrawer" secondary>{{ $t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ $t('save') }}</v-button>
+					<v-button @click="closeLinkDrawer" secondary>{{ t('cancel') }}</v-button>
+					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-drawer v-model="codeDrawerOpen" :title="$t('wysiwyg_options.source_code')" @cancel="closeCodeDrawer" icon="code">
+		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" @cancel="closeCodeDrawer" icon="code">
 			<div class="content">
 				<interface-input-code :value="code" @input="code = $event" language="htmlmixed"></interface-input-code>
 			</div>
@@ -57,25 +57,25 @@
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="$t('wysiwyg_options.image')" @cancel="closeImageDrawer" icon="image">
+		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" @cancel="closeImageDrawer" icon="image">
 			<div class="content">
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.imageUrl" />
 					<div class="grid">
 						<div class="field half">
-							<div class="type-label">{{ $t('image_url') }}</div>
+							<div class="type-label">{{ t('image_url') }}</div>
 							<v-input v-model="imageSelection.imageUrl" />
 						</div>
 						<div class="field half-right">
-							<div class="type-label">{{ $t('alt_text') }}</div>
+							<div class="type-label">{{ t('alt_text') }}</div>
 							<v-input v-model="imageSelection.alt" />
 						</div>
 						<div class="field half">
-							<div class="type-label">{{ $t('width') }}</div>
+							<div class="type-label">{{ t('width') }}</div>
 							<v-input v-model="imageSelection.width" />
 						</div>
 						<div class="field half-right">
-							<div class="type-label">{{ $t('height') }}</div>
+							<div class="type-label">{{ t('height') }}</div>
 							<v-input v-model="imageSelection.height" />
 						</div>
 					</div>
@@ -84,22 +84,17 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="saveImage" v-tooltip.bottom="$t('save_image')" icon rounded>
+				<v-button @click="saveImage" v-tooltip.bottom="t('save_image')" icon rounded>
 					<v-icon name="check" />
 				</v-button>
 			</template>
 		</v-drawer>
 
-		<v-drawer
-			v-model="mediaDrawerOpen"
-			:title="$t('wysiwyg_options.media')"
-			@cancel="closeMediaDrawer"
-			icon="slideshow"
-		>
+		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" @cancel="closeMediaDrawer" icon="slideshow">
 			<template #sidebar>
 				<v-tabs v-model="openMediaTab" vertical>
-					<v-tab value="video">{{ $t('media') }}</v-tab>
-					<v-tab value="embed">{{ $t('embed') }}</v-tab>
+					<v-tab value="video">{{ t('media') }}</v-tab>
+					<v-tab value="embed">{{ t('embed') }}</v-tab>
 				</v-tabs>
 			</template>
 
@@ -112,15 +107,15 @@
 							</video>
 							<div class="grid">
 								<div class="field">
-									<div class="type-label">{{ $t('source') }}</div>
+									<div class="type-label">{{ t('source') }}</div>
 									<v-input v-model="mediaSource" />
 								</div>
 								<div class="field half">
-									<div class="type-label">{{ $t('width') }}</div>
+									<div class="type-label">{{ t('width') }}</div>
 									<v-input v-model="mediaWidth" />
 								</div>
 								<div class="field half-right">
-									<div class="type-label">{{ $t('height') }}</div>
+									<div class="type-label">{{ t('height') }}</div>
 									<v-input v-model="mediaHeight" />
 								</div>
 							</div>
@@ -130,7 +125,7 @@
 					<v-tab-item value="embed">
 						<div class="grid">
 							<div class="field">
-								<div class="type-label">{{ $t('embed') }}</div>
+								<div class="type-label">{{ t('embed') }}</div>
 								<v-textarea v-model="embed" :nullable="false" />
 							</div>
 						</div>
@@ -139,7 +134,7 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="saveMedia" v-tooltip.bottom="$t('save_media')" icon rounded>
+				<v-button @click="saveMedia" v-tooltip.bottom="t('save_media')" icon rounded>
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -148,6 +143,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance } from 'vue';
 
 import 'tinymce/tinymce';
@@ -236,6 +232,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
@@ -316,6 +314,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			editorElement,
 			editorOptions,
 			internalValue,

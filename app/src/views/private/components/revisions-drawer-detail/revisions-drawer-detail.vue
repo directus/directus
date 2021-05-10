@@ -1,6 +1,6 @@
 <template>
 	<sidebar-detail
-		:title="$t('revisions')"
+		:title="t('revisions')"
 		icon="change_history"
 		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
 	>
@@ -16,7 +16,7 @@
 			</template>
 
 			<v-divider class="other" v-if="revisionsCount > 100">
-				{{ $t('count_other_revisions', revisionsCount - 101) }}
+				{{ t('count_other_revisions', revisionsCount - 101) }}
 			</v-divider>
 
 			<template v-if="created">
@@ -27,7 +27,7 @@
 				<v-divider v-if="revisionsByDate.length > 0" />
 
 				<div class="external">
-					{{ $t('revision_delta_created_externally') }}
+					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
 		</template>
@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import { Revision, RevisionsByDate } from './types';
 
@@ -70,6 +71,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
 			props.collection,
 			props.primaryKey
@@ -79,6 +82,7 @@ export default defineComponent({
 		const modalCurrentRevision = ref<number | null>(null);
 
 		return {
+			t,
 			revisions,
 			revisionsByDate,
 			loading,

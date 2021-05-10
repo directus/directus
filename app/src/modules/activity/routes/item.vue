@@ -35,11 +35,11 @@
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="$t('open')">
+			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="t('open')">
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity" icon rounded v-tooltip.bottom="$t('done')">
+			<v-button to="/activity" icon rounded v-tooltip.bottom="t('done')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -47,6 +47,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
@@ -75,6 +76,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
@@ -87,14 +90,7 @@ export default defineComponent({
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });
 
-		return {
-			item,
-			loading,
-			error,
-			close,
-			openItemLink,
-			userName,
-		};
+		return { t, item, loading, error, close, openItemLink, userName };
 
 		async function loadActivity() {
 			loading.value = true;

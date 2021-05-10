@@ -1,10 +1,10 @@
 <template>
 	<v-notice v-if="!selectedInterface">
-		{{ $t('select_interface') }}
+		{{ t('select_interface') }}
 	</v-notice>
 
 	<v-notice v-else-if="!selectedInterface.options">
-		{{ $t('no_options_available') }}
+		{{ t('no_options_available') }}
 	</v-notice>
 
 	<div class="inset" v-else>
@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
@@ -44,6 +45,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -54,7 +57,7 @@ export default defineComponent({
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === values.value[props.interfaceField]);
 		});
 
-		return { selectedInterface, values };
+		return { t, selectedInterface, values };
 	},
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="!junction || !relation">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
 		<template v-if="loading">
@@ -12,7 +12,7 @@
 		</template>
 
 		<v-notice v-else-if="sortedItems.length === 0">
-			{{ $t('no_items') }}
+			{{ t('no_items') }}
 		</v-notice>
 
 		<v-list v-else>
@@ -40,9 +40,9 @@
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -71,10 +71,10 @@
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
-				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-title>{{ t('upload_file') }}</v-card-title>
 				<v-card-text><v-upload @input="onUpload" multiple from-url /></v-card-text>
 				<v-card-actions>
-					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -82,6 +82,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, toRefs, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -137,6 +138,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const permissionsStore = usePermissionsStore();
 		const userStore = useUserStore();
 
@@ -187,15 +190,8 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const {
-			currentlyEditing,
-			editItem,
-			editsAtStart,
-			stageEdits,
-			cancelEdit,
-			relatedPrimaryKey,
-			editModalActive,
-		} = useEdit(value, relationInfo, emitter);
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
+			useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
@@ -205,6 +201,7 @@ export default defineComponent({
 		const { showUpload, onUpload } = useUpload();
 
 		return {
+			t,
 			junction,
 			relation,
 			tableHeaders,

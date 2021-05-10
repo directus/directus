@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -25,7 +25,7 @@
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@update:model-value="showAll = true"
 		></v-detail>
 
@@ -55,13 +55,14 @@
 				@click="addOtherValue()"
 			>
 				<v-icon name="add" />
-				{{ $t('other') }}
+				{{ t('other') }}
 			</button>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, PropType, ref } from 'vue';
 import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
@@ -111,6 +112,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { choices, value } = toRefs(props);
 		const showAll = ref(false);
 
@@ -149,6 +152,7 @@ export default defineComponent({
 		);
 
 		return {
+			t,
 			gridClass,
 			otherValues,
 			addOtherValue,

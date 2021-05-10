@@ -41,7 +41,7 @@
 				icon
 				secondary
 				exact
-				v-tooltip.bottom="$t('back')"
+				v-tooltip.bottom="t('back')"
 				@click="router.back()"
 			>
 				<v-icon name="arrow_back" />
@@ -51,7 +51,7 @@
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: $t('collections'), to: '/collections' }]"
+				:items="[{ name: t('collections'), to: '/collections' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
@@ -63,7 +63,7 @@
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
@@ -73,14 +73,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -107,14 +107,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
-							{{ isArchived ? $t('unarchive') : $t('archive') }}
+							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -125,7 +125,7 @@
 				icon
 				:loading="saving"
 				:disabled="isSavable === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -159,20 +159,20 @@
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="marked(t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
@@ -192,6 +192,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
@@ -237,6 +238,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const form = ref<HTMLElement>();
@@ -246,9 +249,13 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(
-			collection
-		);
+		const {
+			info: collectionInfo,
+			defaults,
+			primaryKeyField,
+			isSingleton,
+			accountabilityScope,
+		} = useCollection(collection);
 
 		const {
 			isNew,
@@ -362,6 +369,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			router,
 			item,
 			loading,

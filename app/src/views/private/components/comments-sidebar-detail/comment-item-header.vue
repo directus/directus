@@ -13,7 +13,7 @@
 					</template>
 
 					<template v-else>
-						{{ $t('private_user') }}
+						{{ t('private_user') }}
 					</template>
 				</span>
 			</user-popover>
@@ -31,11 +31,11 @@
 				<v-list>
 					<v-list-item clickable @click="$emit('edit')">
 						<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
-						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>
+						<v-list-item-content>{{ t('edit') }}</v-list-item-content>
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -43,15 +43,15 @@
 
 		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_comment') }}</v-card-title>
-				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>
+				<v-card-title>{{ t('delete_comment') }}</v-card-title>
+				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
 					<v-button @click="confirmDelete = false" secondary>
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button @click="remove" class="action-delete" :loading="deleting">
-						{{ $t('delete') }}
+						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -60,6 +60,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { Activity } from './types';
 import format from 'date-fns/format';
@@ -83,6 +84,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const formattedTime = computed(() => {
 			if (props.activity.timestamp) {
 				// timestamp is in iso-8601
@@ -100,7 +103,7 @@ export default defineComponent({
 
 		const { confirmDelete, deleting, remove } = useDelete();
 
-		return { formattedTime, avatarSource, confirmDelete, deleting, remove, userName };
+		return { t, formattedTime, avatarSource, confirmDelete, deleting, remove, userName };
 
 		function useDelete() {
 			const confirmDelete = ref(false);

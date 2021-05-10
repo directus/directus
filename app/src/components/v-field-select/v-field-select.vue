@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!availableFields || availableFields.length === 0">
-		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
+		{{ t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
 
 	<draggable
@@ -22,7 +22,7 @@
 			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
 				<template #activator="{ toggle }">
 					<v-button @click="toggle" small>
-						{{ $t('add_field') }}
+						{{ t('add_field') }}
 						<v-icon small name="add" />
 					</v-button>
 				</template>
@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
 import { Field, Collection, Relation } from '@/types';
@@ -77,6 +78,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const menuActive = ref(false);
 		const { collection, inject } = toRefs(props);
 
@@ -109,6 +112,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			menuActive,
 			addField,
 			removeField,

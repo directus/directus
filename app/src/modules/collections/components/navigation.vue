@@ -46,13 +46,13 @@
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
 			<template v-if="searchQuery !== null">
-				<em>{{ $t('no_collections_found') }}</em>
+				<em>{{ t('no_collections_found') }}</em>
 			</template>
 			<template v-else-if="isAdmin">
-				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
-				{{ $t('no_collections_copy') }}
+				{{ t('no_collections_copy') }}
 			</template>
 		</div>
 
@@ -80,7 +80,7 @@
 						<v-icon :name="hiddenShown ? 'visibility_off' : 'visibility'" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="hiddenShown ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+						<v-text-overflow :text="hiddenShown ? t('hide_hidden_collections') : t('show_hidden_collections')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -89,6 +89,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watchEffect, onMounted, ComponentPublicInstance } from 'vue';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
@@ -105,6 +106,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { searchQuery, visible } = useSearch();
 		const listComponent = ref<ComponentPublicInstance>();
 
@@ -152,6 +155,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			navItems,
 			bookmarks,
 			customNavItems,

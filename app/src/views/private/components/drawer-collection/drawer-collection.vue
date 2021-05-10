@@ -1,5 +1,5 @@
 <template>
-	<v-drawer v-model="internalActive" :title="$t('select_item')" @cancel="cancel">
+	<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
 		<template #subtitle>
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
@@ -9,7 +9,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -28,17 +28,18 @@
 			class="layout"
 		>
 			<template #no-results>
-				<v-info :title="$t('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 
 			<template #no-items>
-				<v-info :title="$t('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 		</component>
 	</v-drawer>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
@@ -71,6 +72,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { save, cancel } = useActions();
 		const { internalActive } = useActiveState();
 		const { internalSelection, localSelection, onSelect } = useSelection();
@@ -87,6 +90,7 @@ export default defineComponent({
 		const localQuery = ref(layoutQuery.value);
 
 		return {
+			t,
 			save,
 			cancel,
 			internalActive,

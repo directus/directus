@@ -10,20 +10,20 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('delete_collection') }}
+						{{ t('delete_collection') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
 		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
-				<v-card-title>{{ $t('delete_collection_are_you_sure') }}</v-card-title>
+				<v-card-title>{{ t('delete_collection_are_you_sure') }}</v-card-title>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="deleting" class="delete" @click="deleteCollection">
-						{{ $t('delete_collection') }}
+						{{ t('delete_collection') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
 import { Collection } from '@/types';
 import { useCollectionsStore } from '@/stores/';
@@ -44,10 +45,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const { deleting, deleteActive, deleteCollection } = useDelete();
 
-		return { deleting, deleteActive, deleteCollection };
+		return { t, deleting, deleteActive, deleteCollection };
 
 		function useDelete() {
 			const deleting = ref(false);

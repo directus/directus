@@ -1,7 +1,7 @@
 <template>
 	<div class="repeater">
 		<v-notice v-if="!value || value.length === 0">
-			{{ $t('no_items') }}
+			{{ t('no_items') }}
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
@@ -34,7 +34,7 @@
 			@cancel="closeDrawer()"
 		>
 			<template #actions>
-				<v-button @click="closeDrawer()" icon rounded v-tooltip.bottom="$t('save')">
+				<v-button @click="closeDrawer()" icon rounded v-tooltip.bottom="t('save')">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -53,6 +53,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
@@ -98,6 +99,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const active = ref<number | null>(null);
 		const drawerOpen = computed(() => active.value !== null);
 		const { value } = toRefs(props);
@@ -117,6 +120,7 @@ export default defineComponent({
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
 		return {
+			t,
 			updateValues,
 			removeItem,
 			addNew,

@@ -16,17 +16,17 @@
 
 		<!-- <portal to="layout-options"> -->
 		<div class="field">
-			<div class="type-label">{{ $t('display_template') }}</div>
+			<div class="type-label">{{ t('display_template') }}</div>
 			<v-field-template :collection="collection" v-model="template" />
 		</div>
 
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.calendar.start_date_field') }}</div>
+			<div class="type-label">{{ t('layouts.calendar.start_date_field') }}</div>
 			<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="startDateField" />
 		</div>
 
 		<div class="field">
-			<div class="type-label">{{ $t('layouts.calendar.end_date_field') }}</div>
+			<div class="type-label">{{ t('layouts.calendar.end_date_field') }}</div>
 			<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="endDateField" />
 		</div>
 		<!-- </portal> -->
@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import '@fullcalendar/core/vdom';
 import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -88,6 +89,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const calendarEl = ref<HTMLElement>();
 		const calendar = ref<Calendar>();
 
@@ -303,6 +306,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			calendarEl,
 			items,
 			loading,

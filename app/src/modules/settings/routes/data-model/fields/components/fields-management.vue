@@ -32,7 +32,7 @@
 					full-width
 				>
 					<v-icon name="add" />
-					{{ $t('create_field') }}
+					{{ t('create_field') }}
 				</v-button>
 			</template>
 
@@ -54,6 +54,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
 import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
@@ -73,6 +74,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { collection } = toRefs(props);
 		const { fields } = useCollection(collection);
 		const fieldsStore = useFieldsStore();
@@ -148,13 +151,7 @@ export default defineComponent({
 			},
 		]);
 
-		return {
-			usableFields,
-			lockedFields,
-			setSort,
-			hideDragImage,
-			addOptions,
-		};
+		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions };
 
 		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({

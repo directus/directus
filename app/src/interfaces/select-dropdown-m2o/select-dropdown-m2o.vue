@@ -1,9 +1,9 @@
 <template>
 	<v-notice type="warning" v-if="!relation">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice type="warning" v-else-if="!displayTemplate">
-		{{ $t('display_template_not_setup') }}
+		{{ t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>
 		<v-menu v-model="menuActive" attached :disabled="disabled">
@@ -14,7 +14,7 @@
 					clickable
 					@click="onPreviewClick"
 					v-else
-					:placeholder="$t('select_an_item')"
+					:placeholder="t('select_an_item')"
 					:disabled="disabled"
 				>
 					<template #input v-if="currentItem">
@@ -29,11 +29,11 @@
 
 					<template #append v-if="!disabled">
 						<template v-if="currentItem">
-							<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editModalActive = true" />
-							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+							<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editModalActive = true" />
+							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="t('deselect')" />
 						</template>
 						<template v-else>
-							<v-icon class="add" name="add" v-tooltip="$t('create_item')" @click.stop="editModalActive = true" />
+							<v-icon class="add" name="add" v-tooltip="t('create_item')" @click.stop="editModalActive = true" />
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 					</template>
@@ -86,6 +86,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
@@ -134,6 +135,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { collection } = toRefs(props);
 
 		const relationsStore = useRelationsStore();
@@ -153,6 +156,7 @@ export default defineComponent({
 		const editModalActive = ref(false);
 
 		return {
+			t,
 			collectionInfo,
 			currentItem,
 			displayTemplate,

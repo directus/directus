@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_presets')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_presets')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -11,26 +11,26 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="t('delete')">
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteSelection" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_preset')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_preset')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -40,12 +40,12 @@
 		</template>
 
 		<div class="presets-collection">
-			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="$t('no_presets')" icon="bookmark">
-				{{ $t('no_presets_copy') }}
+			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="t('no_presets')" icon="bookmark">
+				{{ t('no_presets_copy') }}
 
 				<template #append>
 					<v-button :to="addNewLink">
-						{{ $t('no_presets_cta') }}
+						{{ t('no_presets_cta') }}
 					</v-button>
 				</template>
 			</v-info>
@@ -61,7 +61,7 @@
 			>
 				<template #[`item.scope`]="{ item }">
 					<span :class="{ all: item.scope === 'all' }">
-						{{ item.scope === 'all' ? $t('all') : item.scope }}
+						{{ item.scope === 'all' ? t('all') : item.scope }}
 					</span>
 				</template>
 
@@ -72,7 +72,7 @@
 
 				<template #[`item.name`]="{ item }">
 					<span :class="{ default: item.name === null }">
-						{{ item.name === null ? $t('default') : item.name }}
+						{{ item.name === null ? t('default') : item.name }}
 					</span>
 				</template>
 			</v-table>
@@ -85,6 +85,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 
@@ -119,6 +120,8 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const { layouts } = getLayouts();
@@ -134,6 +137,7 @@ export default defineComponent({
 		getPresets();
 
 		return {
+			t,
 			addNewLink,
 			usePresets,
 			loading,

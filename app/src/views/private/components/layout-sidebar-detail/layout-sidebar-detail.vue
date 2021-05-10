@@ -1,8 +1,8 @@
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<sidebar-detail icon="layers" :title="t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
-				<div class="type-label">{{ $t('layout') }}</div>
+				<div class="type-label">{{ t('layout') }}</div>
 				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
 					<template v-if="currentLayout.icon" #prepend>
 						<v-icon :name="currentLayout.icon" />
@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
 
@@ -28,6 +29,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { layouts } = getLayouts();
 
 		const currentLayout = computed(() => {
@@ -49,7 +52,7 @@ export default defineComponent({
 			},
 		});
 
-		return { currentLayout, layouts, layout };
+		return { t, currentLayout, layouts, layout };
 	},
 });
 </script>

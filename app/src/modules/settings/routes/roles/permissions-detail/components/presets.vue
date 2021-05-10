@@ -2,9 +2,9 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('presets_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('presets_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public'),
 				})
 			}}
 		</v-notice>
@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
@@ -30,6 +31,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const presets = computed({
@@ -44,7 +47,7 @@ export default defineComponent({
 			},
 		});
 
-		return { presets };
+		return { t, presets };
 	},
 });
 </script>

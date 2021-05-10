@@ -2,11 +2,11 @@
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
+				<div class="type-label">{{ t('this_collection') }}</div>
 				<v-input disabled :model-value="relations[0].many_collection" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('related_collection') }}</div>
+				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
 					:class="{ matches: relatedCollectionExists }"
 					db-safe
@@ -14,7 +14,7 @@
 					v-model="relations[0].one_collection"
 					:nullable="false"
 					:disabled="isExisting"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 				>
 					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
@@ -23,7 +23,7 @@
 									name="list_alt"
 									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="isExisting"
 								/>
 							</template>
@@ -44,7 +44,7 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
@@ -76,7 +76,7 @@
 				:disabled="relatedCollectionExists"
 				v-model="relations[0].one_primary"
 				:nullable="false"
-				:placeholder="$t('primary_key') + '...'"
+				:placeholder="t('primary_key') + '...'"
 			>
 				<template #input>
 					<v-text-overflow :text="relations[0].one_primary" />
@@ -85,19 +85,19 @@
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
 
 		<div class="grid" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_field') }}</div>
+				<div class="type-label">{{ t('create_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('field_name') }}</div>
+				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
 					:disabled="hasCorresponding === false"
 					v-model="correspondingField"
-					:placeholder="$t('field_name') + '...'"
+					:placeholder="t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
@@ -106,12 +106,12 @@
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
-				{{ $t('new_data_alert') }}
+				{{ t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+						({{ t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -120,6 +120,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore } from '@/stores';
@@ -143,6 +144,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const { availableCollections, systemCollections } = useRelation();
@@ -153,6 +156,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			relations: state.relations,
 			availableCollections,
 			systemCollections,

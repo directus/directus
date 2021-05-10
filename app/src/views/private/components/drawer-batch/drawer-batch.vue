@@ -1,12 +1,12 @@
 <template>
 	<v-drawer
 		v-model="internalActive"
-		:title="$t('editing_in_batch', { count: primaryKeys.length })"
+		:title="t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
 	>
 		<template #actions>
-			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
@@ -51,20 +52,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { internalEdits } = useEdits();
 		const { internalActive } = useActiveState();
 		const { save, cancel, saving, validationErrors } = useActions();
 
 		const { collection } = toRefs(props);
 
-		return {
-			internalActive,
-			internalEdits,
-			save,
-			saving,
-			cancel,
-			validationErrors,
-		};
+		return { t, internalActive, internalEdits, save, saving, cancel, validationErrors };
 
 		function useEdits() {
 			const localEdits = ref<Record<string, any>>({});
