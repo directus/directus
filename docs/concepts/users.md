@@ -1,8 +1,12 @@
 # Users
 
-> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role which defines its granular Permissions.
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
+> which defines its granular Permissions.
 
-To use the App or API, you'll need a valid Directus User. Each user is assigned to a [Role](/concepts/roles/) that determines what they have access to see and do. This means that the experience of users may vary significantly depending on their role's access. For example, while some users may see _all_ platform content, others may only see a smaller subset of Modules, Collections, or Fields.
+To use the App or API, you'll need a valid Directus User. Each user is assigned to a [Role](/concepts/roles/) that
+determines what they have access to see and do. This means that the experience of users may vary significantly depending
+on their role's access. For example, while some users may see _all_ platform content, others may only see a smaller
+subset of Modules, Collections, or Fields.
 
 #### Relevant Guides
 
@@ -15,7 +19,10 @@ To use the App or API, you'll need a valid Directus User. Each user is assigned 
 
 ## User Fields
 
-Directus ships with a basic set of user fields that are displayed on the User Detail pages. While these system fields are required/locked, you can extend the Directus Users Collection with any number of custom fields to create a fully tailored [User Directory](/concepts/application/#user-directory). To add fields within system collections, simply follow the normal guide for [Creating a Field](/guides/fields/#creating-a-field).
+Directus ships with a basic set of user fields that are displayed on the User Detail pages. While these system fields
+are required/locked, you can extend the Directus Users Collection with any number of custom fields to create a fully
+tailored [User Directory](/concepts/application/#user-directory). To add fields within system collections, simply follow
+the normal guide for [Creating a Field](/guides/fields/#creating-a-field).
 
 Below are the system User fields included by default.
 

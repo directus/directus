@@ -1,14 +1,14 @@
 <template>
 	<div class="v-list-group">
 		<v-list-item
-			:active="active"
 			class="activator"
+			:active="active"
 			:to="to"
 			:exact="exact"
-			clickable
-			@click="onClick"
 			:disabled="disabled"
 			:dense="dense"
+			clickable
+			@click="onClick"
 		>
 			<slot name="activator" :active="groupActive" />
 

@@ -109,6 +109,10 @@ SEARCH /relations
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	relations: [directus_relations]
@@ -163,6 +167,10 @@ GET /relations/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -228,6 +236,10 @@ POST /relations
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -303,6 +315,10 @@ POST /relations
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_relations_items(data: [create_directus_relations_input!]!): [directus_relations]
@@ -371,6 +387,10 @@ PATCH /relations/:id
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_relations_item(id: ID!, data: update_directus_relations_input!): directus_relations
@@ -421,6 +441,10 @@ DELETE /relations/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -475,6 +499,10 @@ DELETE /relations
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

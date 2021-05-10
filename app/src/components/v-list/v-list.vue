@@ -13,7 +13,7 @@ export default defineComponent({
 	props: {
 		modelValue: {
 			type: Array as PropType<(number | string)[]>,
-			default: () => [],
+			default: null,
 		},
 		large: {
 			type: Boolean,

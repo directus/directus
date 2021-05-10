@@ -317,7 +317,7 @@ export default defineComponent({
 									collection: state.relations[0].one_collection,
 									field: state.relations[0].many_field,
 									meta: {
-										interface: 'many-to-one',
+										interface: 'select-dropdown-m2o',
 										special: 'm2o',
 									},
 								},
@@ -345,7 +345,7 @@ export default defineComponent({
 									collection: state.relations[0].one_collection,
 									field: state.relations[0].many_field,
 									meta: {
-										interface: 'many-to-one',
+										interface: 'select-dropdown-m2o',
 										special: 'm2o',
 									},
 								},

@@ -18,7 +18,7 @@
 
 			<div class="field full">
 				<div class="label type-label">{{ $t('field_name_translations') }}</div>
-				<interface-repeater
+				<interface-list
 					:value="fieldData.meta.translations"
 					@input="fieldData.meta.translations = $event"
 					:template="'[{{ language }}] {{ translation }}'"
@@ -45,7 +45,7 @@
 							type: 'string',
 							name: $t('translation'),
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: 'Enter a translation...',

@@ -143,13 +143,16 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
-	setup(props, { emit }) {
+	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
 		const listeners = computed(() => ({
 			input: emitValue,
 			keydown: processValue,
-			blur: trimIfEnabled,
+			blur: (e: Event) => {
+				trimIfEnabled();
+				attrs?.onBlur?.(e);
+			},
 		}));
 
 		const isStepUpAllowed = computed(() => {

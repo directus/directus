@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.mime-type.extension_only',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.mime-type.extension_only_label',
 				},

@@ -10,7 +10,7 @@ export type Query = {
 	single?: boolean;
 	meta?: Meta[];
 	search?: string;
-	export?: 'json' | 'csv';
+	export?: 'json' | 'csv' | 'xml';
 	deep?: Record<string, Query>;
 };
 

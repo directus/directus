@@ -70,8 +70,8 @@ export class MailService {
 
 	private async renderTemplate(template: string, variables: Record<string, any>, system = false) {
 		const resolvedPath = system
-			? path.join(__dirname, 'templates', template + '.liquid')
-			: path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');
+			? path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid')
+			: path.join(__dirname, 'templates', template + '.liquid');
 
 		const templateString = await fse.readFile(resolvedPath, 'utf8');
 		const html = await liquidEngine.parseAndRender(templateString, variables);

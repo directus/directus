@@ -81,9 +81,7 @@ export default defineComponent({
 		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
-			return !!interfaces.value.find(
-				(inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'text-input'
-			);
+			return !!interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'input');
 		});
 
 		return { interfaceExists, getDefaultInterfaceForType };

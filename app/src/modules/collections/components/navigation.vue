@@ -1,5 +1,5 @@
 <template>
-	<v-list large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu()">
+	<v-list ref="listComponent" large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu()">
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { defineComponent, computed, ref, watchEffect, onMounted, ComponentPublicInstance } from 'vue';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
@@ -106,6 +106,8 @@ export default defineComponent({
 	},
 	setup() {
 		const { searchQuery, visible } = useSearch();
+		const listComponent = ref<ComponentPublicInstance>();
+
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
@@ -144,6 +146,11 @@ export default defineComponent({
 			visible.value = bookmarks.value.length + navItems.value.length;
 		});
 
+		onMounted(() => {
+			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.router-link-exact-active.active.link');
+			activeEl?.scrollIntoView({ block: 'center' });
+		});
+
 		return {
 			navItems,
 			bookmarks,
@@ -156,6 +163,7 @@ export default defineComponent({
 			hiddenShown,
 			hiddenNavItems,
 			searchQuery,
+			listComponent,
 			activateContextMenu,
 		};
 

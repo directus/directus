@@ -151,7 +151,7 @@ export default defineComponent({
 					return internalValue.value.getFullYear();
 				},
 				set(newYear: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
 					newValue.setFullYear(newYear || 0);
 					internalValue.value = newValue;
 				},
@@ -163,7 +163,7 @@ export default defineComponent({
 					return internalValue.value.getMonth();
 				},
 				set(newMonth: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setMonth(newMonth || 0);
 					internalValue.value = newValue;
 				},
@@ -175,7 +175,7 @@ export default defineComponent({
 					return internalValue.value.getDate();
 				},
 				set(newDate: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setDate(newDate || 1);
 					internalValue.value = newValue;
 				},
@@ -193,7 +193,7 @@ export default defineComponent({
 					return hours;
 				},
 				set(newHours: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setHours(newHours || 0);
 					internalValue.value = newValue;
 				},
@@ -205,7 +205,7 @@ export default defineComponent({
 					return internalValue.value.getMinutes();
 				},
 				set(newMinutes: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setMinutes(newMinutes || 0);
 					internalValue.value = newValue;
 				},
@@ -217,7 +217,7 @@ export default defineComponent({
 					return internalValue.value.getSeconds();
 				},
 				set(newSeconds: number | null) {
-					const newValue = internalValue.value ? new Date(internalValue.value) : new Date(0);
+					const newValue = internalValue.value ? new Date(internalValue.value) : new Date();
 					newValue.setSeconds(newSeconds || 0);
 					internalValue.value = newValue;
 				},

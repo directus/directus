@@ -53,10 +53,15 @@ os_totalmem: Bộ nhớ
 archive: Lưu trữ
 archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
 archive_confirm_count: >-
-  Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
+  Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này
+  không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống:'
-reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
-the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
+reset_system_permissions_copy:
+  Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn
+  không?
+the_following_are_minimum_permissions:
+  Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng
+  không được phép thấp hơn những quyền này.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
 recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
@@ -269,7 +274,7 @@ interface_not_found: 'Giao diện "{interface}" không tồn tại.'
 reset_interface: Cài đặt lại Giao diện
 display_not_found: 'Hiển thị "{display}" không tồn tại.'
 reset_display: Cài đặt lại Hiển thị
-m2a_builder: Xây dựng (Nhiều-Bất Kỳ)
+list-m2a: Xây dựng (Nhiều-Bất Kỳ)
 item_count: 'Không có bản ghi | Có 1 bản ghi | Có {count} bản ghi'
 no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
@@ -318,7 +323,7 @@ account_created_successfully: Tài Khoản Đã Tạo Thành Công
 auto_fill: Tự động Điền
 corresponding_field: Trường tương ứng
 errors:
-  COLLECTION_NOT_FOUND: "Danh mục không tồn tại"
+  COLLECTION_NOT_FOUND: 'Danh mục không tồn tại'
   FIELD_NOT_FOUND: Trường không tồn tại
   FORBIDDEN: Cấm
   INVALID_CREDENTIALS: Sai tên người dùng hoặc mật khẩu
@@ -359,7 +364,8 @@ start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {c
 one_item: '1 sản phẩm'
 one_filtered_item: 'Đã lọc được 1 mục'
 delete_collection_are_you_sure: >-
-  Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
+  Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể
+  khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
 visible_collections: Ứng dụng có thể nhìn thấy
 hidden_collections: Bảng Ẩn
@@ -462,7 +468,8 @@ create_new: Tạo Mới
 all: Tất cả
 no_layout_collection_selected_yet: Không có bố cục/danh mục nào được chọn
 batch_delete_confirm: >-
-  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
+  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có
+  chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
 collection: Danh mục
 collections: Danh mục
@@ -574,29 +581,29 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
-  button-links:
+  presentation-links:
     primary: Khóa chính
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Ô tích
     allow_other: Cho phép những đối tượng khác
-  code:
+  input-code:
     code: Mã nguồn
     line_number: Dòng số
   collection:
     collection: Danh mục
-  collections:
+  system-collections:
     collections: Danh mục
   color:
     color: Màu sắc
   datetime:
     datetime: Ngày giờ
     use_24: Sử dụng Định dạng 24-giờ
-  display-template:
+  system-display-template:
     display-template: Mẫu hiển thị
     select_a_collection: Chọn Bảng
   divider:
     divider: Bộ chia
-  dropdown:
+  select-dropdown:
     allow_other: Cho phép những đối tượng khác
     choices_value_placeholder: Nhập vào một giá trị...
   file:
@@ -607,24 +614,24 @@ interfaces:
     icon: Biểu tượng
     description: Chọn một biểu tượng từ danh sách
     search_for_icon: Tìm kiếm biểu tượng...
-  interface:
+  system-interface:
     interface: Giao diện
-  interface-options:
+  system-interface-options:
     interface-options: Tùy chọn giao diện
-  many-to-many:
+  list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Quan hệ nhiều - một
     display_template: Mẫu hiển thị
-  markdown:
+  input-rich-text-md:
     markdown: Gạch nhớ
   numeric:
     numeric: Kiểu số
-  one-to-many:
+  list-o2m:
     one-to-many: Quan hệ một - nhiều
-  radio-buttons:
+  select-radio:
     radio-buttons: Ô chọn tròn
-  repeater:
+  list:
     repeater: Vòng lặp
   slider:
     slider: Thanh trượt
@@ -632,10 +639,10 @@ interfaces:
     slug: Viết tắt
   tags:
     tags: Tags
-  text-input:
+  input:
     text-input: Văn bản đầu vào
     trim: Rút gọn
-  toggle:
+  boolean:
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị
@@ -643,7 +650,7 @@ interfaces:
     user: Người dùng
     modes:
       dropdown: Tuỳ chọn dạng thả xuống
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: Tuỳ chỉnh định dạng
 displays:
   boolean:

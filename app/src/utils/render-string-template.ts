@@ -27,3 +27,15 @@ export function renderStringTemplate(
 
 	return { fieldsInTemplate, displayValue };
 }
+
+export function renderPlainStringTemplate(template: string, item?: Record<string, any> | null): string | false {
+	const fieldsInTemplate = getFieldsFromTemplate(template);
+
+	if (!item || !template || !fieldsInTemplate) return false;
+
+	try {
+		return render(template, item, { propsExist: true });
+	} catch {
+		return false;
+	}
+}

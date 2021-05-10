@@ -157,6 +157,10 @@ SEARCH /files
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	files: [directus_files]
@@ -210,6 +214,10 @@ GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -374,6 +382,10 @@ POST /files/import
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	import_file(url: String!, data: create_directus_files_input!): directus_files
@@ -436,6 +448,10 @@ PATCH /files/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -510,6 +526,10 @@ PATCH /files
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
@@ -570,6 +590,10 @@ DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	delete_files_item(id: ID!): delete_one
@@ -628,6 +652,10 @@ DELETE /files
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

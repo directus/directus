@@ -13,7 +13,7 @@ export default defineDisplay({
 			name: '$t:displays.datetime.format',
 			type: 'string',
 			meta: {
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				width: 'half',
 				options: {
 					choices: [
@@ -34,7 +34,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.datetime.relative_label',
 				},

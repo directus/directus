@@ -1,6 +1,6 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { Filter } from '@/types/';
+import { Filter, Item } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
 import moveInArray from '@/utils/move-in-array';
 import { isEqual, orderBy, throttle } from 'lodash';
@@ -15,7 +15,7 @@ type Query = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, query: Query): Record<string, any> {
+export function useItems(collection: Ref<string>, query: Query, fetchOnInit = true): Record<string, any> {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: any = null;
@@ -28,7 +28,7 @@ export function useItems(collection: Ref<string>, query: Query): Record<string, 
 			: `/items/${collection.value}`;
 	});
 
-	const items = ref<any>([]);
+	const items = ref<Item[]>([]);
 	const loading = ref(false);
 	const error = ref(null);
 
@@ -41,7 +41,9 @@ export function useItems(collection: Ref<string>, query: Query): Record<string, 
 		return Math.ceil(itemCount.value / limit.value);
 	});
 
-	getItems();
+	if (fetchOnInit) {
+		getItems();
+	}
 
 	watch(
 		collection,
@@ -56,7 +58,7 @@ export function useItems(collection: Ref<string>, query: Query): Record<string, 
 			reset();
 			getItems();
 		},
-		{ immediate: true }
+		{ immediate: fetchOnInit }
 	);
 
 	watch([page, fields], async (after, before) => {
