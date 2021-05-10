@@ -52,14 +52,14 @@ import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { FieldListItem, Draggable },
 	props: {
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<string[]>,
 			default: null,
 		},
@@ -85,10 +85,10 @@ export default defineComponent({
 
 		const internalValue = computed({
 			get() {
-				return props.value || [];
+				return props.modelValue || [];
 			},
 			set(newVal: string[]) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
