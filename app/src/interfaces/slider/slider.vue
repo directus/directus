@@ -1,6 +1,6 @@
 <template>
 	<v-slider
-		:value="value"
+		:modelValue="value"
 		:disabled="disabled"
 		:min="minValue"
 		:max="maxValue"
@@ -8,7 +8,7 @@
 		:alwaysShowValue="alwaysShowValue"
 		show-thumb-label
 		show-ticks
-		@input="$emit('input', $event)"
+		@update:modelValue="$emit('input', $event)"
 	/>
 </template>
 
