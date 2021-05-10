@@ -1,11 +1,11 @@
 <template>
 	<div class="v-pagination">
-		<v-button class="previous" :disabled="disabled || value === 1" secondary icon small @click="toPrev">
+		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
 			<v-icon name="chevron_left" />
 		</v-button>
 
 		<v-button
-			v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
+			v-if="showFirstLast && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
 			class="page"
 			@click="toPage(1)"
 			secondary
@@ -15,14 +15,14 @@
 			1
 		</v-button>
 
-		<span v-if="showFirstLast && value > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1" class="gap">
+		<span v-if="showFirstLast && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1" class="gap">
 			...
 		</span>
 
 		<v-button
 			v-for="page in visiblePages"
 			:key="page"
-			:class="{ active: value === page }"
+			:class="{ active: modelValue === page }"
 			class="page"
 			@click="toPage(page)"
 			secondary
@@ -32,13 +32,16 @@
 			{{ page }}
 		</v-button>
 
-		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1" class="gap">
+		<span
+			v-if="showFirstLast && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
+			class="gap"
+		>
 			...
 		</span>
 
 		<v-button
-			v-if="showFirstLast && value <= length - Math.ceil(totalVisible / 2) && length > totalVisible"
-			:class="{ active: value === length }"
+			v-if="showFirstLast && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible"
+			:class="{ active: modelValue === length }"
 			class="page"
 			@click="toPage(length)"
 			secondary
@@ -48,7 +51,7 @@
 			{{ length }}
 		</v-button>
 
-		<v-button class="next" :disabled="disabled || value === length" secondary icon small @click="toNext">
+		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
 			<v-icon name="chevron_right" />
 		</v-button>
 	</div>
@@ -59,7 +62,7 @@ import { defineComponent, computed } from 'vue';
 import { isEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -76,7 +79,7 @@ export default defineComponent({
 			default: undefined,
 			validator: (val: number) => val >= 0,
 		},
-		value: {
+		modelValue: {
 			type: Number,
 			default: null,
 		},
@@ -97,15 +100,15 @@ export default defineComponent({
 				const pagesBeforeCurrentPage = Math.floor(props.totalVisible / 2);
 				const pagesAfterCurrentPage = Math.ceil(props.totalVisible / 2) - 1;
 
-				if (props.value <= pagesBeforeCurrentPage) {
+				if (props.modelValue <= pagesBeforeCurrentPage) {
 					startPage = 1;
 					endPage = props.totalVisible;
-				} else if (props.value + pagesAfterCurrentPage >= props.length) {
+				} else if (props.modelValue + pagesAfterCurrentPage >= props.length) {
 					startPage = props.length - props.totalVisible + 1;
 					endPage = props.length;
 				} else {
-					startPage = props.value - pagesBeforeCurrentPage;
-					endPage = props.value + pagesAfterCurrentPage;
+					startPage = props.modelValue - pagesBeforeCurrentPage;
+					endPage = props.modelValue + pagesAfterCurrentPage;
 				}
 			}
 
@@ -115,15 +118,15 @@ export default defineComponent({
 		return { toPage, toPrev, toNext, visiblePages };
 
 		function toPrev() {
-			toPage(props.value - 1);
+			toPage(props.modelValue - 1);
 		}
 
 		function toNext() {
-			toPage(props.value + 1);
+			toPage(props.modelValue + 1);
 		}
 
 		function toPage(page: number) {
-			emit('input', page);
+			emit('update:modelValue', page);
 		}
 	},
 });

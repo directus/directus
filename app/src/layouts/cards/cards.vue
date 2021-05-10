@@ -100,8 +100,8 @@
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
-						:value="page"
-						@input="toPage"
+						:modelValue="page"
+						@update:modelValue="toPage"
 					/>
 				</div>
 
