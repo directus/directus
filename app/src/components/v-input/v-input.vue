@@ -1,9 +1,5 @@
 <template>
-	<div
-		class="v-input"
-		@click="$emit('click', $event)"
-		:class="{ 'full-width': fullWidth, 'has-click': clickable, disabled: disabled }"
-	>
+	<div class="v-input" @click="$emit('click', $event)" :class="classes">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
@@ -15,7 +11,7 @@
 			<slot name="input">
 				<!-- @TODO3 `$attrs` now contains class and style attributes as well. With `inheritAttrs: false` they are applied to the input element. -->
 				<input
-					v-bind="$attrs"
+					v-bind="attributes"
 					v-focus="autofocus"
 					v-on="listeners"
 					:autocomplete="autocomplete"
@@ -60,6 +56,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import slugify from '@sindresorhus/slugify';
+import { omit } from 'lodash';
 
 export default defineComponent({
 	emits: ['click', 'keydown', 'update:modelValue'],
@@ -154,6 +151,15 @@ export default defineComponent({
 				attrs?.onBlur?.(e);
 			},
 		}));
+		const attributes = computed(() => omit(attrs, ['class']));
+		const classes = computed(() => [
+			{
+				'full-width': props.fullWidth,
+				'has-click': props.clickable,
+				disabled: props.disabled,
+			},
+			...((attrs.class || '') as string).split(' '),
+		]);
 
 		const isStepUpAllowed = computed(() => {
 			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
@@ -163,7 +169,7 @@ export default defineComponent({
 			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
 		});
 
-		return { listeners, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
+		return { listeners, attributes, classes, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
