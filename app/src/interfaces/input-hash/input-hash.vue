@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { i18n } from '@/lang';
 
@@ -38,11 +39,13 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isHashed = ref(false);
 		const localValue = ref<string | null>(null);
 
 		const internalPlaceholder = computed(() => {
-			return isHashed.value ? i18n.global.t('value_hashed') : props.placeholder;
+			return isHashed.value ? t('value_hashed') : props.placeholder;
 		});
 
 		watch(

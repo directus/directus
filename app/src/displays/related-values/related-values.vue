@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, Ref } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
@@ -61,13 +62,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
 		});
 
 		const primaryKeyField = computed(() => {
 			if (relatedCollection.value !== null) {
-				return useCollection((relatedCollection as unknown) as Ref<string>).primaryKeyField.value;
+				return useCollection(relatedCollection as unknown as Ref<string>).primaryKeyField.value;
 			}
 			return null;
 		});
@@ -80,15 +83,15 @@ export default defineComponent({
 			if (Array.isArray(props.value)) {
 				if (props.value.length === 1) {
 					if (i18n.global.te(`collection_names_singular.${relatedCollection.value}`)) {
-						return i18n.global.t(`collection_names_singular.${relatedCollection.value}`);
+						return t(`collection_names_singular.${relatedCollection.value}`);
 					} else {
-						return i18n.global.t('item');
+						return t('item');
 					}
 				} else {
 					if (i18n.global.te(`collection_names_plural.${relatedCollection.value}`)) {
-						return i18n.global.t(`collection_names_plural.${relatedCollection.value}`);
+						return t(`collection_names_plural.${relatedCollection.value}`);
 					} else {
-						return i18n.global.t('items');
+						return t('items');
 					}
 				}
 			}

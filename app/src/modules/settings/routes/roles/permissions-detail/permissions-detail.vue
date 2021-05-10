@@ -45,6 +45,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
 import { Permission, Role } from '@/types';
@@ -75,6 +76,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
@@ -90,13 +93,13 @@ export default defineComponent({
 		});
 
 		const modalTitle = computed(() => {
-			if (loading.value || !permission.value) return i18n.global.t('loading');
+			if (loading.value || !permission.value) return t('loading');
 
 			if (props.roleKey) {
-				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + i18n.global.t(permission.value.action);
+				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 			}
 
-			return i18n.global.t('public') + ' -> ' + collectionName.value + ' -> ' + i18n.global.t(permission.value.action);
+			return t('public') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });
@@ -110,7 +113,7 @@ export default defineComponent({
 
 			if (['read', 'update', 'delete'].includes(action)) {
 				tabs.push({
-					text: i18n.global.t('item_permissions'),
+					text: t('item_permissions'),
 					value: 'permissions',
 					hasValue: permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
 				});
@@ -118,7 +121,7 @@ export default defineComponent({
 
 			if (['create', 'read', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.global.t('field_permissions'),
+					text: t('field_permissions'),
 					value: 'fields',
 					hasValue: permission.value.fields !== null,
 				});
@@ -126,7 +129,7 @@ export default defineComponent({
 
 			if (['create', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.global.t('field_validation'),
+					text: t('field_validation'),
 					value: 'validation',
 					hasValue: permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
 				});
@@ -134,7 +137,7 @@ export default defineComponent({
 
 			if (['create', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.global.t('field_presets'),
+					text: t('field_presets'),
 					value: 'presets',
 					hasValue: permission.value.presets !== null && Object.keys(permission.value.presets).length > 0,
 				});

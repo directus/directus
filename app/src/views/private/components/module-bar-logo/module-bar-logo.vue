@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
@@ -27,6 +28,8 @@ import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
 
@@ -50,7 +53,7 @@ export default defineComponent({
 		const url = computed(() => settingsStore.settings?.project_url);
 
 		const urlTooltip = computed(() => {
-			return settingsStore.settings?.project_url ? i18n.global.t('view_project') : false;
+			return settingsStore.settings?.project_url ? t('view_project') : false;
 		});
 
 		return {

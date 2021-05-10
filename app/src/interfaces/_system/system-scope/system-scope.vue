@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { i18n } from '@/lang';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -31,6 +32,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const collection = ref<string | null>(null);
 		const itemName = ref<string | null>(null);
 		const loading = ref(false);
@@ -46,15 +49,15 @@ export default defineComponent({
 		const options = computed(() => {
 			let options: any[] = [
 				{
-					text: i18n.global.t('global') + ': ' + i18n.global.t('all_users'),
+					text: t('global') + ': ' + t('all_users'),
 					value: 'all',
 				},
 				{
-					text: i18n.global.t('user') + ': ' + i18n.global.t('select'),
+					text: t('user') + ': ' + t('select'),
 					value: 'directus_users',
 				},
 				{
-					text: i18n.global.t('role') + ': ' + i18n.global.t('select'),
+					text: t('role') + ': ' + t('select'),
 					value: 'directus_roles',
 				},
 			];
@@ -64,7 +67,7 @@ export default defineComponent({
 
 				options = [
 					{
-						text: i18n.global.t(type) + ': ' + (itemName.value || id),
+						text: t(type) + ': ' + (itemName.value || id),
 						value: props.value,
 					},
 					{ divider: true },
