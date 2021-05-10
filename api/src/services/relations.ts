@@ -1,27 +1,31 @@
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException } from '../exceptions';
 import logger from '../logger';
-import { AbstractServiceOptions, PermissionsAction, PrimaryKey, Query, Relation } from '../types';
+import { AbstractServiceOptions, PermissionsAction, PrimaryKey, Query, Relation, RelationMeta } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
+import { applyQueryPost } from '../utils/apply-query-post';
+import SchemaInspector from '@directus/schema';
 
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_relations', options);
 		this.permissionsService = new PermissionsService(options);
+		this.schemaInspector = SchemaInspector(this.knex);
 	}
 
 	/**
-	 * Read multiple relations by query.
+	 * Read multiple relations. Just like collections/fields, this doesn't support a query (yet)
 	 *
 	 * Note: this is based on permissions access to other collections/fields, not permissions to
 	 * directus_relations directly
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Relation[]> {
-		const service = new ItemsService<Relation>('directus_relations', {
+		const service = new ItemsService<RelationMeta>('directus_relations', {
 			knex: this.knex,
 			schema: this.schema,
 			// We don't set accountability here. If you have read access to certain fields, you are
@@ -29,10 +33,47 @@ export class RelationsService extends ItemsService {
 			// happens in `filterForbidden` down below
 		});
 
-		const results = await service.readByQuery(query, opts);
+		const metaRows = await service.readByQuery({ limit: -1 }, opts);
+		metaRows.push(...systemRelationRows);
 
-		results.push(...systemRelationRows);
+		const schemaRows = await this.schemaInspector.foreignKeys();
 
+		const results = schemaRows.map(
+			(foreignKey): Relation => {
+				return {
+					collection: foreignKey.table,
+					field: foreignKey.column,
+					related_collection: foreignKey.foreign_key_table,
+					schema: foreignKey,
+					meta: metaRows.find((meta) => {
+						if (meta.many_collection !== foreignKey.table) return false;
+						if (meta.many_field !== foreignKey.column) return false;
+						if (meta.one_collection && meta.one_collection !== foreignKey.foreign_key_table) return false;
+						return true;
+					}),
+				};
+			}
+		);
+
+		/**
+		 * Meta rows that don't have a corresponding schema foreign key
+		 */
+		const remainingMetaRows = metaRows
+			.filter((meta) => {
+				return !results.find((relation) => relation.meta === meta);
+			})
+			.map(
+				(meta): Relation => {
+					return {
+						collection: meta.many_collection,
+						field: meta.many_field,
+						related_collection: meta.one_collection ?? null,
+						meta: meta,
+					};
+				}
+			);
+
+		results.push(...remainingMetaRows);
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -106,35 +147,35 @@ export class RelationsService extends ItemsService {
 			let collectionsAllowed = true;
 			let fieldsAllowed = true;
 
-			if (allowedCollections.includes(relation.many_collection) === false) {
+			if (allowedCollections.includes(relation.collection) === false) {
 				collectionsAllowed = false;
 			}
 
-			if (relation.one_collection && allowedCollections.includes(relation.one_collection) === false) {
+			if (relation.related_collection && allowedCollections.includes(relation.related_collection) === false) {
 				collectionsAllowed = false;
 			}
 
 			if (
-				relation.one_allowed_collections &&
-				relation.one_allowed_collections.every((collection) => allowedCollections.includes(collection)) === false
+				relation.meta?.one_allowed_collections &&
+				relation.meta?.one_allowed_collections.every((collection) => allowedCollections.includes(collection)) === false
 			) {
 				collectionsAllowed = false;
 			}
 
 			if (
-				!allowedFields[relation.many_collection] ||
-				(allowedFields[relation.many_collection].includes('*') === false &&
-					allowedFields[relation.many_collection].includes(relation.many_field) === false)
+				!allowedFields[relation.collection] ||
+				(allowedFields[relation.collection].includes('*') === false &&
+					allowedFields[relation.collection].includes(relation.field) === false)
 			) {
 				fieldsAllowed = false;
 			}
 
 			if (
-				relation.one_collection &&
-				relation.one_field &&
-				(!allowedFields[relation.one_collection] ||
-					(allowedFields[relation.one_collection].includes('*') === false &&
-						allowedFields[relation.one_collection].includes(relation.one_field) === false))
+				relation.related_collection &&
+				relation.meta?.one_field &&
+				(!allowedFields[relation.related_collection] ||
+					(allowedFields[relation.related_collection].includes('*') === false &&
+						allowedFields[relation.related_collection].includes(relation.meta.one_field) === false))
 			) {
 				fieldsAllowed = false;
 			}

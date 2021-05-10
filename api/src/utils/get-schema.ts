@@ -6,7 +6,8 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import logger from '../logger';
-import { Accountability, Permission, RelationRaw, SchemaOverview } from '../types';
+import { RelationsService } from '../services';
+import { Accountability, Permission, RelationMeta, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
@@ -138,12 +139,8 @@ export async function getSchema(options?: {
 		};
 	}
 
-	const relations: RelationRaw[] = [...(await database.select('*').from('directus_relations')), ...systemRelationRows];
-
-	result.relations = relations.map((relation) => ({
-		...relation,
-		one_allowed_collections: relation.one_allowed_collections ? toArray(relation.one_allowed_collections) : null,
-	}));
+	const relationsService = new RelationsService({ knex: database, schema: result });
+	result.relations = await relationsService.readByQuery({});
 
 	return result;
 }

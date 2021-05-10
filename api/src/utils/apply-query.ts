@@ -7,6 +7,9 @@ import { Filter, Query, Relation, SchemaOverview } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
+/**
+ * Apply the Query to a given Knex query builder instance
+ */
 export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
