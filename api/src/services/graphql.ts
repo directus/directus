@@ -97,7 +97,13 @@ export const GraphQLDate = new GraphQLScalarType({
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
-const SYSTEM_DENY_LIST = ['directus_collections', 'directus_fields', 'directus_migrations', 'directus_sessions'];
+const SYSTEM_DENY_LIST = [
+	'directus_collections',
+	'directus_fields',
+	'directus_relations',
+	'directus_migrations',
+	'directus_sessions',
+];
 const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
@@ -313,6 +319,7 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
+						console.log(getGraphQLType(field.type));
 						acc[field.field] = {
 							type: getGraphQLType(field.type),
 							description: field.note,
@@ -1089,8 +1096,6 @@ export class GraphQLService {
 				return new PermissionsService(opts);
 			case 'directus_presets':
 				return new PresetsService(opts);
-			case 'directus_relations':
-				return new RelationsService(opts);
 			case 'directus_revisions':
 				return new RevisionsService(opts);
 			case 'directus_roles':
@@ -1312,6 +1317,10 @@ export class GraphQLService {
 
 		const Field = schemaComposer.createObjectTC({
 			name: 'directus_fields',
+		});
+
+		const Relation = schemaComposer.createObjectTC({
+			name: 'directus_relations',
 		});
 
 		/**
@@ -1677,7 +1686,7 @@ export class GraphQLService {
 					},
 				},
 				fields_in_collection: {
-					type: Field,
+					type: [Field],
 					args: {
 						collection: GraphQLNonNull(GraphQLString),
 					},
@@ -1697,6 +1706,79 @@ export class GraphQLService {
 					},
 					resolve: async (_, args) => {
 						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						return await service.readOne(args.collection, args.field);
+					},
+				},
+			});
+		}
+
+		if ('directus_relations' in schema.read.collections) {
+			Relation.addFields({
+				collection: GraphQLString,
+				field: GraphQLString,
+				related_collection: GraphQLString,
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_relations_schema',
+					fields: {
+						table: GraphQLNonNull(GraphQLString),
+						column: GraphQLNonNull(GraphQLString),
+						foreign_key_table: GraphQLNonNull(GraphQLString),
+						foreign_key_column: GraphQLNonNull(GraphQLString),
+						constraint_name: GraphQLString,
+						on_update: GraphQLNonNull(GraphQLString),
+						on_delete: GraphQLNonNull(GraphQLString),
+					},
+				}),
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_relations_meta',
+					fields: Object.values(schema.read.collections['directus_relations'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				relations: {
+					type: [Relation],
+					resolve: async () => {
+						const service = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll();
+					},
+				},
+				relations_in_collection: {
+					type: [Relation],
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll(args.collection);
+					},
+				},
+				relations_by_name: {
+					type: Relation,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new RelationsService({
 							accountability: this.accountability,
 							schema: this.schema,
 						});
