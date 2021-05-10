@@ -319,7 +319,6 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
-						console.log(getGraphQLType(field.type));
 						acc[field.field] = {
 							type: getGraphQLType(field.type),
 							description: field.note,
@@ -1903,6 +1902,62 @@ export class GraphQLService {
 						await service.deleteField(args.collection, args.field);
 						const { collection, field } = args;
 						return { collection, field };
+					},
+				},
+			});
+
+			schemaComposer.Mutation.addFields({
+				create_relations_item: {
+					type: Relation,
+					args: {
+						data: toInputObjectType(Relation.clone('create_directus_relations'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await relationsService.createOne(args.data);
+						return await relationsService.readOne(args.data.collection, args.data.field);
+					},
+				},
+				update_relations_item: {
+					type: Relation,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(Relation.clone('update_directus_relations'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await relationsService.updateOne(args.collection, args.field, args.data);
+						return await relationsService.readOne(args.data.collection, args.data.field);
+					},
+				},
+				delete_relations_item: {
+					type: schemaComposer.createObjectTC({
+						name: 'delete_relation',
+						fields: {
+							collection: GraphQLString,
+							field: GraphQLString,
+						},
+					}),
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await relationsService.deleteOne(args.collection, args.field);
+						return { collection: args.collection, field: args.field };
 					},
 				},
 			});
