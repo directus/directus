@@ -7,25 +7,19 @@ import env from '../../env';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
 import mailer from '../mailer';
+import { SendMailOptions } from 'nodemailer';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
 	extname: '.liquid',
 });
 
-export type EmailOptions = {
-	to: string | string[];
-	cc?: string | string[];
-	bcc?: string | string[];
+export type EmailOptions = SendMailOptions & {
 	template?: {
 		name: string;
 		data: Record<string, any>;
 		system?: boolean;
 	};
-	from?: string;
-	subject?: string;
-	text?: string;
-	html?: string;
 };
 
 export class MailService {
@@ -42,15 +36,15 @@ export class MailService {
 	async send(options: EmailOptions): Promise<void> {
 		if (!mailer) return;
 
-		const { to, subject, text, cc, bcc } = options;
-		let { from, html } = options;
+		const { template, ... nodeMailerOptions } = options;
+		let { html } = options;
 
-		from = from || (env.EMAIL_FROM as string);
+		let from = options.from || (env.EMAIL_FROM as string);
 
-		if (options.template) {
-			let templateData = options.template.data;
+		if (template) {
+			let templateData = template.data;
 
-			if (options.template.system === true) {
+			if (template.system === true) {
 				const defaultTemplateData = await this.getDefaultTemplateData();
 
 				templateData = {
@@ -59,11 +53,11 @@ export class MailService {
 				};
 			}
 
-			html = await this.renderTemplate(options.template.name, templateData, options.template.system);
+			html = await this.renderTemplate(template.name, templateData, template.system);
 		}
 
 		try {
-			await mailer.sendMail({ to, cc, bcc, from, subject, html, text });
+			await mailer.sendMail({ ...nodeMailerOptions, from, html });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);
