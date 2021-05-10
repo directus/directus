@@ -844,9 +844,23 @@ view_project: Visualizar projeto
 report_error: Relatar erro
 interfaces:
   presentation-links:
+    presentation-links: Links do botão
+    links: Links
+    style: Estilo
     primary: Primário
+    link: Links
+    button: Botões
+    error: Não foi possível executar a ação
+  select-multiple-checkbox:
+    checkboxes: Caixas de seleção
+    description: Escolha entre várias opções através das caixas de seleção
+    allow_other: Permitir outros
+    show_more: 'Exibir {count} mais'
+    items_shown: Itens mostrados
   input-code:
     code: Código
+    line_number: Número da linha
+    placeholder: Inserir código aqui...
   collection:
     collection: Coleção
     description: Selecione entre coleções existentes
@@ -857,6 +871,10 @@ interfaces:
     include_system_collections: Incluir coleções do sistema
   select-color:
     color: Cor
+    placeholder: Escolha uma cor...
+    preset_colors: Cores predefinidas
+    preset_colors_add_label: Adicionar nova cor...
+    name_placeholder: Inserir nome da cor...
   datetime:
     datetime: Data e Hora
     description: Insira datas e horas
@@ -869,7 +887,15 @@ interfaces:
     select_a_collection: Selecione uma coleção
   presentation-divider:
     divider: Divisor
+    title_placeholder: Insira um título...
+    inline_title_label: Mostrar título dentro da linha
+    margin_top: Margem Superior
+    margin_top_label: Aumentar margem superior
   select-dropdown:
+    choices_placeholder: Adicionar uma nova escolha
+    allow_other: Permitir outros
+    allow_other_label: Permitir outros valores
+    allow_none: Permitir nenhum
     choices_value_placeholder: Insira um valor...
   file:
     file: Arquivo
