@@ -361,7 +361,7 @@ export default defineComponent({
 				if (!item?.value?.folder) {
 					return [
 						{
-							name: i18n.global.t('file_library'),
+							name: t('file_library'),
 							to: '/files',
 						},
 					];
@@ -369,7 +369,7 @@ export default defineComponent({
 
 				return [
 					{
-						name: i18n.global.t('file_library'),
+						name: t('file_library'),
 						to: {
 							path: `/files/`,
 							query: {
@@ -454,10 +454,10 @@ export default defineComponent({
 					);
 
 					await refresh();
-					const folder = response.data.data.folder?.name || i18n.global.t('file_library');
+					const folder = response.data.data.folder?.name || t('file_library');
 
 					notify({
-						title: i18n.global.t('file_moved', { folder }),
+						title: t('file_moved', { folder }),
 						type: 'success',
 						icon: 'folder_move',
 					});

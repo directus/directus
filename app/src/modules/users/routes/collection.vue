@@ -300,14 +300,14 @@ export default defineComponent({
 
 				return [
 					{
-						name: i18n.global.t('user_directory'),
+						name: t('user_directory'),
 						to: `/users`,
 					},
 				];
 			});
 
 			const title = computed(() => {
-				if (!props.queryFilters?.role) return i18n.global.t('user_directory');
+				if (!props.queryFilters?.role) return t('user_directory');
 				return roles.value?.find((role: Role) => role.id === props.queryFilters.role)?.name;
 			});
 

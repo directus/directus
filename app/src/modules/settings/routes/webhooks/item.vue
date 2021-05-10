@@ -114,8 +114,8 @@ export default defineComponent({
 		const confirmDelete = ref(false);
 
 		const title = computed(() => {
-			if (loading.value) return i18n.global.t('loading');
-			if (isNew.value) return i18n.global.t('creating_webhook');
+			if (loading.value) return t('loading');
+			if (isNew.value) return t('creating_webhook');
 			return item.value?.name;
 		});
 

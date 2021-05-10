@@ -236,7 +236,7 @@ export default defineComponent({
 				await fieldsStore.hydrate();
 
 				notify({
-					title: i18n.global.t('collection_created'),
+					title: t('collection_created'),
 					type: 'success',
 				});
 

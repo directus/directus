@@ -130,17 +130,17 @@ export default defineComponent({
 
 			if (i18n.global.te(`collection_names_singular.${collection.collection}`)) {
 				return isNew
-					? i18n.global.t('creating_unit', {
-							unit: i18n.global.t(`collection_names_singular.${collection.collection}`),
+					? t('creating_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
 					  })
-					: i18n.global.t('editing_unit', {
-							unit: i18n.global.t(`collection_names_singular.${collection.collection}`),
+					: t('editing_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
 					  });
 			}
 
 			return isNew
-				? i18n.global.t('creating_in', { collection: collection.name })
-				: i18n.global.t('editing_in', { collection: collection.name });
+				? t('creating_in', { collection: collection.name })
+				: t('editing_in', { collection: collection.name });
 		});
 
 		const showDivider = computed(() => {

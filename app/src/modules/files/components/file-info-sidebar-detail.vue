@@ -186,13 +186,13 @@ export default defineComponent({
 
 					creationDate.value = await localizedFormat(
 						new Date(props.file.uploaded_on),
-						String(i18n.global.t('date-fns_date_short'))
+						String(t('date-fns_date_short'))
 					);
 
 					if (props.file.modified_on) {
 						modificationDate.value = await localizedFormat(
 							new Date(props.file.modified_on),
-							String(i18n.global.t('date-fns_date_short'))
+							String(t('date-fns_date_short'))
 						);
 					}
 				},

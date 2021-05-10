@@ -308,13 +308,13 @@ export default defineComponent({
 		const title = computed(() => {
 			if (i18n.global.te(`collection_names_singular.${props.collection}`)) {
 				return isNew.value
-					? i18n.global.t('creating_unit', { unit: i18n.global.t(`collection_names_singular.${props.collection}`) })
-					: i18n.global.t('editing_unit', { unit: i18n.global.t(`collection_names_singular.${props.collection}`) });
+					? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
+					: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });
 			}
 
 			return isNew.value
-				? i18n.global.t('creating_in', { collection: collectionInfo.value?.name })
-				: i18n.global.t('editing_in', { collection: collectionInfo.value?.name });
+				? t('creating_in', { collection: collectionInfo.value?.name })
+				: t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
 		const tabTitle = computed(() => {
@@ -336,9 +336,9 @@ export default defineComponent({
 		useTitle(tabTitle);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.global.t('not_allowed');
-			if (isArchived.value === true) return i18n.global.t('unarchive');
-			return i18n.global.t('archive');
+			if (archiveAllowed.value === false) return t('not_allowed');
+			if (isArchived.value === true) return t('unarchive');
+			return t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);

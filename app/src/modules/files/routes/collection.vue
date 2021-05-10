@@ -364,15 +364,15 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const title = computed(() => {
 				if (props.special === 'all') {
-					return i18n.global.t('all_files');
+					return t('all_files');
 				}
 
 				if (props.special === 'mine') {
-					return i18n.global.t('my_files');
+					return t('my_files');
 				}
 
 				if (props.special === 'recent') {
-					return i18n.global.t('recent_files');
+					return t('recent_files');
 				}
 
 				if (props.queryFilters?.folder) {
@@ -383,14 +383,14 @@ export default defineComponent({
 					}
 				}
 
-				return i18n.global.t('file_library');
+				return t('file_library');
 			});
 
 			const breadcrumb = computed(() => {
-				if (title.value !== i18n.global.t('file_library')) {
+				if (title.value !== t('file_library')) {
 					return [
 						{
-							name: i18n.global.t('file_library'),
+							name: t('file_library'),
 							to: `/files`,
 						},
 					];
@@ -506,7 +506,7 @@ export default defineComponent({
 				showDropEffect.value = true;
 
 				dragNotificationID = notificationsStore.add({
-					title: i18n.global.t('drop_to_upload'),
+					title: t('drop_to_upload'),
 					icon: 'cloud_upload',
 					type: 'info',
 					persist: true,
@@ -582,7 +582,7 @@ export default defineComponent({
 
 				fileUploadNotificationID = notificationsStore.add({
 					// @TODO3 Are those named interpolations still needed?
-					title: i18n.global.t(
+					title: t(
 						'upload_file_indeterminate',
 						{
 							done: 0,
@@ -610,7 +610,7 @@ export default defineComponent({
 
 						notificationsStore.update(fileUploadNotificationID, {
 							// @TODO3 Are those named interpolations still needed?
-							title: i18n.global.t(
+							title: t(
 								'upload_file_indeterminate',
 								{
 									done,

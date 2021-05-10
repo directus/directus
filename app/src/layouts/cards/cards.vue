@@ -266,18 +266,18 @@ export default defineComponent({
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {
 				if (itemCount.value === 1) {
-					return i18n.global.t('one_filtered_item');
+					return t('one_filtered_item');
 				}
-				return i18n.global.t('start_end_of_count_filtered_items', {
+				return t('start_end_of_count_filtered_items', {
 					start: i18n.global.n((+page.value - 1) * limit.value + 1),
 					end: i18n.global.n(Math.min(page.value * limit.value, itemCount.value || 0)),
 					count: i18n.global.n(itemCount.value || 0),
 				});
 			}
 			if (itemCount.value === 1) {
-				return i18n.global.t('one_item');
+				return t('one_item');
 			}
-			return i18n.global.t('start_end_of_count_items', {
+			return t('start_end_of_count_items', {
 				start: i18n.global.n((+page.value - 1) * limit.value + 1),
 				end: i18n.global.n(Math.min(page.value * limit.value, itemCount.value || 0)),
 				count: i18n.global.n(itemCount.value || 0),

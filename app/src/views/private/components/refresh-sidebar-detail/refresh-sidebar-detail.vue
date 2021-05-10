@@ -57,17 +57,17 @@ export default defineComponent({
 			return intervals.map((seconds) => {
 				if (seconds === null)
 					return {
-						text: i18n.global.t('no_refresh'),
+						text: t('no_refresh'),
 						value: null,
 					};
 
 				return seconds >= 60 && seconds % 60 === 0
 					? {
-							text: i18n.global.t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
+							text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 							value: seconds,
 					  }
 					: {
-							text: i18n.global.t('refresh_interval_seconds', { seconds }, seconds),
+							text: t('refresh_interval_seconds', { seconds }, seconds),
 							value: seconds,
 					  };
 			});

@@ -249,10 +249,10 @@ export default defineComponent({
 
 		const typePlaceholder = computed(() => {
 			if (props.type === 'm2o') {
-				return i18n.global.t('determined_by_relationship');
+				return t('determined_by_relationship');
 			}
 
-			return i18n.global.t('choose_a_type');
+			return t('choose_a_type');
 		});
 
 		const defaultValue = computed({
@@ -287,30 +287,30 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					return [
 						{
-							text: i18n.global.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.global.t('generate_and_save_uuid'),
+							text: t('generate_and_save_uuid'),
 							value: 'uuid',
 						},
 						{
-							text: i18n.global.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-created',
 						},
 						{
-							text: i18n.global.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-created',
 						},
 					];
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
-							text: i18n.global.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.global.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-created',
 						},
 					];
@@ -352,26 +352,26 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					return [
 						{
-							text: i18n.global.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.global.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-updated',
 						},
 						{
-							text: i18n.global.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-updated',
 						},
 					];
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
-							text: i18n.global.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.global.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-updated',
 						},
 					];

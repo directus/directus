@@ -153,9 +153,9 @@ export default defineComponent({
 			if (!props.validationError) return null;
 
 			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
-				return i18n.global.t('validationError.unique');
+				return t('validationError.unique');
 			} else {
-				return i18n.global.t(`validationError.${props.validationError.type}`, props.validationError);
+				return t(`validationError.${props.validationError.type}`, props.validationError);
 			}
 		});
 

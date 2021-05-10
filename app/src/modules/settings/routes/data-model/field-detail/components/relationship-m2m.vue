@@ -458,10 +458,10 @@ export default defineComponent({
 
 			const correspondingLabel = computed(() => {
 				if (state.relations[0].one_collection) {
-					return i18n.global.t('add_m2m_to_collection', { collection: state.relations[1].one_collection });
+					return t('add_m2m_to_collection', { collection: state.relations[1].one_collection });
 				}
 
-				return i18n.global.t('add_field_related');
+				return t('add_field_related');
 			});
 
 			return { hasCorresponding, correspondingField, correspondingLabel };

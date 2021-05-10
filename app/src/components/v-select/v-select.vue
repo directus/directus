@@ -250,9 +250,9 @@ export default defineComponent({
 						const selectionCount = props.modelValue.length;
 
 						if (itemCount === selectionCount) {
-							return i18n.global.t('all_items');
+							return t('all_items');
 						} else {
-							return i18n.global.t('item_count', selectionCount);
+							return t('item_count', selectionCount);
 						}
 					}
 				}

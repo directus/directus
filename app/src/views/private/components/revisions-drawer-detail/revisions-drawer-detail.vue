@@ -203,11 +203,10 @@ export default defineComponent({
 
 						let dateFormatted: string;
 
-						if (today) dateFormatted = i18n.global.t('today');
-						else if (yesterday) dateFormatted = i18n.global.t('yesterday');
-						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.global.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.global.t('date-fns_date_short')));
+						if (today) dateFormatted = t('today');
+						else if (yesterday) dateFormatted = t('yesterday');
+						else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
+						else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
 
 						revisionsGrouped.push({
 							date: date,

@@ -97,21 +97,21 @@ export default defineComponent({
 				align: 'left',
 			},
 			{
-				text: i18n.global.t('name'),
+				text: t('name'),
 				value: 'name',
 				sortable: false,
 				width: 140,
 				align: 'left',
 			},
 			{
-				text: i18n.global.t('users'),
+				text: t('users'),
 				value: 'count',
 				sortable: false,
 				width: 140,
 				align: 'left',
 			},
 			{
-				text: i18n.global.t('description'),
+				text: t('description'),
 				value: 'description',
 				sortable: false,
 				width: 470,
@@ -138,9 +138,9 @@ export default defineComponent({
 				roles.value = [
 					{
 						public: true,
-						name: i18n.global.t('public'),
+						name: t('public'),
 						icon: 'public',
-						description: i18n.global.t('public_description'),
+						description: t('public_description'),
 						id: 'public',
 					},
 					...response.data.data.map((role: any) => {

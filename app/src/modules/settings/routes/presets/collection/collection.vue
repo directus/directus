@@ -221,28 +221,28 @@ export default defineComponent({
 		function useTable() {
 			const headers: Header[] = [
 				{
-					text: i18n.global.t('collection'),
+					text: t('collection'),
 					value: 'collection',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.global.t('scope'),
+					text: t('scope'),
 					value: 'scope',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.global.t('layout'),
+					text: t('layout'),
 					value: 'layout',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.global.t('name'),
+					text: t('name'),
 					value: 'name',
 					align: 'left',
 					sortable: true,

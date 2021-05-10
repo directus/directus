@@ -98,12 +98,12 @@ export default defineComponent({
 			{
 				type: 'standard',
 				icon: 'create',
-				text: i18n.global.t('standard_field'),
+				text: t('standard_field'),
 			},
 			{
 				type: 'presentation',
 				icon: 'scatter_plot',
-				text: i18n.global.t('presentation_and_aliases'),
+				text: t('presentation_and_aliases'),
 			},
 			{
 				divider: true,
@@ -111,12 +111,12 @@ export default defineComponent({
 			{
 				type: 'file',
 				icon: 'photo',
-				text: i18n.global.t('single_file'),
+				text: t('single_file'),
 			},
 			{
 				type: 'files',
 				icon: 'collections',
-				text: i18n.global.t('multiple_files'),
+				text: t('multiple_files'),
 			},
 			{
 				divider: true,
@@ -124,22 +124,22 @@ export default defineComponent({
 			{
 				type: 'm2o',
 				icon: 'call_merge',
-				text: i18n.global.t('m2o_relationship'),
+				text: t('m2o_relationship'),
 			},
 			{
 				type: 'o2m',
 				icon: 'call_split',
-				text: i18n.global.t('o2m_relationship'),
+				text: t('o2m_relationship'),
 			},
 			{
 				type: 'm2m',
 				icon: 'import_export',
-				text: i18n.global.t('m2m_relationship'),
+				text: t('m2m_relationship'),
 			},
 			{
 				type: 'm2a',
 				icon: 'gesture',
-				text: i18n.global.t('m2a_relationship'),
+				text: t('m2a_relationship'),
 			},
 			{
 				divider: true,
@@ -147,7 +147,7 @@ export default defineComponent({
 			{
 				type: 'translations',
 				icon: 'translate',
-				text: i18n.global.t('translations'),
+				text: t('translations'),
 			},
 		]);
 

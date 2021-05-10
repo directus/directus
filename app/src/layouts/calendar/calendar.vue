@@ -302,7 +302,7 @@ export default defineComponent({
 		});
 
 		const showingCount = computed(() => {
-			return i18n.global.t('item_count', itemCount.value);
+			return t('item_count', itemCount.value);
 		});
 
 		return {

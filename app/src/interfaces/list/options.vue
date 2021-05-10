@@ -63,7 +63,7 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
-				name: i18n.global.t('field', 1),
+				name: t('field', 1),
 				field: 'field',
 				type: 'string',
 				meta: {
@@ -73,13 +73,13 @@ export default defineComponent({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: i18n.global.t('interfaces.list.field_name_placeholder'),
+						placeholder: t('interfaces.list.field_name_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.global.t('field_width'),
+				name: t('field_width'),
 				field: 'width',
 				type: 'string',
 				meta: {
@@ -90,11 +90,11 @@ export default defineComponent({
 						choices: [
 							{
 								value: 'half',
-								text: i18n.global.t('half_width'),
+								text: t('half_width'),
 							},
 							{
 								value: 'full',
-								text: i18n.global.t('full_width'),
+								text: t('full_width'),
 							},
 						],
 					},
@@ -102,7 +102,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.global.t('type'),
+				name: t('type'),
 				field: 'type',
 				type: 'string',
 				meta: {
@@ -116,7 +116,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.global.t('interface'),
+				name: t('interface'),
 				field: 'interface',
 				type: 'string',
 				meta: {
@@ -130,7 +130,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.global.t('note'),
+				name: t('note'),
 				field: 'note',
 				type: 'string',
 				meta: {
@@ -138,13 +138,13 @@ export default defineComponent({
 					width: 'full',
 					sort: 6,
 					options: {
-						placeholder: i18n.global.t('interfaces.list.field_note_placeholder'),
+						placeholder: t('interfaces.list.field_note_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.global.t('options'),
+				name: t('options'),
 				field: 'options',
 				type: 'string',
 				meta: {
