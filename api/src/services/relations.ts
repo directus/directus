@@ -123,7 +123,7 @@ export class RelationsService {
 	/**
 	 * Create a new relationship / foreign key constraint
 	 */
-	async create(relation: Partial<Relation>): Promise<void> {
+	async createOne(relation: Partial<Relation>): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -177,6 +177,67 @@ export class RelationsService {
 			}
 
 			await this.relationsItemService.createOne(metaRow);
+		});
+	}
+
+	/**
+	 * Update an existing foreign key constraint
+	 *
+	 * Note: You can update anything under meta, but only the `on_delete` trigger under schema
+	 */
+	async updateOne(collection: string, field: string, relation: Partial<Relation>): Promise<void> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		if (collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
+		}
+
+		if (field in this.schema.collections[collection].fields === false) {
+			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
+		}
+
+		const existingRelation = this.schema.relations.find(
+			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
+		);
+
+		if (!existingRelation) {
+			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
+		}
+
+		await this.knex.transaction(async (trx) => {
+			// NOTE: on_delete is the only editable part
+			if (relation.schema?.on_delete) {
+				await trx.schema.alterTable(collection, async (table) => {
+					// If the FK already exists in the DB, drop it first
+					if (existingRelation?.schema) {
+						table.dropForeign(field);
+					}
+
+					table
+						.foreign(field)
+						.references(
+							`${existingRelation.related_collection!}.${
+								this.schema.collections[existingRelation.related_collection!].primary
+							}`
+						)
+						.onDelete(relation.schema?.on_delete || 'NO ACTION');
+				});
+			}
+
+			if (relation.meta) {
+				if (existingRelation?.meta) {
+					await this.relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
+				} else {
+					await this.relationsItemService.createOne({
+						...(relation.meta || {}),
+						many_collection: relation.collection,
+						many_field: relation.field,
+						one_collection: existingRelation.related_collection || null,
+					});
+				}
+			}
 		});
 	}
 

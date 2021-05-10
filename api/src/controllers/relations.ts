@@ -87,11 +87,53 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		await service.create(req.body);
+		await service.createOne(req.body);
 
 		try {
 			const createdRelation = await service.readOne(req.body.collection, req.body.field);
 			res.locals.payload = { data: createdRelation || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond
+);
+
+const updateRelationSchema = Joi.object({
+	schema: Joi.object({
+		on_delete: Joi.string().valid('NO ACTION', 'SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT'),
+	})
+		.unknown()
+		.allow(null),
+	meta: Joi.any(),
+});
+
+router.patch(
+	'/:collection/:field',
+	validateCollection,
+	asyncHandler(async (req, res, next) => {
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { error } = updateRelationSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		await service.updateOne(req.params.collection, req.params.field, req.body);
+
+		try {
+			const updatedField = await service.readOne(req.params.collection, req.params.field);
+			res.locals.payload = { data: updatedField || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
