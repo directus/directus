@@ -18,14 +18,14 @@
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
-			:value="value === undefined ? field.schema.default_value : value"
+			:value="modelValue === undefined ? field.schema.default_value : modelValue"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
-			@input="$emit('input', $event)"
+			@input="$emit('update:modelValue', $event)"
 		/>
 
 		<v-notice v-else type="warning">
@@ -42,7 +42,7 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -60,7 +60,7 @@ export default defineComponent({
 			type: [Number, String],
 			default: null,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},

@@ -32,14 +32,14 @@
 
 		<form-field-interface
 			:autofocus="autofocus"
-			:value="internalValue"
+			:modelValue="internalValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			@input="emitValue($event)"
+			@update:modelValue="emitValue($event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
