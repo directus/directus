@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.dropColumns('many_primary', 'one_primary');
-		table.string('one_deselect_action');
+		table.string('one_deselect_action').defaultTo('nullify');
 		table.string('sort_field', 64).alter();
 	});
 
