@@ -41,6 +41,7 @@
 		"date-fns": "^2.21.1",
 		"dompurify": "^2.2.7",
 		"front-matter": "^4.0.2",
+		"html-entities": "^2.3.2",
 		"jsonlint-mod": "^1.7.6",
 		"marked": "^2.0.3",
 		"micromustache": "^8.0.3",
