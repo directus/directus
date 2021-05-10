@@ -22,7 +22,7 @@
 			:field="field"
 			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
-			:value="(edits || {})[field.field]"
+			:modelValue="(edits || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
 			:disabled="disabled"
 			:batch-mode="batchMode"
@@ -30,7 +30,7 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-error="validationErrors.find((err) => err.field === field.field)"
-			@input="setValue(field, $event)"
+			@update:modelValue="setValue(field, $event)"
 			@unset="unsetValue(field)"
 			@toggle-batch="toggleBatchField(field)"
 		/>

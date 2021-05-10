@@ -75,7 +75,7 @@ import { isEqual } from 'lodash';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['toggle-batch', 'unset', 'input'],
+	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
 	props: {
 		field: {
@@ -94,7 +94,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: undefined,
 		},
@@ -135,13 +135,13 @@ export default defineComponent({
 		});
 
 		const internalValue = computed(() => {
-			if (props.value !== undefined) return props.value;
+			if (props.modelValue !== undefined) return props.modelValue;
 			if (props.initialValue !== undefined) return props.initialValue;
 			return defaultValue.value;
 		});
 
 		const isEdited = computed<boolean>(() => {
-			return props.value !== undefined && isEqual(props.value, props.initialValue) === false;
+			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
 		const { showRaw, rawValue } = useRaw();
@@ -166,7 +166,7 @@ export default defineComponent({
 			) {
 				emit('unset', props.field);
 			} else {
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
@@ -192,19 +192,19 @@ export default defineComponent({
 				set(newRawValue: string) {
 					switch (type.value) {
 						case 'string':
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 						case 'number':
-							emit('input', Number(newRawValue));
+							emit('update:modelValue', Number(newRawValue));
 							break;
 						case 'boolean':
-							emit('input', newRawValue === 'true');
+							emit('update:modelValue', newRawValue === 'true');
 							break;
 						case 'object':
-							emit('input', JSON.parse(newRawValue));
+							emit('update:modelValue', JSON.parse(newRawValue));
 							break;
 						default:
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 					}
 				},
