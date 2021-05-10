@@ -22,6 +22,6 @@ export type Relation = {
 	collection: string;
 	field: string;
 	related_collection: string | null;
-	schema?: ForeignKey;
-	meta?: RelationMeta;
+	schema: ForeignKey | null;
+	meta: RelationMeta | null;
 };

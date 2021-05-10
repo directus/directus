@@ -140,7 +140,7 @@ export async function getSchema(options?: {
 	}
 
 	const relationsService = new RelationsService({ knex: database, schema: result });
-	result.relations = await relationsService.readByQuery({});
+	result.relations = await relationsService.readAll();
 
 	return result;
 }
