@@ -139,7 +139,7 @@
 		"oracledb": "^5.0.0",
 		"pg": "^8.6.0",
 		"sqlite3": "^5.0.2",
-		"tedious": "^11.0.5"
+		"tedious": "^11.0.8"
 	},
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
