@@ -968,22 +968,15 @@ interfaces:
   map:
     map: Map
     description: Select a location on a map
-    lat: Latitude
-    lat_placeholder: Enter the latitude...
-    lng: Longitude
-    lng_placeholder: Enter the longitude...
     background: Map Style
-    crs: Coordinate Reference System
     zoom: Zoom
-    no_api_key: The currently selected background requires a Mapbox api key.
     geometry_type: Geometry type
-    multi_geometry: Multiple geometries
-    point: Point
-    line_string: LineString
-    polygon: Polygon
-    incompatible_geometry: Incompatible geometry
-    expected_single_geometry: Expeted single geometry, found multiple.
-    expected_other_geometry: Expeted {expected}, got {found}.
+    geometry_format: Geometry format
+    geometry_crs: Coordinate Reference System
+    default_position: Default position
+    invalid_options: Invalid options
+    unknown_format: Format inconnu ( {format} )
+    unexpected_geometry: Expeted {expected}, got {found}.
   notice:
     notice: Notice
     description: Display a short notice
@@ -1186,14 +1179,11 @@ layouts:
     fit_speed: Animation speed
     fit_duration: Animation duration
     preview: Preview
-    geometry_format: Geometry format
     field: Geometry
     lnglat: Longitude | Latitude
     longitude: Longitude
     latitude: Latitude
-    crs: Coordinate Reference System
     wrong_geometry: Invalid geometry
     missing_option: Unspecified geometry field or format
     simplify: Geometry simplification tolerance
     projection: Projection
-    unimplemented_format: Unimplemented format

@@ -11,19 +11,9 @@ import maplibre, {
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
-	Style,
 	Map,
 } from 'maplibre-gl';
-import {
-	ref,
-	watch,
-	computed,
-	PropType,
-	onMounted,
-	onUnmounted,
-	defineComponent,
-	WatchStopHandle,
-} from '@vue/composition-api';
+import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '../controls';
@@ -173,13 +163,13 @@ export default defineComponent({
 			);
 		}
 
-		function updateData(newData: any, previousData: any) {
+		function updateData(newData: any) {
 			const source = map.getSource('__directus');
 			(source as GeoJSONSource).setData(newData);
 			updateSelection(props.selection, undefined);
 		}
 
-		function updateSource(newSource: GeoJSONSource, previousSource?: GeoJSONSource) {
+		function updateSource(newSource: GeoJSONSource) {
 			const layersId = new Set(map.getStyle().layers?.map(({ id }) => id));
 			for (const layer of props.layers) {
 				if (layersId.has(layer.id)) {
