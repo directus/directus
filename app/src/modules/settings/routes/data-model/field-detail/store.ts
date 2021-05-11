@@ -250,14 +250,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function useO2M() {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = 'alias';
 
 		const syncNewCollectionsO2M = throttle(([collectionName, fieldName, sortField]) => {
 			state.newCollections = state.newCollections.filter((col: any) => ['related'].includes(col.$type) === false);
-
 			state.newFields = state.newFields.filter((field) => ['manyRelated', 'sort'].includes(field.$type!) === false);
 
-			if (collectionExists(collectionName) === false) {
+			if (collectionName && collectionExists(collectionName) === false) {
 				state.newCollections.push({
 					$type: 'related',
 					collection: collectionName,
@@ -277,7 +276,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				});
 			}
 
-			if (fieldExists(collectionName, fieldName) === false) {
+			if (fieldName && fieldExists(collectionName, fieldName) === false) {
 				state.newFields.push({
 					$type: 'manyRelated',
 					collection: collectionName,
@@ -340,7 +339,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function useM2M() {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = 'alias';
 
 		const syncNewCollectionsM2M = throttle(
 			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
@@ -690,7 +689,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function useM2A() {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = 'alias';
 
 		const syncNewCollectionsM2A = throttle(
 			([junctionCollection, manyCurrent, manyRelated, oneCollectionField, sortField]) => {
@@ -878,7 +877,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function usePresentation() {
 		delete state.fieldData.schema;
-		delete state.fieldData.type;
+		state.fieldData.type = 'alias';
 		state.fieldData.meta = {
 			...(state.fieldData.meta || {}),
 			special: ['alias', 'no-data'],
