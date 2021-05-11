@@ -106,6 +106,9 @@ router.post(
 );
 
 const updateRelationSchema = Joi.object({
+	collection: Joi.string().optional(),
+	field: Joi.string().optional(),
+	related_collection: Joi.string().optional(),
 	schema: Joi.object({
 		on_delete: Joi.string().valid('NO ACTION', 'SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT'),
 	})
