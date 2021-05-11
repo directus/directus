@@ -51,7 +51,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
-import { i18n } from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';

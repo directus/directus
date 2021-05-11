@@ -28,7 +28,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { i18n } from '@/lang';
 import { version } from '../../../../package.json';
 import { useProjectInfo } from '../composables/use-project-info';
 

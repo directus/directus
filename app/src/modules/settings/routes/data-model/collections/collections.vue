@@ -98,7 +98,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
-import { i18n } from '@/lang/';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
 import { useRouter } from 'vue-router';

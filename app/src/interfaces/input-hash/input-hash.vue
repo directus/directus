@@ -16,7 +16,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
-import { i18n } from '@/lang';
 
 export default defineComponent({
 	emits: ['input'],

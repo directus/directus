@@ -61,7 +61,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 
-import { i18n } from '@/lang';
 import api from '@/api';
 import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';

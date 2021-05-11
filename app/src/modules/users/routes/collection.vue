@@ -142,7 +142,6 @@ import { defineComponent, computed, ref, PropType } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
-import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';

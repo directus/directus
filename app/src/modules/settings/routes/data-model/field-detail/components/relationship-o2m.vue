@@ -177,7 +177,6 @@ import { defineComponent, computed } from 'vue';
 import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
-import { i18n } from '@/lang';
 import { state, generationInfo } from '../store';
 
 export default defineComponent({

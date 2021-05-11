@@ -125,7 +125,6 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
-import { i18n } from '@/lang';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { Relation, Collection } from '@/types';

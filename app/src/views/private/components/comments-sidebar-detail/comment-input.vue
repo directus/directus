@@ -26,7 +26,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
 import api from '@/api';
-import { i18n } from '@/lang';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';

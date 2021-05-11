@@ -49,7 +49,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
-import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../composables/use-navigation';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';

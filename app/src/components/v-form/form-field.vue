@@ -73,7 +73,6 @@ import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
-import { i18n } from '@/lang';
 
 export default defineComponent({
 	emits: ['toggle-batch', 'unset', 'update:modelValue'],

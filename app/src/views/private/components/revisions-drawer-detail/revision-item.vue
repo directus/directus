@@ -20,7 +20,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
-import { i18n } from '@/lang';
 import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 

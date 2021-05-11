@@ -44,7 +44,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
 import usePreset from '@/composables/use-preset';
 import marked from 'marked';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';

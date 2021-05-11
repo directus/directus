@@ -59,7 +59,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import formatLocalized from '@/utils/localized-format';
-import { i18n } from '@/lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';
 
 export default defineComponent({

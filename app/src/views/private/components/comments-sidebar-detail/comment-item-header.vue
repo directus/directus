@@ -64,7 +64,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { Activity } from './types';
 import format from 'date-fns/format';
-import { i18n } from '@/lang';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 

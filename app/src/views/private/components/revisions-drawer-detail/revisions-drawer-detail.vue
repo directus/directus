@@ -50,7 +50,6 @@ import { Revision, RevisionsByDate } from './types';
 import api from '@/api';
 import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { i18n } from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';

@@ -23,7 +23,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
-import { i18n } from '@/lang';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({

@@ -62,7 +62,6 @@ import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
-import { i18n } from '@/lang';
 import { orderBy } from 'lodash';
 
 export default defineComponent({

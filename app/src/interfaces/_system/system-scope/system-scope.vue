@@ -15,7 +15,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
-import { i18n } from '@/lang';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import { userName } from '@/utils/user-name';

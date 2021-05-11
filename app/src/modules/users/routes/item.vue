@@ -177,7 +177,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';

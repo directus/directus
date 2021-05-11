@@ -129,7 +129,6 @@ import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
 import { useRouter } from 'vue-router';
-import { i18n } from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

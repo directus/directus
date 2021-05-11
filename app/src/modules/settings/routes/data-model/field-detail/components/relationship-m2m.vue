@@ -298,7 +298,6 @@ import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import { i18n } from '@/lang';
 
 import { state, generationInfo } from '../store';
 

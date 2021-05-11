@@ -121,7 +121,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
-import { i18n } from '@/lang';
 import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';

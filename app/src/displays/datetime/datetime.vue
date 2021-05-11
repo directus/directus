@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
-import { i18n } from '@/lang';
 import { parseISO, parse } from 'date-fns';
 
 export default defineComponent({

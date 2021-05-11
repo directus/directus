@@ -164,7 +164,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';

@@ -51,7 +51,6 @@ import { formatISO } from 'date-fns';
 import { router } from '@/router';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import { i18n } from '@/lang';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 

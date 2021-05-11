@@ -10,7 +10,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useLatencyStore } from '@/stores';
 import { sortBy } from 'lodash';
-import { i18n } from '@/lang';
 import ms from 'ms';
 
 export default defineComponent({
