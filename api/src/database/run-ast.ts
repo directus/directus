@@ -363,7 +363,7 @@ function removeTemporaryFields(
 					schema,
 					item[nestedNode.fieldKey],
 					nestedNode,
-					schema.collections[nestedNode.relation.field].primary,
+					schema.collections[nestedNode.relation.collection].primary,
 					item
 				);
 			}
@@ -397,7 +397,7 @@ function removeTemporaryFields(
 					nestedNode,
 					nestedNode.type === 'm2o'
 						? schema.collections[nestedNode.relation.related_collection!].primary
-						: schema.collections[nestedNode.relation.field].primary,
+						: schema.collections[nestedNode.relation.collection].primary,
 					item
 				);
 			}
