@@ -295,7 +295,6 @@ export default defineComponent({
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
 			if (field?.meta?.interface !== 'map') return;
-			console.log(field.meta.options);
 			return {
 				geometryField: field.field,
 				geometryFormat: field.meta.options.geometryFormat,
