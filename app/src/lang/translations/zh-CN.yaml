@@ -82,6 +82,7 @@ all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
 field_standard: 标准
+field_presentation: 展示字段
 field_file: 单个文件
 field_files: 多个文件
 field_m2o: M2O 关系
@@ -96,6 +97,7 @@ permissions_for_role: '项目 {role} 角色能够 {action}。'
 fields_for_role: '字段 {role} 角色能够 {action}。'
 validation_for_role: '字段 {action} 规定了 {role} 角色必须遵守。'
 presets_for_role: '{role} 角色的字段值默认值。'
+presentation_and_aliases: 展示字段
 revision_post_update: 这是更新这个项目后的样式...
 changes_made: 这些是所做的具体更改...
 no_relational_data: 请记住，这不包括关系数据。
