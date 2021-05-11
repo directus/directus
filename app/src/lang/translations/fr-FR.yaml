@@ -1152,5 +1152,6 @@ layouts:
     fit_duration: Animation duration
     preview: Preview
     field: Géométrie
-    wrong_geometry: Géométrie invalide
+    invalid_geometry: Géométrie invalide
     simplify: Tolerance de simplification des géométries
+    field_not_found: Géométrie non renseignée

@@ -1190,6 +1190,7 @@ layouts:
     fit_duration: Animation duration
     preview: Preview
     field: Geometry
-    wrong_geometry: Invalid geometry
+    invalid_geometry: Invalid geometry
+    field_not_found: Geometry not found
     simplify: Geometry simplification tolerance
     projection: Projection

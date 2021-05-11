@@ -11,7 +11,7 @@
 			icon="error"
 			center
 			type="warning"
-			:title="$t('interfaces.map.incompatible_geometry')"
+			:title="$t('layouts.map.invalid_geometry')"
 		>
 			<v-notice type="warning" :icon="false">
 				{{ geometryParsingError }}

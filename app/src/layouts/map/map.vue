@@ -127,14 +127,14 @@
 				v-else-if="!geometryOptions"
 				icon="not_listed_location"
 				center
-				:title="$t('layouts.map.missing_option')"
+				:title="$t('layouts.map.field_not_found')"
 			></v-info>
 			<v-info
 				v-else-if="geojsonError"
 				type="warning"
 				icon="wrong_location"
 				center
-				:title="$t('layouts.map.wrong_geometry')"
+				:title="$t('layouts.map.invalid_geometry')"
 			>
 				{{ geojsonError }}
 			</v-info>

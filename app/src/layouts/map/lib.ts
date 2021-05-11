@@ -60,7 +60,7 @@ export function getGeometryParser(geometryFormat: GeometryFormat) {
 		case 'TWKB':
 			return (geom: any) => wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex')).toGeoJSON();
 		case 'CSV':
-			return (geom: any) => new wkx.Point(...[Number(geom[0]), Number(geom[1])]).toGeoJSON();
+			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON();
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
