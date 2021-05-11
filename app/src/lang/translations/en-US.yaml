@@ -1189,10 +1189,6 @@ layouts:
     fit_duration: Animation duration
     preview: Preview
     field: Geometry
-    lnglat: Longitude | Latitude
-    longitude: Longitude
-    latitude: Latitude
     wrong_geometry: Invalid geometry
-    missing_option: Unspecified geometry field or format
     simplify: Geometry simplification tolerance
     projection: Projection

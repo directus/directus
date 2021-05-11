@@ -1151,8 +1151,6 @@ layouts:
     fit_speed: Animation speed
     fit_duration: Animation duration
     preview: Preview
-    format: Format
     field: Géométrie
     wrong_geometry: Géométrie invalide
-    missing_option: Champ ou format de geometrie non renseigne
     simplify: Tolerance de simplification des géométries
