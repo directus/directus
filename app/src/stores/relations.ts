@@ -21,6 +21,9 @@ export const useRelationsStore = createStore({
 				return relation.collection === collection || relation.related_collection === collection;
 			});
 		},
+		/**
+		 * Retrieve all relation rows that apply to the current field. Regardless of relational direction
+		 */
 		getRelationsForField(collection: string, field: string): Relation[] {
 			const fieldsStore = useFieldsStore();
 			const fieldInfo = fieldsStore.getField(collection, field);
@@ -52,6 +55,24 @@ export const useRelationsStore = createStore({
 			}
 
 			return relations;
+		},
+		/**
+		 * Retrieve the passed fields relationship. This is only the current m2o foreign key relationship
+		 */
+		getRelationForField(collection: string, field: string): Relation | null {
+			const fieldsStore = useFieldsStore();
+			const fieldInfo = fieldsStore.getField(collection, field);
+
+			if (!fieldInfo) return null;
+
+			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {
+				return (
+					(relation.collection === collection && relation.field === field) ||
+					(relation.related_collection === collection && relation.meta?.one_field === field)
+				);
+			});
+
+			return relations.find((relation) => relation.collection === collection && relation.field === field) || null;
 		},
 	},
 });

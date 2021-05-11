@@ -383,7 +383,9 @@ export default defineComponent({
 
 				await Promise.all(
 					state.relations.map((relation) => {
-						if (relation.schema || relation.meta) {
+						const relationExists = !!relationsStore.getRelationForField(relation.collection, relation.field);
+
+						if (relationExists) {
 							return api.patch(`/relations/${relation.collection}/${relation.field}`, relation);
 						} else {
 							return api.post(`/relations`, relation);

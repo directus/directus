@@ -65,13 +65,13 @@
 			</v-input>
 			<v-input
 				db-safe
+				v-model="relatedPrimaryKeyField"
 				:disabled="relatedCollectionExists"
-				v-model="relations[0].one_primary"
 				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
 			>
-				<template #input>
-					<v-text-overflow :text="relations[0].one_primary" />
+				<template #input v-if="relatedCollectionExists && relatedPrimaryKeyField">
+					<v-text-overflow :text="relatedPrimaryKeyField" />
 				</template>
 			</v-input>
 			<v-icon class="arrow" name="arrow_back" />
@@ -113,8 +113,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { orderBy } from 'lodash';
-import { useCollectionsStore } from '@/stores';
+import { orderBy, set } from 'lodash';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
 import i18n from '@/lang';
 
 import { state, generationInfo } from '../store';
@@ -134,8 +134,9 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
 
 		const { availableCollections, systemCollections } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
@@ -144,6 +145,19 @@ export default defineComponent({
 			return (
 				state.relations[0].related_collection && !!collectionsStore.getCollection(state.relations[0].related_collection)
 			);
+		});
+
+		const relatedPrimaryKeyField = computed({
+			get() {
+				if (relatedCollectionExists.value) {
+					return fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection).field;
+				}
+
+				return state.newCollections?.[0]?.fields?.[0]?.field;
+			},
+			set(field: string | undefined) {
+				set(state, 'newCollections[0].fields[0].field', field);
+			},
 		});
 
 		return {
@@ -156,6 +170,7 @@ export default defineComponent({
 			fieldData: state.fieldData,
 			relatedCollectionExists,
 			generationInfo,
+			relatedPrimaryKeyField,
 		};
 
 		function useRelation() {
