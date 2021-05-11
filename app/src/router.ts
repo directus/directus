@@ -1,14 +1,13 @@
-import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
-import LoginRoute from '@/routes/login';
-import LogoutRoute from '@/routes/logout';
-import ResetPasswordRoute from '@/routes/reset-password';
-import AcceptInviteRoute from '@/routes/accept-invite';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore, useUserStore, useServerStore } from '@/stores/';
+import AcceptInviteRoute from '@/routes/accept-invite';
+import LoginRoute from '@/routes/login';
+import LogoutRoute from '@/routes/logout';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
-
+import ResetPasswordRoute from '@/routes/reset-password';
+import { useAppStore, useServerStore, useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
+import VueRouter, { NavigationGuard, Route, RouteConfig } from 'vue-router';
 
 export const defaultRoutes: RouteConfig[] = [
 	{
@@ -97,7 +96,9 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
-		} catch {}
+		} catch {
+			// Ignore error
+		}
 	}
 
 	if (serverStore.state.info === null) {
@@ -119,7 +120,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 let trackTimeout: number | null = null;
 
-export const onAfterEach = (to: Route) => {
+export const onAfterEach = (to: Route): void => {
 	const userStore = useUserStore();
 
 	if (to.meta.public !== true) {

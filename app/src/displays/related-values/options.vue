@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="collection === null">
-		{{ $t('interfaces.one-to-many.no_collection') }}
+		{{ $t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
@@ -13,7 +13,6 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 
 export default defineComponent({
@@ -36,7 +35,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -66,6 +64,8 @@ export default defineComponent({
 			if (o2m !== undefined) {
 				return o2m?.many_collection || null;
 			}
+
+			return null;
 		});
 
 		return { template, relatedCollection };

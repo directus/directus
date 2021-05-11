@@ -7,7 +7,7 @@ if (require.main === module) {
 	start();
 }
 
-export default async function start() {
+export default async function start(): Promise<void> {
 	const createServer = require('./server').default;
 
 	const server = await createServer();

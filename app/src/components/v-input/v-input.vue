@@ -142,7 +142,10 @@ export default defineComponent({
 			...listeners,
 			input: emitValue,
 			keydown: processValue,
-			blur: trimIfEnabled,
+			blur: (e: Event) => {
+				trimIfEnabled();
+				listeners.blur?.(e);
+			},
 		}));
 
 		const hasClick = computed(() => {
@@ -283,6 +286,7 @@ body {
 	}
 
 	.input {
+		position: relative;
 		display: flex;
 		flex-grow: 1;
 		align-items: center;

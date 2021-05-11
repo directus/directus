@@ -1,41 +1,16 @@
 <template>
 	<div class="layout-map" ref="layoutElement">
 		<portal to="layout-options">
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.geometry_format') }}</div>
-				<v-select
-					v-model="geometryFormat"
-					:items="[
-						{ value: 'lnglat', text: $t('layouts.map.lnglat') },
-						{ value: 'geojson', text: 'GeoJSON' },
-						{ value: 'postgis', text: 'PostGIS' },
-						{ value: 'wkt', text: '(E)WKT' },
-						{ value: 'wkb', text: '(E)WKB' },
-						{ value: 'twkb', text: 'TWKB' },
-						{ value: 'csv', text: 'CSV' },
-					]"
-				/>
-			</div>
-			<template v-if="availableFieldsForFormat.length == 0">
+			<template v-if="availableFields.length == 0">
 				<div class="field">
 					<v-input type="text" disabled :prefix="'No compatible fields'"></v-input>
 				</div>
 			</template>
 			<template v-else>
-				<template v-if="geometryFormat !== 'lnglat'">
+				<template>
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.field') }}</div>
-						<v-select v-model="geometryField" :items="availableFieldsForFormat" />
-					</div>
-				</template>
-				<template v-else>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.longitude') }}</div>
-						<v-select v-model="longitudeField" :items="availableFieldsForFormat" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.latitude') }}</div>
-						<v-select v-model="latitudeField" :items="availableFieldsForFormat" />
+						<v-select v-model="geometryField" :items="availableFields" />
 					</div>
 				</template>
 			</template>
@@ -72,17 +47,6 @@
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.fit_padding') }}</div>
 						<v-input v-model="fitBoundsPadding" type="number" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.crs') }}</div>
-						<v-select
-							v-model="geometryCRS"
-							:items="[
-								{ value: 'EPSG:4326', text: 'WGS84' },
-								{ value: 'EPSG:4269', text: 'EPSG:4269' },
-								{ value: 'EPSG:3857', text: 'EPSG:3857' },
-							]"
-						/>
 					</div>
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
@@ -131,7 +95,7 @@
 		<map-component
 			ref="map"
 			class="mapboxgl-map"
-			:class="{ loading, error: error || geojsonError || !geojsonOptionsOk || itemCount === 0 }"
+			:class="{ loading, error: error || geojsonError || !geometryOptions || itemCount === 0 }"
 			:data="geojson"
 			:featureId="featureId"
 			:selection="_selection"
@@ -160,7 +124,7 @@
 				</template>
 			</v-info>
 			<v-info
-				v-else-if="!geojsonOptionsOk"
+				v-else-if="!geometryOptions"
 				icon="not_listed_location"
 				center
 				:title="$t('layouts.map.missing_option')"
@@ -207,8 +171,8 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
-import { toGeoJSON } from './lib';
+import { CameraOptions, AnyLayer } from 'maplibre-gl';
+import { GeometryOptions, GeometryFormat, toGeoJSON } from './lib';
 import { layers } from './style';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
@@ -218,6 +182,7 @@ import useCollection from '@/composables/use-collection/';
 import useSync from '@/composables/use-sync/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import type { Field } from '@/types';
 
 import i18n from '@/lang';
 import { cloneDeep, merge } from 'lodash';
@@ -236,8 +201,6 @@ type LayoutOptions = {
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	longitudeField?: string;
-	latitudeField?: string;
 	geometryCRS?: string;
 	simplification?: number;
 	fitDataBounds?: boolean;
@@ -250,8 +213,6 @@ type LayoutOptions = {
 	clusterMinPoints?: number;
 	animateOptions?: any;
 };
-
-type GeometryFormat = 'geojson' | 'postgis' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat' | undefined;
 
 export default defineComponent({
 	components: { MapComponent },
@@ -319,32 +280,32 @@ export default defineComponent({
 		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
 		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
 		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
-		const geometryCRS = syncOption(_layoutOptions, 'geometryCRS', 'EPSG:4326');
-		const longitudeField = syncOption(_layoutOptions, 'longitudeField', undefined);
-		const latitudeField = syncOption(_layoutOptions, 'latitudeField', undefined);
 		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
-		const geometryFormat = computed<GeometryFormat>({
-			get: () => _layoutOptions.value?.geometryFormat ?? undefined,
-			set(newValue: GeometryFormat) {
+		const geometryFormat = computed<GeometryFormat | undefined>({
+			get: () => _layoutOptions.value?.geometryFormat,
+			set(newValue: GeometryFormat | undefined) {
 				_layoutOptions.value = {
 					...(_layoutOptions.value || {}),
 					geometryFormat: newValue,
 					geometryField: undefined,
-					longitudeField: undefined,
-					latitudeField: undefined,
 				};
 			},
 		});
-		const geojsonOptionsOk = computed(() => {
-			return (
-				(geometryFormat.value === 'lnglat' && longitudeField.value && latitudeField.value) ||
-				(geometryFormat.value && geometryField.value)
-			);
+
+		const geometryOptions = computed<GeometryOptions | undefined>(() => {
+			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
+			if (field?.meta?.interface !== 'map') return;
+			console.log(field.meta.options);
+			return {
+				geometryField: field.field,
+				geometryFormat: field.meta.options.geometryFormat,
+				geometryCRS: field.meta.options.geometryCRS,
+			};
 		});
 
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			const fields = fieldsInCollection.value;
+			const fields: Field[] = fieldsInCollection.value;
 			return fields
 				.slice(0, 3)
 				.map((f) => `{{${f.field}}}`)
@@ -352,7 +313,7 @@ export default defineComponent({
 		});
 
 		const queryFields = computed(() => {
-			return [geometryField.value, latitudeField.value, longitudeField.value, ...getFieldsFromTemplate(template.value)]
+			return [geometryField.value, ...getFieldsFromTemplate(template.value)]
 				.concat(primaryKeyField.value?.field)
 				.filter((e) => !!e) as string[];
 		});
@@ -376,39 +337,26 @@ export default defineComponent({
 		watch(() => collection.value, onQueryChange);
 		watch(() => limit.value, onQueryChange);
 		watch(() => sort.value, onQueryChange);
-		watch(() => geometryCRS.value, updateGeojson);
 		watch(() => items.value, updateGeojson);
 
-		watch(
-			() => geometryCRS.value,
-			() => (geojsonDataChanged.value = true)
-		);
-		watch(
-			() => longitudeField.value,
-			() => (geojsonDataChanged.value = true)
-		);
-		watch(
-			() => latitudeField.value,
-			() => (geojsonDataChanged.value = true)
-		);
 		watch(
 			() => geometryField.value,
 			() => (geojsonDataChanged.value = true)
 		);
 
-		function onQueryChange(next: any, prev: any) {
+		function onQueryChange() {
 			geojsonLoading.value = false;
 			page.value = 1;
 			geojsonDataChanged.value = true;
 		}
 
 		function updateGeojson() {
-			if (geojsonOptionsOk.value) {
+			if (geometryOptions.value) {
 				try {
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonError.value = null;
-					geojson.value = toGeoJSON(items.value, _layoutOptions.value, template.value);
+					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -489,31 +437,11 @@ export default defineComponent({
 			return _filters.value.filter((filter) => !filter.locked).length;
 		});
 
-		const availableFieldsForFormat = computed(() => {
-			const types = availableTypesForFormat(geometryFormat.value);
-			return fieldsInCollection.value
-				.filter(({ type, meta }) => types.includes(type) && !meta?.special?.includes('no-data'))
+		const availableFields = computed(() => {
+			return (fieldsInCollection.value as Field[])
+				.filter(({ type, meta }) => meta?.interface == 'map')
 				.map(({ name, field }) => ({ text: name, value: field }));
 		});
-
-		function availableTypesForFormat(format: GeometryFormat) {
-			switch (format) {
-				case 'lnglat':
-					return ['decimal', 'float'];
-				case 'geojson':
-					return ['json'];
-				case 'csv':
-					return ['csv'];
-				case 'wkt':
-					return ['string', 'text'];
-				case 'wkb':
-				case 'twkb':
-				case 'postgis':
-					return ['string', 'text', 'binary', 'unknown'];
-				default:
-					return [];
-			}
-		}
 
 		return {
 			template,
@@ -528,13 +456,10 @@ export default defineComponent({
 			geojsonBounds,
 			geojsonLoading,
 			geojsonError,
-			geojsonOptionsOk,
+			geometryOptions,
 			gotoEdit,
-			geometryCRS,
 			geometryFormat,
 			geometryField,
-			longitudeField,
-			latitudeField,
 			cameraOptions,
 			simplification,
 			fitDataBounds,
@@ -565,7 +490,7 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
-			availableFieldsForFormat,
+			availableFields,
 			customLayerDrawerOpen,
 		};
 

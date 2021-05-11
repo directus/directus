@@ -1,90 +1,76 @@
-import { Knex } from 'knex';
-import database from '../database';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Query,
-	SchemaOverview,
-	GraphQLParams,
-	PrimaryKey,
-	Action,
-} from '../types';
 import argon2 from 'argon2';
 import {
-	GraphQLString,
-	GraphQLList,
-	GraphQLResolveInfo,
-	ObjectFieldNode,
-	GraphQLID,
-	FieldNode,
-	InlineFragmentNode,
-	SelectionNode,
-	GraphQLInt,
-	IntValueNode,
-	StringValueNode,
-	BooleanValueNode,
 	ArgumentNode,
-	GraphQLBoolean,
-	ObjectValueNode,
-	GraphQLUnionType,
+	BooleanValueNode,
 	execute,
-	validate,
 	ExecutionResult,
-	FormattedExecutionResult,
-	specifiedRules,
+	FieldNode,
 	formatError,
-	GraphQLFloat,
-	GraphQLError,
-	GraphQLNonNull,
+	FormattedExecutionResult,
 	FragmentDefinitionNode,
-	GraphQLSchema,
+	GraphQLBoolean,
 	GraphQLEnumType,
-	GraphQLScalarType,
+	GraphQLError,
+	GraphQLFloat,
+	GraphQLID,
+	GraphQLInt,
+	GraphQLList,
+	GraphQLNonNull,
 	GraphQLObjectType,
+	GraphQLResolveInfo,
+	GraphQLScalarType,
+	GraphQLSchema,
+	GraphQLString,
+	GraphQLUnionType,
+	InlineFragmentNode,
+	IntValueNode,
+	ObjectFieldNode,
+	ObjectValueNode,
+	SelectionNode,
+	specifiedRules,
+	StringValueNode,
+	validate,
 } from 'graphql';
+import {
+	GraphQLJSON,
+	InputTypeComposer,
+	InputTypeComposerFieldConfigMapDefinition,
+	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigMapDefinition,
+	SchemaComposer,
+	toInputObjectType,
+} from 'graphql-compose';
+import { Knex } from 'knex';
+import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
+import ms from 'ms';
+import database from '../database';
+import env from '../env';
+import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
+import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
-import { RelationsService } from './relations';
-import { ItemsService } from './items';
-import { set, merge, get, mapKeys, uniq, flatten } from 'lodash';
+import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
-
 import { ActivityService } from './activity';
 import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
 import { FoldersService } from './folders';
+import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
+import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
-import { SettingsService } from './settings';
 import { ServerService } from './server';
+import { SettingsService } from './settings';
+import { SpecificationService } from './specifications';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
-import { BaseException, InvalidPayloadException, GraphQLValidationException, ForbiddenException } from '../exceptions';
-import { toArray } from '../utils/to-array';
-
-import env from '../env';
-import ms from 'ms';
-
-import { reduceSchema } from '../utils/reduce-schema';
-
-import {
-	ObjectTypeComposer,
-	ObjectTypeComposerFieldConfigMapDefinition,
-	InputTypeComposerFieldConfigMapDefinition,
-	SchemaComposer,
-	InputTypeComposer,
-	toInputObjectType,
-	GraphQLJSON,
-} from 'graphql-compose';
-import { SpecificationService } from './specifications';
-
-const Void = new GraphQLScalarType({
+const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
 	description: 'Represents NULL values',
@@ -100,6 +86,12 @@ const Void = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLDate = new GraphQLScalarType({
+	...GraphQLString,
+	name: 'Date',
+	description: 'ISO8601 Date values',
 });
 
 /**
@@ -124,7 +116,12 @@ export class GraphQLService {
 	/**
 	 * Execute a GraphQL structure
 	 */
-	async execute({ document, variables, operationName, contextValue }: GraphQLParams) {
+	async execute({
+		document,
+		variables,
+		operationName,
+		contextValue,
+	}: GraphQLParams): Promise<FormattedExecutionResult> {
 		const schema = this.getSchema();
 
 		const validationErrors = validate(schema, document, specifiedRules);
@@ -144,7 +141,7 @@ export class GraphQLService {
 				operationName,
 			});
 		} catch (err) {
-			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err] });
+			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
 		const formattedResult: FormattedExecutionResult = {
@@ -160,8 +157,9 @@ export class GraphQLService {
 	 */
 	getSchema(): GraphQLSchema;
 	getSchema(type: 'schema'): GraphQLSchema;
-	getSchema(type: 'sdl'): string;
-	getSchema(type: 'schema' | 'sdl' = 'schema') {
+	getSchema(type: 'sdl'): GraphQLSchema | string;
+	getSchema(type: 'schema' | 'sdl' = 'schema'): GraphQLSchema | string {
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const self = this;
 
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
@@ -220,7 +218,7 @@ export class GraphQLService {
 		} else {
 			schemaComposer.Query.addFields({
 				_empty: {
-					type: Void,
+					type: GraphQLVoid,
 					description: "There's no data to query.",
 				},
 			});
@@ -437,6 +435,36 @@ export class GraphQLService {
 				},
 			});
 
+			const DateFilterOperators = schemaComposer.createInputTC({
+				name: 'date_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_gt: {
+						type: GraphQLString,
+					},
+					_gte: {
+						type: GraphQLString,
+					},
+					_lt: {
+						type: GraphQLString,
+					},
+					_lte: {
+						type: GraphQLString,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
@@ -491,6 +519,9 @@ export class GraphQLService {
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
 								break;
+							case GraphQLDate:
+								filterOperatorType = DateFilterOperators;
+								break;
 							default:
 								filterOperatorType = StringFilterOperators;
 						}
@@ -499,6 +530,11 @@ export class GraphQLService {
 
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
+				});
+
+				ReadableCollectionFilterTypes[collection.collection].addFields({
+					_and: [ReadableCollectionFilterTypes[collection.collection]],
+					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({
@@ -762,7 +798,7 @@ export class GraphQLService {
 	 * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
 	 * Directus' query structure which is then executed by the services.
 	 */
-	async resolveQuery(info: GraphQLResolveInfo) {
+	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
 
@@ -773,7 +809,7 @@ export class GraphQLService {
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 		const query = this.getQuery(args, selections, info.variableValues);
 
-		if (collection.endsWith('_by_id') && this.schema.collections.hasOwnProperty(collection) === false) {
+		if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 			collection = collection.slice(0, -6);
 		}
 
@@ -805,7 +841,10 @@ export class GraphQLService {
 	 * Generic mutation resolver that converts the incoming GraphQL mutation AST into a Directus query and executes the
 	 * appropriate C-UD operation
 	 */
-	async resolveMutation(args: Record<string, any>, info: GraphQLResolveInfo) {
+	async resolveMutation(
+		args: Record<string, any>,
+		info: GraphQLResolveInfo
+	): Promise<Partial<Item> | boolean | undefined> {
 		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
 		let collection = info.fieldName.substring(action.length + 1);
 		if (this.scope === 'system') collection = `directus_${collection}`;
@@ -816,29 +855,61 @@ export class GraphQLService {
 		const singleton =
 			collection.endsWith('_items') === false &&
 			collection.endsWith('_item') === false &&
-			this.schema.collections.hasOwnProperty(collection);
+			collection in this.schema.collections;
 
 		const single = collection.endsWith('_items') === false;
 
 		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
-		switch (action) {
-			case 'create':
-				return await this.create(collection, args.data, query);
-			case 'update':
-				return singleton
-					? await this.upsertSingleton(collection, args.data, query)
-					: await this.update(collection, single ? args.id : args.ids, args.data, query);
-			case 'delete':
-				return await this.delete(collection, single ? args.id : args.ids);
+		if (singleton && action === 'update') {
+			return await this.upsertSingleton(collection, args.data, query);
+		}
+
+		const service = this.getService(collection);
+		const hasQuery = (query.fields || []).length > 0;
+
+		try {
+			if (single) {
+				if (action === 'create') {
+					const key = await service.createOne(args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'update') {
+					const key = await service.updateOne(args.id, args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'delete') {
+					await service.deleteOne(args.id);
+					return { id: args.id };
+				}
+			} else {
+				if (action === 'create') {
+					const keys = await service.createMany(args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'update') {
+					const keys = await service.updateMany(args.ids, args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'delete') {
+					const keys = await service.deleteMany(args.ids);
+					return { ids: keys };
+				}
+			}
+		} catch (err) {
+			this.formatError(err);
 		}
 	}
 
 	/**
 	 * Execute the read action on the correct service. Checks for singleton as well.
 	 */
-	async read(collection: string, query: Query) {
+	async read(collection: string, query: Query): Promise<Partial<Item>> {
 		const service = this.getService(collection);
 
 		const result = this.schema.collections[collection].singleton
@@ -849,54 +920,13 @@ export class GraphQLService {
 	}
 
 	/**
-	 * Run create on the correct service, return created item using services' readByKey
-	 */
-	async create(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
-		const service = this.getService(collection);
-
-		try {
-			const keys = await service.create(body);
-
-			if ((query.fields || []).length > 0) {
-				const result = await service.readByKey(keys, query);
-				return Array.isArray(body) ? toArray(result) : result;
-			}
-
-			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
-	 * Run update on the correct service, return updated item using services' readByKey
-	 */
-	async update(
-		collection: string,
-		keys: PrimaryKey[],
-		body: Record<string, any> | Record<string, any>[],
-		query: Query
-	) {
-		const service = this.getService(collection);
-
-		try {
-			const updatedKeys = await service.update(body, keys);
-
-			if ((query.fields || []).length > 0) {
-				const result = await service.readByKey(updatedKeys, query);
-				return Array.isArray(body) ? toArray(result) : result;
-			}
-
-			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
 	 * Upsert and read singleton item
 	 */
-	async upsertSingleton(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
+	async upsertSingleton(
+		collection: string,
+		body: Record<string, any> | Record<string, any>[],
+		query: Query
+	): Promise<Partial<Item> | boolean> {
 		const service = this.getService(collection);
 
 		try {
@@ -908,20 +938,6 @@ export class GraphQLService {
 			}
 
 			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
-	 * Run delete on the correct service, return deleted item's keys
-	 */
-	async delete(collection: string, keys: PrimaryKey | PrimaryKey[]) {
-		const service = this.getService(collection);
-
-		try {
-			await service.delete(keys as any);
-			return Array.isArray(keys) ? { ids: keys } : { id: keys };
 		} catch (err) {
 			throw this.formatError(err);
 		}
@@ -979,7 +995,7 @@ export class GraphQLService {
 		rawQuery: Query,
 		selections: readonly SelectionNode[],
 		variableValues: GraphQLResolveInfo['variableValues']
-	) {
+	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
 
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
@@ -1043,7 +1059,7 @@ export class GraphQLService {
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
-	formatError(error: BaseException | BaseException[]) {
+	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
@@ -1055,7 +1071,7 @@ export class GraphQLService {
 	 * Select the correct service for the given collection. This allows the individual services to run
 	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
 	 */
-	getService(collection: string) {
+	getService(collection: string): RolesService {
 		const opts = {
 			knex: this.knex,
 			accountability: this.accountability,
@@ -1100,16 +1116,26 @@ export class GraphQLService {
 	): readonly SelectionNode[] | null {
 		if (!selections) return null;
 
-		return flatten(
+		const result = flatten(
 			selections.map((selection) => {
+				// Fragments can contains fragments themselves. This allows for nested fragments
 				if (selection.kind === 'FragmentSpread') {
-					// Fragments can contains fragments themselves. This allows for nested fragments
 					return this.replaceFragmentsInSelections(fragments[selection.name.value].selectionSet.selections, fragments);
+				}
+
+				// Nested relational fields can also contain fragments
+				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') && selection.selectionSet) {
+					selection.selectionSet.selections = this.replaceFragmentsInSelections(
+						selection.selectionSet.selections,
+						fragments
+					) as readonly SelectionNode[];
 				}
 
 				return selection;
 			})
 		).filter((s) => s) as SelectionNode[];
+
+		return result;
 	}
 
 	injectSystemResolvers(
@@ -1117,7 +1143,6 @@ export class GraphQLService {
 		{
 			CreateCollectionTypes,
 			ReadCollectionTypes,
-			UpdateCollectionTypes,
 			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
@@ -1131,7 +1156,7 @@ export class GraphQLService {
 			update: SchemaOverview;
 			delete: SchemaOverview;
 		}
-	) {
+	): SchemaComposer<any> {
 		const AuthTokens = schemaComposer.createObjectTC({
 			name: 'auth_tokens',
 			fields: {
@@ -1597,7 +1622,7 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						return await collectionsService.readByKey(args.name);
+						return await collectionsService.readOne(args.name);
 					},
 				},
 			});
@@ -1699,8 +1724,8 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const collectionKey = await collectionsService.create(args.data);
-						return await collectionsService.readByKey(collectionKey);
+						const collectionKey = await collectionsService.createOne(args.data);
+						return await collectionsService.readOne(collectionKey);
 					},
 				},
 				update_collections_item: {
@@ -1716,8 +1741,8 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const collectionKey = await collectionsService.update(args.collection, args.data);
-						return await collectionsService.readByKey(collectionKey);
+						const collectionKey = await collectionsService.updateOne(args.collection, args.data);
+						return await collectionsService.readOne(collectionKey);
 					},
 				},
 				delete_collections_item: {
@@ -1735,7 +1760,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						await collectionsService.delete(args.collection);
+						await collectionsService.deleteOne(args.collection);
 						return { collection: args.collection };
 					},
 				},
@@ -1813,7 +1838,7 @@ export class GraphQLService {
 							info.fragments
 						);
 						const query = this.getQuery(args, selections || [], info.variableValues);
-						return await service.readByKey(this.accountability.user, query);
+						return await service.readOne(this.accountability.user, query);
 					},
 				},
 			});
@@ -1834,7 +1859,7 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						const primaryKey = await service.create({
+						const primaryKey = await service.createOne({
 							...args,
 							action: Action.COMMENT,
 							user: this.accountability?.user,
@@ -1849,7 +1874,7 @@ export class GraphQLService {
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;
@@ -1871,7 +1896,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const primaryKey = await service.update({ comment: args.comment }, args.id);
+						const primaryKey = await service.updateOne(args.id, { comment: args.comment });
 
 						if ('directus_activity' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -1880,7 +1905,7 @@ export class GraphQLService {
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;
@@ -1901,7 +1926,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						await service.delete(args.id);
+						await service.deleteOne(args.id);
 						return { id: args.id };
 					},
 				},
@@ -1921,7 +1946,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const primaryKey = await service.import(args.url, args.data);
+						const primaryKey = await service.importOne(args.url, args.data);
 
 						if ('directus_files' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -1929,7 +1954,7 @@ export class GraphQLService {
 								info.fragments
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;

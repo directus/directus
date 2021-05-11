@@ -4,8 +4,15 @@
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('interfaces.translations.display_template') }}</p>
-			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
+			<p class="type-label">{{ $t('display_template') }}</p>
+			<v-field-template
+				:collection="relatedCollection"
+				v-model="template"
+				:depth="2"
+				:placeholder="
+					relatedCollectionInfo && relatedCollectionInfo.meta && relatedCollectionInfo.meta.display_template
+				"
+			/>
 		</div>
 	</div>
 </template>
@@ -13,8 +20,9 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
+import { useCollectionsStore } from '@/stores/';
+
 export default defineComponent({
 	props: {
 		collection: {
@@ -35,7 +43,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
+		const collectionsStore = useCollectionsStore();
+
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -52,12 +61,17 @@ export default defineComponent({
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
 			const relation = props.relations.find(
-				(relation) => relation.one_collection !== props.collection && relation.one_field !== field
+				(relation) => relation.one_collection === props.collection && relation.one_field === field
 			);
-			return relation?.one_collection || null;
+			return relation?.many_collection || null;
 		});
 
-		return { template, relatedCollection };
+		const relatedCollectionInfo = computed(() => {
+			if (!relatedCollection.value) return null;
+			return collectionsStore.getCollection(relatedCollection.value);
+		});
+
+		return { template, relatedCollection, relatedCollectionInfo };
 	},
 });
 </script>

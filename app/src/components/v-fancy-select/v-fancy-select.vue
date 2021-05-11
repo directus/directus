@@ -22,11 +22,7 @@
 						<div class="description">{{ item.description }}</div>
 					</div>
 
-					<v-icon
-						v-if="value === item.value && disabled === false"
-						name="cancel"
-						@click.stop="toggle(item)"
-					/>
+					<v-icon v-if="value === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
 					<v-icon class="icon-right" v-else-if="item.iconRight" :name="item.iconRight" />
 				</div>
 			</template>

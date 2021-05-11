@@ -1,17 +1,16 @@
 import { Router } from 'express';
-import session from 'express-session';
-import asyncHandler from '../utils/async-handler';
-import Joi from 'joi';
 import grant from 'grant';
-import getEmailFromProfile from '../utils/get-email-from-profile';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import Joi from 'joi';
 import ms from 'ms';
-import cookieParser from 'cookie-parser';
+import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { UsersService, AuthenticationService } from '../services';
-import grantConfig from '../grant';
 import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
+import { AuthenticationService, UsersService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '../utils/to-array';
 
 const router = Router();
@@ -77,7 +76,6 @@ router.post(
 
 router.post(
 	'/refresh',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,
@@ -126,7 +124,6 @@ router.post(
 
 router.post(
 	'/logout',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,
@@ -146,6 +143,13 @@ router.post(
 		}
 
 		await authenticationService.logout(currentRefreshToken);
+
+		if (req.cookies.directus_refresh_token) {
+			res.clearCookie('directus_refresh_token', {
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+			});
+		}
+
 		return next();
 	}),
 	respond
@@ -214,8 +218,6 @@ router.get(
 	respond
 );
 
-router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
-
 router.get(
 	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
@@ -231,6 +233,29 @@ router.get(
 		if (req.query?.redirect && req.session) {
 			req.session.redirect = req.query.redirect as string;
 		}
+
+		const hookPayload = {
+			provider: req.params.provider,
+			redirect: req.query?.redirect,
+		};
+
+		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
+			event: `oauth.${req.params.provider}.redirect`,
+			action: 'redirect',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: req.accountability,
+			user: null,
+		});
+
+		await emitter.emitAsync(`oauth.${req.params.provider}.redirect.before`, {
+			event: `oauth.${req.params.provider}.redirect.before`,
+			action: 'redirect',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: req.accountability,
+			user: null,
+		});
 
 		next();
 	})
@@ -253,16 +278,45 @@ router.get(
 			accountability: accountability,
 			schema: req.schema,
 		});
+
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
+
+		const hookPayload = req.session.grant.response;
+
+		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
+			event: `oauth.${req.params.provider}.login.before`,
+			action: 'oauth.login',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: accountability,
+			status: 'pending',
+			user: null,
+		});
+
+		const emitStatus = (status: 'fail' | 'success') => {
+			emitAsyncSafe(`oauth.${req.params.provider}.login`, hookPayload, {
+				event: `oauth.${req.params.provider}.login`,
+				action: 'oauth.login',
+				schema: req.schema,
+				payload: hookPayload,
+				accountability: accountability,
+				status,
+				user: null,
+			});
+		};
+
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
-			req.session?.destroy(() => {});
+			req.session?.destroy(() => {
+				// Do nothing
+			});
 
 			authResponse = await authenticationService.authenticate({
 				email,
 			});
 		} catch (error) {
+			emitStatus('fail');
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
 
@@ -279,6 +333,8 @@ router.get(
 		}
 
 		const { accessToken, refreshToken, expires } = authResponse;
+
+		emitStatus('success');
 
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {

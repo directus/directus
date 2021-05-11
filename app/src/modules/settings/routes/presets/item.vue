@@ -117,18 +117,7 @@ import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
-import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-type User = {
-	id: number;
-	name: string;
-};
-
-type Role = {
-	id: number;
-	name: string;
-};
 
 type FormattedPreset = {
 	id: number;
@@ -155,14 +144,12 @@ export default defineComponent({
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');
 
-		const { loading: usersLoading, users } = useUsers();
-		const { loading: rolesLoading, roles } = useRoles();
-		const { loading: presetLoading, preset } = usePreset();
+		const { loading, preset } = usePreset();
 		const { fields } = useForm();
 		const {
 			edits,
@@ -176,8 +163,6 @@ export default defineComponent({
 		} = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
-
-		const loading = computed(() => usersLoading.value || presetLoading.value || rolesLoading.value);
 
 		return {
 			backLink,
@@ -275,8 +260,9 @@ export default defineComponent({
 			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 			const initialValues = computed(() => {
-				if (isNew.value === true) return {};
-				if (preset.value === null) return {};
+				const defaultValues = { scope: 'all', layout: 'tabular' };
+				if (isNew.value === true) return defaultValues;
+				if (preset.value === null) return defaultValues;
 
 				let scope = 'all';
 
@@ -400,85 +386,7 @@ export default defineComponent({
 			return { backLink };
 		}
 
-		function useUsers() {
-			const loading = ref(false);
-			const users = ref<User[] | null>(null);
-
-			fetchUsers();
-
-			return { loading, users };
-
-			async function fetchUsers() {
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/users`, {
-						params: {
-							fields: ['email', 'first_name', 'last_name', 'id'],
-						},
-					});
-
-					users.value = response.data.data.map((user: any) => ({
-						name: userName(user),
-						id: user.id,
-					}));
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
-		function useRoles() {
-			const loading = ref(false);
-			const roles = ref<Role[] | null>(null);
-
-			fetchRoles();
-
-			return { loading, roles };
-
-			async function fetchRoles() {
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/roles`, {
-						params: {
-							fields: ['name', 'id'],
-						},
-					});
-
-					roles.value = response.data.data;
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
 		function useForm() {
-			const scopeChoices = computed(() => {
-				if (usersLoading.value || rolesLoading.value) return [];
-
-				const options = [
-					{
-						text: i18n.t('global') + ': ' + i18n.t('all'),
-						value: 'all',
-					},
-				];
-
-				roles.value?.forEach((role) => {
-					options.push({ text: i18n.t('role') + ': ' + role.name, value: `role_${role.id}` });
-				});
-
-				users.value?.forEach((user) => {
-					options.push({ text: i18n.t('user') + ': ' + user.name, value: `user_${user.id}` });
-				});
-
-				return options;
-			});
-
 			const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
 			const fields = computed(() => [
@@ -487,7 +395,7 @@ export default defineComponent({
 					name: i18n.t('collection'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: collectionsStore.state.collections
 								.map((collection) => ({
@@ -508,10 +416,7 @@ export default defineComponent({
 					name: i18n.t('scope'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
-						options: {
-							choices: scopeChoices.value,
-						},
+						interface: 'system-scope',
 						width: 'half',
 					},
 				},
@@ -520,7 +425,7 @@ export default defineComponent({
 					name: i18n.t('layout'),
 					type: 'string',
 					meta: {
-						interface: 'dropdown',
+						interface: 'select-dropdown',
 						options: {
 							choices: layouts.value.map((layout) => ({
 								text: layout.name,
@@ -535,7 +440,7 @@ export default defineComponent({
 					name: i18n.t('name'),
 					type: 'string',
 					meta: {
-						interface: 'text-input',
+						interface: 'input',
 						width: 'half',
 						options: {
 							placeholder: i18n.t('preset_name_placeholder'),
@@ -547,7 +452,7 @@ export default defineComponent({
 					name: i18n.t('divider'),
 					type: 'alias',
 					meta: {
-						interface: 'divider',
+						interface: 'presentation-divider',
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),

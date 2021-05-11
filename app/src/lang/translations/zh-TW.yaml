@@ -163,7 +163,6 @@ item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
-translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
 format: 格式
@@ -272,7 +271,6 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
-add_a_new_item: 添加新項目
 add_filter: 新增篩選器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -300,7 +298,7 @@ create_account: 建立帳號
 account_created_successfully: 帳號建立成功
 auto_fill: 自動填入
 errors:
-  COLLECTION_NOT_FOUND: "集合不存在"
+  COLLECTION_NOT_FOUND: '集合不存在'
   FIELD_NOT_FOUND: 找不到欄位
   FORBIDDEN: 被禁止
   INVALID_CREDENTIALS: 錯誤的帳號或密碼
@@ -381,6 +379,8 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+width: 寬度
+height: 高度
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
@@ -399,10 +399,7 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
-  link: 連結
   unlink: 移除連結
-  media: 新增媒體
-  image: 新增圖像
   copy: 複製
   cut: 剪下
   paste: 貼上
@@ -460,7 +457,6 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
-    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題
@@ -584,32 +580,32 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: 複選框
     allow_other: 允許其他選項
-  code:
+  input-code:
     code: 程式碼
     line_number: 行號
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 資料集
   color:
     color: 顏色
   datetime:
     datetime: 日期時間
-  display-template:
+  system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
   divider:
     divider: 分隔線
-  dropdown:
+  select-dropdown:
     allow_other: 允許其他選項
     allow_other_label: 允許其他值
     choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉 (多個)
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉 (多個)
     description: 從下拉選單選擇多個值
   file:
     file: 檔案
@@ -617,7 +613,7 @@ interfaces:
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  hash:
+  input-hash:
     hash: 哈希
     masked_label: 隱藏真實值
   icon:
@@ -627,24 +623,24 @@ interfaces:
   image:
     image: 圖像
     description: 選擇或上傳圖像
-  interface:
+  system-interface:
     interface: 介面
     description: 選擇現有介面
     placeholder: 選擇一個介面...
-  interface-options:
+  system-interface-options:
     interface-options: 介面選項
-  many-to-many:
+  list-m2m:
     many-to-many: 多對多
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: 多對一
     display_template: 顯示模板
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: 輸入和預覽 Markdown
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
     imageToken: 圖像權杖
-  notice:
+  presentation-notice:
     notice: 通知
     description: 顯示簡短通知
     text: 在此輸入通知內容...
@@ -653,13 +649,13 @@ interfaces:
     description: 輸入一個數字
     minimum_value: 最小值
     maximum_value: 最大值
-  one-to-many:
+  list-o2m:
     one-to-many: 一對多
     description: 選擇多個關聯項目
     no_collection: 找不到該集合
-  radio-buttons:
+  select-radio:
     radio-buttons: 單選按鈕
-  repeater:
+  list:
     repeater: 重複者
     edit_fields: 編輯欄位
     field_name_placeholder: 輸入欄位名稱...
@@ -679,16 +675,15 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  text-input:
+  input:
     text-input: 文字輸入
     description: 輸入單行文本
     trim: 去除內容前後空格
     trim_label: 修剪開頭與結尾
-    nullable_label: 儲存空值為null
-  textarea:
+  input-multiline:
     textarea: 文本區
     description: 輸入多行純文本
-  toggle:
+  boolean:
     toggle: 切換
     label_default: 已啟用
   translations:
@@ -699,7 +694,7 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  wysiwyg:
+  input-rich-text-html:
     toolbar: 工具列
     custom_formats: 自訂格式
 displays:

@@ -2,63 +2,68 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
-half_width: Anchura 50%
+half_width: Mitad del ancho
 full_width: Ancho completo
-fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
-add_field: Agregar Campo
-role_name: Nombre del Rol
-db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
-show_archived_items: Mostrar Elementos Archivados
+fill_width: Rellenar ancho
+field_name_translations: Traducción de campos
+enter_password_to_enable_tfa: Escribe tu contraseña para habilitar el doble factor de autenticación
+add_field: Añadir campo
+role_name: Nombre de rol
+db_only_click_to_configure: 'Sólo para base de datos: Haz clic para configurar '
+show_archived_items: Mostrar ítems archivados
+edited: Campo editado
 required: Necesario
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
-create_preset: Crear Predefinido
+required_for_app_access: Necesario para acceder a la aplicación
+requires_value: Requiere un valor
+create_preset: Crear un pre-definido
 create_role: Crear Rol
-create_user: Crear Usuario
-create_webhook: Crear Webhook
-invite_users: Invitar Usuarios
-email_examples: 'admin@example.com, user@example.com...'
+create_user: Crear usuario
+create_webhook: Crear un webhook(conección)
+invite_users: Invitar usuarios
+email_examples: 'admin@ejemplo.com, usuario@ejemplo.com...'
 invite: Invitar
-emails: Correos Electrónicos
-connection_excellent: Excelente Conexión
-connection_good: Buena Conexión
-connection_fair: Conexión Suficiente
-connection_poor: Conexión Pobre
+emails: Correos electrónicos
+connection_excellent: La conexión es excelente
+connection_good: La conexión es buena
+connection_fair: La conexión es óptima
+connection_poor: La conexión es débil
 primary: Principal
-rename_folder: Renombrar Directorio
-delete_folder: Eliminar Directorio
+rename_folder: Renombrar carpeta
+delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
-reset_bookmark: Restablecer Marcador
-rename_bookmark: Renombrar Marcador
-update_bookmark: Actualizar Marcador
+reset_bookmark: Restablecer el marcador
+rename_bookmark: Renombrar el marcador
+update_bookmark: Actualizar el marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
-  ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
+  ¿Estás seguro de eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
 logoutReason:
-  SIGN_OUT: Sesión terminada
-  SESSION_EXPIRED: Sesión expirada
+  SIGN_OUT: Tu sesión ha sido cerrada
+  SESSION_EXPIRED: Tu sesión ha expirado
 public: Público
-public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
-not_allowed: No Permitido
+public_description: Controlar qué datos de la API están disponibles sin autenticación.
+not_allowed: No permitido
 directus_version: Versión Directus
-node_version: Versión de Node
-node_uptime: Tiempo de actividad de Node
-os_type: Tipo de SO
-os_version: Versión de SO
-os_uptime: Tiempo de actividad del SO
-os_totalmem: Memoria del SO
+node_version: Versión de Node.js
+node_uptime: Tiempo de actividad de Node.js
+os_type: Tipo de sistema operativo
+os_version: Versión de sistema operativo
+os_uptime: Tiempo de actividad del sistema operativo
+os_totalmem: Memoria del sistema operativo
 archive: Archivar
-archive_confirm: '¿Está seguro que desea archivar este elemento?'
+archive_confirm: '¿Estás seguro de archivar este ítem?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
-reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Mínimo acceso a App
-recommended_defaults: Valores predeterminados recomendados
+  No hay elementos seleccionados | ¿Estás seguro de archivar este ítem? | ¿Estás seguro de archivar estos {count} ítems?
+reset_system_permissions_to: 'Restablecer permisos del sistema a:'
+reset_system_permissions_copy:
+  Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones de Directus. ¿Estás
+  seguro?
+the_following_are_minimum_permissions:
+  Estos son los permisos mínimos requeridos cuando "Acceso a la app" está activado. Puedes ampliar los permisos un poco
+  más, pero no menos que esto.
+app_access_minimum: Acceso mínimo a la app
+recommended_defaults: Valores recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
@@ -145,13 +150,20 @@ uuid: UUID
 hash: Hash
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
+auto_refresh: Actualización automática
+refresh_interval: Intervalo de actualización
+no_refresh: No actualizar
+refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
+refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
 auto_generate: Autogenerar
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
 to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
-  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
+  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para
+  administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
+no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
@@ -219,7 +231,6 @@ item_delete_success: Elemento Eliminado | Elementos Eliminados
 this_collection: Esta colección
 related_collection: Colección relacionada
 related_collections: Colecciones Relacionadas
-translations_collection: Colección de Traducciones
 languages_collection: Colección de Idiomas
 export_data: Exportar Datos
 format: Formato
@@ -320,7 +331,7 @@ interface_not_found: 'Interfaz "{interface}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
-m2a_builder: Constructor (M2A)
+list-m2a: Constructor (M2A)
 item_count: 'No hay artículos | Un ítem | {count} Ítems'
 no_items_copy: Aún no hay Elementos en esta colección.
 file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
@@ -344,7 +355,6 @@ users: Usuarios
 activity: Actividad
 webhooks: Webhooks
 field_width: Ancho de campo
-add_a_new_item: Agregar un nuevo Elemento...
 add_filter: Agregar Filtro
 upper_limit: Límite Superior...
 lower_limit: Límite Inferior...
@@ -377,7 +387,7 @@ account_created_successfully: La Cuenta ha sido creada exitósamente
 auto_fill: Auto Rellenar
 corresponding_field: Campo Correspondiente
 errors:
-  COLLECTION_NOT_FOUND: "La Colección no existe"
+  COLLECTION_NOT_FOUND: 'La Colección no existe'
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
@@ -419,7 +429,8 @@ start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
+  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es
+  permanente y no reversible.
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -511,6 +522,8 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+width: Ancho
+height: Altura
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -530,10 +543,7 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Enlace
   unlink: Remover Enlace
-  media: Agregar Multimedia
-  image: Agregar Imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -555,7 +565,6 @@ wysiwyg_options:
   selectall: Seleccionar Todo
   table: Tabular
   visualaid: Ver elementos invisibles
-  code: Ver Fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
 dropdown: Lista Desplegable
@@ -579,7 +588,6 @@ scope: Alcance
 layout: Diseño
 tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
-preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
@@ -590,30 +598,38 @@ discard_changes: Descartar los cambios
 keep_editing: Sigue editando
 page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
 page_help_collections_collection: >-
-  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el
+  Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para
+  un rápido acceso.
 page_help_collections_item: >-
-  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
+  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un
+  historial completo de revisiones y comentarios incluidos.
 page_help_activity_collection: >-
   **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
 page_help_docs_global: >-
   **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
 page_help_files_collection: >-
-  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y
+  Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_files_item: >-
-  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
-page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
+  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes
+  de acceso.
+page_help_settings_project: '**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto.'
 page_help_settings_datamodel_collections: >-
-  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
+  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas
+  y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
-page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
+page_help_settings_roles_item: '**Detalle de Rol** — Administra los permisos del Rol y otros ajustes.'
 page_help_settings_presets_collection: >-
-  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
+  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y
+  global, así como vistas por defecto.
 page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
 page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_webhooks_item:
+  '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -624,7 +640,8 @@ all: Todo
 none: Nada
 no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
-  No se han seleccionado elementos | ¿Está seguro de que desea eliminar este elemento? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estos {count} ítems? Esta acción no puede deshacerse.
+  No se han seleccionado elementos | ¿Está seguro de que desea eliminar este elemento? Esta acción no puede deshacerse.
+  | Está seguro de que desea eliminar estos {count} ítems? Esta acción no puede deshacerse.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
@@ -649,7 +666,6 @@ fields:
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
-    translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
@@ -714,10 +730,10 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducción de campos
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombre de rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App
@@ -799,8 +815,8 @@ value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 interfaces:
-  button-links:
-    button-links: Enlaces de botón
+  presentation-links:
+    presentation-links: Enlaces de botón
     links: Enlaces
     description: Botones de enlace configurables para lanzar URLs dinámicas
     style: Estilo
@@ -808,13 +824,13 @@ interfaces:
     link: Enlaces
     button: Botones
     error: No se puede realizar la acción
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Casillas de Selección
     description: Elegir entre múltiples opciones a través de casillas de selección
     allow_other: Permitir Otro
     show_more: 'Mostrar {count} más'
     items_shown: Elementos Mostrados
-  code:
+  input-code:
     code: Código
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
@@ -823,7 +839,7 @@ interfaces:
     collection: Colección
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
-  collections:
+  system-collections:
     collections: Colecciones
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
@@ -840,7 +856,7 @@ interfaces:
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
-  display-template:
+  system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
     collection_field: Campo Colección
@@ -854,7 +870,7 @@ interfaces:
     inline_title_label: Mostrar título en línea
     margin_top: Margen Superior
     margin_top_label: Aumentar Margen Superior
-  dropdown:
+  select-dropdown:
     description: Seleccine un valor de la lista desplegable
     choices_placeholder: Agregar una nueva opción
     allow_other: Permitir Otro
@@ -863,8 +879,8 @@ interfaces:
     allow_none_label: Permitir No Selección
     choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
-  dropdown-multiselect:
-    dropdown-multiselect: Lista Desplegable (Múltiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Lista Desplegable (Múltiple)
     description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
@@ -872,7 +888,7 @@ interfaces:
   files:
     files: Archivos
     description: Seleccionar o subir múltiples archivos
-  hash:
+  input-hash:
     hash: Hash
     description: Ingresar un valor para ser "Hasheado"
     masked: Enmascarado
@@ -884,21 +900,21 @@ interfaces:
   image:
     image: Imagen
     description: Seleccionar o subir una imagen
-  interface:
+  system-interface:
     interface: Interfaz
     description: Seleccionar una interfaz existente
     placeholder: Seleccionar una interfaz...
-  interface-options:
+  system-interface-options:
     interface-options: Opciones de Interfaz
     description: Un diálogo para seleccionar opciones de una interfaz
-  many-to-many:
+  list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
     customSyntax: Bloques personalizados
@@ -907,7 +923,7 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
-  notice:
+  presentation-notice:
     notice: Aviso
     description: Presentar un aviso corto
     text: Ingresar contenido del aviso aquí...
@@ -917,18 +933,17 @@ interfaces:
     minimum_value: Valor Mínimo
     maximum_value: Valor Máximo
     step_interval: Intervalo de Pasos
-  one-to-many:
+  list-o2m:
     one-to-many: Uno a Muchos
     description: Seleccionar múltiples elementos relacionados
     no_collection: No se encontró la colección
-  radio-buttons:
+  select-radio:
     radio-buttons: Botones de Radio
     description: Seleccionar una de las opciones múltiples
-  repeater:
+  list:
     repeater: Repetidor
     description: Crear múltiples entradas para la misma estructura
     edit_fields: Editar Campos
-    add_label: 'Etiqueta "Agregar Nueva Fila"'
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Ingrese la nota del campo...
   slider:
@@ -952,19 +967,17 @@ interfaces:
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
-  text-input:
+  input:
     text-input: Campo de Texto
     description: Ingresar texto de una línea
     trim: Eliminar Espacios en Blanco
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
-    nullable: Nulo
-    nullable_label: Guardar valor vacío como NULL
-  textarea:
+  input-multiline:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea
-  toggle:
+  boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
     label_placeholder: Ingresar una etiqueta...
@@ -972,7 +985,7 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
-  tree-view:
+  list-o2m-tree-view:
     description: Vista en árbol para elementos anidados recursivos uno-a-muchos
     recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
@@ -983,7 +996,7 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Un editor de texto enriquecido para escribir contenido HTML
     toolbar: Barra de Herramientas
@@ -1014,7 +1027,8 @@ displays:
     description: Presentar valores relacionados a la hora
     format: Formato
     format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      El formato personalizado acepta el __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa

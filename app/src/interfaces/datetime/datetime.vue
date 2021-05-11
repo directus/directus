@@ -149,7 +149,7 @@ export default defineComponent({
 					return _value.value.getFullYear();
 				},
 				set(newYear: number | null) {
-					const newValue = _value.value ? new Date(_value.value) : new Date();
+					const newValue = _value.value ? new Date(_value.value) : new Date(0);
 					newValue.setFullYear(newYear || 0);
 					_value.value = newValue;
 				},

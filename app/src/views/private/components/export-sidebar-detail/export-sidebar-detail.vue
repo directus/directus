@@ -13,6 +13,10 @@
 							text: $t('json'),
 							value: 'json',
 						},
+						{
+							text: $t('xml'),
+							value: 'xml',
+						},
 					]"
 					v-model="format"
 				/>
@@ -64,6 +68,8 @@ export default defineComponent({
 
 			if (format.value === 'csv') {
 				params.export = 'csv';
+			} else if (format.value === 'xml') {
+				params.export = 'xml';
 			} else {
 				params.export = 'json';
 			}
@@ -103,8 +109,8 @@ export default defineComponent({
 }
 
 .v-checkbox {
-	margin-top: 8px;
 	width: 100%;
+	margin-top: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

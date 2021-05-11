@@ -164,7 +164,6 @@ export default defineComponent({
 	position: relative;
 
 	&::before {
-		transition: opacity var(--slow) var(--transition);
 		position: absolute;
 		top: -4px;
 		left: -4px;
@@ -172,8 +171,9 @@ export default defineComponent({
 		height: calc(100% + 8px);
 		background-color: var(--background-highlight);
 		border-radius: 50%;
-		content: '';
 		opacity: 0;
+		transition: opacity var(--slow) var(--transition);
+		content: '';
 	}
 	&:hover::before,
 	&.has-app-minimal::before {

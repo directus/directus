@@ -1,6 +1,6 @@
-import { Relation } from './relation';
-import { Permission } from './permissions';
 import { types } from './field';
+import { Permission } from './permissions';
+import { Relation } from './relation';
 
 type CollectionsOverview = {
 	[name: string]: {
@@ -9,6 +9,7 @@ type CollectionsOverview = {
 		singleton: boolean;
 		sortField: string | null;
 		note: string | null;
+		accountability: 'all' | 'activity' | null;
 		fields: {
 			[name: string]: {
 				field: string;

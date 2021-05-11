@@ -117,6 +117,10 @@ GET /settings
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	settings: directus_settings
@@ -175,6 +179,10 @@ PATCH /settings
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

@@ -56,8 +56,6 @@ export default defineComponent({
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.state.currentUser?.id;
-			const role = userStore.state.currentUser?.role?.id;
-
 			return `/users/${id}`;
 		});
 
@@ -73,6 +71,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .module-bar-avatar {
 	position: relative;
 
@@ -124,7 +124,12 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
+		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
+
+		@include breakpoint(medium) {
+			transform: translateY(0);
+		}
 
 		&.show {
 			transform: translateY(-100%);

@@ -11,6 +11,7 @@ add_field: Alan Ekle
 role_name: Rol Adı
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
+edited: Değer Düzenlendi
 required: Gerekli
 required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
@@ -21,6 +22,7 @@ create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
 email_examples: 'admin@example.com, user@example.com...'
 invite: Davet et
+email_already_invited: '"{email}" bu e-posta zaten davet edildi'
 emails: E-postalar
 connection_excellent: Mükemmel Bağlantı
 connection_good: İyi Bağlantı
@@ -53,9 +55,11 @@ os_totalmem: OS Hafıza
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
-  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin
+  misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
-reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+reset_system_permissions_copy:
+  Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
@@ -79,10 +83,13 @@ validationError:
   null: Değer null olmalı
   nnull: Değer null olamaz
   required: Değer gereklidir
+  unique: Değer benzersiz olmalı
+  regex: Değer doğru biçime sahip değil
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
 field_standard: Standart
+field_presentation: Sunum ve Takma Adlar
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
@@ -96,6 +103,12 @@ field_validation: Alan Doğrulama
 field_presets: Alan Hazır Ayarları
 permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
+validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
+presets_for_role: '{role} rolü için varsayılan alan değeri.'
+presentation_and_aliases: Sunum ve Takma Adlar
+revision_post_update: İşte güncellemeden sonra bu öğenin nasıl göründüğü...
+changes_made: Bunlar yapılan belirli değişiklikler...
+no_relational_data: Bunun ilişkisel verileri içermediğini unutmayın.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -111,6 +124,7 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
+schema_setup_key: Bu alanın veritabanı sütun adı ve API anahtarı
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -136,19 +150,29 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
+auto_refresh: Otomatik Yenile
+refresh_interval: Yenileme Aralığı
+no_refresh: Yenileme yapma
+refresh_interval_seconds: Anında Yenileyin | Her Saniyede | Her {seconds} Saniyede
+refresh_interval_minutes: Her Dakika | Her {minutes} Dakikada bir
 auto_generate: Otomatik Oluştur
 this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri otomatik olarak kuracaktır.
 click_here: Buraya tıklayın
 to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
-  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı
+  tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
+no_collections_found: Koleksiyon bulunamadı.
+new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
+search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
 add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
 add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
 add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
+determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
 standard_field: Standart Alan
@@ -158,6 +182,7 @@ m2o_relationship: Çoktan Bire İlişki
 o2m_relationship: Bire Çok İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bir İlişki
+invalid_item: Geçersiz Öğe
 next: Sonraki
 field_name: Alan adı
 translations: Çeviriler
@@ -165,6 +190,7 @@ note: Not
 enter_a_value: Bir değer girin...
 enter_a_placeholder: Placeholder ekle...
 length: Uzunluk
+precision_scale: Hassas & Ölçek
 readonly: Salt-Okunur
 unique: Benzersiz
 updated_on: Güncelleme tarihi
@@ -184,10 +210,13 @@ show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
 confirm_revert: Geri Alma İşlemini Onayla
+confirm_revert_body: Bu, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Ünvan
 revision_delta_created: Oluşturulma tarihi
+revision_delta_created_externally: Harici Olarak Oluşturuldu
+revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
@@ -203,13 +232,17 @@ item_delete_success: Alan(lar) Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
+translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
 export_data: Verileri Dışa Aktar
 format: Biçim
+use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
 export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
+a_unique_table_name: Benzersiz bir tablo adı...
+a_unique_column_name: Benzersiz bir sütun adı...
 enable_custom_values: Kişisel başlıklara izin ver
 submit: Gönder
 move_to_folder: Klasöre Taşı
@@ -293,7 +326,6 @@ users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
-add_a_new_item: Yeni Öğe ekle...
 add_filter: Filtre Ekle
 upper_limit: Üst sınır...
 lower_limit: Alt sınır...
@@ -378,7 +410,7 @@ operators:
   gte: Büyük veya eşittir
   in: Bunlardan biri
   nin: Bunlardan biri değil
-  null: "Null"
+  null: 'Null'
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
@@ -399,6 +431,7 @@ upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
+value_unique: Değer benzersiz olmalı
 display_template: Görüntüleme Şablonu
 no_results: Sonuç Yok
 role: Rol
@@ -409,6 +442,8 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+width: Genişlik
+height: Yükseklik
 wysiwyg_options:
   aligncenter: Ortala
   alignjustify: İki Yana Yasla
@@ -427,10 +462,7 @@ wysiwyg_options:
   bullist: Liste
   numlist: Sıralı Liste
   hr: Yatay çizgi
-  link: Link
   unlink: Linki sil
-  media: Medya Ekle
-  image: Görsel ekle
   copy: Kopyala
   cut: Kes
   paste: Yapıştır
@@ -451,7 +483,6 @@ wysiwyg_options:
   removeformat: Biçimi Kaldır
   selectall: Tümünü Seç
   table: Tablo
-  code: Kaynağı Göster
   fullscreen: Tam Ekran
 dropdown: Açılır Liste
 choices: Seçenekler
@@ -469,7 +500,6 @@ settings_project: Proje Ayarları
 settings_webhooks: Ağ Kancaları
 scope: Kapsam
 layout: Yerleşim
-preset_name_placeholder: Yer imi adı...
 editing_preset: Önayarı Düzenle
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
@@ -478,7 +508,8 @@ keep_editing: Düzenlemeye Devam Et
 add_new: Yeni ekle
 all: Tümü
 batch_delete_confirm: >-
-  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count}
+  ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 collection: Koleksiyon
 collections: Koleksiyonlar
@@ -618,66 +649,66 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
-  button-links:
-    button-links: Buton Linki
+  presentation-links:
+    presentation-links: Buton Linki
     links: Linkler
     style: Stil
     primary: Birincil
     link: Linkler
     button: Butonlar
     error: İşlem gerçekleştirilemiyor
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Onay Kutuları
     allow_other: Diğerlerine İzin Ver
-  code:
+  input-code:
     code: Kod
     line_number: Satır Numarası
   collection:
     collection: Koleksiyon
-  collections:
+  system-collections:
     collections: Koleksiyonlar
   color:
     color: Renk
   datetime:
     datetime: Tarih/Saat
-  display-template:
+  system-display-template:
     display-template: Görüntüleme Şablonu
     select_a_collection: Koleksiyon Seç
   divider:
     divider: Ayırıcı
-  dropdown:
+  select-dropdown:
     allow_other: Diğerlerine İzin Ver
     choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
   files:
     files: Dosyalar
-  hash:
+  input-hash:
     hash: Hash
     masked: Maskeli
   icon:
     icon: İkon
     search_for_icon: Simge ara...
-  interface:
+  system-interface:
     interface: Arayüz
     placeholder: Arayüz seçin...
-  interface-options:
+  system-interface-options:
     interface-options: Arayüz Ayarları
-  many-to-many:
+  list-m2m:
     many-to-many: Çoktan Çoka
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Çoktan Bire
     display_template: Görüntüleme Şablonu
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
   numeric:
     numeric: Sayısal
     description: Bir sayı girin
-  one-to-many:
+  list-o2m:
     one-to-many: Bire Çok
-  radio-buttons:
+  select-radio:
     radio-buttons: Radyo Düğmeleri
-  repeater:
+  list:
     repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı
@@ -688,14 +719,13 @@ interfaces:
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
-  text-input:
+  input:
     text-input: Metin Girişi
     trim: Kırp
     mask: Maskeli
-    nullable: Boş (null) olabilir
-  textarea:
+  input-multiline:
     textarea: Metin Alanı
-  toggle:
+  boolean:
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
@@ -706,7 +736,7 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     toolbar: Araç Çubuğu
     custom_formats: Özel Biçimler

@@ -1,14 +1,19 @@
 <template>
 	<div class="interface-map">
-		<div class="map" ref="container" :class="{ error: !!geometryParsingError }"></div>
+		<div class="map" ref="container" :class="{ error: geometryParsingError || geometryOptionsError }"></div>
+		<v-info v-if="geometryOptionsError" icon="error" center type="danger" :title="$t('interfaces.map.invalid_options')">
+			<v-notice type="danger" :icon="false">
+				{{ geometryOptionsError }}
+			</v-notice>
+		</v-info>
 		<v-info
-			v-if="geometryParsingError"
+			v-else-if="geometryParsingError"
 			icon="error"
 			center
-			type="danger"
+			type="warning"
 			:title="$t('interfaces.map.incompatible_geometry')"
 		>
-			<v-notice type="danger" :icon="false">
+			<v-notice type="warning" :icon="false">
 				{{ geometryParsingError }}
 			</v-notice>
 			<template #append>
@@ -26,7 +31,7 @@ import maplibre, { LngLatBoundsLike, AnimationOptions, CameraOptions, Map, ICont
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
 import { ButtonControl, BasemapSelectControl } from '@/layouts/map/controls';
-import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
+import { getParser, getSerializer, GeoJSONParser, GeoJSONSerializer, assignBBox } from '@/layouts/map/lib';
 import { GeometryFormat } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
 import drawStyle from './style';
@@ -35,7 +40,7 @@ import i18n from '@/lang';
 const MARKER_ICON_URL =
 	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
 
-type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiPolygon' | 'MultiLineString';
+import { GeometryType } from '@/layouts/map/lib';
 type _SimpleGeometry = Point | Polygon | LineString;
 type _MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
 type _Geometry = _SimpleGeometry | _MultiGeometry;
@@ -46,40 +51,28 @@ export default defineComponent({
 			type: [Object, Array, String] as PropType<any>,
 			default: null,
 		},
-		longitude: {
-			type: Number,
-			default: -73.94896388,
-		},
 		loading: {
 			type: Boolean,
 		},
-		latitude: {
-			type: Number,
-			default: 40.72803624,
-		},
 		type: {
-			type: String as PropType<'json' | 'csv'>,
+			type: String as PropType<'json' | 'csv' | 'string' | 'text' | 'binary' | 'unknown'>,
 			default: null,
-		},
-		zoom: {
-			type: Number,
-			default: 8,
-		},
-		geometryType: {
-			type: String as PropType<_GeometryType>,
-			default: 'Point',
 		},
 		geometryFormat: {
 			type: String as PropType<GeometryFormat>,
 			required: true,
 		},
+		geometryType: {
+			type: String as PropType<GeometryType>,
+			default: 'Point',
+		},
 		geometryCRS: {
 			type: String,
 			default: 'EPSG:4326',
 		},
-		multiGeometry: {
-			type: Boolean,
-			default: false,
+		defaultPosition: {
+			type: Object,
+			default: () => ({}),
 		},
 	},
 	setup(props, { emit }) {
@@ -87,6 +80,7 @@ export default defineComponent({
 		let map: Map;
 		let currentGeometry: _Geometry | null | undefined;
 
+		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | null>();
 
 		const geometryOptions = {
@@ -95,15 +89,21 @@ export default defineComponent({
 			geometryField: 'value',
 		};
 
-		const parse = getParser(geometryOptions);
-		const serialize = getSerializer(geometryOptions);
+		let parse: GeoJSONParser;
+		let serialize: GeoJSONSerializer;
+		try {
+			parse = getParser(geometryOptions);
+			serialize = getSerializer(geometryOptions);
+		} catch (error) {
+			geometryOptionsError.value = error;
+		}
 
-		const snakeGeometryType = snakeCase(props.geometryType);
+		const drawMode = snakeCase(props.geometryType.replace('Multi', ''));
 		const mapboxDrawArgs = {
 			displayControlsDefault: false,
 			controls: {
 				trash: true,
-				[snakeGeometryType]: true,
+				[drawMode]: true,
 			},
 			styles: drawStyle,
 		};
@@ -121,6 +121,7 @@ export default defineComponent({
 		return {
 			container,
 			geometryParsingError,
+			geometryOptionsError,
 			resetInterface,
 		};
 
@@ -128,9 +129,8 @@ export default defineComponent({
 			map = new Map({
 				container: container.value!,
 				style: { version: 8, layers: [] },
-				center: [props.longitude, props.latitude],
-				zoom: props.zoom,
 				attributionControl: false,
+				...props.defaultPosition,
 			});
 
 			let draw = new MapboxDraw(mapboxDrawArgs);
@@ -189,14 +189,19 @@ export default defineComponent({
 			function addInitialValue() {
 				if (!props.value) {
 					// @ts-ignore
-					draw.changeMode(`draw_${snakeGeometryType}`);
+					draw.changeMode(`draw_${drawMode}`);
 					return;
 				}
 				try {
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
-					if (uncombined.length > 1 && !props.multiGeometry) {
-						throw new Error(i18n.t('interfaces.map.expected_single_geometry') as string);
+					if (uncombined.length > 1 && !props.geometryType.startsWith('Multi')) {
+						throw new Error(
+							i18n.t('interfaces.map.unexpected_geometry', {
+								expected: props.geometryType,
+								found: `Multi${props.geometryType}`,
+							}) as string
+						);
 					}
 					uncombined.forEach((geometry) => {
 						draw.add(geometry);
@@ -211,11 +216,11 @@ export default defineComponent({
 
 			function combine(geometries: _SimpleGeometry[]): _MultiGeometry {
 				const geometry = {
-					type: `Multi${props.geometryType}` as _GeometryType,
+					type: props.geometryType as GeometryType,
 					coordinates: [] as (Position | Position[] | Position[][])[],
 				};
 				for (const { type, coordinates } of geometries) {
-					if (type == props.geometryType) {
+					if (`Multi${type}` == props.geometryType) {
 						geometry.coordinates.push(coordinates);
 					}
 				}
@@ -230,9 +235,9 @@ export default defineComponent({
 						coordinates: [geometry.coordinates],
 					} as _MultiGeometry;
 				}
-				if (geometry.type !== `Multi${props.geometryType}`) {
+				if (!geometry.type.endsWith(props.geometryType)) {
 					throw new Error(
-						i18n.t('interfaces.map.expected_other_geometry', {
+						i18n.t('interfaces.map.unexpected_geometry', {
 							expected: props.geometryType,
 							found: geometry.type,
 						}) as string
@@ -240,7 +245,7 @@ export default defineComponent({
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({
-						type: props.geometryType,
+						type: props.geometryType.replace('Multi', ''),
 						coordinates,
 					} as _SimpleGeometry);
 				}
@@ -252,7 +257,7 @@ export default defineComponent({
 				if (geometries.length == 0) {
 					currentGeometry = null;
 					return;
-				} else if (props.multiGeometry) {
+				} else if (props.geometryType.startsWith('Multi')) {
 					currentGeometry = combine(geometries);
 				} else {
 					currentGeometry = geometries[geometries.length - 1];
@@ -277,7 +282,7 @@ export default defineComponent({
 				if (map && currentGeometry) {
 					map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
 						padding: 80,
-						maxZoom: props.zoom,
+						maxZoom: 8,
 						...options,
 					});
 				}

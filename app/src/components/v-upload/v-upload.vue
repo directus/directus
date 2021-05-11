@@ -86,12 +86,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
-import useItem from '@/composables/use-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

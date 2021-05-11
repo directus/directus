@@ -47,14 +47,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import router from '@/router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
-
-type Values = {
-	[field: string]: any;
-};
 
 type ActivityRecord = {
 	user: {
@@ -79,7 +75,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { primaryKey } = toRefs(props);
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
 		const error = ref<any>(null);
@@ -87,7 +82,7 @@ export default defineComponent({
 		const openItemLink = computed(() => {
 			if (!item || !item.value) return;
 
-			return `/collections/${item.value.collection}/${item.value.item}`;
+			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });

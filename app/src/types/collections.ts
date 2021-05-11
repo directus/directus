@@ -3,6 +3,8 @@ import VueI18n from 'vue-i18n';
 type Translations = {
 	language: string;
 	translation: string;
+	singular: string;
+	plural: string;
 };
 
 export interface CollectionRaw {
@@ -19,6 +21,7 @@ export interface CollectionRaw {
 		archive_value: string | null;
 		unarchive_value: string | null;
 		archive_app_filter: boolean;
+		accountability: 'all' | 'activity' | null;
 	} | null;
 	schema: Record<string, any>;
 }

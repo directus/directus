@@ -53,6 +53,10 @@ GET /extensions/interfaces
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	extensions: extensions

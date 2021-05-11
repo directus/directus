@@ -103,9 +103,16 @@ available, data will be an empty array.
 
 ```
 GET /activity
+SEARCH /activity
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -153,6 +160,10 @@ GET /activity/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -224,6 +235,10 @@ POST /activity/comment
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
@@ -288,6 +303,10 @@ PATCH /activity/comment/:id
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_comment(id: ID!, comment: String!): directus_activity
@@ -331,6 +350,10 @@ DELETE /activity/comment/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

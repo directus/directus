@@ -31,6 +31,7 @@
 		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
 
 		<form-field-interface
+			:autofocus="autofocus"
 			:value="_value"
 			:field="field"
 			:loading="loading"
@@ -112,6 +113,10 @@ export default defineComponent({
 			type: Object as PropType<ValidationError>,
 			default: null,
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const isDisabled = computed(() => {
@@ -135,7 +140,7 @@ export default defineComponent({
 		});
 
 		const isEdited = computed<boolean>(() => {
-			return props.value && isEqual(props.value, props.initialValue) === false;
+			return props.value !== undefined && isEqual(props.value, props.initialValue) === false;
 		});
 
 		const { showRaw, rawValue } = useRaw();

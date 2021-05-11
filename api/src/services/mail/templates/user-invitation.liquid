@@ -1,0 +1,19 @@
+{% layout "base" %}
+{% block content %}
+
+<p>
+    Hello. You have been invited to join {{ projectName }}. Please click the button below to accept this invitation and join the project:
+</p>
+
+<p style="text-align: center; padding: 20px 0;">
+    <a href="{{ url }}">
+        Join {{ projectName }}
+    </a>
+</p>
+
+<p>
+    Thank You,<br>
+    {{ projectName }}
+</p>
+
+{% endblock %}

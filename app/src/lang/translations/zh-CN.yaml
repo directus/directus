@@ -55,6 +55,7 @@ archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限为：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
+the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 recommended_defaults: 推荐的默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
@@ -205,7 +206,6 @@ item_delete_success: 项目已删除 | 项目已删除
 this_collection: 此集合
 related_collection: 相关集合
 related_collections: 相关集合
-translations_collection: 翻译集合
 languages_collection: 语言集合
 export_data: 导出数据
 format: 格式
@@ -299,7 +299,7 @@ interface_not_found: '未找到接口 "{interface}"。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
-m2a_builder: 构建器 (M2A)
+list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
 no_items_copy: 此集合中没有项目。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
@@ -323,7 +323,6 @@ users: 用户
 activity: 活动
 webhooks: Webhook
 field_width: 字段宽度
-add_a_new_item: 添加新项目...
 add_filter: 添加过滤器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -355,7 +354,7 @@ account_created_successfully: 账号成功创建！
 auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
-  COLLECTION_NOT_FOUND: "集合不存在"
+  COLLECTION_NOT_FOUND: '集合不存在'
   FIELD_NOT_FOUND: 空格未找到
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
@@ -477,6 +476,8 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+width: 宽
+height: 高度
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -493,10 +494,7 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
-  link: 链接
   unlink: 移除链接
-  media: 添加媒体
-  image: 添加图片
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -517,7 +515,6 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
-  code: 查看源代码
   fullscreen: 全屏显示
 dropdown: 下拉列表
 choices: 选择项
@@ -561,6 +558,7 @@ fields:
     comment: 注释
     user_agent: 用户代理（User Agent）
     ip: IP 地址
+    revisions: 修订版本
   directus_collections:
     collection: 集合
     icon: 图标
@@ -568,7 +566,6 @@ fields:
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
-    translations: 集合名称翻译
     sort_field: 排序字段
   directus_files:
     title: 标题
@@ -673,6 +670,7 @@ permissions: 权限
 relationship: 关联
 reset: 重置
 reset_password: 重置密码
+revisions: 修订版本
 revert: 还原
 save: 保存
 schema: Schema
@@ -689,23 +687,23 @@ template: 模板
 translation: 翻译
 value: 值
 interfaces:
-  button-links:
+  presentation-links:
     primary: 主要的
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: 复选框
     allow_other: 允许其他选项
-  code:
+  input-code:
     code: 代码
     line_number: 行号
   collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 集合
   color:
     color: 颜色
   datetime:
     datetime: 日期时间
-  display-template:
+  system-display-template:
     display-template: 显示模板
     collection_field_not_setup: 集合的字段选项配置错误
     select_a_collection: 选择一个集合
@@ -715,7 +713,7 @@ interfaces:
     inline_title_label: 在行内显示标题
     margin_top: 上边距
     margin_top_label: 增加上边距
-  dropdown:
+  select-dropdown:
     description: 从下拉列表中选择一个值
     choices_placeholder: 添加一个新的选项
     allow_other: 允许其他选项
@@ -724,8 +722,8 @@ interfaces:
     allow_none_label: 允许不选择
     choices_name_placeholder: 输入一个名称...
     choices_value_placeholder: 输入值...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉(多次)
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉(多次)
     description: 从下拉列表中选择多个值
   file:
     file: 文件
@@ -733,27 +731,27 @@ interfaces:
   files:
     files: 多个文件
     description: 选择或上传多个文件
-  hash:
+  input-hash:
     hash: Hash
     description: 输入一个经过hash的值
   icon:
     icon: 图标
-  interface-options:
+  system-interface-options:
     interface-options: 界面选项
-  many-to-many:
+  list-m2m:
     many-to-many: 多对多
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: 多对一
     display_template: 显示模板
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
   numeric:
     numeric: 数字
-  one-to-many:
+  list-o2m:
     one-to-many: 一对多
-  radio-buttons:
+  select-radio:
     radio-buttons: 单选按钮
-  repeater:
+  list:
     repeater: 中继器
   slider:
     slider: 滑块
@@ -761,10 +759,10 @@ interfaces:
     slug: 别名
   tags:
     tags: 标签
-  text-input:
+  input:
     text-input: 文本输入
     trim: 修剪
-  toggle:
+  boolean:
     toggle: 切换
     label_default: 已启用
   translations:
@@ -773,7 +771,7 @@ interfaces:
     user: 用户
     modes:
       dropdown: 下拉列表
-  wysiwyg:
+  input-rich-text-html:
     custom_formats: 自定义格式
 displays:
   boolean:

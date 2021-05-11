@@ -17,7 +17,12 @@ invite: 招待する
 emails: メールアドレス
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
-delete_bookmark: ブックマーク削除
+reset_bookmark: ブックマークをリセット
+rename_bookmark: ブックマークの名前を変更
+update_bookmark: ブックマークを更新
+delete_bookmark: ブックマークを削除
+delete_bookmark_copy: >-
+  "{bookmark}" ブックマークを削除してもよろしいですか？この操作は元に戻せません。
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
@@ -97,7 +102,6 @@ item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
-translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
 format: 書式
 last_access: 最後にアクセスした日時
@@ -177,7 +181,6 @@ users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
-add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
 collection_created: コレクションが作成されました
@@ -186,8 +189,10 @@ sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
 toggle_manual_sorting: 手動ソートを有効にする
+bookmark_doesnt_exist: ブックマークは存在しません
+bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
 errors:
-  COLLECTION_NOT_FOUND: "コレクションが存在しません"
+  COLLECTION_NOT_FOUND: 'コレクションが存在しません'
   FORBIDDEN: アクセス禁止
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
   INVALID_OTP: ワンタイムパスワードが間違っています
@@ -197,8 +202,11 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   UNKNOWN: 予期しないエラーが発生しました
+bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
+edit_bookmark: ブックマークを編集
 bookmarks: ブックマーク
+presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
@@ -224,27 +232,33 @@ layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
+all_activity: すべてのアクティビティ
+create_item: アイテムの作成
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
+create_folder: フォルダを作成
+folder_name: フォルダ名...
 add_file: ファイルを追加する
 no_results: 結果なし
 saves_automatically: 変更は自動的に保存されます
 user: ユーザー
+no_presets: プリセットがありません
+no_presets_copy: プリセットやブックマークはまだ保存されていません。
+no_presets_cta: プリセットを追加
 create: 作成
 on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+width: 幅
+height: 高さ
 wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
   backcolor: 背景色
   hr: 水平線
-  link: リンク
-  media: メディアを追加
-  image: 画像を追加
   copy: コピー
   paste: ペースト
   heading: 見出し
@@ -267,7 +281,9 @@ settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
+settings_presets: プリセットとブックマーク
 layout: レイアウト
+editing_preset: プリセットを編集
 layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
@@ -276,7 +292,8 @@ add_new: 新規追加
 create_new: 新規作成
 all: すべて
 batch_delete_confirm: >-
-  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
+  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count}
+  個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
 collections: コレクション
 singleton: シングルトン
@@ -291,7 +308,6 @@ fields:
     note: 備考
     hidden: 非表示
     singleton: シングルトン
-    translations: コレクション名の翻訳
     sort_field: フィールドの並べ替え
   directus_files:
     title: タイトル
@@ -391,23 +407,24 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: チェックボックス
-  code:
+  input-code:
     description: コードスニペットでコードを共有
-  collections:
+  system-collections:
     collections: コレクション
   color:
     color: 色
     description: 色の入力または選択
-  dropdown:
+    preset_colors: プリセットカラー
+  select-dropdown:
     description: ドロップダウンから値を選択
     choices_value_placeholder: 値を入力...
   file:
     file: ファイル
   files:
     files: ファイル
-  hash:
+  input-hash:
     hash: ハッシュ値
     description: 入力した値をハッシュ値に変換します
     masked: 入力値を非表示にします（暗号化する値など）
@@ -415,19 +432,19 @@ interfaces:
   icon:
     icon: アイコン
     description: ドロップダウンからアイコンを選択
-  notice:
+  presentation-notice:
     notice: 補足
     description: 入力に関する簡単な補足を表示できます
     text: 補足の内容を入力してください
   numeric:
     numeric: 数値
-  radio-buttons:
+  select-radio:
     description: 1つあるいは複数の値を選択できます
   slug:
     description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
   tags:
     tags: タグ
-  text-input:
+  input:
     text-input: テキスト入力
     description: 単一行での文字列入力
     mask: 入力値を非表示にします（暗号化する値など）

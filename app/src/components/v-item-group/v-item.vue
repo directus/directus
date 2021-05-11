@@ -20,20 +20,20 @@ export default defineComponent({
 		},
 		active: {
 			type: Boolean,
-			default: undefined
+			default: undefined,
 		},
 		watch: {
 			type: Boolean,
-			default: true
-		}
+			default: true,
+		},
 	},
 	setup(props) {
-		const {active} = toRefs(props)
+		const { active } = toRefs(props);
 		const { active: isActive, toggle } = useGroupable({
 			value: props.value,
 			group: props.scope,
 			watch: props.watch,
-			active
+			active,
 		});
 
 		return { isActive, toggle };

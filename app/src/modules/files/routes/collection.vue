@@ -178,7 +178,7 @@ import router from '@/router';
 import Vue from 'vue';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
-import useFolders from '../composables/use-folders';
+import useFolders, { Folder } from '../composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -371,7 +371,7 @@ export default defineComponent({
 				}
 
 				if (props.queryFilters?.folder) {
-					const folder = folders.value?.find((folder) => folder.id === props.queryFilters.folder);
+					const folder = folders.value?.find((folder: Folder) => folder.id === props.queryFilters.folder);
 
 					if (folder) {
 						return folder.name;

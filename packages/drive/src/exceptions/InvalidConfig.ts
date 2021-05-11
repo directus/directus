@@ -1,6 +1,10 @@
 import { RuntimeException } from 'node-exceptions';
 
 export class InvalidConfig extends RuntimeException {
+	private constructor(message: string, status?: number, code?: string) {
+		super(message, status, code);
+	}
+
 	public static missingDiskName(): InvalidConfig {
 		return new this('Make sure to define a default disk name inside config file', 500, 'E_INVALID_CONFIG');
 	}

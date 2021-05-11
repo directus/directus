@@ -21,6 +21,7 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invite
+email_already_invited: Email "{email}" has already been invited
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
@@ -84,9 +85,13 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
+nullable: Nullable
+allow_null_value: Allow NULL value
+enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_file: Single File
@@ -141,6 +146,7 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Text
 time: Time
@@ -149,6 +155,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
+auto_refresh: Auto Refresh
+refresh_interval: Refresh Interval
+no_refresh: Do not refresh
+refresh_interval_seconds: Refresh Instantly | Every Second | Every {seconds} Seconds
+refresh_interval_minutes: Every Minute | Every {minutes} Minutes
 auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here
@@ -157,7 +168,9 @@ click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
+no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
+search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
@@ -224,7 +237,7 @@ item_delete_success: Item Deleted | Items Deleted
 this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
-translations_collection: Translations Collection
+translations_collection: Translation Collection
 languages_collection: Languages Collection
 export_data: Export Data
 format: Format
@@ -311,6 +324,10 @@ save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_as_copy: Save as Copy
 add_existing: Add Existing
+creating_items: Creating Items
+enable_create_button: Enable Create Button
+selecting_items: Selecting Items
+enable_select_button: Enable Select Button
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
@@ -325,7 +342,7 @@ interface_not_found: 'Interface "{interface}" not found.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
-m2a_builder: Builder (M2A)
+list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
@@ -349,7 +366,6 @@ users: Users
 activity: Activity
 webhooks: Webhooks
 field_width: Field Width
-add_a_new_item: Add a new item...
 add_filter: Add Filter
 upper_limit: Upper limit...
 lower_limit: Lower limit...
@@ -393,6 +409,8 @@ errors:
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
+  USER_SUSPENDED: User Suspended
+  CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -471,6 +489,8 @@ operators:
   has: Contains some of these keys
 loading: Loading...
 drop_to_upload: Drop to Upload
+item: Item
+items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
@@ -518,6 +538,21 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+image_url: Image Url
+alt_text: Alternative Text
+media: Media
+width: Width
+height: Height
+source: Source
+url_placeholder: Enter an url...
+display_text: Display Text
+display_text_placeholder: Enter a display text...
+tooltip: Tooltip
+tooltip_placeholder: Enter a tooltip...
+unlimited: Unlimited
+open_link_in: Open link in
+new_tab: New tab
+current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -537,10 +572,10 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
-  link: Link
+  link: Add/Edit Link
   unlink: Remove Link
-  media: Add Media
-  image: Add Image
+  media: Add/Edit Media
+  image: Add/Edit Image
   copy: Copy
   cut: Cut
   paste: Paste
@@ -562,7 +597,7 @@ wysiwyg_options:
   selectall: Select All
   table: Table
   visualaid: View invisible elements
-  code: View Source
+  source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
 dropdown: Dropdown
@@ -575,6 +610,8 @@ adding_user: Adding User
 unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
+creating_unit: 'Creating {unit}'
+editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
@@ -582,11 +619,13 @@ settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
+one_or_more_options_are_missing: One or more options are missing
 scope: Scope
+select: Select...
 layout: Layout
 tree_view: Tree View
 changes_are_permanent: Changes are permanent
-preset_name_placeholder: Name of bookmark...
+preset_name_placeholder: Serves as default when empty...
 preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
@@ -662,12 +701,14 @@ fields:
     display_template: Display Template
     hidden: Hidden
     singleton: Singleton
-    translations: Collection Name Translations
+    translations: Collection Naming Translations
     archive_app_filter: Archive App Filter
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Title
     description: Description
     tags: Tags
@@ -740,6 +781,11 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
@@ -813,8 +859,8 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
-  button-links:
-    button-links: Button Links
+  presentation-links:
+    presentation-links: Button Links
     links: Links
     description: Configurable link buttons for launching dynamic URLs
     style: Style
@@ -822,13 +868,13 @@ interfaces:
     link: Links
     button: Buttons
     error: Cannot perform action
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
     allow_other: Allow Other
     show_more: 'Show {count} more'
     items_shown: Items Shown
-  code:
+  input-code:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
@@ -837,11 +883,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
-  collections:
+  system-collections:
     collections: Collections
     description: Select between existing collections
     include_system_collections: Include System Collections
-  color:
+  select-color:
     color: Color
     description: Enter or select a color value
     placeholder: Choose a color...
@@ -854,13 +900,13 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
-  display-template:
+  system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
     collection_field: Collection field
     collection_field_not_setup: The collection field option is misconfigured
     select_a_collection: Select a Collection
-  divider:
+  presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
     title_placeholder: Enter a title...
@@ -868,7 +914,7 @@ interfaces:
     inline_title_label: Show title inside line
     margin_top: Margin Top
     margin_top_label: Increase Top Margin
-  dropdown:
+  select-dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice
     allow_other: Allow Other
@@ -877,8 +923,8 @@ interfaces:
     allow_none_label: Allow No Selection
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Multiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
   file:
     file: File
@@ -886,33 +932,33 @@ interfaces:
   files:
     files: Files
     description: Select or upload multiple files
-  hash:
+  input-hash:
     hash: Hash
     description: Enter a value to be hashed
     masked: Masked
     masked_label: Hide the true values
-  icon:
+  select-icon:
     icon: Icon
     description: Select an icon from a dropdown
     search_for_icon: Search for icon...
-  image:
+  file-image:
     image: Image
     description: Select or upload an image
-  interface:
+  system-interface:
     interface: Interface
     description: Select an existing interface
     placeholder: Select an interface...
-  interface-options:
+  system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
-  many-to-many:
+  list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
     customSyntax: Custom Blocks
@@ -924,53 +970,37 @@ interfaces:
   map:
     map: Map
     description: Select a location on a map
-    lat: Latitude
-    lat_placeholder: Enter the latitude...
-    lng: Longitude
-    lng_placeholder: Enter the longitude...
     background: Map Style
-    crs: Coordinate Reference System
     zoom: Zoom
-    no_api_key: The currently selected background requires a Mapbox api key.
     geometry_type: Geometry type
-    multi_geometry: Multiple geometries
-    point: Point
-    line_string: LineString
-    polygon: Polygon
-    incompatible_geometry: Incompatible geometry
-    expected_single_geometry: Expeted single geometry, found multiple.
-    expected_other_geometry: Expeted {expected}, got {found}.
-  notice:
+    geometry_format: Geometry format
+    geometry_crs: Coordinate Reference System
+    default_position: Default position
+    invalid_options: Invalid options
+    unknown_format: Format inconnu ( {format} )
+    unexpected_geometry: Expeted {expected}, got {found}.
+  presentation-notice:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
-  numeric:
-    numeric: Numeric
-    description: Enter a number
-    minimum_value: Minimum Value
-    maximum_value: Maximum Value
-    step_interval: Step Interval
-  one-to-many:
+  list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
-  radio-buttons:
+  select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
-  repeater:
+  list:
     repeater: Repeater
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
-    add_label: '"Add New Row" Label'
+    add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:
     slider: Slider
     description: Select a number using a slider
     always_show_value: Always show value
-  slug:
-    slug: Slug
-    description: Enter a word connected with hyphens
   tags:
     tags: Tags
     description: Select or add tags
@@ -985,19 +1015,24 @@ interfaces:
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
     add_tags: Add tags...
-  text-input:
-    text-input: Text Input
-    description: Enter a single line text
+  input:
+    input: Input
+    description: Manually enter a value
     trim: Trim
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
-    nullable: Nullable
-    nullable_label: Save empty value as NULL
-  textarea:
+    clear: Cleared Value
+    clear_label: Save as empty string
+    minimum_value: Minimum Value
+    maximum_value: Maximum Value
+    step_interval: Step Interval
+    slug: Slugify
+    slug_label: Make entered value URL safe
+  input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
-  toggle:
+  boolean:
     toggle: Toggle
     description: Switch between on and off
     label_placeholder: Enter a label...
@@ -1005,7 +1040,7 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
-  tree-view:
+  list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
   user:
@@ -1016,12 +1051,19 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    trigger: Trigger
+    rate: Rate
 displays:
   boolean:
     boolean: Boolean
@@ -1125,6 +1167,10 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+  calendar:
+    calendar: Calendar
+    start_date_field: Start Date Field
+    end_date_field: End Date Field
   map:
     map: Map
     layers: Layers,
@@ -1142,7 +1188,6 @@ layouts:
     fit_speed: Animation speed
     fit_duration: Animation duration
     preview: Preview
-    geometry_format: Geometry format
     field: Geometry
     lnglat: Longitude | Latitude
     longitude: Longitude
@@ -1151,4 +1196,3 @@ layouts:
     missing_option: Unspecified geometry field or format
     simplify: Geometry simplification tolerance
     projection: Projection
-    unimplemented_format: Unimplemented format

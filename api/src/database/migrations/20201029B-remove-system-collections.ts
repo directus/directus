@@ -1,11 +1,11 @@
 import { Knex } from 'knex';
 import { merge } from 'lodash';
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	await knex('directus_collections').delete().where('collection', 'like', 'directus_%');
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	const defaults = {
 		collection: null,
 		hidden: false,

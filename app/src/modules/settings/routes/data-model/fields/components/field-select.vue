@@ -202,6 +202,7 @@ import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -218,7 +219,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 
@@ -234,7 +235,7 @@ export default defineComponent({
 		} = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.value.find((inter) => inter.id === props.field.meta?.interface)?.name;
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
 		});
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
@@ -445,7 +446,7 @@ export default defineComponent({
 	padding: var(--input-padding);
 	background-color: var(--card-face-color);
 	border-radius: var(--border-radius);
-	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2);
+	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 
 	.header {
 		display: flex;
@@ -480,9 +481,9 @@ export default defineComponent({
 	--input-padding: 8px;
 
 	::v-deep .input {
-		border: none;
 		background-color: var(--card-face-color);
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2);
+		border: none;
+		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 
 		&:hover {
 			background-color: var(--card-face-color);
@@ -492,17 +493,17 @@ export default defineComponent({
 	.label {
 		flex-grow: 1;
 		overflow: hidden;
-		text-overflow: ellipsis;
 		white-space: nowrap;
+		text-overflow: ellipsis;
 
 		.name {
 			font-family: var(--family-monospace);
 		}
 
 		.interface {
-			font-family: var(--family-monospace);
 			display: none;
 			color: var(--foreground-subdued);
+			font-family: var(--family-monospace);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 

@@ -112,9 +112,16 @@ available, data will be an empty array.
 
 ```
 GET /permissions
+SEARCH /permissions
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -191,6 +198,10 @@ GET /permissions/:id
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	permissions_by_id(id: ID!): directus_permissions
@@ -256,6 +267,10 @@ POST /permissions
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -333,6 +348,10 @@ POST /permissions
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_permissions_itemss(data: [create_directus_permissions_input!]!): [directus_permissions]
@@ -400,6 +419,10 @@ PATCH /permissions/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -477,6 +500,10 @@ PATCH /permissions
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
@@ -527,6 +554,10 @@ DELETE /permissions/34
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -582,6 +613,10 @@ DELETE /permissions
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

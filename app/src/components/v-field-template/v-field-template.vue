@@ -6,6 +6,7 @@
 					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
 						<span class="text" />
 					</span>
+					<span class="placeholder" v-if="placeholder && !value">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
@@ -21,12 +22,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from '@vue/composition-api';
 import FieldListItem from './field-list-item.vue';
-import { useFieldsStore } from '@/stores';
-import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
+import { Field, Relation } from '@/types';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -39,6 +39,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		collection: {
 			type: String,
 			required: true,
@@ -47,15 +51,22 @@ export default defineComponent({
 			type: Number,
 			default: 2,
 		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
+		inject: {
+			type: Object as PropType<{ fields: Field[]; relations: Relation[] }>,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
 		const contentEl = ref<HTMLElement | null>(null);
 
 		const menuActive = ref(false);
 
-		const { collection } = toRefs(props);
-		const { tree } = useFieldTree(collection);
+		const { collection, inject } = toRefs(props);
+		const { tree } = useFieldTree(collection, true, inject);
 
 		watch(() => props.value, setContent, { immediate: true });
 
@@ -223,7 +234,7 @@ export default defineComponent({
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
-			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
+			const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
@@ -234,6 +245,12 @@ export default defineComponent({
 
 				return (acc += '');
 			}, '');
+
+			if (props.nullable === true && value === '') {
+				return null;
+			}
+
+			return value;
 		}
 
 		function setContent() {
@@ -246,9 +263,6 @@ export default defineComponent({
 
 			if (props.value !== getInputValue()) {
 				const regex = /({{.*?}})/g;
-
-				const before = null;
-				const after = null;
 
 				const newInnerHTML = props.value
 					.split(regex)
@@ -312,6 +326,16 @@ export default defineComponent({
 				background-color: var(--danger);
 			}
 		}
+	}
+
+	.placeholder {
+		position: absolute;
+		top: 50%;
+		left: 14px;
+		color: var(--foreground-subdued);
+		transform: translateY(-50%);
+		user-select: none;
+		pointer-events: none;
 	}
 }
 </style>

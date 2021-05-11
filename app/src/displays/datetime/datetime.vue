@@ -88,8 +88,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .datetime {
 	overflow: hidden;
+	line-height: 1.15;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	line-height: 1.15;
 }
 </style>

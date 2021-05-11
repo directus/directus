@@ -85,7 +85,7 @@ Lets say we have a collection `pages` with a many-to-any field called `sections`
 sections.item:headings.title
 sections.item:headings.level
 sections.item:paragraphs.body
-sections.item:videos.body
+sections.item:videos.source
 ```
 
 In GraphQL, this can be achieved using Union Types.
@@ -370,7 +370,7 @@ Skip the first `n` items in the response. Can be used for pagination.
 
 ### Examples
 
-Get items 100—200\
+Get items 101—200\
 `100`
 
 </div>

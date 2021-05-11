@@ -1,6 +1,7 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { Collection } from '@/types';
 
-export default function getRelatedCollection(collection: string, field: string) {
+export default function getRelatedCollection(collection: string, field: string): Collection {
 	const relationsStore = useRelationsStore();
 	const fieldsStore = useFieldsStore();
 
@@ -11,7 +12,7 @@ export default function getRelatedCollection(collection: string, field: string) 
 	const type = fieldInfo.type.toLowerCase();
 
 	// o2m | m2m
-	if (['o2m', 'm2m', 'm2a', 'alias', 'translations'].includes(type)) {
+	if (['o2m', 'm2m', 'm2a', 'alias', 'translations', 'files'].includes(type)) {
 		return relations[0].many_collection;
 	}
 

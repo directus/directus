@@ -107,9 +107,16 @@ will be an empty array.
 
 ```
 GET /roles
+SEARCH /roles
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -167,6 +174,10 @@ GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -236,6 +247,10 @@ POST /roles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -317,6 +332,10 @@ POST /roles
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
@@ -386,6 +405,10 @@ PATCH /roles/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -463,6 +486,10 @@ PATCH /roles
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
@@ -519,6 +546,10 @@ DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	delete_roles_item(id: ID!): delete_one
@@ -572,6 +603,10 @@ DELETE /roles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

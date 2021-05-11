@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact to="/users">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -112,12 +112,18 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false && item">
-						<div class="name type-title">
+						<div class="name type-label">
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email">{{ item.email }}</div>
-						<div class="location" v-if="item.location">{{ item.location }}</div>
+						<div class="email">
+							<v-icon name="alternate_email" small outline />
+							{{ item.email }}
+						</div>
+						<div class="location" v-if="item.location">
+							<v-icon name="place" small outline />
+							{{ item.location }}
+						</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
@@ -170,7 +176,8 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n, setLanguage } from '@/lang';
+import { i18n } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
@@ -276,8 +283,14 @@ export default defineComponent({
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
+			ref('directus_users'),
+			item,
+			isNew
+		);
+
 		// These fields will be shown in the sidebar instead
-		const fieldsBlacklist = [
+		const fieldsDenyList = [
 			'id',
 			'external_id',
 			'last_page',
@@ -289,18 +302,10 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fieldsStore
-				.getFieldsForCollection('directus_users')
-				.filter((field: Field) => fieldsBlacklist.includes(field.field) === false);
+			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
-
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed } = usePermissions(
-			ref('directus_users'),
-			item,
-			isNew
-		);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');
@@ -526,25 +531,25 @@ export default defineComponent({
 	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	padding: 20px;
+	background-color: var(--background-normal);
+	border-radius: calc(var(--border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);
 
 		display: flex;
 		flex-shrink: 0;
-		justify-content: center;
 		align-items: center;
+		justify-content: center;
 		width: 84px;
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
 		background-color: var(--background-normal);
-		border: solid var(--border-width) var(--border-normal);
-		border-radius: var(--border-radius);
+		border: solid 6px var(--white);
+		border-radius: 100%;
+		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;
@@ -607,7 +612,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		height: 172px;
+		height: 188px;
 
 		.user-box-content .location {
 			display: block;

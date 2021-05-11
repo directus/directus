@@ -1,4 +1,5 @@
-import type { Feature, FeatureCollection, Geometry, GeometryCollection, Point, BBox } from 'geojson';
+import { types } from '@/types';
+import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
 import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
@@ -6,103 +7,89 @@ import proj4 from 'proj4';
 import wkx from 'wkx';
 
 export type GeometryOptions = {
-	geometryFormat?: GeometryFormat;
-	geometryField?: string;
-	longitudeField?: string;
-	latitudeField?: string;
+	geometryFormat: GeometryFormat;
+	geometryField: string;
 	geometryCRS?: string;
 };
 
-export type GeometryFormat = 'geojson' | 'postgis' | 'csv' | 'wkt' | 'ewkt' | 'wkb' | 'ewkb' | 'twkb' | 'lnglat';
+export const geometryTypes = [
+	'Point',
+	'LineString',
+	'Polygon',
+	'MultiPoint',
+	'MultiLineString',
+	'MultiPolygon',
+] as const;
+export type GeometryType = typeof geometryTypes[number];
+export const geometryFormats = ['GeoJSON', 'PostGIS', 'WKT', 'EWKT', 'WKB', 'EWKB', 'TWKB', 'CSV'] as const;
+export type GeometryFormat = typeof geometryFormats[number];
 export type AnyGeoJSON = FeatureCollection | Feature | GeometryCollection | Geometry;
 export type AllGeoJSON = FeatureCollection & Feature & GeometryCollection & Geometry;
-type GeometryParser = (entry: any) => wkx.Geometry | undefined;
-type GeoJSONParser = (entry: any) => Geometry | GeometryCollection | undefined;
+export type GeoJSONParser = (entry: any) => Geometry | GeometryCollection | undefined;
+export type GeoJSONSerializer = (entry: Geometry | GeometryCollection) => any;
 type Coord = [number, number];
 
-function lnglatParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const [lng, lat] = [entry[options.longitudeField!], entry[options.latitudeField!]];
-		return lng && lat && new wkx.Point(lng, lat);
-	};
-}
-function geojsonParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const geom = entry[options.geometryField!];
-		return geom && wkx.Geometry.parseGeoJSON(geom);
-	};
-}
-function twkbParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const geom = entry[options.geometryField!];
-		return geom && wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex'));
-	};
-}
-function wktParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const geom = entry[options.geometryField!];
-		return geom && wkx.Geometry.parse(geom);
-	};
-}
-function wkbParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const geom = entry[options.geometryField!];
-		return geom && wkx.Geometry.parse(Buffer.from(geom, 'hex'));
-	};
-}
-function csvParser(options: GeometryOptions): GeometryParser {
-	return function (entry: any) {
-		const geom = entry[options.geometryField!];
-		return geom && new wkx.Point(...[Number(geom[0]), Number(geom[1])]);
-	};
-}
-
-export function getGeometryParser(options: GeometryOptions): GeometryParser {
-	switch (options.geometryFormat) {
-		case 'geojson':
-			return geojsonParser(options);
-		case 'lnglat':
-			return lnglatParser(options);
-		case 'twkb':
-			return twkbParser(options);
-		case 'postgis':
-		case 'ewkb':
-		case 'wkb':
-			return wkbParser(options);
-		case 'ewkt':
-		case 'wkt':
-			return wktParser(options);
+export function compatibleFormatsForType(type: typeof types[number]): GeometryFormat[] {
+	switch (type) {
+		case 'json':
+			return ['GeoJSON'];
+		case 'text':
+		case 'string':
+		case 'unknown':
+			return ['WKT', 'EWKT', 'PostGIS'];
+		case 'binary':
+			return ['WKB', 'EWKB', 'TWKB'];
 		case 'csv':
-			return csvParser(options);
+			return ['CSV'];
 		default:
-			throw new Error(i18n.t('unimplemented_format') as string);
+			return [];
 	}
 }
 
-export function getGeometrySerializer(options: GeometryOptions): (entry: AnyGeoJSON) => any {
-	switch (options.geometryFormat) {
-		case 'geojson':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toGeoJSON();
-		case 'wkb':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toWkb();
-		case 'ewkb':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toEwkb();
-		case 'twkb':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toTwkb();
-		case 'wkt':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toWkt();
-		case 'postgis':
-		case 'ewkt':
-			return (entry) => wkx.Geometry.parseGeoJSON(entry).toEwkt();
-		case 'csv':
-			return (entry) => (entry as GeoJSON.Point).coordinates;
+export function getGeometryParser(geometryFormat: GeometryFormat) {
+	switch (geometryFormat) {
+		case 'GeoJSON':
+			return (geom: any) => wkx.Geometry.parseGeoJSON(geom).toGeoJSON();
+		case 'EWKT':
+		case 'WKT':
+			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON();
+		case 'EWKB':
+		case 'WKB':
+		case 'PostGIS':
+			return (geom: any) => wkx.Geometry.parse(Buffer.from(geom, 'hex')).toGeoJSON();
+		case 'TWKB':
+			return (geom: any) => wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex')).toGeoJSON();
+		case 'CSV':
+			return (geom: any) => new wkx.Point(...[Number(geom[0]), Number(geom[1])]).toGeoJSON();
 		default:
-			throw new Error(i18n.t('unimplemented_format') as string);
+			throw new Error(i18n.t('interfaces.map.unknown_format', { format: geometryFormat }) as string);
+	}
+}
+
+export function getGeometrySerializer(geometryFormat: GeometryFormat) {
+	switch (geometryFormat) {
+		case 'GeoJSON':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toGeoJSON();
+		case 'WKB':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkb();
+		case 'EWKB':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toEwkb();
+		case 'TWKB':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toTwkb();
+		case 'WKT':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkt();
+		case 'PostGIS':
+		case 'EWKT':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toEwkt();
+		case 'CSV':
+			return (entry: AnyGeoJSON) => (entry as GeoJSON.Point).coordinates;
+		default:
+			throw new Error(i18n.t('interfaces.map.unknown_format', { format: geometryFormat }) as string);
 	}
 }
 
 export function getSerializer(options: GeometryOptions) {
-	const serialize = getGeometrySerializer(options);
+	const serialize = getGeometrySerializer(options.geometryFormat);
 	const project = (coord: Coord) => proj4(options.geometryCRS!, coord);
 
 	return function (entry: AnyGeoJSON) {
@@ -130,11 +117,12 @@ export function assignBBox(object: AnyGeoJSON) {
 }
 
 export function getParser(options: GeometryOptions): GeoJSONParser {
-	const parse = getGeometryParser(options);
+	const parse = getGeometryParser(options.geometryFormat);
 	const project = (coord: Coord) => proj4(options.geometryCRS!, 'EPSG:4326', coord);
 
 	return function (entry: any) {
-		const geom = parse(entry)?.toGeoJSON() as Geometry | GeometryCollection;
+		const geomRaw = entry[options.geometryField];
+		const geom = geomRaw && (parse(geomRaw) as Geometry | GeometryCollection);
 		if (!geom) return undefined;
 		geom.bbox = [Infinity, Infinity, -Infinity, -Infinity];
 		if (options.geometryCRS && options.geometryCRS !== 'EPSG:4326') {
@@ -156,7 +144,6 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 		features: [],
 		bbox: [Infinity, Infinity, -Infinity, -Infinity],
 	};
-	const throttle = entries.length / 15;
 	for (let i = 0; i < entries.length; i++) {
 		const geometry = parser(entries[i]);
 		if (!geometry) continue;
@@ -164,9 +151,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 		expand(geojson.bbox!, [bbox[0], bbox[1]]);
 		expand(geojson.bbox!, [bbox[2], bbox[3]]);
 		const properties = { ...entries[i] };
-		delete properties[options.geometryField!];
-		delete properties[options.longitudeField!];
-		delete properties[options.latitudeField!];
+		delete properties[options.geometryField];
 		properties.description = render(template, entries[i]);
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as GeoJSON.Feature);

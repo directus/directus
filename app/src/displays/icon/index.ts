@@ -13,7 +13,7 @@ export default defineDisplay({
 			name: '$t:displays.icon.filled',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				width: 'half',
 				options: {
 					label: '$t:displays.icon.filled_label',
@@ -28,7 +28,7 @@ export default defineDisplay({
 			name: '$t:color',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 		},

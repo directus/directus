@@ -1,5 +1,10 @@
 <template>
-	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
+	<v-list
+		ref="listComponent"
+		large
+		class="collections-navigation"
+		@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+	>
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
 				<template
@@ -46,7 +51,10 @@
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
-			<template v-if="isAdmin">
+			<template v-if="searchQuery !== null">
+				<em>{{ $t('no_collections_found') }}</em>
+			</template>
+			<template v-else-if="isAdmin">
 				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
@@ -87,11 +95,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, watchEffect, onMounted } from '@vue/composition-api';
+import Vue from 'vue';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
 import NavigationBookmark from './navigation-bookmark.vue';
+import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
@@ -102,12 +112,15 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { searchQuery, visible } = useSearch();
+		const listComponent = ref<Vue>();
+
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
-		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation();
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -115,10 +128,15 @@ export default defineComponent({
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
+					.filter(
+						(preset) =>
+							typeof preset.bookmark !== 'string' ||
+							preset.bookmark.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+					)
 					.map((preset) => {
 						let scope = 'global';
-						if (!!preset.role) scope = 'role';
-						if (!!preset.user) scope = 'user';
+						if (preset.role) scope = 'role';
+						if (preset.user) scope = 'user';
 
 						return {
 							...preset,
@@ -129,6 +147,15 @@ export default defineComponent({
 				['bookmark'],
 				['asc']
 			);
+		});
+
+		watchEffect(() => {
+			visible.value = bookmarks.value.length + navItems.value.length;
+		});
+
+		onMounted(() => {
+			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.router-link-exact-active.active.link');
+			activeEl?.scrollIntoView({ block: 'center' });
 		});
 
 		return {
@@ -142,6 +169,8 @@ export default defineComponent({
 			contextMenu,
 			hiddenShown,
 			hiddenNavItems,
+			searchQuery,
+			listComponent,
 		};
 
 		function isActive(name: string) {
@@ -175,7 +204,7 @@ export default defineComponent({
 }
 
 .collections-navigation {
-	--v-list-min-height: 100%;
+	--v-list-min-height: calc(100% - 64px);
 }
 
 .hidden-collection {

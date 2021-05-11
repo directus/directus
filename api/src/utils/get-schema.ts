@@ -1,17 +1,16 @@
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { Accountability, SchemaOverview, Permission, RelationRaw } from '../types';
-import logger from '../logger';
-import { mergePermissions } from './merge-permissions';
-import { Knex } from 'knex';
 import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
-import getLocalType from './get-local-type';
-import getDefaultValue from './get-default-value';
+import logger from '../logger';
+import { Accountability, Permission, RelationRaw, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
+import getDefaultValue from './get-default-value';
+import getLocalType from './get-local-type';
+import { mergePermissions } from './merge-permissions';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -68,7 +67,9 @@ export async function getSchema(options?: {
 	const schemaOverview = await schemaInspector.overview();
 
 	const collections = [
-		...(await database.select('collection', 'singleton', 'note', 'sort_field').from('directus_collections')),
+		...(await database
+			.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
+			.from('directus_collections')),
 		...systemCollectionRows,
 	];
 
@@ -87,10 +88,11 @@ export async function getSchema(options?: {
 				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
+			accountability: collectionMeta ? collectionMeta.accountability : 'all',
 			fields: mapValues(schemaOverview[collection].columns, (column) => ({
 				field: column.column_name,
-				defaultValue: getDefaultValue(column) || null,
-				nullable: column.is_nullable || true,
+				defaultValue: getDefaultValue(column) ?? null,
+				nullable: column.is_nullable ?? true,
 				type: getLocalType(column) || 'alias',
 				precision: column.numeric_precision || null,
 				scale: column.numeric_scale || null,
@@ -121,8 +123,8 @@ export async function getSchema(options?: {
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
-			defaultValue: existing?.defaultValue || null,
-			nullable: existing?.nullable || true,
+			defaultValue: existing?.defaultValue ?? null,
+			nullable: existing?.nullable ?? true,
 			type: existing
 				? getLocalType(schemaOverview[field.collection].columns[field.field], {
 						special: field.special ? toArray(field.special) : [],

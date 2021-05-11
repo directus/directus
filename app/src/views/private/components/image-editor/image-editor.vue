@@ -110,6 +110,7 @@ import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 type Image = {
 	type: string;
@@ -176,7 +177,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return addTokenToURL(`/assets/${props.id}?${nanoid()}`);
+			return addTokenToURL(`${getRootPath()}assets/${props.id}?${nanoid()}`);
 		});
 
 		return {
@@ -312,7 +313,6 @@ export default defineComponent({
 						return 'crop_square';
 					case imageData.value.width / imageData.value.height:
 						return 'crop_original';
-					case NaN:
 					default:
 						return 'crop_free';
 				}

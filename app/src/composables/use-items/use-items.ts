@@ -1,12 +1,11 @@
-import { computed, ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import Vue from 'vue';
-import { isEqual } from 'lodash';
-import { Filter } from '@/types/';
+import { Filter, Item } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
+import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { isEqual, orderBy, throttle } from 'lodash';
+import Vue from 'vue';
 
 type Query = {
 	limit: Ref<number>;
@@ -17,7 +16,7 @@ type Query = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, query: Query) {
+export function useItems(collection: Ref<string>, query: Query, fetchOnInit = true): Record<string, any> {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: any = null;
@@ -30,7 +29,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			: `/items/${collection.value}`;
 	});
 
-	const items = ref<any>([]);
+	const items = ref<Item[]>([]);
 	const loading = ref(false);
 	const error = ref(null);
 
@@ -43,7 +42,9 @@ export function useItems(collection: Ref<string>, query: Query) {
 		return Math.ceil(itemCount.value / limit.value);
 	});
 
-	getItems();
+	if (fetchOnInit) {
+		getItems();
+	}
 
 	watch(
 		collection,
@@ -58,7 +59,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			reset();
 			getItems();
 		},
-		{ immediate: true }
+		{ immediate: fetchOnInit }
 	);
 
 	watch([page, fields], async (after, before) => {
@@ -159,7 +160,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			}
 		}
 
-		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field
+		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
 		// on directus_files
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
@@ -184,13 +185,13 @@ export function useItems(collection: Ref<string>, query: Query) {
 			 * able to render out the directus_files collection (file library) using regular layouts
 			 *
 			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
-			 * only collection that doesn't have this (obviously). This fake $file field is used to
+			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
 			 */
 			if (collection.value === 'directus_files') {
 				fetchedItems = fetchedItems.map((file: any) => ({
 					...file,
-					$file: file,
+					$thumbnail: file,
 				}));
 			}
 

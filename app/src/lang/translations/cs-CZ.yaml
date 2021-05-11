@@ -157,8 +157,9 @@ on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+width: Šířka
+height: Výška
 wysiwyg_options:
-  image: Přidat obrázek
   copy: Kopírovat
   cut: Vyjmout
   paste: Vložit
@@ -181,7 +182,8 @@ keep_editing: Ne, vrátit se k úpravám
 add_new: Přidat nový
 all: Vše
 batch_delete_confirm: >-
-  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
+  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním
+  těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
 collection: Kategorie
 collections: Kategorie
@@ -287,11 +289,11 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
-  code:
+  input-code:
     line_number: Číslo řádku
   collection:
     collection: Kategorie
-  collections:
+  system-collections:
     collections: Kategorie
   color:
     color: Barva
@@ -305,7 +307,7 @@ interfaces:
     icon: Ikona
   numeric:
     numeric: Číselné
-  repeater:
+  list:
     edit_fields: Upravit pole
   tags:
     tags: Štítky

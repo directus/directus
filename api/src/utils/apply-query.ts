@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
-import { Query, Filter, Relation, SchemaOverview } from '../types';
-import { clone, isPlainObject, get, set } from 'lodash';
-import { systemRelationRows } from '../database/system-data/relations';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
+import { systemRelationRows } from '../database/system-data/relations';
+import { Filter, Query, Relation, SchemaOverview } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -12,8 +12,8 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -35,10 +35,6 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.single) {
-		dbQuery.limit(1).first();
-	}
-
 	if (query.filter) {
 		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
 	}
@@ -53,8 +49,8 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -113,7 +109,8 @@ export function applyFilter(
 					);
 				}
 
-				if (subQuery === true && isM2O === false) {
+				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
+				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -195,6 +192,43 @@ export function applyFilter(
 		}
 
 		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
+			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+				dbQuery[logical].whereNull(key);
+			}
+
+			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+				dbQuery[logical].whereNotNull(key);
+			}
+
+			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNull(key);
+					query.orWhere(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNotNull(key);
+					query.orWhere(key, '!=', '');
+				});
+			}
+
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined].
+				// We need to remove any undefined values, as they are useless
+				compareValue = compareValue.filter((val) => val !== undefined);
+				// And ignore the result filter if there are no values in it
+				if (compareValue.length === 0) return;
+			}
+
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
@@ -241,29 +275,9 @@ export function applyFilter(
 				dbQuery[logical].whereNotIn(key, value as string[]);
 			}
 
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(key);
-			}
-
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
-				dbQuery[logical].whereNotNull(key);
-			}
-
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
-				});
-			}
-
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
-				});
-			}
-
 			if (operator === '_between') {
+				if (compareValue.length !== 2) return;
+
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
@@ -271,6 +285,8 @@ export function applyFilter(
 			}
 
 			if (operator === '_nbetween') {
+				if (compareValue.length !== 2) return;
+
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
@@ -321,7 +337,7 @@ export async function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
-) {
+): Promise<void> {
 	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {

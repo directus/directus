@@ -54,7 +54,10 @@ os_totalmem: Память ОС
 archive: Архивировать
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
-  Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
+  Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти
+  {count} элементов?
+reset_system_permissions_to: 'Сбросить системные разрешения для:'
+app_access_minimum: Минимальный доступ приложения
 recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
@@ -77,6 +80,7 @@ validationError:
   nnull: Значение не может быть null
   required: Значение обязательно
   unique: Значение должно быть уникальным
+  regex: Значение имеет некорректный формат
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
@@ -117,6 +121,7 @@ iso: ISO
 focal_length: Фокусное Расстояние
 create_field: Создать Поле
 creating_new_field: 'Новое Поле ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Сбросить Настройки Страницы
 hidden_field: Скрытое Поле
 hidden_on_detail: Скрывать в карточке
@@ -139,13 +144,20 @@ uuid: UUID
 hash: Хэш
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
+auto_refresh: Авто обновление
+refresh_interval: Интервал обновления
+no_refresh: Не обновлять
+refresh_interval_minutes: Каждую минуту | Каждые {minutes} минут
 auto_generate: Авто-Генерация
 this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
 click_here: Нажмите здесь
 to_manually_setup_translations: для ручной настройки переводов.
 click_to_manage_translated_fields: >-
-  Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
+  Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять
+  им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
 fields_group: Группа Полей
+no_collections_found: Нет найденных коллекций.
+search_collection: Поиск коллекций...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
 add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
@@ -212,7 +224,6 @@ item_delete_success: Элемент Удален | Элементы Удален
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
-translations_collection: Коллекция Переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
@@ -313,7 +324,7 @@ interface_not_found: 'Интерфейс "{interface}" не найден.'
 reset_interface: Сбросить Интерфейс
 display_not_found: 'Отображение "{display}" не найдено.'
 reset_display: Сбросить Отображение
-m2a_builder: Строитель (M2A)
+list-m2a: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет Файлов | Один Файл | {count} Файлов'
@@ -337,7 +348,6 @@ users: Пользователи
 activity: Активность
 webhooks: Webhooks
 field_width: Ширина поля
-add_a_new_item: Добавить новый элемент...
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
@@ -352,6 +362,7 @@ collection_created: Коллекция Создана
 modified_on: Дата изменения
 card_size: Размер Карточки
 sort_field: Поле сортировки
+add_sort_field: Добавить поле сортировки
 sort: Сортировать
 status: Статус
 toggle_manual_sorting: Переключить Ручную Сортировку
@@ -369,7 +380,7 @@ account_created_successfully: Аккаунт Успешно Создан
 auto_fill: Автозаполнение
 corresponding_field: Соответствующее Поле
 errors:
-  COLLECTION_NOT_FOUND: "Коллекция не существует"
+  COLLECTION_NOT_FOUND: 'Коллекция не существует'
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
   INVALID_CREDENTIALS: Неверное имя пользователя или пароль
@@ -379,6 +390,7 @@ errors:
   ITEM_LIMIT_REACHED: Достигнут лимит элементов
   ITEM_NOT_FOUND: Элемент не найден
   ROUTE_NOT_FOUND: Не найдено
+  RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   UNKNOWN: Неожиданная Ошибка
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...
@@ -409,7 +421,8 @@ start_end_of_count_items: '{start}-{end} из {count} элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
-  Вы уверены, что хотите удалить эту коллекцию? Это действие приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+  Вы уверены, что хотите удалить эту коллекцию? Это действие приведет к удалению коллекции и всех ее элементов. Это
+  действие необратимо.
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
@@ -441,7 +454,7 @@ operators:
   gte: Больше или равно
   in: Один из
   nin: Не один из
-  null: "Null"
+  null: 'Null'
   nnull: Не null
   contains: Содержит
   ncontains: Не содержит
@@ -500,6 +513,20 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+image_url: URL изображения
+alt_text: Альтернативный текст
+media: Медиа
+width: Ширина
+height: Высота
+source: Источник
+url_placeholder: Введите адрес url...
+display_text: Отображаемый текст
+display_text_placeholder: Введите текст для отображения...
+tooltip: Подсказка
+tooltip_placeholder: Введите подсказку...
+open_link_in: Открыть ссылку в
+new_tab: Новая вкладка
+current_tab: Текущая вкладка
 wysiwyg_options:
   aligncenter: По Середине
   alignjustify: По Ширине
@@ -519,10 +546,10 @@ wysiwyg_options:
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
-  link: Ссылка
+  link: Добавить/изменить адрес
   unlink: Удалить Ссылку
-  media: Добавить Медиа
-  image: Добавить Изображение
+  media: Добавить/изменить медиа
+  image: Добавить/изменить изображ.
   copy: Копировать
   cut: Вырезать
   paste: Вставить
@@ -544,7 +571,7 @@ wysiwyg_options:
   selectall: Выбрать Все
   table: Таблица
   visualaid: Показать невидимые элементы
-  code: Показать Исходник
+  source_code: Изменить исходный код
   fullscreen: Во Весь Экран
   directionality: Направленность
 dropdown: Выпадающий список
@@ -565,9 +592,10 @@ settings_project: Настройки Проекта
 settings_webhooks: Webhooks
 settings_presets: Пресеты и Закладки
 scope: Область
+select: Выбрать...
 layout: Макет
+tree_view: В виде дерева
 changes_are_permanent: Изменения необратимы
-preset_name_placeholder: Название закладки...
 preset_search_placeholder: Строка поиска...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета
@@ -578,26 +606,33 @@ discard_changes: Отменить изменения
 keep_editing: Продолжить Редактирование
 page_help_collections_overview: '**Обзор Коллекций** — Списки всех коллекций, к которым у вас есть доступ.'
 page_help_collections_collection: >-
-  **Просмотр Элементов** — Список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
+  **Просмотр Элементов** — Список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и
+  сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_collections_item: >-
-  **Карточка Элемента** — Форма для просмотра и управления этим элементом. Эта панель также содержит полную историю изменений и встроенные комментарии.
+  **Карточка Элемента** — Форма для просмотра и управления этим элементом. Эта панель также содержит полную историю
+  изменений и встроенные комментарии.
 page_help_activity_collection: >-
   **Просмотр Активности** — Полный список всех действий пользователя и контента.
 page_help_docs_global: >-
   **Обзор Документации** — Документация, специально созданная к версии и схеме этого проекта.
 page_help_files_collection: >-
-  **Библиотека Файлов** — Список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
+  **Библиотека Файлов** — Список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя,
+  и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
-  **Карточка Файла** — Форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки Проекта** — Глобальные параметры конфигурации проекта."
+  **Карточка Файла** — Форма для управления метаданными файла, редактирования исходного файла и обновления настроек
+  доступа.
+page_help_settings_project: '**Настройки Проекта** — Глобальные параметры конфигурации проекта.'
 page_help_settings_datamodel_collections: >-
-  **Модель Данных: Коллекции** — Список всех доступных коллекций. Включает видимые, скрытые и системные коллекции, а также неуправляемые таблицы базы данных, которые могут быть добавлены.
+  **Модель Данных: Коллекции** — Список всех доступных коллекций. Включает видимые, скрытые и системные коллекции, а
+  также неуправляемые таблицы базы данных, которые могут быть добавлены.
 page_help_settings_datamodel_fields: >-
   **Модель Данных: Коллекция** — Форма для управления этой коллекцией и ее полями.
-page_help_settings_roles_collection: '**Просмотр Ролей** — Список Администраторов, Публичных и собственных Ролей Пользователей.'
-page_help_settings_roles_item: "**Карточка Роли** — Управление разрешениями роли и другими настройками."
+page_help_settings_roles_collection:
+  '**Просмотр Ролей** — Список Администраторов, Публичных и собственных Ролей Пользователей.'
+page_help_settings_roles_item: '**Карточка Роли** — Управление разрешениями роли и другими настройками.'
 page_help_settings_presets_collection: >-
-  **Просмотр Пресетов** — Список всех пресетов проекта, включая: пользователей, ролей и глобальные закладки, а также представления по умолчанию.
+  **Просмотр Пресетов** — Список всех пресетов проекта, включая: пользователей, ролей и глобальные закладки, а также
+  представления по умолчанию.
 page_help_settings_presets_item: >-
   **Карточка Пресета** — Форма для управления пресетами закладок и коллекций по умолчанию.
 page_help_settings_webhooks_collection: '**Просмотр Веб-хуков** — Список всех веб-хуков в проекте.'
@@ -612,7 +647,8 @@ all: Все
 none: Нет
 no_layout_collection_selected_yet: Макет/коллекция пока не выбраны
 batch_delete_confirm: >-
-  Никаких элементов не выбрано | Вы уверены, что хотите удалить этот элемент? Это действие не может быть отменено. | Вы уверены, что хотите удалить эти элементы {count}? Это действие не может быть отменено.
+  Никаких элементов не выбрано | Вы уверены, что хотите удалить этот элемент? Это действие не может быть отменено. | Вы
+  уверены, что хотите удалить эти элементы {count}? Это действие не может быть отменено.
 cancel: Отмена
 collection: Коллекция
 collections: Коллекции
@@ -637,7 +673,6 @@ fields:
     display_template: Шаблон отображения
     hidden: Скрыто
     singleton: Синглтон
-    translations: Переводы Названия Коллекции
     archive_value: Заархивировать содержимое
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
@@ -713,12 +748,18 @@ fields:
     users: Пользователи в Роли
     module_list: Навигация по Модулям
     collection_list: Навигация по Коллекциям
+field_options:
+  directus_collections:
+    track_activity_revisions: Отслеживание активности и изменений
+    only_track_activity: Отслеживать только активность
+    do_not_track_anything: Ничего не отслеживать
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 do_nothing: Ничего не Делать
 generate_and_save_uuid: Создать и Сохранить UUID
 save_current_user_id: Сохранить ID Текущего Пользователя
 save_current_user_role: Сохранить Роль Текущего Пользователя
 save_current_datetime: Сохранить Текущую Дату/Время
+block: Блокировать
 comment: Комментарий
 continue: Продолжить
 continue_as: >-
@@ -783,19 +824,20 @@ value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 interfaces:
-  button-links:
+  presentation-links:
+    presentation-links: Ссылки на кнопки
     links: Ссылки
     style: Стиль
     primary: Первичный
     link: Ссылки
     button: Кнопки
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Флажки
     description: Выбрать из нескольких опций с помощью флажков
     allow_other: Разрешить другие
     show_more: 'Показать еще {count}'
     items_shown: Показано Элементов
-  code:
+  input-code:
     code: Код
     description: Написать или поделиться фрагментами кода
     line_number: Номер строки
@@ -804,7 +846,7 @@ interfaces:
     collection: Коллекция
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  collections:
+  system-collections:
     collections: Коллекции
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
@@ -821,7 +863,7 @@ interfaces:
     include_seconds: Включать Секунды
     set_to_now: Установить Сейчас
     use_24: Использовать 24-Часовой Формат
-  display-template:
+  system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей
     collection_field: Поле коллекции
@@ -835,7 +877,7 @@ interfaces:
     inline_title_label: Показать заголовок внутри строки
     margin_top: Отступ сверху
     margin_top_label: Увеличить верхний отступ
-  dropdown:
+  select-dropdown:
     description: Выберите значение из выпадающего списка
     choices_placeholder: Добавить новый выбор
     allow_other: Разрешить другие
@@ -844,8 +886,8 @@ interfaces:
     allow_none_label: Разрешить Отсутствие Выбора
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
-  dropdown-multiselect:
-    dropdown-multiselect: Выпадающий Список (Несколько)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Выпадающий Список (Несколько)
     description: Выберите несколько значений из выпадающего списка
   file:
     file: Файл
@@ -853,7 +895,7 @@ interfaces:
   files:
     files: Файлы
     description: Выбрать или загрузить несколько файлов
-  hash:
+  input-hash:
     hash: Хэш
     description: Введите значение для хэширования
     masked: Маскированный
@@ -865,26 +907,26 @@ interfaces:
   image:
     image: Изображение
     description: Выберите или загрузите изображение
-  interface:
+  system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...
-  interface-options:
+  system-interface-options:
     interface-options: Настройки интерфейса
     description: Окно выбора параметров интерфейса
-  many-to-many:
+  list-m2m:
     many-to-many: Многие ко многим
     description: Выберите несколько связанных элементов
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Многие к одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
     customSyntax_label: Добавить пользовательский тип синтаксиса
     customSyntax_add: Добавить пользовательский синтаксис
-  notice:
+  presentation-notice:
     notice: Примечание
     description: Показать короткое примечание
     text: Введите содержимое примечания здесь...
@@ -894,18 +936,17 @@ interfaces:
     minimum_value: Минимальное Значение
     maximum_value: Максимальное Значение
     step_interval: Интервал Шага
-  one-to-many:
+  list-o2m:
     one-to-many: Один ко многим
     description: Выберите несколько связанных элементов
     no_collection: Коллекция не найдена
-  radio-buttons:
+  select-radio:
     radio-buttons: Радио кнопки
     description: Выберите один из нескольких вариантов
-  repeater:
+  list:
     repeater: Репитер
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать Поля
-    add_label: 'Метка "Добавить Новую Строку"'
     field_name_placeholder: Введите название поля...
     field_note_placeholder: Введите примечание к полю...
   slider:
@@ -929,18 +970,18 @@ interfaces:
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
     add_tags: Добавить метки...
-  text-input:
+  input:
     text-input: Text Input
     description: Введите текст в одну строку
     trim: Обрезать
     trim_label: Обрезать начало и конец
     mask: Маскированный
     mask_label: Скрыть настоящее значение
-    nullable_label: Сохранить пустое значение как NULL
-  textarea:
+    clear_label: Сохранить как пустую строку
+  input-multiline:
     textarea: Текстовое поле
     description: Введите простой текст в несколько строк
-  toggle:
+  boolean:
     toggle: Переключить
     description: Переключение между вкл и выкл
     label_placeholder: Введите метку...
@@ -956,7 +997,7 @@ interfaces:
       auto: Авто
       dropdown: Выпадающий список
       modal: Модальный
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Расширенный редактор, создающий HTML содержимое
     toolbar: Панель инструментов

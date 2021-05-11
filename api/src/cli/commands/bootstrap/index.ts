@@ -1,11 +1,11 @@
+import { nanoid } from 'nanoid';
+import runMigrations from '../../../database/migrations/run';
+import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
 import logger from '../../../logger';
-import installDatabase from '../../../database/seeds/run';
-import runMigrations from '../../../database/migrations/run';
 import { getSchema } from '../../../utils/get-schema';
-import { nanoid } from 'nanoid';
 
-export default async function bootstrap() {
+export default async function bootstrap(): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
 	if ((await isDatabaseAvailable()) === false) {
@@ -23,11 +23,14 @@ export default async function bootstrap() {
 
 		await installDatabase(database);
 
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
+
 		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });
-		const role = await rolesService.create({ name: 'Admin', admin_access: true });
+		const role = await rolesService.createOne({ name: 'Admin', admin_access: true });
 
 		logger.info('Adding first admin user...');
 		const usersService = new UsersService({ schema });
@@ -46,7 +49,7 @@ export default async function bootstrap() {
 			logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 		}
 
-		await usersService.create({ email: adminEmail, password: adminPassword, role });
+		await usersService.createOne({ email: adminEmail, password: adminPassword, role });
 
 		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
 			const settingsService = new SettingsService({ schema });
@@ -54,10 +57,9 @@ export default async function bootstrap() {
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
 	}
-
-	logger.info('Running migrations...');
-	await runMigrations(database, 'latest');
 
 	logger.info('Done');
 	process.exit(0);
@@ -69,7 +71,7 @@ async function isDatabaseAvailable() {
 	const tries = 5;
 	const secondsBetweenTries = 5;
 
-	for (var i = 0; i < tries; i++) {
+	for (let i = 0; i < tries; i++) {
 		if (await hasDatabaseConnection()) {
 			return true;
 		}
