@@ -23,12 +23,14 @@ if (env.EMAIL_TRANSPORT === 'sendmail') {
 	} as any);
 } else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {
 	const mg = require('nodemailer-mailgun-transport');
-	transporter = nodemailer.createTransport(mg({
-		auth: {
-			api_key: env.EMAIL_MAILGUN_APIKEY,
-			domain: env.EMAIL_MAILGUN_DOMAIN,
-		},
-	}) as any);
+	transporter = nodemailer.createTransport(
+		mg({
+			auth: {
+				api_key: env.EMAIL_MAILGUN_APIKEY,
+				domain: env.EMAIL_MAILGUN_DOMAIN,
+			},
+		}) as any
+	);
 } else {
 	logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 }
