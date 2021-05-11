@@ -1,16 +1,22 @@
 <template>
-	<div id="map-container" ref="container" :class="{ hover: hoveredId != null }"></div>
+	<div id="map-container" ref="container" :class="{ hover: hoveredFeature != null }"></div>
 </template>
 
 <script lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css';
-
-import maplibre, {
+import {
+	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
+	AttributionControl,
+	NavigationControl,
+	GeolocateControl,
 	LngLatBoundsLike,
+	FitBoundsOptions,
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
+	AnyLayer,
+	Popup,
 	Map,
 } from 'maplibre-gl';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
@@ -30,11 +36,11 @@ export default defineComponent({
 			required: true,
 		},
 		layers: {
-			type: Array as PropType<maplibre.AnyLayer[]>,
+			type: Array as PropType<AnyLayer[]>,
 			default: () => [],
 		},
 		animateOptions: {
-			type: Object as PropType<maplibre.FitBoundsOptions>,
+			type: Object as PropType<FitBoundsOptions>,
 			default: () => ({}),
 		},
 		camera: {
@@ -57,7 +63,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 		let map: Map;
 		const container = ref<HTMLElement>();
-		const hoveredId = ref<string | number>();
+		const hoveredFeature = ref<MapboxGeoJSONFeature>();
 		const unwatchers = [] as WatchStopHandle[];
 
 		onMounted(() => {
@@ -67,7 +73,7 @@ export default defineComponent({
 			map.remove();
 		});
 
-		const popup = new maplibre.Popup({
+		const popup = new Popup({
 			closeButton: false,
 			closeOnClick: false,
 			className: 'mapboxgl-point-popup',
@@ -75,9 +81,9 @@ export default defineComponent({
 			offset: 20,
 		});
 
-		const attributionControl = new maplibre.AttributionControl({ compact: true });
-		const navigationControl = new maplibre.NavigationControl();
-		const geolocateControl = new maplibre.GeolocateControl();
+		const attributionControl = new AttributionControl({ compact: true });
+		const navigationControl = new NavigationControl();
+		const geolocateControl = new GeolocateControl();
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
 		const basemapSelectControl = new BasemapSelectControl();
 		const boxSelectControl = new BoxSelectControl({
@@ -87,10 +93,10 @@ export default defineComponent({
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
 
-		return { container, hoveredId };
+		return { container, hoveredFeature };
 
 		function setupMap() {
-			map = new maplibre.Map({
+			map = new Map({
 				container: 'map-container',
 				style: { version: 8, layers: [] },
 				attributionControl: false,
@@ -106,12 +112,6 @@ export default defineComponent({
 
 			map.on('load', () => {
 				watch(() => props.bounds, fitDataBounds);
-				map.on('mouseenter', '__directus_polygons', onFeatureEnter);
-				map.on('mouseleave', '__directus_polygons', onFeatureLeave);
-				map.on('mouseenter', '__directus_points', onFeatureEnter);
-				map.on('mouseleave', '__directus_points', onFeatureLeave);
-				map.on('mouseenter', '__directus_lines', onFeatureEnter);
-				map.on('mouseleave', '__directus_lines', onFeatureLeave);
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('click', '__directus_polygons', onFeatureClick);
 				map.on('click', '__directus_points', onFeatureClick);
@@ -128,6 +128,7 @@ export default defineComponent({
 						pitch: map.getPitch(),
 					});
 				});
+				map.on('mousemove', updatePopup);
 				map.on('basemapselect', updateStyle);
 				startWatchers();
 			});
@@ -192,7 +193,7 @@ export default defineComponent({
 			});
 		}
 
-		function updateLayers(newLayers?: maplibre.AnyLayer[], previousLayers?: maplibre.AnyLayer[]) {
+		function updateLayers(newLayers?: AnyLayer[], previousLayers?: AnyLayer[]) {
 			const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
 			previousLayers?.forEach((layer) => {
 				if (currentMapLayersId.has(layer.id)) map.removeLayer(layer.id);
@@ -222,40 +223,23 @@ export default defineComponent({
 			}
 		}
 
-		function onFeatureEnter(event: MapLayerMouseEvent) {
-			const feature = event.features?.[0];
+		function updatePopup(event: MapLayerMouseEvent) {
+			const feature = map.queryRenderedFeatures(event.point, {
+				layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
+			})[0];
 			if (feature && props.featureId && feature.properties) {
-				hoveredId.value = feature.id;
-				map.setFeatureState(
-					{
-						id: hoveredId.value,
-						source: feature.layer.source as string,
-					},
-					{ hovered: true }
-				);
+				if (feature.id !== hoveredFeature.value?.id) {
+					popup.setHTML(feature.properties.description).addTo(map);
+				}
 				if (feature.geometry.type === 'Point') {
 					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
 				} else {
 					popup.setLngLat(event.lngLat);
-					map.on('mousemove', updatePopupLngLat);
 				}
-				popup.setHTML(feature.properties.description).addTo(map);
-				emit('hover', hoveredId.value);
-			}
-		}
-
-		function updatePopupLngLat(event: MapLayerMouseEvent) {
-			popup.setLngLat(event.lngLat);
-		}
-
-		function onFeatureLeave(event: MapLayerMouseEvent) {
-			if (hoveredId.value) {
-				map.off('mousemove', updatePopupLngLat);
-				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
-				hoveredId.value = undefined;
+			} else {
 				popup.remove();
-				emit('leave', hoveredId.value);
 			}
+			hoveredFeature.value = feature;
 		}
 
 		function expandCluster(event: MapLayerMouseEvent) {
