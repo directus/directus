@@ -22,7 +22,7 @@
 			:collection="translationsCollection"
 			:primary-key="editing"
 			:edits="edits"
-			:circular-field="translationsRelation.many_field"
+			:circular-field="translationsRelation.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -33,7 +33,7 @@
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
 import { useRelationsStore, useFieldsStore } from '@/stores/';
 import api from '@/api';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 import { useCollection } from '@/composables/use-collection';

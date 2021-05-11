@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].one_collection" />
+				<v-input disabled :value="relations[0].related_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('translations_collection') }}</div>
@@ -30,8 +30,8 @@
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
-									:active="relations[0].many_collection === collection.collection"
-									@click="relations[0].many_collection = collection.collection"
+									:active="relations[0].collection === collection.collection"
+									@click="relations[0].collection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -45,8 +45,8 @@
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
-										:active="relations[0].many_collection === collection.collection"
-										@click="relations[0].many_collection = collection.collection"
+										:active="relations[0].collection === collection.collection"
+										@click="relations[0].collection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -63,7 +63,7 @@
 				<v-input
 					:autofocus="autoFill"
 					:class="{ matches: relatedCollectionExists }"
-					v-model="relations[1].one_collection"
+					v-model="relations[1].related_collection"
 					:nullable="false"
 					:placeholder="$t('collection') + '...'"
 					:disabled="type === 'files' || isExisting"
@@ -84,8 +84,8 @@
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
-									:active="relations[1].one_collection === collection.collection"
-									@click="relations[1].one_collection = collection.collection"
+									:active="relations[1].related_collection === collection.collection"
+									@click="relations[1].related_collection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -99,8 +99,8 @@
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
-										:active="relations[1].one_collection === collection.collection"
-										@click="relations[1].one_collection = collection.collection"
+										:active="relations[1].related_collection === collection.collection"
+										@click="relations[1].related_collection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -114,8 +114,8 @@
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
-				v-model="relations[0].many_field"
+				:class="{ matches: junctionFieldExists(relations[0].field) }"
+				v-model="relations[0].field"
 				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
@@ -136,9 +136,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[0].many_field === item.value"
+								:active="relations[0].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].many_field = item.value"
+								@click="relations[0].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -151,8 +151,8 @@
 			<div class="spacer" />
 			<div class="spacer" />
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
-				v-model="relations[1].many_field"
+				:class="{ matches: junctionFieldExists(relations[1].field) }"
+				v-model="relations[1].field"
 				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
@@ -173,9 +173,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[1].many_field === item.value"
+								:active="relations[1].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[1].many_field = item.value"
+								@click="relations[1].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -258,20 +258,23 @@ export default defineComponent({
 
 		const junctionCollection = computed({
 			get() {
-				return state.relations[0].many_collection;
+				return state.relations[0].collection;
 			},
-			set(collection: string) {
-				state.relations[0].many_collection = collection;
-				state.relations[1].many_collection = collection;
+			set(collection: string | undefined) {
+				state.relations[0].collection = collection;
+				state.relations[1].collection = collection;
 			},
 		});
 
 		const junctionCollectionExists = computed(() => {
-			return collectionsStore.getCollection(junctionCollection.value) !== null;
+			return junctionCollection.value && collectionsStore.getCollection(junctionCollection.value) !== null;
 		});
 
 		const relatedCollectionExists = computed(() => {
-			return collectionsStore.getCollection(state.relations[1].one_collection) !== null;
+			return (
+				state.relations[1].related_collection &&
+				collectionsStore.getCollection(state.relations[1].related_collection) !== null
+			);
 		});
 
 		const junctionFields = computed(() => {
@@ -281,9 +284,9 @@ export default defineComponent({
 				text: field.field,
 				value: field.field,
 				disabled:
-					state.relations[0].many_field === field.field ||
+					state.relations[0].field === field.field ||
 					field.schema?.is_primary_key ||
-					state.relations[1].many_field === field.field,
+					state.relations[1].field === field.field,
 			}));
 		});
 

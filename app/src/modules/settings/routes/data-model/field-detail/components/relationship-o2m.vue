@@ -10,7 +10,7 @@
 				<v-input
 					db-safe
 					:placeholder="$t('collection') + '...'"
-					v-model="relations[0].many_collection"
+					v-model="relations[0].collection"
 					:nullable="false"
 					:disabled="isExisting"
 					:class="{ matches: relatedCollectionExists }"
@@ -25,8 +25,8 @@
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
-									:active="relations[0].many_collection === collection.collection"
-									@click="relations[0].many_collection = collection.collection"
+									:active="relations[0].collection === collection.collection"
+									@click="relations[0].collection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -40,8 +40,8 @@
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
-										:active="relations[0].many_collection === collection.collection"
-										@click="relations[0].many_collection = collection.collection"
+										:active="relations[0].collection === collection.collection"
+										@click="relations[0].collection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -53,7 +53,7 @@
 					</template>
 
 					<template #input v-if="isExisting">
-						<v-text-overflow :text="relations[0].many_collection" />
+						<v-text-overflow :text="relations[0].collection" />
 					</template>
 				</v-input>
 			</div>
@@ -64,7 +64,7 @@
 			</v-input>
 			<v-input
 				db-safe
-				v-model="relations[0].many_field"
+				v-model="relations[0].field"
 				:nullable="false"
 				:disabled="isExisting"
 				:placeholder="$t('foreign_key') + '...'"
@@ -80,8 +80,8 @@
 							<v-list-item
 								v-for="field in fields"
 								:key="field.value"
-								:active="relations[0].many_field === field.value"
-								@click="relations[0].many_field = field.value"
+								:active="relations[0].field === field.value"
+								@click="relations[0].field = field.value"
 								:disabled="field.disabled"
 							>
 								<v-list-item-content>
@@ -93,7 +93,7 @@
 				</template>
 
 				<template #input v-if="isExisting">
-					<v-text-overflow :text="relations[0].many_field" />
+					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
 			<v-icon class="arrow" name="arrow_forward" />
@@ -108,7 +108,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>
-				<v-input disabled v-model="relations[0].many_field" :placeholder="$t('field_name') + '...'" db-safe />
+				<v-input disabled v-model="relations[0].field" :placeholder="$t('field_name') + '...'" db-safe />
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
@@ -118,7 +118,7 @@
 
 			<v-input
 				db-safe
-				v-model="relations[0].sort_field"
+				v-model="relations[0].meta.sort_field"
 				:placeholder="$t('add_sort_field') + '...'"
 				:class="{ matches: sortFieldExists }"
 			>
@@ -132,8 +132,8 @@
 							<v-list-item
 								v-for="field in fields"
 								:key="field.value"
-								:active="relations[0].sort_field === field.value"
-								@click="relations[0].sort_field = field.value"
+								:active="relations[0].meta.sort_field === field.value"
+								@click="relations[0].meta.sort_field = field.value"
 								:disabled="field.disabled"
 							>
 								<v-list-item-content>
@@ -194,19 +194,19 @@ export default defineComponent({
 
 		const relatedCollectionExists = computed(() => {
 			return (
-				collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection) !==
+				collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].collection) !==
 				undefined
 			);
 		});
 
 		const relatedFieldExists = computed(() => {
-			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].many_field) return false;
-			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
+			if (!state?.relations?.[0].collection || !state?.relations?.[0].field) return false;
+			return !!fieldsStore.getField(state.relations[0].collection, state.relations[0].field);
 		});
 
 		const sortFieldExists = computed(() => {
-			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].sort_field) return false;
-			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].sort_field);
+			if (!state?.relations?.[0].collection || !state?.relations?.[0].meta?.sort_field) return false;
+			return !!fieldsStore.getField(state.relations[0].collection, state.relations[0].meta.sort_field);
 		});
 
 		return {
@@ -248,25 +248,23 @@ export default defineComponent({
 			const currentCollectionPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
 			const fields = computed(() => {
-				if (!state.relations[0].many_collection) return [];
+				if (!state.relations[0].collection) return [];
 
-				return fieldsStore
-					.getFieldsForCollectionAlphabetical(state.relations[0].many_collection)
-					.map((field: Field) => ({
-						text: field.field,
-						value: field.field,
-						disabled:
-							!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
-					}));
+				return fieldsStore.getFieldsForCollectionAlphabetical(state.relations[0].collection).map((field: Field) => ({
+					text: field.field,
+					value: field.field,
+					disabled:
+						!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
+				}));
 			});
 
 			const collectionMany = computed({
 				get() {
-					return state.relations[0].many_collection!;
+					return state.relations[0].collection!;
 				},
 				set(collection: string) {
-					state.relations[0].many_collection = collection;
-					state.relations[0].many_field = '';
+					state.relations[0].collection = collection;
+					state.relations[0].field = '';
 				},
 			});
 
@@ -276,14 +274,14 @@ export default defineComponent({
 		function useCorresponding() {
 			const hasCorresponding = computed({
 				get() {
-					if (!state?.relations?.[0]?.many_collection || !state?.relations?.[0]?.many_field) return false;
+					if (!state?.relations?.[0]?.collection || !state?.relations?.[0]?.field) return false;
 
 					if (relatedFieldExists.value === true) {
 						return (
-							state.updateFields.find((updateField: any) => updateField.field === state.relations[0].many_field)?.meta
+							state.updateFields.find((updateField: any) => updateField.field === state.relations[0].field)?.meta
 								?.interface === 'many-to-one' ||
-							fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)?.meta
-								?.interface === 'many-to-one'
+							fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.meta?.interface ===
+								'many-to-one'
 						);
 					} else {
 						return (
@@ -293,25 +291,25 @@ export default defineComponent({
 					}
 				},
 				set(enabled: boolean) {
-					if (!state?.relations?.[0]?.many_field) return;
+					if (!state?.relations?.[0]?.field) return;
 
 					if (relatedFieldExists.value === true) {
 						if (enabled === true) {
 							state.updateFields = [
 								{
-									collection: state.relations[0].one_collection,
-									field: state.relations[0].many_field,
+									collection: state.relations[0].related_collection!,
+									field: state.relations[0].field,
 									meta: {
 										interface: 'select-dropdown-m2o',
-										special: 'm2o',
+										special: ['m2o'],
 									},
 								},
 							];
 						} else {
 							state.updateFields = [
 								{
-									collection: state.relations[0].one_collection,
-									field: state.relations[0].many_field,
+									collection: state.relations[0].related_collection!,
+									field: state.relations[0].field,
 									meta: {
 										interface: null,
 										special: null,
@@ -327,11 +325,11 @@ export default defineComponent({
 								...state.newFields,
 								{
 									$type: 'manyRelated',
-									collection: state.relations[0].one_collection,
-									field: state.relations[0].many_field,
+									collection: state.relations[0].related_collection!,
+									field: state.relations[0].field,
 									meta: {
 										interface: 'select-dropdown-m2o',
-										special: 'm2o',
+										special: ['m2o'],
 									},
 								},
 							];
@@ -356,8 +354,8 @@ export default defineComponent({
 			});
 
 			const correspondingLabel = computed(() => {
-				if (state.relations[0].many_collection) {
-					return i18n.t('add_m2o_to_collection', { collection: state.relations[0].many_collection });
+				if (state.relations[0].collection) {
+					return i18n.t('add_m2o_to_collection', { collection: state.relations[0].collection });
 				}
 
 				return i18n.t('add_field_related');

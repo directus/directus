@@ -29,7 +29,7 @@ let state: {
 	relations: DeepPartial<Relation>[];
 	newCollections: DeepPartial<Collection & { fields?: DeepPartial<Field>[]; $type?: string }>[];
 	newFields: DeepPartial<Field & { $type?: string }>[];
-	updateFields: DeepPartial<Field>[];
+	updateFields: DeepPartial<Field & { $type?: string }>[];
 	newRows: Record<string, Item[]>;
 	autoFillJunctionRelation: boolean;
 };
@@ -44,37 +44,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	const { interfaces } = getInterfaces();
 	const { displays } = getDisplays();
 
-	state = reactive({
-		fieldData: {
-			field: '',
-			type: 'string',
-			schema: {
-				default_value: undefined,
-				max_length: undefined,
-				is_nullable: true,
-				is_unique: false,
-				numeric_precision: null,
-				numeric_scale: null,
-			},
-			meta: {
-				hidden: false,
-				interface: undefined,
-				options: undefined,
-				display: undefined,
-				display_options: undefined,
-				readonly: false,
-				special: undefined,
-				note: undefined,
-			},
-		},
-		relations: [],
-		newCollections: [],
-		newFields: [],
-		updateFields: [],
-		newRows: {},
-
-		autoFillJunctionRelation: false,
-	});
+	clearLocalStore();
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
 		return interfaces.value
@@ -591,7 +561,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.relations[0].field,
 			() => {
 				state.relations[1].meta = {
-					...state.relations[1].meta,
+					...(state.relations[1].meta || {}),
 					junction_field: state.relations[0].field,
 				};
 			}
@@ -694,7 +664,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 			state.fieldData.field = 'translations';
 			state.relations[0].meta = {
-				...state.relations[0].meta,
+				...(state.relations[0].meta || {}),
 				one_field: 'translations',
 			};
 		}
@@ -843,15 +813,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		}
 
 		watch(
-			() => state.relations[0].collection,
-			() => {
-				if (state.relations[0].collection && collectionExists(state.relations[0].collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].collection)?.field;
-				}
-			}
-		);
-
-		watch(
 			() => state.relations[0].field,
 			() => {
 				state.relations[1].meta = {
@@ -876,8 +837,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				() => state.relations[0].collection,
 				() => state.relations[0].field,
 				() => state.relations[1].field,
-				() => state.relations[1].one_collection_field,
-				() => state.relations[0].sort_field,
+				() => state.relations[1].meta?.one_collection_field,
+				() => state.relations[0].meta?.sort_field,
 			],
 			syncNewCollectionsM2A
 		);
@@ -885,7 +846,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].one_field = state.fieldData.field;
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: state.fieldData.field,
+				};
 
 				if (state.autoFillJunctionRelation) {
 					state.relations[0].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
@@ -900,8 +864,11 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (state.autoFillJunctionRelation === true) {
 					state.relations[0].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
 					state.relations[1].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
-					state.relations[0].field = `${state.relations[0].related_collection}_${state.relations[0].one_primary}`;
-					state.relations[1].one_collection_field = 'collection';
+					state.relations[0].field = `${state.relations[0].related_collection}_id`;
+					state.relations[1].meta = {
+						...(state.relations[1].meta || {}),
+						one_collection_field: 'collection',
+					};
 					state.relations[1].field = 'item';
 				}
 			},
@@ -911,23 +878,32 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function usePresentation() {
 		delete state.fieldData.schema;
-		state.fieldData.type = null;
-
-		state.fieldData.meta.special = ['alias', 'no-data'];
+		delete state.fieldData.type;
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data'],
+		};
 	}
 
 	function useStandard() {
 		watch(
 			() => state.fieldData.type,
 			() => {
-				state.fieldData.meta.interface = null;
-				state.fieldData.meta.options = null;
-				state.fieldData.meta.display = null;
-				state.fieldData.meta.display_options = null;
-				state.fieldData.meta.special = null;
-				state.fieldData.schema.default_value = undefined;
-				state.fieldData.schema.max_length = undefined;
-				state.fieldData.schema.is_nullable = true;
+				state.fieldData.meta = {
+					...(state.fieldData.meta || {}),
+					interface: null,
+					options: null,
+					display: null,
+					display_options: null,
+					special: null,
+				};
+
+				state.fieldData.schema = {
+					...(state.fieldData.schema || {}),
+					default_value: undefined,
+					max_length: undefined,
+					is_nullable: true,
+				};
 
 				switch (state.fieldData.type) {
 					case 'uuid':
@@ -962,5 +938,35 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 }
 
 function clearLocalStore(): void {
-	state = null;
+	state = reactive({
+		fieldData: {
+			field: '',
+			type: 'string',
+			schema: {
+				default_value: undefined,
+				max_length: undefined,
+				is_nullable: true,
+				is_unique: false,
+				numeric_precision: null,
+				numeric_scale: null,
+			},
+			meta: {
+				hidden: false,
+				interface: undefined,
+				options: undefined,
+				display: undefined,
+				display_options: undefined,
+				readonly: false,
+				special: undefined,
+				note: undefined,
+			},
+		},
+		relations: [],
+		newCollections: [],
+		newFields: [],
+		updateFields: [],
+		newRows: {},
+
+		autoFillJunctionRelation: false,
+	});
 }

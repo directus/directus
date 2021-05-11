@@ -9,7 +9,7 @@ export function getLocalTypeForField(
 	const relationsStore = useRelationsStore();
 
 	const fieldInfo = fieldsStore.getField(collection, field);
-	const relations = relationsStore.getRelationsForField(collection, field);
+	const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
 
 	if (relations.length === 0) {
 		if (fieldInfo.type === 'alias') return 'presentation';
@@ -18,8 +18,8 @@ export function getLocalTypeForField(
 
 	if (relations.length === 1) {
 		const relation = relations[0];
-		if (relation.one_collection === 'directus_files') return 'file';
-		if (relation.many_collection === collection && relation.many_field === field) return 'm2o';
+		if (relation.related_collection === 'directus_files') return 'file';
+		if (relation.collection === collection && relation.field === field) return 'm2o';
 		return 'o2m';
 	}
 
@@ -33,16 +33,16 @@ export function getLocalTypeForField(
 
 		const relationForCurrent = relations.find((relation: Relation) => {
 			return (
-				(relation.many_collection === collection && relation.many_field === field) ||
-				(relation.one_collection === collection && relation.one_field === field)
+				(relation.collection === collection && relation.field === field) ||
+				(relation.related_collection === collection && relation.meta?.one_field === field)
 			);
 		});
 
-		if (relationForCurrent?.many_collection === collection && relationForCurrent?.many_field === field) {
+		if (relationForCurrent?.collection === collection && relationForCurrent?.field === field) {
 			return 'm2o';
 		}
 
-		if (relations[0].one_collection === 'directus_files' || relations[1].one_collection === 'directus_files') {
+		if (relations[0].related_collection === 'directus_files' || relations[1].related_collection === 'directus_files') {
 			return 'files';
 		} else {
 			return 'm2m';

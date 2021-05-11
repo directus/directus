@@ -50,9 +50,9 @@ export default defineComponent({
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
 			const relation = props.relations.find(
-				(relation) => relation.many_collection === props.collection && relation.many_field === field
+				(relation) => relation.collection === props.collection && relation.field === field
 			);
-			return relation?.one_collection || null;
+			return relation?.related_collection || null;
 		});
 
 		return { template, relatedCollection };

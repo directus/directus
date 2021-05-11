@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].many_collection" />
+				<v-input disabled :value="relations[0].collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
@@ -11,7 +11,7 @@
 					:class="{ matches: relatedCollectionExists }"
 					db-safe
 					key="related-collection"
-					v-model="relations[0].one_collection"
+					v-model="relations[0].related_collection"
 					:nullable="false"
 					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
@@ -26,8 +26,8 @@
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
-									:active="relations[0].one_collection === collection.collection"
-									@click="relations[0].one_collection = collection.collection"
+									:active="relations[0].related_collection === collection.collection"
+									@click="relations[0].related_collection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -41,8 +41,8 @@
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
-										:active="relations[0].one_collection === collection.collection"
-										@click="relations[0].one_collection = collection.collection"
+										:active="relations[0].related_collection === collection.collection"
+										@click="relations[0].related_collection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -54,13 +54,13 @@
 					</template>
 
 					<template #input v-if="isExisting">
-						<v-text-overflow :text="relations[0].one_collection" />
+						<v-text-overflow :text="relations[0].related_collection" />
 					</template>
 				</v-input>
 			</div>
 			<v-input disabled>
 				<template #input>
-					<v-text-overflow :text="relations[0].many_field" />
+					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
 			<v-input
@@ -141,7 +141,9 @@ export default defineComponent({
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
-			return !!collectionsStore.getCollection(state.relations[0].one_collection);
+			return (
+				state.relations[0].related_collection && !!collectionsStore.getCollection(state.relations[0].related_collection)
+			);
 		});
 
 		return {
@@ -187,15 +189,17 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
-						state.relations[0].one_field = state.relations[0].many_collection;
+						state.relations[0].meta = {
+							...(state.relations[0].meta || {}),
+							one_field: state.relations[0].collection,
+						};
 
 						state.newFields.push({
 							$type: 'corresponding',
-							type: null,
-							field: state.relations[0].one_field,
-							collection: state.relations[0].one_collection,
+							field: state.relations[0].meta.one_field!,
+							collection: state.relations[0].related_collection!,
 							meta: {
-								special: 'o2m',
+								special: ['o2m'],
 								interface: 'list-o2m',
 							},
 						});
@@ -221,13 +225,16 @@ export default defineComponent({
 						return newField;
 					});
 
-					state.relations[0].one_field = field;
+					state.relations[0].meta = {
+						...(state.relations[0].meta || {}),
+						one_field: field,
+					};
 				},
 			});
 
 			const correspondingLabel = computed(() => {
-				if (state.relations[0].one_collection) {
-					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].one_collection });
+				if (state.relations[0].related_collection) {
+					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].related_collection });
 				}
 
 				return i18n.t('add_field_related');

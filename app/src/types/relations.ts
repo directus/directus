@@ -14,4 +14,5 @@ export type Relation = {
 		one_collection_field: null | string;
 		one_allowed_collections: null | string[];
 	};
+	schema?: Record<string, unknown>;
 };
