@@ -151,16 +151,8 @@ export default defineComponent({
 
 		const { loading, preset } = usePreset();
 		const { fields } = useForm();
-		const {
-			edits,
-			hasEdits,
-			initialValues,
-			values,
-			layoutQuery,
-			layoutOptions,
-			updateFilters,
-			searchQuery,
-		} = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, searchQuery } =
+			useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
