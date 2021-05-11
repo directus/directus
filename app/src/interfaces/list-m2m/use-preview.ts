@@ -1,3 +1,4 @@
+import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
@@ -96,9 +97,8 @@ export default function usePreview(
 		() => {
 			const { junctionField, junctionCollection } = relation.value;
 
-			tableHeaders.value = (fields.value.length > 0
-				? fields.value
-				: getDefaultFields().map((field) => `${junctionField}.${field}`)
+			tableHeaders.value = (
+				fields.value.length > 0 ? fields.value : getDefaultFields().map((field) => `${junctionField}.${field}`)
 			)
 				.map((fieldKey) => {
 					const field = fieldsStore.getField(junctionCollection, fieldKey);
