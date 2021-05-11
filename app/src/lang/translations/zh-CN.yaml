@@ -4,7 +4,7 @@ item_revision: 项目修订
 duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
-fill_width: 全宽
+fill_width: 填充宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用两步验证
 add_field: 添加字段
@@ -153,6 +153,7 @@ click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
 no_collections_found: 未找到任何集合
+new_data_alert: '以下将在您的数据模型中创建：'
 new_field: '新建字段'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
@@ -392,6 +393,8 @@ all_users: 全部用户
 delete_collection: 删除集合
 update_collection_success: 集合已更新
 delete_collection_success: 集合已删除
+start_end_of_count_items: '{count} 个项目中的 {start}-{end}'
+start_end_of_count_filtered_items: '已过滤后{count} 个项目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
@@ -406,6 +409,7 @@ system_collections: 系统集合
 placeholder: 占位文本
 icon_left: 左图标
 icon_right: 右图标
+count_other_revisions: '{count} 个其它版本'
 font: 字体
 sans_serif: 无衬线字体
 serif: 衬线字体
