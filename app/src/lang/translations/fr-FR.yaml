@@ -54,10 +54,15 @@ os_totalmem: Mémoire de l'OS
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
-  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
+  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces
+  {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
-reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
-the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de permissions, mais pas les restreindre.
+reset_system_permissions_copy:
+  Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du
+  système. Êtes-vous sûr ?
+the_following_are_minimum_permissions:
+  Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de
+  permissions, mais pas les restreindre.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -157,7 +162,8 @@ this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires
 click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
-  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
+  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le
+  gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
@@ -328,7 +334,7 @@ interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
-m2a_builder: Builder (M2A)
+list-m2a: Builder (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
@@ -426,7 +432,8 @@ start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtré
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
+  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments
+  qu'elle contient. Cette action est irréversible.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -587,8 +594,8 @@ deselect_all: Tout désélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
-creating_in: 'Création de l''élément dans {collection}'
-editing_in: 'Modification de l''élément dans {collection}'
+creating_in: "Création de l'élément dans {collection}"
+editing_in: "Modification de l'élément dans {collection}"
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
@@ -610,28 +617,38 @@ unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
-page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
+page_help_collections_overview:
+  '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
+  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise
+  en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour
+  un accès rapide.
 page_help_collections_item: >-
-  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
+  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également
+  un historique complet des révisions et des commentaires intégrés.
 page_help_activity_collection: >-
   **Parcourez l'activité** — Une liste complète de tous votre système et contenu de l'activité utilisateur.
 page_help_docs_global: >-
   **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
 page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
+  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les
+  filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès
+  rapide.
 page_help_files_item: >-
-  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
+  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et
+  de mise à jour des paramètres d'accès.
+page_help_settings_project: '**Paramètres du projet** — Les options de configuration globale de votre projet.'
 page_help_settings_datamodel_collections: >-
-  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
+  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles,
+  cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
+page_help_settings_roles_collection:
+  '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
+  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris
+  globaux et les vues par défaut.
 page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
@@ -646,7 +663,9 @@ all: Tout
 none: Aucun
 no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée pour le moment
 batch_delete_confirm: >-
-  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
+  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir
+  en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en
+  arrière !
 cancel: Annuler
 collection: Collection
 collections: Collections
@@ -826,8 +845,8 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 interfaces:
-  button-links:
-    button-links: Bouton de liens
+  presentation-links:
+    presentation-links: Bouton de liens
     links: Liens
     description: Boutons de liens configurables pour lancer des URL
     style: Style
@@ -835,13 +854,13 @@ interfaces:
     link: Liens
     button: Boutons
     error: Impossible d’effectuer cette action
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Cases à cocher
     description: Choisissez entre plusieurs options via les cases à cocher
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
-  code:
+  input-code:
     code: Code
     description: Écrire ou partager des extraits de code
     line_number: Numéro de ligne
@@ -850,7 +869,7 @@ interfaces:
     collection: Collection
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
-  collections:
+  system-collections:
     collections: Collections
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
@@ -867,7 +886,7 @@ interfaces:
     include_seconds: Inclure les secondes
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
-  display-template:
+  system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
     collection_field: Champ de collection
@@ -881,7 +900,7 @@ interfaces:
     inline_title_label: Afficher le titre à l'intérieur de la ligne
     margin_top: Marge supérieure
     margin_top_label: Augmenter la marge supérieure
-  dropdown:
+  select-dropdown:
     description: Sélectionner une valeur à partir d'une liste déroulante
     choices_placeholder: Ajouter un nouveau choix
     allow_other: Autoriser d'autres valeurs
@@ -890,8 +909,8 @@ interfaces:
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
-  dropdown-multiselect:
-    dropdown-multiselect: Liste déroulante (choix multiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier
@@ -899,7 +918,7 @@ interfaces:
   files:
     files: Fichiers
     description: Sélectionner ou Transférer plusieurs fichiers
-  hash:
+  input-hash:
     hash: Hash
     description: Entrer une valeur pour hachage
     masked: Masqué
@@ -911,21 +930,21 @@ interfaces:
   image:
     image: Image
     description: Sélectionner ou envoyer une image
-  interface:
+  system-interface:
     interface: Interface
     description: Sélectionner une interface existante
     placeholder: Sélectionner une interface...
-  interface-options:
+  system-interface-options:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
-  many-to-many:
+  list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Saisir et prévisualiser le markdown
     customSyntax: Blocs personnalisés
@@ -934,7 +953,7 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
-  notice:
+  presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
     text: Entrez le contenu de la remarque ici...
@@ -944,14 +963,14 @@ interfaces:
     minimum_value: Valeur minimale
     maximum_value: Valeur maximale
     step_interval: Intervalle
-  one-to-many:
+  list-o2m:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
-  radio-buttons:
+  select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés
-  repeater:
+  list:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
     edit_fields: Modifier les champs
@@ -978,7 +997,7 @@ interfaces:
     alphabetize: Alphabétiser
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
-  text-input:
+  input:
     text-input: Champ de texte
     description: Entrer un texte d'une seule ligne
     trim: Espaces aux extrêmités
@@ -987,10 +1006,10 @@ interfaces:
     mask_label: Cacher la valeur réelle
     clear: Valeur effacée
     clear_label: Enregistrer en tant que chaîne vide
-  textarea:
+  input-multiline:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
-  toggle:
+  boolean:
     toggle: Activer/Désactiver
     description: Basculer entre sélectionné et désélectionné
     label_placeholder: Entrer un libellé...
@@ -998,7 +1017,7 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
-  tree-view:
+  list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "un vers plusieurs"
     recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
   user:
@@ -1009,7 +1028,7 @@ interfaces:
       auto: Auto
       dropdown: Liste déroulante
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Un éditeur de texte enrichi pouvant contenir du HTML
     toolbar: Barre d’outils
@@ -1040,11 +1059,12 @@ displays:
     description: Afficher les valeurs liées à l'heure
     format: Format
     format_note: >-
-      Le format personnalisé accepte le __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Le format personnalisé accepte le __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Court
     relative: Relatif
-    relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
+    relative_label: "Afficher l'heure relative, par exemple: il y a 5 minutes"
   file:
     file: Fichier
     description: Afficher les fichiers

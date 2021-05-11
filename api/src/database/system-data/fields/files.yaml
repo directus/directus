@@ -3,18 +3,18 @@ table: directus_files
 fields:
   - field: id
     hidden: true
-    interface: text-input
+    interface: input
     special: uuid
 
   - field: title
-    interface: text-input
+    interface: input
     options:
       iconRight: title
       placeholder: A unique title...
     width: full
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
     options:
       placeholder: An optional description...
@@ -32,21 +32,21 @@ fields:
       format: false
 
   - field: location
-    interface: text-input
+    interface: input
     options:
       iconRight: place
       placeholder: An optional location...
     width: half
 
   - field: storage
-    interface: text-input
+    interface: input
     options:
       iconRight: storage
     width: half
     readonly: true
 
   - field: storage_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: insert_drive_file
       title: File Naming
@@ -56,7 +56,7 @@ fields:
     width: full
 
   - field: filename_disk
-    interface: text-input
+    interface: input
     options:
       iconRight: publish
       placeholder: Name on disk storage...
@@ -64,7 +64,7 @@ fields:
     width: half
 
   - field: filename_download
-    interface: text-input
+    interface: input
     options:
       iconRight: get_app
       placeholder: Name when downloading...
@@ -83,11 +83,13 @@ fields:
     readonly: true
 
   - field: modified_by
-    interface: user
+    interface: select-dropdown-m2o
     special: user-updated
     width: half
     display: user
     readonly: true
+    options:
+      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
 
   - field: modified_on
     interface: datetime

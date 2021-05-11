@@ -13,6 +13,10 @@
 							text: $t('json'),
 							value: 'json',
 						},
+						{
+							text: $t('xml'),
+							value: 'xml',
+						},
 					]"
 					v-model="format"
 				/>
@@ -64,6 +68,8 @@ export default defineComponent({
 
 			if (format.value === 'csv') {
 				params.export = 'csv';
+			} else if (format.value === 'xml') {
+				params.export = 'xml';
 			} else {
 				params.export = 'json';
 			}

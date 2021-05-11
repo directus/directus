@@ -9,6 +9,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import formatTitle from '@directus/format-title';
+import { decode } from 'html-entities';
 
 export default defineComponent({
 	props: {
@@ -38,7 +39,12 @@ export default defineComponent({
 		const displayValue = computed(() => {
 			if (!props.value) return null;
 			let value = String(props.value);
+
+			// Strip out all HTML tags
 			value = value.replace(/(<([^>]+)>)/gi, '');
+
+			// Decode any HTML encoded characters (like &copy;)
+			value = decode(value);
 
 			if (props.formatTitle) {
 				value = formatTitle(value);

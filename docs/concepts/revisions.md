@@ -1,9 +1,11 @@
 # Revisions & Versioning
 
-> Revisions are created when an _original_ Item is updated. These alternate versions are tracked so that previous states can be recovered, or potential edits can be staged.
+> Revisions are created when an _original_ Item is updated. These alternate versions are tracked so that previous states
+> can be recovered, or potential edits can be staged.
 
-Every change made to items in Directus is stored as a complete versioned snapshot. The Revisions system is tightly coupled to the Activity Logs system, with each revision being linked to
-the specific [Activity](/concepts/application/#activity-log) event which created it.
+Every change made to items in Directus is stored as a complete versioned snapshot. The Revisions system is tightly
+coupled to the Activity Logs system, with each revision being linked to the specific
+[Activity](/concepts/application/#activity-log) event which created it.
 
 ## Revision Fields
 

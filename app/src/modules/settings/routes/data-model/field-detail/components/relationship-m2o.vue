@@ -196,7 +196,7 @@ export default defineComponent({
 							collection: state.relations[0].one_collection,
 							meta: {
 								special: 'o2m',
-								interface: 'one-to-many',
+								interface: 'list-o2m',
 							},
 						});
 					} else {
