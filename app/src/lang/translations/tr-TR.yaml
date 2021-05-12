@@ -290,6 +290,7 @@ choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
 no_file_selected: Dosya seçilmedi
 download_file: Dosyayı İndir
+collection_key: Koleksiyonlar
 name: İsim
 type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
@@ -299,6 +300,7 @@ save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
 add_existing: Var olanı ekle
+creating_items: öğe oluşturma
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 click_to_expand: Genişletmek için Tıklayın
