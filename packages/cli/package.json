@@ -18,12 +18,14 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc",
+		"prepublishOnly": "npm run build",
+		"prebuild": "npm run cleanup",
+		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
-		"dev": "jest --coverage --watchAll",
 		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll",
 		"profile": "clinic flame -- node ./bin/directus"
 	},
 	"keywords": [
