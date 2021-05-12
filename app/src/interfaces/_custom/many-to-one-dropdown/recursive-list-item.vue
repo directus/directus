@@ -81,7 +81,7 @@ export default defineComponent({
 		const hasChildren = computed(() => props.item.children?.length > 0);
 		const containsCurrentItem = computed(() => {
 			if (props.currentItem == null) return false;
-			return props.computedItems.list[props.currentItem?.id].includes(props.item.id);
+			return props.computedItems?.list[props.currentItem?.id]?.includes(props.item.id);
 		});
 
 		return {
