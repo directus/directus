@@ -70,7 +70,7 @@ export class UIBuilder implements IUIComposer {
 		this.indentLevel = indentLevel ?? 0;
 		this.indentSize = indentSize;
 		this.terminalWidth = terminalWidth ?? DefaultTerminalWidth;
-		this.markdownRenderer = (null as any) as TerminalRenderer;
+		this.markdownRenderer = null as any as TerminalRenderer;
 		this.configure({
 			indent: indentSize,
 			width: terminalWidth,
