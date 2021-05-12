@@ -173,9 +173,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	function useM2O() {
 		const syncNewCollectionsM2O = throttle(() => {
 			const collectionName = state.relations[0].related_collection;
-			if (!collectionName) return;
 
-			if (collectionExists(collectionName)) {
+			if (!collectionName || collectionExists(collectionName)) {
 				state.newCollections = [];
 			} else {
 				const pkFieldName = state.newCollections?.[0]?.fields?.[0]?.field || 'id';
