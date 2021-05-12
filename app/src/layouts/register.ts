@@ -9,7 +9,7 @@ import { LayoutConfig } from './types';
 const { layoutsRaw } = getLayouts();
 
 export async function registerLayouts(app: App): Promise<void> {
-	const layoutModules = import.meta.globEager('./*/**/index.ts');
+	const layoutModules = import.meta.globEager('./tabular/index.ts');
 
 	const layouts: LayoutConfig[] = Object.values(layoutModules).map((module) => module.default);
 
@@ -33,5 +33,8 @@ export async function registerLayouts(app: App): Promise<void> {
 
 	layoutsRaw.value.forEach((layout) => {
 		app.component('layout-' + layout.id, layout.component);
+		app.component('layout-options-' + layout.id, layout.slots.options);
+		app.component('layout-sidebar-' + layout.id, layout.slots.sidebar);
+		app.component('layout-actions-' + layout.id, layout.slots.actions);
 	});
 }

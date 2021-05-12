@@ -10,7 +10,9 @@
 				</v-select>
 			</div>
 
-			<div id="target-layout-options" class="teleport-contents"></div>
+			<div class="options-contents">
+				<component :is="`layout-options-${layout}`" />
+			</div>
 		</div>
 	</sidebar-detail>
 </template>
@@ -60,7 +62,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.teleport-contents {
+.options-contents {
 	display: contents;
 }
 

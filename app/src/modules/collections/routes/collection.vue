@@ -68,7 +68,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<div id="target-actions:prepend"></div>
+			<component :is="`layout-actions-${layout || 'tabular'}`" />
 		</template>
 
 		<template #actions>
@@ -178,19 +178,7 @@
 			</template>
 		</v-info>
 
-		<component
-			v-else
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout || 'tabular'}`"
-			:collection="collection"
-			v-model:selection="selection"
-			v-model:layout-options="layoutOptions"
-			v-model:layout-query="layoutQuery"
-			v-model:filters="filters"
-			v-model:search-query="searchQuery"
-			:reset-preset="resetPreset"
-		>
+		<component v-else class="layout" :is="`layout-${layout || 'tabular'}`">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -233,7 +221,7 @@
 				/>
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
-			<div id="target-sidebar"></div>
+			<component :is="`layout-sidebar-${layout || 'tabular'}`" />
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
 			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
 		</template>
@@ -258,9 +246,9 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
+import { useLayout } from '@/composables/use-layout';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
@@ -309,7 +297,6 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
-		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const { collection } = toRefs(props);
 		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
@@ -336,6 +323,18 @@ export default defineComponent({
 			busy: bookmarkSaving,
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
+
+		const { layoutState } = useLayout(layout, {
+			collection,
+			selection,
+			layoutOptions,
+			layoutQuery,
+			filters,
+			searchQuery,
+			resetPreset,
+			selectMode: ref(false),
+			readonly: ref(false),
+		});
 
 		const {
 			confirmDelete,
@@ -371,7 +370,7 @@ export default defineComponent({
 			currentCollection,
 			deleting,
 			filters,
-			layoutRef,
+			layoutState,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -407,7 +406,7 @@ export default defineComponent({
 		};
 
 		function refresh() {
-			layoutRef.value?.refresh?.();
+			layoutState.refresh();
 		}
 
 		function useBreadcrumb() {
@@ -456,7 +455,7 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutRef.value?.refresh?.();
+					await layoutState.refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -483,7 +482,7 @@ export default defineComponent({
 					confirmArchive.value = false;
 					selection.value = [];
 
-					await layoutRef.value?.refresh?.();
+					await layoutState.refresh();
 				} catch (err) {
 					error.value = err;
 				} finally {
