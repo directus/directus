@@ -1677,7 +1677,7 @@ export class GraphQLService {
 					},
 				},
 				fields_in_collection: {
-					type: Field,
+					type: [Field],
 					args: {
 						collection: GraphQLNonNull(GraphQLString),
 					},
@@ -1686,6 +1686,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						return await service.readAll(args.collection);
 					},
 				},
