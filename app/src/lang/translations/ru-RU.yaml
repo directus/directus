@@ -413,7 +413,7 @@ flip_vertical: Отразить по Вертикали
 aspect_ratio: Соотношение Сторон
 rotate: Повернуть
 all_users: Все пользователи
-delete_collection: Удалить Уоллекцию
+delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
 start_end_of_count_items: '{start}-{end} из {count} элементов'
