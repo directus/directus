@@ -55,10 +55,15 @@ os_totalmem: Käyttöjärjestelmämuisti
 archive: Arkistoi
 archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
 archive_confirm_count: >-
-  Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida nämä {count} kohdetta?
+  Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida
+  nämä {count} kohdetta?
 reset_system_permissions_to: 'Palauta järjestelmän käyttöoikeudet:'
-reset_system_permissions_copy: Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko varma?
-the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä korkeammaksi, mutta et matalammaksi.
+reset_system_permissions_copy:
+  Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko
+  varma?
+the_following_are_minimum_permissions:
+  Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä
+  korkeammaksi, mutta et matalammaksi.
 app_access_minimum: Sovelluspääsy vähintään
 recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
@@ -161,7 +166,8 @@ this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaik
 click_here: Klikkaa tästä
 to_manually_setup_translations: käännösten manuaaliseen määrittämiseen.
 click_to_manage_translated_fields: >-
-  Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
+  Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä
+  hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
 fields_group: Kenttien ryhmä
 no_collections_found: Kokoelmia ei löytynyt.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
@@ -337,7 +343,7 @@ interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
-m2a_builder: Rakentaja (M2A, useampi kaikkiin)
+list-m2a: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
@@ -393,7 +399,7 @@ account_created_successfully: Tilin luonti onnistui
 auto_fill: Automaattinen täyttö
 corresponding_field: Vastaava kenttä
 errors:
-  COLLECTION_NOT_FOUND: "Kokoelmaa ei ole olemassa"
+  COLLECTION_NOT_FOUND: 'Kokoelmaa ei ole olemassa'
   FIELD_NOT_FOUND: Kenttää ei löydy
   FORBIDDEN: Kielletty
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
@@ -437,7 +443,8 @@ start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
 delete_collection_are_you_sure: >-
-  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
+  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on
+  lopullinen.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
@@ -628,30 +635,38 @@ discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
 page_help_collections_overview: '**Kokoelmien Yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
 page_help_collections_collection: >-
-  **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
+  **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja
+  lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_collections_item: >-
-  **Kohteen yksityiskohdat** — Lomake tämän kohteen katselua ja hallintaa varten. Tämä sivupalkki sisältää myös täyden historian uudistuksia ja upotettuja kommentteja.
+  **Kohteen yksityiskohdat** — Lomake tämän kohteen katselua ja hallintaa varten. Tämä sivupalkki sisältää myös täyden
+  historian uudistuksia ja upotettuja kommentteja.
 page_help_activity_collection: >-
   **Selaa aktiviteettejä** — Kattava luettelo kaikesta käyttäjän järjestelmästä ja sisällöstä.
 page_help_docs_global: >-
   **Dokumentaation yleiskatsaus** — Dokumentit on räätälöity erityisesti tämän projektin versioon ja kaavioon.
 page_help_files_collection: >-
-  **Tiedostokirjasto** — Listaa kaikki tiedostoassetit, jotka on ladattu tähän projektiin. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
+  **Tiedostokirjasto** — Listaa kaikki tiedostoassetit, jotka on ladattu tähän projektiin. Mukauta asettelua,
+  suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa
+  käyttöä varten.
 page_help_files_item: >-
-  **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja käyttöoikeuksien päivittämiseen.
-page_help_settings_project: "**Projektin asetukset** — Projektisi yleiset konfiguraatioasetukset."
+  **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja
+  käyttöoikeuksien päivittämiseen.
+page_help_settings_project: '**Projektin asetukset** — Projektisi yleiset konfiguraatioasetukset.'
 page_help_settings_datamodel_collections: >-
-  **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
+  **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja
+  järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
 page_help_settings_datamodel_fields: >-
   **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
 page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
-page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
+page_help_settings_roles_item: '**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia.'
 page_help_settings_presets_collection: >-
-  **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
+  **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset
+  kirjanmerkit sekä oletusnäkymät.
 page_help_settings_presets_item: >-
   **Esiasetuksen yksityiskohdat** — Lomake kirjanmerkkien ja oletuskokoelmien esiasetusten hallintaan.
 page_help_settings_webhooks_collection: '**Selaa webhookkeja** — Listaa kaikki projektin webhookit.'
-page_help_settings_webhooks_item: '**Webhookkien yksityiskohdat** — Lomake projektin webhookkien luomiseen ja hallintaan.'
+page_help_settings_webhooks_item:
+  '**Webhookkien yksityiskohdat** — Lomake projektin webhookkien luomiseen ja hallintaan.'
 page_help_users_collection: '**Käyttäjähakemisto** — Listaa kaikki järjestelmän käyttäjät tässä projektissa.'
 page_help_users_item: >-
   **Käyttäjätieto** — Hallitse tilitietojasi tai tarkastele muiden käyttäjien tietoja.
@@ -662,7 +677,8 @@ all: Kaikki
 none: Ei mikään
 no_layout_collection_selected_yet: Asettelua/kokoelmaa ei ole vielä valittu
 batch_delete_confirm: >-
-  Kohteita ei ole valittu | Oletko varma, että haluat poistaa tämän kohteen? Tätä toimintoa ei voi perua. | Oletko varma, että haluat poistaa nämä {count} kohteet? Tätä toimintoa ei voi perua.
+  Kohteita ei ole valittu | Oletko varma, että haluat poistaa tämän kohteen? Tätä toimintoa ei voi perua. | Oletko
+  varma, että haluat poistaa nämä {count} kohteet? Tätä toimintoa ei voi perua.
 cancel: Peruuta
 collection: Kokoelma
 collections: Kokoelmat
@@ -842,10 +858,11 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
-  button-links:
-    button-links: Painikkeen linkit
+  presentation-links:
+    presentation-links: Painikkeen linkit
     links: Linkit
     description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
     style: Tyyli
@@ -853,13 +870,13 @@ interfaces:
     link: Linkit
     button: Painikkeet
     error: Toimintoa ei voi suorittaa
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Valintaruudut
     description: Valitse useista vaihtoehdoista valintaruutujen kautta
     allow_other: Salli muut
     show_more: 'Näytä {count} lisää'
     items_shown: Näytettävät kohteet
-  code:
+  input-code:
     code: Koodi
     description: Kirjoita tai jaa koodipätkä
     line_number: Rivinumero
@@ -868,7 +885,7 @@ interfaces:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  collections:
+  system-collections:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
@@ -885,7 +902,7 @@ interfaces:
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
-  display-template:
+  system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
     collection_field: Kokoeilmakenttä
@@ -899,7 +916,7 @@ interfaces:
     inline_title_label: Näytä otsikko rivin sisällä
     margin_top: Ylämarginaali
     margin_top_label: Suurenna ylämarginaalia
-  dropdown:
+  select-dropdown:
     description: Valitse arvo pudotusvalikosta
     choices_placeholder: Lisää uusi valinta
     allow_other: Salli muut
@@ -908,8 +925,8 @@ interfaces:
     allow_none_label: Salli ei valintaa
     choices_name_placeholder: Syötä nimi...
     choices_value_placeholder: Syötä arvo...
-  dropdown-multiselect:
-    dropdown-multiselect: Pudotusvalikko (useampi)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Pudotusvalikko (useampi)
     description: Valitse useita arvoja pudotusvalikosta
   file:
     file: Tiedosto
@@ -917,7 +934,7 @@ interfaces:
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
-  hash:
+  input-hash:
     hash: Tiiviste
     description: Syötä arvo, josta luodaan tiiviste
     masked: Maskeerattu
@@ -929,21 +946,21 @@ interfaces:
   image:
     image: Kuva
     description: Valitse tai lataa kuva
-  interface:
+  system-interface:
     interface: Käyttöliittymä
     description: Valitse olemassa oleva liittymä
     placeholder: Valitse liittymä...
-  interface-options:
+  system-interface-options:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
-  many-to-many:
+  list-m2m:
     many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
     display_template: Esitysmalli
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Syötä ja esikatsele markdown
     customSyntax: Mukautetut lohkot
@@ -952,7 +969,7 @@ interfaces:
     box: Lohko / rivillä
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
-  notice:
+  presentation-notice:
     notice: Ilmoitus
     description: Näytä lyhyt ilmoitus
     text: Syötä ilmoituksen sisältö tähän...
@@ -962,14 +979,14 @@ interfaces:
     minimum_value: Vähimmäisarvo
     maximum_value: Enimmäisarvo
     step_interval: Askelväli
-  one-to-many:
+  list-o2m:
     one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
-  radio-buttons:
+  select-radio:
     radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
-  repeater:
+  list:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
@@ -997,7 +1014,7 @@ interfaces:
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
-  text-input:
+  input:
     text-input: Tekstinsyöttö
     description: Syötä yhden rivin teksti
     trim: Leikkaa
@@ -1006,10 +1023,10 @@ interfaces:
     mask_label: Piilota todellinen arvo
     clear: Tyhjennetty arvo
     clear_label: Tallenna tyhjänä merkkijonona
-  textarea:
+  input-multiline:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
-  toggle:
+  boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
     label_placeholder: Syötä otsikko...
@@ -1017,7 +1034,7 @@ interfaces:
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
-  tree-view:
+  list-o2m-tree-view:
     description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
     recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
@@ -1028,7 +1045,7 @@ interfaces:
       auto: Automaattinen
       dropdown: Pudotusvalikko
       modal: Modaali
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
@@ -1059,7 +1076,8 @@ displays:
     description: Näytä kellonaikaan liittyvät arvot
     format: Muoto
     format_note: >-
-      Mukautettu muoto hyväksyy __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Mukautettu muoto hyväksyy __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Pitkä
     short: Lyhyt
     relative: Suhteellinen
@@ -1136,3 +1154,7 @@ layouts:
     comfortable: Mukava
     compact: Kompakti
     cozy: Kodikas
+  calendar:
+    calendar: Kalenteri
+    start_date_field: Aloituspäivämäärän kenttä
+    end_date_field: Päättymispäivämäärän kenttä

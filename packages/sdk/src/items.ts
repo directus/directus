@@ -31,7 +31,7 @@ export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
 	deep?: Record<string, QueryMany<T>>;
-	export?: 'json' | 'csv';
+	export?: 'json' | 'csv' | 'xml';
 	filter?: Filter<T>;
 };
 

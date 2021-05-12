@@ -15,7 +15,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.formatted-value.format_title_label',
 				},
@@ -30,7 +30,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.formatted-value.bold_label',
 				},
@@ -44,7 +44,7 @@ export default defineDisplay({
 			name: '$t:color',
 			meta: {
 				width: 'half',
-				interface: 'color',
+				interface: 'select-color',
 			},
 		},
 		{
@@ -52,7 +52,7 @@ export default defineDisplay({
 			name: '$t:font',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					choices: [
 						{ text: '$t:sans_serif', value: 'sans-serif' },

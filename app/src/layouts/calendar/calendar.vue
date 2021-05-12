@@ -38,6 +38,7 @@ import '@fullcalendar/core/vdom';
 import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import {
 	defineComponent,
@@ -215,12 +216,15 @@ export default defineComponent({
 				eventStartEditable: true,
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
-				plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+				dayMaxEventRows: true,
+				contentHeight: 800,
+				nextDayThreshold: '01:00:00',
+				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
 				headerToolbar: {
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
-					right: 'dayGridMonth,dayGridWeek,dayGridDay',
+					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
@@ -261,7 +265,7 @@ export default defineComponent({
 			if (startDateFieldInfo?.type === 'dateTime' || startDateFieldInfo?.type === 'timestamp') {
 				options.headerToolbar = {
 					...options.headerToolbar,
-					right: 'dayGridMonth,timeGridWeek,timeGridDay',
+					right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
 				};
 			}
 

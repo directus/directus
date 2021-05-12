@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:icon',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.collection.icon_label',
 				},

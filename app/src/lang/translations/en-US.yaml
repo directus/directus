@@ -146,6 +146,7 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Text
 time: Time
@@ -341,7 +342,7 @@ interface_not_found: 'Interface "{interface}" not found.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
-m2a_builder: Builder (M2A)
+list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
@@ -617,6 +618,7 @@ settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
+one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 select: Select...
 layout: Layout
@@ -856,8 +858,8 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
-  button-links:
-    button-links: Button Links
+  presentation-links:
+    presentation-links: Button Links
     links: Links
     description: Configurable link buttons for launching dynamic URLs
     style: Style
@@ -865,13 +867,13 @@ interfaces:
     link: Links
     button: Buttons
     error: Cannot perform action
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
     allow_other: Allow Other
     show_more: 'Show {count} more'
     items_shown: Items Shown
-  code:
+  input-code:
     code: Code
     description: Write or share code snippets
     line_number: Line Number
@@ -880,11 +882,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
-  collections:
+  system-collections:
     collections: Collections
     description: Select between existing collections
     include_system_collections: Include System Collections
-  color:
+  select-color:
     color: Color
     description: Enter or select a color value
     placeholder: Choose a color...
@@ -897,13 +899,13 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
-  display-template:
+  system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
     collection_field: Collection field
     collection_field_not_setup: The collection field option is misconfigured
     select_a_collection: Select a Collection
-  divider:
+  presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
     title_placeholder: Enter a title...
@@ -911,7 +913,7 @@ interfaces:
     inline_title_label: Show title inside line
     margin_top: Margin Top
     margin_top_label: Increase Top Margin
-  dropdown:
+  select-dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice
     allow_other: Allow Other
@@ -920,8 +922,8 @@ interfaces:
     allow_none_label: Allow No Selection
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Multiple)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
   file:
     file: File
@@ -929,33 +931,33 @@ interfaces:
   files:
     files: Files
     description: Select or upload multiple files
-  hash:
+  input-hash:
     hash: Hash
     description: Enter a value to be hashed
     masked: Masked
     masked_label: Hide the true values
-  icon:
+  select-icon:
     icon: Icon
     description: Select an icon from a dropdown
     search_for_icon: Search for icon...
-  image:
+  file-image:
     image: Image
     description: Select or upload an image
-  interface:
+  system-interface:
     interface: Interface
     description: Select an existing interface
     placeholder: Select an interface...
-  interface-options:
+  system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
-  many-to-many:
+  list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
     customSyntax: Custom Blocks
@@ -964,24 +966,18 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
-  notice:
+  presentation-notice:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
-  numeric:
-    numeric: Numeric
-    description: Enter a number
-    minimum_value: Minimum Value
-    maximum_value: Maximum Value
-    step_interval: Step Interval
-  one-to-many:
+  list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
-  radio-buttons:
+  select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
-  repeater:
+  list:
     repeater: Repeater
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
@@ -992,9 +988,6 @@ interfaces:
     slider: Slider
     description: Select a number using a slider
     always_show_value: Always show value
-  slug:
-    slug: Slug
-    description: Enter a word connected with hyphens
   tags:
     tags: Tags
     description: Select or add tags
@@ -1009,19 +1002,24 @@ interfaces:
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
     add_tags: Add tags...
-  text-input:
-    text-input: Text Input
-    description: Enter a single line text
+  input:
+    input: Input
+    description: Manually enter a value
     trim: Trim
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
     clear: Cleared Value
     clear_label: Save as empty string
-  textarea:
+    minimum_value: Minimum Value
+    maximum_value: Maximum Value
+    step_interval: Step Interval
+    slug: Slugify
+    slug_label: Make entered value URL safe
+  input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
-  toggle:
+  boolean:
     toggle: Toggle
     description: Switch between on and off
     label_placeholder: Enter a label...
@@ -1029,7 +1027,7 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
-  tree-view:
+  list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
   user:
@@ -1040,12 +1038,19 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    trigger: Trigger
+    rate: Rate
 displays:
   boolean:
     boolean: Boolean

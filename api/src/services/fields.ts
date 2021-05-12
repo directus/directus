@@ -16,8 +16,9 @@ import { Field } from '../types/field';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
+import { isEqual } from 'lodash';
 
-type RawField = Partial<Field> & { field: string; type: typeof types[number] };
+export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
 export class FieldsService {
 	knex: Knex;
@@ -255,13 +256,15 @@ export class FieldsService {
 		if (field.schema) {
 			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
 
-			try {
-				await this.knex.schema.alterTable(collection, (table) => {
-					if (!field.schema) return;
-					this.addColumnToTable(table, field, existingColumn);
-				});
-			} catch (err) {
-				throw await translateDatabaseError(err);
+			if (!isEqual(existingColumn, field.schema)) {
+				try {
+					await this.knex.schema.alterTable(collection, (table) => {
+						if (!field.schema) return;
+						this.addColumnToTable(table, field, existingColumn);
+					});
+				} catch (err) {
+					throw await translateDatabaseError(err);
+				}
 			}
 		}
 

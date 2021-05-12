@@ -4,7 +4,7 @@ import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 import { Field } from '@/types';
-import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import { clone } from 'lodash';
 

@@ -6,6 +6,7 @@ import cache from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheKey } from '../utils/get-cache-key';
+import { parse as toXML } from 'js2xmlparser';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
@@ -49,6 +50,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.json`);
 			res.set('Content-Type', 'application/json');
 			return res.status(200).send(JSON.stringify(res.locals.payload, null, '\t'));
+		}
+
+		if (req.sanitizedQuery.export === 'xml') {
+			res.attachment(`${filename}.xml`);
+			res.set('Content-Type', 'text/xml');
+			return res.status(200).send(toXML('data', res.locals.payload?.data));
 		}
 
 		if (req.sanitizedQuery.export === 'csv') {

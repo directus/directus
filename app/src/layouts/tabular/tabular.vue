@@ -157,6 +157,7 @@ import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
 import useShortcut from '@/composables/use-shortcut';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 
 type layoutOptions = {
 	widths?: {
@@ -238,15 +239,8 @@ export default defineComponent({
 			}
 		);
 
-		const {
-			tableSort,
-			tableHeaders,
-			tableRowHeight,
-			onRowClick,
-			onSortChange,
-			activeFields,
-			tableSpacing,
-		} = useTable();
+		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
+			useTable();
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {
@@ -461,7 +455,7 @@ export default defineComponent({
 						value: field.field,
 						width: localWidths.value[field.field] || _layoutOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.meta?.display,
+							display: field.meta?.display || getDefaultDisplayForType(field.type),
 							displayOptions: field.meta?.display_options,
 							interface: field.meta?.interface,
 							interfaceOptions: field.meta?.options,
