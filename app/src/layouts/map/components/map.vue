@@ -62,8 +62,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		let map: Map;
-		const container = ref<HTMLElement>();
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
+		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 
 		onMounted(() => {
@@ -227,19 +227,29 @@ export default defineComponent({
 			const feature = map.queryRenderedFeatures(event.point, {
 				layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 			})[0];
-			if (feature && props.featureId && feature.properties) {
-				if (feature.id !== hoveredFeature.value?.id) {
-					popup.setHTML(feature.properties.description).addTo(map);
-				}
+
+			const previousId = hoveredFeature.value?.id;
+			const featureChanged = previousId !== feature?.id;
+			if (previousId && featureChanged) {
+				map.setFeatureState({ id: previousId, source: '__directus' }, { hovered: false });
+			}
+			if (feature && feature.properties) {
 				if (feature.geometry.type === 'Point') {
 					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
 				} else {
 					popup.setLngLat(event.lngLat);
 				}
+				if (featureChanged) {
+					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
+					popup.setHTML(feature.properties.description).addTo(map);
+					hoveredFeature.value = feature;
+				}
 			} else {
-				popup.remove();
+				if (featureChanged) {
+					hoveredFeature.value = feature;
+					popup.remove();
+				}
 			}
-			hoveredFeature.value = feature;
 		}
 
 		function expandCluster(event: MapLayerMouseEvent) {

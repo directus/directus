@@ -1193,4 +1193,4 @@ layouts:
     invalid_geometry: Invalid geometry
     field_not_found: Geometry not found
     simplify: Geometry simplification tolerance
-    projection: Projection
+    out_of_bounds: Out of bounds coordinates ({coord})

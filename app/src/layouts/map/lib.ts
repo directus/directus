@@ -169,6 +169,8 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 	}
 	if (geojson.features.length == 0) {
 		delete geojson.bbox;
+	} else if (geojson.bbox!.some((b) => Math.abs(b) > 90)) {
+		throw new Error(i18n.t('interfaces.map.out_of_bounds', { coord: JSON.stringify(geojson.bbox) }) as string);
 	}
 	return geojson;
 }

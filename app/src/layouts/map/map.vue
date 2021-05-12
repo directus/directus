@@ -72,7 +72,7 @@
 								</v-button>
 							</template>
 							<div class="custom-layers">
-								<interface-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
+								<interface-input-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
 							</div>
 						</v-drawer>
 					</div>

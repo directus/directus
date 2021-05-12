@@ -2,7 +2,13 @@ import { AnyLayer, Expression } from 'maplibre-gl';
 
 const baseColor = '#09f';
 const selectColor = '#FFA500';
-const color: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
+const fill: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
+const outline: Expression = [
+	'case',
+	['boolean', ['feature-state', 'selected'], ['feature-state', 'hovered'], false],
+	selectColor,
+	baseColor,
+];
 
 export const layers: AnyLayer[] = [
 	{
@@ -11,7 +17,7 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
 		paint: {
-			'fill-color': color,
+			'fill-color': fill,
 			'fill-opacity': 0.15,
 		},
 	},
@@ -21,7 +27,7 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
 		paint: {
-			'line-color': color,
+			'line-color': outline,
 			'line-width': 2,
 		},
 	},
@@ -31,7 +37,7 @@ export const layers: AnyLayer[] = [
 		source: '__directus',
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'LineString']],
 		paint: {
-			'line-color': color,
+			'line-color': outline,
 			'line-width': 2,
 		},
 	},
@@ -42,8 +48,10 @@ export const layers: AnyLayer[] = [
 		filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
 		layout: {},
 		paint: {
-			'circle-radius': 8,
-			'circle-color': color,
+			'circle-radius': 5,
+			'circle-color': fill,
+			'circle-stroke-color': outline,
+			'circle-stroke-width': 3,
 		},
 	},
 	{
