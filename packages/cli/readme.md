@@ -1,12 +1,9 @@
 # Directus CLI
 
+The official Directus CLI tool. Allows you to connect to, and manage, any given Directus instance through the command
+line interface.
+
 ## Installation
-
-```
-npm install @directus/cli
-```
-
-or globally
 
 ```
 npm install -g @directus/cli
@@ -15,7 +12,7 @@ npm install -g @directus/cli
 ## Usage
 
 ```sh
-user@host:~# directus --help
+$ directusctl --help
 ```
 
 ## Docs
