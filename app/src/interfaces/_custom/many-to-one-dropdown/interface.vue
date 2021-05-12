@@ -47,21 +47,22 @@
 					</v-list-item>
 				</template>
 
-				<template v-else-if="asdf && asdf.tree">
+				<template v-else-if="computedItems && computedItems.tree">
 					<!-- Dummy item, otherwise the v-list does not initialize correctly -->
 					<v-list-item v-show="false">Item 1</v-list-item>
 					<recursive-list-item
-						v-for="item in asdf.tree"
+						v-for="item in computedItems.tree"
 						:key="item.id"
 						:collection="relatedCollection.collection"
 						:children-field="childrenField"
 						:parent-field="parentField"
 						:item="item"
-						:tree="item.children"
+						:children="item.children"
 						:template="displayTemplate"
 						:currentItem="currentItem"
 						@input="$emit('input', $event)"
 						:active="true"
+						:computedItems="computedItems"
 					/>
 				</template>
 			</v-list>
@@ -129,13 +130,13 @@ export default defineComponent({
 
 		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
-		const asdf = computed(() => {
+		const computedItems = computed(() => {
 			if (items.value) return generateNormalized(items.value, 'id', props.parentField, props.childrenField);
 			return null;
 		});
 
 		return {
-			asdf,
+			computedItems,
 			collectionInfo,
 			currentItem,
 			displayTemplate,
@@ -279,6 +280,7 @@ export default defineComponent({
 						params: {
 							fields: fields,
 							limit: -1,
+							sort: 'sort',
 						},
 					});
 

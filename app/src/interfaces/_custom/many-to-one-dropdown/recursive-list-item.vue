@@ -1,5 +1,5 @@
 <template>
-	<v-list-group>
+	<v-list-group :active="containsCurrentItem">
 		<template #activator>
 			<v-list-item class="link" :value="item.id" @click="hasChildren ? null : emitValue(item.id)">
 				<v-list-item-content>
@@ -7,6 +7,7 @@
 				</v-list-item-content>
 			</v-list-item>
 		</template>
+
 		<!-- Adds the current item (without children) to the children array to let the user select it... -->
 		<v-list-group class="fake-children" v-if="hasChildren">
 			<template #activator>
@@ -17,17 +18,19 @@
 				</v-list-item>
 			</template>
 		</v-list-group>
+		<!-- Recrusive group children -->
 		<recursive-list-item
-			v-for="item in tree"
+			v-for="item in children"
 			:key="item.id"
 			:collection="collection"
 			:children-field="childrenField"
 			:parent-field="parentField"
 			:item="item"
-			:tree="item.children"
+			:children="item.children"
 			:template="template"
 			@input="emitValue"
 			:currentItem="currentItem"
+			:computedItems="computedItems"
 		/>
 	</v-list-group>
 </template>
@@ -45,7 +48,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		tree: {
+		children: {
 			required: true,
 			type: Array as PropType<Record<string, any>[]>,
 			default: () => [],
@@ -54,13 +57,12 @@ export default defineComponent({
 			required: true,
 			type: Object,
 		},
-		currentItem: {
+		computedItems: {
 			required: true,
 			type: Object,
 		},
-		active: {
-			type: Boolean,
-			default: false,
+		currentItem: {
+			type: Object,
 		},
 		collection: {
 			type: String,
@@ -77,10 +79,15 @@ export default defineComponent({
 		}
 
 		const hasChildren = computed(() => props.item.children?.length > 0);
+		const containsCurrentItem = computed(() => {
+			if (props.currentItem == null) return false;
+			return props.computedItems.list[props.currentItem?.id].includes(props.item.id);
+		});
 
 		return {
 			emitValue,
 			hasChildren,
+			containsCurrentItem,
 		};
 	},
 });
