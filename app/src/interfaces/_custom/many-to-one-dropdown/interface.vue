@@ -47,11 +47,11 @@
 					</v-list-item>
 				</template>
 
-				<template v-else>
+				<template v-else-if="asdf && asdf.tree">
 					<!-- Dummy item, otherwise the v-list does not initialize correctly -->
 					<v-list-item v-show="false">Item 1</v-list-item>
 					<recursive-list-item
-						v-for="item in tree.filter((i) => i[parentField] == null)"
+						v-for="item in asdf.tree"
 						:key="item.id"
 						:collection="relatedCollection.collection"
 						:children-field="childrenField"
@@ -59,25 +59,27 @@
 						:item="item"
 						:tree="item.children"
 						:template="displayTemplate"
+						:currentItem="currentItem"
 						@input="$emit('input', $event)"
+						:active="true"
 					/>
 				</template>
 			</v-list>
 		</v-menu>
-		{{ tree }}
 	</div>
 </template>
 
 <script lang="ts">
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { defineComponent, computed, ref, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs, watch, onMounted } from '@vue/composition-api';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 import RecursiveListItem from './recursive-list-item.vue';
+import { generateNormalized } from './methods';
 
 export default defineComponent({
 	components: {
@@ -122,42 +124,18 @@ export default defineComponent({
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { info: collectionInfo } = useCollection(collection);
 		const { usesMenu, menuActive } = useMenu();
-		const { selection, stageSelection, selectModalActive } = useSelection();
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
 
 		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
-		const editModalActive = ref(false);
-
-		const tree = computed(() => {
-			const tree: Record<string, any>[] = [];
-			if (items.value == null || items.value.length === 0) return tree;
-
-			const recursive = (item: Record<string, any>) => {
-				if (item[props.childrenField] == null) return item;
-
-				const children = item[props.childrenField].map((id: string) => {
-					const child = items.value!.find((i) => i.id === id);
-
-					return recursive(child!);
-				});
-
-				return {
-					...item,
-					children,
-				};
-			};
-
-			items.value.map((item) => {
-				if (item[props.parentField] == null) tree.push(recursive(item));
-			});
-
-			return tree;
+		const asdf = computed(() => {
+			if (items.value) return generateNormalized(items.value, 'id', props.parentField, props.childrenField);
+			return null;
 		});
 
 		return {
-			tree,
+			asdf,
 			collectionInfo,
 			currentItem,
 			displayTemplate,
@@ -169,13 +147,9 @@ export default defineComponent({
 			menuActive,
 			usesMenu,
 			relation,
-			selection,
-			selectModalActive,
 			setCurrent,
 			totalCount,
-			stageSelection,
 			currentPrimaryKey,
-			editModalActive,
 			relatedPrimaryKeyField,
 		};
 
@@ -252,7 +226,9 @@ export default defineComponent({
 						},
 					});
 
-					currentItem.value = response.data.data;
+					const item = response.data.data;
+
+					currentItem.value = item;
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
@@ -367,36 +343,6 @@ export default defineComponent({
 					const newActive = !menuActive.value;
 					menuActive.value = newActive;
 					if (newActive === true) fetchItems();
-				} else {
-					selectModalActive.value = true;
-				}
-			}
-		}
-
-		function useSelection() {
-			const selectModalActive = ref(false);
-
-			const selection = computed<(number | string)[]>(() => {
-				if (!props.value) return [];
-
-				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in props.value) {
-					return [props.value[relatedPrimaryKeyField.value.field]];
-				}
-
-				if (typeof props.value === 'string' || typeof props.value === 'number') {
-					return [props.value];
-				}
-
-				return [];
-			});
-
-			return { selection, stageSelection, selectModalActive };
-
-			function stageSelection(newSelection: (number | string)[]) {
-				if (newSelection.length === 0) {
-					emit('input', null);
-				} else {
-					emit('input', newSelection[0]);
 				}
 			}
 		}
