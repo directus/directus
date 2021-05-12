@@ -1,8 +1,8 @@
 # Command Line Interface
 
 > Directus has two command line interfaces (CLI) that you can use for various actions. One is used for server-side
-> actions, where you have server side access, the other is used for remote management and allows you to interact with a
-> Directus instance as you would with an SDK.
+> actions that relate to your on-prem instance, like migrating the database or resetting a user, while the other allows
+> you to interact with a Directus instance as you would with an SDK.
 
 [[toc]]
 
@@ -58,6 +58,8 @@ npx directus database migrate:down
 
 Migrate the database up/down to match the versions of Directus. Once you update Directus itself, make sure to run
 `npx directus database migrate:latest` (or `npx directus bootstrap`) to update your database.
+
+---
 
 ## Client
 
@@ -126,7 +128,7 @@ off with special flags) and prettify the output to make it easier to read.
 
 Useful when you need to parse data using tools like `jq` for example.
 
-### Extending
+<!-- ### Extending
 
 To find how you can extend the CLI and write custom commands, check how we make Directus highly extensible on our
-[extensions overview page](/concepts/extensions/).
+[extensions overview page](/concepts/extensions/). -->

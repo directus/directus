@@ -18,9 +18,9 @@ Out-of-the-box components are configurable, or altogether new components can be 
 - [Endpoints](/guides/api-endpoints)
 - [Hooks](/guides/api-hooks)
 
-## CLI Extensions
+<!-- ## CLI Extensions
 
 TBD
 
 - Commands
-- Extensions
+- Extensions -->
