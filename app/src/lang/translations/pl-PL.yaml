@@ -844,6 +844,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
@@ -942,7 +943,36 @@ interfaces:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
   select-dropdown-m2o:
+    many-to-one: Wiele do jednego
+    description: Wybierz pojedynczy powiązany element
     display_template: Wyświetl szablon
+  input-rich-text-md:
+    markdown: Markdown
+    description: Wprowadź i zobacz markdown
+    customSyntax: Niestandardowe bloki
+    customSyntax_label: Dodaj własne typy składni
+    customSyntax_add: Dodaj własną składnię
+    box: Blok / Inline
+    imageToken: Token obrazu
+    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+  presentation-notice:
+    notice: Informacja
+    description: Wyświetl krótką informacje
+    text: Wprowadź zawartość informacji...
+  list-o2m:
+    one-to-many: Jeden do wielu
+    description: Wybierz wiele powiązanych elementów
+    no_collection: Kolekcja nie została znaleziona
+  select-radio:
+    radio-buttons: Pola wyboru
+    description: Wybierz jeden lub wiele obiektów
+  list:
+    repeater: Powtarzaj
+    description: Utwórz wiele wpisów o tej samej strukturze
+    edit_fields: Edytuj pola
+    add_label: 'Etykieta "Utwórz nowy"'
+    field_name_placeholder: Wprowadź nazwę pola...
+    field_note_placeholder: Wprowadź opis pola...
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
@@ -962,13 +992,33 @@ interfaces:
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
   input:
+    input: Wprowadź
+    description: Ręcznie wprowadź wartość
+    trim: Przytnij
+    trim_label: Przytnij początek i koniec
     mask: Zamaskowany
+    mask_label: Ukryj rzeczywistą wartość
+    clear: Wyczyść wartość
+    clear_label: Zapisz jako pusty ciąg
+    minimum_value: Wartość minimalna
+    maximum_value: Maksymalna Wartość
+    step_interval: Czas kroku
+    slug: Slugify
+    slug_label: Bezpieczny URL wprowadzonej wartości
+  input-multiline:
+    textarea: Obszar tekstowy
+    description: Wprowadź wieloliniowy zwykły tekst
   boolean:
     toggle: Przełącz
+    description: Przełącz między włącz/wyłącz
+    label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
+  list-o2m-tree-view:
+    description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
+    recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:
     user: Użytkownik
     description: Wybierz istniejącego użytkownika
@@ -977,7 +1027,16 @@ interfaces:
       auto: Automatycznie
       dropdown: Lista rozwijana
       modal: Okno
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Edytor zawartość HTML
+    toolbar: Pasek narzędzi
+    custom_formats: Niestandardowe formaty
+    options_override: Zastąp opcje
   input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: Typ wyszukiwania dla zewnętrznych wartości API.
+    results_path: Ścieżka wyników
     value_path: Ścieżka bazowa
     trigger: Wyzwalacz
     rate: Oceń
