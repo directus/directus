@@ -63,17 +63,7 @@
 					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
-			<v-input
-				db-safe
-				v-model="relatedPrimaryKeyField"
-				:disabled="relatedCollectionExists"
-				:nullable="false"
-				:placeholder="$t('primary_key') + '...'"
-			>
-				<template #input v-if="relatedCollectionExists && relatedPrimaryKeyField">
-					<v-text-overflow :text="relatedPrimaryKeyField" />
-				</template>
-			</v-input>
+			<v-input v-model="relatedPrimaryKeyField" disabled :placeholder="$t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
@@ -147,17 +137,14 @@ export default defineComponent({
 			);
 		});
 
-		const relatedPrimaryKeyField = computed({
-			get() {
-				if (relatedCollectionExists.value) {
-					return fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection).field;
-				}
+		const relatedPrimaryKeyField = computed(() => {
+			if (!state.relations[0].related_collection) return '';
 
-				return state.newCollections?.[0]?.fields?.[0]?.field;
-			},
-			set(field: string | undefined) {
-				set(state, 'newCollections[0].fields[0].field', field);
-			},
+			if (relatedCollectionExists.value) {
+				return fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection).field;
+			}
+
+			return 'id';
 		});
 
 		return {

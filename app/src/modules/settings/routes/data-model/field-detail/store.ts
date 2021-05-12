@@ -595,17 +595,12 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_field: state.fieldData.field,
 				};
 
+				/**
+				 * When the pane is opened, if the current fieldname is the actual name of a related collection, we auto-fill all
+				 * the fields as if that related collection was already selected
+				 */
 				if (state.fieldData.field && collectionExists(state.fieldData.field) && type !== 'translations') {
-					state.relations[0].collection = getAutomaticJunctionCollectionName();
-					state.relations[0].field = `${state.relations[0].related_collection}_id`;
-					state.relations[1].related_collection = state.fieldData.field;
-
-					state.relations[1].collection = `${state.relations[0].related_collection}_${state.relations[1].related_collection}`;
-					state.relations[1].field = `${state.relations[1].related_collection}_id`;
-
-					if (state.relations[0].field === state.relations[1].field) {
-						state.relations[1].field = `${state.relations[1].related_collection}_related_id`;
-					}
+					autoFillFields(state.fieldData.field);
 				}
 			}
 		);
@@ -625,16 +620,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					if (startWatching) {
 						stop = watch(
 							() => state.relations[1].related_collection,
-							(newRelatedCollection) => {
-								if (newRelatedCollection) {
-									state.relations[0].collection = getAutomaticJunctionCollectionName();
-									state.relations[1].collection = getAutomaticJunctionCollectionName();
-								}
-
-								if (state.relations[0].field === state.relations[1].field) {
-									state.relations[1].field = `${state.relations[1].related_collection}_related_id`;
-								}
-							}
+							(newRelatedCollection) => autoFillFields(newRelatedCollection)
 						);
 					} else {
 						stop?.();
@@ -668,7 +654,42 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			};
 		}
 
-		function getAutomaticJunctionCollectionName() {
+		function autoFillFields(relatedCollection: string | null | undefined) {
+			const currentPKField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
+
+			if (!relatedCollection) {
+				state.relations[0].collection = undefined;
+				state.relations[1].collection = undefined;
+
+				state.relations[0].related_collection = collection;
+				state.relations[1].related_collection = undefined;
+
+				state.relations[0].field = undefined;
+				state.relations[1].field = undefined;
+			} else {
+				const junctionCollection = getAutomaticJunctionCollectionName(collection, relatedCollection);
+				const relatedPKField =
+					fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ||
+					state.newCollections?.find((collection) => collection.$type === 'related')?.fields?.[0]?.field ||
+					'id';
+
+				state.relations[0].collection = junctionCollection;
+				state.relations[1].collection = junctionCollection;
+
+				state.relations[0].related_collection = collection;
+				state.relations[1].related_collection = relatedCollection;
+
+				state.relations[0].field = `${collection}_${currentPKField}`;
+				state.relations[1].field = `${relatedCollection}_${relatedPKField}`;
+			}
+		}
+
+		/**
+		 * Generate junction collection name for two given collections. Most of the time, it'll just
+		 * combine the two with a `_`. It'll check if that collection already exists, and append an
+		 * index if the junction collection already exists and is used for something else
+		 */
+		function getAutomaticJunctionCollectionName(collectionA: string, collectionB: string) {
 			let index = 0;
 			let name = getName(index);
 
@@ -680,7 +701,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			return name;
 
 			function getName(index: number) {
-				const name = `${state.relations[0].related_collection}_${state.relations[1].related_collection}`;
+				const name = `${collectionA}_${collectionB}`;
 				if (index) return name + '_' + index;
 				return name;
 			}

@@ -120,7 +120,7 @@
 					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="relations[0].one_primary" />
+			<v-input disabled :value="currentPrimaryKeyField" />
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].field) }"
 				v-model="relations[0].field"
@@ -201,13 +201,7 @@
 					<v-text-overflow :text="relations[1].field" />
 				</template>
 			</v-input>
-			<v-input
-				db-safe
-				:disabled="relatedCollectionExists"
-				v-model="relations[1].one_primary"
-				:nullable="false"
-				:placeholder="$t('primary_key') + '...'"
-			/>
+			<v-input disabled v-model="relatedPrimaryKeyField" :placeholder="$t('primary_key') + '...'" />
 			<div class="spacer" />
 			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
@@ -372,6 +366,20 @@ export default defineComponent({
 			}));
 		});
 
+		const currentPrimaryKeyField = computed(
+			() => fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection).field
+		);
+
+		const relatedPrimaryKeyField = computed(() => {
+			if (!state.relations[1].related_collection) return '';
+
+			if (relatedCollectionExists.value) {
+				return fieldsStore.getPrimaryKeyFieldForCollection(state.relations[1].related_collection).field;
+			}
+
+			return 'id';
+		});
+
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		return {
@@ -388,6 +396,9 @@ export default defineComponent({
 			correspondingField,
 			correspondingLabel,
 			generationInfo,
+			currentPrimaryKeyField,
+			relatedPrimaryKeyField,
+			state,
 		};
 
 		function junctionFieldExists(fieldKey: string) {
