@@ -4,22 +4,19 @@ import { computed, reactive, provide, inject, Ref } from 'vue';
 
 const layoutSymbol = Symbol();
 
-export function useLayout<T>(layoutName: Ref<string>, props: LayoutProps): T {
+export function useLayout(layoutName: Ref<string>, props: LayoutProps): any {
 	const { layouts } = getLayouts();
 
-	const currentLayout = computed(() => {
-		const layout = layouts.value.find((layout) => layout.id === layoutName.value);
+	const setupLayouts: Record<string, any> = layouts.value.reduce(
+		(acc, { id, setup }) => ({ ...acc, [id]: setup(props) }),
+		{}
+	);
 
-		if (layout === undefined) {
-			return layouts.value.find((layout) => layout.id === 'tabular')!;
-		}
+	const layoutState = computed(() => {
+		const setupResult = setupLayouts[layoutName.value];
 
-		return layout;
+		return reactive({ ...setupResult, props });
 	});
-
-	const { setup } = currentLayout.value;
-	const setupResult = setup(props);
-	const layoutState = reactive({ ...setupResult, props });
 
 	provide(layoutSymbol, layoutState);
 	return layoutState;

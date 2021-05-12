@@ -1,4 +1,4 @@
-import { Component, Ref, ComponentPublicInstance } from 'vue';
+import { Component, ComponentPublicInstance } from 'vue';
 import { Item } from '@/components/v-table/types';
 import { Filter } from '@/types';
 
@@ -16,15 +16,15 @@ export interface LayoutConfig {
 }
 
 export interface LayoutProps {
-	collection: Ref<string>;
-	selection: Ref<Item[]>;
-	layoutOptions: Ref<any>;
-	layoutQuery: Ref<any>;
-	filters: Ref<Filter[]>;
-	searchQuery: Ref<string | null>;
-	selectMode: Ref<boolean>;
-	readonly: Ref<boolean>;
-	resetPreset: Ref<() => Promise<void>>;
+	collection: string;
+	selection: Item[];
+	layoutOptions: any;
+	layoutQuery: any;
+	filters: Filter[];
+	searchQuery: string | null;
+	selectMode: boolean;
+	readonly: boolean;
+	resetPreset: () => Promise<void>;
 }
 
 export type LayoutContext = Record<string, any>;

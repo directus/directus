@@ -241,7 +241,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, watch, toRefs } from 'vue';
+import { defineComponent, computed, ref, reactive, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
@@ -321,17 +321,20 @@ export default defineComponent({
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
 
-		const { layoutState } = useLayout(layout, {
-			collection,
-			selection,
-			layoutOptions,
-			layoutQuery,
-			filters,
-			searchQuery,
-			resetPreset,
-			selectMode: ref(false),
-			readonly: ref(false),
-		});
+		const { layoutState } = useLayout(
+			layout,
+			reactive({
+				collection,
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				resetPreset,
+				selectMode: false,
+				readonly: false,
+			})
+		);
 
 		const {
 			confirmDelete,
@@ -403,7 +406,7 @@ export default defineComponent({
 		};
 
 		function refresh() {
-			layoutState.refresh();
+			layoutState.value.refresh();
 		}
 
 		function useBreadcrumb() {
