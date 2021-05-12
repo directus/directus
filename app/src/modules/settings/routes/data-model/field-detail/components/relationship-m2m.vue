@@ -398,7 +398,6 @@ export default defineComponent({
 			generationInfo,
 			currentPrimaryKeyField,
 			relatedPrimaryKeyField,
-			state,
 		};
 
 		function junctionFieldExists(fieldKey: string) {

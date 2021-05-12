@@ -72,13 +72,13 @@
 					item-text="name"
 					item-disabled="meta.singleton"
 					multiple
-					v-model="relations[1].one_allowed_collections"
+					v-model="relations[1].meta.one_allowed_collections"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
 			<v-input disabled>
 				<template #input>
-					<v-text-overflow :text="junctionPrimaryKeyField" />
+					<v-text-overflow :text="currentPrimaryKeyField" />
 				</template>
 			</v-input>
 			<v-input
@@ -120,7 +120,7 @@
 					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
-			<div class="related-collections-preview">{{ (relations[1].one_allowed_collections || []).join(', ') }}</div>
+			<div class="related-collections-preview">{{ (relations[1].meta.one_allowed_collections || []).join(', ') }}</div>
 			<div class="spacer" />
 			<v-input
 				class="one-collection-field"
@@ -280,7 +280,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -334,14 +334,14 @@ export default defineComponent({
 				text: field.field,
 				value: field.field,
 				disabled:
-					state.relations[0].field === field.field ||
+					state.relations?.[0]?.field === field.field ||
 					field.schema?.is_primary_key ||
-					state.relations[1].field === field.field,
+					state.relations?.[1]?.field === field.field,
 			}));
 		});
 
-		const junctionPrimaryKeyField = computed<string>(() => {
-			return fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection.value).field;
+		const currentPrimaryKeyField = computed<string | undefined>(() => {
+			return fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field;
 		});
 
 		return {
@@ -354,7 +354,7 @@ export default defineComponent({
 			junctionCollectionExists,
 			junctionFieldExists,
 			generationInfo,
-			junctionPrimaryKeyField,
+			currentPrimaryKeyField,
 		};
 
 		function junctionFieldExists(fieldKey: string) {

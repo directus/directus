@@ -644,7 +644,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 			state.relations[1].related_collection = 'languages';
 
-			state.relations[1].field = `${state.relations[1].related_collection}_id`;
+			const relatedPKField =
+				fieldsStore.getPrimaryKeyFieldForCollection(state.relations[1].related_collection)?.field || 'id';
+			state.relations[1].field = `${state.relations[1].related_collection}_${relatedPKField}`;
 
 			state.fieldData.field = 'translations';
 			state.relations[0].meta = {
@@ -881,9 +883,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.autoFillJunctionRelation,
 			() => {
 				if (state.autoFillJunctionRelation === true) {
+					const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
 					state.relations[0].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
 					state.relations[1].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
-					state.relations[0].field = `${state.relations[0].related_collection}_id`;
+					state.relations[0].field = `${state.relations[0].related_collection}_${currentPrimaryKeyField}`;
 					state.relations[1].meta = {
 						...(state.relations[1].meta || {}),
 						one_collection_field: 'collection',
