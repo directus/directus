@@ -28,7 +28,7 @@
 
 					<template #append v-if="!disabled">
 						<template v-if="currentItem">
-							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+							<v-icon name="close" class="deselect" @click.stop="emitValue(null)" v-tooltip="$t('deselect')" />
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 						<template v-else>
@@ -60,7 +60,7 @@
 						:children="item.children"
 						:template="displayTemplate"
 						:currentItem="currentItem"
-						@input="$emit('input', $event)"
+						@input="emitValue"
 						:active="true"
 						:computedItems="computedItems"
 					/>
@@ -135,7 +135,13 @@ export default defineComponent({
 			return null;
 		});
 
+		function emitValue(value: boolean | null) {
+			emit('input', value);
+			menuActive.value = false;
+		}
+
 		return {
+			emitValue,
 			computedItems,
 			collectionInfo,
 			currentItem,
