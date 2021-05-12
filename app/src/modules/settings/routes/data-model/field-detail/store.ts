@@ -425,7 +425,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 							},
 							fields: [
 								{
-									field: 'id',
+									field: 'code',
 									type: 'string',
 									schema: {
 										is_primary_key: true,
