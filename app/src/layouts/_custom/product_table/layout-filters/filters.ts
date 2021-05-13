@@ -23,6 +23,5 @@ export function createCategoryFilter(value: string) {
 }
 
 function createFilter(filter: Filter): Filter {
-	console.log('Creating filter:', filter);
 	return filter;
 }
