@@ -49,7 +49,12 @@ export async function generateNormalized(
 
 async function fetchItems(collection: string) {
 	try {
-		const response = await api.get(`/items/${collection}`);
+		const response = await api.get(`/items/${collection}`, {
+			params: {
+				limit: -1,
+				sort: 'sort',
+			},
+		});
 
 		return response.data.data;
 	} catch (err) {
