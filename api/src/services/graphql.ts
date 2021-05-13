@@ -320,7 +320,7 @@ export class GraphQLService {
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: getGraphQLType(field.type),
+							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
 							description: field.note,
 						};
 
@@ -1590,7 +1590,7 @@ export class GraphQLService {
 					name: 'directus_collections_meta',
 					fields: Object.values(schema.read.collections['directus_collections'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: getGraphQLType(field.type),
+							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
 							description: field.note,
 						};
 
@@ -1645,7 +1645,7 @@ export class GraphQLService {
 					name: 'directus_fields_meta',
 					fields: Object.values(schema.read.collections['directus_fields'].fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: getGraphQLType(field.type),
+							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
 							description: field.note,
 						};
 
@@ -1694,6 +1694,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						return await service.readAll(args.collection);
 					},
 				},
