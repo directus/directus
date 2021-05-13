@@ -43,7 +43,7 @@
 	"dependencies": {
 		"@directus/format-title": "9.0.0-rc.64",
 		"@directus/sdk": "9.0.0-rc.64",
-		"@types/yargs": "^15.0.13",
+		"@types/yargs": "^16.0.1",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
 		"cli-highlight": "^2.1.11",
