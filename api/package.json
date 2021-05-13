@@ -86,7 +86,7 @@
 		"cors": "^2.8.5",
 		"date-fns": "^2.21.1",
 		"deep-map": "^2.0.0",
-		"dotenv": "^8.2.0",
+		"dotenv": "^9.0.2",
 		"eventemitter2": "^6.4.3",
 		"execa": "^4.1.0",
 		"exif-reader": "^1.0.3",
