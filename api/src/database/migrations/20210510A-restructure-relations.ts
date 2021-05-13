@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex('directus_relations').update({ one_deselect_action: 'nullify' });
 
 	await knex.schema.alterTable('directus_relations', (table) => {
-		table.string('one_deselect_action').notNullable().alter();
+		table.string('one_deselect_action').notNullable().defaultTo('nullify').alter();
 	});
 }
 
