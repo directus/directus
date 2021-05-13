@@ -276,6 +276,8 @@ wysiwyg_options:
   directionality: 方向
 choices: 選択項目
 deselect: 選択解除
+creating_in: '{collection} のアイテム作成'
+editing_in: '{collection} のアイテムを編集中'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 settings_data_model: データモデル
 settings_permissions: 役割・権限
