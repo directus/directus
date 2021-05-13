@@ -221,7 +221,12 @@
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
-			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
+			<export-sidebar-detail
+				:filters="filters"
+				:layout-query="layoutQuery"
+				:search-query="searchQuery"
+				:collection="currentCollection"
+			/>
 			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
 		</template>
 
