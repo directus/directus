@@ -410,6 +410,8 @@ interfaces:
     collections: コレクション
   select-color:
     color: 色
+  datetime:
+    set_to_now: 現在時刻を設定
   select-dropdown:
     choices_value_placeholder: 値を入力...
   file:
