@@ -329,6 +329,12 @@ export class FieldsService {
 				schema: this.schema,
 			});
 
+			const fieldsService = new FieldsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
 			for (const relation of relations) {
 				const isM2O = relation.collection === collection && relation.field === field;
 
@@ -337,7 +343,7 @@ export class FieldsService {
 					await relationsService.deleteOne(collection, field);
 
 					if (relation.related_collection && relation.meta?.one_field) {
-						await this.deleteField(relation.related_collection, relation.meta.one_field);
+						await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 					}
 				}
 
