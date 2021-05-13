@@ -7,6 +7,7 @@ import { ItemsService } from './items';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import csv from 'csv-parser';
+import { set, transform } from 'lodash';
 
 export class ImportService {
 	knex: Knex;
@@ -100,8 +101,13 @@ export class ImportService {
 			return new Promise<void>((resolve, reject) => {
 				stream
 					.pipe(csv())
-					.on('data', (value) => {
-						saveQueue.push(value);
+					.on('data', (value: Record<string, string>) => {
+						const obj = transform(value, (result: Record<string, string>, value, key) => {
+							if (value.length === 0) delete result[key];
+							else set(result, key, value);
+						});
+
+						saveQueue.push(obj);
 					})
 					.on('error', (err) => {
 						destroyStream(stream);
