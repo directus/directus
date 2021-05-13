@@ -4,7 +4,6 @@ export function generateNormalized(
 	parentField: string,
 	childrenField: string
 ) {
-	console.log('running...');
 	const tree: Record<string, any>[] = [];
 	const list: Record<string, any> = {};
 
