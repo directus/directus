@@ -1,22 +1,24 @@
 <template>
-	<div class="form-grid with-fill">
-		<div class="field half-left">
-			<filter-field
-				:filter="getFilter('status')"
-				:field="statusField"
-				@input="handleFilters(createStatusFilter($event))"
-				@unset="deleteFilter"
-			/>
+	<div class="layout-filters">
+		<div class="form-grid with-fill">
+			<div class="field half-left">
+				<filter-field
+					:filter="getFilter('status')"
+					:field="statusField"
+					@input="handleFilters(createStatusFilter($event))"
+					@unset="deleteFilter"
+				/>
+			</div>
+			<div class="field half-right">
+				<filter-field
+					:filter="getFilter('category')"
+					:field="categoryField"
+					@input="_createCategoryFilter($event)"
+					@unset="deleteFilter"
+				/>
+			</div>
 		</div>
-		<div class="field half-right">
-			<filter-field
-				:filter="getFilter('category')"
-				:field="categoryField"
-				@input="handleFilters(createCategoryFilter($event))"
-				@unset="deleteFilter"
-			/>
-		</div>
-		<v-button x-small @click="$emit('update:filters', null)" class="field full" :disabled="!filters.length > 0">
+		<v-button x-small @click="$emit('update:filters', null)" :disabled="!filters.length > 0">
 			{{ $t('clear_filters') }}
 		</v-button>
 	</div>
@@ -49,9 +51,21 @@ export default defineComponent({
 		const fields = computed<Field[]>(() => fieldsStore.getFieldsForCollection(props.collection));
 
 		const statusField = fields.value.find(({ field }: Field) => field === 'status');
+		/* Adds deselectable option to the statusfield */
+		if (statusField?.meta?.options) statusField.meta.options.allowNone = true;
+
 		const categoryField = fields.value.find(({ field }: Field) => field === 'category');
 
-		if (statusField?.meta?.options) statusField.meta.options.allowNone = true;
+		return {
+			fields,
+			statusField,
+			categoryField,
+			handleFilters,
+			getFilter,
+			deleteFilter,
+			createStatusFilter,
+			_createCategoryFilter,
+		};
 
 		function handleFilters(filter: Filter) {
 			const { key } = filter;
@@ -67,7 +81,16 @@ export default defineComponent({
 		}
 
 		function getFilter(key: Filter['key']) {
-			return props.filters.find((filter) => filter.key === key);
+			const filter = props.filters.find((filter) => filter.key === key);
+			if (key === 'category' && filter) {
+				/* Alias the value to the first item of the concatenated string, otherwise it 500s */
+				const legalValue = filter.value.split(',')[0];
+				return {
+					...filter,
+					value: legalValue,
+				};
+			}
+			return filter;
 		}
 
 		function deleteFilter(key: Filter['key']) {
@@ -75,26 +98,25 @@ export default defineComponent({
 			emit('update:filters', [...(removeFilter || [])]);
 		}
 
-		return {
-			fields,
-			statusField,
-			categoryField,
-			handleFilters,
-			getFilter,
-			deleteFilter,
-			createStatusFilter,
-			createCategoryFilter,
-		};
+		async function _createCategoryFilter(value: string) {
+			const filter = await createCategoryFilter(value, categoryField!);
+
+			handleFilters(filter);
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
+.layout-filters {
+	margin-bottom: 12px;
+	margin-left: 32px;
+}
 
 .form-grid {
 	@include form-grid;
 
-	margin-left: 32px;
+	margin: 12px 0;
 }
 </style>
