@@ -844,6 +844,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   presentation-links:
@@ -923,6 +924,7 @@ interfaces:
     hash: Tiiviste
     description: Syötä arvo, josta luodaan tiiviste
     masked: Maskeerattu
+    masked_label: Piilota totuus-arvot
   select-icon:
     icon: Kuvake
     description: Valitse kuvake pudotusvalikosta
@@ -938,25 +940,36 @@ interfaces:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
   list-m2m:
+    many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
   select-dropdown-m2o:
+    many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
     display_template: Esitysmalli
   input-rich-text-md:
+    markdown: Markdown
     description: Syötä ja esikatsele markdownia
+    customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
+    box: Lohko / rivillä
+    imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
   presentation-notice:
+    notice: Ilmoitus
     description: Näytä lyhyt ilmoitus
     text: Syötä ilmoituksen sisältö tähän...
   list-o2m:
+    one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
   select-radio:
+    radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
   list:
+    repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
+    edit_fields: Muokkaa kenttiä
     add_label: '"Luo uusi"-tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
@@ -979,18 +992,26 @@ interfaces:
     alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
   input:
+    input: Syöte
     description: Manuaalisesti syötetty arvo
+    trim: Leikkaa
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
+    clear: Tyhjennetty arvo
     clear_label: Tallenna tyhjänä merkkijonona
+    minimum_value: Vähimmäisarvo
+    maximum_value: Enimmäisarvo
+    step_interval: Askelväli
+    slug: Slugify
     slug_label: Tee syötetystä arvosta URL-osoiteturvallinen
   input-multiline:
+    textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
   boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
-    label_placeholder: Syötä otsikko...
+    label_placeholder: Syötä tunniste...
     label_default: Käytössä
   translations:
     display_template: Esitysmalli
@@ -1007,10 +1028,18 @@ interfaces:
       dropdown: Pudotusvalikko
       modal: Modaali
   input-rich-text-html:
+    wysiwyg: WYSIWYG
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
+    toolbar: Työkalupalkki
+    custom_formats: Mukautetut muodot
+    options_override: Valintojen ohitus
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
+    results_path: Tulosten polku
+    value_path: Arvon polku
+    trigger: Laukaisija
+    rate: Rajoita
 displays:
   boolean:
     boolean: Totuusarvo
