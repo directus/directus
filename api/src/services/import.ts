@@ -6,6 +6,7 @@ import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';
 import { queue } from 'async';
 import destroyStream from 'destroy';
+import csv from 'csv-parser';
 
 export class ImportService {
 	knex: Knex;
@@ -36,8 +37,10 @@ export class ImportService {
 		switch (mimetype) {
 			case 'application/json':
 				return await this.importJSON(collection, stream);
+			case 'text/csv':
+				return await this.importCSV(collection, stream);
 			default:
-				throw new InvalidPayloadException(`Can't parse files of type ${mimetype}`);
+				throw new InvalidPayloadException(`Can't import files of type "${mimetype}"`);
 		}
 	}
 
@@ -77,6 +80,41 @@ export class ImportService {
 					saveQueue.drain(() => {
 						return resolve();
 					});
+				});
+			});
+		});
+	}
+
+	importCSV(collection: string, stream: NodeJS.ReadableStream) {
+		return this.knex.transaction((trx) => {
+			const service = new ItemsService(collection, {
+				knex: trx,
+				schema: this.schema,
+				accountability: this.accountability,
+			});
+
+			const saveQueue = queue(async (value: Record<string, unknown>) => {
+				return await service.upsertOne(value);
+			});
+
+			return new Promise<void>((resolve, reject) => {
+				stream
+					.pipe(csv())
+					.on('data', (value) => {
+						saveQueue.push(value);
+					})
+					.on('error', (err) => {
+						destroyStream(stream);
+						reject(new InvalidPayloadException(err.message));
+					})
+					.on('end', () => {
+						saveQueue.drain(() => {
+							return resolve();
+						});
+					});
+
+				saveQueue.error((err) => {
+					reject(err);
 				});
 			});
 		});

@@ -85,6 +85,7 @@
 		"commander": "^7.2.0",
 		"cookie-parser": "^1.4.5",
 		"cors": "^2.8.5",
+		"csv-parser": "^3.0.0",
 		"date-fns": "^2.21.1",
 		"deep-map": "^2.0.0",
 		"destroy": "^1.0.4",
