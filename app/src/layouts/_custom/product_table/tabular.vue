@@ -165,7 +165,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
 import useShortcut from '@/composables/use-shortcut';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import layoutFilters from './layout-filters.vue';
+import layoutFilters from './layout-filters/index.vue';
 
 type layoutOptions = {
 	widths?: {
