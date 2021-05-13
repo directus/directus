@@ -20,7 +20,7 @@ export async function createCategoryFilter(value: string, field: Field) {
 
 	const { relatedCollection } = useRelation(field);
 
-	const { tree, list } = await generateNormalized(
+	const { list } = await generateNormalized(
 		relatedCollection.collection,
 		'id',
 		field?.meta?.options?.parentField,
