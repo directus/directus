@@ -86,6 +86,7 @@ field_presentation: 展示字段
 field_file: 单个文件
 field_files: 多个文件
 field_m2o: M2O 关系
+field_m2a: M2A Relationship
 field_o2m: O2M 关系
 field_m2m: M2M 关系
 field_translations: 翻译
@@ -154,7 +155,9 @@ click_to_manage_translated_fields: >-
 fields_group: 字段组
 no_collections_found: 未找到任何集合
 new_data_alert: '以下将在您的数据模型中创建：'
+search_collection: Search Collection...
 new_field: '新建字段'
+new_collection: 'New Collection'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
 add_m2m_to_collection: '添加多对多到"{collection}"'
@@ -203,6 +206,7 @@ settings_update_success: 设置已更新
 title: 标题
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
+revision_delta_reverted: Reverted
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 revision_preview: 修订预览
