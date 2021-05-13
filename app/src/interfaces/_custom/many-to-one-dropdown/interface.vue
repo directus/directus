@@ -130,10 +130,23 @@ export default defineComponent({
 
 		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
 
-		const computedItems = computed(() => {
-			if (items.value) return generateNormalized(items.value, 'id', props.parentField, props.childrenField);
-			return null;
-		});
+		getItems();
+
+		const computedItems = ref<any>(null);
+
+		async function getItems() {
+			const { tree, list } = await generateNormalized(
+				relatedCollection.value.collection,
+				'id',
+				props.parentField,
+				props.childrenField
+			);
+
+			computedItems.value = {
+				tree,
+				list,
+			};
+		}
 
 		function emitValue(value: boolean | null) {
 			emit('input', value);

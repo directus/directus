@@ -1,9 +1,14 @@
-export function generateNormalized(
-	items: Record<string, any>[],
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+
+export async function generateNormalized(
+	collection: string,
 	idField: string,
 	parentField: string,
 	childrenField: string
 ) {
+	const items = (await fetchItems(collection)) as Record<string, any>[];
+
 	const tree: Record<string, any>[] = [];
 	const list: Record<string, any> = {};
 
@@ -40,4 +45,14 @@ export function generateNormalized(
 		tree,
 		list,
 	};
+}
+
+async function fetchItems(collection: string) {
+	try {
+		const response = await api.get(`/items/${collection}`);
+
+		return response.data.data;
+	} catch (err) {
+		unexpectedError(err);
+	}
 }
