@@ -34,27 +34,32 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Collection, Filter } from '@/types';
+import { Filter } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import filtersToQuery from '@/utils/filters-to-query';
 
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+};
+
 export default defineComponent({
 	props: {
+		layoutQuery: {
+			type: Object as PropType<LayoutQuery>,
+			default: (): LayoutQuery => ({}),
+		},
 		filters: {
 			type: Array as PropType<Filter[]>,
 			default: () => [],
 		},
-		layoutQuery: {
-			type: Object,
-			default: () => ({}),
-		},
 		searchQuery: {
-			type: String,
+			type: String as PropType<string | null>,
 			default: null,
 		},
 		collection: {
-			type: Object as PropType<Collection>,
+			type: String,
 			required: true,
 		},
 	},
@@ -65,25 +70,17 @@ export default defineComponent({
 		return { format, useFilters, exportData };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection.collection}`;
+			const url = getRootPath() + `items/${props.collection}`;
 
-			let params: Record<string, any> = {
+			let params: Record<string, unknown> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
+				export: format.value || 'json',
 			};
 
-			if (format.value === 'csv') {
-				params.export = 'csv';
-			} else if (format.value === 'xml') {
-				params.export = 'xml';
-			} else {
-				params.export = 'json';
-			}
-
 			if (useFilters.value === true) {
-				params = {
-					...params,
-					...props.layoutQuery,
-				};
+				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
+				if (props.searchQuery) params.search = props.searchQuery;
 
 				if (props.filters?.length) {
 					params = {
