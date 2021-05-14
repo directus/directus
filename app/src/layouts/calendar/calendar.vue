@@ -114,8 +114,6 @@ export default defineComponent({
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const fields = <any>[];
-
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
 				return ['timestamp', 'dateTime', 'date'].includes(field.type);
@@ -320,7 +318,6 @@ export default defineComponent({
 		return {
 			calendarEl,
 			items,
-			fields,
 			loading,
 			error,
 			totalPages,

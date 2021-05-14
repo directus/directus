@@ -309,7 +309,6 @@ export default defineComponent({
 			itemCount,
 			totalCount,
 			fieldsInCollection,
-			fields,
 			limit,
 			size,
 			primaryKeyField,
