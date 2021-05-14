@@ -296,12 +296,12 @@ export default defineComponent({
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
 			if (!field) return;
 			if (field.type == 'geometry') {
-				const special = field.meta?.special ?? ([] as [string, GeometryFormat, GeometryType?]);
+				const special = field.meta!.special as [string, GeometryFormat, GeometryType?];
 				return {
 					geometryField: field.field,
 					geometryFormat: special[1],
 					geometryType: special[2],
-				};
+				} as GeometryOptions;
 			}
 			if (field?.meta?.interface == 'map') {
 				return {
@@ -309,7 +309,7 @@ export default defineComponent({
 					geometryFormat: field.meta.options.geometryFormat,
 					geometryType: field.meta.options.geometryType,
 					geometryCRS: field.meta.options.geometryCRS,
-				};
+				} as GeometryOptions;
 			}
 			return undefined;
 		});
