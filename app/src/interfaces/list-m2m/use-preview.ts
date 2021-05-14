@@ -2,7 +2,7 @@ import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import { sanitizeFieldsToFetch } from '@/utils/sanitize-fields-to-fetch';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { Ref, ref, watch } from '@vue/composition-api';
 import { cloneDeep, get } from 'lodash';
 import { RelationInfo } from './use-relation';
@@ -186,7 +186,7 @@ export default function usePreview(
 
 		const endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 
-		const fieldsToFetch = sanitizeFieldsToFetch(collection, fields);
+		const fieldsToFetch = addRelatedPrimaryKeyToFields(collection, fields);
 
 		const response = await api.get(endpoint, {
 			params: {

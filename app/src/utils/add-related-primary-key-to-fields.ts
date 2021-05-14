@@ -1,14 +1,26 @@
 import { useFieldsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 
-export function sanitizeFieldsToFetch(currentCollection: string, fields: string[]): string[] {
+/**
+ * Adds the primary key field for any passed relational dot-notation field to the array of fields.
+ * Useful for cases where you need to fetch a single piece of nested relational data, but also need
+ * access to its primary key.
+ *
+ * @example
+ * const collection = 'articles';
+ * const fields = ['title', 'user.name'];
+ *
+ * addRelatedPrimaryKeyToFields(collection, fields);
+ * // => ['title', 'user.name', 'user.id'];
+ */
+export function addRelatedPrimaryKeyToFields(currentCollection: string, fields: string[]): string[] {
 	if (!fields?.length) return [];
 
 	const fieldsStore = useFieldsStore();
 
 	const sanitizedFields: string[] = [];
 
-	for (const [index, fieldName] of fields.entries()) {
+	for (const fieldName of fields) {
 		sanitizedFields.push(fieldName);
 
 		if (!fieldName.includes('.')) continue;
