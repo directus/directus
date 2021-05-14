@@ -210,3 +210,52 @@ mutation {
 </div>
 
 ---
+
+## Import Data from File
+
+Import multiple records from a JSON or CSV file into a collection. Relies on a `multipart/form-data` encoded request,
+just like regular file uploads. Check [Upload a File](/reference/api/system/files/#upload-a-file) for more information.
+
+The import endpoint expects the file structure to match [the export query parameter](/reference/api/query/#export). For
+JSON, this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
+
+<div class="two-up">
+<div class="left">
+
+### Request Body
+
+Send the file in a `multipart/form-data` request. See [Upload a File](/reference/api/system/files/#upload-a-file) for
+more information.
+
+### Returns
+
+Empty body.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /utils/import/:collection
+```
+
+##### Example
+
+```json
+// POST /utils/sort/articles
+
+{
+	"item": 16,
+	"to": 51
+}
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---

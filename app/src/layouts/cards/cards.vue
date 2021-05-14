@@ -49,7 +49,6 @@
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
 			<export-sidebar-detail
-				:fields="fields"
 				:layout-query="layoutQuery"
 				:filters="_filters"
 				:search-query="searchQuery"

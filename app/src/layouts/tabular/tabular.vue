@@ -52,7 +52,6 @@
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
 			<export-sidebar-detail
-				:fields="fields"
 				:layout-query="layoutQuery"
 				:filters="_filters"
 				:search-query="searchQuery"
@@ -247,15 +246,8 @@ export default defineComponent({
 			}
 		);
 
-		const {
-			tableSort,
-			tableHeaders,
-			tableRowHeight,
-			onRowClick,
-			onSortChange,
-			activeFields,
-			tableSpacing,
-		} = useTable();
+		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
+			useTable();
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {

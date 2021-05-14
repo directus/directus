@@ -72,7 +72,7 @@ export class UtilsService {
 			.count(sortField, { as: 'count' })
 			.groupBy(sortField)
 			.from(collection)
-			.having('count', '>', 1);
+			.havingRaw('count(??) > 1', [sortField]);
 
 		if (duplicates?.length > 0) {
 			const ids = await this.knex.select(primaryKeyField).from(collection).orderBy(sortField);
