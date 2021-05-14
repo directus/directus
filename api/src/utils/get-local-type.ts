@@ -59,6 +59,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 
 	// Postgres
 	json: { type: 'json' },
+	jsonb: { type: 'json' },
 	uuid: { type: 'uuid' },
 	int2: { type: 'integer' },
 	serial4: { type: 'integer' },
