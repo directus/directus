@@ -1,5 +1,5 @@
 import { Field, Filter } from '@/types';
-import { generateNormalized } from '@/interfaces/_custom/many-to-one-dropdown/methods';
+import api from '@/api';
 import { useCollectionsStore, useRelationsStore } from '@/stores';
 import useCollection from '@/composables/use-collection';
 import _ from 'lodash';
@@ -20,12 +20,13 @@ export async function createCategoryFilter(value: string, field: Field) {
 
 	const { relatedCollection } = useRelation(field);
 
-	const { list } = await generateNormalized(
-		relatedCollection.collection,
-		'id',
-		field?.meta?.options?.parentField,
-		field?.meta?.options?.childrenField
-	);
+	const { data } = await api.get(`/_custom/generate-tree-list/${relatedCollection.collection}`, {
+		params: {
+			parentField: field?.meta?.options?.parentField,
+			childrenField: field?.meta?.options?.childrenField,
+		},
+	});
+	const { list } = data.data;
 
 	const uuids = [];
 

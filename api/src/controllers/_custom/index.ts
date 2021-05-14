@@ -12,7 +12,13 @@ router.get(
 	'/generate-tree-list/:collection',
 	asyncHandler(async (req, res, next) => {
 		const { collection } = req.params;
-		const { parentField, childrenField } = req.body;
+
+		// const { parentField, childrenField } = req.query;
+		const parentField = 'parent';
+		const childrenField = 'children';
+
+		console.log(parentField, childrenField);
+
 		const query: Query = {
 			limit: -1,
 		};
@@ -23,7 +29,7 @@ router.get(
 
 		const items = await service.readByQuery(query);
 
-		const { tree, list } = generateTreeList(items, parentField, childrenField);
+		const { tree, list } = generateTreeList(items, parentField as string, childrenField as string);
 
 		const data = { tree, list };
 

@@ -80,7 +80,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 import RecursiveListItem from './recursive-list-item.vue';
-import { generateNormalized } from './methods';
 
 export default defineComponent({
 	components: {
@@ -135,12 +134,13 @@ export default defineComponent({
 		const computedItems = ref<any>(null);
 
 		async function getItems() {
-			const { tree, list } = await generateNormalized(
-				relatedCollection.value.collection,
-				'id',
-				props.parentField,
-				props.childrenField
-			);
+			const { data } = await api.get(`/_custom/generate-tree-list/${relatedCollection.value.collection}`, {
+				params: {
+					parentField: props.parentField,
+					childrenField: props.childrenField,
+				},
+			});
+			const { tree, list } = data.data;
 
 			computedItems.value = {
 				tree,
