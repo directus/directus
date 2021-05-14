@@ -121,7 +121,7 @@
 		"pino": "^6.7.0",
 		"pino-colada": "^2.1.0",
 		"qs": "^6.9.4",
-		"rate-limiter-flexible": "^2.1.13",
+		"rate-limiter-flexible": "^2.2.2",
 		"resolve-cwd": "^3.0.0",
 		"sharp": "^0.27.1",
 		"uuid": "^8.3.2",
