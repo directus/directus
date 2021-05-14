@@ -294,14 +294,24 @@ export default defineComponent({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
-			if (field.type !== 'geometry' || field?.meta?.interface !== 'map') return;
-			const special = field?.meta?.special || ([] as [string?, GeometryFormat?, GeometryType?]);
-			return {
-				geometryField: field.field,
-				geometryFormat: field.meta.options.geometryFormat ?? special[1],
-				geometryType: field.meta.options.geometryType ?? special[2],
-				geometryCRS: field.meta.options.geometryCRS ?? special[3],
-			};
+			if (!field) return;
+			if (field.type == 'geometry') {
+				const special = field.meta?.special ?? ([] as [string, GeometryFormat, GeometryType?]);
+				return {
+					geometryField: field.field,
+					geometryFormat: special[1],
+					geometryType: special[2],
+				};
+			}
+			if (field?.meta?.interface == 'map') {
+				return {
+					geometryField: field.field,
+					geometryFormat: field.meta.options.geometryFormat,
+					geometryType: field.meta.options.geometryType,
+					geometryCRS: field.meta.options.geometryCRS,
+				};
+			}
+			return undefined;
 		});
 
 		const template = computed(() => {

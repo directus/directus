@@ -158,7 +158,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		if (columnSchema.special[0] == 'geometry' && columnSchema.special[1] == 'native') {
 			return queryGeometryAsText(knex, column);
 		}
-		return knex.raw(`${knex.ref(table)}.${knex.ref(column)}`);
+		return knex.raw('??.??', [table, column]);
 	};
 }
 

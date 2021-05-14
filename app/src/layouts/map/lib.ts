@@ -149,7 +149,9 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 		bbox: [Infinity, Infinity, -Infinity, -Infinity],
 	};
 	for (let i = 0; i < entries.length; i++) {
+		console.log(entries[i]);
 		const geometry = parser(entries[i]);
+		console.log(geometry);
 		if (!geometry) continue;
 		const bbox = geometry.bbox!;
 		expand(geojson.bbox!, [bbox[0], bbox[1]]);
@@ -162,8 +164,6 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 	}
 	if (geojson.features.length == 0) {
 		delete geojson.bbox;
-	} else if (geojson.bbox!.some((b) => Math.abs(b) > 90)) {
-		throw new Error(i18n.t('interfaces.map.out_of_bounds', { coord: JSON.stringify(geojson.bbox) }) as string);
 	}
 	return geojson;
 }

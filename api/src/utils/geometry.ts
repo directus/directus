@@ -7,9 +7,7 @@ export function createGeometryColumn(
 	field: RawField | Field
 ): Knex.ColumnBuilder {
 	const [, format = 'geojson', type = 'Point'] = field.meta?.special || [];
-	const {
-		config: { client },
-	} = knex.client;
+	const client = knex.client.config.client;
 	switch (format) {
 		case 'native':
 			switch (client) {
@@ -46,9 +44,7 @@ export function createGeometryColumn(
 }
 
 export function queryGeometryAsText(knex: Knex, column: string): Knex.Raw {
-	const {
-		config: { client },
-	} = knex.client;
+	const client = knex.client.config.client;
 	switch (client) {
 		case 'pg':
 		case 'mysql':
@@ -66,9 +62,7 @@ export function queryGeometryAsText(knex: Knex, column: string): Knex.Raw {
 }
 
 export function queryGeometryFromText(knex: Knex, text: string): Knex.Raw {
-	const {
-		config: { client },
-	} = knex.client;
+	const client = knex.client.config.client;
 	switch (client) {
 		case 'mysql':
 		case 'mariadb':
