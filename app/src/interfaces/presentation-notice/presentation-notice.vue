@@ -1,12 +1,12 @@
 <template>
 	<v-notice :icon="icon" :type="color">
-		<div v-html="marked(text)" />
+		<div v-html="md(text)" />
 	</v-notice>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import marked from 'marked';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	props: {
@@ -24,7 +24,7 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		return { marked };
+		return { md };
 	},
 });
 </script>

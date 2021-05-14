@@ -88,7 +88,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
+				<div class="page-description" v-html="md($t('page_help_settings_presets_item'))" />
 			</sidebar-detail>
 
 			<sidebar-detail icon="search" :title="$t('search')" class="layout-sidebar">
@@ -116,7 +116,7 @@ import i18n from '@/lang';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import router from '@/router';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type FormattedPreset = {
@@ -172,7 +172,7 @@ export default defineComponent({
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
-			marked,
+			md,
 			updateFilters,
 			searchQuery,
 		};

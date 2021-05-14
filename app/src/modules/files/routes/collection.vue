@@ -145,7 +145,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
+				<div class="page-description" v-html="md($t('page_help_files_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
@@ -171,7 +171,7 @@ import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import FolderPicker from '../components/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import router from '@/router';
@@ -300,7 +300,7 @@ export default defineComponent({
 			layout,
 			filtersWithFolderAndType,
 			searchQuery,
-			marked,
+			md,
 			moveToDialogActive,
 			moveToFolder,
 			moving,

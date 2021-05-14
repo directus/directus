@@ -37,7 +37,7 @@
 import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
@@ -57,7 +57,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const textarea = ref<Vue>();
-		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
+		const htmlContent = computed(() => (props.activity.comment ? md(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
