@@ -9,5 +9,34 @@ export default defineInterface({
 	relational: true,
 	types: ['alias'],
 	groups: ['m2a'],
-	options: [],
+	options: [
+		{
+			field: 'enableSelect',
+			name: '$t:selecting_items',
+			schema: {
+				default_value: true,
+			},
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: '$t:enable_select_button',
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'enableCreate',
+			name: '$t:creating_items',
+			schema: {
+				default_value: true,
+			},
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: '$t:enable_create_button',
+				},
+				width: 'half',
+			},
+		},
+	],
 });
