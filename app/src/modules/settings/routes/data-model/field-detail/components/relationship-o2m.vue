@@ -188,13 +188,8 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const {
-			availableCollections,
-			systemCollections,
-			fields,
-			currentCollectionPrimaryKey,
-			collectionMany,
-		} = useRelation();
+		const { availableCollections, systemCollections, fields, currentCollectionPrimaryKey, collectionMany } =
+			useRelation();
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {

@@ -19,6 +19,8 @@ import { toArray } from '../utils/to-array';
 import { createGeometryColumn } from '../utils/geometry';
 import { isEqual } from 'lodash';
 
+export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
+
 export class FieldsService {
 	knex: Knex;
 	accountability: Accountability | null;

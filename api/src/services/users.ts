@@ -39,12 +39,18 @@ export class UsersService extends ItemsService {
 	 * User email has to be unique case-insensitive. This is an additional check to make sure that
 	 * the email is unique regardless of casing
 	 */
-	private async checkUniqueEmails(emails: string[]) {
+	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey) {
 		if (emails.length > 0) {
-			const results = await this.knex
+			const query = this.knex
 				.select('email')
 				.from('directus_users')
 				.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
+
+			if (excludeKey) {
+				query.whereNot('id', excludeKey);
+			}
+
+			const results = await query;
 
 			if (results.length > 0) {
 				throw new RecordNotUniqueException('email', {
@@ -125,7 +131,7 @@ export class UsersService extends ItemsService {
 		const email = data.email?.toLowerCase();
 
 		if (email) {
-			await this.checkUniqueEmails([email]);
+			await this.checkUniqueEmails([email], key);
 		}
 
 		if (data.password) {

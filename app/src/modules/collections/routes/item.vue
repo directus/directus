@@ -246,9 +246,13 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(
-			collection
-		);
+		const {
+			info: collectionInfo,
+			defaults,
+			primaryKeyField,
+			isSingleton,
+			accountabilityScope,
+		} = useCollection(collection);
 
 		const {
 			isNew,

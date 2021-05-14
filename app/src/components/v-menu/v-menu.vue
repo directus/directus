@@ -118,7 +118,13 @@ export default defineComponent({
 		const id = computed(() => nanoid());
 		const popper = ref<HTMLElement | null>(null);
 
-		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
+		const {
+			start,
+			stop,
+			styles,
+			arrowStyles,
+			placement: popperPlacement,
+		} = usePopper(
 			reference,
 			popper,
 			computed(() => ({
