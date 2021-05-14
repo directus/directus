@@ -293,6 +293,7 @@ choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
 no_file_selected: Dosya seçilmedi
 download_file: Dosyayı İndir
+collection_key: Koleksiyonlar
 name: İsim
 type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
@@ -302,6 +303,7 @@ save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
 add_existing: Var olanı ekle
+creating_items: öğe oluşturma
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 click_to_expand: Genişletmek için Tıklayın
@@ -662,19 +664,18 @@ interfaces:
     allow_other: Diğerlerine İzin Ver
   input-code:
     code: Kod
-    line_number: Satır Numarası
   collection:
     collection: Koleksiyon
   system-collections:
     collections: Koleksiyonlar
-  color:
+  select-color:
     color: Renk
   datetime:
     datetime: Tarih/Saat
   system-display-template:
     display-template: Görüntüleme Şablonu
     select_a_collection: Koleksiyon Seç
-  divider:
+  presentation-divider:
     divider: Ayırıcı
   select-dropdown:
     allow_other: Diğerlerine İzin Ver
@@ -685,8 +686,7 @@ interfaces:
     files: Dosyalar
   input-hash:
     hash: Hash
-    masked: Maskeli
-  icon:
+  select-icon:
     icon: İkon
     search_for_icon: Simge ara...
   system-interface:
@@ -712,8 +712,6 @@ interfaces:
     repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı
-  slug:
-    slug: Slug
   tags:
     tags: Etiketler
     alphabetize: Alfabetik

@@ -1,6 +1,6 @@
 import { getSchema } from '../../../utils/get-schema';
 
-export default async function rolesCreate({ name, admin }: { name: string; admin: boolean }): Promise<void> {
+export default async function rolesCreate({ role: name, admin }: { role: string; admin: boolean }): Promise<void> {
 	const { default: database } = require('../../../database/index');
 	const { RolesService } = require('../../../services/roles');
 

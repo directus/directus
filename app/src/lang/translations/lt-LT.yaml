@@ -766,9 +766,6 @@ interfaces:
     items_shown: Rodomi elementai
   input-code:
     code: Kodas
-    description: Rašyti arba pasidalinti kodo elementais
-    line_number: Eilutės numeris
-    placeholder: Įveskite kodą čia...
   collection:
     collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
@@ -777,13 +774,8 @@ interfaces:
     collections: Kolekcijos
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas
-  color:
+  select-color:
     color: Spalva
-    description: Įveskite arba pasirinkite spalvą
-    placeholder: Pasirinkte spalvą...
-    preset_colors: Ruošinių spalvos
-    preset_colors_add_label: Pridėti naują spalvą...
-    name_placeholder: Įvesti spalvos pavadinimą...
   datetime:
     datetime: Data ir laikas
     description: Įvesti datas ir laikus
@@ -792,11 +784,9 @@ interfaces:
     use_24: Naudoti 24 val. laikrodį
   system-display-template:
     display-template: Rodymo šablonas
-    description: Maišyti statinį tekstą ir dinamines laukų reikšmes
-    collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
     select_a_collection: Pasirinkite kolekciją
-  divider:
+  presentation-divider:
     divider: Skyriklis
     description: Aprašyti ir padalinti laukus į skiltis
     title_placeholder: Įvesti pavadinimą...
@@ -824,14 +814,9 @@ interfaces:
     description: Pasirinkite arba įkelkite kelis failus
   input-hash:
     hash: Maiša
-    description: Įveskite reikšmę išmaišymui
-    masked: Paslėptas
-    masked_label: Paslėpti tikrąsias reikšmes
-  icon:
+  select-icon:
     icon: Ikona
-    description: Pasirinkite ikonėlę iš sąrašo
-    search_for_icon: Ieškoti ikonėlių...
-  image:
+  file-image:
     image: Paveikslėlis
     description: Pasirinkite arba įkelkite paveikslėlį
   system-interface:
@@ -869,8 +854,6 @@ interfaces:
     description: Įveskite kelių eilučių neformatuotą tesktą
   boolean:
     toggle: Perjungti
-    description: Pasirinkti tarp įjungta/išjungta
-    label_placeholder: Įveskite žymą...
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas

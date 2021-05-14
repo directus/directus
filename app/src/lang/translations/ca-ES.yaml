@@ -179,18 +179,17 @@ interfaces:
     allow_other: Permet altres
   input-code:
     code: Codi
-    line_number: Número de línia
   collection:
     collection: Coŀlecció
   system-collections:
     collections: Col·leccions
-  color:
+  select-color:
     color: Color
   datetime:
     datetime: Data i hora
   system-display-template:
     display-template: Mostra la plantilla
-  divider:
+  presentation-divider:
     divider: Separador
   select-dropdown:
     allow_other: Permet altres

@@ -64,7 +64,7 @@
 		</v-list>
 
 		<div class="buttons">
-			<v-menu show-arrow>
+			<v-menu show-arrow v-if="enableCreate">
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
 						{{ $t('create_new') }}
@@ -84,7 +84,7 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu show-arrow>
+			<v-menu show-arrow v-if="enableSelect">
 				<template #activator="{ toggle }">
 					<v-button @click="toggle" class="existing">
 						{{ $t('add_existing') }}
@@ -167,6 +167,14 @@ export default defineComponent({
 			type: [String, Number] as PropType<string | number>,
 			required: true,
 		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
@@ -177,15 +185,8 @@ export default defineComponent({
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
-		const {
-			currentlyEditing,
-			relatedPrimaryKey,
-			editsAtStart,
-			stageEdits,
-			cancelEdit,
-			editExisting,
-			createNew,
-		} = useEdits();
+		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
+			useEdits();
 		const { onSort } = useManualSort();
 
 		watch(props, fetchValues, { immediate: true, deep: true });

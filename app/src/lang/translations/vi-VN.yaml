@@ -588,12 +588,11 @@ interfaces:
     allow_other: Cho phép những đối tượng khác
   input-code:
     code: Mã nguồn
-    line_number: Dòng số
   collection:
     collection: Danh mục
   system-collections:
     collections: Danh mục
-  color:
+  select-color:
     color: Màu sắc
   datetime:
     datetime: Ngày giờ
@@ -601,7 +600,7 @@ interfaces:
   system-display-template:
     display-template: Mẫu hiển thị
     select_a_collection: Chọn Bảng
-  divider:
+  presentation-divider:
     divider: Bộ chia
   select-dropdown:
     allow_other: Cho phép những đối tượng khác
@@ -610,7 +609,7 @@ interfaces:
     file: Tệp
   files:
     files: Tệp
-  icon:
+  select-icon:
     icon: Biểu tượng
     description: Chọn một biểu tượng từ danh sách
     search_for_icon: Tìm kiếm biểu tượng...
@@ -635,8 +634,6 @@ interfaces:
     repeater: Vòng lặp
   slider:
     slider: Thanh trượt
-  slug:
-    slug: Viết tắt
   tags:
     tags: Tags
   input:
