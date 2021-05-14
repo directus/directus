@@ -528,6 +528,9 @@ class OASSpecsService implements SpecificationSubService {
 		hash: {
 			type: 'string',
 		},
+		geometry: {
+			type: 'string',
+		},
 	};
 }
 

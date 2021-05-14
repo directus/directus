@@ -8,7 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.map.description',
 	icon: 'map',
 	component: InterfaceMap,
-	types: ['json', 'csv', 'string', 'text', 'binary', 'unknown'],
+	types: ['json', 'geometry', 'string', 'text', 'binary'],
 	options: Options,
 	recommendedDisplays: [],
 });

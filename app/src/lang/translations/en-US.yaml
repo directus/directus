@@ -153,6 +153,7 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometry
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -974,12 +975,19 @@ interfaces:
     zoom: Zoom
     geometry_type: Geometry type
     geometry_format: Geometry format
+    geometry_srid: Geometry SRID
     geometry_crs: Coordinate Reference System
+    storage_type: Storage type
     default_position: Default position
     invalid_options: Invalid options
     invalid_format: Invalid format ( {format} )
     invalid_crs: Invalid CRS ( {crs} )
     unexpected_geometry: Expeted {expected}, got {found}.
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude,Latitude
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Notice
     description: Display a short notice

@@ -6,6 +6,7 @@ import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
 import { toArray } from '../utils/to-array';
 import database from './index';
+import { queryGeometryAsText } from '../utils/geometry';
 
 type RunASTOptions = {
 	/**
@@ -151,6 +152,16 @@ async function parseCurrentLevel(
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
 
+function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
+	return function (column: string): Knex.Raw<string> {
+		const columnSchema = schema.collections[table].fields[column];
+		if (columnSchema.special[0] == 'geometry' && columnSchema.special[1] == 'native') {
+			return queryGeometryAsText(knex, column);
+		}
+		return knex.raw(`${knex.ref(table)}.${knex.ref(column)}`);
+	};
+}
+
 function getDBQuery(
 	knex: Knex,
 	table: string,
@@ -160,8 +171,8 @@ function getDBQuery(
 	schema: SchemaOverview,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
-
+	const preProcess = getColumnPreprocessor(knex, schema, table);
+	const dbQuery = knex.select(columns.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;

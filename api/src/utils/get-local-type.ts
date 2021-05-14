@@ -99,6 +99,7 @@ export default function getLocalType(
 	if (field?.special?.includes('hash')) return 'hash';
 	if (field?.special?.includes('csv')) return 'csv';
 	if (field?.special?.includes('uuid')) return 'uuid';
+	if (field?.special?.includes('geometry')) return 'geometry';
 
 	if (type) {
 		return type.type;

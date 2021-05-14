@@ -9,6 +9,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
+import { queryGeometryFromText } from '../utils/geometry';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -18,6 +19,7 @@ type Transformers = {
 		value: any;
 		payload: Partial<Item>;
 		accountability: Accountability | null;
+		specials: string[];
 	}) => Promise<any>;
 };
 
@@ -129,6 +131,12 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
+		geometry: (params) => {
+			const { value, specials } = params;
+			if (specials[1] == 'lnglat') return this.transformers.csv(params);
+			if (specials[1] == 'geojson') return this.transformers.json(params);
+			return value;
+		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -164,12 +172,16 @@ export class PayloadService {
 			})
 		);
 
+		await this.processGeometries(processedPayload, action);
 		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && value instanceof Date !== true && value !== null)) {
+					if (
+						Array.isArray(value) ||
+						(typeof value === 'object' && !(value instanceof Date) && value !== null && !value.isRawInstance)
+					) {
 						record[key] = JSON.stringify(value);
 					}
 				}
@@ -201,6 +213,7 @@ export class PayloadService {
 					value,
 					payload,
 					accountability,
+					specials: fieldSpecials,
 				});
 			}
 		}
@@ -208,6 +221,24 @@ export class PayloadService {
 		return value;
 	}
 
+	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+		if (action == 'read') return payloads;
+
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+		const nativeGeometryColumns = fieldsInCollection.filter(([_, field]) => {
+			const [type, format] = field.special ?? [];
+			return type == 'geometry' && format == 'native';
+		});
+
+		for (const [name] of nativeGeometryColumns) {
+			for (const payload of payloads) {
+				if (name in payload) {
+					payload[name] = queryGeometryFromText(this.knex, payload[name]);
+				}
+			}
+		}
+		return payloads;
+	}
 	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively

@@ -21,6 +21,7 @@ import {
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '../utils/to-array';
+import { cleanupRawPayload } from '../utils/cleanup-raw-payload';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 
@@ -476,7 +477,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						item: keys[index],
 						data:
 							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithTypeCasting),
+						delta: JSON.stringify(cleanupRawPayload(payloadWithTypeCasting)),
 					}));
 
 					for (let i = 0; i < revisionRecords.length; i++) {

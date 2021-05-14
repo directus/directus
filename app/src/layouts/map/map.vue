@@ -172,7 +172,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryOptions, GeometryFormat, toGeoJSON } from './lib';
+import { GeometryOptions, GeometryFormat, GeometryType, toGeoJSON } from './lib';
 import { layers } from './style';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
@@ -294,11 +294,13 @@ export default defineComponent({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
-			if (field?.meta?.interface !== 'map') return;
+			if (field.type !== 'geometry' || field?.meta?.interface !== 'map') return;
+			const special = field?.meta?.special || ([] as [string?, GeometryFormat?, GeometryType?]);
 			return {
 				geometryField: field.field,
-				geometryFormat: field.meta.options.geometryFormat,
-				geometryCRS: field.meta.options.geometryCRS,
+				geometryFormat: field.meta.options.geometryFormat ?? special[1],
+				geometryType: field.meta.options.geometryType ?? special[2],
+				geometryCRS: field.meta.options.geometryCRS ?? special[3],
 			};
 		});
 
@@ -438,7 +440,7 @@ export default defineComponent({
 
 		const availableFields = computed(() => {
 			return (fieldsInCollection.value as Field[])
-				.filter(({ type, meta }) => meta?.interface == 'map')
+				.filter(({ type, meta }) => type == 'geometry' || meta?.interface == 'map')
 				.map(({ name, field }) => ({ text: name, value: field }));
 		});
 

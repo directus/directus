@@ -12,13 +12,12 @@ import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
 import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
-import { Field } from '../types/field';
+import { Field, RawField } from '../types/field';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
+import { createGeometryColumn } from '../utils/geometry';
 import { isEqual } from 'lodash';
-
-export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
 export class FieldsService {
 	knex: Knex;
@@ -398,6 +397,8 @@ export class FieldsService {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
+		} else if (field.type === 'geometry') {
+			column = createGeometryColumn(this.knex, table, field);
 		} else {
 			column = table[field.type](field.field);
 		}

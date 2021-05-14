@@ -34,7 +34,37 @@
 				/>
 			</div>
 
-			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
+			<template v-if="fieldData.type == 'geometry'">
+				<template v-if="fieldData.meta.special">
+					<div class="field half-right">
+						<div class="label type-label">{{ $t('interfaces.map.geometry_type') }}</div>
+						<v-select
+							:disabled="isExisting || fieldData.meta.special[1] == 'lnglat'"
+							:items="geometryTypes.map((value) => ({ value, text: value }))"
+							v-model="fieldData.meta.special[2]"
+						/>
+					</div>
+					<div class="field half-left">
+						<div class="label type-label">{{ $t('interfaces.map.storage_type') }}</div>
+						<v-select
+							:disabled="isExisting"
+							:items="geometryFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
+							v-model="fieldData.meta.special[1]"
+							@input="onUpdateGeometryFormat"
+						/>
+					</div>
+					<div class="field half-right">
+						<div class="label type-label">{{ $t('interfaces.map.geometry_crs') }}</div>
+						<v-input
+							placeholder="EPSG:4326"
+							:disabled="isExisting || ['native', 'geojson'].includes(fieldData.meta.special[1])"
+							v-model="fieldData.meta.special[3]"
+						/>
+					</div>
+				</template>
+			</template>
+
+			<template v-else-if="['decimal', 'float'].includes(fieldData.type) === false">
 				<div class="field half" v-if="fieldData.schema">
 					<div class="label type-label">{{ $t('length') }}</div>
 					<v-input
@@ -156,8 +186,11 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import i18n from '@/lang';
 import { state } from '../store';
+import { geometryTypes, geometryFormats, GeometryFormat } from '@/layouts/map/lib';
+import { DatabaseType } from '@/types';
+import { TranslateResult } from 'vue-i18n';
 
-export const fieldTypes = [
+export const fieldTypes: Array<{ value: DatabaseType; text: TranslateResult | string } | { divider: true }> = [
 	{
 		text: i18n.t('string'),
 		value: 'string',
@@ -187,6 +220,11 @@ export const fieldTypes = [
 	{
 		text: i18n.t('decimal'),
 		value: 'decimal',
+	},
+	{ divider: true },
+	{
+		text: i18n.t('geometry'),
+		value: 'geometry',
 	},
 	{ divider: true },
 	{
@@ -261,12 +299,25 @@ export default defineComponent({
 			},
 		});
 
+		function onUpdateGeometryFormat(format: GeometryFormat) {
+			if (state.fieldData.meta.special) {
+				if (format == 'lnglat') {
+					state.fieldData.meta.special[2] = 'Point';
+				}
+				if (['native', 'geojson'].includes(format)) {
+					delete state.fieldData.meta.special[3];
+				}
+			}
+		}
+
 		const { onCreateOptions, onCreateValue } = useOnCreate();
 		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
 
 		return {
 			fieldData: state.fieldData,
 			typesWithLabels,
+			geometryTypes,
+			geometryFormats,
 			typeDisabled,
 			typePlaceholder,
 			defaultValue,
@@ -274,6 +325,7 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
+			onUpdateGeometryFormat,
 		};
 
 		function useOnCreate() {

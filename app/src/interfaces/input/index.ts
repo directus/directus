@@ -8,6 +8,6 @@ export default defineInterface({
 	description: '$t:interfaces.input.description',
 	icon: 'text_fields',
 	component: InterfaceInput,
-	types: ['string', 'uuid', 'bigInteger', 'integer', 'float', 'decimal'],
+	types: ['string', 'uuid', 'bigInteger', 'integer', 'float', 'decimal', 'geometry'],
 	options: Options,
 });

@@ -1,16 +1,10 @@
-import { types } from '@/types';
+import { DatabaseType } from '@/types';
 import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
 import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
 import proj4 from 'proj4';
 import wkx from 'wkx';
-
-export type GeometryOptions = {
-	geometryFormat: GeometryFormat;
-	geometryField: string;
-	geometryCRS?: string;
-};
 
 export const geometryTypes = [
 	'Point',
@@ -19,87 +13,86 @@ export const geometryTypes = [
 	'MultiPoint',
 	'MultiLineString',
 	'MultiPolygon',
+	'Any',
 ] as const;
-export const geometryFormats = ['GeoJSON', 'PostGIS', 'WKT', 'EWKT', 'WKB', 'EWKB', 'TWKB', 'CSV'] as const;
+export const geometryFormats = ['native', 'geojson', 'wkt', 'wkb', 'lnglat'] as const;
 export type GeometryType = typeof geometryTypes[number];
 export type GeometryFormat = typeof geometryFormats[number];
+
+export type GeometryOptions = {
+	geometryField: string;
+	geometryFormat: GeometryFormat;
+	geometryType: GeometryType;
+	geometryCRS?: string;
+};
+
 export type AnyGeoJSON = FeatureCollection | Feature | GeometryCollection | Geometry;
 export type AllGeoJSON = FeatureCollection & Feature & GeometryCollection & Geometry;
 export type GeoJSONParser = (entry: any) => Geometry | GeometryCollection | undefined;
 export type GeoJSONSerializer = (entry: Geometry | GeometryCollection) => any;
 type Coord = [number, number];
 
-export function compatibleFormatsForType(type: typeof types[number]): GeometryFormat[] {
+export function compatibleFormatsForType(type: DatabaseType): GeometryFormat[] {
 	switch (type) {
+		case 'geometry':
+			return ['native'];
 		case 'json':
-			return ['GeoJSON'];
+			return ['geojson'];
 		case 'text':
 		case 'string':
-		case 'unknown':
-			return ['WKT', 'EWKT', 'PostGIS'];
+			return ['wkt'];
 		case 'binary':
-			return ['WKB', 'EWKB', 'TWKB'];
+			return ['wkb'];
 		case 'csv':
-			return ['CSV'];
+			return ['lnglat'];
 		default:
 			return [];
 	}
 }
 
-export function getGeometryParser(geometryFormat: GeometryFormat) {
+export function getGeometryParser(geometryFormat: GeometryFormat): (geom: any) => AnyGeoJSON {
 	switch (geometryFormat) {
-		case 'GeoJSON':
-			return (geom: any) => wkx.Geometry.parseGeoJSON(geom).toGeoJSON();
-		case 'WKT':
-		case 'EWKT':
-			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON();
-		case 'WKB':
-		case 'EWKB':
-		case 'PostGIS':
-			return (geom: any) => wkx.Geometry.parse(Buffer.from(geom, 'hex')).toGeoJSON();
-		case 'TWKB':
-			return (geom: any) => wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex')).toGeoJSON();
-		case 'CSV':
-			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON();
+		case 'native':
+		case 'wkt':
+			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeoJSON;
+		case 'wkb':
+			return (geom: any) => wkx.Geometry.parse(Buffer.from(geom, 'hex')).toGeoJSON() as AnyGeoJSON;
+		case 'lnglat':
+			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeoJSON;
+		case 'geojson':
+			return (geom: any) => geom;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
 }
 
-export function getGeometrySerializer(geometryFormat: GeometryFormat) {
+export function getGeometrySerializer(geometryFormat: GeometryFormat): (entry: AnyGeoJSON) => any {
 	switch (geometryFormat) {
-		case 'GeoJSON':
-			return (entry: AnyGeoJSON) => entry;
-		case 'PostGIS':
-			return (entry: AnyGeoJSON) => JSON.stringify(entry);
-		case 'WKB':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkb();
-		case 'EWKB':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toEwkb();
-		case 'TWKB':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toTwkb();
-		case 'WKT':
+		case 'native':
+		case 'wkt':
 			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkt();
-		case 'EWKT':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toEwkt();
-		case 'CSV':
+		case 'wkb':
+			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkb();
+		case 'lnglat':
 			return (entry: AnyGeoJSON) => (entry as GeoJSON.Point).coordinates;
+		case 'geojson':
+			return (entry: AnyGeoJSON) => entry;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
 }
 
-function getProjecter(from: string, to: string) {
+function getProjecter(from?: string, to?: string): (coord: Coord) => Coord {
 	try {
-		const fromProj = proj4.Proj(from);
-		const toProj = proj4.Proj(to);
+		if (!to || !from) return (coord: Coord) => coord;
+		proj4.Proj(from), proj4.Proj(to);
 		return (coord: Coord) => proj4(from, to, coord);
 	} catch (error) {
 		throw new Error(i18n.t('interfaces.map.invalid_crs', { crs: error }) as string);
 	}
 }
 
-export function getSerializer(options: GeometryOptions) {
+export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	const serialize = getGeometrySerializer(options.geometryFormat);
 	const project = getProjecter('EPSG:4326', options.geometryCRS!);
 
@@ -113,14 +106,14 @@ export function getSerializer(options: GeometryOptions) {
 	};
 }
 
-export function expand(bbox: BBox, coord: Coord) {
+export function expand(bbox: BBox, coord: Coord): void {
 	if (bbox[0] > coord[0]) bbox[0] = coord[0];
 	if (bbox[1] > coord[1]) bbox[1] = coord[1];
 	if (bbox[2] < coord[0]) bbox[2] = coord[0];
 	if (bbox[3] < coord[1]) bbox[3] = coord[1];
 }
 
-export function assignBBox(object: AnyGeoJSON) {
+export function assignBBox(object: AnyGeoJSON): void {
 	object.bbox = [Infinity, Infinity, -Infinity, -Infinity];
 	coordEach(object as AllGeoJSON, (coord) => {
 		expand(object.bbox!, coord as Coord);
@@ -129,7 +122,7 @@ export function assignBBox(object: AnyGeoJSON) {
 
 export function getParser(options: GeometryOptions): GeoJSONParser {
 	const parse = getGeometryParser(options.geometryFormat);
-	const project = getProjecter(options.geometryCRS!, 'EPSG:4326');
+	const project = getProjecter(options.geometryCRS, 'EPSG:4326');
 
 	return function (entry: any) {
 		const geomRaw = entry[options.geometryField];

@@ -25,8 +25,10 @@ export const types = [
 	'uuid',
 	'hash',
 	'csv',
+	'geometry',
 	'unknown',
 ] as const;
+export type DatabaseType = typeof types[number];
 
 export const localTypes = [
 	'standard',
@@ -39,6 +41,7 @@ export const localTypes = [
 	'presentation',
 	'translations',
 ] as const;
+export type LocalType = typeof localTypes[number];
 
 export type FieldSchema = {
 	/** @todo import this from @directus/schema when that's launched */

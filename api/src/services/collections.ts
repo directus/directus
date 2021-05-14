@@ -7,7 +7,8 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
-import { FieldsService, RawField } from '../services/fields';
+import { FieldsService } from '../services/fields';
+import { RawField } from '../types';
 import { ItemsService, MutationOptions } from '../services/items';
 import {
 	AbstractServiceOptions,

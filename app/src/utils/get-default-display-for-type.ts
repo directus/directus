@@ -19,6 +19,7 @@ const defaultDisplayMap: Record<typeof types[number], string> = {
 	unknown: 'raw',
 	csv: 'labels',
 	hash: 'formatted-value',
+	geometry: 'map',
 };
 
 export function getDefaultDisplayForType(type: typeof types[number]): string {

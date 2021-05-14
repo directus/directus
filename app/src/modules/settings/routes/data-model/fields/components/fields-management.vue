@@ -60,6 +60,7 @@ import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
 import { orderBy } from 'lodash';
+import { LocalType } from '@/types';
 
 export default defineComponent({
 	components: { Draggable, FieldSelect },
@@ -88,7 +89,7 @@ export default defineComponent({
 			return parsedFields.value.filter((field) => field.meta?.system !== true);
 		});
 
-		const addOptions = computed(() => [
+		const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
 			{
 				type: 'standard',
 				icon: 'create',

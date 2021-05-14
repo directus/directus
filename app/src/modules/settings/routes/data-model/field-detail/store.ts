@@ -964,6 +964,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.schema.default_value = false;
 						state.fieldData.schema.is_nullable = false;
 						break;
+					case 'geometry':
+						state.fieldData.meta.special = ['geometry', 'native', 'Point'];
+						break;
 				}
 			}
 		);

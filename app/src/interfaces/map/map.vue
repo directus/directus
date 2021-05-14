@@ -31,11 +31,19 @@ import maplibre, { LngLatBoundsLike, AnimationOptions, CameraOptions, Map, ICont
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
 import { ButtonControl, BasemapSelectControl } from '@/layouts/map/controls';
-import { getParser, getSerializer, GeoJSONParser, GeoJSONSerializer, assignBBox } from '@/layouts/map/lib';
+import {
+	getParser,
+	getSerializer,
+	assignBBox,
+	GeoJSONParser,
+	GeoJSONSerializer,
+	GeometryOptions,
+} from '@/layouts/map/lib';
 import { GeometryFormat } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
 import drawStyle from './style';
 import i18n from '@/lang';
+import { Field } from '@/types';
 
 const MARKER_ICON_URL =
 	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
@@ -47,6 +55,14 @@ type _Geometry = _SimpleGeometry | _MultiGeometry;
 
 export default defineComponent({
 	props: {
+		type: {
+			type: String as PropType<'json' | 'csv' | 'string' | 'text' | 'binary'>,
+			default: null,
+		},
+		fieldData: {
+			type: Object as PropType<Field>,
+			required: true,
+		},
 		value: {
 			type: [Object, Array, String] as PropType<any>,
 			default: null,
@@ -54,21 +70,14 @@ export default defineComponent({
 		loading: {
 			type: Boolean,
 		},
-		type: {
-			type: String as PropType<'json' | 'csv' | 'string' | 'text' | 'binary' | 'unknown'>,
-			default: null,
-		},
 		geometryFormat: {
 			type: String as PropType<GeometryFormat>,
-			required: true,
 		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
-			default: 'Point',
 		},
 		geometryCRS: {
-			type: String,
-			default: 'EPSG:4326',
+			type: String as PropType<string | undefined>,
 		},
 		defaultPosition: {
 			type: Object,
@@ -83,10 +92,12 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | null>();
 
-		const geometryOptions = {
-			geometryCRS: props.geometryCRS,
-			geometryFormat: props.geometryFormat,
+		const special = props.fieldData?.meta?.special as [string, GeometryFormat, GeometryType, string | undefined];
+		const geometryOptions: GeometryOptions = {
 			geometryField: 'value',
+			geometryFormat: props.geometryFormat || special?.[1],
+			geometryType: props.geometryType || special?.[2],
+			geometryCRS: props.geometryCRS,
 		};
 
 		let parse: GeoJSONParser;
@@ -98,7 +109,7 @@ export default defineComponent({
 			geometryOptionsError.value = error;
 		}
 
-		const drawMode = snakeCase(props.geometryType.replace('Multi', ''));
+		const drawMode = snakeCase(geometryOptions.geometryType.replace('Multi', ''));
 		const mapboxDrawArgs = {
 			displayControlsDefault: false,
 			controls: {
@@ -195,11 +206,11 @@ export default defineComponent({
 				try {
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
-					if (uncombined.length > 1 && !props.geometryType.startsWith('Multi')) {
+					if (uncombined.length > 1 && !geometryOptions.geometryType.startsWith('Multi')) {
 						throw new Error(
 							i18n.t('interfaces.map.unexpected_geometry', {
-								expected: props.geometryType,
-								found: `Multi${props.geometryType}`,
+								expected: geometryOptions.geometryType,
+								found: `Multi${geometryOptions.geometryType}`,
 							}) as string
 						);
 					}
@@ -216,11 +227,11 @@ export default defineComponent({
 
 			function combine(geometries: _SimpleGeometry[]): _MultiGeometry {
 				const geometry = {
-					type: props.geometryType as GeometryType,
+					type: geometryOptions.geometryType as GeometryType,
 					coordinates: [] as (Position | Position[] | Position[][])[],
 				};
 				for (const { type, coordinates } of geometries) {
-					if (`Multi${type}` == props.geometryType) {
+					if (`Multi${type}` == geometryOptions.geometryType) {
 						geometry.coordinates.push(coordinates);
 					}
 				}
@@ -235,17 +246,17 @@ export default defineComponent({
 						coordinates: [geometry.coordinates],
 					} as _MultiGeometry;
 				}
-				if (!geometry.type.endsWith(props.geometryType)) {
+				if (!geometry.type.endsWith(geometryOptions.geometryType)) {
 					throw new Error(
 						i18n.t('interfaces.map.unexpected_geometry', {
-							expected: props.geometryType,
+							expected: geometryOptions.geometryType,
 							found: geometry.type,
 						}) as string
 					);
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({
-						type: props.geometryType.replace('Multi', ''),
+						type: geometryOptions.geometryType.replace('Multi', ''),
 						coordinates,
 					} as _SimpleGeometry);
 				}
@@ -257,7 +268,7 @@ export default defineComponent({
 				if (geometries.length == 0) {
 					currentGeometry = null;
 					return;
-				} else if (props.geometryType.startsWith('Multi')) {
+				} else if (geometryOptions.geometryType.startsWith('Multi')) {
 					currentGeometry = combine(geometries);
 				} else {
 					currentGeometry = geometries[geometries.length - 1];

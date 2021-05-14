@@ -2,15 +2,24 @@
 	<div class="form-grid">
 		<div class="field">
 			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
-			<v-select v-model="geometryFormat" :items="compatibleFormats.map((value) => ({ value, text: value }))" />
+			<v-select
+				v-model="geometryFormat"
+				:disabled="isNativeGeometry"
+				:items="compatibleFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
+			/>
 		</div>
 		<div class="field half">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
-			<v-select v-model="geometryType" :items="geometryTypes.map((value) => ({ value, text: value }))" />
+			<v-select
+				v-model="geometryType"
+				:disabled="isNativeGeometry"
+				:items="geometryTypes.map((value) => ({ value, text: value }))"
+			/>
 		</div>
 		<div class="field half">
 			<div class="type-label">{{ $t('interfaces.map.geometry_crs') }}</div>
 			<v-select
+				:disabled="isNativeGeometry"
 				v-model="geometryCRS"
 				:allowOther="true"
 				:items="[
@@ -30,6 +39,7 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { ref, defineComponent, PropType, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { GeometryOptions } from '@/layouts/map/lib';
 import {
 	geometryFormats,
 	geometryTypes,
@@ -52,16 +62,24 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<GeometryOptions & { defaultPosition: CameraOptions }>,
 			default: null,
 		},
 	},
 	setup(props, { emit }) {
+		const isNativeGeometry = computed(() => props.fieldData.type == 'geometry');
 		const compatibleFormats = computed(() => compatibleFormatsForType(props.fieldData.type));
-		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats.value[0]);
-		const geometryType = ref<GeometryType>(props.value?.geometryType ?? 'Point');
-		const geometryCRS = ref<string>(props.value?.geometryCRS ?? 'EPSG:4326');
+		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats.value[0]!);
+		const geometryType = ref<GeometryType>(props.value?.geometryType);
+		const geometryCRS = ref<string | undefined>(props.value?.geometryCRS);
 		const defaultPosition = ref<CameraOptions>(props.value?.defaultPosition);
+		if (isNativeGeometry) {
+			const special = props.fieldData?.meta?.special as [string, GeometryFormat, GeometryType, string | undefined];
+			if (special) {
+				[, geometryFormat.value, geometryType.value] = special;
+				geometryCRS.value = undefined;
+			}
+		}
 		watch(
 			[geometryFormat, geometryType, geometryCRS, defaultPosition],
 			() => {
@@ -94,6 +112,7 @@ export default defineComponent({
 		});
 
 		return {
+			isNativeGeometry,
 			geometryFormats,
 			geometryFormat,
 			compatibleFormats,

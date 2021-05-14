@@ -140,7 +140,7 @@ bigInteger: Grand entier
 boolean: Booléen
 date: Date
 datetime: Date et heure
-decimal: Décimale
+decimal: Décimal
 float: Décimal
 integer: Entier
 json: JSON
@@ -150,6 +150,7 @@ time: Date et heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
+geometry: Geometrie
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
