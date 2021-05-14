@@ -87,7 +87,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
+				<div class="page-description" v-html="md($t('page_help_settings_webhooks_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
 			<portal-target name="sidebar" />
@@ -99,7 +99,7 @@
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
 import api from '@/api';
@@ -134,7 +134,7 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			marked,
+			md,
 			clearFilters,
 		};
 

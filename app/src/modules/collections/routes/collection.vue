@@ -215,7 +215,7 @@
 				<div
 					class="page-description"
 					v-html="
-						marked(
+						md(
 							$t('page_help_collections_collection', {
 								collection: currentCollection.name,
 							})
@@ -257,7 +257,7 @@ import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -373,7 +373,7 @@ export default defineComponent({
 			editingBookmark,
 			editBookmark,
 			breadcrumb,
-			marked,
+			md,
 			clearFilters,
 			confirmArchive,
 			archive,

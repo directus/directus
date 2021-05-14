@@ -112,7 +112,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_files_item'))" />
+		<div class="page-description" v-html="md($t('page_help_files_item'))" />
 	</sidebar-detail>
 </template>
 
@@ -121,7 +121,7 @@ import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
 import i18n from '@/lang';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import localizedFormat from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -164,7 +164,7 @@ export default defineComponent({
 			userCreated,
 			userModified,
 			folder,
-			marked,
+			md,
 			folderLink,
 			getRootPath,
 			fileLink,

@@ -9,13 +9,13 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_settings_roles_item'))" />
+		<div class="page-description" v-html="md($t('page_help_settings_roles_item'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import marked from 'marked';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	props: {
@@ -29,7 +29,7 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		return { marked };
+		return { md };
 	},
 });
 </script>

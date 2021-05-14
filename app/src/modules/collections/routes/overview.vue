@@ -38,7 +38,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_collections_overview'))" />
+				<div class="page-description" v-html="md($t('page_help_collections_overview'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -53,7 +53,7 @@ import useNavigation, { NavItem } from '../composables/use-navigation';
 import router from '@/router';
 import { useUserStore } from '@/stores';
 
-import marked from 'marked';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	name: 'collections-overview',
@@ -93,7 +93,7 @@ export default defineComponent({
 			navItems,
 			navigateToCollection,
 			isAdmin,
-			marked,
+			md,
 		};
 
 		function navigateToCollection(navItem: NavItem) {

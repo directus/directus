@@ -128,7 +128,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
+				<div class="page-description" v-html="md($t('page_help_users_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
@@ -148,7 +148,7 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '@/stores';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import useNavigation from '../composables/use-navigation';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@/types';
@@ -231,7 +231,7 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			marked,
+			md,
 			clearFilters,
 			userInviteModalActive,
 			refresh,
