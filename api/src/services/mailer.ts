@@ -26,7 +26,7 @@ if (env.EMAIL_TRANSPORT === 'sendmail') {
 	transporter = nodemailer.createTransport(
 		mg({
 			auth: {
-				api_key: env.EMAIL_MAILGUN_APIKEY,
+				api_key: env.EMAIL_MAILGUN_API_KEY,
 				domain: env.EMAIL_MAILGUN_DOMAIN,
 			},
 		}) as any
