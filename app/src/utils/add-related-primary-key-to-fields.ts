@@ -7,11 +7,13 @@ import useCollection from '@/composables/use-collection';
  * access to its primary key.
  *
  * @example
+ * ```
  * const collection = 'articles';
  * const fields = ['title', 'user.name'];
  *
  * addRelatedPrimaryKeyToFields(collection, fields);
  * // => ['title', 'user.name', 'user.id'];
+ * ```
  */
 export function addRelatedPrimaryKeyToFields(currentCollection: string, fields: string[]): string[] {
 	if (!fields?.length) return [];
