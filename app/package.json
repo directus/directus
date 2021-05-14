@@ -25,7 +25,7 @@
 		"build": "vue-cli-service build",
 		"prepublishOnly": "npm run build"
 	},
-	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "9.0.0-rc.65",
 		"@directus/format-title": "9.0.0-rc.65",
