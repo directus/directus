@@ -73,7 +73,7 @@
 		"@directus/format-title": "9.0.0-rc.64",
 		"@directus/schema": "9.0.0-rc.64",
 		"@directus/specs": "9.0.0-rc.64",
-		"@godaddy/terminus": "^4.4.1",
+		"@godaddy/terminus": "^4.7.2",
 		"argon2": "^0.27.0",
 		"atob": "^2.1.2",
 		"axios": "^0.21.0",
