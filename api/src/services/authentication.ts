@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { omit } from 'lodash';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import { authenticator } from 'otplib';
