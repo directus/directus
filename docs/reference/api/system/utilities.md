@@ -242,13 +242,23 @@ POST /utils/import/:collection
 
 ##### Example
 
-```json
-// POST /utils/sort/articles
+```
+POST /utils/import/articles
 
-{
-	"item": 16,
-	"to": 51
-}
+Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
+Content-Length: 3442422
+
+--__X_BOUNDARY__
+Content-Disposition: form-data; name="file"; filename="articles.csv"
+Content-Type: text/csv
+
+"id","title","another","created_by"
+1,"My First Articled","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
+2,"My Second Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
+3,"My Updated Third Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
+4,"My Fourth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
+5,"My Fifth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
+...
 ```
 
 ### GraphQL
