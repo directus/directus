@@ -4,6 +4,7 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 import database from '../../database';
 import env from '../../env';
+import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
 import mailer from '../mailer';
@@ -18,7 +19,6 @@ export type EmailOptions = {
 	template?: {
 		name: string;
 		data: Record<string, any>;
-		system?: boolean;
 	};
 	from?: string;
 	subject?: string;
@@ -55,7 +55,7 @@ export class MailService {
 				...templateData,
 			};
 
-			html = await this.renderTemplate(options.template.name, templateData, options.template.system);
+			html = await this.renderTemplate(options.template.name, templateData);
 		}
 
 		try {
@@ -66,12 +66,17 @@ export class MailService {
 		}
 	}
 
-	private async renderTemplate(template: string, variables: Record<string, any>, system = false) {
-		let resolvedPath = path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');
-		if (system && !(await fse.pathExists(resolvedPath)))
-			resolvedPath = path.join(__dirname, 'templates', template + '.liquid');
+	private async renderTemplate(template: string, variables: Record<string, any>) {
+		const customTemplatePath = path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');
+		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
 
-		const templateString = await fse.readFile(resolvedPath, 'utf8');
+		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
+
+		if ((await fse.pathExists(templatePath)) === false) {
+			throw new InvalidPayloadException(`Template "${template}" doesn't exist.`);
+		}
+
+		const templateString = await fse.readFile(templatePath, 'utf8');
 		const html = await liquidEngine.parseAndRender(templateString, variables);
 
 		return html;
