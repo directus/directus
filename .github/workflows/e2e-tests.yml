@@ -13,10 +13,14 @@ jobs:
       fail-fast: false
       matrix:
         db: ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3']
-        node-version: [ '12-alpine', '14-alpine', '15-alpine' ]
+        node-version: ['12-alpine', '14-alpine', '15-alpine']
     env:
       CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
