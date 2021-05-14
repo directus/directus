@@ -148,6 +148,7 @@ decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
 json: JSON
+xml: XML
 string: Merkkijono
 text: Teksti
 time: Aika
@@ -619,6 +620,7 @@ settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
 settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
+one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
 scope: Laajuus
 select: Valitse...
 layout: Asettelu
@@ -864,7 +866,7 @@ interfaces:
   presentation-links:
     presentation-links: Painikkeen linkit
     links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
+    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien avaamiseen
     style: Tyyli
     primary: Ensisijainen
     link: Linkit
@@ -872,13 +874,13 @@ interfaces:
     error: Toimintoa ei voi suorittaa
   select-multiple-checkbox:
     checkboxes: Valintaruudut
-    description: Valitse useista vaihtoehdoista valintaruutujen kautta
+    description: Valitse useista vaihtoehdoista valintaruuduilla
     allow_other: Salli muut
     show_more: 'Näytä {count} lisää'
     items_shown: Näytettävät kohteet
   input-code:
     code: Koodi
-    description: Kirjoita tai jaa koodipätkä
+    description: Kirjoita tai jaa koodipätkiä
     line_number: Rivinumero
     placeholder: Syötä koodi tähän...
   collection:
@@ -889,7 +891,7 @@ interfaces:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  color:
+  select-color:
     color: Väri
     description: Syötä tai valitse väriarvo
     placeholder: Valitse väri...
@@ -905,10 +907,10 @@ interfaces:
   system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
-    collection_field: Kokoeilmakenttä
+    collection_field: Kokoelmakenttä
     collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
     select_a_collection: Valitse kokoelma
-  divider:
+  presentation-divider:
     divider: Jakaja
     description: Merkitse ja jaa kentät osiin
     title_placeholder: Syötä otsikko...
@@ -938,12 +940,12 @@ interfaces:
     hash: Tiiviste
     description: Syötä arvo, josta luodaan tiiviste
     masked: Maskeerattu
-    masked_label: Piilota todelliset arvot
-  icon:
+    masked_label: Piilota totuus-arvot
+  select-icon:
     icon: Kuvake
     description: Valitse kuvake pudotusvalikosta
     search_for_icon: Etsi kuvakkeita...
-  image:
+  file-image:
     image: Kuva
     description: Valitse tai lataa kuva
   system-interface:
@@ -962,7 +964,7 @@ interfaces:
     display_template: Esitysmalli
   input-rich-text-md:
     markdown: Markdown
-    description: Syötä ja esikatsele markdown
+    description: Syötä ja esikatsele markdownia
     customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
@@ -990,16 +992,13 @@ interfaces:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
-    add_label: '"Luo uusi" tunniste'
+    add_label: '"Luo uusi"-tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
     always_show_value: Näytä aina arvo
-  slug:
-    slug: Slug
-    description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
     description: Valitse tai lisää tunnisteita
@@ -1029,7 +1028,7 @@ interfaces:
   boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
-    label_placeholder: Syötä otsikko...
+    label_placeholder: Syötä tunniste...
     label_default: Käytössä
   translations:
     display_template: Esitysmalli
@@ -1050,7 +1049,14 @@ interfaces:
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
-    options_override: Ohita valinnat
+    options_override: Valintojen ohitus
+  input-autocomplete-api:
+    input-autocomplete-api: Automaattitäydennyskenttä (API)
+    description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
+    results_path: Tulosten polku
+    value_path: Arvon polku
+    trigger: Laukaisija
+    rate: Rajoita
 displays:
   boolean:
     boolean: Totuusarvo

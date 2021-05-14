@@ -680,9 +680,6 @@ interfaces:
     items_shown: Elementi Visualizzati
   input-code:
     code: Codice
-    description: Scrivi o condividi frammenti di codice
-    line_number: Numero di riga
-    placeholder: Inserisci il codice qui...
   collection:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
@@ -691,11 +688,8 @@ interfaces:
     collections: Raccolte
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema
-  color:
+  select-color:
     color: Colore
-    placeholder: Scegli un colore...
-    preset_colors_add_label: Aggiungi nuovo colore...
-    name_placeholder: Inserisci il nome del colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
@@ -703,10 +697,9 @@ interfaces:
     use_24: Usa Formato 24 Ore
   system-display-template:
     display-template: Display Template
-    collection_field: Campo Raccolta
     collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
     select_a_collection: Seleziona una Raccolta
-  divider:
+  presentation-divider:
     divider: Separatore
     title_placeholder: Inserisci un titolo...
   select-dropdown:
@@ -721,10 +714,9 @@ interfaces:
     description: Seleziona o carica più file
   input-hash:
     hash: Hash
-  icon:
+  select-icon:
     icon: Icon
-    search_for_icon: Cerca un'icona...
-  image:
+  file-image:
     image: Immagine
     description: Seleziona o carica un'immagine
   system-interface:
@@ -757,8 +749,6 @@ interfaces:
   slider:
     slider: Cursore
     always_show_value: Mostra sempre il valore
-  slug:
-    slug: Slug
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag

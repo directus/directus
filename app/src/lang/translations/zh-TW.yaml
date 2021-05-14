@@ -585,19 +585,18 @@ interfaces:
     allow_other: 允許其他選項
   input-code:
     code: 程式碼
-    line_number: 行號
   collection:
     collection: 集合
   system-collections:
     collections: 資料集
-  color:
+  select-color:
     color: 顏色
   datetime:
     datetime: 日期時間
   system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
-  divider:
+  presentation-divider:
     divider: 分隔線
   select-dropdown:
     allow_other: 允許其他選項
@@ -615,12 +614,9 @@ interfaces:
     description: 選擇或上傳多個檔案
   input-hash:
     hash: 哈希
-    masked_label: 隱藏真實值
-  icon:
+  select-icon:
     icon: 圖示
-    description: 從下拉清單中選擇圖示
-    search_for_icon: 搜尋圖示...
-  image:
+  file-image:
     image: 圖像
     description: 選擇或上傳圖像
   system-interface:
@@ -664,8 +660,6 @@ interfaces:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
     always_show_value: 永遠顯示值
-  slug:
-    slug: 網址片段
   tags:
     tags: 標籤
     description: 選擇或新增標籤

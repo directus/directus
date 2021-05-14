@@ -234,7 +234,7 @@ interfaces:
     file: Αρχείο
   files:
     files: Αρχεία
-  icon:
+  select-icon:
     icon: Εικονίδιο
   tags:
     tags: Ετικέτες

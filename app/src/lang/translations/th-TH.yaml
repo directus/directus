@@ -821,9 +821,6 @@ interfaces:
     items_shown: ไอเท็มที่ถูกแสดง
   input-code:
     code: โค้ด
-    description: เขียนหรือแชร์โค้ดสั้นๆ
-    line_number: เลขบรรทัด
-    placeholder: กรอกโค้ดที่นี่
   collection:
     collection: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
@@ -832,13 +829,8 @@ interfaces:
     collections: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ
-  color:
+  select-color:
     color: สี
-    description: กรอกหรือเลือกค่าของสี
-    placeholder: เลือกสี...
-    preset_colors: สีที่กำหนดไว้ล่วงหน้า
-    preset_colors_add_label: เพิ่มสีใหม่...
-    name_placeholder: กรอกชื่อสี
   datetime:
     datetime: วันที่และเวลา
     description: กรอกวันที่และเวลา
@@ -847,11 +839,9 @@ interfaces:
     use_24: ใช้รูปแบบ 24 ชั่วโมง
   system-display-template:
     display-template: แม่แบบการแสดงผล
-    description: ผสมระหว่างข้อความและค่าของฟิลด์
-    collection_field: ฟิลด์คอลเลกชัน
     collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
     select_a_collection: เลือกคอลเลกชัน
-  divider:
+  presentation-divider:
     divider: ตัวแบ่ง
     description: แบ่งฟิลด์ออกเป็นส่วนๆ
     title_placeholder: ระบุชื่อ...
@@ -879,14 +869,9 @@ interfaces:
     description: เลือกหรืออัพโหลดทีละหลายไฟล์
   input-hash:
     hash: ค่าแฮช
-    description: กรอกค่าที่ต้องการแฮช
-    masked: Masked
-    masked_label: ซ่อนค่าจริง
-  icon:
+  select-icon:
     icon: ไอคอน
-    description: เลือกไอคอนจากดรอปดาวน์
-    search_for_icon: ค้นหาไอคอน...
-  image:
+  file-image:
     image: รูปภาพ
     description: เลือกหรืออัพโหลดรูปภาพ
   system-interface:
@@ -939,9 +924,6 @@ interfaces:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
     always_show_value: แสดงค่าเสมอ
-  slug:
-    slug: หมุด
-    description: กรอกคำที่เชื่อมโยงกันด้วยเครื่องหมายขีดกลาง
   tags:
     tags: แท็ก
     description: เลือกหรือเพิ่มแท็ก
@@ -968,8 +950,6 @@ interfaces:
     description: กรอกข้อความได้แบบหลายบรรทัด
   boolean:
     toggle: สลับ
-    description: สลับระหว่าง เปิด และ ปิด
-    label_placeholder: กรอกป้ายชื่อ...
     label_default: เปิดใช้งาน
   translations:
     display_template: แม่แบบการแสดงผล

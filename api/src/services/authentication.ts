@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { omit } from 'lodash';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import { authenticator } from 'otplib';
@@ -59,31 +58,33 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		const hookPayload = omit(options, 'password', 'otp');
-
-		const user = await database
+		let user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
-		await emitter.emitAsync('auth.login.before', hookPayload, {
+		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
-			payload: hookPayload,
+			payload: options,
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
 			database: this.knex,
 		});
 
+		if (updatedUser) {
+			user = updatedUser;
+		}
+
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', hookPayload, {
+			emitAsyncSafe('auth.login', options, {
 				event: 'auth.login',
 				action: 'login',
 				schema: this.schema,
-				payload: hookPayload,
+				payload: options,
 				accountability: this.accountability,
 				status,
 				user: user?.id,

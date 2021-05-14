@@ -170,8 +170,6 @@ interfaces:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:

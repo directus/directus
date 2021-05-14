@@ -146,6 +146,7 @@ decimal: Liczba dziesiętna
 float: Liczba zmiennoprzecinkowa
 integer: Liczba całkowita
 json: JSON
+xml: XML
 string: Ciąg znaków
 text: Tekst
 time: Czas
@@ -617,6 +618,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
 layout: Układ
@@ -856,6 +858,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
@@ -886,7 +889,7 @@ interfaces:
     collections: Kolekcje
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  color:
+  select-color:
     color: Kolor
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
@@ -905,7 +908,7 @@ interfaces:
     collection_field: Pole kolekcji
     collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
     select_a_collection: Wybierz kolekcje
-  divider:
+  presentation-divider:
     divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
     title_placeholder: Wprowadź tytuł...
@@ -918,7 +921,7 @@ interfaces:
     choices_placeholder: Dodaj nowy wybór
     allow_other: Zezwól na inne
     allow_other_label: Zezwalaj na inne wartości
-    allow_none: Zezwalaj na None
+    allow_none: Zezwalaj na brak
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
@@ -936,11 +939,11 @@ interfaces:
     description: Wprowadź wartość do hashowania
     masked: Zamaskowany
     masked_label: Ukryj rzeczywiste wartości
-  icon:
+  select-icon:
     icon: Ikona
     description: Wybierz ikonę z listy rozwijanej
     search_for_icon: Szukaj ikony...
-  image:
+  file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
   system-interface:
@@ -987,16 +990,13 @@ interfaces:
     repeater: Powtarzaj
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
-    add_label: 'Utwórz nową etykietę'
+    add_label: 'Etykieta "Utwórz nowy"'
     field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
     always_show_value: Zawsze pokazuj wartość
-  slug:
-    slug: Slug
-    description: Wpisz słowo połączone z myślnikami
   tags:
     tags: Etykiety
     description: Wybierz lub dodaj tagi
@@ -1048,6 +1048,13 @@ interfaces:
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: Typ wyszukiwania dla zewnętrznych wartości API.
+    results_path: Ścieżka wyników
+    value_path: Ścieżka bazowa
+    trigger: Wyzwalacz
+    rate: Oceń
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1151,3 +1158,7 @@ layouts:
     comfortable: Wygodny
     compact: Kompaktowy
     cozy: Przytulny
+  calendar:
+    calendar: Kalendarz
+    start_date_field: Pole daty rozpoczęcia
+    end_date_field: Pole daty zakończenia

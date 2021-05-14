@@ -148,6 +148,7 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Texto
 time: Hora
@@ -618,6 +619,7 @@ settings_permissions: Funções & Permissões
 settings_project: Configurações do projeto
 settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
+one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
 select: Selecionar...
 layout: Layout
@@ -864,7 +866,7 @@ interfaces:
   presentation-links:
     presentation-links: Links do Botão
     links: Links
-    description: Botões de link configuráveis para iniciar URLs dinâmicas
+    description: Botões de link configuráveis para iniciar URLs dinâmicos
     style: Estilo
     primary: Primário
     link: Links
@@ -878,8 +880,8 @@ interfaces:
     items_shown: Itens mostrados
   input-code:
     code: Código
-    description: Escreva ou compartilhe trechos de código
-    line_number: Número da Linha
+    description: Escrever ou compartilhar trechos de código
+    line_number: Número da linha
     placeholder: Inserir código aqui...
   collection:
     collection: Coleção
@@ -889,7 +891,7 @@ interfaces:
     collections: Coleções
     description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
-  color:
+  select-color:
     color: Cor
     description: Digite ou selecione um valor de cor
     placeholder: Escolha uma cor...
@@ -904,13 +906,13 @@ interfaces:
     use_24: Usar formato de 24 horas
   system-display-template:
     display-template: Modelo de exibição
-    description: Misturar texto estático e valores dos campos dinâmicos
-    collection_field: Campo da coleção
+    description: Combinar texto estático e valores dinâmicos
+    collection_field: Campo de coleção
     collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
     select_a_collection: Selecione uma coleção
-  divider:
+  presentation-divider:
     divider: Divisor
-    description: Rótulo e divisão de campos em seções
+    description: Rotular e dividir campos em seções
     title_placeholder: Insira um título...
     inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
@@ -919,7 +921,7 @@ interfaces:
   select-dropdown:
     description: Selecione um valor a partir de uma seleção
     choices_placeholder: Adicionar uma nova escolha
-    allow_other: Permitir Outros
+    allow_other: Permitir outros
     allow_other_label: Permitir outros valores
     allow_none: Permitir nenhum
     allow_none_label: Permitir nenhuma seleção
@@ -936,14 +938,14 @@ interfaces:
     description: Selecione ou envie vários arquivos
   input-hash:
     hash: Hash
-    description: Insira um valor para ser hasheado
+    description: Digite um valor para o hash
     masked: Mascarado
     masked_label: Ocultar os valores verdadeiros
-  icon:
+  select-icon:
     icon: Ícone
-    description: Selecione um ícone a partir de uma seleção
-    search_for_icon: Procurar por um ícone...
-  image:
+    description: Selecione um ícone em um menu suspenso
+    search_for_icon: Procurar por ícone...
+  file-image:
     image: Imagem
     description: Selecione ou envie uma imagem
   system-interface:
@@ -963,9 +965,9 @@ interfaces:
   input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
-    customSyntax: Blocos Personalizados
+    customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
-    customSyntax_add: Adicionar tipos de sintaxe personalizados
+    customSyntax_add: Adicionar sintaxe personalizada
     box: Bloco / Em linha
     imageToken: Token da imagem
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
@@ -988,18 +990,15 @@ interfaces:
     description: Selecione uma das múltiplas escolhas
   list:
     repeater: Repetidor
-    description: Criar múltiplas entradas da mesma estrutura
+    description: Crie múltiplas entradas com a mesma estrutura
     edit_fields: Editar campos
     add_label: 'Texto de "Criar Novo"'
     field_name_placeholder: Inserir nome do campo...
-    field_note_placeholder: Insira uma nota pro campo...
+    field_note_placeholder: Insira a nota de campo...
   slider:
     slider: Slider
     description: Selecione um número usando um controle deslizante
     always_show_value: Sempre mostrar valor
-  slug:
-    slug: Slug
-    description: Digite uma palavra conectada com hífens
   tags:
     tags: Tags
     description: Selecione ou adicione tags
@@ -1029,7 +1028,7 @@ interfaces:
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
-    label_placeholder: Insira uma etiqueta...
+    label_placeholder: Insira um rótulo...
     label_default: Habilitado
   translations:
     display_template: Modelo de exibição
@@ -1051,6 +1050,13 @@ interfaces:
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
     options_override: Sobrescrever opções
+  input-autocomplete-api:
+    input-autocomplete-api: Entrada de preenchimento automático (API)
+    description: Um tipo de pesquisa para valores de API externos.
+    results_path: Caminho de resultados
+    value_path: Caminho do Valor
+    trigger: Acionar
+    rate: Avaliar
 displays:
   boolean:
     boolean: Boolean
@@ -1154,3 +1160,7 @@ layouts:
     comfortable: Confortável
     compact: Compacto
     cozy: Aconchegante
+  calendar:
+    calendar: Calendário
+    start_date_field: Campo de Data de Início
+    end_date_field: Campo de Data Final

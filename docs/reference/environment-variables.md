@@ -284,10 +284,10 @@ covered. Checkout [the grant repo](https://github.com/simov/grant) for more info
 
 ## Email
 
-| Variable          | Description                                            | Default Value          |
-| ----------------- | ------------------------------------------------------ | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.              | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`. | `sendmail`             |
+| Variable          | Description                                                       | Default Value          |
+| ----------------- | ----------------------------------------------------------------- | ---------------------- |
+| `EMAIL_FROM`      | Email address from which emails are sent.                         | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -308,6 +308,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
 | `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
 | `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
+
+### Mailgun (`mailgun`)
+
+| Variable                | Description                                                                       | Default Value |
+| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
+| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --            |
+| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --            |
 
 ## Misc.
 
