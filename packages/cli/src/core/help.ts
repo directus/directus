@@ -55,7 +55,7 @@ export class Help implements IHelp {
 			const name = (command.name ? command.commandPath!.slice(0, -1).concat(command.name) : command.commandPath!).join(
 				' '
 			);
-			const cmd = (command as any) as Command;
+			const cmd = command as any as Command;
 			const hidden = cmd.run.$directus.settings?.hidden ?? false;
 			if (hidden) {
 				return commands;
@@ -142,11 +142,10 @@ export class Help implements IHelp {
 			commands: this.runtime
 				.commands!.reduce(
 					(commands, command) => {
-						const name = (command.name
-							? command.commandPath!.slice(0, -1).concat(command.name)
-							: command.commandPath!
+						const name = (
+							command.name ? command.commandPath!.slice(0, -1).concat(command.name) : command.commandPath!
 						).join(' ');
-						const cmd = (command as any) as Command;
+						const cmd = command as any as Command;
 						const hidden = cmd.run.$directus.settings?.hidden ?? false;
 						const group = cmd.run.$directus.settings?.group ?? 'cli';
 						const description = cmd.run.$directus.settings?.description || '';
@@ -223,7 +222,7 @@ export class Help implements IHelp {
 
 	async getCommandHelp(command: Command): Promise<CommandHelp> {
 		const settings = command.run.$directus?.settings;
-		const gluegun = (command as any) as GluegunCommand;
+		const gluegun = command as any as GluegunCommand;
 		const synopsis =
 			settings.synopsis ||
 			[this.entrypoint, ...(gluegun.commandPath || []), settings?.parameters ?? '', '[options]']

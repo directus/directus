@@ -24,7 +24,7 @@ export class Options implements IOptions {
 		this._raw = yargsParser(argv);
 
 		events.on('command.options.register', (command: Command) => {
-			const cmd = (command as any) as GluegunCommand;
+			const cmd = command as any as GluegunCommand;
 			const name = cmd.commandPath
 				?.concat(...[command.settings?.parameters ?? ''])
 				.filter((p) => p != '')

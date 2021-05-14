@@ -185,15 +185,8 @@ export default defineComponent({
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
-		const {
-			currentlyEditing,
-			relatedPrimaryKey,
-			editsAtStart,
-			stageEdits,
-			cancelEdit,
-			editExisting,
-			createNew,
-		} = useEdits();
+		const { currentlyEditing, relatedPrimaryKey, editsAtStart, stageEdits, cancelEdit, editExisting, createNew } =
+			useEdits();
 		const { onSort } = useManualSort();
 
 		watch(props, fetchValues, { immediate: true, deep: true });

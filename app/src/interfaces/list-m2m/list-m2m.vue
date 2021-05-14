@@ -185,15 +185,8 @@ export default defineComponent({
 			getPrimaryKeys
 		);
 
-		const {
-			currentlyEditing,
-			editItem,
-			editsAtStart,
-			stageEdits,
-			cancelEdit,
-			relatedPrimaryKey,
-			editModalActive,
-		} = useEdit(value, relationInfo, emitter);
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
+			useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);

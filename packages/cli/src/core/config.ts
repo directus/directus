@@ -14,7 +14,8 @@ export type BaseConfigurationOptions<T> = {
 export class BaseConfiguration<
 	T extends Record<string, unknown> = any,
 	C extends BaseConfigurationOptions<T> = BaseConfigurationOptions<T>
-> implements IBaseConfiguration<T> {
+> implements IBaseConfiguration<T>
+{
 	protected _data?: T;
 	protected _path?: string;
 	protected _options: C;
@@ -44,7 +45,8 @@ export type StaticConfigurationOptions<T> = BaseConfigurationOptions<T> & {
 
 export class StaticConfiguration<T extends Record<string, unknown> = any>
 	extends BaseConfiguration<T, StaticConfigurationOptions<T>>
-	implements IStaticConfiguration<T> {
+	implements IStaticConfiguration<T>
+{
 	private engine: Liquid;
 
 	constructor(options: StaticConfigurationOptions<T>) {
@@ -93,7 +95,8 @@ export type ConfigurationOptions<T> = BaseConfigurationOptions<T> & {
 
 export class YamlConfiguration<T extends Record<string, unknown> = any>
 	extends BaseConfiguration<T, ConfigurationOptions<T>>
-	implements IConfiguration<T> {
+	implements IConfiguration<T>
+{
 	constructor(options: ConfigurationOptions<T>) {
 		super(options);
 

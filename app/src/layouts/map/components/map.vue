@@ -48,7 +48,7 @@ export default defineComponent({
 			default: () => ({}),
 		},
 		bounds: {
-			type: (Array as unknown) as PropType<GeoJSON.BBox>,
+			type: Array as unknown as PropType<GeoJSON.BBox>,
 		},
 		featureId: {
 			type: String,
