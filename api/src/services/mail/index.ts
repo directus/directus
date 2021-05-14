@@ -48,14 +48,12 @@ export class MailService {
 		if (options.template) {
 			let templateData = options.template.data;
 
-			if (options.template.system === true) {
-				const defaultTemplateData = await this.getDefaultTemplateData();
+			const defaultTemplateData = await this.getDefaultTemplateData();
 
-				templateData = {
-					...defaultTemplateData,
-					...templateData,
-				};
-			}
+			templateData = {
+				...defaultTemplateData,
+				...templateData,
+			};
 
 			html = await this.renderTemplate(options.template.name, templateData, options.template.system);
 		}
@@ -69,9 +67,9 @@ export class MailService {
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>, system = false) {
-		const resolvedPath = system
-			? path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid')
-			: path.join(__dirname, 'templates', template + '.liquid');
+		let resolvedPath = path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');
+		if (system && !(await fse.pathExists(resolvedPath)))
+			resolvedPath = path.join(__dirname, 'templates', template + '.liquid');
 
 		const templateString = await fse.readFile(resolvedPath, 'utf8');
 		const html = await liquidEngine.parseAndRender(templateString, variables);
