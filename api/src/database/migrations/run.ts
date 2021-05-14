@@ -27,7 +27,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
-	];
+	].sort((a, b) => (a.version > b.version ? 1 : -1));
 
 	function parseFilePath(filePath: string, custom = false) {
 		const version = filePath.split('-')[0];

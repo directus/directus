@@ -556,18 +556,17 @@ interfaces:
     allow_other: Izinkan lainnya
   input-code:
     code: Kode
-    line_number: Nomor Baris
   collection:
     collection: Koleksi
   system-collections:
     collections: Pengumpulan
-  color:
+  select-color:
     color: Warna
   datetime:
     datetime: Datetime
   system-display-template:
     display-template: Tampilan Template
-  divider:
+  presentation-divider:
     divider: Pembagi/Pemecah
   select-dropdown:
     allow_other: Izinkan lainnya
@@ -576,7 +575,7 @@ interfaces:
     file: Berkas
   files:
     files: Berkas
-  icon:
+  select-icon:
     icon: Ikon
   system-interface:
     interface: Antarmuka

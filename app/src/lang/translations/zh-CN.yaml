@@ -4,7 +4,7 @@ item_revision: 项目修订
 duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
-fill_width: 全宽
+fill_width: 填充宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用两步验证
 add_field: 添加字段
@@ -82,9 +82,11 @@ all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
 field_standard: 标准
+field_presentation: 展示字段
 field_file: 单个文件
 field_files: 多个文件
 field_m2o: M2O 关系
+field_m2a: M2A Relationship
 field_o2m: O2M 关系
 field_m2m: M2M 关系
 field_translations: 翻译
@@ -96,6 +98,7 @@ permissions_for_role: '项目 {role} 角色能够 {action}。'
 fields_for_role: '字段 {role} 角色能够 {action}。'
 validation_for_role: '字段 {action} 规定了 {role} 角色必须遵守。'
 presets_for_role: '{role} 角色的字段值默认值。'
+presentation_and_aliases: 展示字段
 revision_post_update: 这是更新这个项目后的样式...
 changes_made: 这些是所做的具体更改...
 no_relational_data: 请记住，这不包括关系数据。
@@ -139,6 +142,10 @@ uuid: UUID
 hash: Hash
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
+auto_refresh: 自动刷新
+refresh_interval: 刷新间隔
+refresh_interval_seconds: 即时刷新 | 每秒 | 每 {seconds} 秒
+refresh_interval_minutes: 每分钟 | 每 {minutes} 分钟
 auto_generate: 自动生成
 this_will_auto_setup_fields_relations: 这将自动设置所有必填字段和关系。
 click_here: 点击此处
@@ -146,7 +153,11 @@ to_manually_setup_translations: 手动设置翻译。
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
+no_collections_found: 未找到任何集合
+new_data_alert: '以下将在您的数据模型中创建：'
+search_collection: Search Collection...
 new_field: '新建字段'
+new_collection: 'New Collection'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
 add_m2m_to_collection: '添加多对多到"{collection}"'
@@ -195,6 +206,7 @@ settings_update_success: 设置已更新
 title: 标题
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
+revision_delta_reverted: Reverted
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 revision_preview: 修订预览
@@ -386,6 +398,8 @@ all_users: 全部用户
 delete_collection: 删除集合
 update_collection_success: 集合已更新
 delete_collection_success: 集合已删除
+start_end_of_count_items: '{count} 个项目中的 {start}-{end}'
+start_end_of_count_filtered_items: '已过滤后{count} 个项目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
@@ -395,10 +409,12 @@ visible_collections: 显示集合
 hidden_collections: 隐藏集合
 show_hidden_collections: 展开隐藏集合
 hide_hidden_collections: 不显示隐藏集合
+unmanaged_collections: 未配置的集合
 system_collections: 系统集合
 placeholder: 占位文本
 icon_left: 左图标
 icon_right: 右图标
+count_other_revisions: '{count} 个其它版本'
 font: 字体
 sans_serif: 无衬线字体
 serif: 衬线字体
@@ -534,6 +550,13 @@ unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
 keep_editing: 继续编辑
+page_help_collections_overview: '**集合总览** - 您可以访问的所有集合列表。'
+page_help_collections_collection: >-
+  **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
+page_help_collections_item: >-
+  **条目详情l** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
+page_help_settings_datamodel_collections: >-
+  **数据模型: 集合** - 列出所有可用的集合。这包括可见、隐藏和系统集合，以及可以添加的数据库表（当前还未加入并管理）。
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -566,7 +589,12 @@ fields:
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
+    translations: 集合名称翻译
+    archive_app_filter: 后台Admin App中归档数据过滤器
+    archive_value: 归档值
+    unarchive_value: 取消归档值
     sort_field: 排序字段
+    accountability: 活动和版本修订跟踪
   directus_files:
     title: 标题
     description: 描述
@@ -632,6 +660,11 @@ fields:
     users: 角色中的用户
     module_list: 模块导航
     collection_list: 集合导航
+field_options:
+  directus_collections:
+    track_activity_revisions: 跟踪活动和历史修改版本
+    only_track_activity: 仅跟踪活动
+    do_not_track_anything: 不跟踪任何内容
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 do_nothing: 什么都不做
 generate_and_save_uuid: 生成并保存 UUID
@@ -694,12 +727,13 @@ interfaces:
     allow_other: 允许其他选项
   input-code:
     code: 代码
-    line_number: 行号
   collection:
     collection: 集合
   system-collections:
     collections: 集合
-  color:
+    description: 在现有集合之间选择
+    include_system_collections: 包含系统集合
+  select-color:
     color: 颜色
   datetime:
     datetime: 日期时间
@@ -707,7 +741,7 @@ interfaces:
     display-template: 显示模板
     collection_field_not_setup: 集合的字段选项配置错误
     select_a_collection: 选择一个集合
-  divider:
+  presentation-divider:
     divider: 分隔线
     inline_title: 内嵌标题
     inline_title_label: 在行内显示标题
@@ -733,8 +767,7 @@ interfaces:
     description: 选择或上传多个文件
   input-hash:
     hash: Hash
-    description: 输入一个经过hash的值
-  icon:
+  select-icon:
     icon: 图标
   system-interface-options:
     interface-options: 界面选项
@@ -755,8 +788,6 @@ interfaces:
     repeater: 中继器
   slider:
     slider: 滑块
-  slug:
-    slug: 别名
   tags:
     tags: 标签
   input:

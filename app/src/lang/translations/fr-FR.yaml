@@ -862,9 +862,6 @@ interfaces:
     items_shown: Éléments affichés
   input-code:
     code: Code
-    description: Écrire ou partager des extraits de code
-    line_number: Numéro de ligne
-    placeholder: Entrez le code ici...
   collection:
     collection: Collection
     description: Sélectionner parmi les collections existantes
@@ -873,13 +870,8 @@ interfaces:
     collections: Collections
     description: Sélectionner parmi les collections existantes
     include_system_collections: Inclure les collections système
-  color:
+  select-color:
     color: Couleur
-    description: Saisir ou choisir une couleur
-    placeholder: Choisir une couleur...
-    preset_colors: Couleurs prédéfinies
-    preset_colors_add_label: Ajouter une nouvelle couleur...
-    name_placeholder: Entrer le nom de la couleur...
   datetime:
     datetime: Date / Heure
     description: Saisir des dates et des heures
@@ -888,11 +880,9 @@ interfaces:
     use_24: Utiliser le format 24h
   system-display-template:
     display-template: Modèle d'affichage
-    description: Mélanger du texte statique et des valeurs de champs dynamiques
-    collection_field: Champ de collection
     collection_field_not_setup: L'option de champ de collection est mal configurée
     select_a_collection: Sélectionner une collection
-  divider:
+  presentation-divider:
     divider: Séparateur
     description: Étiqueter et diviser les champs en sections
     title_placeholder: Entrez un titre...
@@ -920,14 +910,9 @@ interfaces:
     description: Sélectionner ou Transférer plusieurs fichiers
   input-hash:
     hash: Hash
-    description: Entrer une valeur pour hachage
-    masked: Masqué
-    masked_label: Cacher les valeurs marquées "vrai"
-  icon:
+  select-icon:
     icon: Icône
-    description: Sélectionner une icône dans la liste déroulante
-    search_for_icon: Rechercher une icône...
-  image:
+  file-image:
     image: Image
     description: Sélectionner ou envoyer une image
   system-interface:
@@ -980,9 +965,6 @@ interfaces:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
     always_show_value: Toujours afficher la valeur
-  slug:
-    slug: Slug
-    description: Saisir des mots reliés par des tirets
   tags:
     tags: Étiquettes
     description: Sélectionner ou ajouter des tags
@@ -1011,8 +993,6 @@ interfaces:
     description: Entrez le texte brut en multiligne
   boolean:
     toggle: Activer/Désactiver
-    description: Basculer entre sélectionné et désélectionné
-    label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
     display_template: Modèle d'affichage

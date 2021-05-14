@@ -639,16 +639,12 @@ interfaces:
     items_shown: Megjelenített elemek
   input-code:
     code: Kód
-    line_number: Sorszám
   collection:
     collection: Gyűjtemény
   system-collections:
     collections: Gyűjtemények
-  color:
+  select-color:
     color: Szín
-    placeholder: Szín választása...
-    preset_colors_add_label: Új szín hozzáadása...
-    name_placeholder: Szín elnevezése...
   datetime:
     datetime: Dátum és idő
     description: Dátum és idő beállítása
@@ -656,10 +652,9 @@ interfaces:
     use_24: 24 órás formátum használata
   system-display-template:
     display-template: Megjelenítési sablon
-    collection_field: Gyűjtemény mező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
-  divider:
+  presentation-divider:
     divider: Elválasztó
     title_placeholder: Írja be a címet...
     margin_top: Felső margó
@@ -679,9 +674,9 @@ interfaces:
     description: Válasszon vagy töltsön fel fájlokat
   input-hash:
     hash: Hash
-  icon:
+  select-icon:
     icon: Ikon
-  image:
+  file-image:
     image: Kép
   system-interface:
     interface: Kezelőfelület
@@ -727,7 +722,6 @@ interfaces:
     textarea: Szövegdoboz
   boolean:
     toggle: Váltás
-    label_placeholder: Írja be a címkét...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon

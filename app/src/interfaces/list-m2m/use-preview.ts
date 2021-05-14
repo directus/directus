@@ -97,9 +97,8 @@ export default function usePreview(
 		() => {
 			const { junctionField, junctionCollection } = relation.value;
 
-			tableHeaders.value = (fields.value.length > 0
-				? fields.value
-				: getDefaultFields().map((field) => `${junctionField}.${field}`)
+			tableHeaders.value = (
+				fields.value.length > 0 ? fields.value : getDefaultFields().map((field) => `${junctionField}.${field}`)
 			)
 				.map((fieldKey) => {
 					const field = fieldsStore.getField(junctionCollection, fieldKey);

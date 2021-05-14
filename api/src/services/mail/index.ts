@@ -4,26 +4,22 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 import database from '../../database';
 import env from '../../env';
+import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
 import mailer from '../mailer';
+import { SendMailOptions } from 'nodemailer';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
 	extname: '.liquid',
 });
 
-export type EmailOptions = {
-	to: string;
+export type EmailOptions = SendMailOptions & {
 	template?: {
 		name: string;
 		data: Record<string, any>;
-		system?: boolean;
 	};
-	from?: string;
-	subject?: string;
-	text?: string;
-	html?: string;
 };
 
 export class MailService {
@@ -40,40 +36,43 @@ export class MailService {
 	async send(options: EmailOptions): Promise<void> {
 		if (!mailer) return;
 
-		const { to, subject, text } = options;
-		let { from, html } = options;
+		const { template, ...emailOptions } = options;
+		let { html } = options;
 
-		from = from || (env.EMAIL_FROM as string);
+		const from = options.from || (env.EMAIL_FROM as string);
 
-		if (options.template) {
-			let templateData = options.template.data;
+		if (template) {
+			let templateData = template.data;
 
-			if (options.template.system === true) {
-				const defaultTemplateData = await this.getDefaultTemplateData();
+			const defaultTemplateData = await this.getDefaultTemplateData();
 
-				templateData = {
-					...defaultTemplateData,
-					...templateData,
-				};
-			}
+			templateData = {
+				...defaultTemplateData,
+				...templateData,
+			};
 
-			html = await this.renderTemplate(options.template.name, templateData, options.template.system);
+			html = await this.renderTemplate(template.name, templateData);
 		}
 
 		try {
-			await mailer.sendMail({ to, from, subject, html, text });
+			await mailer.sendMail({ ...emailOptions, from, html });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);
 		}
 	}
 
-	private async renderTemplate(template: string, variables: Record<string, any>, system = false) {
-		const resolvedPath = system
-			? path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid')
-			: path.join(__dirname, 'templates', template + '.liquid');
+	private async renderTemplate(template: string, variables: Record<string, any>) {
+		const customTemplatePath = path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');
+		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
 
-		const templateString = await fse.readFile(resolvedPath, 'utf8');
+		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
+
+		if ((await fse.pathExists(templatePath)) === false) {
+			throw new InvalidPayloadException(`Template "${template}" doesn't exist.`);
+		}
+
+		const templateString = await fse.readFile(templatePath, 'utf8');
 		const html = await liquidEngine.parseAndRender(templateString, variables);
 
 		return html;
