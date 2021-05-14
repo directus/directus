@@ -20,7 +20,7 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream) {
+	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
 		if (collection.startsWith('directus_')) throw new ForbiddenException();
 
 		const createPermissions = this.schema.permissions.find(
@@ -45,7 +45,7 @@ export class ImportService {
 		}
 	}
 
-	importJSON(collection: string, stream: NodeJS.ReadableStream) {
+	importJSON(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 
 		return this.knex.transaction((trx) => {
@@ -86,7 +86,7 @@ export class ImportService {
 		});
 	}
 
-	importCSV(collection: string, stream: NodeJS.ReadableStream) {
+	importCSV(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
