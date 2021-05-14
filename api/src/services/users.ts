@@ -263,7 +263,6 @@ export class UsersService extends ItemsService {
 							url: acceptURL,
 							email,
 						},
-						system: true,
 					},
 				});
 			}
@@ -324,7 +323,6 @@ export class UsersService extends ItemsService {
 					url: acceptURL,
 					email,
 				},
-				system: true,
 			},
 		});
 	}
