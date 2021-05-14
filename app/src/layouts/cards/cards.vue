@@ -48,6 +48,12 @@
 
 		<!-- <teleport to="#target-sidebar"> -->
 		<filter-sidebar-detail v-model="internalFilters" :collection="collection" :loading="loading" />
+		<export-sidebar-detail
+			:layout-query="layoutQuery"
+			:filters="_filters"
+			:search-query="searchQuery"
+			:collection="collection"
+		/>
 		<!-- </teleport> -->
 
 		<!-- <teleport to="#target-actions:prepend"> -->
@@ -141,6 +147,7 @@ import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import Card from './components/card.vue';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
@@ -170,7 +177,7 @@ type layoutQuery = {
 
 export default defineComponent({
 	emits: ['update:selection', 'update:layoutOptions', 'update:layoutQuery', 'update:filters', 'update:searchQuery'],
-	components: { Card, CardsHeader },
+	components: { Card, CardsHeader, ExportSidebarDetail },
 	props: {
 		collection: {
 			type: String,

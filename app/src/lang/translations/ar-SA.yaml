@@ -428,21 +428,17 @@ interfaces:
     allow_other: السماح لآخرين
   input-code:
     code: نص برمجي
-    line_number: أرقام الأسطر
   collection:
     collection: المجموعة
   system-collections:
     collections: مجموعات
-  color:
+  select-color:
     color: لون
-    placeholder: اختر لون...
-    preset_colors_add_label: إضافة لون جديد...
-    name_placeholder: أدخل اسم اللون...
   datetime:
     datetime: التاريخ والوقت
   system-display-template:
     display-template: عرض القالب
-  divider:
+  presentation-divider:
     divider: الفاصل
   select-dropdown:
     allow_other: السماح لآخرين
@@ -452,7 +448,7 @@ interfaces:
     file: ملف
   files:
     files: الملفات
-  icon:
+  select-icon:
     icon: أيقونة
   system-interface-options:
     interface-options: خيارات الواجهة
@@ -483,8 +479,6 @@ interfaces:
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
-  slug:
-    slug: مقال
   tags:
     tags: الوسوم
   input:

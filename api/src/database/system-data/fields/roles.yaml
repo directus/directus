@@ -133,7 +133,7 @@ fields:
                   field: collection
                   type: string
                   meta:
-                    interface: collection
+                    interface: system-collection
                     width: full
                   schema:
                     is_nullable: false

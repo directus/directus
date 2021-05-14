@@ -31,14 +31,14 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked(t('page_help_users_item'))" />
+		<div class="page-description" v-html="md(t('page_help_users_item'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import localizedFormat from '@/utils/localized-format';
 
 export default defineComponent({
@@ -69,7 +69,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { t, marked, lastAccessDate };
+		return { t, md, lastAccessDate };
 	},
 });
 </script>

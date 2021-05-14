@@ -38,7 +38,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
@@ -60,7 +60,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const textarea = ref<ComponentPublicInstance>();
-		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
+		const htmlContent = computed(() => (props.activity.comment ? md(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 

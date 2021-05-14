@@ -134,7 +134,6 @@ interfaces:
     checkboxes: Поља за потврду
   input-code:
     code: Код
-    line_number: Број линија
   collection:
     collection: Колекција
   files:

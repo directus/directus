@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="marked(t('page_help_docs_global'))" />
+				<div class="page-description" v-html="md(t('page_help_docs_global'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -30,7 +30,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, defineAsyncComponent, ref, computed } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
-import marked from 'marked';
+import { md } from '@/utils/md';
 
 // @TODO3 Investigate manual chunking and prefetching
 const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
@@ -100,7 +100,7 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { t, markdown, title, markdownWithoutTitle, marked, path };
+		return { t, markdown, title, markdownWithoutTitle, md, path };
 	},
 });
 </script>

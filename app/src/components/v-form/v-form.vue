@@ -44,7 +44,7 @@ import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
@@ -144,7 +144,7 @@ export default defineComponent({
 			batchActiveFields,
 			toggleBatchField,
 			unsetValue,
-			marked,
+			md,
 			unknownValidationErrors,
 			firstEditableFieldIndex,
 		};

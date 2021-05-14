@@ -54,7 +54,7 @@
 			</v-card>
 		</v-dialog>
 
-		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
+		<small class="note" v-if="field.meta && field.meta.note" v-html="md(field.meta.note)" />
 
 		<small class="validation-error" v-if="validationError">
 			{{ validationMessage }}
@@ -66,7 +66,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types/';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
@@ -158,7 +158,7 @@ export default defineComponent({
 			}
 		});
 
-		return { t, isDisabled, marked, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { t, isDisabled, md, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (

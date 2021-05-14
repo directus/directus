@@ -85,6 +85,7 @@ import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
@@ -300,6 +301,8 @@ export default defineComponent({
 					if (relation.value.sort_field !== null && fieldsList.includes(relation.value.sort_field) === false)
 						fieldsList.push(relation.value.sort_field);
 
+					const fieldsToFetch = addRelatedPrimaryKeyToFields(relatedCollection.value.collection, fieldsList);
+
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
 							? `/${relatedCollection.value.collection.substring(9)}`
@@ -312,7 +315,7 @@ export default defineComponent({
 						if (primaryKeys && primaryKeys.length > 0) {
 							const response = await api.get(endpoint, {
 								params: {
-									fields: fieldsList,
+									fields: fieldsToFetch,
 									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
 								},
 							});

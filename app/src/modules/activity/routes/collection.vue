@@ -32,7 +32,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="marked(t('page_help_activity_collection'))" />
+				<div class="page-description" v-html="md(t('page_help_activity_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
@@ -45,7 +45,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
@@ -65,7 +65,7 @@ export default defineComponent({
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
-		return { t, breadcrumb, marked, layout, layoutOptions, layoutQuery, searchQuery, filters };
+		return { t, breadcrumb, md, layout, layoutOptions, layoutQuery, searchQuery, filters };
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {

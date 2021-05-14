@@ -144,6 +144,7 @@ decimal: Десетичен
 float: Реално число
 integer: Цяло число
 json: JSON
+xml: XML
 string: Низ
 text: Текст
 time: Час
@@ -614,6 +615,7 @@ settings_permissions: Роли и позволения
 settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
+one_or_more_options_are_missing: Липсват една или повече опции
 scope: Обхват
 select: Избор...
 layout: Оформление
@@ -877,9 +879,7 @@ interfaces:
     items_shown: Показани записи
   input-code:
     code: Код
-    description: Писане или споделяне на кодови откъси
-    line_number: Номер на ред
-    placeholder: Въвеждане на кода...
+    line_number: Номериране на редове
   collection:
     collection: Колекция
     description: Избор от съществуващи колекции
@@ -888,13 +888,8 @@ interfaces:
     collections: Колекции
     description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции
-  color:
+  select-color:
     color: Цвят
-    description: Въвеждане или избор на стойност за цвят
-    placeholder: Избор на цвят...
-    preset_colors: Предварително зададени цветове
-    preset_colors_add_label: Добавяне на нов цвят...
-    name_placeholder: Въвеждане на име на цвета...
   datetime:
     datetime: Дата и час
     description: Въвеждане на дати и часове
@@ -903,13 +898,10 @@ interfaces:
     use_24: Използване на 24 часов формат
   system-display-template:
     display-template: Шаблон при показване
-    description: Комбиниране на статичен текст и динамични стойности от полета
-    collection_field: Поле на колекцията
     collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
     select_a_collection: Избор на колекция
-  divider:
+  presentation-divider:
     divider: Разделител
-    description: Именуване и разделяне на полетата по секции
     title_placeholder: Въвеждане на заглавие...
     inline_title: Заглавие в линия
     inline_title_label: Показване на заглавията в реда
@@ -918,11 +910,8 @@ interfaces:
   select-dropdown:
     description: Избор на стойност от падащо меню
     choices_placeholder: Добавяне на избор
-    allow_other: Позволи други
-    allow_other_label: Позволяване на други стойности
-    allow_none: Позволяване на нищо
-    allow_none_label: Празен избор
-    choices_name_placeholder: Въвеждане на името...
+    allow_other: Други
+    choices_name_placeholder: Въвеждане на име...
     choices_value_placeholder: Въвеждане на стойност...
   select-multiple-dropdown:
     select-multiple-dropdown: Падащо меню (множествен избор)
@@ -935,19 +924,15 @@ interfaces:
     description: Избор или качване на множество файлове
   input-hash:
     hash: Хеш
-    description: Въвеждане на стойност за хеширане
     masked: Маскиране
-    masked_label: Скриване на истинските стойности
-  icon:
+  select-icon:
     icon: Икона
-    description: Избор на икона от падащото меню
     search_for_icon: Търсене на икона...
-  image:
+  file-image:
     image: Изображение
     description: Избор или качване на изображение
   system-interface:
     interface: Интерфейс
-    description: Избор на съществуващ интерфейс
     placeholder: Избор на интерфейс...
   system-interface-options:
     interface-options: Опции за интерфейса
@@ -987,18 +972,11 @@ interfaces:
     description: Един или няколко избора
   list:
     repeater: Повторение
-    description: Създаване на множество записи със същата структура
-    edit_fields: Редактиране на полета
-    add_label: 'Текст за "Създаване"'
-    field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
     always_show_value: Показване на стойностите винаги
-  slug:
-    slug: Кратко име
-    description: Въвеждане на думи свързани чрез тире
   tags:
     tags: Тагове
     description: Избор или добавяне на етикети
@@ -1017,18 +995,14 @@ interfaces:
     text-input: Поле за текст
     description: Въвеждане на един ред
     trim: Почистване
-    trim_label: Почистване на краищата от интервали
     mask: Маскиране
     mask_label: Скриване на истинската стойност
-    clear: Изчистване на стойност
     clear_label: Запазване като празен стринг
   input-multiline:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
   boolean:
     toggle: Превключване
-    description: Превключване между вкл. и изкл.
-    label_placeholder: Въвеждане на етикет...
     label_default: Включване
   translations:
     display_template: Шаблон при показване
@@ -1046,10 +1020,12 @@ interfaces:
       modal: Модал
   input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Редактор на текст с допълнения в HTML формат
     toolbar: Лента с инструменти
-    custom_formats: Специфични формати
-    options_override: Наслагване на опции
+  input-autocomplete-api:
+    results_path: Път до резултатите
+    value_path: Път до стойността
+    trigger: Задействане
+    rate: Оценка
 displays:
   boolean:
     boolean: Булев
@@ -1153,3 +1129,7 @@ layouts:
     comfortable: Удобно
     compact: Компактно
     cozy: Уютно
+  calendar:
+    calendar: Календар
+    start_date_field: Начална дата
+    end_date_field: Крайна дата

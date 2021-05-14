@@ -4,6 +4,12 @@
 		:collection="layoutState.props.collection"
 		:loading="layoutState.loading"
 	/>
+	<export-sidebar-detail
+		:layout-query="layoutState.props.layoutQuery"
+		:filters="layoutState.props.filters"
+		:search-query="layoutState.props.searchQuery"
+		:collection="layoutState.props.collection"
+	/>
 </template>
 
 <script lang="ts">

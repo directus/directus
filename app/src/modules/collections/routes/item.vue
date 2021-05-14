@@ -172,7 +172,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="marked(t('page_help_collections_item'))" />
+				<div class="page-description" v-html="md(t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
@@ -203,7 +203,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
 import { useRouter, NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
@@ -394,7 +394,7 @@ export default defineComponent({
 			breadcrumb,
 			title,
 			revisionsDrawerDetail,
-			marked,
+			md,
 			refresh,
 			confirmLeave,
 			leaveTo,

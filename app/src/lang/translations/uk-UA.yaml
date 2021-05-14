@@ -245,22 +245,21 @@ interfaces:
     checkboxes: Прапорці
   input-code:
     code: Код
-    line_number: Номери рядків
   collection:
     collection: Колекція
   system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
   select-dropdown-m2o:
     many-to-one: Багато до одного

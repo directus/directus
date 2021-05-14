@@ -1,7 +1,7 @@
 # Extensions
 
 > In addition to being highly customizable, Directus has also been built with many modular extension points throughout
-> the App and API.
+> the App, API and CLI.
 
 ## App Extensions
 
@@ -17,3 +17,10 @@ Out-of-the-box components are configurable, or altogether new components can be 
 
 - [Endpoints](/guides/api-endpoints)
 - [Hooks](/guides/api-hooks)
+
+<!-- ## CLI Extensions
+
+TBD
+
+- Commands
+- Extensions -->
