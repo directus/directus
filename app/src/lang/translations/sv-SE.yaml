@@ -854,9 +854,6 @@ interfaces:
     items_shown: Objekt som visas
   input-code:
     code: Kod
-    description: Skriv eller dela kod-snippets
-    line_number: Radnummer
-    placeholder: Ange kod här...
   collection:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
@@ -865,13 +862,8 @@ interfaces:
     collections: Kollektioner
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner
-  color:
+  select-color:
     color: Färg
-    description: Ange eller välj ett färgvärde
-    placeholder: Välj en färg...
-    preset_colors: Förinställda färger
-    preset_colors_add_label: Lägg till ny färg...
-    name_placeholder: Ange färgnamn...
   datetime:
     datetime: Datum och tid
     description: Ange datum och tider
@@ -880,11 +872,9 @@ interfaces:
     use_24: Använd 24-timmars format
   system-display-template:
     display-template: Visningsmall
-    description: Blanda statisk text och dynamiska fältvärden
-    collection_field: Kollektionens fält
     collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
     select_a_collection: Välj en kollektion
-  divider:
+  presentation-divider:
     divider: Avdelare
     description: Märk och dela upp fält i sektioner
     title_placeholder: Ange en titel...
@@ -912,14 +902,9 @@ interfaces:
     description: Välj eller ladda upp flera filer
   input-hash:
     hash: Hash
-    description: Ange ett värde som ska hashas
-    masked: Maskerad
-    masked_label: Dölj de riktiga värdena
-  icon:
+  select-icon:
     icon: Ikon
-    description: Välj en ikon från en flervalslista
-    search_for_icon: Sök efter ikon...
-  image:
+  file-image:
     image: Bild
     description: Välj eller ladda upp en bild
   system-interface:
@@ -972,9 +957,6 @@ interfaces:
     slider: Reglage
     description: Välj ett nummer med ett reglage
     always_show_value: Visa alltid värde
-  slug:
-    slug: Permalänk
-    description: Ange ett ord som sitter ihop med bindestreck
   tags:
     tags: Etiketter
     description: Välj eller lägg till taggar
@@ -1002,8 +984,6 @@ interfaces:
     description: Ange fritext på flera rader
   boolean:
     toggle: Växla
-    description: Växla mellan på och av
-    label_placeholder: Ange en etikett...
     label_default: Aktiverad
   translations:
     display_template: Visningsmall

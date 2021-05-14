@@ -862,7 +862,6 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 interfaces:
   presentation-links:
@@ -882,9 +881,6 @@ interfaces:
     items_shown: Angezeigte Elemente
   input-code:
     code: Code
-    description: Code-Snippets schreiben oder teilen
-    line_number: Zeilennummer
-    placeholder: Code hier eingeben...
   collection:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
@@ -893,13 +889,8 @@ interfaces:
     collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  color:
+  select-color:
     color: Farbe
-    description: Farbwert eingeben oder auswählen
-    placeholder: Farbe wählen...
-    preset_colors: Preset-Farben
-    preset_colors_add_label: Farbe hinzufügen...
-    name_placeholder: Farbnamen eingeben...
   datetime:
     datetime: Datum & Uhrzeit
     description: Datum und Uhrzeit eingeben
@@ -908,11 +899,9 @@ interfaces:
     use_24: 24-Stunden-Format verwenden
   system-display-template:
     display-template: Anzeigevorlage
-    description: Statische Text- und dynamische Feldwerte mischen
-    collection_field: Sammlungsfeld
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
-  divider:
+  presentation-divider:
     divider: Divider
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
@@ -940,14 +929,9 @@ interfaces:
     description: Mehrere Dateien auswählen oder hochladen
   input-hash:
     hash: Hash
-    description: Den zu hashenden Wert eingeben
-    masked: Maskiert
-    masked_label: Wahre Werte ausblenden
-  icon:
+  select-icon:
     icon: Symbol
-    description: Icon aus einer Dropdown-Liste auswählen
-    search_for_icon: Nach Icon suchen...
-  image:
+  file-image:
     image: Bild
     description: Bild auswählen oder hochladen
   system-interface:
@@ -1001,9 +985,6 @@ interfaces:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
-  slug:
-    slug: Slug
-    description: Wort eingeben, das mit Bindestrichen verbunden ist
   tags:
     tags: Stichwörter
     description: Tags auswählen oder hinzufügen
@@ -1032,8 +1013,6 @@ interfaces:
     description: Mehrzeiligen Klartext eingeben
   boolean:
     toggle: Umschalten
-    description: Zwischen Ein und Aus wechseln
-    label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage

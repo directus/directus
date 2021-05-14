@@ -32,7 +32,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_activity_collection'))" />
+				<div class="page-description" v-html="md($t('page_help_activity_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
@@ -45,7 +45,7 @@ import { defineComponent, computed, ref } from '@vue/composition-api';
 import ActivityNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import usePreset from '@/composables/use-preset';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
@@ -65,7 +65,7 @@ export default defineComponent({
 
 		return {
 			breadcrumb,
-			marked,
+			md,
 			layout,
 			layoutOptions,
 			layoutQuery,

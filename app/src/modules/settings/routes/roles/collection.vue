@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_roles_collection'))" />
+				<div class="page-description" v-html="md($t('page_help_settings_roles_collection'))" />
 			</sidebar-detail>
 		</template>
 
@@ -62,7 +62,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 import { i18n } from '@/lang';
 import api from '@/api';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import router from '@/router';
@@ -120,7 +120,7 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
+		return { md, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;

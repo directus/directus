@@ -49,7 +49,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
 			res.set('Content-Type', 'application/json');
-			return res.status(200).send(JSON.stringify(res.locals.payload, null, '\t'));
+			return res.status(200).send(JSON.stringify(res.locals.payload?.data || null, null, '\t'));
 		}
 
 		if (req.sanitizedQuery.export === 'xml') {

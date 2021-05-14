@@ -33,20 +33,20 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_settings_project'))" />
+		<div class="page-description" v-html="md($t('page_help_settings_project'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { useProjectInfo } from '../../../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
 		const { parsedInfo } = useProjectInfo();
 
-		return { parsedInfo, marked };
+		return { parsedInfo, md };
 	},
 });
 </script>

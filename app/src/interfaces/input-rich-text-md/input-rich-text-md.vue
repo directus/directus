@@ -238,20 +238,20 @@ export default defineComponent({
 		const { edit } = useEdit(codemirror);
 
 		const html = computed(() => {
-			let md = props.value || '';
+			let mdString = props.value || '';
 
 			if (!props.imageToken) {
 				const baseUrl = getPublicURL() + 'assets/';
 				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
 
-				const images = Array.from(md.matchAll(regex));
+				const images = Array.from(mdString.matchAll(regex));
 
 				for (const image of images) {
-					md = md.replace(image[1], addTokenToURL(image[1]));
+					mdString = mdString.replace(image[1], addTokenToURL(image[1]));
 				}
 			}
 
-			const html = marked(md);
+			const html = marked(mdString);
 			const htmlSanitized = sanitize(html);
 
 			return htmlSanitized;

@@ -26,7 +26,7 @@
 				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="branding && branding.project_name" />
 			</transition>
 			<div class="note-container">
-				<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
+				<div class="note" v-if="branding && branding.public_note" v-html="md(branding.public_note)" />
 			</div>
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
 import { useServerStore } from '@/stores';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
@@ -83,7 +83,7 @@ export default defineComponent({
 		return {
 			version,
 			artStyles,
-			marked,
+			md,
 			branding: serverStore.state.info?.project,
 			foregroundURL,
 			logoURL,

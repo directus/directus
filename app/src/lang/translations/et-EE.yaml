@@ -709,12 +709,11 @@ interfaces:
     allow_other: Luba muud
   input-code:
     code: Kood
-    line_number: Reanumbrid
   collection:
     collection: Kogud
   system-collections:
     collections: Kogud
-  color:
+  select-color:
     color: Värv
   datetime:
     datetime: Kuupäev-kellaaeg
@@ -722,7 +721,7 @@ interfaces:
     display-template: Vaate mall
     collection_field_not_setup: Andmekogu väli on valesti seadistatud
     select_a_collection: Vali andmekogu
-  divider:
+  presentation-divider:
     divider: Eraldaja
   select-dropdown:
     allow_other: Luba muud
@@ -731,7 +730,7 @@ interfaces:
     file: Fail
   files:
     files: Failid
-  icon:
+  select-icon:
     icon: Ikoon
   system-interface:
     interface: Kasutajaliides

@@ -822,9 +822,6 @@ interfaces:
     items_shown: Items weergegeven
   input-code:
     code: Code
-    description: Schrijf of deel code snippets
-    line_number: Regelnummer
-    placeholder: Voer code in...
   collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
@@ -833,13 +830,8 @@ interfaces:
     collections: Collecties
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  color:
+  select-color:
     color: Kleur
-    description: Voer in of selecteer een kleurwaarde
-    placeholder: Kies een kleur...
-    preset_colors: Voorafbepaalde kleuren
-    preset_colors_add_label: Nieuwe kleur toevoegen...
-    name_placeholder: Voer kleurnaam in...
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
@@ -848,11 +840,9 @@ interfaces:
     use_24: 24-uurs formaat gebruiken
   system-display-template:
     display-template: Weergavesjabloon
-    description: Mix statische tekst en dynamische veld waarden
-    collection_field: Collectie veld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
-  divider:
+  presentation-divider:
     divider: Scheidingslijn
     description: Label en verdeel velden in secties
     title_placeholder: Voer een titel in...
@@ -880,14 +870,9 @@ interfaces:
     description: Selecteer of upload meerdere bestanden
   input-hash:
     hash: Hash
-    description: Voer een waarde in om te hashen
-    masked: Gemaskeerd
-    masked_label: Verberg de waarde
-  icon:
+  select-icon:
     icon: Icoon
-    description: Selecteer een icoon uit een dropdown
-    search_for_icon: Zoek naar een icoon...
-  image:
+  file-image:
     image: Afbeelding
     description: Selecteer of upload een afbeelding
   system-interface:
@@ -940,9 +925,6 @@ interfaces:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
     always_show_value: Waarde altijd weergeven
-  slug:
-    slug: Url
-    description: Voer een woord in dat is verbonden met streepjes
   tags:
     tags: Tags
     description: Selecteer of voeg tags toe
@@ -969,8 +951,6 @@ interfaces:
     description: Voer multiline tekst in
   boolean:
     toggle: Schakel
-    description: Schakel tussen aan en uit
-    label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
     display_template: Weergavesjabloon

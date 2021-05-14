@@ -833,9 +833,6 @@ interfaces:
     items_shown: Elementos Mostrados
   input-code:
     code: Código
-    description: Escribir o compartir fragmentos de código
-    line_number: Número de línea
-    placeholder: Ingrese el código aquí...
   collection:
     collection: Colección
     description: Seleccionar entre colecciones existentes
@@ -844,13 +841,8 @@ interfaces:
     collections: Colecciones
     description: Seleccionar entre colecciones existentes
     include_system_collections: Incluir Colecciones del Sistema
-  color:
+  select-color:
     color: Color
-    description: Ingrese o seleccione un color
-    placeholder: Seleccionar un color...
-    preset_colors: Colores Predefinidos
-    preset_colors_add_label: Agregar nuevo color...
-    name_placeholder: Ingresar nombre del color...
   datetime:
     datetime: Fecha/hora
     description: Ingrese fechas y horas
@@ -859,11 +851,9 @@ interfaces:
     use_24: Usar Formato 24 horas
   system-display-template:
     display-template: Plantilla de Presentación
-    description: Combinar texto estático y valores de campos dinámicos
-    collection_field: Campo Colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
-  divider:
+  presentation-divider:
     divider: Separador
     description: Etiqueta y a la vez permite dividir los campos en secciones
     title_placeholder: Ingresar un título...
@@ -891,14 +881,9 @@ interfaces:
     description: Seleccionar o subir múltiples archivos
   input-hash:
     hash: Hash
-    description: Ingresar un valor para ser "Hasheado"
-    masked: Enmascarado
-    masked_label: Ocultar los verdaderos valores
-  icon:
+  select-icon:
     icon: Ícono
-    description: Seleccione un ícono de la lista
-    search_for_icon: Buscar un ícono...
-  image:
+  file-image:
     image: Imagen
     description: Seleccionar o subir una imagen
   system-interface:
@@ -951,9 +936,6 @@ interfaces:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
     always_show_value: Siemrpe presentar valor
-  slug:
-    slug: Slug
-    description: Ingresar una palabra conectada con guiones
   tags:
     tags: Etiquetas
     description: Seleccionar o agregar etiquetas
@@ -980,8 +962,6 @@ interfaces:
     description: Ingresar texto plano multi-línea
   boolean:
     toggle: Alternar
-    description: Alternar entre Activado y Desactivado
-    label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
