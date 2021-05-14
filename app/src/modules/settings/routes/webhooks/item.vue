@@ -76,7 +76,7 @@ import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import md from '@/utils/md';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	name: 'webhooks-item',
