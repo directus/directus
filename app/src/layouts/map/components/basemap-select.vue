@@ -24,7 +24,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const basemaps = getBasemapSources();
 		const basemap = ref<BasemapSource>();
 		const appStore = useAppStore();

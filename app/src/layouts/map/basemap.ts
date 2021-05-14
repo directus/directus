@@ -25,7 +25,7 @@ export function getBasemapSources(): BasemapSource[] {
 	return basemaps?.length ? basemaps : [{ ...defaultBasemap }];
 }
 
-export function getStyleFromBasemapSource(basemap: BasemapSource) {
+export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
 	setMapboxAccessToken(basemap.url);
 	if (basemap.type == 'style') {
 		return basemap.url;
@@ -70,7 +70,7 @@ function expandUrl(url: string): string[] {
 	if (match) {
 		// csv
 		const subdomains = match[1].split(',');
-		for (let subdomain of subdomains) {
+		for (const subdomain of subdomains) {
 			urls.push(url.replace(match[0], subdomain));
 		}
 		return urls;
@@ -79,7 +79,7 @@ function expandUrl(url: string): string[] {
 	return urls;
 }
 
-function setMapboxAccessToken(styleURL: string) {
+function setMapboxAccessToken(styleURL: string): void {
 	styleURL = styleURL.replace(/^mapbox:\//, 'https://api.mapbox.com/styles/v1');
 	try {
 		const url = new URL(styleURL);
@@ -87,5 +87,7 @@ function setMapboxAccessToken(styleURL: string) {
 			const token = url.searchParams.get('access_token');
 			if (token) maplibre.accessToken = token;
 		}
-	} catch (e) {}
+	} catch (e) {
+		return;
+	}
 }

@@ -12,23 +12,23 @@ export class ButtonControl {
 		this.element.onclick = callback;
 		this.active = false;
 	}
-	click(...args: any) {
+	click(...args: any[]): void {
 		this.callback(...args);
 	}
-	activate(yes: boolean) {
+	activate(yes: boolean): void {
 		this.element.classList[yes ? 'add' : 'remove']('active');
 		this.active = yes;
 	}
-	show(yes: boolean) {
+	show(yes: boolean): void {
 		this.element.classList[yes ? 'remove' : 'add']('hidden');
 	}
-	onAdd() {
+	onAdd(): HTMLElement {
 		this.groupElement = document.createElement('div');
 		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this.groupElement.appendChild(this.element);
 		return this.groupElement;
 	}
-	onRemove() {
+	onRemove(): void {
 		this.element.remove();
 		this.groupElement?.remove();
 	}
@@ -36,14 +36,14 @@ export class ButtonControl {
 
 export class BasemapSelectControl {
 	component?: any;
-	onAdd(map: Map) {
+	onAdd(map: Map): HTMLElement {
 		this.component = new (Vue.extend(BasemapSelectComponent))({
 			propsData: { map },
 		});
 		this.component.$mount();
 		return this.component.$el as HTMLElement;
 	}
-	onRemove() {
+	onRemove(): void {
 		this.component!.$destroy();
 	}
 }
@@ -66,8 +66,8 @@ export class BoxSelectControl {
 	map?: Map;
 	layers: string[];
 
-	selecting: boolean = false;
-	shiftPressed: boolean = false;
+	selecting = false;
+	shiftPressed = false;
 	startPos: Point | undefined;
 	lastPos: Point | undefined;
 
@@ -101,7 +101,7 @@ export class BoxSelectControl {
 		this.onMouseUpHandler = this.onMouseUp.bind(this);
 	}
 
-	onAdd(map: Map) {
+	onAdd(map: Map): HTMLElement {
 		this.map = map;
 		this.map!.boxZoom.disable();
 		this.map!.getContainer().appendChild(this.boxElement);
@@ -111,7 +111,7 @@ export class BoxSelectControl {
 		return this.groupElement;
 	}
 
-	onRemove() {
+	onRemove(): void {
 		this.map!.boxZoom.enable();
 		this.boxElement.remove();
 		this.groupElement.remove();
@@ -120,7 +120,7 @@ export class BoxSelectControl {
 		document.removeEventListener('keyup', this.onKeyUpHandler);
 	}
 
-	active() {
+	active(): boolean {
 		return this.shiftPressed || this.selecting;
 	}
 
@@ -130,7 +130,7 @@ export class BoxSelectControl {
 		return new Point(event.clientX - rect.left - container.clientLeft, event.clientY - rect.top - container.clientTop);
 	}
 
-	onKeyDown(event: KeyboardEvent) {
+	onKeyDown(event: KeyboardEvent): void {
 		if (event.key == 'Shift') {
 			this.activate(true);
 		}
@@ -141,20 +141,20 @@ export class BoxSelectControl {
 		}
 	}
 
-	activate(yes: boolean) {
+	activate(yes: boolean): void {
 		this.shiftPressed = yes;
 		this.selectButton.activate(yes);
 		this.map!.fire(`select.${yes ? 'enable' : 'disable'}`);
 		this.map!.getContainer().classList[yes ? 'add' : 'remove']('box-select');
 	}
 
-	onKeyUp(event: KeyboardEvent) {
+	onKeyUp(event: KeyboardEvent): void {
 		if (event.key == 'Shift') {
 			this.activate(false);
 		}
 	}
 
-	onMouseDown(event: MouseEvent) {
+	onMouseDown(event: MouseEvent): void {
 		if (!this.shiftPressed) {
 			return;
 		}
@@ -169,9 +169,9 @@ export class BoxSelectControl {
 		}
 	}
 
-	onMouseMove(event: MouseEvent) {
+	onMouseMove(event: MouseEvent): void {
 		this.lastPos = this.getMousePosition(event);
-		let minX = Math.min(this.startPos!.x, this.lastPos!.x),
+		const minX = Math.min(this.startPos!.x, this.lastPos!.x),
 			maxX = Math.max(this.startPos!.x, this.lastPos!.x),
 			minY = Math.min(this.startPos!.y, this.lastPos!.y),
 			maxY = Math.max(this.startPos!.y, this.lastPos!.y);
@@ -181,7 +181,7 @@ export class BoxSelectControl {
 		this.updateBoxStyle({ transform, width, height });
 	}
 
-	onMouseUp() {
+	onMouseUp(): void {
 		this.reset();
 		const features = this.map!.queryRenderedFeatures([this.startPos!, this.lastPos!], {
 			layers: this.layers,
@@ -189,7 +189,7 @@ export class BoxSelectControl {
 		this.map!.fire('select.end', { features });
 	}
 
-	reset() {
+	reset(): void {
 		this.selecting = false;
 		this.updateBoxStyle({ width: '0', height: '0', transform: '' });
 		document.removeEventListener('pointermove', this.onMouseMoveHandler);
@@ -197,7 +197,7 @@ export class BoxSelectControl {
 		this.map!.dragPan.enable();
 	}
 
-	updateBoxStyle(style: { width: string; height: string; transform: string }) {
+	updateBoxStyle(style: { width: string; height: string; transform: string }): void {
 		this.boxElement.style.transform = style.transform;
 		this.boxElement.style.width = style.width;
 		this.boxElement.style.height = style.height;

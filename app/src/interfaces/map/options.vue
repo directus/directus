@@ -4,7 +4,7 @@
 			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
 			<v-select
 				v-model="geometryFormat"
-				:disabled="isNativeGeometry"
+				:disabled="isGeometry"
 				:items="compatibleFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
 			/>
 		</div>
@@ -12,14 +12,14 @@
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
-				:disabled="isNativeGeometry"
+				:disabled="hasGeometryType"
 				:items="geometryTypes.map((value) => ({ value, text: value }))"
 			/>
 		</div>
 		<div class="field half">
 			<div class="type-label">{{ $t('interfaces.map.geometry_crs') }}</div>
 			<v-select
-				:disabled="isNativeGeometry"
+				:disabled="isGeometry"
 				v-model="geometryCRS"
 				:allowOther="true"
 				:items="[
@@ -67,17 +67,22 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const isNativeGeometry = computed(() => props.fieldData.type == 'geometry');
 		const compatibleFormats = computed(() => compatibleFormatsForType(props.fieldData.type));
 		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats.value[0]!);
 		const geometryType = ref<GeometryType>(props.value?.geometryType);
 		const geometryCRS = ref<string | undefined>(props.value?.geometryCRS);
 		const defaultPosition = ref<CameraOptions>(props.value?.defaultPosition);
-		if (isNativeGeometry) {
+
+		const isGeometry = props.fieldData.type == 'geometry';
+		let hasGeometryType = false;
+		if (isGeometry) {
 			const special = props.fieldData?.meta?.special as [string, GeometryFormat, GeometryType, string | undefined];
-			if (special) {
-				[, geometryFormat.value, geometryType.value] = special;
+			[, geometryFormat.value, geometryType.value] = special;
+			if (geometryFormat.value == 'native') {
 				geometryCRS.value = undefined;
+			}
+			if (geometryType.value) {
+				hasGeometryType = true;
 			}
 		}
 		watch(
@@ -112,7 +117,8 @@ export default defineComponent({
 		});
 
 		return {
-			isNativeGeometry,
+			isGeometry,
+			hasGeometryType,
 			geometryFormats,
 			geometryFormat,
 			compatibleFormats,
