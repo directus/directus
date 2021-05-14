@@ -46,6 +46,9 @@ import { validateEnv } from './utils/validate-env';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
 
+/* CUSTOM */
+import testRouter from './controllers/_custom/test';
+
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
@@ -168,6 +171,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);
+	/* CUSTOM */
+	app.use('/_custom', testRouter);
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
