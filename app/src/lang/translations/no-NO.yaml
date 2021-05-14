@@ -477,12 +477,10 @@ interfaces:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
   system-interface:
     interface: Grensesnitt
-  numeric:
-    numeric: Nummerisk
   tags:
     tags: Etiketter
   boolean:

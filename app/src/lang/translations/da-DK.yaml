@@ -358,12 +358,11 @@ interfaces:
     allow_other: Tillad Andre
   input-code:
     code: Kode
-    line_number: Linjenummer
   collection:
     collection: Samling
   system-collections:
     collections: Samlinger
-  color:
+  select-color:
     color: Farve
   datetime:
     datetime: Datotid
@@ -373,7 +372,7 @@ interfaces:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
   system-interface-options:
     interface-options: Interface indstillinger

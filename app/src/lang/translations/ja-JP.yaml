@@ -276,6 +276,8 @@ wysiwyg_options:
   directionality: 方向
 choices: 選択項目
 deselect: 選択解除
+creating_in: '{collection} のアイテム作成'
+editing_in: '{collection} のアイテムを編集中'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 settings_data_model: データモデル
 settings_permissions: 役割・権限
@@ -413,7 +415,7 @@ interfaces:
     description: コードスニペットでコードを共有
   system-collections:
     collections: コレクション
-  color:
+  select-color:
     color: 色
     description: 色の入力または選択
     preset_colors: プリセットカラー
@@ -426,10 +428,7 @@ interfaces:
     files: ファイル
   input-hash:
     hash: ハッシュ値
-    description: 入力した値をハッシュ値に変換します
-    masked: 入力値を非表示にします（暗号化する値など）
-    masked_label: 入力値を非表示にする
-  icon:
+  select-icon:
     icon: アイコン
     description: ドロップダウンからアイコンを選択
   presentation-notice:

@@ -84,6 +84,8 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
+nullable: Разрешить NULL значение
+allow_null_value: Разрешить NULL значение
 field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
@@ -414,7 +416,7 @@ flip_vertical: Отразить по Вертикали
 aspect_ratio: Соотношение Сторон
 rotate: Повернуть
 all_users: Все пользователи
-delete_collection: Удалить Уоллекцию
+delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
 start_end_of_count_items: '{start}-{end} из {count} элементов'
@@ -524,6 +526,7 @@ display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
+unlimited: Без ограничения
 open_link_in: Открыть ссылку в
 new_tab: Новая вкладка
 current_tab: Текущая вкладка
@@ -827,7 +830,6 @@ interfaces:
   presentation-links:
     presentation-links: Ссылки на кнопки
     links: Ссылки
-    style: Стиль
     primary: Первичный
     link: Ссылки
     button: Кнопки
@@ -839,9 +841,7 @@ interfaces:
     items_shown: Показано Элементов
   input-code:
     code: Код
-    description: Написать или поделиться фрагментами кода
-    line_number: Номер строки
-    placeholder: Введите код здесь...
+    placeholder: Введите код сюда...
   collection:
     collection: Коллекция
     description: Выбрать из существующих коллекций
@@ -850,13 +850,10 @@ interfaces:
     collections: Коллекции
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  color:
+  select-color:
     color: Цвет
     description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
-    preset_colors: Цвета Пресета
-    preset_colors_add_label: Добавить новый цвет...
-    name_placeholder: Введите название цвета...
   datetime:
     datetime: Дата и время
     description: Введите даты и время
@@ -865,11 +862,9 @@ interfaces:
     use_24: Использовать 24-Часовой Формат
   system-display-template:
     display-template: Шаблон отображения
-    description: Смешивать статический текст и динамические значения полей
-    collection_field: Поле коллекции
     collection_field_not_setup: Опция поля коллекции настроена некорректно
     select_a_collection: Выберите Коллекцию
-  divider:
+  presentation-divider:
     divider: Разделитель
     description: Разметить и разделить поля на разделы
     title_placeholder: Введите название...
@@ -897,14 +892,9 @@ interfaces:
     description: Выбрать или загрузить несколько файлов
   input-hash:
     hash: Хэш
-    description: Введите значение для хэширования
-    masked: Маскированный
-    masked_label: Скрыть настоящие значения
-  icon:
+  select-icon:
     icon: Иконка
-    description: Выберите значок из выпадающего списка
-    search_for_icon: Найти значок...
-  image:
+  file-image:
     image: Изображение
     description: Выберите или загрузите изображение
   system-interface:
@@ -953,9 +943,6 @@ interfaces:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
     always_show_value: Всегда показывать значение
-  slug:
-    slug: Слаг
-    description: Введите слово, связанное дефисами
   tags:
     tags: Теги
     description: Выбрать или добавить теги
@@ -983,8 +970,6 @@ interfaces:
     description: Введите простой текст в несколько строк
   boolean:
     toggle: Переключить
-    description: Переключение между вкл и выкл
-    label_placeholder: Введите метку...
     label_default: Включен
   translations:
     display_template: Шаблон отображения

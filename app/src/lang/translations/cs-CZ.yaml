@@ -295,7 +295,7 @@ interfaces:
     collection: Kategorie
   system-collections:
     collections: Kategorie
-  color:
+  select-color:
     color: Barva
   file:
     file: Soubor
@@ -303,7 +303,7 @@ interfaces:
   files:
     files: Soubory
     description: Vyberte nebo nahrajte soubory
-  icon:
+  select-icon:
     icon: Ikona
   numeric:
     numeric: Číselné

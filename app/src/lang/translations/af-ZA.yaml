@@ -95,7 +95,6 @@ interfaces:
     allow_other: Laat Ander Toe
   input-code:
     code: Kode
-    line_number: Lyn Nommer
   collection:
     collection: Versameling
   select-dropdown:
