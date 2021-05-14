@@ -11,16 +11,32 @@ if (env.EMAIL_TRANSPORT === 'sendmail') {
 		path: env.EMAIL_SENDMAIL_PATH || '/usr/sbin/sendmail',
 	});
 } else if (env.EMAIL_TRANSPORT.toLowerCase() === 'smtp') {
+	let auth: boolean | { user?: string; pass?: string } = false;
+
+	if (env.EMAIL_SMTP_USER || env.EMAIL_SMTP_PASSWORD) {
+		auth = {
+			user: env.EMAIL_SMTP_USER,
+			pass: env.EMAIL_SMTP_PASSWORD,
+		};
+	}
+
 	transporter = nodemailer.createTransport({
 		pool: env.EMAIL_SMTP_POOL,
 		host: env.EMAIL_SMTP_HOST,
 		port: env.EMAIL_SMTP_PORT,
 		secure: env.EMAIL_SMTP_SECURE,
-		auth: {
-			user: env.EMAIL_SMTP_USER,
-			pass: env.EMAIL_SMTP_PASSWORD,
-		},
-	} as any);
+		auth: auth,
+	} as Record<string, unknown>);
+} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {
+	const mg = require('nodemailer-mailgun-transport');
+	transporter = nodemailer.createTransport(
+		mg({
+			auth: {
+				api_key: env.EMAIL_MAILGUN_API_KEY,
+				domain: env.EMAIL_MAILGUN_DOMAIN,
+			},
+		}) as any
+	);
 } else {
 	logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 }

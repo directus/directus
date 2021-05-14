@@ -15,7 +15,7 @@ export default defineDisplay({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'dropdown',
+				interface: 'select-dropdown',
 				options: {
 					choices: [
 						{
@@ -43,7 +43,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.user.circle_label',
 				},

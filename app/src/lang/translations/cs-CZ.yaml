@@ -182,7 +182,8 @@ keep_editing: Ne, vrátit se k úpravám
 add_new: Přidat nový
 all: Vše
 batch_delete_confirm: >-
-  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
+  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním
+  těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
 collection: Kategorie
 collections: Kategorie
@@ -288,6 +289,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  input-code:
+    line_number: Číslo řádku
   collection:
     collection: Kategorie
   system-collections:
@@ -302,6 +305,10 @@ interfaces:
     description: Vyberte nebo nahrajte soubory
   select-icon:
     icon: Ikona
+  numeric:
+    numeric: Číselné
+  list:
+    edit_fields: Upravit pole
   tags:
     tags: Štítky
   user:

@@ -109,12 +109,8 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 
 		const { _active } = useActiveState();
-		const {
-			junctionFieldInfo,
-			junctionRelatedCollection,
-			junctionRelatedCollectionInfo,
-			setJunctionEdits,
-		} = useJunction();
+		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } =
+			useJunction();
 		const { _edits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
