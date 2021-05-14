@@ -36,7 +36,7 @@ export class MailService {
 	async send(options: EmailOptions): Promise<void> {
 		if (!mailer) return;
 
-		const { template, ...nodeMailerOptions } = options;
+		const { template, ...emailOptions } = options;
 		let { html } = options;
 
 		const from = options.from || (env.EMAIL_FROM as string);
@@ -55,7 +55,7 @@ export class MailService {
 		}
 
 		try {
-			await mailer.sendMail({ ...nodeMailerOptions, from, html });
+			await mailer.sendMail({ ...emailOptions, from, html });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);
