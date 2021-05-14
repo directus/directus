@@ -51,6 +51,12 @@
 
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+			<export-sidebar-detail
+				:layout-query="layoutQuery"
+				:filters="_filters"
+				:search-query="searchQuery"
+				:collection="collection"
+			/>
 		</portal>
 
 		<portal to="actions:prepend">
@@ -151,6 +157,7 @@ import router from '@/router';
 import useSync from '@/composables/use-sync';
 import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import i18n from '@/lang';
@@ -173,7 +180,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
-	components: { Draggable },
+	components: { Draggable, ExportSidebarDetail },
 	props: {
 		collection: {
 			type: String,

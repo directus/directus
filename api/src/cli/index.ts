@@ -55,7 +55,7 @@ const rolesCommand = program.command('roles');
 rolesCommand
 	.command('create')
 	.description('Create a new role')
-	.option('--name <value>', `name for the role`)
+	.option('--role <value>', `name for the role`)
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
 
