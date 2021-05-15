@@ -9,7 +9,7 @@ import { computed, Ref, ref, watch } from '@vue/composition-api';
 import { AxiosResponse } from 'axios';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Record<string, any> {
-	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField, defaults } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref(null);
@@ -245,7 +245,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		deleting.value = false;
 
 		if (isNew.value === true) {
-			item.value = null;
+			const { id, ...defaultValue } = defaults.value;
+			item.value = defaultValue;
 		} else {
 			getItem();
 		}
