@@ -52,6 +52,7 @@
 	},
 	"scripts": {
 		"start": "npx directus start",
+		"prebuild": "npm run cleanup",
 		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"cleanup": "rimraf dist",
 		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect --exit-child -- src/start.ts",
