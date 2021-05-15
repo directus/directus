@@ -14,6 +14,7 @@ import {
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
@@ -226,9 +227,7 @@ export class UsersService extends ItemsService {
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
 		const emails = toArray(email);
 
-		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
@@ -306,9 +305,7 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 
-		const urlWhitelist = toArray(env.PASSWORD_RESET_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
 		}
 
