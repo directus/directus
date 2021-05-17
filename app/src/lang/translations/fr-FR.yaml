@@ -22,6 +22,7 @@ create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
 email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
 invite: Inviter
+email_already_invited: '"{email}" a déjà été invité'
 emails: E-mails
 connection_excellent: Excellente connexion
 connection_good: Bonne connexion
@@ -85,6 +86,9 @@ validationError:
 all_access: Accès total
 no_access: Aucun accès
 use_custom: Personnalisé
+nullable: Peut être nul
+allow_null_value: Autoriser la valeur NULL
+enter_value_to_replace_nulls: Veuillez entrer une nouvelle valeur pour remplacer les NULL actuellement dans ce champ.
 field_standard: Standard
 field_presentation: Présentation & Alias
 field_file: Fichier unique
@@ -229,6 +233,7 @@ item_delete_success: Élément supprimé | Éléments supprimés
 this_collection: Cette collection
 related_collection: Collection associée
 related_collections: Collections associées
+translations_collection: Collection de traduction
 languages_collection: Collection de langues
 export_data: Exporter les données
 format: Format
@@ -317,6 +322,8 @@ save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
 creating_items: Création d'éléments
 enable_create_button: Activer le bouton de création
+selecting_items: Sélection d'éléments
+enable_select_button: Activer le bouton de sélection
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -682,12 +689,14 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
+    translations: Traductions de nommage de collection
     archive_app_filter: Filtrer les valeurs archivées dans l'application
     archive_value: Valeur pour archivage
     unarchive_value: Valeur au désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
   directus_files:
+    $thumbnail: Miniature
     title: Titre
     description: Description
     tags: Étiquettes
@@ -835,16 +844,21 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
     presentation-links: Bouton de liens
     links: Liens
+    description: Boutons de lien configurables pour le lancement d'URL dynamiques
+    style: Style
     primary: Primaire
     link: Liens
     button: Boutons
+    error: Impossible d’effectuer cette action
   select-multiple-checkbox:
     checkboxes: Cases à cocher
+    description: Choisissez entre plusieurs options via les cases à cocher
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
@@ -876,11 +890,13 @@ interfaces:
     use_24: Utiliser le format 24h
   system-display-template:
     display-template: Modèle d'affichage
+    description: Mélanger du texte statique et des valeurs de champs dynamiques
     collection_field: Champ de collection
     collection_field_not_setup: L'option de champ de collection est mal configurée
     select_a_collection: Sélectionner une collection
   presentation-divider:
     divider: Séparateur
+    description: Étiqueter et diviser les champs dans les sections
     title_placeholder: Entrez un titre...
     inline_title: Titre en ligne
     inline_title_label: Afficher le titre à l'intérieur de la ligne
@@ -890,7 +906,14 @@ interfaces:
     description: Sélectionner une valeur à partir d'une liste déroulante
     choices_placeholder: Ajouter un nouveau choix
     allow_other: Autoriser d'autres valeurs
+    allow_other_label: Autoriser d'autres valeurs
+    allow_none: Autoriser une valeur vide
+    allow_none_label: Autoriser aucune sélection
+    choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Liste déroulante (choix multiple)
+    description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier
     description: Sélectionner ou Transférer un fichier
@@ -899,15 +922,49 @@ interfaces:
     description: Sélectionner ou Transférer plusieurs fichiers
   input-hash:
     hash: Hash
+    description: Entrer une valeur à hacher
+    masked: Masqué
+    masked_label: Cacher les valeurs marquées "vrai"
   select-icon:
     icon: Icône
+    description: Sélectionner une icône depuis une liste déroulante
+    search_for_icon: Rechercher une icône...
   file-image:
     image: Image
+    description: Sélectionner ou envoyer une image
   system-interface:
     interface: Interface
+    description: Sélectionner une interface existante
+    placeholder: Sélectionner une interface...
+  system-interface-options:
+    interface-options: Options d'interface
+    description: Une popup pour sélectionner les options d'une interface
+  list-m2m:
+    many-to-many: Many to Many
+    description: Sélectionner plusieurs éléments de jonction liés
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
+  input-rich-text-md:
+    markdown: Markdown
+    description: Saisir et prévisualiser le markdown
+    customSyntax: Blocs personnalisés
+    customSyntax_label: Ajouter des types de syntaxe personnalisés
+    customSyntax_add: Ajouter une syntaxe personnalisée
+    box: Bloc / Inline
+    imageToken: Token d'image
+    imageToken_label: Quel token (statique) ajouter aux sources d'images
+  presentation-notice:
+    notice: Remarque
+    description: Afficher une courte remarque
+    text: Entrez le contenu de la remarque ici...
+  list-o2m:
+    one-to-many: Un à plusieurs
+    description: Sélectionner plusieurs éléments liés
+    no_collection: La collection est introuvable
   select-radio:
+    radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés
   list:
     repeater: Répéteur
@@ -939,6 +996,7 @@ interfaces:
     description: Entrer manuellement une valeur
     trim: Supprimer les espaces aux extrémités
     trim_label: Enlever les espaces au début et à la fin
+    mask: Masqué
     mask_label: Cacher la valeur réelle
     clear: Valeur effacée
     clear_label: Enregistrer en tant que chaîne vide
@@ -946,6 +1004,7 @@ interfaces:
     maximum_value: Valeur maximale
     step_interval: Intervalle d'étape
     slug: Transformer en Slug
+    slug_label: Rendre l'URL de la valeur sécurisée
   input-multiline:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
