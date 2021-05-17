@@ -94,6 +94,6 @@
 		"vue-template-compiler": "^2.6.10",
 		"vuedraggable": "^2.24.3",
 		"vuepress": "^1.5.2",
-		"webpack-assets-manifest": "^3.1.1"
+		"webpack-assets-manifest": "^5.0.6"
 	}
 }
