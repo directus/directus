@@ -431,7 +431,7 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			if (!relation.meta || payload[relation.meta.one_field!]) continue;
+			if (!relation.meta || !payload[relation.meta.one_field!]) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!].primary;
 			const relatedPrimaryKeyField = this.schema.collections[relation.collection].primary;
