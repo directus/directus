@@ -5,6 +5,7 @@
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
 			<export-sidebar-detail :filters="filtersWithCalendarView" :search-query="searchQuery" :collection="collection" />
+			<import-sidebar-detail :collection="collection" @refresh="refresh" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -58,6 +59,7 @@ import useItems from '@/composables/use-items';
 import useSync from '@/composables/use-sync';
 import useCollection from '@/composables/use-collection';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import { formatISO } from 'date-fns';
 import router from '@/router';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -77,7 +79,7 @@ type layoutOptions = {
 };
 
 export default defineComponent({
-	components: { ExportSidebarDetail },
+	components: { ExportSidebarDetail, ImportSidebarDetail },
 	props: {
 		collection: {
 			type: String,

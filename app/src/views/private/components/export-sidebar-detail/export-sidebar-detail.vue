@@ -8,15 +8,15 @@
 			</div>
 			<div class="field full" v-show="isXliff && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
+				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full" v-if="isXliff && translationField">
 				<p class="type-label">{{ $t('language') }}</p>
-				<language-select @input="onSelectLanguage" :collection="collection.collection" :field="translationField" />
+				<language-select @input="onSelectLanguage" :collection="collection" :field="translationField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">
-					{{ $t('export_collection', { collection: collection.name }) }}
+					{{ $t('export_collection', { collection: collectionInfo.name }) }}
 				</v-button>
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Filter } from '@/types';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import { Field } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -75,6 +75,10 @@ export default defineComponent({
 						text: this.$t('json'),
 						value: 'json',
 					},
+					{
+						text: this.$t('xml'),
+						value: 'xml',
+					},
 				],
 				// enable XLIFF for translatable content only
 				...(this.translatable
@@ -93,12 +97,12 @@ export default defineComponent({
 		},
 		translatable(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.some((field: Field) => field.type === 'translations');
 		},
 		hasMoreThanOneTranslationFields(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
 		isExportDisabled(): boolean {
@@ -119,12 +123,23 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(props.collection);
 		const format = ref('csv');
 		const useFilters = ref(true);
 		const language = ref<any>(null);
 		const translationField = ref<any>(null);
 
-		return { format, language, translationField, useFilters, exportData, onSelectTranslationField, onSelectLanguage };
+		return {
+			collectionInfo,
+			format,
+			language,
+			translationField,
+			useFilters,
+			exportData,
+			onSelectTranslationField,
+			onSelectLanguage,
+		};
 
 		function onSelectTranslationField(selection: string) {
 			translationField.value = selection;
@@ -169,7 +184,6 @@ export default defineComponent({
 					};
 				}
 
-
 				if (props.searchQuery) {
 					params.search = props.searchQuery;
 				}
@@ -179,7 +193,7 @@ export default defineComponent({
 			// it's required for correct generation of XLIFF file
 			if (['xliff', 'xliff2'].includes(format.value)) {
 				const fieldsStore = useFieldsStore();
-				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
+				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection);
 				if (!params.fields) {
 					params.fields = [primaryKey];
 				} else if (!params.fields.includes(primaryKey)) {

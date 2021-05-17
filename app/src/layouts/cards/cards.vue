@@ -54,6 +54,7 @@
 				:search-query="searchQuery"
 				:collection="collection"
 			/>
+			<import-sidebar-detail :collection="collection" @refresh="refresh" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -147,6 +148,7 @@ import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import Card from './components/card.vue';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
@@ -176,7 +178,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
-	components: { Card, CardsHeader, ExportSidebarDetail },
+	components: { Card, CardsHeader, ExportSidebarDetail, ImportSidebarDetail },
 	props: {
 		collection: {
 			type: String,

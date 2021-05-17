@@ -57,6 +57,7 @@
 				:search-query="searchQuery"
 				:collection="collection"
 			/>
+			<import-sidebar-detail :collection="collection" @refresh="refresh" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -158,6 +159,7 @@ import useSync from '@/composables/use-sync';
 import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import i18n from '@/lang';
@@ -180,7 +182,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
-	components: { Draggable, ExportSidebarDetail },
+	components: { Draggable, ExportSidebarDetail, ImportSidebarDetail },
 	props: {
 		collection: {
 			type: String,
@@ -246,8 +248,15 @@ export default defineComponent({
 			}
 		);
 
-		const { tableSort, tableHeaders, tableRowHeight, onRowClick, onSortChange, activeFields, tableSpacing } =
-			useTable();
+		const {
+			tableSort,
+			tableHeaders,
+			tableRowHeight,
+			onRowClick,
+			onSortChange,
+			activeFields,
+			tableSpacing,
+		} = useTable();
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {

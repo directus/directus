@@ -19,6 +19,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	unknown: 'input',
 	csv: 'tags',
 	hash: 'input-hash',
+	translations: 'translations',
 };
 
 export function getDefaultInterfaceForType(type: typeof types[number]): string {

@@ -248,7 +248,6 @@ import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
@@ -270,7 +269,6 @@ export default defineComponent({
 		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
-		ImportSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,
