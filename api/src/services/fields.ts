@@ -452,7 +452,7 @@ export class FieldsService {
 		}
 
 		if (field.schema?.is_primary_key) {
-			column.primary();
+			column.primary().notNullable();
 		}
 
 		if (alter) {
