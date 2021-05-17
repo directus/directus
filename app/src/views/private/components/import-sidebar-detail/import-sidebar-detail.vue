@@ -97,6 +97,8 @@ export default defineComponent({
 	},
 	watch: {
 		collection: function () {
+			const collectionsStore = useCollectionsStore();
+			this.collectionInfo = collectionsStore.getCollection(this.collection);
 			// clear file and language selection each time when user
 			// switching between collections
 			this.clearFile();

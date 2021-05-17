@@ -27,7 +27,7 @@
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Filter } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field, Collection } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { LanguageSelect } from '../language-select';
@@ -114,6 +114,8 @@ export default defineComponent({
 	},
 	watch: {
 		collection: function () {
+			const collectionsStore = useCollectionsStore();
+			this.collectionInfo = collectionsStore.getCollection(this.collection);
 			// watch it
 			if (!this.translatable && !this.formats.includes(this.format)) {
 				const [defaultFormat] = this.formats;
@@ -124,7 +126,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
-		const collectionInfo = collectionsStore.getCollection(props.collection);
+		const collectionInfo = ref<Collection | null>(collectionsStore.getCollection(props.collection));
 		const format = ref('csv');
 		const useFilters = ref(true);
 		const language = ref<any>(null);
