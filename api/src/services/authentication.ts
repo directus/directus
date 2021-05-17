@@ -17,6 +17,7 @@ import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from '../services/activity';
 import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
 import { SettingsService } from './settings';
+import { merge } from 'lodash';
 
 type AuthenticateOptions = {
 	email: string;
@@ -76,7 +77,7 @@ export class AuthenticationService {
 		});
 
 		if (updatedUser) {
-			user = updatedUser;
+			user = updatedUser.length > 0 ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
