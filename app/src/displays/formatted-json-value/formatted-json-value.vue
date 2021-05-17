@@ -2,9 +2,9 @@
 	<div>
 		<value-null v-if="!displayValue" />
 
-		<v-menu v-else-if="displayValue.length > 1" show-arrow :disabled="displayValue.length === 0">
+		<v-menu v-else-if="displayValue.length > 1" show-arrow>
 			<template #activator="{ toggle }">
-				<span @click.stop="toggle" class="toggle" :class="{ subdued: displayValue.length === 0 }">
+				<span @click.stop="toggle" class="toggle">
 					<span class="label">
 						{{ displayValue.length }}
 						<template v-if="displayValue.length >= 100">+</template>
@@ -80,17 +80,13 @@ export default defineComponent({
 		content: '';
 	}
 
-	&:not(.subdued):hover::before {
+	:hover::before {
 		opacity: 1;
 	}
 
-	&:not(.subdued):active::before {
+	:active::before {
 		background-color: var(--background-normal-alt);
 	}
-}
-
-.subdued {
-	color: var(--foreground-subdued);
 }
 
 .links {
