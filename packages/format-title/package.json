@@ -1,6 +1,6 @@
 {
 	"name": "@directus/format-title",
-	"version": "9.0.0-rc.68",
+	"version": "9.0.0-rc.69",
 	"description": "Custom string formatter that converts any string into [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)",
 	"keywords": [
 		"title-case",
@@ -33,7 +33,7 @@
 		"prepublishOnly": "npm run build"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "^17.1.0",
+		"@rollup/plugin-commonjs": "^19.0.0",
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
 		"rimraf": "^3.0.2",

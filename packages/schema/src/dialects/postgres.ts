@@ -1,4 +1,4 @@
-import KnexPostgres from 'knex-schema-inspector/dist/dialects/postgres';
+import KnexPostgres, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/postgres';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
@@ -68,7 +68,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 				default_value:
 					column.is_identity === 'YES' || column.default_value?.startsWith('nextval(')
 						? 'AUTO_INCREMENT'
-						: this.parseDefaultValue(column.default_value),
+						: parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
