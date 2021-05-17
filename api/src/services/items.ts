@@ -114,8 +114,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// The events are fired last-to-first based on when they were created. By reversing the
 			// output array of results, we ensure that the augmentations are applied in
 			// "chronological" order
-			const payloadAfterHooks =
-				hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 			const payloadWithPresets = this.accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
@@ -402,8 +401,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// The events are fired last-to-first based on when they were created. By reversing the
 		// output array of results, we ensure that the augmentations are applied in
 		// "chronological" order
-		const payloadAfterHooks =
-			hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);

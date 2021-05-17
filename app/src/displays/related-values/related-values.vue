@@ -67,7 +67,7 @@ export default defineComponent({
 
 		const primaryKeyField = computed(() => {
 			if (relatedCollection.value !== null) {
-				return useCollection((relatedCollection as unknown) as Ref<string>).primaryKeyField.value;
+				return useCollection(relatedCollection as unknown as Ref<string>).primaryKeyField.value;
 			}
 			return null;
 		});

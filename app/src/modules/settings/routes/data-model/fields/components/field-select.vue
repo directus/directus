@@ -224,15 +224,8 @@ export default defineComponent({
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const {
-			duplicateActive,
-			duplicateName,
-			collections,
-			duplicateTo,
-			saveDuplicate,
-			duplicating,
-			duplicable,
-		} = useDuplicate();
+		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating, duplicable } =
+			useDuplicate();
 
 		const interfaceName = computed(() => {
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;

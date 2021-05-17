@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_docs_global'))" />
+				<div class="page-description" v-html="md($t('page_help_docs_global'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -30,7 +30,7 @@
 import { AsyncComponent } from 'vue';
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
-import marked from 'marked';
+import { md } from '@/utils/md';
 
 const Markdown = () => import(/* webpackChunkName: 'markdown', webpackPrefetch: true */ '../components/markdown.vue');
 
@@ -97,7 +97,7 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { markdown, title, markdownWithoutTitle, marked, path };
+		return { markdown, title, markdownWithoutTitle, md, path };
 	},
 });
 </script>

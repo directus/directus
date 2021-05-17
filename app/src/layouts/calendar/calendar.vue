@@ -4,6 +4,7 @@
 
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+			<export-sidebar-detail :filters="filtersWithCalendarView" :search-query="searchQuery" :collection="collection" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -38,6 +39,7 @@ import '@fullcalendar/core/vdom';
 import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import {
 	defineComponent,
@@ -55,6 +57,7 @@ import { Item, Filter, Field } from '@/types';
 import useItems from '@/composables/use-items';
 import useSync from '@/composables/use-sync';
 import useCollection from '@/composables/use-collection';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import { formatISO } from 'date-fns';
 import router from '@/router';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -74,6 +77,7 @@ type layoutOptions = {
 };
 
 export default defineComponent({
+	components: { ExportSidebarDetail },
 	props: {
 		collection: {
 			type: String,
@@ -215,12 +219,15 @@ export default defineComponent({
 				eventStartEditable: true,
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
-				plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+				dayMaxEventRows: true,
+				contentHeight: 800,
+				nextDayThreshold: '01:00:00',
+				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
 				headerToolbar: {
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
-					right: 'dayGridMonth,dayGridWeek,dayGridDay',
+					right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
@@ -261,7 +268,7 @@ export default defineComponent({
 			if (startDateFieldInfo?.type === 'dateTime' || startDateFieldInfo?.type === 'timestamp') {
 				options.headerToolbar = {
 					...options.headerToolbar,
-					right: 'dayGridMonth,timeGridWeek,timeGridDay',
+					right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
 				};
 			}
 

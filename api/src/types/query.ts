@@ -7,10 +7,9 @@ export type Query = {
 	limit?: number;
 	offset?: number;
 	page?: number;
-	single?: boolean;
 	meta?: Meta[];
 	search?: string;
-	export?: 'json' | 'csv' | 'xliff' | 'xliff2';
+	export?: 'json' | 'csv' | 'xml' | 'xliff' | 'xliff2';
 	deep?: Record<string, Query>;
 	optional?: Record<string, any>;
 };
