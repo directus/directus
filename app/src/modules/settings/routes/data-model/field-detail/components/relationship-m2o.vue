@@ -86,6 +86,85 @@
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 
+		<v-divider large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+
+		<div class="relational-triggers">
+			<div class="field">
+				<div class="type-label">{{ $t('Referential Action') }}</div>
+				<v-select
+					v-model="relations[0].schema.on_delete"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_no_action'),
+							value: 'NO ACTION',
+						},
+						{
+							text: $t('referential_action_set_null'),
+							value: 'SET NULL',
+						},
+						{
+							text: $t('referential_action_restrict'),
+							value: 'RESTRICT',
+						},
+						{
+							text: $t('referential_action_cascade'),
+							value: 'CASCADE',
+						},
+						{
+							text: $t('referential_action_set_default'),
+							value: 'SET DEFAULT',
+						},
+					]"
+				/>
+			</div>
+
+			<div class="field">
+				<v-notice>
+					<template v-if="relations[0].schema.on_delete === 'NO ACTION'">
+						{{
+							$t('referential_action_no_action_description', {
+								collection: collection,
+								related: relations[0].related_collection,
+							})
+						}}
+					</template>
+					<template v-else-if="relations[0].schema.on_delete === 'SET NULL'">
+						{{
+							$t('referential_action_set_null_description', {
+								collection: collection,
+								related: relations[0].related_collection,
+							})
+						}}
+					</template>
+					<template v-else-if="relations[0].schema.on_delete === 'RESTRICT'">
+						{{
+							$t('referential_action_restrict_description', {
+								collection: collection,
+								related: relations[0].related_collection,
+							})
+						}}
+					</template>
+					<template v-else-if="relations[0].schema.on_delete === 'CASCADE'">
+						{{
+							$t('referential_action_cascade_description', {
+								collection: collection,
+								related: relations[0].related_collection,
+							})
+						}}
+					</template>
+					<template v-else-if="relations[0].schema.on_delete === 'SET DEFAULT'">
+						{{
+							$t('referential_action_set_default_description', {
+								collection: collection,
+								related: relations[0].related_collection,
+							})
+						}}
+					</template>
+				</v-notice>
+			</div>
+		</div>
+
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
@@ -249,6 +328,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .grid {
 	--v-select-font-family: var(--family-monospace);
 	--v-input-font-family: var(--family-monospace);
@@ -300,5 +381,12 @@ export default defineComponent({
 	.field-name {
 		font-family: var(--family-monospace);
 	}
+}
+
+.relational-triggers {
+	--form-horizontal-gap: 12px;
+	--form-vertical-gap: 24px;
+
+	@include form-grid;
 }
 </style>

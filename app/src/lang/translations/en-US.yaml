@@ -795,6 +795,18 @@ save_current_datetime: Save Current Date/Time
 block: Block
 inline: Inline
 comment: Comment
+relational_triggers: Relational Triggers
+referential_action_no_action: Do Nothing
+referential_action_no_action_description: Nothing happens when a "{related}" item is deleted.
+referential_action_restrict: Throw Error (Restrict)
+referential_action_restrict_description: Prevent the "{related}" item from being deleted.
+referential_action_cascade: Delete Related Item (Cascade)
+referential_action_cascade_description: When a "{related}" item is deleted, delete the "{collection}" item.
+referential_action_set_null: Nullify
+referential_action_set_null_description: When a "{related}" item is deleted, set the current field value to null.
+referential_action_set_default: Set to Default Value
+referential_action_set_default_description:
+  When a "{related}" item is deleted, set the current field value to the default value.
 continue: Continue
 continue_as: >-
   <b>{name}</b> is currently authenticated. If you recognize this account, press continue.
