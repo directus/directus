@@ -40,7 +40,7 @@
 
 					<div class="field">
 						<div class="type-label">{{ $t('fallback_icon') }}</div>
-						<interface-icon v-model="icon" />
+						<interface-select-icon v-model="icon" />
 					</div>
 				</div>
 			</v-detail>
@@ -48,6 +48,13 @@
 
 		<portal to="sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+			<export-sidebar-detail
+				:layout-query="layoutQuery"
+				:filters="_filters"
+				:search-query="searchQuery"
+				:collection="collection"
+			/>
+			<import-sidebar-detail :collection="collection" @refresh="refresh" />
 		</portal>
 
 		<portal to="actions:prepend">
@@ -140,6 +147,8 @@ import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import Card from './components/card.vue';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
@@ -169,7 +178,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
-	components: { Card, CardsHeader },
+	components: { Card, CardsHeader, ExportSidebarDetail, ImportSidebarDetail },
 	props: {
 		collection: {
 			type: String,

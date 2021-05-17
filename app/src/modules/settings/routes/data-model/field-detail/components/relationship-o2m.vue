@@ -188,13 +188,8 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const {
-			availableCollections,
-			systemCollections,
-			fields,
-			currentCollectionPrimaryKey,
-			collectionMany,
-		} = useRelation();
+		const { availableCollections, systemCollections, fields, currentCollectionPrimaryKey, collectionMany } =
+			useRelation();
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
@@ -307,7 +302,7 @@ export default defineComponent({
 									collection: state.relations[0].one_collection,
 									field: state.relations[0].many_field,
 									meta: {
-										interface: 'many-to-one',
+										interface: 'select-dropdown-m2o',
 										special: 'm2o',
 									},
 								},
@@ -335,7 +330,7 @@ export default defineComponent({
 									collection: state.relations[0].one_collection,
 									field: state.relations[0].many_field,
 									meta: {
-										interface: 'many-to-one',
+										interface: 'select-dropdown-m2o',
 										special: 'm2o',
 									},
 								},

@@ -7,7 +7,7 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
-import { FieldsService } from '../services/fields';
+import { FieldsService, RawField } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import {
 	AbstractServiceOptions,
@@ -17,6 +17,12 @@ import {
 	FieldMeta,
 	SchemaOverview,
 } from '../types';
+
+export type RawCollection = {
+	collection: string;
+	fields?: RawField[];
+	meta?: Partial<CollectionMeta>;
+};
 
 export class CollectionsService {
 	knex: Knex;
@@ -34,14 +40,32 @@ export class CollectionsService {
 	/**
 	 * Create a single new collection
 	 */
-	async createOne(payload: Partial<Collection> & { collection: string }, opts?: MutationOptions): Promise<string> {
+	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
 
 		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
 
-		if (!payload.fields) payload.fields = [];
+		// Directus heavily relies on the primary key of a collection, so we have to make sure that
+		// every collection that is created has a primary key. If no primary key field is created
+		// while making the collection, we default to an auto incremented id named `id`
+		if (!payload.fields)
+			payload.fields = [
+				{
+					field: 'id',
+					type: 'integer',
+					meta: {
+						hidden: true,
+						interface: 'numeric',
+						readonly: true,
+					},
+					schema: {
+						is_primary_key: true,
+						has_auto_increment: true,
+					},
+				},
+			];
 
 		// Ensure that every field meta has the field/collection fields filled correctly
 		payload.fields = payload.fields.map((field) => {
@@ -114,10 +138,7 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(
-		payloads: Partial<Collection> & { collection: string }[],
-		opts?: MutationOptions
-	): Promise<string[]> {
+	async createMany(payloads: RawCollection[], opts?: MutationOptions): Promise<string[]> {
 		const collections = await this.knex.transaction(async (trx) => {
 			const service = new CollectionsService({
 				schema: this.schema,
@@ -404,11 +425,9 @@ export class CollectionsService {
 	/**
 	 * @deprecated Use `createOne` or `createMany` instead
 	 */
-	create(data: (Partial<Collection> & { collection: string })[]): Promise<string[]>;
-	create(data: Partial<Collection> & { collection: string }): Promise<string>;
-	async create(
-		data: (Partial<Collection> & { collection: string }) | (Partial<Collection> & { collection: string })[]
-	): Promise<string | string[]> {
+	create(data: RawCollection[]): Promise<string[]>;
+	create(data: RawCollection): Promise<string>;
+	async create(data: RawCollection | RawCollection[]): Promise<string | string[]> {
 		logger.warn(
 			'CollectionsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
 		);

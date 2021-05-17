@@ -8,15 +8,15 @@
 			</div>
 			<div class="field full" v-show="isXliff && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
+				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full" v-if="isXliff && translationField">
 				<p class="type-label">{{ $t('language') }}</p>
-				<language-select @input="onSelectLanguage" :collection="collection.collection" :field="translationField" />
+				<language-select @input="onSelectLanguage" :collection="collection" :field="translationField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">
-					{{ $t('export_collection', { collection: collection.name }) }}
+					{{ $t('export_collection', { collection: collectionInfo.name }) }}
 				</v-button>
 			</div>
 		</div>
@@ -25,13 +25,20 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Collection } from '@/types';
-import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Filter } from '@/types';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { Field, Collection } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { LanguageSelect } from '../language-select';
 import { TranslationFieldSelect } from '../translation-field-select';
+
+import filtersToQuery from '@/utils/filters-to-query';
+
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+};
 
 export default defineComponent({
 	components: {
@@ -40,15 +47,19 @@ export default defineComponent({
 	},
 	props: {
 		layoutQuery: {
-			type: Object,
-			default: () => ({}),
+			type: Object as PropType<LayoutQuery>,
+			default: (): LayoutQuery => ({}),
+		},
+		filters: {
+			type: Array as PropType<Filter[]>,
+			default: () => [],
 		},
 		searchQuery: {
-			type: String,
+			type: String as PropType<string | null>,
 			default: null,
 		},
 		collection: {
-			type: Object as PropType<Collection>,
+			type: String,
 			required: true,
 		},
 	},
@@ -63,6 +74,10 @@ export default defineComponent({
 					{
 						text: this.$t('json'),
 						value: 'json',
+					},
+					{
+						text: this.$t('xml'),
+						value: 'xml',
 					},
 				],
 				// enable XLIFF for translatable content only
@@ -82,12 +97,12 @@ export default defineComponent({
 		},
 		translatable(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.some((field: Field) => field.type === 'translations');
 		},
 		hasMoreThanOneTranslationFields(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
 		isExportDisabled(): boolean {
@@ -99,6 +114,8 @@ export default defineComponent({
 	},
 	watch: {
 		collection: function () {
+			const collectionsStore = useCollectionsStore();
+			this.collectionInfo = collectionsStore.getCollection(this.collection);
 			// watch it
 			if (!this.translatable && !this.formats.includes(this.format)) {
 				const [defaultFormat] = this.formats;
@@ -108,12 +125,23 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = ref<Collection | null>(collectionsStore.getCollection(props.collection));
 		const format = ref('csv');
 		const useFilters = ref(true);
 		const language = ref<any>(null);
 		const translationField = ref<any>(null);
 
-		return { format, language, translationField, useFilters, exportData, onSelectTranslationField, onSelectLanguage };
+		return {
+			collectionInfo,
+			format,
+			language,
+			translationField,
+			useFilters,
+			exportData,
+			onSelectTranslationField,
+			onSelectLanguage,
+		};
 
 		function onSelectTranslationField(selection: string) {
 			translationField.value = selection;
@@ -124,7 +152,7 @@ export default defineComponent({
 		}
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection.collection}`;
+			const url = getRootPath() + `items/${props.collection}`;
 
 			let params: Record<string, any> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
@@ -132,10 +160,9 @@ export default defineComponent({
 
 			switch (format.value) {
 				case 'csv':
-					params.export = 'csv';
-					break;
 				case 'json':
-					params.export = 'json';
+				case 'xml':
+					params.export = format.value;
 					break;
 				case 'xliff':
 				case 'xliff2':
@@ -148,10 +175,16 @@ export default defineComponent({
 			}
 
 			if (useFilters.value === true) {
-				params = {
-					...params,
-					...props.layoutQuery,
-				};
+				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
+				if (props.searchQuery) params.search = props.searchQuery;
+
+				if (props.filters?.length) {
+					params = {
+						...params,
+						...filtersToQuery(props.filters),
+					};
+				}
 
 				if (props.searchQuery) {
 					params.search = props.searchQuery;
@@ -162,7 +195,7 @@ export default defineComponent({
 			// it's required for correct generation of XLIFF file
 			if (['xliff', 'xliff2'].includes(format.value)) {
 				const fieldsStore = useFieldsStore();
-				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
+				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection);
 				if (!params.fields) {
 					params.fields = [primaryKey];
 				} else if (!params.fields.includes(primaryKey)) {
@@ -170,11 +203,12 @@ export default defineComponent({
 				}
 			}
 
-			const qs = Object.keys(params)
-				.map((key) => `${key}=${params[key]}`)
-				.join('&');
+			const exportUrl = api.getUri({
+				url,
+				params,
+			});
 
-			window.open(`${url}?${qs}`);
+			window.open(exportUrl);
 		}
 	},
 });

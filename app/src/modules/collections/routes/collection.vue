@@ -211,7 +211,7 @@
 				<div
 					class="page-description"
 					v-html="
-						marked(
+						md(
 							$t('page_help_collections_collection', {
 								collection: currentCollection.name,
 							})
@@ -221,8 +221,6 @@
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
-			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
-			<import-sidebar-detail :collection="currentCollection" @refresh="refresh" />
 			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
 		</template>
 
@@ -250,14 +248,12 @@ import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import ImportSidebarDetail from '@/views/private/components/import-sidebar-detail';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -273,8 +269,6 @@ export default defineComponent({
 		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
-		ExportSidebarDetail,
-		ImportSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,
@@ -371,7 +365,7 @@ export default defineComponent({
 			editingBookmark,
 			editBookmark,
 			breadcrumb,
-			marked,
+			md,
 			clearFilters,
 			confirmArchive,
 			archive,

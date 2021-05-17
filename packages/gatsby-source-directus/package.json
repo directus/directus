@@ -1,6 +1,6 @@
 {
 	"name": "@directus/gatsby-source-directus",
-	"version": "9.0.0-rc.62",
+	"version": "9.0.0-rc.68",
 	"description": "Source plugin for pulling data into Gatsby from a Directus API.",
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
@@ -25,5 +25,5 @@
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

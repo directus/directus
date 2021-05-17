@@ -11,14 +11,14 @@
 			</div>
 			<div class="field full" v-show="hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('target_translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
+				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('target_language') }}</p>
 				<language-select
 					@input="onSelectLanguage"
 					v-if="!useFileLanguage && translationField"
-					:collection="collection.collection"
+					:collection="collection"
 					:field="translationField"
 				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
@@ -30,7 +30,7 @@
 					@click="importData"
 					:disabled="file === null || (!language && !useFileLanguage)"
 				>
-					{{ $t('import_collection', { collection: collection.name }) }}
+					{{ $t('import_collection', { collection: collectionInfo.name }) }}
 				</v-button>
 			</div>
 		</div>
@@ -40,9 +40,9 @@
 <script lang="ts">
 import api from '@/api';
 import i18n from '@/lang';
-import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Collection, Field } from '@/types';
-import { useFieldsStore } from '@/stores/';
+import { defineComponent, ref } from '@vue/composition-api';
+import { Field } from '@/types';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
 import { LanguageSelect } from '../language-select';
 import { TranslationFieldSelect } from '../translation-field-select';
@@ -56,7 +56,7 @@ export default defineComponent({
 	},
 	props: {
 		collection: {
-			type: Object as PropType<Collection>,
+			type: String,
 			required: true,
 		},
 	},
@@ -83,12 +83,12 @@ export default defineComponent({
 		},
 		translatable(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.some((field: Field) => field.type === 'translations');
 		},
 		hasMoreThanOneTranslationFields(): boolean {
 			const fieldsStore = useFieldsStore();
-			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			const fields = fieldsStore.getFieldsForCollection(this.collection);
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
 		visible(): boolean {
@@ -97,21 +97,26 @@ export default defineComponent({
 	},
 	watch: {
 		collection: function () {
+			const collectionsStore = useCollectionsStore();
+			this.collectionInfo = collectionsStore.getCollection(this.collection);
 			// clear file and language selection each time when user
 			// switching between collections
 			this.clearFile();
 		},
 	},
 	setup(props, { emit }) {
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(props.collection);
 		const format = ref('xliff');
 		const language = ref<any>(null);
 		const translationField = ref<any>(null);
 		const file = ref<File | null>(null);
 		const useFileLanguage = ref(true);
-		const clearFileSelection = ref<Function>(() => {});
+		const clearFileSelection = ref(() => undefined);
 		const importing = ref<boolean>(false);
 
 		return {
+			collectionInfo,
 			format,
 			file,
 			language,
@@ -140,7 +145,7 @@ export default defineComponent({
 			formData.append('file', file.value);
 
 			try {
-				const result = await api.post(`/items/${props.collection.collection}/import`, formData);
+				const result = await api.post(`/items/${props.collection}/import`, formData);
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
 				const importedAmount = data ? data.length : 0;

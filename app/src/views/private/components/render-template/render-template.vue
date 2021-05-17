@@ -28,6 +28,7 @@ import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { DisplayConfig, DisplayHandlerFunction } from '@/displays/types';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -87,8 +88,12 @@ export default defineComponent({
 					const value = get(props.item, fieldKey);
 					if (value === undefined) return null;
 
-					// If no display is configured, we can render the raw value
-					if (!field || !field.meta?.display) return value;
+					if (!field) return value;
+
+					const display = field?.meta?.display || getDefaultDisplayForType(field.type);
+
+					// No need to render the empty display overhead in this case
+					if (display === 'raw') return value;
 
 					const displayInfo = displays.value.find((display: DisplayConfig) => display.id === field.meta?.display);
 

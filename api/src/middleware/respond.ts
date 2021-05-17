@@ -8,6 +8,7 @@ import { PassThrough } from 'stream';
 import { XliffService, XliffSupportedFormats } from '../services';
 import ms from 'ms';
 import { TranslationsService } from '../services/translations';
+import { parse as toXML } from 'js2xmlparser';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
@@ -50,7 +51,13 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
 			res.set('Content-Type', 'application/json');
-			return res.status(200).send(JSON.stringify(res.locals.payload, null, '\t'));
+			return res.status(200).send(JSON.stringify(res.locals.payload?.data || null, null, '\t'));
+		}
+
+		if (req.sanitizedQuery.export === 'xml') {
+			res.attachment(`${filename}.xml`);
+			res.set('Content-Type', 'text/xml');
+			return res.status(200).send(toXML('data', res.locals.payload?.data));
 		}
 
 		if (req.sanitizedQuery.export === 'csv') {
