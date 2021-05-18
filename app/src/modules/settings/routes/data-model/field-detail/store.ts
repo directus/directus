@@ -701,21 +701,21 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{ immediate: true }
 			);
 
-			state.relations[0].collection = `${collection}_translations`;
+			if (isExisting === false) {
+				state.relations[0].collection = `${collection}_translations`;
+				state.relations[0].field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+				state.relations[1].related_collection = 'languages';
 
-			state.relations[0].field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+				const relatedPKField =
+					fieldsStore.getPrimaryKeyFieldForCollection(state.relations[1].related_collection)?.field || 'id';
+				state.relations[1].field = `${state.relations[1].related_collection}_${relatedPKField}`;
 
-			state.relations[1].related_collection = 'languages';
-
-			const relatedPKField =
-				fieldsStore.getPrimaryKeyFieldForCollection(state.relations[1].related_collection)?.field || 'id';
-			state.relations[1].field = `${state.relations[1].related_collection}_${relatedPKField}`;
-
-			state.fieldData.field = 'translations';
-			state.relations[0].meta = {
-				...(state.relations[0].meta || {}),
-				one_field: 'translations',
-			};
+				state.fieldData.field = 'translations';
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: 'translations',
+				};
+			}
 		}
 
 		function autoFillFields(relatedCollection: string | null | undefined) {
