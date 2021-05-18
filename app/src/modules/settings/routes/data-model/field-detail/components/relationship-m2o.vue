@@ -90,78 +90,35 @@
 
 		<div class="relational-triggers">
 			<div class="field">
-				<div class="type-label">{{ $t('Referential Action') }}</div>
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label', {
+							related: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+						})
+					}}
+				</div>
 				<v-select
 					v-model="relations[0].schema.on_delete"
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_no_action'),
-							value: 'NO ACTION',
-						},
-						{
-							text: $t('referential_action_set_null'),
+							text: $t('referential_action_set_null', { field: relations[0].field }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_restrict'),
+							text: $t('referential_action_set_default', { field: relations[0].field }),
+							value: 'SET DEFAULT',
+						},
+						{
+							text: $t('referential_action_restrict', { field: relations[0].field }),
 							value: 'RESTRICT',
 						},
 						{
-							text: $t('referential_action_cascade'),
+							text: $t('referential_action_cascade', { field: relations[0].field }),
 							value: 'CASCADE',
-						},
-						{
-							text: $t('referential_action_set_default'),
-							value: 'SET DEFAULT',
 						},
 					]"
 				/>
-			</div>
-
-			<div class="field">
-				<v-notice>
-					<template v-if="relations[0].schema.on_delete === 'NO ACTION'">
-						{{
-							$t('referential_action_no_action_description', {
-								collection: collection,
-								related: relations[0].related_collection,
-							})
-						}}
-					</template>
-					<template v-else-if="relations[0].schema.on_delete === 'SET NULL'">
-						{{
-							$t('referential_action_set_null_description', {
-								collection: collection,
-								related: relations[0].related_collection,
-							})
-						}}
-					</template>
-					<template v-else-if="relations[0].schema.on_delete === 'RESTRICT'">
-						{{
-							$t('referential_action_restrict_description', {
-								collection: collection,
-								related: relations[0].related_collection,
-							})
-						}}
-					</template>
-					<template v-else-if="relations[0].schema.on_delete === 'CASCADE'">
-						{{
-							$t('referential_action_cascade_description', {
-								collection: collection,
-								related: relations[0].related_collection,
-							})
-						}}
-					</template>
-					<template v-else-if="relations[0].schema.on_delete === 'SET DEFAULT'">
-						{{
-							$t('referential_action_set_default_description', {
-								collection: collection,
-								related: relations[0].related_collection,
-							})
-						}}
-					</template>
-				</v-notice>
 			</div>
 		</div>
 
