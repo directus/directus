@@ -798,10 +798,10 @@ comment: Comment
 relational_triggers: Relational Triggers
 referential_action_field_label_m2o: When the {collection} item is deleted...
 referential_action_field_label_o2m: When a {collection} item is deselected...
-referential_action_no_action: Prevent the "{collection}" item from being deleted
+referential_action_no_action: Prevent the deletion
 referential_action_cascade: Delete "{collection}" item (cascade)
 referential_action_set_null: Nullify "{field}" field
-referential_action_set_default: Set "{field}" to default value
+referential_action_set_default: Set "{field}" to its default value
 choose_action: Choose Action
 continue: Continue
 continue_as: >-

@@ -210,11 +210,23 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						sort_field: null,
 					},
 					schema: {
-						on_delete: 'NO ACTION',
+						on_delete: 'SET NULL',
 					},
 				},
 			];
 		}
+
+		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
 
 		watch(
 			() => state.fieldData.field,
@@ -321,11 +333,23 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						one_deselect_action: 'nullify',
 					},
 					schema: {
-						on_delete: 'NO ACTION',
+						on_delete: 'SET NULL',
 					},
 				},
 			];
 		}
+
+		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
 
 		watch(
 			() => state.fieldData.field,
@@ -551,7 +575,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						one_deselect_action: 'nullify',
 					},
 					schema: {
-						on_delete: 'NO ACTION',
+						on_delete: 'SET NULL',
 					},
 				},
 				{
@@ -564,11 +588,35 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						one_deselect_action: 'nullify',
 					},
 					schema: {
-						on_delete: 'NO ACTION',
+						on_delete: 'SET NULL',
 					},
 				},
 			];
 		}
+
+		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
+
+		watch(
+			() => state.relations[1].collection,
+			() => {
+				if (state.relations[1].collection === state.relations[1].related_collection) {
+					state.relations[1].schema = {
+						...state.relations[1].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
 
 		watch(
 			() => state.relations[0].field,
@@ -832,6 +880,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					meta: {
 						one_field: state.fieldData.field,
 						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'SET NULL',
 					},
 				},
 				{
@@ -843,10 +895,23 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						one_allowed_collections: [],
 						one_collection_field: '',
 						sort_field: null,
+						one_deselect_action: 'nullify',
 					},
 				},
 			];
 		}
+
+		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
 
 		watch(
 			() => state.relations[0].field,

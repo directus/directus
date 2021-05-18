@@ -277,13 +277,6 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_no_action', {
-								collection: relations[0].related_collection,
-								field: relations[0].field,
-							}),
-							value: 'NO ACTION',
-						},
-						{
 							text: $t('referential_action_set_null', { field: relations[0].field }),
 							value: 'SET NULL',
 						},
@@ -298,9 +291,14 @@
 							}),
 							value: 'CASCADE',
 						},
+						{
+							text: $t('referential_action_no_action'),
+							value: 'NO ACTION',
+						},
 					]"
 				/>
 			</div>
+
 			<div class="field">
 				<div class="type-label">
 					{{
@@ -326,6 +324,42 @@
 								field: relations[0].field,
 							}),
 							value: 'delete',
+						},
+					]"
+				/>
+			</div>
+
+			<div class="field">
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label_m2o', {
+							collection: relations[1].related_collection ? `"${relations[1].related_collection}"` : 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[1].schema.on_delete"
+					:disabled="relations[1].collection === relations[1].related_collection"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: relations[1].field }),
+							value: 'SET NULL',
+						},
+						{
+							text: $t('referential_action_set_default', { field: relations[1].field }),
+							value: 'SET DEFAULT',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relations[1].collection,
+								field: relations[1].field,
+							}),
+							value: 'CASCADE',
+						},
+						{
+							text: $t('referential_action_no_action'),
+							value: 'NO ACTION',
 						},
 					]"
 				/>

@@ -163,13 +163,6 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_no_action', {
-								collection: relations[0].related_collection,
-								field: relations[0].field,
-							}),
-							value: 'NO ACTION',
-						},
-						{
 							text: $t('referential_action_set_null', { field: relations[0].field }),
 							value: 'SET NULL',
 						},
@@ -183,6 +176,10 @@
 								field: relations[0].field,
 							}),
 							value: 'CASCADE',
+						},
+						{
+							text: $t('referential_action_no_action'),
+							value: 'NO ACTION',
 						},
 					]"
 				/>
