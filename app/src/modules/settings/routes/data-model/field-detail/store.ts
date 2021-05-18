@@ -319,6 +319,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						one_field: state.fieldData.field,
 						sort_field: null,
 					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				},
 			];
 		}

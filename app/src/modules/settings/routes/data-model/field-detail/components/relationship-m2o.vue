@@ -92,8 +92,8 @@
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label', {
-							related: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+						$t('referential_action_field_label_m2o', {
+							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
 						})
 					}}
 				</div>
@@ -114,7 +114,10 @@
 							value: 'RESTRICT',
 						},
 						{
-							text: $t('referential_action_cascade', { field: relations[0].field }),
+							text: $t('referential_action_cascade', {
+								collection: relations[0].collection,
+								field: relations[0].field,
+							}),
 							value: 'CASCADE',
 						},
 					]"

@@ -146,6 +146,71 @@
 			</v-input>
 		</div>
 
+		<div class="relational-triggers">
+			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+
+			<div class="field">
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label_m2o', {
+							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].schema.on_delete"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: relations[0].field }),
+							value: 'SET NULL',
+						},
+						{
+							text: $t('referential_action_set_default', { field: relations[0].field }),
+							value: 'SET DEFAULT',
+						},
+						{
+							text: $t('referential_action_restrict', { field: relations[0].field }),
+							value: 'RESTRICT',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relations[0].collection,
+								field: relations[0].field,
+							}),
+							value: 'CASCADE',
+						},
+					]"
+				/>
+			</div>
+			<div class="field">
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label_o2m', {
+							collection: relations[0].collection ? `"${relations[0].collection}"` : 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].meta.one_deselect_action"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: relations[0].field }),
+							value: 'nullify',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relations[0].collection,
+								field: relations[0].field,
+							}),
+							value: 'delete',
+						},
+					]"
+				/>
+			</div>
+		</div>
+
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
@@ -368,6 +433,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .grid {
 	--v-select-font-family: var(--family-monospace);
 	--v-input-font-family: var(--family-monospace);
@@ -444,6 +511,18 @@ export default defineComponent({
 	.v-divider {
 		margin-top: 48px;
 		margin-bottom: 24px;
+	}
+}
+
+.relational-triggers {
+	--form-horizontal-gap: 12px;
+	--form-vertical-gap: 24px;
+
+	@include form-grid;
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 0;
 	}
 }
 </style>

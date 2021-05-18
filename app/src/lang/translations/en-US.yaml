@@ -796,9 +796,10 @@ block: Block
 inline: Inline
 comment: Comment
 relational_triggers: Relational Triggers
-referential_action_field_label: When the {related} item is deleted...
+referential_action_field_label_m2o: When the {collection} item is deleted...
+referential_action_field_label_o2m: When a {collection} item is deselected...
 referential_action_restrict: Throw error (restrict)
-referential_action_cascade: Delete current "{collection} item (cascade)
+referential_action_cascade: Delete "{collection}" item (cascade)
 referential_action_set_null: Nullify "{field}" field
 referential_action_set_default: Set "{field}" to default value
 continue: Continue
