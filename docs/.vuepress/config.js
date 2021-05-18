@@ -235,6 +235,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/guides/email-templates',
+						title: 'Email Templates',
+					},
+					{
+						type: 'page',
 						path: '/guides/fields',
 						title: 'Fields',
 					},
