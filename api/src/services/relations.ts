@@ -1,17 +1,7 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import logger from '../logger';
-import {
-	AbstractServiceOptions,
-	PermissionsAction,
-	PrimaryKey,
-	SchemaOverview,
-	Query,
-	Relation,
-	RelationMeta,
-	Accountability,
-} from '../types';
+import { AbstractServiceOptions, SchemaOverview, Query, Relation, RelationMeta, Accountability } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
@@ -291,23 +281,21 @@ export class RelationsService {
 	 * Relation objects
 	 */
 	private stitchRelations(metaRows: RelationMeta[], schemaRows: ForeignKey[]) {
-		const results = schemaRows.map(
-			(foreignKey): Relation => {
-				return {
-					collection: foreignKey.table,
-					field: foreignKey.column,
-					related_collection: foreignKey.foreign_key_table,
-					schema: foreignKey,
-					meta:
-						metaRows.find((meta) => {
-							if (meta.many_collection !== foreignKey.table) return false;
-							if (meta.many_field !== foreignKey.column) return false;
-							if (meta.one_collection && meta.one_collection !== foreignKey.foreign_key_table) return false;
-							return true;
-						}) || null,
-				};
-			}
-		);
+		const results = schemaRows.map((foreignKey): Relation => {
+			return {
+				collection: foreignKey.table,
+				field: foreignKey.column,
+				related_collection: foreignKey.foreign_key_table,
+				schema: foreignKey,
+				meta:
+					metaRows.find((meta) => {
+						if (meta.many_collection !== foreignKey.table) return false;
+						if (meta.many_field !== foreignKey.column) return false;
+						if (meta.one_collection && meta.one_collection !== foreignKey.foreign_key_table) return false;
+						return true;
+					}) || null,
+			};
+		});
 
 		/**
 		 * Meta rows that don't have a corresponding schema foreign key
@@ -316,17 +304,15 @@ export class RelationsService {
 			.filter((meta) => {
 				return !results.find((relation) => relation.meta === meta);
 			})
-			.map(
-				(meta): Relation => {
-					return {
-						collection: meta.many_collection,
-						field: meta.many_field,
-						related_collection: meta.one_collection ?? null,
-						schema: null,
-						meta: meta,
-					};
-				}
-			);
+			.map((meta): Relation => {
+				return {
+					collection: meta.many_collection,
+					field: meta.many_field,
+					related_collection: meta.one_collection ?? null,
+					schema: null,
+					meta: meta,
+				};
+			});
 
 		results.push(...remainingMetaRows);
 

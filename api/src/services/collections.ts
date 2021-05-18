@@ -9,7 +9,6 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
 import { FieldsService, RawField } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
-import { RelationsService } from '../services/relations';
 import {
 	AbstractServiceOptions,
 	Accountability,

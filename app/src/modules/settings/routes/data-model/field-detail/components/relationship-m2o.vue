@@ -146,7 +146,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { orderBy, set } from 'lodash';
+import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import i18n from '@/lang';
 
@@ -167,7 +167,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
