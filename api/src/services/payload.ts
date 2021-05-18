@@ -6,7 +6,7 @@ import { clone, cloneDeep, isObject, isPlainObject } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 
@@ -475,26 +475,29 @@ export class PayloadService {
 
 				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords);
 
-				// Nullify all related items that aren't included in the current payload
-				await itemsService.updateByQuery(
-					{
-						filter: {
-							_and: [
-								{
-									[relation.field]: {
-										_eq: parent,
-									},
+				const query: Query = {
+					filter: {
+						_and: [
+							{
+								[relation.field]: {
+									_eq: parent,
 								},
-								{
-									[relatedPrimaryKeyField]: {
-										_nin: savedPrimaryKeys,
-									},
+							},
+							{
+								[relatedPrimaryKeyField]: {
+									_nin: savedPrimaryKeys,
 								},
-							],
-						},
+							},
+						],
 					},
-					{ [relation.field]: null }
-				);
+				};
+
+				// Nullify all related items that aren't included in the current payload
+				if (relation.meta.one_deselect_action === 'delete') {
+					await itemsService.deleteByQuery(query);
+				} else {
+					await itemsService.updateByQuery(query, { [relation.field]: null });
+				}
 			}
 			// "Updates" object w/ create/update/delete
 			else {
@@ -523,25 +526,28 @@ export class PayloadService {
 				}
 
 				if (alterations.delete) {
-					await itemsService.updateByQuery(
-						{
-							filter: {
-								_and: [
-									{
-										[relation.field]: {
-											_eq: parent,
-										},
+					const query: Query = {
+						filter: {
+							_and: [
+								{
+									[relation.field]: {
+										_eq: parent,
 									},
-									{
-										[relatedPrimaryKeyField]: {
-											_in: alterations.delete,
-										},
+								},
+								{
+									[relatedPrimaryKeyField]: {
+										_in: alterations.delete,
 									},
-								],
-							},
+								},
+							],
 						},
-						{ [relation.field]: null }
-					);
+					};
+
+					if (relation.meta.one_deselect_action === 'delete') {
+						await itemsService.deleteByQuery(query);
+					} else {
+						await itemsService.updateByQuery(query, { [relation.field]: null });
+					}
 				}
 			}
 		}
