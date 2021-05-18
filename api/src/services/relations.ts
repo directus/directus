@@ -157,6 +157,8 @@ export class RelationsService {
 		await this.knex.transaction(async (trx) => {
 			if (relation.related_collection) {
 				await trx.schema.alterTable(relation.collection!, async (table) => {
+					this.alterType(table, relation);
+
 					table
 						.foreign(relation.field!)
 						.references(
@@ -203,6 +205,8 @@ export class RelationsService {
 					if (existingRelation?.schema) {
 						table.dropForeign(field);
 					}
+
+					this.alterType(table, relation);
 
 					table
 						.foreign(field)
@@ -375,5 +379,27 @@ export class RelationsService {
 
 			return collectionsAllowed && fieldsAllowed;
 		});
+	}
+
+	/**
+	 * MySQL Specific
+	 *
+	 * MySQL doesn't accept FKs from `int` to `int unsigned`. `knex` defaults `.increments()` to
+	 * `unsigned`, but defaults regular `int` to `int`. This means that created m2o fields have the
+	 * wrong type. This step will force the m2o `int` field into `unsigned`, but only if both types are
+	 * integers, and only if we go from `int` to `int unsigned`.
+	 *
+	 * @TODO This is a bit of a hack, and might be better of abstracted elsewhere
+	 */
+	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
+		const m2oFieldDBType = this.schema.collections[relation.collection!].fields[relation.field!].dbType;
+		const relatedFieldDBType =
+			this.schema.collections[relation.related_collection!].fields[
+				this.schema.collections[relation.related_collection!].primary
+			].dbType;
+
+		if (m2oFieldDBType !== relatedFieldDBType && m2oFieldDBType === 'int' && relatedFieldDBType === 'int unsigned') {
+			table.specificType(relation.field!, 'int unsigned').alter();
+		}
 	}
 }

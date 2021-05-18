@@ -94,6 +94,7 @@ export async function getSchema(options?: {
 				defaultValue: getDefaultValue(column) ?? null,
 				nullable: column.is_nullable ?? true,
 				type: getLocalType(column) || 'alias',
+				dbType: column.data_type,
 				precision: column.numeric_precision || null,
 				scale: column.numeric_scale || null,
 				special: [],
@@ -130,6 +131,7 @@ export async function getSchema(options?: {
 						special: field.special ? toArray(field.special) : [],
 				  })
 				: 'alias',
+			dbType: existing?.dbType || null,
 			precision: existing?.precision || null,
 			scale: existing?.scale || null,
 			special: field.special ? toArray(field.special) : [],

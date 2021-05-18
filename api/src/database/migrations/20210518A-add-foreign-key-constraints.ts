@@ -49,7 +49,22 @@ export async function up(knex: Knex): Promise<void> {
 			// Can't reliably have circular cascade
 			const action = constraint.many_collection === constraint.one_collection ? 'NO ACTION' : 'SET NULL';
 
+			// MySQL doesn't accept FKs from `int` to `int unsigned`. `knex` defaults `.increments()`
+			// to `unsigned`, but defaults `.integer()` to `int`. This means that created m2o fields
+			// have the wrong type. This step will force the m2o `int` field into `unsigned`, but only
+			// if both types are integers, and only if we go from `int` to `int unsigned`.
+			const columnInfo = await schemaInspector.columnInfo(constraint.many_collection, constraint.many_field);
+			const relatedColumnInfo = await schemaInspector.columnInfo(constraint.one_collection!, relatedPrimaryKeyField);
+
 			await trx.schema.alterTable(constraint.many_collection, (table) => {
+				if (
+					columnInfo.data_type !== relatedColumnInfo.data_type &&
+					columnInfo.data_type === 'int' &&
+					relatedColumnInfo.data_type === 'int unsigned'
+				) {
+					table.specificType(constraint.many_field, 'int unsigned').alter();
+				}
+
 				table
 					.foreign(constraint.many_field)
 					.references(relatedPrimaryKeyField)

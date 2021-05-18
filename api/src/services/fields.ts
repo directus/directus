@@ -409,6 +409,8 @@ export class FieldsService {
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
+		} else if (field.schema?.data_type) {
+			column = table.specificType(field.field, field.schema.data_type);
 		} else if (field.type === 'string') {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
