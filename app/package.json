@@ -43,7 +43,7 @@
 		"@types/color": "^3.0.1",
 		"@types/diff": "^5.0.0",
 		"@types/dompurify": "^2.2.1",
-		"@types/lodash": "^4.14.168",
+		"@types/lodash": "^4.14.169",
 		"@types/markdown-it": "^12.0.1",
 		"@types/marked": "^2.0.2",
 		"@types/mime-types": "^2.1.0",
