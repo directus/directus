@@ -226,6 +226,7 @@ item_delete_success: Элемент Удален | Элементы Удален
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
+translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
@@ -312,6 +313,8 @@ save_and_create_new: Сохранить и Создать Новый
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
 add_existing: Добавить Существующий
+creating_items: Создание элементов
+selecting_items: Выбор элементов
 comments: Комментарии
 no_comments: Комментариев Пока Нет
 click_to_expand: Нажмите, чтобы Раскрыть
@@ -392,6 +395,7 @@ errors:
   ITEM_NOT_FOUND: Элемент не найден
   ROUTE_NOT_FOUND: Не найдено
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
+  USER_SUSPENDED: Пользователь заблокирован
   UNKNOWN: Неожиданная Ошибка
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...
@@ -466,6 +470,8 @@ operators:
   has: Содержит некоторые из этих ключей
 loading: Загрузка...
 drop_to_upload: Перетащите для Загрузки
+item: Элемент
+items: Элементы
 upload_file: Загрузить Файл
 upload_file_indeterminate: Загрузка Файла...
 upload_file_success: Файл Загружен
@@ -830,6 +836,7 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Чекбоксы
     allow_other: Разрешить другие
+    items_shown: Показывать
   input-code:
     code: Код
     line_number: Номер строки
@@ -937,6 +944,7 @@ interfaces:
     slug_label: Сделать введённое значение безопасным для URL
   input-multiline:
     textarea: Область текста
+    description: Введите простой текст (несколько строк)
   boolean:
     toggle: Переключить
     label_default: Включен
