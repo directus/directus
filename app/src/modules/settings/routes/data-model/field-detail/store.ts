@@ -210,7 +210,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						sort_field: null,
 					},
 					schema: {
-						on_delete: 'SET NULL',
+						on_delete: 'NO ACTION',
 					},
 				},
 			];
@@ -318,9 +318,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					meta: {
 						one_field: state.fieldData.field,
 						sort_field: null,
+						one_deselect_action: 'nullify',
 					},
 					schema: {
-						on_delete: 'SET NULL',
+						on_delete: 'NO ACTION',
 					},
 				},
 			];
@@ -547,6 +548,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					meta: {
 						one_field: state.fieldData.field,
 						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'NO ACTION',
 					},
 				},
 				{
@@ -556,6 +561,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					meta: {
 						one_field: null,
 						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'NO ACTION',
 					},
 				},
 			];

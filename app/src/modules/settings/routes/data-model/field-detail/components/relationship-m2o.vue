@@ -86,9 +86,9 @@
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 
-		<v-divider large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
-
 		<div class="relational-triggers">
+			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+
 			<div class="field">
 				<div class="type-label">
 					{{
@@ -99,8 +99,16 @@
 				</div>
 				<v-select
 					v-model="relations[0].schema.on_delete"
+					:disabled="relations[0].collection === relations[0].related_collection"
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
+						{
+							text: $t('referential_action_no_action', {
+								collection: relations[0].collection,
+								field: relations[0].field,
+							}),
+							value: 'NO ACTION',
+						},
 						{
 							text: $t('referential_action_set_null', { field: relations[0].field }),
 							value: 'SET NULL',
@@ -108,10 +116,6 @@
 						{
 							text: $t('referential_action_set_default', { field: relations[0].field }),
 							value: 'SET DEFAULT',
-						},
-						{
-							text: $t('referential_action_restrict', { field: relations[0].field }),
-							value: 'RESTRICT',
 						},
 						{
 							text: $t('referential_action_cascade', {
@@ -348,5 +352,10 @@ export default defineComponent({
 	--form-vertical-gap: 24px;
 
 	@include form-grid;
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 0;
+	}
 }
 </style>
