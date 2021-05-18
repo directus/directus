@@ -60,7 +60,7 @@
 			</template>
 
 			<template #input>
-				<div class="label" v-tooltip="field.name + ' (' + interfaceName + ')'">
+				<div class="label" v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name">
 					<span class="name">
 						{{ field.field }}
 						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />

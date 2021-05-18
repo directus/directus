@@ -115,7 +115,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		// Make sure every relation has a schema we can operate on
 		for (const relation of state.relations) {
 			if (!relation.schema) {
-				relation.schema = {};
+				relation.schema = {
+					on_delete: 'SET NULL',
+				};
 			}
 		}
 	} else {
@@ -370,8 +372,26 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		watch(
 			[() => state.relations[0].collection, () => state.relations[0].field, () => state.relations[0].meta?.sort_field],
-			syncNewCollectionsO2M
+			([collectionName, fieldName, sortField]) => {
+				syncNewCollectionsO2M([collectionName, fieldName, sortField]);
+				syncOnDeleteTrigger(collectionName, fieldName);
+			}
 		);
+
+		/**
+		 * Syncs the on_delete value of the existing relationship with the new o2m one, so you don't
+		 * accidentally override it
+		 */
+		function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
+			if (!collection || !field) return;
+
+			const existingRelation = relationsStore.getRelationForField(collection, field) || {};
+			if (!existingRelation) return;
+
+			state.relations[0].schema = {
+				on_delete: existingRelation.schema.on_delete,
+			};
+		}
 	}
 
 	function useM2M() {
@@ -653,7 +673,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				() => state.relations[1].related_collection,
 				() => state.relations[0].meta?.sort_field,
 			],
-			syncNewCollectionsM2M
+			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
+				syncNewCollectionsM2M([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]);
+				syncOnDeleteTrigger(junctionCollection, manyCurrent);
+			}
 		);
 
 		watch(
@@ -776,6 +799,21 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (index) return name + '_' + index;
 				return name;
 			}
+		}
+
+		/**
+		 * Syncs the on_delete value of the existing relationship with the new m2m one, so you don't
+		 * accidentally override it
+		 */
+		function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
+			if (!collection || !field) return;
+
+			const existingRelation = relationsStore.getRelationForField(collection, field) || {};
+			if (!existingRelation) return;
+
+			state.relations[0].schema = {
+				on_delete: existingRelation.schema.on_delete,
+			};
 		}
 	}
 
