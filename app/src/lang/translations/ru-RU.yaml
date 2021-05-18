@@ -670,6 +670,7 @@ fields:
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
   directus_files:
+    $thumbnail: Миниатюра
     title: Заголовок
     description: Описание
     tags: Теги
@@ -828,6 +829,7 @@ interfaces:
     error: Не удается выполнить действие
   select-multiple-checkbox:
     checkboxes: Чекбоксы
+    allow_other: Разрешить другие
   input-code:
     code: Код
     line_number: Номер строки
@@ -859,7 +861,12 @@ interfaces:
     divider: Разделитель
     title_placeholder: Введите название...
   select-dropdown:
+    choices_placeholder: Добавить вариант
+    allow_other: Разрешить другие
+    choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Выпадающий список (несколько)
   file:
     file: Файл
     description: Выберите или загрузите файл
@@ -870,17 +877,34 @@ interfaces:
     hash: Хэш
   select-icon:
     icon: Иконка
+    search_for_icon: Найти иконку...
   file-image:
     image: Изображение
+    description: Выберите или загрузите изображение
   system-interface:
     interface: Интерфейс
+    description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...
+  system-interface-options:
+    interface-options: Настройки интерфейса
+    description: Окно выбора параметров интерфейса
+  list-m2m:
+    many-to-many: Многие ко многим
   select-dropdown-m2o:
     many-to-one: Многие к одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
   input-rich-text-md:
     markdown: Markdown
+  list-o2m:
+    one-to-many: Один ко многим
+  select-radio:
+    radio-buttons: Радиокнопки
+    description: Выбор одного из нескольких вариантов
+  list:
+    repeater: Повторитель
+    edit_fields: Редактировать поля
+    add_label: 'Ярлык «Создать новый»'
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
@@ -899,6 +923,18 @@ interfaces:
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
     add_tags: Добавить метки...
+  input:
+    input: Ввод
+    description: Ввести значение вручную
+    trim: Обрезать
+    trim_label: Обрезать начало и конец
+    mask_label: Скрыть настоящее значение
+    clear: Очищенное значение
+    clear_label: Сохранить как пустую строку
+    minimum_value: Минимальное значение
+    maximum_value: Максимальное значение
+    step_interval: Интервал шага
+    slug_label: Сделать введённое значение безопасным для URL
   input-multiline:
     textarea: Область текста
   boolean:
@@ -916,7 +952,14 @@ interfaces:
       dropdown: Выпадающий список
       modal: Модальный
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
+    custom_formats: Пользовательские форматы
+    options_override: Переопределение параметров
+  input-autocomplete-api:
+    input-autocomplete-api: Автоматическое дополнение ввода (API)
+    trigger: Триггер
 displays:
   boolean:
     boolean: Логическое
