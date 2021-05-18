@@ -111,6 +111,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		state.fieldData.meta = existingField.meta;
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
+
+		// Make sure every relation has a schema we can operate on
+		for (const relation of state.relations) {
+			if (!relation.schema) {
+				relation.schema = {};
+			}
+		}
 	} else {
 		state.autoFillJunctionRelation = true;
 
