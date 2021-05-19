@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable/src/vuedraggable.js';
 import { defineComponent, ref, PropType } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';

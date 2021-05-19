@@ -57,7 +57,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
 import useCollection from '@/composables/use-collection/';
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable/src/vuedraggable.js';
 import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';

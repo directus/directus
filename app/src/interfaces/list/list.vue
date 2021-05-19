@@ -56,7 +56,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
 import { Field } from '@/types';
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable/src/vuedraggable.js';
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';

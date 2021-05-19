@@ -146,7 +146,7 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { isPlainObject, cloneDeep } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable/src/vuedraggable.js';
 
 export default defineComponent({
 	emits: ['input'],
