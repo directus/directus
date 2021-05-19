@@ -27,6 +27,7 @@ import 'codemirror/addon/dialog/dialog.js';
 import 'codemirror/keymap/sublime.js';
 
 import formatTitle from '@directus/format-title';
+import importCodemirrorMode from './import-codemirror-mode';
 
 export default defineComponent({
 	emits: ['input'],
@@ -163,7 +164,7 @@ export default defineComponent({
 				} else if (lang === 'plaintext') {
 					codemirror.value.setOption('mode', { name: null });
 				} else {
-					await import(`@vite-module!codemirror/mode/${lang}/${lang}.js`);
+					await importCodemirrorMode(lang);
 					codemirror.value.setOption('mode', { name: lang });
 				}
 			}
