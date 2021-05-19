@@ -17,6 +17,6 @@
 		"no-descending-specificity": true,
 		"rule-empty-line-before": "always",
 		"block-closing-brace-empty-line-before": "never",
-		"block-closing-brace-empty-line-after": "never"
+		"block-opening-brace-newline-after": "always-multi-line"
 	}
 }
