@@ -148,9 +148,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType } from 'vue';
-// @TODO3 It seems like the dompurify export isn't tree-shakable
-import dompurify from 'dompurify';
-import marked from 'marked';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
@@ -158,6 +155,7 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { useEdit, CustomSyntax } from './composables/use-edit';
 import { getPublicURL } from '@/utils/get-root-path';
+import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
@@ -247,10 +245,9 @@ export default defineComponent({
 				}
 			}
 
-			const html = marked(mdString);
-			const htmlSanitized = dompurify.sanitize(html);
+			const html = md(mdString);
 
-			return htmlSanitized;
+			return html;
 		});
 
 		const table = reactive({

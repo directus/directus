@@ -145,7 +145,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="marked(t('page_help_files_collection'))" />
+				<div class="page-description" v-html="md(t('page_help_files_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<div id="target-sidebar"></div>
