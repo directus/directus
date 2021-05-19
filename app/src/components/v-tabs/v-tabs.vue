@@ -49,27 +49,25 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-tabs-underline-color: var(--foreground-normal);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-tabs.horizontal {
 	position: relative;
 	display: inline-flex;
+}
 
-	::v-deep .v-tab {
-		display: flex;
-		flex-basis: 0px;
-		flex-grow: 1;
-		flex-shrink: 0;
-		align-items: center;
-		justify-content: center;
-		height: 38px;
-		padding: 8px 20px;
-		cursor: pointer;
-	}
+.v-tabs.horizontal :slotted(.v-tab) {
+	display: flex;
+	flex-basis: 0px;
+	flex-grow: 1;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	height: 38px;
+	padding: 8px 20px;
+	cursor: pointer;
 }
 </style>
