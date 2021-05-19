@@ -795,7 +795,12 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			return name;
 
 			function getName(index: number) {
-				const name = `${collectionA}_${collectionB}`;
+				let name = `${collectionA}_${collectionB}`;
+
+				if (name.startsWith('directus_')) {
+					name = 'junction_' + name;
+				}
+
 				if (index) return name + '_' + index;
 				return name;
 			}
