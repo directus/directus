@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<div id="target-actions:prepend"></div>
+			<component :is="`layout-actions-${layout}`" />
 		</template>
 
 		<template #actions>
@@ -85,19 +85,7 @@
 
 		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_users"
-			v-model:selection="selection"
-			v-model:layout-options="layoutOptions"
-			v-model:layout-query="layoutQuery"
-			:filters="internalFilters"
-			:search-query="searchQuery"
-			:reset-preset="resetPreset"
-			@update:filters="filters = $event"
-		>
+		<component class="layout" :is="`layout-${layout}`">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -131,25 +119,25 @@
 				<div class="page-description" v-html="md(t('page_help_users_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
-			<div id="target-sidebar"></div>
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, PropType } from 'vue';
+import { defineComponent, computed, ref, reactive, PropType } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
 import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import { md } from '@/utils/md';
 import useNavigation from '../composables/use-navigation';
+import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { Role } from '@/types';
 
@@ -170,7 +158,6 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const { roles } = useNavigation();
-		const layoutRef = ref<LayoutComponent | null>(null);
 		const userInviteModalActive = ref(false);
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
@@ -184,23 +171,28 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const internalFilters = computed(() => {
-			if (props.queryFilters !== null) {
-				const urlFilters = [];
+		const layoutFilters = computed<any[]>({
+			get() {
+				if (props.queryFilters !== null) {
+					const urlFilters = [];
 
-				for (const [field, value] of Object.entries(props.queryFilters)) {
-					urlFilters.push({
-						locked: true,
-						operator: 'eq',
-						field,
-						value,
-					});
+					for (const [field, value] of Object.entries(props.queryFilters)) {
+						urlFilters.push({
+							locked: true,
+							operator: 'eq',
+							field,
+							value,
+						});
+					}
+
+					return [...urlFilters, ...filters.value];
 				}
 
-				return [...urlFilters, ...filters.value];
-			}
-
-			return filters.value;
+				return filters.value;
+			},
+			set(newFilters) {
+				filters.value = newFilters;
+			},
 		});
 
 		const canInviteUsers = computed(() => {
@@ -218,17 +210,30 @@ export default defineComponent({
 			return !!usersCreatePermission && !!rolesReadPermission;
 		});
 
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_users',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters: layoutFilters,
+				searchQuery,
+				resetPreset,
+				selectMode: false,
+				readonly: false,
+			})
+		);
+
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 		return {
 			t,
 			canInviteUsers,
-			internalFilters,
 			addNewLink,
 			breadcrumb,
 			title,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -250,7 +255,7 @@ export default defineComponent({
 		};
 
 		async function refresh() {
-			await layoutRef.value?.refresh();
+			await layoutState.value.refresh();
 		}
 
 		function useBatch() {
@@ -273,7 +278,7 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutRef.value?.refresh?.();
+					await layoutState.value.refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;

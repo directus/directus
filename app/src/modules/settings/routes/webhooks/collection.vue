@@ -52,18 +52,7 @@
 			</v-button>
 		</template>
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_webhooks"
-			v-model:selection="selection"
-			v-model:layout-options="layoutOptions"
-			v-model:layout-query="layoutQuery"
-			:filters="filters"
-			:search-query="searchQuery"
-			@update:filters="filters = $event"
-		>
+		<component class="layout" :is="`layout-${layout}`">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -90,19 +79,19 @@
 				<div class="page-description" v-html="md(t('page_help_settings_webhooks_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
-			<div id="target-sidebar"></div>
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import { md } from '@/utils/md';
-import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
+import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -116,13 +105,25 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const layoutRef = ref<LayoutComponent | null>(null);
-
 		const selection = ref<Item[]>([]);
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_webhooks'));
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_webhooks',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				selectMode: false,
+				readonly: false,
+			})
+		);
 
 		return {
 			t,
@@ -132,7 +133,6 @@ export default defineComponent({
 			confirmDelete,
 			deleting,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -157,7 +157,7 @@ export default defineComponent({
 
 				await api.delete(`/webhooks/${batchPrimaryKeys}`);
 
-				await layoutRef.value?.refresh();
+				await layoutState.value.refresh();
 
 				selection.value = [];
 				deleting.value = false;

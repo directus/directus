@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<div id="target-actions:prepend"></div>
+			<component :is="`layout-actions-${layout}`" />
 		</template>
 
 		<template #actions>
@@ -100,19 +100,7 @@
 			<files-navigation :current-folder="queryFilters && queryFilters.folder" />
 		</template>
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_files"
-			v-model:selection="selection"
-			v-model:layout-options="layoutOptions"
-			v-model:layout-query="layoutQuery"
-			:filters="[...filters, ...filtersWithFolderAndType]"
-			:search-query="searchQuery"
-			:reset-preset="resetPreset"
-			@update:filters="filters = $event"
-		>
+		<component class="layout" :is="`layout-${layout}`">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -148,7 +136,7 @@
 				<div class="page-description" v-html="md(t('page_help_files_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
-			<div id="target-sidebar"></div>
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 
 		<template v-if="showDropEffect">
@@ -162,10 +150,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
+import { defineComponent, computed, ref, reactive, PropType, onMounted, onUnmounted, nextTick } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -179,6 +166,7 @@ import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stor
 import { subDays } from 'date-fns';
 import useFolders, { Folder } from '../composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
+import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -216,7 +204,6 @@ export default defineComponent({
 		const notificationsStore = useNotificationsStore();
 		const permissionsStore = usePermissionsStore();
 		const { folders } = useFolders();
-		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
 		const userStore = useUserStore();
@@ -278,6 +265,30 @@ export default defineComponent({
 			return filtersParsed;
 		});
 
+		const layoutFilters = computed<any[]>({
+			get() {
+				return [...filters.value, ...filtersWithFolderAndType.value];
+			},
+			set(newFilters) {
+				filters.value = newFilters;
+			},
+		});
+
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_files',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters: layoutFilters,
+				searchQuery,
+				resetPreset,
+				selectMode: false,
+				readonly: false,
+			})
+		);
+
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		onMounted(() => emitter.on(Events.upload, refresh));
@@ -297,7 +308,6 @@ export default defineComponent({
 			breadcrumb,
 			title,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -348,7 +358,7 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutRef.value?.refresh?.();
+					await layoutState.value.refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -437,7 +447,7 @@ export default defineComponent({
 		}
 
 		function refresh() {
-			layoutRef.value?.refresh();
+			layoutState.value.refresh();
 		}
 
 		function clearFilters() {

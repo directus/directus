@@ -17,14 +17,14 @@ export interface LayoutConfig {
 
 export interface LayoutProps {
 	collection: string;
-	selection: Item[];
+	selection?: Item[];
 	layoutOptions: any;
 	layoutQuery: any;
 	filters: Filter[];
 	searchQuery: string | null;
 	selectMode: boolean;
 	readonly: boolean;
-	resetPreset: () => Promise<void>;
+	resetPreset?: () => Promise<void>;
 }
 
 export type LayoutContext = Record<string, any>;

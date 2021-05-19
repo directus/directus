@@ -4,7 +4,7 @@
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend><div id="target-actions:prepend"></div></template>
+		<template #actions:prepend><component :is="`layout-actions-${localLayout}`" /></template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
@@ -14,19 +14,7 @@
 			</v-button>
 		</template>
 
-		<component
-			:is="`layout-${localLayout}`"
-			:collection="collection"
-			:selection="internalSelection"
-			:filters="filters"
-			v-model:layout-query="localQuery"
-			v-model:layout-options="localOptions"
-			:search-query="searchQuery"
-			@update:selection="onSelect"
-			@update:filters="$emit('update:filters', $event)"
-			select-mode
-			class="layout"
-		>
+		<component class="layout" :is="`layout-${localLayout}`">
 			<template #no-results>
 				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
@@ -40,10 +28,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
+import { defineComponent, PropType, ref, reactive, computed, toRefs, watch } from 'vue';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
+import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
@@ -89,6 +78,38 @@ export default defineComponent({
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
 
+		const layoutSelection = computed<any>({
+			get() {
+				return internalSelection;
+			},
+			set(newFilters) {
+				onSelect(newFilters);
+			},
+		});
+
+		const layoutFilters = computed<Filter[]>({
+			get() {
+				return props.filters;
+			},
+			set(newFilters) {
+				emit('update:filters', newFilters);
+			},
+		});
+
+		useLayout(
+			localLayout,
+			reactive({
+				collection,
+				selection: layoutSelection,
+				layoutOptions: localOptions,
+				layoutQuery: localQuery,
+				filters: layoutFilters,
+				searchQuery,
+				selectMode: true,
+				readonly: false,
+			})
+		);
+
 		return {
 			t,
 			save,
@@ -99,7 +120,6 @@ export default defineComponent({
 			onSelect,
 			localLayout,
 			localOptions,
-			localQuery,
 			collectionInfo,
 			searchQuery,
 		};

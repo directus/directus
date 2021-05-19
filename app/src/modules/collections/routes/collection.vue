@@ -321,7 +321,7 @@ export default defineComponent({
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
 
-		const { layoutState } = useLayout(
+		const layoutState = useLayout(
 			layout,
 			reactive({
 				collection,

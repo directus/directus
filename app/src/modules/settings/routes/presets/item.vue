@@ -56,17 +56,7 @@
 			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
 
 			<div class="layout">
-				<component
-					v-if="values.layout && values.collection"
-					:is="`layout-${values.layout}`"
-					:collection="values.collection"
-					v-model:layout-options="layoutOptions"
-					v-model:layout-query="layoutQuery"
-					:filters="values.filters || []"
-					:search-query="searchQuery"
-					@update:filters="updateFilters"
-					readonly
-				>
+				<component v-if="values.layout && values.collection" :is="`layout-${values.layout}`">
 					<template #no-results>
 						<v-info :title="t('no_results')" icon="search" center>
 							{{ t('no_results_copy') }}
@@ -95,11 +85,11 @@
 				<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
-			<div id="target-sidebar" class="layout-sidebar"></div>
+			<component :is="`layout-sidebar-${values.layout}`" class="layout-sidebar" />
 
 			<sidebar-detail class="layout-sidebar" icon="layers" :title="t('layout_options')">
 				<div class="layout-options">
-					<div id="target-layout-options" class="teleport-contents"></div>
+					<component :is="`layout-options-${values.layout}`" />
 				</div>
 			</sidebar-detail>
 		</template>
@@ -108,7 +98,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@/types';
@@ -118,6 +108,7 @@ import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
 import { md } from '@/utils/md';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useLayout } from '@/composables/use-layout';
 
 type FormattedPreset = {
 	id: number;
@@ -159,6 +150,28 @@ export default defineComponent({
 			useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
+
+		const layoutFilters = computed<any>({
+			get() {
+				return values.value.filters || [];
+			},
+			set(newFilters) {
+				updateFilters(newFilters);
+			},
+		});
+
+		useLayout(
+			values.value.layout,
+			reactive({
+				collection: values.value.collection,
+				layoutOptions,
+				layoutQuery,
+				filters: layoutFilters,
+				searchQuery,
+				selectMode: false,
+				readonly: true,
+			})
+		);
 
 		return {
 			t,
@@ -292,7 +305,7 @@ export default defineComponent({
 				};
 			});
 
-			const layoutQuery = computed({
+			const layoutQuery = computed<any>({
 				get() {
 					if (!values.value.layout_query) return null;
 					if (!values.value.layout) return null;
@@ -310,7 +323,7 @@ export default defineComponent({
 				},
 			});
 
-			const layoutOptions = computed({
+			const layoutOptions = computed<any>({
 				get() {
 					if (!values.value.layout_options) return null;
 					if (!values.value.layout) return null;
@@ -328,7 +341,7 @@ export default defineComponent({
 				},
 			});
 
-			const searchQuery = computed({
+			const searchQuery = computed<string | null>({
 				get() {
 					return values.value.search;
 				},
@@ -502,10 +515,6 @@ export default defineComponent({
 	--sidebar-detail-color: var(--primary);
 	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
-}
-
-.teleport-contents {
-	display: contents;
 }
 
 .layout-options ::v-deep {

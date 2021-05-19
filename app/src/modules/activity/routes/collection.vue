@@ -7,7 +7,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<div id="target-actions:prepend"></div>
+			<component :is="`layout-actions-${layout}`" />
 		</template>
 
 		<template #actions>
@@ -18,15 +18,7 @@
 			<activity-navigation v-model:filters="filters" />
 		</template>
 
-		<component
-			class="layout"
-			:is="`layout-${layout}`"
-			collection="directus_activity"
-			v-model:layout-options="layoutOptions"
-			v-model:layout-query="layoutQuery"
-			v-model:filters="filters"
-			:search-query="searchQuery"
-		/>
+		<component class="layout" :is="`layout-${layout}`" />
 
 		<router-view name="detail" :primary-key="primaryKey" />
 
@@ -35,16 +27,17 @@
 				<div class="page-description" v-html="md(t('page_help_activity_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
-			<div id="target-sidebar"></div>
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
+import { useLayout } from '@/composables/use-layout';
 import { md } from '@/utils/md';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -64,6 +57,19 @@ export default defineComponent({
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
+
+		useLayout(
+			layout,
+			reactive({
+				collection: 'directus_activity',
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				selectMode: false,
+				readonly: false,
+			})
+		);
 
 		return { t, breadcrumb, md, layout, layoutOptions, layoutQuery, searchQuery, filters };
 
