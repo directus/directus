@@ -377,9 +377,10 @@ export class PayloadService {
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
-			const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
+			const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
 
 			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
 

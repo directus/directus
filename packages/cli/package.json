@@ -49,7 +49,7 @@
 		"cli-highlight": "^2.1.11",
 		"cli-table3": "^0.5.1",
 		"cli-ux": "^5.5.1",
-		"cosmiconfig": "^6.0.0",
+		"cosmiconfig": "^7.0.0",
 		"csv": "^5.4.0",
 		"debug": "^4.3.1",
 		"dot-object": "^2.1.4",
