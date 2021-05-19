@@ -250,7 +250,7 @@
 				<div class="type-label">
 					{{
 						$t('referential_action_field_label_m2o', {
-							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+							collection: currentCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -260,17 +260,17 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: relations[0].field }),
+							text: $t('referential_action_set_default', { field: m2oFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								collection: relatedCollectionName,
+								field: m2oFieldName,
 							}),
 							value: 'CASCADE',
 						},
@@ -285,7 +285,7 @@
 				<div class="type-label">
 					{{
 						$t('referential_action_field_label_o2m', {
-							collection: relations[0].collection ? `"${relations[0].collection}"` : 'related',
+							collection: relatedCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -294,13 +294,13 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
 							value: 'nullify',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								collection: relatedCollectionName,
+								field: m2oFieldName,
 							}),
 							value: 'delete',
 						},
@@ -328,6 +328,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
+import formatTitle from '@directus/format-title';
 
 import { state, generationInfo } from '../store';
 
@@ -410,6 +411,30 @@ export default defineComponent({
 			return fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field;
 		});
 
+		const relatedCollectionName = computed(() => {
+			if (!state.relations[0].collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].collection)?.name ||
+				formatTitle(state.relations[0].collection)
+			);
+		});
+
+		const currentCollectionName = computed(() => {
+			if (!state.relations[0].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
+				formatTitle(state.relations[0].related_collection)
+			);
+		});
+
+		const m2oFieldName = computed(() => {
+			if (!state.relations[0].collection || !state.relations[0].field) return null;
+			return (
+				fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
+				formatTitle(state.relations[0].field)
+			);
+		});
+
 		return {
 			relations: state.relations,
 			autoFill,
@@ -421,6 +446,9 @@ export default defineComponent({
 			junctionFieldExists,
 			generationInfo,
 			currentPrimaryKeyField,
+			relatedCollectionName,
+			currentCollectionName,
+			m2oFieldName,
 		};
 
 		function junctionFieldExists(fieldKey: string) {

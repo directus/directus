@@ -266,8 +266,38 @@
 			<div class="field">
 				<div class="type-label">
 					{{
+						$t('referential_action_field_label_o2m', {
+							collection: junctionCollectionName || '',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].meta.one_deselect_action"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', {
+								collection: junctionCollectionName,
+								field: junctionM2OFieldName,
+							}),
+							value: 'nullify',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: junctionCollectionName,
+								field: junctionM2OFieldName,
+							}),
+							value: 'delete',
+						},
+					]"
+				/>
+			</div>
+
+			<div class="field">
+				<div class="type-label">
+					{{
 						$t('referential_action_field_label_m2o', {
-							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+							collection: currentCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -277,17 +307,17 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
+							text: $t('referential_action_set_null', { field: junctionM2OFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: relations[0].field }),
+							text: $t('referential_action_set_default', { field: junctionM2OFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								collection: junctionCollectionName,
+								field: junctionM2OFieldName,
 							}),
 							value: 'CASCADE',
 						},
@@ -302,38 +332,8 @@
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label_o2m', {
-							collection: relations[0].collection ? `"${relations[0].collection}"` : 'related',
-						})
-					}}
-				</div>
-				<v-select
-					v-model="relations[0].meta.one_deselect_action"
-					:placeholder="$t('choose_action') + '...'"
-					:items="[
-						{
-							text: $t('referential_action_set_null', {
-								collection: relations[0].collection,
-								field: relations[0].field,
-							}),
-							value: 'nullify',
-						},
-						{
-							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
-							}),
-							value: 'delete',
-						},
-					]"
-				/>
-			</div>
-
-			<div class="field">
-				<div class="type-label">
-					{{
 						$t('referential_action_field_label_m2o', {
-							collection: relations[1].related_collection ? `"${relations[1].related_collection}"` : 'related',
+							collection: relatedCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -343,17 +343,17 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[1].field }),
+							text: $t('referential_action_set_null', { field: junctionRelatedM2OFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: relations[1].field }),
+							text: $t('referential_action_set_default', { field: junctionRelatedM2OFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[1].collection,
-								field: relations[1].field,
+								collection: relatedCollectionName,
+								field: junctionRelatedM2OFieldName,
 							}),
 							value: 'CASCADE',
 						},
@@ -389,6 +389,7 @@ import { Field } from '@/types';
 import i18n from '@/lang';
 
 import { state, generationInfo } from '../store';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -486,6 +487,46 @@ export default defineComponent({
 			return 'id';
 		});
 
+		const currentCollectionName = computed(() => {
+			if (!state.relations[0].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
+				formatTitle(state.relations[0].related_collection)
+			);
+		});
+
+		const junctionCollectionName = computed(() => {
+			if (!state.relations[0].collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].collection)?.name ||
+				formatTitle(state.relations[0].collection)
+			);
+		});
+
+		const junctionM2OFieldName = computed(() => {
+			if (!state.relations[0].collection || !state.relations[0].field) return null;
+			return (
+				fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
+				formatTitle(state.relations[0].field)
+			);
+		});
+
+		const junctionRelatedM2OFieldName = computed(() => {
+			if (!state.relations[1].collection || !state.relations[1].field) return null;
+			return (
+				fieldsStore.getField(state.relations[1].collection, state.relations[1].field)?.name ||
+				formatTitle(state.relations[1].field)
+			);
+		});
+
+		const relatedCollectionName = computed(() => {
+			if (!state.relations[1].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[1].related_collection)?.name ||
+				formatTitle(state.relations[1].related_collection)
+			);
+		});
+
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		return {
@@ -504,6 +545,11 @@ export default defineComponent({
 			generationInfo,
 			currentPrimaryKeyField,
 			relatedPrimaryKeyField,
+			junctionCollectionName,
+			junctionM2OFieldName,
+			currentCollectionName,
+			junctionRelatedM2OFieldName,
+			relatedCollectionName,
 		};
 
 		function junctionFieldExists(fieldKey: string) {

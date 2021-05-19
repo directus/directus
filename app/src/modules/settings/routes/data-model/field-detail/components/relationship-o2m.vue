@@ -152,8 +152,35 @@
 			<div class="field">
 				<div class="type-label">
 					{{
+						$t('referential_action_field_label_o2m', {
+							collection: relatedCollectionName || 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].meta.one_deselect_action"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
+							value: 'nullify',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relatedCollectionName,
+								field: m2oFieldName,
+							}),
+							value: 'delete',
+						},
+					]"
+				/>
+			</div>
+
+			<div class="field">
+				<div class="type-label">
+					{{
 						$t('referential_action_field_label_m2o', {
-							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+							collection: currentCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -163,49 +190,23 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: relations[0].field }),
+							text: $t('referential_action_set_default', { field: m2oFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								collection: currentCollectionName,
+								field: m2oFieldName,
 							}),
 							value: 'CASCADE',
 						},
 						{
 							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
-						},
-					]"
-				/>
-			</div>
-			<div class="field">
-				<div class="type-label">
-					{{
-						$t('referential_action_field_label_o2m', {
-							collection: relations[0].collection ? `"${relations[0].collection}"` : 'related',
-						})
-					}}
-				</div>
-				<v-select
-					v-model="relations[0].meta.one_deselect_action"
-					:placeholder="$t('choose_action') + '...'"
-					:items="[
-						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
-							value: 'nullify',
-						},
-						{
-							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
-							}),
-							value: 'delete',
 						},
 					]"
 				/>
@@ -234,6 +235,7 @@ import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
 import { state, generationInfo } from '../store';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
@@ -275,6 +277,30 @@ export default defineComponent({
 			return !!fieldsStore.getField(state.relations[0].collection, state.relations[0].meta.sort_field);
 		});
 
+		const relatedCollectionName = computed(() => {
+			if (!state.relations[0].collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].collection)?.name ||
+				formatTitle(state.relations[0].collection)
+			);
+		});
+
+		const currentCollectionName = computed(() => {
+			if (!state.relations[0].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
+				formatTitle(state.relations[0].related_collection)
+			);
+		});
+
+		const m2oFieldName = computed(() => {
+			if (!state.relations[0].collection || !state.relations[0].field) return null;
+			return (
+				fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
+				formatTitle(state.relations[0].field)
+			);
+		});
+
 		return {
 			relations: state.relations,
 			availableCollections,
@@ -288,6 +314,9 @@ export default defineComponent({
 			relatedFieldExists,
 			generationInfo,
 			sortFieldExists,
+			relatedCollectionName,
+			currentCollectionName,
+			m2oFieldName,
 		};
 
 		function useRelation() {

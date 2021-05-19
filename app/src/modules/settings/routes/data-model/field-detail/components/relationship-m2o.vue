@@ -93,7 +93,7 @@
 				<div class="type-label">
 					{{
 						$t('referential_action_field_label_m2o', {
-							collection: relations[0].related_collection ? `"${relations[0].related_collection}"` : 'related',
+							collection: relatedCollectionName || 'related',
 						})
 					}}
 				</div>
@@ -103,24 +103,23 @@
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: relations[0].field }),
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: relations[0].field }),
+							text: $t('referential_action_set_default', { field: m2oFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								collection: currentCollectionName,
+								field: m2oFieldName,
 							}),
 							value: 'CASCADE',
 						},
 						{
 							text: $t('referential_action_no_action', {
-								collection: relations[0].collection,
-								field: relations[0].field,
+								field: m2oFieldName,
 							}),
 							value: 'NO ACTION',
 						},
@@ -149,6 +148,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import i18n from '@/lang';
+import formatTitle from '@directus/format-title';
 
 import { state, generationInfo } from '../store';
 
@@ -190,6 +190,30 @@ export default defineComponent({
 			return 'id';
 		});
 
+		const relatedCollectionName = computed(() => {
+			if (!state.relations[0].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
+				formatTitle(state.relations[0].related_collection)
+			);
+		});
+
+		const currentCollectionName = computed(() => {
+			if (!state.relations[0].collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].collection)?.name ||
+				formatTitle(state.relations[0].collection)
+			);
+		});
+
+		const m2oFieldName = computed(() => {
+			if (!state.relations[0].collection || !state.relations[0].field) return null;
+			return (
+				fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
+				formatTitle(state.relations[0].field)
+			);
+		});
+
 		return {
 			relations: state.relations,
 			availableCollections,
@@ -201,6 +225,9 @@ export default defineComponent({
 			relatedCollectionExists,
 			generationInfo,
 			relatedPrimaryKeyField,
+			relatedCollectionName,
+			m2oFieldName,
+			currentCollectionName,
 		};
 
 		function useRelation() {

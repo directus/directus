@@ -389,7 +389,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			if (!existingRelation) return;
 
 			state.relations[0].schema = {
-				on_delete: existingRelation.schema.on_delete,
+				on_delete: existingRelation.schema?.on_delete || 'SET NULL',
 			};
 		}
 	}
@@ -812,7 +812,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			if (!existingRelation) return;
 
 			state.relations[0].schema = {
-				on_delete: existingRelation.schema.on_delete,
+				on_delete: existingRelation.schema?.on_delete || 'SET NULL',
 			};
 		}
 	}
