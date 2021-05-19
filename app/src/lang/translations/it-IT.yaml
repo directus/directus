@@ -53,15 +53,10 @@ os_totalmem: Memoria sistema operativo
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
 archive_confirm_count: >-
-  Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare
-  {count} elementi?
+  Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
-reset_system_permissions_copy:
-  Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema.
-  Sei sicuro?
-the_following_are_minimum_permissions:
-  Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i
-  permessi, ma non ridurli.
+reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
+the_following_are_minimum_permissions: Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i permessi, ma non ridurli.
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
@@ -148,8 +143,7 @@ this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i
 click_here: Clicca qui
 to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
-  Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono
-  {count} campi tradotti. Clicca qui per gestirli.
+  Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Collezione'
@@ -305,7 +299,6 @@ report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
-list-m2a: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
@@ -357,7 +350,7 @@ account_created_successfully: Account Creato con Successo
 auto_fill: Auto-completamento
 corresponding_field: Campo Corrispondente
 errors:
-  COLLECTION_NOT_FOUND: 'La Raccolta non esiste'
+  COLLECTION_NOT_FOUND: "La Raccolta non esiste"
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
@@ -366,6 +359,7 @@ errors:
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
   UNKNOWN: Errore Imprevisto
+  INTERNAL_SERVER_ERROR: Errore Imprevisto
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -391,8 +385,7 @@ update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
 delete_collection_are_you_sure: >-
-  Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa
-  azione è permanente.
+  Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -508,18 +501,13 @@ unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
 page_help_collections_item: >-
-  **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale
-  contiene anche una cronologia completa di revisioni e commenti incorporati.
+  **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
 page_help_files_collection: >-
-  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e
-  l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso
-  rapido.
+  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_files_item: >-
-  **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e
-  l'aggiornamento delle impostazioni di accesso.
+  **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
 page_help_settings_presets_collection: >-
-  **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste
-  predefinite.
+  **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
 page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 add_new: Aggiungi nuovo
@@ -527,8 +515,7 @@ create_new: Crea Nuovo
 all: Tutti
 no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
-  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere
-  annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
+  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 collection: Raccolta
 collections: Raccolte
@@ -673,11 +660,6 @@ view_project: Visualizza Progetto
 interfaces:
   presentation-links:
     primary: Principale
-  select-multiple-checkbox:
-    checkboxes: Checkbox
-    allow_other: Permetti Altro
-    show_more: 'Mostra altri {count}'
-    items_shown: Elementi Visualizzati
   input-code:
     code: Codice
   collection:
@@ -701,10 +683,7 @@ interfaces:
     select_a_collection: Seleziona una Raccolta
   presentation-divider:
     divider: Separatore
-    title_placeholder: Inserisci un titolo...
   select-dropdown:
-    allow_other: Permetti Altro
-    choices_name_placeholder: Inserisci un nome...
     choices_value_placeholder: Inserisci un valore...
   file:
     file: File
@@ -718,34 +697,10 @@ interfaces:
     icon: Icon
   file-image:
     image: Immagine
-    description: Seleziona o carica un'immagine
   system-interface:
     interface: Interfaccia
-  system-interface-options:
-    interface-options: Opzioni interfaccia
-  list-m2m:
-    many-to-many: Molti a Molti
-    description: Seleziona più elementi correlati di giunzione
   select-dropdown-m2o:
-    many-to-one: Molti a Uno
     display_template: Display Template
-  input-rich-text-md:
-    markdown: Markdown
-  numeric:
-    numeric: Numerico
-    description: Inserisci un numero
-    minimum_value: Valore Minimo
-    maximum_value: Valore Massimo
-  list-o2m:
-    one-to-many: Uno a Molti
-    description: Seleziona più elementi correlati
-    no_collection: Impossibile trovare la raccolta
-  select-radio:
-    radio-buttons: Pulsanti di scelta
-  list:
-    repeater: Ripetitore
-    edit_fields: Modifica Campi
-    field_name_placeholder: Inserisci il nome del campo...
   slider:
     slider: Cursore
     always_show_value: Mostra sempre il valore
@@ -754,9 +709,6 @@ interfaces:
     description: Seleziona o aggiungi tag
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
-  input:
-    text-input: Text Input
-    trim: Trim
   boolean:
     label_default: Abilitato
   translations:
@@ -768,9 +720,6 @@ interfaces:
     modes:
       dropdown: Menu a tendina
       modal: Modale
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    custom_formats: Formati personalizzati
 displays:
   boolean:
     boolean: Boolean
