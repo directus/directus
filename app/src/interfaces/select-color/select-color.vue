@@ -259,12 +259,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .swatch {
-	/* --v-button-height: calc(var(--input-height) - 12px);
-	--v-button-width: calc(var(--input-height) - 12px);
-	--v-button-min-height: none;
-	--v-button-max-height: calc(var(--input-height) - 12px); */
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;
 	--v-button-background-color-hover: var(--v-button-background-color);
@@ -282,21 +278,22 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	padding: 0px 8px 14px 8px;
+}
 
-	.preset {
-		--v-button-background-color-hover: var(--v-button-background-color);
-		--v-button-height: 20px;
-		--v-button-width: 20px;
+.presets .preset {
+	--v-button-background-color-hover: var(--v-button-background-color);
+	--v-button-height: 20px;
+	--v-button-width: 20px;
 
-		padding: 0px 4px;
+	padding: 0px 4px;
+}
 
-		&:first-child {
-			padding-left: 0px;
-		}
-		&:last-child {
-			padding-right: 0px;
-		}
-	}
+.presets .preset:first-child {
+	padding-left: 0px;
+}
+
+.presets .preset:last-child {
+	padding-right: 0px;
 }
 
 .v-input.html-color-select {
@@ -313,68 +310,64 @@ export default defineComponent({
 	grid-template-columns: repeat(5, 1fr);
 	width: 100%;
 	padding: 12px 10px;
+}
 
-	.color-type {
-		grid-column: 1 / span 2;
-	}
+.color-data-inputs .color-type {
+	grid-column: 1 / span 2;
+}
 
-	.color-data-input {
-		--border-radius: 0px;
+.color-data-inputs .color-data-input {
+	--border-radius: 0px;
+}
 
-		&::v-deep .input:focus-within,
-		&::v-deep .input:active,
-		&::v-deep .input:focus,
-		&::v-deep .input:hover,
-		&::v-deep .input.active {
-			z-index: 1;
-		}
+.color-data-inputs
+	.color-data-input
+	:deep(.input:focus-within, .input:active, .input:focus, .input:hover, .input.active) {
+	z-index: 1;
+}
 
-		&:not(.color-type) {
-			--input-padding: 12px 8px;
-		}
+.color-data-inputs .color-data-input:not(.color-type) {
+	--input-padding: 12px 8px;
+}
 
-		&:not(:first-child)::v-deep .input {
-			margin-left: calc(-1 * var(--border-width));
-		}
+.color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
+	margin-left: calc(-1 * var(--border-width));
+}
 
-		&:first-child {
-			--border-radius: 4px 0px 0px 4px;
-		}
+.color-data-inputs .color-data-input:first-child {
+	--border-radius: 4px 0px 0px 4px;
+}
 
-		&:last-child {
-			--border-radius: 0px 4px 4px 0px;
-		}
-	}
+.color-data-inputs .color-data-input:last-child {
+	--border-radius: 0px 4px 4px 0px;
+}
 
-	&.stacked {
-		grid-template-columns: repeat(3, 1fr);
+.color-data-inputs.stacked {
+	grid-template-columns: repeat(3, 1fr);
+}
 
-		.color-type {
-			grid-column: 1 / span 3;
-		}
+.color-data-inputs.stacked .color-type {
+	grid-column: 1 / span 3;
+}
 
-		.color-data-input {
-			&:not(:first-child)::v-deep .input {
-				margin-top: calc(-2 * var(--border-width));
-				margin-left: initial;
-			}
+.color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
+	margin-top: calc(-2 * var(--border-width));
+	margin-left: initial;
+}
 
-			&:not(:first-child):not(:nth-child(2))::v-deep .input {
-				margin-left: calc(-1 * var(--border-width));
-			}
+.color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
+	margin-left: calc(-1 * var(--border-width));
+}
 
-			&:first-child {
-				--border-radius: 4px 4px 0px 0px;
-			}
+.color-data-inputs.stacked .color-data-input:first-child {
+	--border-radius: 4px 4px 0px 0px;
+}
 
-			&:nth-child(2) {
-				--border-radius: 0px 0px 0px 4px;
-			}
+.color-data-inputs.stacked .color-data-input:nth-child(2) {
+	--border-radius: 0px 0px 0px 4px;
+}
 
-			&:last-child {
-				--border-radius: 0px 0px 4px 0px;
-			}
-		}
-	}
+.color-data-inputs.stacked .color-data-input:last-child {
+	--border-radius: 0px 0px 4px 0px;
 }
 </style>

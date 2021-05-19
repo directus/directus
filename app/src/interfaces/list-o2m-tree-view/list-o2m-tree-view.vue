@@ -335,25 +335,22 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-::v-deep {
-	ul,
-	li {
-		list-style: none;
-	}
+<style scoped>
+:deep(ul, li) {
+	list-style: none;
+}
 
-	ul {
-		margin-left: 24px;
-		padding-left: 0;
-	}
+:deep(ul) {
+	margin-left: 24px;
+	padding-left: 0;
 }
 
 .actions {
 	margin-top: 12px;
+}
 
-	.v-button + .v-button {
-		margin-left: 12px;
-	}
+.actions .v-button + .v-button {
+	margin-left: 12px;
 }
 
 .existing {
