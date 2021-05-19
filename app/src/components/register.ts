@@ -1,3 +1,4 @@
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
@@ -111,6 +112,7 @@ export function registerComponents(app: App): void {
 	app.component('render-display', RenderDisplay);
 	app.component('render-template', RenderTemplate);
 	app.component('filter-sidebar-detail', FilterSidebarDetail);
+	app.component('export-sidebar-detail', ExportSidebarDetail);
 	app.component('sidebar-detail', SidebarDetail);
 	app.component('user-popover', UserPopover);
 	app.component('value-null', ValueNull);
