@@ -34,7 +34,7 @@ body {
 }
 </style>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-avatar {
 	position: relative;
 	display: flex;
@@ -48,35 +48,33 @@ body {
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);
 	border-radius: var(--border-radius);
+}
 
-	&.tile {
-		border-radius: 0;
-	}
+.tile {
+	border-radius: 0;
+}
 
-	&.x-small {
-		--v-avatar-size: 24px;
+.x-small {
+	--v-avatar-size: 24px;
 
-		border-radius: 2px;
-	}
+	border-radius: 2px;
+}
 
-	&.small {
-		--v-avatar-size: 36px;
-	}
+.small {
+	--v-avatar-size: 36px;
+}
 
-	&.large {
-		--v-avatar-size: 64px;
-	}
+.large {
+	--v-avatar-size: 64px;
+}
 
-	&.x-large {
-		--v-avatar-size: 80px;
-	}
+.x-large {
+	--v-avatar-size: 80px;
+}
 
-	::v-deep {
-		img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-	}
+:slotted(img) {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 </style>
