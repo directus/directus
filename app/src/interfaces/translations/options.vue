@@ -61,9 +61,9 @@ export default defineComponent({
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
 			const relation = props.relations.find(
-				(relation) => relation.one_collection === props.collection && relation.one_field === field
+				(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
 			);
-			return relation?.many_collection || null;
+			return relation?.collection || null;
 		});
 
 		const relatedCollectionInfo = computed(() => {

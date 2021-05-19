@@ -14,30 +14,32 @@
 				:value="previewValues"
 				@input="onSort"
 				:set-data="hideDragImage"
-				:disabled="!o2mRelation.sort_field"
+				:disabled="!o2mRelation.meta || !o2mRelation.meta.sort_field"
 			>
 				<template v-for="item of previewValues">
 					<v-list-item
 						:key="item.$index"
-						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+						v-if="allowedCollections.includes(item[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
 						@click="editExisting((value || [])[item.$index])"
 					>
-						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-						<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-						<span
-							v-if="
-								typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
-							"
-						>
-							{{ item[anyRelation.many_field] }}
+						<v-icon
+							class="drag-handle"
+							left
+							name="drag_handle"
+							@click.stop
+							v-if="o2mRelation.meta && o2mRelation.meta.sort_field"
+						/>
+						<span class="collection">{{ collections[item[anyRelation.meta.one_collection_field]].name }}:</span>
+						<span v-if="typeof item[anyRelation.field] === 'number' || typeof item[anyRelation.field] === 'string'">
+							{{ item[anyRelation.field] }}
 						</span>
 						<render-template
 							v-else
-							:collection="item[anyRelation.one_collection_field]"
-							:template="templates[item[anyRelation.one_collection_field]]"
-							:item="item[anyRelation.many_field]"
+							:collection="item[anyRelation.meta.one_collection_field]"
+							:template="templates[item[anyRelation.meta.one_collection_field]]"
+							:item="item[anyRelation.field]"
 						/>
 						<div class="spacer" />
 						<v-icon
@@ -118,12 +120,12 @@
 		<drawer-item
 			v-if="!disabled"
 			:active="!!currentlyEditing"
-			:collection="o2mRelation.many_collection"
+			:collection="o2mRelation.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="o2mRelation.junction_field"
+			:junction-field="o2mRelation.meta.junction_field"
 			:edits="editsAtStart"
-			:circular-field="o2mRelation.many_field"
+			:circular-field="o2mRelation.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -181,7 +183,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { o2mRelation, anyRelation, allowedCollections } = useRelations();
+		const { o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
@@ -219,12 +221,20 @@ export default defineComponent({
 				return relationsStore.getRelationsForField(props.collection, props.field);
 			});
 
-			const o2mRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection !== null)!);
-			const anyRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection === null)!);
+			const o2mRelation = computed(
+				() => relationsForField.value.find((relation) => relation.related_collection !== null)!
+			);
+			const anyRelation = computed(
+				() => relationsForField.value.find((relation) => relation.related_collection === null)!
+			);
 
-			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
+			const o2mRelationPrimaryKeyField = computed<string>(() => {
+				return fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.collection).field;
+			});
 
-			return { relationsForField, o2mRelation, anyRelation, allowedCollections };
+			const allowedCollections = computed(() => anyRelation.value.meta!.one_allowed_collections!);
+
+			return { relationsForField, o2mRelation, anyRelation, allowedCollections, o2mRelationPrimaryKeyField };
 		}
 
 		function useCollections() {
@@ -284,10 +294,10 @@ export default defineComponent({
 				// related values
 				const values = cloneDeep(props.value || [])
 					.map((val, index) => {
-						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
+						const junctionKey = isPlainObject(val) ? val[o2mRelationPrimaryKeyField.value] : val;
 
 						const savedValues = (junctionRowMap.value || []).find(
-							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
+							(junctionRow) => junctionRow[o2mRelationPrimaryKeyField.value] === junctionKey
 						);
 
 						if (isPlainObject(val)) {
@@ -310,11 +320,11 @@ export default defineComponent({
 					.filter((val) => val)
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
-						const collection = val[anyRelation.value.one_collection_field!];
+						const collection = val[anyRelation.value.meta!.one_collection_field!];
 
-						const key = isPlainObject(val[anyRelation.value.many_field])
-							? val[anyRelation.value.many_field][primaryKeys.value[collection]]
-							: val[anyRelation.value.many_field];
+						const key = isPlainObject(val[anyRelation.value.field])
+							? val[anyRelation.value.field][primaryKeys.value[collection]]
+							: val[anyRelation.value.field];
 
 						const item = relatedItemValues.value[collection]?.find(
 							(item) => item[primaryKeys.value[collection]] == key
@@ -322,26 +332,26 @@ export default defineComponent({
 
 						// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
 						if (key && item) {
-							if (isPlainObject(val[anyRelation.value.many_field])) {
-								val[anyRelation.value.many_field] = {
+							if (isPlainObject(val[anyRelation.value.field])) {
+								val[anyRelation.value.field] = {
 									...item,
-									...val[anyRelation.value.many_field],
+									...val[anyRelation.value.field],
 								};
 							} else {
-								val[anyRelation.value.many_field] = cloneDeep(item);
+								val[anyRelation.value.field] = cloneDeep(item);
 							}
 						}
 
 						return val;
 					});
 
-				if (o2mRelation.value?.sort_field) {
+				if (o2mRelation.value?.meta?.sort_field) {
 					return [
 						...values
-							.filter((val) => o2mRelation.value.sort_field! in val)
-							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
+							.filter((val) => o2mRelation.value.meta!.sort_field! in val)
+							.sort((a, b) => a[o2mRelation.value.meta!.sort_field!] - b[o2mRelation.value.meta!.sort_field!]), // sort by sort field if it exists
 						...values
-							.filter((val) => o2mRelation.value.sort_field! in val === false)
+							.filter((val) => o2mRelation.value.meta!.sort_field! in val === false)
 							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {
@@ -385,22 +395,22 @@ export default defineComponent({
 
 						// There's a case where you sort with no other changes where the one_collection_field doesn't exist
 						// and there's no further changes nested in the many field
-						else if (anyRelation.value.one_collection_field! in stagedValue === false) {
-							junctionRowsToInspect.push(stagedValue[o2mRelation.value.many_primary]);
+						else if (anyRelation.value.meta!.one_collection_field! in stagedValue === false) {
+							junctionRowsToInspect.push(stagedValue[o2mRelationPrimaryKeyField.value]);
 						}
 
 						// Otherwise, it's an object with the edits on an existing item, or a newly added item
 						// In both cases, it'll have the "one_collection_field" set. Both theoretically can have a primary key
 						// though the primary key could be a newly created one
 						else {
-							const relatedCollection = stagedValue[anyRelation.value.one_collection_field!];
+							const relatedCollection = stagedValue[anyRelation.value.meta!.one_collection_field!];
 							const relatedCollectionPrimaryKey = primaryKeys.value[relatedCollection];
 
-							// stagedValue could contain the primary key as a primitive in many_field or nested as primaryKeyField
+							// stagedValue could contain the primary key as a primitive in field or nested as primaryKeyField
 							// in an object
-							const relatedKey = isPlainObject(stagedValue[anyRelation.value.many_field])
-								? stagedValue[anyRelation.value.many_field][relatedCollectionPrimaryKey]
-								: stagedValue[anyRelation.value.many_field];
+							const relatedKey = isPlainObject(stagedValue[anyRelation.value.field])
+								? stagedValue[anyRelation.value.field][relatedCollectionPrimaryKey]
+								: stagedValue[anyRelation.value.field];
 
 							// Could be that the key doesn't exist (add new item without manual primary key)
 							if (relatedKey) {
@@ -412,28 +422,28 @@ export default defineComponent({
 					// If there's junction row IDs, we'll have to fetch the related collection / key from them in order to fetch
 					// the correct data from those related collections
 					if (junctionRowsToInspect.length > 0) {
-						const junctionInfoResponse = await api.get(`/items/${o2mRelation.value.many_collection}`, {
+						const junctionInfoResponse = await api.get(`/items/${o2mRelation.value.collection}`, {
 							params: {
 								filter: {
-									[o2mRelation.value.many_primary]: {
+									[o2mRelationPrimaryKeyField.value]: {
 										_in: junctionRowsToInspect,
 									},
 								},
 								fields: [
-									o2mRelation.value.many_primary,
-									anyRelation.value.many_field,
-									anyRelation.value.one_collection_field!,
-									o2mRelation.value.sort_field,
+									o2mRelationPrimaryKeyField.value,
+									anyRelation.value.field,
+									anyRelation.value.meta!.one_collection_field!,
+									o2mRelation.value.meta?.sort_field,
 								],
 							},
 						});
 
 						for (const junctionRow of junctionInfoResponse.data.data) {
-							const relatedCollection = junctionRow[anyRelation.value.one_collection_field!];
+							const relatedCollection = junctionRow[anyRelation.value.meta!.one_collection_field!];
 
 							// When the collection exists in the setup
 							if (relatedCollection in itemsToFetchPerCollection) {
-								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.field]);
 							}
 						}
 
@@ -490,14 +500,15 @@ export default defineComponent({
 			return { selectingFrom, stageSelection, deselect };
 
 			function stageSelection(selection: (number | string)[]) {
-				const { one_collection_field, many_field } = anyRelation.value;
+				const { field } = anyRelation.value;
+				const oneCollectionField = anyRelation.value.meta!.one_collection_field!;
 
 				const currentValue = props.value || [];
 
 				const selectionAsJunctionRows = selection.map((key) => {
 					return {
-						[one_collection_field!]: selectingFrom.value,
-						[many_field]: key,
+						[oneCollectionField]: selectingFrom.value,
+						[field]: key,
 					};
 				});
 
@@ -562,24 +573,24 @@ export default defineComponent({
 				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
 					const junctionRow = (junctionRowMap.value || []).find((row) => {
-						return row[o2mRelation.value.many_primary] == item;
+						return row[o2mRelationPrimaryKeyField.value] == item;
 					});
 
-					const collection = junctionRow[anyRelation.value.one_collection_field!];
-					const relatedKey = isPlainObject(junctionRow[anyRelation.value.many_field])
-						? junctionRow[anyRelation.value.many_field][primaryKeys.value[collection]]
-						: junctionRow[anyRelation.value.many_field];
+					const collection = junctionRow[anyRelation.value.meta!.one_collection_field!];
+					const relatedKey = isPlainObject(junctionRow[anyRelation.value.field])
+						? junctionRow[anyRelation.value.field][primaryKeys.value[collection]]
+						: junctionRow[anyRelation.value.field];
 
 					editsAtStart.value = {
-						[o2mRelation.value.many_primary]: item,
-						[anyRelation.value.one_collection_field!]: collection,
-						[anyRelation.value.many_field]: {
+						[o2mRelationPrimaryKeyField.value]: item,
+						[anyRelation.value.meta!.one_collection_field!]: collection,
+						[anyRelation.value.field]: {
 							[primaryKeys.value[collection]]: relatedKey,
 						},
 					};
 
-					if (o2mRelation.value.sort_field) {
-						editsAtStart.value[o2mRelation.value.sort_field] = junctionRow[o2mRelation.value.sort_field];
+					if (o2mRelation.value.meta?.sort_field) {
+						editsAtStart.value[o2mRelation.value.meta?.sort_field] = junctionRow[o2mRelation.value.meta?.sort_field];
 					}
 
 					relatedPrimaryKey.value = relatedKey || '+';
@@ -587,12 +598,12 @@ export default defineComponent({
 					return;
 				}
 
-				const junctionPrimaryKey = item[o2mRelation.value.many_primary];
-				const relatedCollectiom = item[anyRelation.value.one_collection_field!];
-				let relatedKey = item[anyRelation.value.many_field];
+				const junctionPrimaryKey = item[o2mRelationPrimaryKeyField.value];
+				const relatedCollectiom = item[anyRelation.value.meta!.one_collection_field!];
+				let relatedKey = item[anyRelation.value.field];
 
 				if (isPlainObject(relatedKey)) {
-					relatedKey = item[anyRelation.value.many_field][primaryKeys.value[relatedCollectiom]];
+					relatedKey = item[anyRelation.value.field][primaryKeys.value[relatedCollectiom]];
 				}
 
 				editsAtStart.value = item;
@@ -602,13 +613,13 @@ export default defineComponent({
 
 			function createNew(collection: string) {
 				const newItem = {
-					[anyRelation.value.one_collection_field!]: collection,
-					[anyRelation.value.many_field]: {},
+					[anyRelation.value.meta!.one_collection_field!]: collection,
+					[anyRelation.value.field]: {},
 				};
 
-				if (previewValues.value && o2mRelation.value?.sort_field) {
-					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.sort_field!]));
-					newItem[o2mRelation.value.sort_field!] = maxSort + 1;
+				if (previewValues.value && o2mRelation.value?.meta?.sort_field) {
+					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.meta!.sort_field!]));
+					newItem[o2mRelation.value.meta!.sort_field!] = maxSort + 1;
 				}
 
 				editsAtStart.value = newItem;
@@ -624,7 +635,7 @@ export default defineComponent({
 				emit(
 					'input',
 					props.value.map((rawValue, index) => {
-						if (!o2mRelation.value.sort_field) return rawValue;
+						if (!o2mRelation.value.meta?.sort_field) return rawValue;
 
 						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
 							return sortedItem.$index === index;
@@ -633,13 +644,13 @@ export default defineComponent({
 						if (isPlainObject(rawValue)) {
 							return {
 								...rawValue,
-								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
+								[o2mRelation.value.meta?.sort_field]: sortedItemIndex + 1,
 							};
 						} else {
 							return {
 								...sortedItems[sortedItemIndex],
-								[o2mRelation.value.many_primary]: rawValue,
-								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
+								[o2mRelationPrimaryKeyField.value]: rawValue,
+								[o2mRelation.value.meta?.sort_field]: sortedItemIndex + 1,
 							};
 						}
 					})

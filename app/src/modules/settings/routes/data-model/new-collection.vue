@@ -450,21 +450,17 @@ export default defineComponent({
 
 			if (systemFields.userCreated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
-					many_field: systemFields.userCreated.name,
-					many_primary: primaryKeyFieldName.value,
-					one_collection: 'directus_users',
-					one_primary: 'id',
+					collection: collectionName.value!,
+					field: systemFields.userCreated.name,
+					related_collection: 'directus_users',
 				});
 			}
 
 			if (systemFields.userUpdated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
-					many_field: systemFields.userUpdated.name,
-					many_primary: primaryKeyFieldName.value,
-					one_collection: 'directus_users',
-					one_primary: 'id',
+					collection: collectionName.value!,
+					field: systemFields.userUpdated.name,
+					related_collection: 'directus_users',
 				});
 			}
 

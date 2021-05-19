@@ -339,54 +339,69 @@ export class CollectionsService {
 			throw new ForbiddenException();
 		}
 
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		const fieldsService = new FieldsService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
 		const tablesInDatabase = Object.keys(this.schema.collections);
 
 		if (tablesInDatabase.includes(collectionKey) === false) {
 			throw new ForbiddenException();
 		}
 
-		await collectionItemsService.deleteOne(collectionKey);
+		await this.knex.transaction(async (trx) => {
+			const collectionItemsService = new ItemsService('directus_collections', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
 
-		await this.knex('directus_fields').delete().where('collection', '=', collectionKey);
-		await this.knex('directus_presets').delete().where('collection', '=', collectionKey);
-		await this.knex('directus_revisions').delete().where('collection', '=', collectionKey);
-		await this.knex('directus_activity').delete().where('collection', '=', collectionKey);
-		await this.knex('directus_permissions').delete().where('collection', '=', collectionKey);
+			const fieldsService = new FieldsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
 
-		const relations = this.schema.relations.filter((relation) => {
-			return relation.many_collection === collectionKey || relation.one_collection === collectionKey;
-		});
+			await trx('directus_fields').delete().where('collection', '=', collectionKey);
+			await trx('directus_presets').delete().where('collection', '=', collectionKey);
 
-		for (const relation of relations) {
-			const isM2O = relation.many_collection === collectionKey;
+			const revisionsToDelete = await trx.select('id').from('directus_revisions').where({ collection: collectionKey });
 
-			if (isM2O) {
-				await this.knex('directus_relations')
-					.delete()
-					.where({ many_collection: collectionKey, many_field: relation.many_field });
-
-				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else if (relation.one_collection) {
-				await this.knex('directus_relations')
-					.update({ one_field: null })
-					.where({ one_collection: collectionKey, one_field: relation.one_field });
-				await fieldsService.deleteField(relation.many_collection, relation.many_field);
+			if (revisionsToDelete.length > 0) {
+				const keys = revisionsToDelete.map((record) => record.id);
+				await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
 			}
-		}
 
-		await this.knex.schema.dropTable(collectionKey);
+			await trx('directus_revisions').delete().where('collection', '=', collectionKey);
+
+			await trx('directus_activity').delete().where('collection', '=', collectionKey);
+			await trx('directus_permissions').delete().where('collection', '=', collectionKey);
+			await trx('directus_relations').delete().where({ many_collection: collectionKey });
+
+			const relations = this.schema.relations.filter((relation) => {
+				return relation.collection === collectionKey || relation.related_collection === collectionKey;
+			});
+
+			for (const relation of relations) {
+				// Delete related o2m fields that point to current collection
+				if (relation.related_collection && relation.meta?.one_field) {
+					await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
+				}
+
+				// Delete related m2o fields that point to current collection
+				if (relation.related_collection === collectionKey) {
+					await fieldsService.deleteField(relation.collection, relation.field);
+				}
+
+				const isM2O = relation.collection === collectionKey;
+
+				// Delete any fields that have a relationship to/from the current collection
+				if (isM2O && relation.related_collection && relation.meta?.one_field) {
+					await fieldsService.deleteField(relation.related_collection!, relation.meta.one_field);
+				} else {
+					await fieldsService.deleteField(relation.collection, relation.field);
+				}
+			}
+
+			await collectionItemsService.deleteOne(collectionKey);
+			await trx.schema.dropTable(collectionKey);
+		});
 
 		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
