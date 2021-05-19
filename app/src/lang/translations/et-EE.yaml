@@ -54,11 +54,9 @@ os_totalmem: OS Mälu
 archive: Arhiveeri
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
-  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid
-  {count} üksuseid?
+  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
 reset_system_permissions_to: 'Lähtesta süsteemi load:'
-reset_system_permissions_copy:
-  See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
 recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
@@ -156,8 +154,7 @@ this_will_auto_setup_fields_relations: See seadistab automaatselt kõik väljad 
 click_here: Kliki siia
 to_manually_setup_translations: et käsitsi tõlkeid uuendada.
 click_to_manage_translated_fields: >-
-  Tõlkeid ei leitud. Lisamiseks klõpsa siia. | Leiti üks tõlgitud väli. Muutmiseks klõpsa siia. | Leiti {count} tõlgitud
-  välja. Nende muutmiseks klõpsa siia.
+  Tõlkeid ei leitud. Lisamiseks klõpsa siia. | Leiti üks tõlgitud väli. Muutmiseks klõpsa siia. | Leiti {count} tõlgitud välja. Nende muutmiseks klõpsa siia.
 fields_group: Väljade grupp
 no_collections_found: Andmedkogusid ei leitud.
 new_data_alert: 'Sinu andmemudelisse lisatakse:'
@@ -329,7 +326,6 @@ interface_not_found: '"{interface}" liidest ei leitud.'
 reset_interface: Nulli liides
 display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
-list-m2a: M2A koostamine
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
 no_items_copy: Selles kogus pole veel ühtegi kiret.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'
@@ -385,7 +381,7 @@ account_created_successfully: Konto edukalt loodud
 auto_fill: Täida automaatselt
 corresponding_field: Seotud väli
 errors:
-  COLLECTION_NOT_FOUND: 'Andmekogu ei leitud'
+  COLLECTION_NOT_FOUND: "Andmekogu ei leitud"
   FIELD_NOT_FOUND: "Välja ei leitud\n"
   FORBIDDEN: Keelatud
   INVALID_CREDENTIALS: Vale kasutajanimi või parool
@@ -397,6 +393,7 @@ errors:
   ROUTE_NOT_FOUND: Ei leitud
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
   UNKNOWN: Ootamatu viga
+  INTERNAL_SERVER_ERROR: Ootamatu viga
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -590,8 +587,7 @@ add_new: Lisa uus
 create_new: Loo Uus
 all: Kõik
 batch_delete_confirm: >-
-  Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. |
-  Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
+  Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
 cancel: Loobu
 collection: Kogud
 collections: Kogud
@@ -704,9 +700,6 @@ value: Väärtus
 interfaces:
   presentation-links:
     primary: Peamine
-  select-multiple-checkbox:
-    checkboxes: Märkeruudud
-    allow_other: Luba muud
   input-code:
     code: Kood
   collection:
@@ -724,7 +717,6 @@ interfaces:
   presentation-divider:
     divider: Eraldaja
   select-dropdown:
-    allow_other: Luba muud
     choices_value_placeholder: Sisesta väärtus...
   file:
     file: Fail
@@ -734,28 +726,12 @@ interfaces:
     icon: Ikoon
   system-interface:
     interface: Kasutajaliides
-  system-interface-options:
-    interface-options: Kasutajaliidese valikud
-  list-m2m:
-    many-to-many: Mitu mitmele
   select-dropdown-m2o:
-    many-to-one: Mitu ühele
     display_template: Vaate mall
-  input-rich-text-md:
-    markdown: Markdown
-  numeric:
-    numeric: Numbriline
-  select-radio:
-    radio-buttons: Raadionupud
-  list:
-    repeater: Kordaja
   slider:
     slider: Liugur
   tags:
     tags: Sildid
-  input:
-    text-input: Tekstisisestus
-    trim: Kärbi
   boolean:
     toggle: Lülita
     label_default: lubatud
@@ -765,8 +741,6 @@ interfaces:
     user: Kasutaja
     modes:
       dropdown: Rippmenüü
-  input-rich-text-html:
-    custom_formats: Kohandatud vormingud
 displays:
   boolean:
     boolean: Boolean
