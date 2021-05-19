@@ -14,6 +14,7 @@
 		],
 		"string-quotes": "single",
 		"length-zero-no-unit": null,
-		"no-descending-specificity": true
+		"no-descending-specificity": true,
+		"rule-empty-line-before": "always"
 	}
 }
