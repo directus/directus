@@ -66,26 +66,21 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		let columns = await this.schemaInspector.columnInfo(collection);
-
-		columns = columns.map((column) => {
-			return {
-				...column,
-				default_value: getDefaultValue(column),
-			};
-		});
+		const columns = await this.schemaInspector.columnInfo(collection);
 
 		const columnsWithSystem = columns.map((column) => {
 			const field = fields.find((field) => {
 				return field.field === column.name && field.collection === column.table;
 			});
 
+			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
 			const data = {
 				collection: column.table,
 				field: column.name,
-				type: column ? getLocalType(column, field) : 'alias',
-				schema: column,
+				type: type,
+				schema: { ...column, ...info },
 				meta: field || null,
+				default_value: getDefaultValue(column),
 			};
 
 			return data as Field;
@@ -191,12 +186,13 @@ export class FieldsService {
 			// Do nothing
 		}
 
+		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
 		const data = {
 			collection,
 			field,
-			type: column ? getLocalType(column, fieldInfo) : 'alias',
+			type,
 			meta: fieldInfo || null,
-			schema: column || null,
+			schema: type == 'alias' ? null : { ...column, ...info },
 		};
 
 		return data;

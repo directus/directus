@@ -353,6 +353,7 @@ no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: There are no webhooks yet.
 all_items: All Items
+any: Any
 csv: CSV
 no_collections: No Collections
 create_collection: Create Collection
@@ -978,11 +979,12 @@ interfaces:
     geometry_srid: Geometry SRID
     geometry_crs: Coordinate Reference System
     storage_type: Storage type
-    default_position: Default position
+    default_view: Default view
     invalid_options: Invalid options
     invalid_format: Invalid format ( {format} )
     invalid_crs: Invalid CRS ( {crs} )
     unexpected_geometry: Expeted {expected}, got {found}.
+    fit_bounds: Fit view to data
     native: Native
     geojson: GeoJSON
     lnglat: Longitude,Latitude

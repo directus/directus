@@ -5,7 +5,9 @@ const selectColor = '#FFA500';
 const fill: Expression = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
 const outline: Expression = [
 	'case',
-	['boolean', ['feature-state', 'selected'], ['feature-state', 'hovered'], false],
+	['boolean', ['feature-state', 'selected'], false],
+	selectColor,
+	['boolean', ['feature-state', 'hovered'], false],
 	selectColor,
 	baseColor,
 ];

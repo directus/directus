@@ -21,8 +21,7 @@ const baseStyle: Style = {
 };
 
 export function getBasemapSources(): BasemapSource[] {
-	const basemaps = getSetting('basemaps');
-	return basemaps?.length ? basemaps : [{ ...defaultBasemap }];
+	return [defaultBasemap, ...getSetting('basemaps')];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {

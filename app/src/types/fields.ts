@@ -7,6 +7,16 @@ type Translations = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
+export const geometryTypes = [
+	'Point',
+	'LineString',
+	'Polygon',
+	'MultiPoint',
+	'MultiLineString',
+	'MultiPolygon',
+] as const;
+export type GeometryType = typeof geometryTypes[number];
+
 export const types = [
 	'alias',
 	'bigInteger',
@@ -28,7 +38,7 @@ export const types = [
 	'geometry',
 	'unknown',
 ] as const;
-export type DatabaseType = typeof types[number];
+export type DataType = typeof types[number];
 
 export const localTypes = [
 	'standard',
@@ -56,6 +66,7 @@ export type FieldSchema = {
 	foreign_key_column: string | null;
 	foreign_key_table: string | null;
 	comment: string | null;
+	geometry_type?: GeometryType;
 
 	// Postgres Only
 	schema?: string;

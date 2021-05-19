@@ -131,12 +131,6 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
-		geometry: (params) => {
-			const { value, specials } = params;
-			if (specials[1] == 'lnglat') return this.transformers.csv(params);
-			if (specials[1] == 'geojson') return this.transformers.json(params);
-			return value;
-		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -225,12 +219,8 @@ export class PayloadService {
 		if (action == 'read') return payloads;
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const nativeGeometryColumns = fieldsInCollection.filter(([_, field]) => {
-			const [type, format] = field.special ?? [];
-			return type == 'geometry' && format == 'native';
-		});
-
-		for (const [name] of nativeGeometryColumns) {
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type == 'geometry');
+		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
 				if (name in payload) {
 					payload[name] = queryGeometryFromText(this.knex, payload[name]);

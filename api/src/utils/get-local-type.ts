@@ -1,11 +1,12 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FieldMeta, types } from '../types';
+import { FieldMeta, DataType } from '../types';
 
 /**
  * Typemap graciously provided by @gpetrov
  */
-const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: boolean }> = {
+type LocalTypeEntry = { type: DataType | 'unknown'; useTimezone?: boolean; geometry_type?: string };
+const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
 	boolean: { type: 'boolean' },
 	tinyint: { type: 'boolean' },
@@ -39,6 +40,16 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	real: { type: 'float' },
 	decimal: { type: 'decimal' },
 	numeric: { type: 'integer' },
+
+	// Geometries
+	point: { type: 'geometry', geometry_type: 'Point' },
+	linestring: { type: 'geometry', geometry_type: 'Linestring' },
+	polygon: { type: 'geometry', geometry_type: 'Polygon' },
+	multipoint: { type: 'geometry', geometry_type: 'Multipoint' },
+	multilinestring: { type: 'geometry', geometry_type: 'MultiLinestring' },
+	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon' },
+	geometry: { type: 'geometry' },
+	sdo_geometry: { type: 'geometry' },
 
 	// MySQL
 	string: { type: 'text' },
@@ -88,23 +99,22 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
-): typeof types[number] | 'unknown' {
+): LocalTypeEntry {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
-		return 'decimal';
+		return { type: 'decimal' };
 	}
 
-	if (field?.special?.includes('json')) return 'json';
-	if (field?.special?.includes('hash')) return 'hash';
-	if (field?.special?.includes('csv')) return 'csv';
-	if (field?.special?.includes('uuid')) return 'uuid';
-	if (field?.special?.includes('geometry')) return 'geometry';
+	if (field?.special?.includes('json')) return { type: 'json' };
+	if (field?.special?.includes('hash')) return { type: 'hash' };
+	if (field?.special?.includes('csv')) return { type: 'csv' };
+	if (field?.special?.includes('uuid')) return { type: 'uuid' };
 
 	if (type) {
-		return type.type;
+		return type;
 	}
 
-	return 'unknown';
+	return { type: 'unknown' };
 }

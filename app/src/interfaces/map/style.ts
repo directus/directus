@@ -121,8 +121,8 @@ export default [
 		id: 'directus-point-inactive',
 		filter: [
 			'all',
-			['==', 'active', 'false'],
 			['==', '$type', 'Point'],
+			['==', 'active', 'false'],
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
 		],
@@ -142,8 +142,8 @@ export default [
 		id: 'directus-point-active',
 		filter: [
 			'all',
-			['==', 'active', 'true'],
 			['==', '$type', 'Point'],
+			['==', 'active', 'true'],
 			['==', 'meta', 'feature'],
 			['!=', 'meta', 'midpoint'],
 		],
@@ -157,6 +157,27 @@ export default [
 		},
 		paint: {
 			'icon-color': '#fbb03b',
+		},
+	},
+	{
+		id: 'directus-point-static',
+		type: 'symbol',
+		filter: [
+			'all',
+			['==', '$type', 'Point'],
+			['==', 'mode', 'static'],
+			['==', 'meta', 'feature'],
+			['!=', 'meta', 'midpoint'],
+		],
+		layout: {
+			'icon-image': 'place',
+			'icon-anchor': 'bottom',
+			'icon-allow-overlap': true,
+			'icon-size': 2,
+			'icon-offset': [0, 3],
+		},
+		paint: {
+			'icon-color': '#404040',
 		},
 	},
 	{
@@ -193,15 +214,6 @@ export default [
 		paint: {
 			'line-color': '#404040',
 			'line-width': 2,
-		},
-	},
-	{
-		id: 'directus-point-static',
-		type: 'circle',
-		filter: ['all', ['==', 'mode', 'static'], ['==', '$type', 'Point']],
-		paint: {
-			'circle-radius': 5,
-			'circle-color': '#404040',
 		},
 	},
 ];

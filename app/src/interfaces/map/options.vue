@@ -1,37 +1,29 @@
 <template>
 	<div class="form-grid">
-		<div class="field">
+		<div class="field half-left">
 			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
 			<v-select
 				v-model="geometryFormat"
-				:disabled="isGeometry"
+				:disabled="isGeometry || compatibleFormats.length == 1"
 				:items="compatibleFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
 			/>
 		</div>
-		<div class="field half">
+		<div class="field half-right">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
-				:disabled="hasGeometryType"
-				:items="geometryTypes.map((value) => ({ value, text: value }))"
-			/>
-		</div>
-		<div class="field half">
-			<div class="type-label">{{ $t('interfaces.map.geometry_crs') }}</div>
-			<v-select
-				:disabled="isGeometry"
-				v-model="geometryCRS"
-				:allowOther="true"
-				:items="[
-					{ value: 'EPSG:4326', text: 'EPSG:4326 / WGS84' },
-					{ value: 'EPSG:4269', text: 'EPSG:4269 / NAD83' },
-					{ value: 'EPSG:3857', text: 'EPSG:3857 / Web Mercator' },
-				]"
+				:placeholder="$t('any')"
+				:disabled="hasGeometryType || geometryFormat == 'lnglat'"
+				:items="geometryTypes.map((value) => ({ value, text: value })).concat({ text: $t('any'), value: undefined })"
 			/>
 		</div>
 		<div class="field">
-			<div class="type-label">{{ $t('interfaces.map.default_position') }}</div>
+			<div class="type-label">{{ $t('interfaces.map.default_view') }}</div>
 			<div class="map" ref="mapContainer"></div>
+		</div>
+		<div class="field half-left">
+			<div class="type-label">{{ $t('interfaces.map.fit_bounds') }}</div>
+			<v-checkbox block :input-value="fitBounds" :label="$t('enabled')" />
 		</div>
 	</div>
 </template>
@@ -40,13 +32,8 @@
 import { Field } from '@/types';
 import { ref, defineComponent, PropType, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { GeometryOptions } from '@/layouts/map/lib';
-import {
-	geometryFormats,
-	geometryTypes,
-	GeometryFormat,
-	GeometryType,
-	compatibleFormatsForType,
-} from '@/layouts/map/lib';
+import { geometryTypes, GeometryType } from '@/types';
+import { geometryFormats, GeometryFormat, compatibleFormatsForType } from '@/layouts/map/lib';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
 import { BasemapSelectControl } from '@/layouts/map/controls';
@@ -62,33 +49,28 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Object as PropType<GeometryOptions & { defaultPosition: CameraOptions }>,
+			type: Object as PropType<GeometryOptions & { defaultView: CameraOptions; fitBounds: boolean }>,
 			default: null,
 		},
 	},
 	setup(props, { emit }) {
 		const compatibleFormats = computed(() => compatibleFormatsForType(props.fieldData.type));
 		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats.value[0]!);
-		const geometryType = ref<GeometryType>(props.value?.geometryType);
-		const geometryCRS = ref<string | undefined>(props.value?.geometryCRS);
-		const defaultPosition = ref<CameraOptions>(props.value?.defaultPosition);
+		const geometryType = ref<GeometryType | undefined>(props.value?.geometryType);
+		const defaultView = ref<CameraOptions>(props.value?.defaultView);
+		const fitBounds = ref<boolean>(props.value?.fitBounds || true);
 
 		const isGeometry = props.fieldData.type == 'geometry';
 		let hasGeometryType = false;
 		if (isGeometry) {
-			const special = props.fieldData?.meta?.special as [string, GeometryFormat, GeometryType, string | undefined];
-			[, geometryFormat.value, geometryType.value] = special;
-			if (geometryFormat.value == 'native') {
-				geometryCRS.value = undefined;
-			}
-			if (geometryType.value) {
-				hasGeometryType = true;
-			}
+			geometryType.value = props.fieldData?.schema?.geometry_type;
+			hasGeometryType = !!geometryType.value;
 		}
+
 		watch(
-			[geometryFormat, geometryType, geometryCRS, defaultPosition],
+			[geometryFormat, geometryType, defaultView, fitBounds],
 			() => {
-				emit('input', { geometryFormat, geometryType, geometryCRS, defaultPosition });
+				emit('input', { geometryFormat, geometryType, defaultView, fitBounds: fitBounds.value });
 			},
 			{ immediate: true }
 		);
@@ -100,11 +82,11 @@ export default defineComponent({
 				container: mapContainer.value!,
 				style: { version: 8, layers: [] },
 				attributionControl: false,
-				...(defaultPosition.value || {}),
+				...(defaultView.value || {}),
 			});
 			map.addControl(new BasemapSelectControl(), 'top-right');
 			map.on('moveend', () => {
-				defaultPosition.value = {
+				defaultView.value = {
 					center: map.getCenter(),
 					zoom: map.getZoom(),
 					bearing: map.getBearing(),
@@ -124,8 +106,8 @@ export default defineComponent({
 			compatibleFormats,
 			geometryTypes,
 			geometryType,
-			geometryCRS,
 			mapContainer,
+			fitBounds,
 		};
 	},
 });
@@ -139,8 +121,9 @@ export default defineComponent({
 }
 
 .map {
-	// position: relative;
-	// width: 100%;
 	height: 400px;
+	overflow: hidden;
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--border-radius);
 }
 </style>

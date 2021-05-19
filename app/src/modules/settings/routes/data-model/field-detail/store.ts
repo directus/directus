@@ -46,6 +46,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				is_unique: false,
 				numeric_precision: null,
 				numeric_scale: null,
+				geometry_type: undefined,
 			},
 			meta: {
 				hidden: false,
@@ -945,6 +946,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				state.fieldData.schema.default_value = undefined;
 				state.fieldData.schema.max_length = undefined;
 				state.fieldData.schema.is_nullable = true;
+				state.fieldData.schema.geometry_type = undefined;
 
 				switch (state.fieldData.type) {
 					case 'uuid':
@@ -965,7 +967,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.schema.is_nullable = false;
 						break;
 					case 'geometry':
-						state.fieldData.meta.special = ['geometry', 'native', 'Point'];
+						state.fieldData.meta.interface = 'map';
+						state.fieldData.schema.geometry_type = 'Point';
 						break;
 				}
 			}

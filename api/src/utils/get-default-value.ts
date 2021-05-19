@@ -5,7 +5,7 @@ import getLocalType from './get-local-type';
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column
 ): string | boolean | null {
-	const type = getLocalType(column);
+	const { type } = getLocalType(column);
 
 	let defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;

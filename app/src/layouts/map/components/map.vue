@@ -116,6 +116,13 @@ export default defineComponent({
 				map.on('click', '__directus_polygons', onFeatureClick);
 				map.on('click', '__directus_points', onFeatureClick);
 				map.on('click', '__directus_lines', onFeatureClick);
+				map.on('mousemove', '__directus_polygons', updatePopup);
+				map.on('mousemove', '__directus_points', updatePopup);
+				map.on('mousemove', '__directus_lines', updatePopup);
+				map.on('mouseleave', '__directus_polygons', updatePopup);
+				map.on('mouseleave', '__directus_points', updatePopup);
+				map.on('mouseleave', '__directus_lines', updatePopup);
+				map.on('basemapselect', updateStyle);
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
 					emit('select', ids);
@@ -128,8 +135,6 @@ export default defineComponent({
 						pitch: map.getPitch(),
 					});
 				});
-				map.on('mousemove', updatePopup);
-				map.on('basemapselect', updateStyle);
 				startWatchers();
 			});
 
@@ -188,7 +193,7 @@ export default defineComponent({
 			map.addSource('__directus', { ...newSource, data: props.data });
 			map.once('sourcedata', () => {
 				for (const layer of props.layers) {
-					setTimeout(() => map.addLayer(layer));
+					map.addLayer(layer);
 				}
 			});
 		}
@@ -206,6 +211,7 @@ export default defineComponent({
 		function updateSelection(newSelection?: (string | number)[], previousSelection?: (string | number)[]) {
 			previousSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: false });
+				map.removeFeatureState({ id, source: '__directus' });
 			});
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });

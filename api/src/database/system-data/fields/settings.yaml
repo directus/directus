@@ -215,7 +215,7 @@ fields:
     width: full
 
   - field: map_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: map
       title: $t:layouts.map.map
@@ -225,32 +225,31 @@ fields:
     width: full
 
   - field: basemaps
-    interface: repeater
+    interface: list
+    special: json
     options:
       template: '{{name}}'
       fields:
-        - field: type
-          name: $t:type
-          meta:
-            interface: dropdown
-            width: half
-            options:
-              choices:
-                - value: style
-                  text: Mapbox Style
-                - value: raster
-                  text: Raster
-                - value: tile
-                  text: Raster TileJSON
         - field: name
           name: $t:name
           schema:
             is_nullable: false
           meta:
             interface: text-input
-            width: half
             options:
               placeholder: Enter the basemap name...
+        - field: type
+          name: $t:type
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - value: raster
+                  text: Raster
+                - value: tile
+                  text: Raster TileJSON
+                - value: style
+                  text: Mapbox Style
         - field: url
           name: $t:url
           schema:

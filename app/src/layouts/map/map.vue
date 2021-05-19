@@ -125,6 +125,7 @@
 			</v-info>
 			<v-info
 				v-else-if="!geometryOptions"
+				type="warning"
 				icon="not_listed_location"
 				center
 				:title="$t('layouts.map.field_not_found')"
@@ -172,7 +173,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryOptions, GeometryFormat, GeometryType, toGeoJSON } from './lib';
+import { GeometryOptions, GeometryFormat, toGeoJSON } from './lib';
 import { layers } from './style';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
@@ -201,7 +202,6 @@ type LayoutOptions = {
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	geometryCRS?: string;
 	simplification?: number;
 	fitDataBounds?: boolean;
 	fitBoundsAnimate?: boolean;
@@ -294,21 +294,17 @@ export default defineComponent({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
-			if (!field) return;
+			if (!field) return undefined;
 			if (field.type == 'geometry') {
-				const special = field.meta!.special as [string, GeometryFormat, GeometryType?];
 				return {
 					geometryField: field.field,
-					geometryFormat: special[1],
-					geometryType: special[2],
+					geometryFormat: 'native',
 				} as GeometryOptions;
 			}
 			if (field?.meta?.interface == 'map') {
 				return {
 					geometryField: field.field,
 					geometryFormat: field.meta.options.geometryFormat,
-					geometryType: field.meta.options.geometryType,
-					geometryCRS: field.meta.options.geometryCRS,
 				} as GeometryOptions;
 			}
 			return undefined;
