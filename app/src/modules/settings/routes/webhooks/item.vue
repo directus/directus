@@ -60,7 +60,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_item'))" />
+				<div class="page-description" v-html="md($t('page_help_settings_webhooks_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
@@ -75,7 +75,7 @@ import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import marked from 'marked';
+import { md } from '@/utils/md';
 import i18n from '@/lang';
 
 export default defineComponent({
@@ -130,7 +130,7 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			marked,
+			md,
 			title,
 			validationErrors,
 		};

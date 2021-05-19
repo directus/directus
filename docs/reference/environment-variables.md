@@ -160,6 +160,44 @@ Alternatively, you can provide the individual connection parameters:
 | ---------------- | ---------------------------------- | ------------- |
 | `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
 
+## Sessions
+
+Sessions are only used in the oAuth authentication flow.
+
+| Variable        | Description                                                                          | Default Value |
+| --------------- | ------------------------------------------------------------------------------------ | ------------- |
+| `SESSION_STORE` | Where to store the session data. Either `memory`, `redis`, `memcache` or `database`. | `memory`      |
+
+Based on the `SESSION_STORE` used, you must also provide the following configurations:
+
+### Memory
+
+No additional configuration required.
+
+### Redis
+
+| Variable        | Description                                                           | Default Value |
+| --------------- | --------------------------------------------------------------------- | ------------- |
+| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+
+Alternatively, you can provide the individual connection parameters:
+
+| Variable                 | Description                      | Default Value |
+| ------------------------ | -------------------------------- | ------------- |
+| `SESSION_REDIS_HOST`     | Hostname of the Redis instance   | --            |
+| `SESSION_REDIS_PORT`     | Port of the Redis instance       | --            |
+| `SESSION_REDIS_PASSWORD` | Password for your Redis instance | --            |
+
+### Memcache
+
+| Variable           | Description                        | Default Value |
+| ------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+
+### Database
+
+No additional configuration required.
+
 ## File Storage
 
 | Variable            | Description                                                                                                           | Default Value |
@@ -246,10 +284,10 @@ covered. Checkout [the grant repo](https://github.com/simov/grant) for more info
 
 ## Email
 
-| Variable          | Description                                            | Default Value          |
-| ----------------- | ------------------------------------------------------ | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.              | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`. | `sendmail`             |
+| Variable          | Description                                                       | Default Value          |
+| ----------------- | ----------------------------------------------------------------- | ---------------------- |
+| `EMAIL_FROM`      | Email address from which emails are sent.                         | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -270,6 +308,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
 | `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
 | `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
+
+### Mailgun (`mailgun`)
+
+| Variable                | Description                                                                       | Default Value |
+| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
+| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --            |
+| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --            |
 
 ## Misc.
 

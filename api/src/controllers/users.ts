@@ -128,6 +128,7 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const primaryKey = await service.updateOne(req.accountability.user, req.body);
 		const item = await service.readOne(primaryKey, req.sanitizedQuery);
 

@@ -1,3 +1,4 @@
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
@@ -11,6 +12,8 @@ enum MySQLErrorCodes {
 	ER_DATA_TOO_LONG = 'ER_DATA_TOO_LONG',
 	NOT_NULL_VIOLATION = 'ER_BAD_NULL_ERROR',
 	FOREIGN_KEY_VIOLATION = 'ER_NO_REFERENCED_ROW_2',
+	ER_INVALID_USE_OF_NULL = 'ER_INVALID_USE_OF_NULL',
+	WARN_DATA_TRUNCATED = 'WARN_DATA_TRUNCATED',
 }
 
 export function extractError(error: MySQLError): MySQLError | Error {
@@ -25,7 +28,12 @@ export function extractError(error: MySQLError): MySQLError | Error {
 			return notNullViolation(error);
 		case MySQLErrorCodes.FOREIGN_KEY_VIOLATION:
 			return foreignKeyViolation(error);
+		// Note: MariaDB throws data truncated for null value error
+		case MySQLErrorCodes.ER_INVALID_USE_OF_NULL:
+		case MySQLErrorCodes.WARN_DATA_TRUNCATED:
+			return containsNullValues(error);
 	}
+
 	return error;
 }
 
@@ -131,4 +139,18 @@ function foreignKeyViolation(error: MySQLError) {
 		field,
 		invalid,
 	});
+}
+
+function containsNullValues(error: MySQLError) {
+	const betweenTicks = /`([^`]+)`/g;
+
+	// Normally, we shouldn't read from the executed SQL. In this case, we're altering a single
+	// column, so we shouldn't have the problem where multiple columns are altered at the same time
+	const tickMatches = error.sql.match(betweenTicks);
+
+	if (!tickMatches) return error;
+
+	const field = tickMatches[1].slice(1, -1);
+
+	return new ContainsNullValuesException(field);
 }

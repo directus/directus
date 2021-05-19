@@ -22,6 +22,7 @@ create_webhook: Создать Веб-хук
 invite_users: Пригласить Пользователей
 email_examples: 'admin@example.com, user@example.com...'
 invite: Пригласить
+email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
 connection_excellent: Отличное Подключение
 connection_good: Хорошее Подключение
@@ -83,6 +84,8 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
+nullable: Разрешить NULL значение
+allow_null_value: Разрешить NULL значение
 field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
@@ -135,6 +138,7 @@ decimal: Десятичная
 float: Десятичное
 integer: Целое
 json: JSON
+xml: XML
 string: Строка
 text: Текст
 time: Время
@@ -222,6 +226,7 @@ item_delete_success: Элемент Удален | Элементы Удален
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
+translations_collection: Коллекция переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
@@ -308,6 +313,8 @@ save_and_create_new: Сохранить и Создать Новый
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
 add_existing: Добавить Существующий
+creating_items: Создание элементов
+selecting_items: Выбор элементов
 comments: Комментарии
 no_comments: Комментариев Пока Нет
 click_to_expand: Нажмите, чтобы Раскрыть
@@ -322,7 +329,6 @@ interface_not_found: 'Интерфейс "{interface}" не найден.'
 reset_interface: Сбросить Интерфейс
 display_not_found: 'Отображение "{display}" не найдено.'
 reset_display: Сбросить Отображение
-m2a_builder: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет Файлов | Один Файл | {count} Файлов'
@@ -389,6 +395,7 @@ errors:
   ITEM_NOT_FOUND: Элемент не найден
   ROUTE_NOT_FOUND: Не найдено
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
+  USER_SUSPENDED: Пользователь заблокирован
   UNKNOWN: Неожиданная Ошибка
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...
@@ -412,7 +419,7 @@ flip_vertical: Отразить по Вертикали
 aspect_ratio: Соотношение Сторон
 rotate: Повернуть
 all_users: Все пользователи
-delete_collection: Удалить Уоллекцию
+delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
 start_end_of_count_items: '{start}-{end} из {count} элементов'
@@ -463,6 +470,8 @@ operators:
   has: Содержит некоторые из этих ключей
 loading: Загрузка...
 drop_to_upload: Перетащите для Загрузки
+item: Элемент
+items: Элементы
 upload_file: Загрузить Файл
 upload_file_indeterminate: Загрузка Файла...
 upload_file_success: Файл Загружен
@@ -521,6 +530,7 @@ display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
+unlimited: Без ограничения
 open_link_in: Открыть ссылку в
 new_tab: Новая вкладка
 current_tab: Текущая вкладка
@@ -666,6 +676,7 @@ fields:
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
   directus_files:
+    $thumbnail: Миниатюра
     title: Заголовок
     description: Описание
     tags: Теги
@@ -674,6 +685,7 @@ fields:
     filename_disk: Имя файла (на диске)
     filename_download: Имя файла (Загруженое)
     metadata: Метаданные
+    type: MIME-тип
     filesize: Размер файла
     modified_by: Изменил
     modified_on: Дата изменения
@@ -813,38 +825,34 @@ value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 interfaces:
-  button-links:
-    button-links: Ссылки на кнопки
+  presentation-links:
+    presentation-links: Ссылки кнопок
     links: Ссылки
     style: Стиль
     primary: Первичный
     link: Ссылки
     button: Кнопки
-  checkboxes:
-    checkboxes: Флажки
-    description: Выбрать из нескольких опций с помощью флажков
+    error: Не удается выполнить действие
+  select-multiple-checkbox:
+    checkboxes: Чекбоксы
     allow_other: Разрешить другие
-    show_more: 'Показать еще {count}'
-    items_shown: Показано Элементов
-  code:
+    items_shown: Показывать
+  input-code:
     code: Код
-    description: Написать или поделиться фрагментами кода
     line_number: Номер строки
-    placeholder: Введите код здесь...
+    placeholder: Введите код сюда...
   collection:
     collection: Коллекция
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  collections:
+  system-collections:
     collections: Коллекции
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
-  color:
+  select-color:
     color: Цвет
     description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
-    preset_colors: Цвета Пресета
-    preset_colors_add_label: Добавить новый цвет...
     name_placeholder: Введите название цвета...
   datetime:
     datetime: Дата и время
@@ -852,99 +860,62 @@ interfaces:
     include_seconds: Включать Секунды
     set_to_now: Установить Сейчас
     use_24: Использовать 24-Часовой Формат
-  display-template:
+  system-display-template:
     display-template: Шаблон отображения
-    description: Смешивать статический текст и динамические значения полей
-    collection_field: Поле коллекции
     collection_field_not_setup: Опция поля коллекции настроена некорректно
     select_a_collection: Выберите Коллекцию
-  divider:
+  presentation-divider:
     divider: Разделитель
-    description: Разметить и разделить поля на разделы
     title_placeholder: Введите название...
-    inline_title: Встроенный Заголовок
-    inline_title_label: Показать заголовок внутри строки
-    margin_top: Отступ сверху
-    margin_top_label: Увеличить верхний отступ
-  dropdown:
-    description: Выберите значение из выпадающего списка
-    choices_placeholder: Добавить новый выбор
+  select-dropdown:
+    choices_placeholder: Добавить вариант
     allow_other: Разрешить другие
-    allow_other_label: Разрешить Другие Значения
-    allow_none: Не Разрешать
-    allow_none_label: Разрешить Отсутствие Выбора
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
-  dropdown-multiselect:
-    dropdown-multiselect: Выпадающий Список (Несколько)
-    description: Выберите несколько значений из выпадающего списка
+  select-multiple-dropdown:
+    select-multiple-dropdown: Выпадающий список (несколько)
   file:
     file: Файл
     description: Выберите или загрузите файл
   files:
     files: Файлы
     description: Выбрать или загрузить несколько файлов
-  hash:
+  input-hash:
     hash: Хэш
-    description: Введите значение для хэширования
-    masked: Маскированный
-    masked_label: Скрыть настоящие значения
-  icon:
+  select-icon:
     icon: Иконка
-    description: Выберите значок из выпадающего списка
-    search_for_icon: Найти значок...
-  image:
+    search_for_icon: Найти иконку...
+  file-image:
     image: Изображение
     description: Выберите или загрузите изображение
-  interface:
+  system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...
-  interface-options:
+  system-interface-options:
     interface-options: Настройки интерфейса
     description: Окно выбора параметров интерфейса
-  many-to-many:
+  list-m2m:
     many-to-many: Многие ко многим
-    description: Выберите несколько связанных элементов
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Многие к одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
-    description: Ввод и предпросмотр markdown
-    customSyntax_label: Добавить пользовательский тип синтаксиса
-    customSyntax_add: Добавить пользовательский синтаксис
-  notice:
-    notice: Примечание
-    description: Показать короткое примечание
-    text: Введите содержимое примечания здесь...
-  numeric:
-    numeric: Числовой
-    description: Введите число
-    minimum_value: Минимальное Значение
-    maximum_value: Максимальное Значение
-    step_interval: Интервал Шага
-  one-to-many:
+  list-o2m:
     one-to-many: Один ко многим
-    description: Выберите несколько связанных элементов
-    no_collection: Коллекция не найдена
-  radio-buttons:
-    radio-buttons: Радио кнопки
-    description: Выберите один из нескольких вариантов
-  repeater:
-    repeater: Репитер
-    description: Создать несколько записей одной структуры
-    edit_fields: Редактировать Поля
-    field_name_placeholder: Введите название поля...
-    field_note_placeholder: Введите примечание к полю...
+  select-radio:
+    radio-buttons: Радиокнопки
+    description: Выбор одного из нескольких вариантов
+  list:
+    repeater: Повторитель
+    edit_fields: Редактировать поля
+    add_label: 'Ярлык «Создать новый»'
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
     always_show_value: Всегда показывать значение
-  slug:
-    slug: Слаг
-    description: Введите слово, связанное дефисами
   tags:
     tags: Теги
     description: Выбрать или добавить теги
@@ -959,21 +930,23 @@ interfaces:
     alphabetize: По алфавиту
     alphabetize_label: Принудительный Порядок по Алфавиту
     add_tags: Добавить метки...
-  text-input:
-    text-input: Text Input
-    description: Введите текст в одну строку
+  input:
+    input: Ввод
+    description: Ввести значение вручную
     trim: Обрезать
     trim_label: Обрезать начало и конец
-    mask: Маскированный
     mask_label: Скрыть настоящее значение
+    clear: Очищенное значение
     clear_label: Сохранить как пустую строку
-  textarea:
-    textarea: Текстовое поле
-    description: Введите простой текст в несколько строк
-  toggle:
+    minimum_value: Минимальное значение
+    maximum_value: Максимальное значение
+    step_interval: Интервал шага
+    slug_label: Сделать введённое значение безопасным для URL
+  input-multiline:
+    textarea: Область текста
+    description: Введите простой текст (несколько строк)
+  boolean:
     toggle: Переключить
-    description: Переключение между вкл и выкл
-    label_placeholder: Введите метку...
     label_default: Включен
   translations:
     display_template: Шаблон отображения
@@ -986,12 +959,15 @@ interfaces:
       auto: Авто
       dropdown: Выпадающий список
       modal: Модальный
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Расширенный редактор, создающий HTML содержимое
+    description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
-    options_override: Переопределение Параметров
+    options_override: Переопределение параметров
+  input-autocomplete-api:
+    input-autocomplete-api: Автоматическое дополнение ввода (API)
+    trigger: Триггер
 displays:
   boolean:
     boolean: Логическое
@@ -1092,3 +1068,5 @@ layouts:
     comfortable: Удобный
     compact: Компактный
     cozy: Уютный
+  calendar:
+    calendar: Календарь

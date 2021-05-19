@@ -4,6 +4,20 @@ item_revision: Barang semakan
 duplicate_field: Halaman salinan
 required: Diperlukan
 create_role: Buat Peranan
+invite: Jemputan
+emails: Emel
+connection_excellent: Rangkaian bagus
+connection_good: Rangkaian baik
+connection_fair: Rangkaian sederhana
+connection_poor: Rangkaian lemah
+primary: Utama
+rename_folder: Tukar nama fail
+delete_folder: Padam fail
+prefix: Awalan
+suffix: Akhiran
+reset_bookmark: Tetapkan semula penanda buku
+rename_bookmark: Namakan semula penanda buku
+update_bookmark: Kemas kini penanda buku
 delete_bookmark: Padam Penanda Buku
 create_field: Cipta Medan
 hidden_on_detail: Tersembunyi di Butiran
@@ -66,7 +80,8 @@ keep_editing: Terus Menyunting
 add_new: Tambah Baru
 all: Semua
 batch_delete_confirm: >-
-  Tiada benda dipilih | Adakah anda pasti ingin memadam benda ini? Tindakan ini tidak dapat dibatalkan. | Adakah anda pasti ingin memadam {count} benda ini? Tindakan ini tidak dapat dibatalkan.
+  Tiada benda dipilih | Adakah anda pasti ingin memadam benda ini? Tindakan ini tidak dapat dibatalkan. | Adakah anda
+  pasti ingin memadam {count} benda ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 collection: Koleksi
 collections: Koleksi-koleksi
@@ -145,16 +160,16 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
+  presentation-links:
+    primary: Utama
   collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:

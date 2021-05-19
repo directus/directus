@@ -5,53 +5,53 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: box
       title: Collection Setup
     width: full
 
   - field: collection
-    interface: text-input
+    interface: input
     options:
       font: monospace
     readonly: true
     width: half
 
   - field: icon
-    interface: icon
+    interface: select-icon
     options:
     width: half
 
   - field: note
-    interface: text-input
+    interface: input
     options:
       placeholder: A description of this collection...
     width: full
 
   - field: display_template
-    interface: display-template
+    interface: system-display-template
     options:
       collectionField: collection
     width: full
 
   - field: hidden
     special: boolean
-    interface: toggle
+    interface: boolean
     options:
       label: Hide within the App
     width: half
 
   - field: singleton
     special: boolean
-    interface: toggle
+    interface: boolean
     options:
       label: Treat as single object
     width: half
 
   - field: translations
     special: json
-    interface: repeater
+    interface: list
     options:
       template: '{{ translation }} ({{ language }})'
       fields:
@@ -67,7 +67,7 @@ fields:
           name: Collection Name
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -75,7 +75,7 @@ fields:
           name: Singular Unit
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -83,7 +83,7 @@ fields:
           name: Plural Unit
           type: string
           meta:
-            interface: text-input
+            interface: input
             width: half
             options:
               placeholder: Enter a translation...
@@ -93,14 +93,14 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: archive
       title: Archive
     width: full
 
   - field: archive_field
-    interface: field
+    interface: system-field
     options:
       collectionField: collection
       allowNone: true
@@ -108,14 +108,14 @@ fields:
     width: half
 
   - field: archive_app_filter
-    interface: toggle
+    interface: boolean
     special: boolean
     options:
       label: Enable App Archive Filter
     width: half
 
   - field: archive_value
-    interface: text-input
+    interface: input
     options:
       font: monospace
       iconRight: archive
@@ -123,7 +123,7 @@ fields:
     width: half
 
   - field: unarchive_value
-    interface: text-input
+    interface: input
     options:
       font: monospace
       iconRight: unarchive
@@ -134,14 +134,14 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: sort
       title: Sort
     width: full
 
   - field: sort_field
-    interface: field
+    interface: system-field
     options:
       collectionField: collection
       placeholder: Choose a field...
@@ -156,14 +156,14 @@ fields:
     special:
       - alias
       - no-data
-    interface: divider
+    interface: presentation-divider
     options:
       icon: admin_panel_settings
       title: Accountability
     width: full
 
   - field: accountability
-    interface: dropdown
+    interface: select-dropdown
     options:
       choices:
         - text: '$t:field_options.directus_collections.track_activity_revisions'

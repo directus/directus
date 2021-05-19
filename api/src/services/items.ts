@@ -114,8 +114,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// The events are fired last-to-first based on when they were created. By reversing the
 			// output array of results, we ensure that the augmentations are applied in
 			// "chronological" order
-			const payloadAfterHooks =
-				hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 			const payloadWithPresets = this.accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
@@ -203,7 +202,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'create',
 				payload,
 				schema: this.schema,
-				database: this.knex,
+				// This hook is called async. If we would pass the transaction here, the hook can be
+				// called after the transaction is done #5460
+				database: database,
 			});
 		}
 
@@ -350,6 +351,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 
+		if (keys.length === 0) return [];
+
 		return await this.updateMany(keys, data, opts);
 	}
 
@@ -400,8 +403,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// The events are fired last-to-first based on when they were created. By reversing the
 		// output array of results, we ensure that the augmentations are applied in
 		// "chronological" order
-		const payloadAfterHooks =
-			hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -512,7 +514,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'update',
 				payload,
 				schema: this.schema,
-				database: this.knex,
+				// This hook is called async. If we would pass the transaction here, the hook can be
+				// called after the transaction is done #5460
+				database: database,
 			});
 		}
 
@@ -656,7 +660,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'delete',
 				payload: null,
 				schema: this.schema,
-				database: this.knex,
+				// This hook is called async. If we would pass the transaction here, the hook can be
+				// called after the transaction is done #5460
+				database: database,
 			});
 		}
 

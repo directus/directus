@@ -10,7 +10,7 @@
 		</v-notice>
 
 		<p class="type-label">{{ $tc('field', 0) }}</p>
-		<interface-checkboxes v-model="fields" type="json" :choices="fieldsInCollection" />
+		<interface-select-multiple-checkbox v-model="fields" type="json" :choices="fieldsInCollection" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />

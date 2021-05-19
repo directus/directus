@@ -13,7 +13,7 @@ export default defineDisplay({
 			name: '$t:displays.rating.simple',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				width: 'half',
 				options: {
 					label: '$t:displays.rating.simple_label',

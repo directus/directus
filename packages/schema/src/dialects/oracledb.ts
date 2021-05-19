@@ -1,9 +1,35 @@
 import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
+import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
+	private static _mapColumnAutoIncrement(column: Column): Column {
+		// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+		// keys without a default are AUTO_INCREMENT
+		const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.is_primary_key;
+
+		return {
+			...column,
+			default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : column.default_value,
+			has_auto_increment: hasAutoIncrement,
+		};
+	}
+
+	columnInfo(): Promise<Column[]>;
+	columnInfo(table: string): Promise<Column[]>;
+	columnInfo(table: string, column: string): Promise<Column>;
+	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
+		if (column) {
+			const columnInfo: Column = await super.columnInfo(table!, column!);
+			return Oracle._mapColumnAutoIncrement(columnInfo);
+		}
+
+		const columnInfo: Column[] = await super.columnInfo(table!);
+		return columnInfo.map(Oracle._mapColumnAutoIncrement);
+	}
+
 	async overview(): Promise<SchemaOverview> {
 		type RawColumn = {
 			TABLE_NAME: string;
@@ -61,17 +87,14 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				};
 			}
 
-			/**
-			 * Oracle doesn't return AUTO_INCREMENT. Incrementing is done using triggers, and there is no
-			 * nice way to detect if a trigger is an increment trigger. For compatibility sake, assume all
-			 * numeric primary keys AUTO_INCREMENT to prevent authorization throwing a "required value" error.
-			 */
-			const isNumericPrimary = column.data_type === 'NUMBER' && overview[column.table_name].primary;
+			// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+			// keys without a default are AUTO_INCREMENT
+			const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.column_key === 'P';
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
 				is_nullable: column.is_nullable === 'Y',
-				default_value: !column.default_value && isNumericPrimary ? 'AUTO_INCREMENT' : column.default_value,
+				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : column.default_value,
 			};
 		}
 

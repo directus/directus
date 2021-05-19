@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import session from 'express-session';
 import grant from 'grant';
 import Joi from 'joi';
 import ms from 'ms';
@@ -147,7 +146,10 @@ router.post(
 
 		if (req.cookies.directus_refresh_token) {
 			res.clearCookie('directus_refresh_token', {
+				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -218,8 +220,6 @@ router.get(
 	}),
 	respond
 );
-
-router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
 
 router.get(
 	'/oauth/:provider',

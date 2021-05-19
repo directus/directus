@@ -15,7 +15,7 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 			},
 			schema: {
 				default_value: false,
@@ -27,7 +27,7 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 			},
 			schema: {
 				default_value: true,
