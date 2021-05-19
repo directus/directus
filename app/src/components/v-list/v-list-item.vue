@@ -181,13 +181,13 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-text-overflow {
+		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-text-overflow {
+			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
 		}
