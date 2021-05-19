@@ -967,8 +967,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.schema.is_nullable = false;
 						break;
 					case 'geometry':
-						state.fieldData.meta.interface = 'map';
-						state.fieldData.schema.geometry_type = 'Point';
 						break;
 				}
 			}

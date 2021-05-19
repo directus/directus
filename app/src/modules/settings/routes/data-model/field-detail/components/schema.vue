@@ -45,7 +45,7 @@
 								geometryTypes.map((value) => ({ value, text: value })).concat({ text: $t('any'), value: undefined })
 							"
 							v-model="fieldData.schema.geometry_type"
-							@input="fieldData.meta.options = { geometryType: $event, ...fieldData.meta.options }"
+							@input="fieldData.meta.options = { ...fieldData.meta.options, geometryType: $event }"
 						/>
 					</div>
 				</template>

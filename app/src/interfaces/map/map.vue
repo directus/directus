@@ -61,7 +61,7 @@ import {
 	getBBox,
 	GeoJSONParser,
 	GeoJSONSerializer,
-	GeometryOptions,
+	compatibleFormatsForType,
 } from '@/layouts/map/lib';
 import { GeometryFormat, flatten } from '@/layouts/map/lib';
 import { snakeCase, isEqual } from 'lodash';
@@ -120,17 +120,13 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | null>();
 		const geometryType = props.geometryType || props.fieldData?.schema?.geometry_type || 'GeometryCollection';
-
-		const geometryOptions: GeometryOptions = {
-			geometryField: 'value',
-			geometryFormat: props.geometryFormat || 'native',
-		};
+		const geometryFormat = props.geometryFormat || compatibleFormatsForType(props.type)[0]!;
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
 		try {
-			parse = getParser(geometryOptions);
-			serialize = getSerializer(geometryOptions);
+			parse = getParser({ geometryFormat, geometryField: 'value' });
+			serialize = getSerializer({ geometryFormat, geometryField: 'value' });
 		} catch (error) {
 			geometryOptionsError.value = error;
 		}
@@ -261,7 +257,7 @@ export default defineComponent({
 				options.controls.trash = true;
 				return options;
 			} else {
-				const base = snakeCase(type.replace('Multi', ''));
+				const base = snakeCase(type!.replace('Multi', ''));
 				options.controls[base] = true;
 				options.controls.trash = true;
 				return options;
