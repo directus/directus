@@ -1,20 +1,16 @@
 <template>
-	<filter-sidebar-detail
-		v-model="layoutState.props.filters"
-		:collection="layoutState.props.collection"
-		:loading="layoutState.loading"
-	/>
+	<filter-sidebar-detail v-model="props.filters" :collection="props.collection" :loading="loading" />
 	<export-sidebar-detail
-		:layout-query="layoutState.props.layoutQuery"
-		:filters="layoutState.props.filters"
-		:search-query="layoutState.props.searchQuery"
-		:collection="layoutState.props.collection"
+		:layout-query="props.layoutQuery"
+		:filters="props.filters"
+		:search-query="props.searchQuery"
+		:collection="props.collection"
 	/>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
 
@@ -23,8 +19,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
+		const { props, loading } = toRefs(layoutState.value);
 
-		return { t, layoutState };
+		return { t, props, loading };
 	},
 });
 </script>

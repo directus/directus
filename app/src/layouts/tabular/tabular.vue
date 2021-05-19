@@ -1,33 +1,29 @@
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-model="layoutState.props.selection"
-			v-if="layoutState.loading || layoutState.itemCount > 0"
+			v-model="props.selection"
+			v-if="loading || itemCount > 0"
 			class="table"
 			ref="table"
 			fixed-header
-			:show-select="layoutState.props.readonly ? false : layoutState.props.selection !== undefined"
+			:show-select="props.readonly ? false : props.selection !== undefined"
 			show-resize
 			must-sort
-			:sort="layoutState.tableSort"
-			:items="layoutState.items"
-			:loading="layoutState.loading"
-			v-model:headers="layoutState.tableHeaders"
-			:row-height="layoutState.tableRowHeight"
-			:server-sort="layoutState.itemCount === layoutState.limit || layoutState.totalPages > 1"
-			:item-key="layoutState.primaryKeyField.field"
-			:show-manual-sort="layoutState.sortField !== null"
-			:manual-sort-key="layoutState.sortField"
+			:sort="tableSort"
+			:items="items"
+			:loading="loading"
+			v-model:headers="tableHeaders"
+			:row-height="tableRowHeight"
+			:server-sort="itemCount === limit || totalPages > 1"
+			:item-key="primaryKeyField.field"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField"
 			selection-use-keys
-			@click:row="layoutState.onRowClick"
-			@update:sort="layoutState.onSortChange"
-			@manual-sort="layoutState.changeManualSort"
+			@click:row="onRowClick"
+			@update:sort="onSortChange"
+			@manual-sort="changeManualSort"
 		>
-			<template
-				v-for="header in layoutState.tableHeaders"
-				:key="header.value"
-				v-slot:[`item.${header.value}`]="{ item }"
-			>
+			<template v-for="header in tableHeaders" :key="header.value" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:value="item[header.value]"
 					:display="header.field.display"
@@ -35,7 +31,7 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="layoutState.props.collection"
+					:collection="props.collection"
 					:field="header.field.field"
 				/>
 			</template>
@@ -44,20 +40,20 @@
 				<div class="footer">
 					<div class="pagination">
 						<v-pagination
-							v-if="layoutState.totalPages > 1"
-							:length="layoutState.totalPages"
+							v-if="totalPages > 1"
+							:length="totalPages"
 							:total-visible="7"
 							show-first-last
-							:model-value="layoutState.page"
-							@update:model-value="layoutState.toPage"
+							:model-value="page"
+							@update:model-value="toPage"
 						/>
 					</div>
 
-					<div v-if="layoutState.loading === false && layoutState.items.length >= 25" class="per-page">
+					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ t('per_page') }}</span>
 						<v-select
-							@update:model-value="layoutState.limit = +$event"
-							:model-value="`${layoutState.limit}`"
+							@update:model-value="limit = +$event"
+							:model-value="`${limit}`"
 							:items="['25', '50', '100', '250', '500', ' 1000']"
 							inline
 						/>
@@ -66,26 +62,26 @@
 			</template>
 		</v-table>
 
-		<v-info v-else-if="layoutState.error" type="danger" :title="t('unexpected_error')" icon="error" center>
+		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
 			{{ t('unexpected_error_copy') }}
 
 			<template #append>
-				<v-error :error="layoutState.error" />
+				<v-error :error="error" />
 
-				<v-button small @click="layoutState.resetPresetAndRefresh" class="reset-preset">
+				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
 					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>
 		</v-info>
 
-		<slot v-else-if="layoutState.itemCount === 0 && layoutState.activeFilterCount > 0" name="no-results" />
-		<slot v-else-if="layoutState.itemCount === 0" name="no-items" />
+		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
+		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
 
@@ -94,8 +90,72 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
+		const {
+			props,
+			table,
+			tableHeaders,
+			items,
+			loading,
+			error,
+			totalPages,
+			tableSort,
+			onRowClick,
+			onSortChange,
+			tableRowHeight,
+			page,
+			toPage,
+			itemCount,
+			totalCount,
+			fieldsInCollection,
+			fields,
+			limit,
+			activeFields,
+			tableSpacing,
+			primaryKeyField,
+			info,
+			showingCount,
+			sortField,
+			changeManualSort,
+			hideDragImage,
+			activeFilterCount,
+			refresh,
+			resetPresetAndRefresh,
+			availableFields,
+		} = toRefs(layoutState.value);
 
-		return { t, layoutState };
+		return {
+			t,
+			props,
+			table,
+			tableHeaders,
+			items,
+			loading,
+			error,
+			totalPages,
+			tableSort,
+			onRowClick,
+			onSortChange,
+			tableRowHeight,
+			page,
+			toPage,
+			itemCount,
+			totalCount,
+			fieldsInCollection,
+			fields,
+			limit,
+			activeFields,
+			tableSpacing,
+			primaryKeyField,
+			info,
+			showingCount,
+			sortField,
+			changeManualSort,
+			hideDragImage,
+			activeFilterCount,
+			refresh,
+			resetPresetAndRefresh,
+			availableFields,
+		};
 	},
 });
 </script>

@@ -1,14 +1,14 @@
 <template>
 	<transition name="fade">
-		<span class="item-count" v-if="layoutState.itemCount">
-			{{ layoutState.showingCount }}
+		<span class="item-count" v-if="itemCount">
+			{{ showingCount }}
 		</span>
 	</transition>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
 
@@ -17,8 +17,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
+		const { itemCount, showingCount } = toRefs(layoutState.value);
 
-		return { t, layoutState };
+		return { t, itemCount, showingCount };
 	},
 });
 </script>

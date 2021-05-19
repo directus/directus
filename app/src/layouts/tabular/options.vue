@@ -2,7 +2,7 @@
 	<div class="field">
 		<div class="type-label">{{ t('layouts.tabular.spacing') }}</div>
 		<v-select
-			v-model="layoutState.tableSpacing"
+			v-model="tableSpacing"
 			:items="[
 				{
 					text: t('layouts.tabular.compact'),
@@ -23,14 +23,14 @@
 	<div class="field">
 		<div class="type-label">{{ t('layouts.tabular.fields') }}</div>
 		<draggable
-			v-model="layoutState.activeFields"
+			v-model="activeFields"
 			item-key="field"
 			handle=".drag-handle"
-			:set-data="layoutState.hideDragImage"
+			:set-data="hideDragImage"
 			:force-fallback="true"
 		>
 			<template #item="{ element }">
-				<v-checkbox v-model="layoutState.fields" :value="element.field" :label="element.name">
+				<v-checkbox v-model="fields" :value="element.field" :label="element.name">
 					<template #append>
 						<div class="spacer" />
 						<v-icon @click.stop name="drag_handle" class="drag-handle" />
@@ -40,8 +40,8 @@
 		</draggable>
 
 		<v-checkbox
-			v-for="field in layoutState.availableFields.filter((field) => layoutState.fields.includes(field.field) === false)"
-			v-model="layoutState.fields"
+			v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
+			v-model="fields"
 			:key="field.field"
 			:value="field.field"
 			:label="field.name"
@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 
 import Draggable from 'vuedraggable/src/vuedraggable.js';
 import { useLayoutState } from '@/composables/use-layout';
@@ -62,8 +62,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
+		const { tableSpacing, activeFields, hideDragImage, fields, availableFields } = toRefs(layoutState.value);
 
-		return { t, layoutState };
+		return { t, tableSpacing, activeFields, hideDragImage, fields, availableFields };
 	},
 });
 </script>
