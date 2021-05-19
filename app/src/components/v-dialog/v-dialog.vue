@@ -80,8 +80,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-dialog {
 	--v-dialog-z-index: 100;
 
@@ -96,82 +94,90 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+}
 
-	::v-deep > * {
-		z-index: 2;
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+.container > :slotted(*) {
+	z-index: 2;
+	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+}
+
+.container.center {
+	align-items: center;
+	justify-content: center;
+}
+
+.container.center.nudge > :slotted(*:not(:first-child)) {
+	animation: nudge 200ms;
+}
+
+.container.right {
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.container.right.nudge > :slotted(*:not(:first-child)) {
+	transform-origin: right;
+	animation: shake 200ms;
+}
+
+.container :slotted(.v-card) {
+	--v-card-min-width: calc(100vw - 40px);
+	--v-card-padding: 28px;
+	--v-card-background-color: var(--background-page);
+}
+
+.container :slotted(.v-card .v-card-title) {
+	padding-bottom: 8px;
+}
+
+.container :slotted(.v-card .v-card-actions) {
+	flex-direction: column-reverse;
+	flex-wrap: wrap;
+}
+
+.container :slotted(.v-card .v-card-actions .v-button) {
+	width: 100%;
+}
+
+.container :slotted(.v-card .v-card-actions .v-button .button) {
+	width: 100%;
+}
+
+.container :slotted(.v-card .v-card-actions > .v-button + .v-button) {
+	margin-bottom: 20px;
+	margin-left: 0;
+}
+
+.container :slotted(.v-sheet) {
+	--v-sheet-padding: 24px;
+	--v-sheet-max-width: 560px;
+}
+
+.container .v-overlay {
+	--v-overlay-z-index: 1;
+}
+
+@media (min-width: 600px) {
+	.container :slotted(.v-card) {
+		--v-card-min-width: 540px;
 	}
 
-	&.center {
-		align-items: center;
-		justify-content: center;
-
-		&.nudge > ::v-deep *:not(:first-child) {
-			animation: nudge 200ms;
-		}
+	.container :slotted(.v-card .v-card-actions) {
+		flex-direction: inherit;
+		flex-wrap: nowrap;
 	}
 
-	&.right {
-		align-items: center;
-		justify-content: flex-end;
-
-		&.nudge > ::v-deep *:not(:first-child) {
-			transform-origin: right;
-			animation: shake 200ms;
-		}
+	.container :slotted(.v-card .v-card-actions .v-button) {
+		width: auto;
 	}
 
-	::v-deep .v-card {
-		--v-card-min-width: calc(100vw - 40px);
-		--v-card-padding: 28px;
-		--v-card-background-color: var(--background-page);
-
-		.v-card-title {
-			padding-bottom: 8px;
-		}
-
-		.v-card-actions {
-			flex-direction: column-reverse;
-			flex-wrap: wrap;
-			.v-button {
-				width: 100%;
-
-				.button {
-					width: 100%;
-				}
-			}
-			& > .v-button + .v-button {
-				margin-bottom: 20px;
-				margin-left: 0;
-			}
-		}
-
-		@include breakpoint(small) {
-			--v-card-min-width: 540px;
-			.v-card-actions {
-				flex-direction: inherit;
-				flex-wrap: nowrap;
-				.v-button {
-					width: auto;
-					.button {
-						width: auto;
-					}
-				}
-				& > .v-button + .v-button {
-					margin-bottom: 0;
-					margin-left: 12px;
-				}
-			}
-		}
+	.container :slotted(.v-card .v-card-actions .v-button .button) {
+		width: auto;
 	}
 
-	::v-deep .v-sheet {
-		--v-sheet-padding: 24px;
-		--v-sheet-max-width: 560px;
-	}
-
-	.v-overlay {
-		--v-overlay-z-index: 1;
+	.container :slotted(.v-card .v-card-actions > .v-button + .v-button) {
+		margin-bottom: 0;
+		margin-left: 12px;
 	}
 }
 
