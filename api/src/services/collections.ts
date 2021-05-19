@@ -360,7 +360,16 @@ export class CollectionsService {
 
 			await trx('directus_fields').delete().where('collection', '=', collectionKey);
 			await trx('directus_presets').delete().where('collection', '=', collectionKey);
+
+			const revisionsToDelete = await trx.select('id').from('directus_revisions').where({ collection: collectionKey });
+
+			if (revisionsToDelete.length > 0) {
+				const keys = revisionsToDelete.map((record) => record.id);
+				await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+			}
+
 			await trx('directus_revisions').delete().where('collection', '=', collectionKey);
+
 			await trx('directus_activity').delete().where('collection', '=', collectionKey);
 			await trx('directus_permissions').delete().where('collection', '=', collectionKey);
 			await trx('directus_relations').delete().where({ many_collection: collectionKey });

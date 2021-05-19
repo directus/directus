@@ -375,6 +375,14 @@ export class FieldsService {
 				await trx('directus_collections').update(collectionMetaUpdates).where({ collection });
 			}
 
+			// Cleanup directus_fields
+			const metaRow = await trx.select('id').from('directus_fields').where({ collection, field }).first();
+
+			if (metaRow.id) {
+				// Handle recursive FK constraints
+				await trx('directus_fields').update({ group: null }).where({ group: metaRow.id });
+			}
+
 			await trx('directus_fields').delete().where({ collection, field });
 
 			if (
