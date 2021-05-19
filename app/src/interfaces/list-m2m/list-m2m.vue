@@ -22,11 +22,17 @@
 				@update:model-value="sortItems($event)"
 				item-key="id"
 				handler=".drag-handle"
-				:disabled="!junction.sort_field"
+				:disabled="!junction.meta.sort_field"
 			>
 				<template #item="{ element }">
 					<v-list-item :dense="sortedItems.length > 4" block @click="editItem(element)">
-						<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<v-icon
+							v-if="junction.meta.sort_field"
+							name="drag_handle"
+							class="drag-handle"
+							left
+							@click.stop="() => {}"
+						/>
 						<render-template
 							:collection="junctionCollection.collection"
 							:item="element"
@@ -54,7 +60,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
-			:circular-field="junction.many_field"
+			:circular-field="junction.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -159,7 +165,7 @@ export default defineComponent({
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;
 					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const newPart = `{{${relation.value.many_field}.${key}}}`;
+					const newPart = `{{${relation.value.field}.${key}}}`;
 
 					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
 				}
@@ -167,7 +173,7 @@ export default defineComponent({
 				return relatedDisplayTemplate;
 			}
 
-			return `{{${relation.value.many_field}.${relationInfo.value.relationPkField}}}`;
+			return `{{${relation.value.field}.${relationInfo.value.relationPkField}}}`;
 		});
 
 		const fields = computed(() =>

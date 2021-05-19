@@ -65,7 +65,7 @@ export default defineComponent({
 		const { interfaces } = getInterfaces();
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta?.interface);
 		});
 
 		const selectItems = computed(() => {
@@ -109,7 +109,7 @@ export default defineComponent({
 		});
 
 		const selectedDisplay = computed(() => {
-			return displays.value.find((display: DisplayConfig) => display.id === state.fieldData.meta.display);
+			return displays.value.find((display: DisplayConfig) => display.id === state.fieldData.meta?.display);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);

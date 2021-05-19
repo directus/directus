@@ -219,12 +219,12 @@ export const useFieldsStore = defineStore({
 				unexpectedError(err);
 			}
 		},
-		getPrimaryKeyFieldForCollection(collection: string) {
+		getPrimaryKeyFieldForCollection(collection: string): Field {
 			/** @NOTE it's safe to assume every collection has a primary key */
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
-			);
+			)!;
 
 			return primaryKeyField;
 		},
@@ -262,11 +262,13 @@ export const useFieldsStore = defineStore({
 
 			const relation = relationsStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
+				?.find(
+					(relation: Relation) => relation.field === parts[0] || relation.meta?.one_field === parts[0]
+				) as Relation;
 
 			if (relation === undefined) return false;
 
-			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
+			const relatedCollection = relation.field === parts[0] ? relation.related_collection : relation.collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

@@ -22,7 +22,7 @@
 				@update:model-value="sortItems($event)"
 				item-key="id"
 				handler=".drag-handle"
-				:disabled="!relation.sort_field"
+				:disabled="!relation.meta.sort_field"
 			>
 				<template #item="{ element }">
 					<v-list-item
@@ -31,8 +31,14 @@
 						:disabled="disabled || updateAllowed === false"
 						@click="editItem(element)"
 					>
-						<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template :collection="relation.many_collection" :item="element" :template="templateWithDefaults" />
+						<v-icon
+							v-if="relation.meta.sort_field"
+							name="drag_handle"
+							class="drag-handle"
+							left
+							@click.stop="() => {}"
+						/>
+						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
 					</v-list-item>
@@ -55,7 +61,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:circular-field="relation.many_field"
+			:circular-field="relation.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -80,7 +86,7 @@ import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { Filter, Field } from '@/types';
+import { Filter, Field, Relation } from '@/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -138,7 +144,10 @@ export default defineComponent({
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 
 		const templateWithDefaults = computed(
-			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
+			() =>
+				props.template ||
+				relatedCollection.value.meta?.display_template ||
+				`{{${fieldsStore.getPrimaryKeyFieldForCollection(relation.value.collection).field}}}`
 		);
 
 		const fields = computed(() =>
@@ -240,13 +249,13 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref({ by: relation.value.sort_field || fields.value[0], desc: false });
+			const sort = ref({ by: relation.value.meta?.sort_field || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
-				if (relation.value.sort_field === null) return;
+				if (!relation.value.meta?.sort_field) return;
 
 				const itemsSorted = newItems.map((item, i) => {
-					item[relation.value.sort_field] = i;
+					item[relation.value.meta!.sort_field!] = i;
 					return item;
 				});
 
@@ -254,10 +263,10 @@ export default defineComponent({
 			}
 
 			const sortedItems = computed(() => {
-				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return items.value;
+				if (!relation.value.meta?.sort_field || sort.value.by !== relation.value.meta?.sort_field) return items.value;
 
 				const desc = sort.value.desc;
-				const sorted = sortBy(items.value, [relation.value.sort_field]);
+				const sorted = sortBy(items.value, [relation.value.meta.sort_field]);
 				return desc ? sorted.reverse() : sorted;
 			});
 
@@ -269,12 +278,12 @@ export default defineComponent({
 		 * of the other collection etc
 		 */
 		function useRelation() {
-			const relation = computed(() => {
+			const relation = computed<Relation>(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
 			});
 
 			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.many_collection)!;
+				return collectionsStore.getCollection(relation.value.collection)!;
 			});
 
 			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
@@ -298,8 +307,8 @@ export default defineComponent({
 						fieldsList.push(pkField);
 					}
 
-					if (relation.value.sort_field !== null && fieldsList.includes(relation.value.sort_field) === false)
-						fieldsList.push(relation.value.sort_field);
+					if (relation.value.meta?.sort_field && fieldsList.includes(relation.value.meta.sort_field) === false)
+						fieldsList.push(relation.value.meta.sort_field);
 
 					const fieldsToFetch = addRelatedPrimaryKeyToFields(relatedCollection.value.collection, fieldsList);
 

@@ -2,11 +2,13 @@ import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { systemRelationRows } from '../database/system-data/relations';
 import { Filter, Query, Relation, SchemaOverview } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
+/**
+ * Apply the Query to a given Knex query builder instance
+ */
 export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
@@ -51,7 +53,7 @@ export function applyFilter(
 	collection: string,
 	subQuery = false
 ): void {
-	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
+	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
 
@@ -88,14 +90,14 @@ export function applyFilter(
 			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+						(relation.collection === parentCollection && relation.field === pathParts[0]) ||
+						(relation.related_collection === parentCollection && relation.meta?.one_field === pathParts[0])
 					);
 				});
 
 				if (!relation) return;
 
-				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				const isM2O = relation.collection === parentCollection && relation.field === pathParts[0];
 
 				const alias = generateAlias();
 
@@ -103,25 +105,25 @@ export function applyFilter(
 
 				if (isM2O) {
 					dbQuery.leftJoin(
-						{ [alias]: relation.one_collection! },
-						`${parentAlias || parentCollection}.${relation.many_field}`,
-						`${alias}.${relation.one_primary}`
+						{ [alias]: relation.related_collection! },
+						`${parentAlias || parentCollection}.${relation.field}`,
+						`${alias}.${schema.collections[relation.related_collection!].primary}`
 					);
 				}
 
 				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
 				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
-						{ [alias]: relation.many_collection },
-						`${parentAlias || parentCollection}.${relation.one_primary}`,
-						`${alias}.${relation.many_field}`
+						{ [alias]: relation.collection },
+						`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+						`${alias}.${relation.field}`
 					);
 				}
 
 				if (isM2O || subQuery === true) {
 					pathParts.shift();
 
-					const parent = isM2O ? relation.one_collection! : relation.many_collection;
+					const parent = isM2O ? relation.related_collection! : relation.collection;
 
 					if (pathParts.length) {
 						followRelation(pathParts, parent, alias);
@@ -158,20 +160,20 @@ export function applyFilter(
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
 			const o2mRelation = relations.find((relation) => {
-				return relation.one_collection === collection && relation.one_field === filterPath[0];
+				return relation.related_collection === collection && relation.meta?.one_field === filterPath[0];
 			});
 
 			if (!!o2mRelation && subQuery === false) {
-				const pkField = `${collection}.${o2mRelation.one_primary}`;
+				const pkField = `${collection}.${schema.collections[o2mRelation.related_collection!].primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
-					const field = o2mRelation.many_field;
-					const collection = o2mRelation.many_collection;
+					const field = o2mRelation.field;
+					const collection = o2mRelation.collection;
 					const column = `${collection}.${field}`;
 					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
-						o2mRelation.many_collection,
+						o2mRelation.collection,
 						subQueryKnex,
 						{
 							filter: value,
@@ -306,19 +308,19 @@ export function applyFilter(
 			): string | void {
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+						(relation.collection === parentCollection && relation.field === pathParts[0]) ||
+						(relation.related_collection === parentCollection && relation.meta?.one_field === pathParts[0])
 					);
 				});
 
 				if (!relation) return;
 
-				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				const isM2O = relation.collection === parentCollection && relation.field === pathParts[0];
 				const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
 
 				const remainingParts = pathParts.slice(1);
 
-				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+				const parent = isM2O ? relation.related_collection! : relation.collection;
 
 				if (remainingParts.length === 1) {
 					return `${alias || parent}.${remainingParts[0]}`;
