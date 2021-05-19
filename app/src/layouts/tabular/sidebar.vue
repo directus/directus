@@ -9,19 +9,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
 
 export default defineComponent({
 	setup() {
-		const { t } = useI18n();
-
 		const layoutState = useLayoutState();
 		const { props, loading } = toRefs(layoutState.value);
 
-		return { t, props, loading };
+		return { props, loading };
 	},
 });
 </script>

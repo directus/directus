@@ -35,6 +35,7 @@ export default defineLayout({
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const { collection, searchQuery, selection, layoutOptions, layoutQuery, filters } = toRefs(props);
+
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const fileFields = computed(() => {

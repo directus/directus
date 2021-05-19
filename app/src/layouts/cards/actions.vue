@@ -5,19 +5,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
 
 export default defineComponent({
 	setup() {
-		const { t } = useI18n();
-
 		const layoutState = useLayoutState();
 		const { itemCount, showingCount } = toRefs(layoutState.value);
 
-		return { t, itemCount, showingCount };
+		return { itemCount, showingCount };
 	},
 });
 </script>

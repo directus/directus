@@ -1,8 +1,7 @@
 <template>
 	<filter-sidebar-detail v-model="props.filters" :collection="props.collection" :loading="loading" />
 	<export-sidebar-detail
-		:layout-query="props.layoutQuery"
-		:filters="props.filters"
+		:filters="filtersWithCalendarView"
 		:search-query="props.searchQuery"
 		:collection="props.collection"
 	/>
@@ -16,9 +15,9 @@ import { useLayoutState } from '@/composables/use-layout';
 export default defineComponent({
 	setup() {
 		const layoutState = useLayoutState();
-		const { props, loading } = toRefs(layoutState.value);
+		const { props, loading, filtersWithCalendarView } = toRefs(layoutState.value);
 
-		return { props, loading };
+		return { props, loading, filtersWithCalendarView };
 	},
 });
 </script>
