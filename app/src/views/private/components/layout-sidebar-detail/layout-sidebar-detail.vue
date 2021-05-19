@@ -10,9 +10,7 @@
 				</v-select>
 			</div>
 
-			<div class="options-contents">
-				<component :is="`layout-options-${layout}`" />
-			</div>
+			<component :is="`layout-options-${layout}`" />
 		</div>
 	</sidebar-detail>
 </template>
@@ -61,10 +59,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
-
-.options-contents {
-	display: contents;
-}
 
 .layout-options ::v-deep {
 	--form-vertical-gap: 24px;
