@@ -269,13 +269,11 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-select-font-family: var(--family-sans-serif);
 }
-</style>
 
-<style lang="scss" scoped>
 .list {
 	--v-list-min-width: 0;
 }
@@ -288,19 +286,19 @@ body {
 	--v-input-font-family: var(--v-select-font-family);
 
 	cursor: pointer;
+}
 
-	.v-icon {
-		transition: transform var(--medium) var(--transition-out);
+.v-input .v-icon {
+	transition: transform var(--medium) var(--transition-out);
+}
 
-		&.active {
-			transform: scaleY(-1);
-			transition-timing-function: var(--transition-in);
-		}
-	}
+.v-input .v-icon.active {
+	transform: scaleY(-1);
+	transition-timing-function: var(--transition-in);
+}
 
-	::v-deep input {
-		cursor: pointer;
-	}
+.v-input :deep(input) {
+	cursor: pointer;
 }
 
 .other-input {
@@ -316,13 +314,13 @@ body {
 	width: max-content;
 	padding-right: 18px;
 	cursor: pointer;
+}
 
-	.v-icon {
-		position: absolute;
-	}
+.inline-display .v-icon {
+	position: absolute;
+}
 
-	&.placeholder {
-		color: var(--foreground-subdued);
-	}
+.inline-display.placeholder {
+	color: var(--foreground-subdued);
 }
 </style>
