@@ -26,9 +26,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
-		const { tableSpacing, activeFields, hideDragImage, fields, availableFields } = toRefs(layoutState.value);
+		const { props, template, dateFields, startDateField, endDateField } = toRefs(layoutState.value);
 
-		return { t, tableSpacing, activeFields, hideDragImage, fields, availableFields };
+		return { t, props, template, dateFields, startDateField, endDateField };
 	},
 });
 </script>

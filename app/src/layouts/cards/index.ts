@@ -13,7 +13,6 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
 
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import useElementSize from '@/composables/use-element-size';
 import { clone } from 'lodash';
 
 export default defineLayout({
@@ -91,7 +90,7 @@ export default defineLayout({
 			});
 		});
 
-		const { width } = useElementSize(layoutElement);
+		const width = ref(0);
 
 		const isSingleRow = computed(() => {
 			const cardsWidth = items.value.length * (size.value * 40) + (items.value.length - 1) * 24;

@@ -80,11 +80,12 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, watch, toRefs } from 'vue';
 
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 import { useLayoutState } from '@/composables/use-layout';
+import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
@@ -125,6 +126,12 @@ export default defineComponent({
 			selectAll,
 			resetPresetAndRefresh,
 		} = toRefs(layoutState.value);
+
+		const { width: elementWidth } = useElementSize(layoutElement);
+
+		watch(elementWidth, () => {
+			width.value = elementWidth.value;
+		});
 
 		return {
 			t,

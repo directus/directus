@@ -10,7 +10,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { onMounted, onUnmounted, ref, watch, toRefs, computed } from 'vue';
+import { ref, watch, toRefs, computed } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { Item, Filter, Field } from '@/types';
 import useItems from '@/composables/use-items';
@@ -215,20 +215,6 @@ export default defineLayout({
 			return options;
 		});
 
-		onMounted(() => {
-			if (!calendarEl.value) return;
-			calendar.value = new Calendar(calendarEl.value!, fullFullCalendarOptions.value);
-
-			calendar.value.on('datesSet', (args) => {
-				viewInfo.value = {
-					type: args.view.type,
-					startDateStr: formatISO(args.view.currentStart),
-				};
-			});
-
-			calendar.value.render();
-		});
-
 		// Make sure to re-render the size of the calendar when the available space changes due to the
 		// sidebar being manipulated
 		watch(
@@ -247,10 +233,6 @@ export default defineLayout({
 			},
 			{ deep: true, immediate: true }
 		);
-
-		onUnmounted(() => {
-			calendar.value?.destroy();
-		});
 
 		const showingCount = computed(() => {
 			return t('item_count', itemCount.value);
@@ -272,7 +254,26 @@ export default defineLayout({
 			startDateField,
 			endDateField,
 			showingCount,
+			createCalendar,
+			destroyCalendar,
 		};
+
+		function createCalendar() {
+			calendar.value = new Calendar(calendarEl.value!, fullFullCalendarOptions.value);
+
+			calendar.value.on('datesSet', (args) => {
+				viewInfo.value = {
+					type: args.view.type,
+					startDateStr: formatISO(args.view.currentStart),
+				};
+			});
+
+			calendar.value.render();
+		}
+
+		function destroyCalendar() {
+			calendar.value?.destroy();
+		}
 
 		function parseEvent(item: Item) {
 			if (!startDateField.value) return null;

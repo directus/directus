@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, onMounted, onUnmounted, toRefs } from 'vue';
 
 import '@fullcalendar/core/vdom';
 import { useLayoutState } from '@/composables/use-layout';
@@ -16,7 +16,16 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const layoutState = useLayoutState();
-		const { calendarEl } = toRefs(layoutState.value);
+		const { calendarEl, createCalendar, destroyCalendar } = toRefs(layoutState.value);
+
+		onMounted(() => {
+			const create = createCalendar.value;
+			create();
+		});
+		onUnmounted(() => {
+			const destroy = destroyCalendar.value;
+			destroy();
+		});
 
 		return { t, calendarEl };
 	},
