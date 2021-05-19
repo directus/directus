@@ -127,7 +127,7 @@
 			</v-item-group>
 		</div>
 
-		<textarea ref="codemirrorEl" :value="value || ''" />
+		<textarea ref="codemirrorEl" :value="value" />
 
 		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
 
@@ -204,12 +204,9 @@ export default defineComponent({
 					lineWrapping: true,
 					placeholder: props.placeholder,
 				});
-
 				codemirror.value.setValue(props.value || '');
-
 				codemirror.value.on('change', (cm, { origin }) => {
 					if (origin === 'setValue') return;
-
 					const content = cm.getValue();
 					emit('input', content);
 				});
@@ -220,6 +217,7 @@ export default defineComponent({
 			codemirror.value?.toTextArea();
 		});
 
+		// @TODO3 This is causing issues somehow
 		watch(
 			() => props.value,
 			(newValue) => {
@@ -318,31 +316,185 @@ textarea {
 	display: none;
 }
 
-.interface-input-rich-text-md ::v-deep .CodeMirror {
-	border: none;
-	border-radius: 0;
-
-	.CodeMirror-lines {
-		padding: 0 20px;
-
-		&:first-of-type {
-			margin-top: 20px;
-		}
-
-		&:last-of-type {
-			margin-bottom: 20px;
-		}
-	}
-
-	.CodeMirror-scroll {
-		min-height: 300px - 40px;
-	}
+.preview-box {
+	padding: 20px;
 }
 
-.interface-input-rich-text-md.preview {
-	::v-deep .CodeMirror {
-		display: none;
-	}
+.preview-box :deep(h1) {
+	margin-bottom: 0;
+	font-weight: 300;
+	font-size: 44px;
+	font-family: var(--font-serif), serif;
+	line-height: 52px;
+}
+
+.preview-box :deep(h2) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 34px;
+	line-height: 38px;
+}
+
+.preview-box :deep(h3) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 31px;
+}
+
+.preview-box :deep(h4) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 22px;
+	line-height: 28px;
+}
+
+.preview-box :deep(h5) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 26px;
+}
+
+.preview-box :deep(h6) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+.preview-box :deep(p) {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-family: var(--font-serif), serif;
+	line-height: 32px;
+}
+
+.preview-box :deep(a) {
+	color: #546e7a;
+}
+
+.preview-box :deep(ul),
+.preview-box :deep(ol) {
+	margin: 24px 0;
+	font-size: 18px;
+	font-family: var(--font-serif), serif;
+	line-height: 34px;
+}
+
+.preview-box :deep(ul ul),
+.preview-box :deep(ol ol),
+.preview-box :deep(ul ol),
+.preview-box :deep(ol ul) {
+	margin: 0;
+}
+
+.preview-box :deep(b),
+.preview-box :deep(strong) {
+	font-weight: 600;
+}
+
+.preview-box :deep(code) {
+	padding: 2px 4px;
+	font-size: 18px;
+	font-family: var(--family-monospace), monospace;
+	line-height: 34px;
+	overflow-wrap: break-word;
+	background-color: #eceff1;
+	border-radius: 4px;
+}
+
+.preview-box :deep(pre) {
+	padding: 20px;
+	overflow: auto;
+	font-size: 18px;
+	font-family: var(--family-monospace), monospace;
+	line-height: 24px;
+	background-color: #eceff1;
+	border-radius: 4px;
+}
+
+.preview-box :deep(blockquote) {
+	margin-left: -10px;
+	padding-left: 10px;
+	font-size: 18px;
+	font-family: var(--font-serif), serif;
+	font-style: italic;
+	line-height: 34px;
+	border-left: 2px solid #546e7a;
+}
+
+.preview-box :deep(blockquote blockquote) {
+	margin-left: 10px;
+}
+
+.preview-box :deep(video),
+.preview-box :deep(iframe),
+.preview-box :deep(img) {
+	max-width: 100%;
+	height: auto;
+	border-radius: 4px;
+}
+
+.preview-box :deep(hr) {
+	margin-top: 52px;
+	margin-bottom: 56px;
+	text-align: center;
+	border: 0;
+	border-top: 2px solid #cfd8dc;
+}
+
+.preview-box :deep(table) {
+	border-collapse: collapse;
+}
+
+.preview-box :deep(table th),
+.preview-box :deep(table td) {
+	padding: 0.4rem;
+	border: 1px solid #cfd8dc;
+}
+
+.preview-box :deep(figure) {
+	display: table;
+	margin: 1rem auto;
+}
+
+.preview-box :deep(figure figcaption) {
+	display: block;
+	margin-top: 0.25rem;
+	color: #999;
+	text-align: center;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror) {
+	border: none;
+	border-radius: 0;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
+	padding: 0 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
+	margin-top: 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
+	margin-bottom: 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-scroll) {
+	min-height: 260px;
+}
+
+.interface-input-rich-text-md.preview :deep(.CodeMirror) {
+	display: none;
 }
 
 .toolbar {
@@ -382,164 +534,6 @@ textarea {
 
 	.v-input {
 		min-width: 100px;
-	}
-}
-
-.preview-box {
-	padding: 20px;
-
-	::v-deep {
-		h1 {
-			margin-bottom: 0;
-			font-weight: 300;
-			font-size: 44px;
-			font-family: var(--font-serif), serif;
-			line-height: 52px;
-		}
-
-		h2 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 34px;
-			line-height: 38px;
-		}
-
-		h3 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 26px;
-			line-height: 31px;
-		}
-
-		h4 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 22px;
-			line-height: 28px;
-		}
-
-		h5 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 18px;
-			line-height: 26px;
-		}
-
-		h6 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 16px;
-			line-height: 24px;
-		}
-
-		p {
-			margin-top: 20px;
-			margin-bottom: 20px;
-			font-size: 16px;
-			font-family: var(--font-serif), serif;
-			line-height: 32px;
-		}
-
-		a {
-			color: #546e7a;
-		}
-
-		ul,
-		ol {
-			margin: 24px 0;
-			font-size: 18px;
-			font-family: var(--font-serif), serif;
-			line-height: 34px;
-		}
-
-		ul ul,
-		ol ol,
-		ul ol,
-		ol ul {
-			margin: 0;
-		}
-
-		b,
-		strong {
-			font-weight: 600;
-		}
-
-		code {
-			padding: 2px 4px;
-			font-size: 18px;
-			font-family: var(--family-monospace), monospace;
-			line-height: 34px;
-			overflow-wrap: break-word;
-			background-color: #eceff1;
-			border-radius: 4px;
-		}
-
-		pre {
-			padding: 20px;
-			overflow: auto;
-			font-size: 18px;
-			font-family: var(--family-monospace), monospace;
-			line-height: 24px;
-			background-color: #eceff1;
-			border-radius: 4px;
-		}
-
-		blockquote {
-			margin-left: -10px;
-			padding-left: 10px;
-			font-size: 18px;
-			font-family: var(--font-serif), serif;
-			font-style: italic;
-			line-height: 34px;
-			border-left: 2px solid #546e7a;
-
-			blockquote {
-				margin-left: 10px;
-			}
-		}
-
-		video,
-		iframe,
-		img {
-			max-width: 100%;
-			height: auto;
-			border-radius: 4px;
-		}
-
-		hr {
-			margin-top: 52px;
-			margin-bottom: 56px;
-			text-align: center;
-			border: 0;
-			border-top: 2px solid #cfd8dc;
-		}
-
-		table {
-			border-collapse: collapse;
-		}
-
-		table th,
-		table td {
-			padding: 0.4rem;
-			border: 1px solid #cfd8dc;
-		}
-
-		figure {
-			display: table;
-			margin: 1rem auto;
-		}
-
-		figure figcaption {
-			display: block;
-			margin-top: 0.25rem;
-			color: #999;
-			text-align: center;
-		}
 	}
 }
 </style>

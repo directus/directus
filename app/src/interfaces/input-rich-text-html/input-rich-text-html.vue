@@ -402,7 +402,7 @@ export default defineComponent({
 	padding-bottom: var(--content-padding);
 }
 
-::v-deep .v-card-title {
+:deep(.v-card-title) {
 	margin-bottom: 24px;
 	font-size: 24px;
 }
