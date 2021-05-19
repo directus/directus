@@ -164,6 +164,7 @@ export default defineComponent({
 			values.value.layout,
 			reactive({
 				collection: values.value.collection,
+				selection: [],
 				layoutOptions,
 				layoutQuery,
 				filters: layoutFilters,

@@ -62,6 +62,7 @@ export default defineComponent({
 			layout,
 			reactive({
 				collection: 'directus_activity',
+				selection: [],
 				layoutOptions,
 				layoutQuery,
 				filters,

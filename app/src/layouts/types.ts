@@ -17,7 +17,7 @@ export interface LayoutConfig {
 
 export interface LayoutProps {
 	collection: string;
-	selection?: Item[];
+	selection: Item[];
 	layoutOptions: any;
 	layoutQuery: any;
 	filters: Filter[];
