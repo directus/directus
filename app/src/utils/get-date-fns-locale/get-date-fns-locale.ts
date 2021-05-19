@@ -1,6 +1,8 @@
 import { i18n } from '@/lang';
 import { Locale } from 'date-fns';
 
+import importDateLocale from './import-date-locale';
+
 export async function getDateFNSLocale(): Promise<Locale> {
 	const lang = i18n.global.locale.value;
 
@@ -11,7 +13,7 @@ export async function getDateFNSLocale(): Promise<Locale> {
 	for (const l of localesToTry) {
 		try {
 			// @TODO3 Investigate manual chunking
-			const mod = await import(`@vite-module!date-fns/locale/${l}/index.js`);
+			const mod = await importDateLocale(l);
 
 			locale = mod.default;
 			break;
