@@ -389,126 +389,122 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
 	--v-table-background-color: var(--background-input);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-table {
 	position: relative;
 	height: var(--v-table-height);
 	overflow-y: auto;
+}
 
-	table {
-		min-width: 100%;
-		border-collapse: collapse;
-		border-spacing: 0;
+table {
+	min-width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
 
-		tbody {
-			display: contents;
-		}
+table tbody {
+	display: contents;
+}
 
-		::v-deep {
-			thead {
-				display: contents;
-			}
+table :deep(thead) {
+	display: contents;
+}
 
-			tr,
-			.loading-indicator {
-				display: grid;
-				grid-template-columns: var(--grid-columns);
-			}
+table :deep(td),
+table :deep(th) {
+	color: var(--v-table-color);
+}
 
-			td,
-			th {
-				color: var(--v-table-color);
+table :deep(tr),
+table :deep(.loading-indicator) {
+	display: grid;
+	grid-template-columns: var(--grid-columns);
+}
 
-				&.align-left {
-					text-align: left;
-				}
+table :deep(td.align-left),
+table :deep(th.align-left) {
+	text-align: left;
+}
 
-				&.align-center {
-					text-align: center;
-				}
+table :deep(td.align-center),
+table :deep(th.align-center) {
+	text-align: center;
+}
 
-				&.align-right {
-					text-align: right;
-				}
-			}
+table :deep(td.align-right),
+table :deep(th.align-right) {
+	text-align: right;
+}
 
-			.loading-indicator {
-				position: relative;
-				z-index: 3;
+table :deep(.loading-indicator) {
+	position: relative;
+	z-index: 3;
+}
 
-				> th {
-					margin-right: var(--content-padding);
-				}
-			}
+table :deep(.loading-indicator > th) {
+	margin-right: var(--content-padding);
+}
 
-			.sortable-ghost {
-				.cell {
-					background-color: var(--background-subdued);
-				}
-			}
-		}
-	}
+table :deep(.sortable-ghost .cell) {
+	background-color: var(--background-subdued);
+}
 
-	&.loading {
-		table {
-			pointer-events: none;
-		}
+.loading table {
+	pointer-events: none;
+}
 
-		.loading-indicator {
-			height: auto;
-			padding: 0;
-			border: none;
+.loading .loading-indicator {
+	height: auto;
+	padding: 0;
+	border: none;
+}
 
-			.v-progress-linear {
-				--v-progress-linear-height: 2px;
-				--v-progress-linear-color: var(--border-normal-alt);
+.loading .loading-indicator .v-progress-linear {
+	--v-progress-linear-height: 2px;
+	--v-progress-linear-color: var(--border-normal-alt);
 
-				position: absolute;
-				top: -2px;
-				left: 0;
-				width: 100%;
-			}
+	position: absolute;
+	top: -2px;
+	left: 0;
+	width: 100%;
+}
 
-			th {
-				padding: 0;
-			}
+.loading .loading-indicator th {
+	padding: 0;
+}
 
-			&.sticky th {
-				position: sticky;
-				top: 48px;
-				z-index: 2;
-			}
-		}
-	}
+.loading .loading-indicator.sticky th {
+	position: sticky;
+	top: 48px;
+	z-index: 2;
+}
 
-	.loading-text,
-	.no-items-text {
-		text-align: center;
-		background-color: var(--background-input);
+.loading-text,
+.no-items-text {
+	text-align: center;
+	background-color: var(--background-input);
+}
 
-		td {
-			padding: 16px;
-			color: var(--foreground-subdued);
-		}
-	}
+.loading-text td,
+.no-items-text td {
+	padding: 16px;
+	color: var(--foreground-subdued);
+}
 
-	&.inline {
-		border: 2px solid var(--border-normal);
-		border-radius: var(--border-radius);
+.inline {
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+}
 
-		table ::v-deep .table-row:last-of-type .cell {
-			border-bottom: none;
-		}
-	}
+.inline table :deep(.table-row:last-of-type .cell) {
+	border-bottom: none;
 }
 
 .disabled {
