@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.66",
+	"version": "9.0.0-rc.69",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -47,7 +47,7 @@
 		"axios": "^0.21.1"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "^17.1.0",
+		"@rollup/plugin-commonjs": "^19.0.0",
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
 		"@types/jest": "^26.0.22",

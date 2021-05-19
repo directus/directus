@@ -354,8 +354,7 @@ export default defineComponent({
 		height: 500px;
 		&.error,
 		&.loading {
-			opacity: 0.15;
-			// pointer-events: none;
+			opacity: 0.25;
 		}
 	}
 	.v-info {

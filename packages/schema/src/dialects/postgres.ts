@@ -1,4 +1,4 @@
-import KnexPostgres from 'knex-schema-inspector/dist/dialects/postgres';
+import KnexPostgres, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/postgres';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';

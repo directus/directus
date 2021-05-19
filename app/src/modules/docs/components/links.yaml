@@ -68,6 +68,8 @@
       name: Collections
     - to: '/guides/displays'
       name: Displays
+    - to: '/guides/email-templates'
+      name: Email Templates
     - to: '/guides/fields'
       name: Fields
     - to: '/guides/files'
