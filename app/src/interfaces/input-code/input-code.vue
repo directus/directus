@@ -104,7 +104,7 @@ export default defineComponent({
 			codemirror.value?.toTextArea();
 		});
 
-		const stringValue = computed<string>(() => {
+		const stringValue = computed(() => {
 			if (props.value == null) return '';
 
 			if (props.type === 'json') {
