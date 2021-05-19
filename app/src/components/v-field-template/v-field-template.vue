@@ -286,7 +286,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .content {
 	display: block;
 	flex-grow: 1;
@@ -296,47 +296,45 @@ export default defineComponent({
 	font-size: 14px;
 	font-family: var(--family-monospace);
 	white-space: nowrap;
+}
 
-	::v-deep {
-		> * {
-			display: inline-block;
-			white-space: nowrap;
-		}
+:deep(br) {
+	display: none;
+}
 
-		br {
-			display: none;
-		}
+:deep(span) {
+	min-width: 1px;
+	min-height: 1em;
+}
 
-		span {
-			min-width: 1px;
-			min-height: 1em;
-		}
+:deep(button) {
+	margin: -1px 4px 0;
+	padding: 2px 4px 0;
+	color: var(--primary);
+	background-color: var(--primary-alt);
+	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, color;
+	user-select: none;
+}
 
-		button {
-			margin: -1px 4px 0; // top offset for monospace
-			padding: 2px 4px 0; // top offset for monospace
-			color: var(--primary);
-			background-color: var(--primary-alt);
-			border-radius: var(--border-radius);
-			transition: var(--fast) var(--transition);
-			transition-property: background-color, color;
-			user-select: none;
+:deep(button:hover) {
+	color: var(--white);
+	background-color: var(--danger);
+}
 
-			&:hover {
-				color: var(--white);
-				background-color: var(--danger);
-			}
-		}
-	}
+.placeholder {
+	position: absolute;
+	top: 50%;
+	left: 14px;
+	color: var(--foreground-subdued);
+	transform: translateY(-50%);
+	user-select: none;
+	pointer-events: none;
+}
 
-	.placeholder {
-		position: absolute;
-		top: 50%;
-		left: 14px;
-		color: var(--foreground-subdued);
-		transform: translateY(-50%);
-		user-select: none;
-		pointer-events: none;
-	}
+.content > :deep(*) {
+	display: inline-block;
+	white-space: nowrap;
 }
 </style>
