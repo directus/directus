@@ -81,7 +81,7 @@
 		"raw-loader": "^4.0.2",
 		"resize-observer": "^1.0.0",
 		"rimraf": "^3.0.2",
-		"sass": "^1.26.10",
+		"sass": "^1.32.13",
 		"sass-loader": "^9.0.2",
 		"stylelint": "^13.13.1",
 		"tiny-async-pool": "^1.2.0",
