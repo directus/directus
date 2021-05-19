@@ -373,11 +373,6 @@ module.exports = {
 								type: 'page',
 							},
 							{
-								path: 'reference/app/components/v-button-group',
-								title: 'Button Group',
-								type: 'page',
-							},
-							{
 								path: 'reference/app/components/v-button',
 								title: 'Button',
 								type: 'page',

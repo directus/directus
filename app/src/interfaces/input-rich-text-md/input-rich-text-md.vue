@@ -121,10 +121,10 @@
 
 			<div class="spacer"></div>
 
-			<v-button-group class="view" mandatory v-model="view" rounded>
+			<v-item-group class="view" mandatory v-model="view" rounded>
 				<v-button x-small value="editor">Editor</v-button>
 				<v-button x-small value="preview">Preview</v-button>
-			</v-button-group>
+			</v-item-group>
 		</div>
 
 		<textarea ref="codemirrorEl" :value="value || ''" />

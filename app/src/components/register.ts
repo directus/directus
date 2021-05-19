@@ -12,7 +12,6 @@ import TransitionExpand from './transition/expand';
 import VAvatar from './v-avatar/';
 import VBadge from './v-badge/';
 import VBreadcrumb from './v-breadcrumb';
-import VButtonGroup from './v-button-group/';
 import VButton from './v-button/';
 import VCard, { VCardActions, VCardSubtitle, VCardText, VCardTitle } from './v-card';
 import VCheckbox from './v-checkbox/';
@@ -55,7 +54,6 @@ export function registerComponents(app: App): void {
 	app.component('v-badge', VBadge);
 	app.component('v-breadcrumb', VBreadcrumb);
 	app.component('v-button', VButton);
-	app.component('v-button-group', VButtonGroup);
 	app.component('v-card-actions', VCardActions);
 	app.component('v-card-subtitle', VCardSubtitle);
 	app.component('v-card-text', VCardText);

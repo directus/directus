@@ -136,7 +136,7 @@ export default defineComponent({
 
 		const { active, toggle } = useGroupable({
 			value: props.value,
-			group: 'button-group',
+			group: 'item-group',
 		});
 
 		return { sizeClass, onClick, component, active, toggle };
