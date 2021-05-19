@@ -132,63 +132,65 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-pagination-active-color: var(--primary);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-pagination {
 	display: flex;
+}
+
+.gap {
+	display: none;
+	margin: 0 4px;
+	color: var(--foreground-subdued);
+	line-height: 2em;
+}
+
+@media (min-width: 600px) {
 
 	.gap {
-		display: none;
-		margin: 0 4px;
-		color: var(--foreground-subdued);
-		line-height: 2em;
-
-		@media (min-width: 600px) {
-			display: inline;
-		}
+		display: inline;
 	}
+}
 
-	.v-button {
-		--v-button-background-color-hover: var(--background-normal);
-		--v-button-background-color: var(--background-subdued);
-		--v-button-color: var(--foreground-normal);
+.v-button {
+	--v-button-background-color-hover: var(--background-normal);
+	--v-button-background-color: var(--background-subdued);
+	--v-button-color: var(--foreground-normal);
 
-		margin: 0 2px;
-		vertical-align: middle;
+	margin: 0 2px;
+	vertical-align: middle;
+}
 
-		&.page:not(.active) {
-			display: none;
+.v-button.page:not(.active) {
+	display: none;
+}
 
-			@media (min-width: 600px) {
-				display: inline;
-			}
-		}
+@media (min-width: 600px) {
 
-		& ::v-deep {
-			.small {
-				--v-button-min-width: 32px;
-			}
-		}
-
-		&:first-child {
-			margin-left: 0;
-		}
-
-		&:last-child {
-			margin-right: 0;
-		}
-
-		&.active {
-			--v-button-background-color-hover: var(--primary);
-			--v-button-color-hover: var(--foreground-inverted);
-			--v-button-background-color: var(--primary);
-			--v-button-color: var(--foreground-inverted);
-		}
+	.v-button.page:not(.active) {
+		display: inline;
 	}
+}
+
+.v-button :deep(.small) {
+	--v-button-min-width: 32px;
+}
+
+.v-button:first-child {
+	margin-left: 0;
+}
+
+.v-button:last-child {
+	margin-right: 0;
+}
+
+.v-button.active {
+	--v-button-background-color-hover: var(--primary);
+	--v-button-color-hover: var(--foreground-inverted);
+	--v-button-background-color: var(--primary);
+	--v-button-color: var(--foreground-inverted);
 }
 </style>
