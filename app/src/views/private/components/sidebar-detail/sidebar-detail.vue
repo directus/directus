@@ -103,6 +103,7 @@ body {
 		&.open,
 		&:hover {
 			color: var(--sidebar-detail-color-active);
+
 			.icon {
 				--v-icon-color: var(--sidebar-detail-color-active);
 			}
@@ -157,15 +158,14 @@ body {
 
 	.content {
 		padding: 16px;
-		::v-deep {
-			.page-description {
-				margin-bottom: 8px;
-				color: var(--foreground-subdued);
 
-				a {
-					color: var(--primary);
-				}
-			}
+		:deep(.page-description) {
+			margin-bottom: 8px;
+			color: var(--foreground-subdued);
+		}
+
+		:deep(.page-description a) {
+			color: var(--primary);
 		}
 	}
 

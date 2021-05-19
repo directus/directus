@@ -172,7 +172,7 @@ export default defineComponent({
 
 	display: contents;
 
-	::v-deep > table {
+	& > :deep(table) {
 		min-width: calc(100% - var(--content-padding)) !important;
 		margin-left: var(--content-padding);
 

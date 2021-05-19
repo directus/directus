@@ -105,7 +105,7 @@ export default defineComponent({
 .icon {
 	--v-icon-color: var(--foreground-subdued);
 
-	::v-deep i {
+	:deep(i) {
 		vertical-align: unset;
 	}
 }

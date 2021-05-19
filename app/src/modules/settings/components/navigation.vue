@@ -99,23 +99,22 @@ Node: ${parsedInfo.value?.node.version}
 });
 </script>
 
-<style lang="scss" scoped>
-.version {
-	.v-icon {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	::v-deep .v-text-overflow {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	&:hover {
-		.v-icon {
-			color: var(--foreground-normal-alt);
-		}
-		::v-deep .v-text-overflow {
-			color: var(--foreground-normal-alt);
-		}
-	}
+<style scoped>
+.version .v-icon {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.version :deep(.v-text-overflow) {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.version:hover .v-icon {
+	color: var(--foreground-normal-alt);
+}
+
+.version:hover :deep(.v-text-overflow) {
+	color: var(--foreground-normal-alt);
 }
 </style>

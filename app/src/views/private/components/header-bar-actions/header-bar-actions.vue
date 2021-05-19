@@ -40,77 +40,74 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .actions {
 	position: relative;
 	display: flex;
 	background-color: transparent;
+}
 
-	.gradient-wrapper {
-		display: contents;
+.actions .gradient-wrapper {
+	display: contents;
+}
+
+.actions .expand {
+	--v-icon-color: var(--foreground-normal);
+
+	flex-shrink: 0;
+	margin-right: 8px;
+}
+@media (min-width: 960px) {
+	.actions .expand {
+		display: none;
 	}
+}
 
-	.expand {
-		--v-icon-color: var(--foreground-normal);
+.actions .action-buttons {
+	display: flex;
+	flex-shrink: 0;
+}
 
-		flex-shrink: 0;
-		margin-right: 8px;
+.actions .action-buttons .v-button.secondary {
+	--v-icon-color: var(--foreground-normal);
+}
 
-		@media (min-width: 960px) {
-			display: none;
-		}
+.actions .action-buttons > :deep(*:not(:last-child)) {
+	display: none;
+	margin-right: 8px;
+}
+
+.actions .action-buttons .sidebar-toggle {
+	flex-shrink: 0;
+}
+@media (min-width: 960px) {
+	.actions .action-buttons .sidebar-toggle {
+		display: none;
 	}
+}
 
-	.action-buttons {
-		display: flex;
-		flex-shrink: 0;
+.actions.active {
+	position: absolute;
+	top: 0;
+	right: 0;
+	align-items: center;
+	justify-content: flex-end;
+	height: 100%;
+	padding: inherit;
+	padding-left: 8px;
+	background-color: var(--background-page);
+}
 
-		.v-button.secondary {
-			--v-icon-color: var(--foreground-normal);
-		}
+.actions.active .expand {
+	transform: rotate(180deg);
+}
 
-		> *:not(:last-child) {
-			display: none;
-			margin-right: 8px;
-		}
-
-		.sidebar-toggle {
-			flex-shrink: 0;
-
-			@media (min-width: 960px) {
-				display: none;
-			}
-		}
-	}
-
-	&.active {
-		position: absolute;
-		top: 0;
-		right: 0;
-		align-items: center;
-		justify-content: flex-end;
-		height: 100%;
-		padding: inherit;
-		padding-left: 8px;
-		background-color: var(--background-page);
-
-		.expand {
-			transform: rotate(180deg);
-		}
-
-		.action-buttons {
-			> * {
-				display: inherit;
-			}
-		}
-	}
-
-	@media (min-width: 960px) {
-		.action-buttons ::v-deep {
-			> *:not(.sidebar-toggle) {
-				display: inherit !important;
-			}
-		}
+.actions.active .action-buttons > * {
+	display: inherit;
+}
+@media (min-width: 960px) {
+	.actions .action-buttons > :deep(*:not(.sidebar-toggle)) {
+		display: inherit !important;
 	}
 }
 </style>

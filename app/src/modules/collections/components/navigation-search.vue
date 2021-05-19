@@ -49,7 +49,7 @@ export default defineComponent({
 .v-input {
 	height: 40px;
 
-	::v-deep .input {
+	:deep(.input) {
 		border: none;
 	}
 }

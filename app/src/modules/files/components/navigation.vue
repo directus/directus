@@ -124,7 +124,7 @@ export default defineComponent({
 	width: 100%;
 	overflow-x: hidden;
 
-	::v-deep .v-list-item-content {
+	:deep(.v-list-item-content) {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

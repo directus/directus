@@ -208,6 +208,7 @@ export default defineComponent({
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-color-hover: var(--foreground-inverted);
+
 			&.inactive {
 				--v-chip-background-color: var(--background-subdued);
 				--v-chip-color: var(--foreground-subdued);
@@ -229,7 +230,8 @@ export default defineComponent({
 
 			&:hover {
 				--v-chip-close-color: var(--white);
-				::v-deep .chip-content .close-outline .close:hover {
+
+				:deep(.chip-content .close-outline .close:hover) {
 					--v-icon-color: var(--danger);
 				}
 			}

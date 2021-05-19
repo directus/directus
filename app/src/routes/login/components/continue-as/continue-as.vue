@@ -62,30 +62,27 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.continue-as {
-	p {
-		margin-bottom: 32px;
-	}
+<style scoped>
+.continue-as p {
+	margin-bottom: 32px;
+}
 
-	::v-deep {
-		// In the translated string for continue as, there's a B element to emphasize the users name
-		b {
-			font-weight: 600;
-		}
-	}
+.continue-as :deep(b) {
+	font-weight: 600;
+}
 
-	.actions {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	.sign-out {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-		&:hover {
-			color: var(--foreground-normal);
-		}
-	}
+.continue-as .actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.continue-as .sign-out {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.continue-as .sign-out:hover {
+	color: var(--foreground-normal);
 }
 </style>

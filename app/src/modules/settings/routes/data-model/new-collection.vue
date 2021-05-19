@@ -483,20 +483,16 @@ export default defineComponent({
 	@include form-grid;
 }
 
-.system {
-	::v-deep .v-input {
-		.input {
-			color: var(--foreground-subdued);
-		}
+.system :deep(.v-input .input) {
+	color: var(--foreground-subdued);
+}
 
-		&.active .input {
-			color: var(--foreground-normal);
-		}
-	}
+.system :deep(.v-input .active .input) {
+	color: var(--foreground-normal);
+}
 
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-	}
+.system .v-icon {
+	--v-icon-color: var(--foreground-subdued);
 }
 
 .spacer {

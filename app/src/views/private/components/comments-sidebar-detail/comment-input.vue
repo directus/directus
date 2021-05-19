@@ -84,70 +84,54 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.new-comment {
-	&::v-deep {
-		&.expand-on-focus {
-			textarea {
-				position: relative;
-				transition: margin-bottom var(--fast) var(--transition);
-			}
+<style scoped>
+.new-comment :deep(.expand-on-focus textarea) {
+	position: relative;
+	transition: margin-bottom var(--fast) var(--transition);
+}
 
-			.append {
-				&::after {
-					position: absolute;
-					right: 0;
-					bottom: 36px;
-					left: 0;
-					height: 8px;
-					background: linear-gradient(
-						180deg,
-						rgba(var(--background-page-rgb), 0) 0%,
-						rgba(var(--background-page-rgb), 1) 100%
-					);
-					content: '';
-				}
-			}
+.new-comment :deep(.expand-on-focus .append::after) {
+	position: absolute;
+	right: 0;
+	bottom: 36px;
+	left: 0;
+	height: 8px;
+	background: linear-gradient(180deg, rgba(var(--background-page-rgb), 0) 0%, rgba(var(--background-page-rgb), 1) 100%);
+	content: '';
+}
 
-			&:focus,
-			&:focus-within,
-			&.has-content {
-				textarea {
-					margin-bottom: 36px;
-				}
-			}
-		}
-	}
+.new-comment
+	:deep(.expand-on-focus:focus textarea, .expand-on-focus:focus-within textarea, .expand-on-focus.has-content
+		textarea) {
+	margin-bottom: 36px;
+}
 
-	.add-mention {
-		position: absolute;
-		bottom: 8px;
-		left: 8px;
-		color: var(--foreground-subdued);
-		cursor: pointer;
-		transition: color var(--fast) var(--transition);
-	}
+.new-comment .add-mention {
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	color: var(--foreground-subdued);
+	cursor: pointer;
+	transition: color var(--fast) var(--transition);
+}
 
-	.add-emoji {
-		position: absolute;
-		bottom: 8px;
-		left: 36px;
-		color: var(--foreground-subdued);
-		cursor: pointer;
-		transition: color var(--fast) var(--transition);
-	}
+.new-comment .add-emoji {
+	position: absolute;
+	bottom: 8px;
+	left: 36px;
+	color: var(--foreground-subdued);
+	cursor: pointer;
+	transition: color var(--fast) var(--transition);
+}
 
-	.add-mention,
-	.add-emoji {
-		&:hover {
-			color: var(--primary);
-		}
-	}
+.new-comment .add-mention:hover,
+.new-comment .add-emoji:hover {
+	color: var(--primary);
+}
 
-	.post-comment {
-		position: absolute;
-		right: 8px;
-		bottom: 8px;
-	}
+.new-comment .post-comment {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
 }
 </style>

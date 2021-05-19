@@ -518,14 +518,13 @@ export default defineComponent({
 	--form-vertical-gap: 24px;
 }
 
-.layout-options ::v-deep {
+:deep(.layout-options) {
 	--form-vertical-gap: 24px;
-
-	.type-label {
-		font-size: 1rem;
-	}
-
 	@include form-grid;
+}
+
+:deep(.layout-options .type-label) {
+	font-size: 1rem;
 }
 
 .subdued {

@@ -478,14 +478,14 @@ export default defineComponent({
 	--input-height: 48px;
 	--input-padding: 8px;
 
-	::v-deep .input {
+	:deep(.input) {
 		background-color: var(--card-face-color);
 		border: none;
 		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+	}
 
-		&:hover {
-			background-color: var(--card-face-color);
-		}
+	:deep(.input:hover) {
+		background-color: var(--card-face-color);
 	}
 
 	.label {

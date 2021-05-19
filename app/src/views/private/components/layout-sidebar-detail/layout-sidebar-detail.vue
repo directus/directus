@@ -10,7 +10,7 @@
 				</v-select>
 			</div>
 
-			<component :is="`layout-options-${layout}`" />
+			<component class="options" :is="`layout-options-${layout}`" />
 		</div>
 	</sidebar-detail>
 </template>
@@ -60,13 +60,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.layout-options ::v-deep {
+:deep(.layout-options) {
 	--form-vertical-gap: 24px;
-
-	.type-label {
-		font-size: 1rem;
-	}
-
 	@include form-grid;
+}
+
+:deep(.layout-options .type-label) {
+	font-size: 1rem;
 }
 </style>

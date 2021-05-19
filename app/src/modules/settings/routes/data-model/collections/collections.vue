@@ -213,22 +213,18 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.icon ::v-deep i {
+<style scoped>
+.icon :deep(i) {
 	vertical-align: baseline;
 }
 
-.icon.hidden ::v-deep i {
+.icon.hidden :deep(i) {
 	color: var(--foreground-subdued);
 }
 
-.icon.system ::v-deep i {
+.icon.system :deep(i) {
 	color: var(--primary);
 }
-
-// .icon.unmanaged ::v-deep i {
-// 	color: var(--warning);
-// }
 
 .collection {
 	font-family: var(--family-monospace);
@@ -241,10 +237,6 @@ export default defineComponent({
 .system {
 	color: var(--primary);
 }
-
-// .unmanaged {
-// 	color: var(--warning);
-// }
 
 .note {
 	color: var(--foreground-subdued);

@@ -100,22 +100,9 @@ export default defineComponent({
 	height: 100%;
 	color: #263238;
 
-	&.branded {
-		::v-deep {
-			.v-button {
-				--v-button-background-color: var(--foreground-normal-alt);
-				--v-button-background-color-hover: var(--foreground-normal-alt);
-				--v-button-background-color-activated: var(--foreground-normal-alt);
-			}
-
-			.v-input {
-				--v-input-border-color-focus: var(--foreground-normal);
-			}
-		}
-	}
-
 	// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
-	::v-slotted(.v-icon) {
+
+	:slotted(.v-icon) {
 		--v-icon-color: var(--foreground-subdued);
 
 		margin-left: 4px;
@@ -144,7 +131,8 @@ export default defineComponent({
 		transition: max-width var(--medium) var(--transition);
 
 		// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
-		::v-slotted(.type-title) {
+
+		:slotted(.type-title) {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
@@ -192,6 +180,7 @@ export default defineComponent({
 			align-items: flex-end;
 			justify-content: center;
 			height: 10px;
+
 			.note {
 				max-width: 340px;
 				margin: 0 auto;
@@ -225,6 +214,7 @@ export default defineComponent({
 		.title {
 			margin-top: 2px;
 			margin-left: 16px;
+
 			h1 {
 				color: var(--foreground-subdued);
 				color: var(--brand);
@@ -232,6 +222,7 @@ export default defineComponent({
 				font-size: 24px;
 				line-height: 24px;
 			}
+
 			.subtitle {
 				width: 100%;
 				color: var(--foreground-subdued);
@@ -256,6 +247,16 @@ export default defineComponent({
 			object-fit: contain;
 			object-position: center center;
 		}
+	}
+
+	&.branded :deep(.v-button) {
+		--v-button-background-color: var(--foreground-normal-alt);
+		--v-button-background-color-hover: var(--foreground-normal-alt);
+		--v-button-background-color-activated: var(--foreground-normal-alt);
+	}
+
+	&.branded :deep(.v-input) {
+		--v-input-border-color-focus: var(--foreground-normal);
 	}
 }
 

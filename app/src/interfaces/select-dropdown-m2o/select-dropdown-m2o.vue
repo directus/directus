@@ -447,7 +447,7 @@ export default defineComponent({
 .many-to-one {
 	position: relative;
 
-	::v-deep .v-input .append {
+	:deep(.v-input .append) {
 		display: flex;
 	}
 }

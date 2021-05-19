@@ -710,11 +710,11 @@ export default defineComponent({
 }
 
 .dragging {
-	::v-deep * {
+	:deep(*) {
 		pointer-events: none;
 	}
 
-	::v-deep [data-dropzone] {
+	:deep([data-dropzone]) {
 		pointer-events: all;
 	}
 }

@@ -45,7 +45,7 @@ export default defineComponent({
 	direction: rtl;
 
 	> *,
-	::v-deep > * {
+	> :deep(*) {
 		direction: ltr;
 	}
 
