@@ -94,8 +94,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .public-view {
 	display: flex;
 	width: 100%;
@@ -165,7 +163,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			padding: 40px 80px;
 		}
 	}
@@ -207,7 +205,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			display: flex;
 		}
 	}

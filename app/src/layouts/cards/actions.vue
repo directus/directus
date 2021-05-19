@@ -20,8 +20,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .item-count {
 	position: relative;
 	display: none;
@@ -29,7 +27,7 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	white-space: nowrap;
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		display: inline;
 	}
 }

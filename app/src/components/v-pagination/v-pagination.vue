@@ -139,8 +139,6 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-pagination {
 	display: flex;
 
@@ -150,7 +148,7 @@ body {
 		color: var(--foreground-subdued);
 		line-height: 2em;
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			display: inline;
 		}
 	}
@@ -166,7 +164,7 @@ body {
 		&.page:not(.active) {
 			display: none;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				display: inline;
 			}
 		}

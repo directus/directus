@@ -121,8 +121,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .radio-buttons {
 	--columns: 1;
 
@@ -132,19 +130,19 @@ export default defineComponent({
 }
 
 .grid-2 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 4;
 	}
 }

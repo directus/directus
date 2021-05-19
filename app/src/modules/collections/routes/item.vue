@@ -528,8 +528,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .action-delete {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
@@ -554,7 +552,7 @@ export default defineComponent({
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		padding: var(--content-padding);
 		padding-bottom: var(--content-padding-bottom);
 	}

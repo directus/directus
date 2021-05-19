@@ -128,8 +128,6 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-drawer {
 	position: relative;
 	display: flex;
@@ -177,7 +175,7 @@ body {
 
 			display: none;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				position: relative;
 				z-index: 2;
 				display: block;
@@ -193,7 +191,7 @@ body {
 		.v-overlay {
 			--v-overlay-z-index: 1;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				--v-overlay-z-index: none;
 
 				display: none;
@@ -207,14 +205,14 @@ body {
 			flex-grow: 1;
 			overflow: auto;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
 		}
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		width: calc(100% - 64px);
 	}
 }
@@ -227,7 +225,7 @@ body {
 		border-radius: var(--border-radius);
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		display: none;
 	}
 }

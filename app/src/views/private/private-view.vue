@@ -134,8 +134,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
@@ -148,7 +146,7 @@ export default defineComponent({
 	.nav-overlay {
 		--v-overlay-z-index: 49;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -156,7 +154,7 @@ export default defineComponent({
 	.sidebar-overlay {
 		--v-overlay-z-index: 29;
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			display: none;
 		}
 	}
@@ -193,7 +191,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
 		}
@@ -221,11 +219,11 @@ export default defineComponent({
 		}
 
 		// Offset for partially visible sidebar
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			margin-right: 64px;
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			margin-right: 0;
 		}
 	}
@@ -257,11 +255,11 @@ export default defineComponent({
 			height: 100%;
 		}
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			transform: translateX(calc(100% - 64px));
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			position: relative;
 			flex-basis: 64px;
 			flex-shrink: 0;
@@ -275,7 +273,7 @@ export default defineComponent({
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
 	}

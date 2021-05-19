@@ -504,8 +504,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .action-delete {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
@@ -568,7 +566,7 @@ export default defineComponent({
 			object-fit: cover;
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			width: 144px;
 			height: 144px;
 			margin-right: 22px;
@@ -617,7 +615,7 @@ export default defineComponent({
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		height: 188px;
 
 		.user-box-content .location {

@@ -392,7 +392,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
 .full,
@@ -506,7 +505,7 @@ export default defineComponent({
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				display: initial;
 			}
 		}

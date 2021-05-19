@@ -84,7 +84,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
 .type-title {

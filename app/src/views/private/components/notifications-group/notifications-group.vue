@@ -35,8 +35,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .notifications-group {
 	position: fixed;
 	top: 0;
@@ -51,7 +49,7 @@ export default defineComponent({
 		direction: ltr;
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		top: auto;
 		right: 12px;
 		bottom: 76px;

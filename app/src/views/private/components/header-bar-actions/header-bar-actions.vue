@@ -41,8 +41,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .actions {
 	position: relative;
 	display: flex;
@@ -58,7 +56,7 @@ export default defineComponent({
 		flex-shrink: 0;
 		margin-right: 8px;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -79,7 +77,7 @@ export default defineComponent({
 		.sidebar-toggle {
 			flex-shrink: 0;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				display: none;
 			}
 		}
@@ -107,7 +105,7 @@ export default defineComponent({
 		}
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		.action-buttons ::v-deep {
 			> *:not(.sidebar-toggle) {
 				display: inherit !important;

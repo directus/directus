@@ -83,8 +83,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .header-bar {
 	position: sticky;
 	top: -1px;
@@ -102,7 +100,7 @@ export default defineComponent({
 	transition: box-shadow var(--medium) var(--transition);
 
 	.nav-toggle {
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -110,7 +108,7 @@ export default defineComponent({
 	.title-outer-prepend {
 		display: none;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: block;
 		}
 	}
@@ -125,7 +123,7 @@ export default defineComponent({
 		margin-left: 16px;
 		overflow: hidden;
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			max-width: 70%;
 		}
 
@@ -133,7 +131,7 @@ export default defineComponent({
 			margin-right: 12px;
 			padding-right: 0;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;
 			}
@@ -148,7 +146,7 @@ export default defineComponent({
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				top: -2px;
 			}
 		}
@@ -188,12 +186,12 @@ export default defineComponent({
 		flex-shrink: 0;
 		margin-left: 8px;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		margin: 24px 0;
 		padding: 0 32px;
 	}
