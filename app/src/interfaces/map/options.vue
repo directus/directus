@@ -67,7 +67,7 @@ export default defineComponent({
 		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats[0]!);
 		const geometryType = ref<GeometryType>(geometryFormat.value == 'lnglat' ? 'Point' : props.value?.geometryType);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
-		const fitBounds = ref<boolean>(props.value?.fitBounds || true);
+		const fitBounds = ref<boolean>(props.value?.fitBounds ?? true);
 
 		const isGeometry = props.fieldData.type == 'geometry';
 		const hasGeometryType = isGeometry && !!props.fieldData?.schema?.geometry_type;

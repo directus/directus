@@ -21,7 +21,7 @@ const baseStyle: Style = {
 };
 
 export function getBasemapSources(): BasemapSource[] {
-	return [defaultBasemap, ...getSetting('basemaps')];
+	return [defaultBasemap, ...(getSetting('basemaps') || [])];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
