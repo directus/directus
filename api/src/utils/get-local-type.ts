@@ -114,7 +114,6 @@ export default function getLocalType(
 	}
 
 	if (field?.special?.[0] == 'wkt') return { type: 'geometry', geometry_format: 'wkt' };
-	if (field?.special?.[0] == 'wkb') return { type: 'geometry', geometry_format: 'wkb' };
 	if (field?.special?.[0] == 'geojson') return { type: 'geometry', geometry_format: 'geojson' };
 	if (field?.special?.[0] == 'lnglat') return { type: 'geometry', geometry_format: 'lnglat' };
 

@@ -57,7 +57,7 @@ export function queryGeometryAsText(knex: Knex, table: string, column: string): 
 		case 'mssql':
 			return knex.raw(':table:.:column:.STAsText() as :column:', { table, column });
 		case 'oracledb':
-			return knex.raw('sdo_util.from_wkbgeometry(:table:.:column:) as :column:', { table, column });
+			return knex.raw('sdo_util.from_wktgeometry(:table:.:column:) as :column:', { table, column });
 		default:
 			throw new Error(`Native geometric types not supported on ${client}.`);
 	}

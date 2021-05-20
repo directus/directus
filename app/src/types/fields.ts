@@ -18,7 +18,7 @@ export const geometryTypes = [
 ] as const;
 export type GeometryType = typeof geometryTypes[number] | 'GeometryCollection' | undefined;
 
-export const geometryFormats = ['native', 'geojson', 'wkt', 'wkb', 'lnglat'] as const;
+export const geometryFormats = ['native', 'geojson', 'wkt', 'lnglat'] as const;
 export type GeometryFormat = typeof geometryFormats[number];
 
 export const types = [

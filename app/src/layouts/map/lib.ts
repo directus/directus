@@ -58,8 +58,6 @@ export function compatibleFormatsForType(type: DataType): GeometryFormat[] {
 		case 'text':
 		case 'string':
 			return ['wkt'];
-		case 'binary':
-			return ['wkb'];
 		case 'csv':
 			return ['lnglat'];
 		default:
@@ -73,8 +71,6 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 		case 'native':
 		case 'wkt':
 			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkt();
-		case 'wkb':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkb();
 		case 'lnglat':
 			return (entry: AnyGeoJSON) => (entry as Point).coordinates;
 		case 'geojson':
@@ -90,8 +86,6 @@ export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyG
 		case 'native':
 		case 'wkt':
 			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeoJSON;
-		case 'wkb':
-			return (geom: any) => wkx.Geometry.parse(Buffer.from(geom, 'hex')).toGeoJSON() as AnyGeoJSON;
 		case 'lnglat':
 			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeoJSON;
 		case 'geojson':
