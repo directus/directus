@@ -35,16 +35,24 @@
 			</div>
 
 			<template v-if="fieldData.type == 'geometry'">
-				<template>
+				<template v-if="fieldData.schema">
+					<div class="field half-right">
+						<div class="label type-label">{{ $t('interfaces.map.storage_type') }}</div>
+						<v-select
+							:disabled="isExisting"
+							:items="geometryFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
+							v-model="fieldData.schema.geometry_format"
+							@input="onUpdateGeometryFormat"
+						/>
+					</div>
 					<div class="field half-right">
 						<div class="label type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 						<v-select
-							:disabled="isExisting"
 							:showDeselect="true"
 							:placeholder="$t('any')"
+							:disabled="isExisting || fieldData.schema.geometry_format !== 'native'"
 							:items="geometryTypes.map((value) => ({ value, text: value }))"
 							v-model="fieldData.schema.geometry_type"
-							@input="fieldData.meta.options = { ...fieldData.meta.options, geometryType: $event }"
 						/>
 					</div>
 				</template>
@@ -172,8 +180,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import i18n from '@/lang';
 import { state } from '../store';
-import { geometryTypes } from '@/types';
-import { geometryFormats } from '@/layouts/map/lib';
+import { geometryTypes, geometryFormats, GeometryFormat } from '@/types';
 import { DataType } from '@/types';
 import { TranslateResult } from 'vue-i18n';
 
@@ -304,7 +311,17 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
+			onUpdateGeometryFormat,
 		};
+
+		function onUpdateGeometryFormat(format: GeometryFormat) {
+			state.fieldData.meta!.special = [format];
+			if (format == 'lnglat') {
+				state.fieldData.schema!.geometry_type = 'Point';
+			} else if (format !== 'native') {
+				state.fieldData.schema!.geometry_type = undefined;
+			}
+		}
 
 		function useOnCreate() {
 			const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];

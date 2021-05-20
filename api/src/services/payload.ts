@@ -9,7 +9,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
-import { queryGeometryFromText } from '../utils/geometry';
+import { isNativeGeometry, queryGeometryFromText } from '../utils/geometry';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -219,7 +219,9 @@ export class PayloadService {
 		if (action == 'read') return payloads;
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type == 'geometry');
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => {
+			return field.type == 'geometry' && isNativeGeometry(field.dbType);
+		});
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
 				if (name in payload) {

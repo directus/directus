@@ -6,6 +6,21 @@ export function createGeometryColumn(
 	table: Knex.CreateTableBuilder,
 	field: RawField | Field
 ): Knex.ColumnBuilder {
+	const format = field.schema?.geometry_format;
+	switch (format) {
+		case 'native':
+			break;
+		case 'geojson':
+			return table.json(field.field);
+		case 'wkb':
+			return table.binary(field.field);
+		case 'wkt':
+		case 'lnglat':
+			return table.string(field.field);
+		default:
+			throw new Error(`Unknown geometry format: ${format}.`);
+			break;
+	}
 	const type = field.schema?.geometry_type || 'geometry';
 	const client = knex.client.config.client;
 	switch (client) {
@@ -64,4 +79,21 @@ export function queryGeometryFromText(knex: Knex, text: string): Knex.Raw {
 		default:
 			throw new Error(`Native geometric types not supported on ${client}.`);
 	}
+}
+
+const dbGeometricTypes = new Set([
+	'point',
+	'polygon',
+	'linestring',
+	'multipoint',
+	'multipolygon',
+	'multilinestring',
+	'geometry',
+	'geometrycollection',
+	'sdo_geometry',
+	'user-defined',
+]);
+
+export function isNativeGeometry(type?: string | null): boolean {
+	return !!type && dbGeometricTypes.has(type.toLowerCase());
 }

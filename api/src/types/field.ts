@@ -41,7 +41,7 @@ export type Field = {
 	collection: string;
 	field: string;
 	type: DataType;
-	schema: (Column & { geometry_type?: string }) | null;
+	schema: (Column & { geometry_type?: string; geometry_format?: string }) | null;
 	meta: FieldMeta | null;
 };
 

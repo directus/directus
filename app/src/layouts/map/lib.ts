@@ -1,4 +1,4 @@
-import { DataType, GeometryType } from '@/types';
+import { DataType, GeometryType, GeometryFormat } from '@/types';
 import {
 	BBox,
 	Point,
@@ -16,9 +16,6 @@ import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
 import wkx from 'wkx';
-
-export const geometryFormats = ['native', 'geojson', 'wkt', 'wkb', 'lnglat'] as const;
-export type GeometryFormat = typeof geometryFormats[number];
 
 export type GeometryOptions = {
 	geometryField: string;

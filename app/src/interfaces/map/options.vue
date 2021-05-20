@@ -4,8 +4,8 @@
 			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
 			<v-select
 				v-model="geometryFormat"
-				:disabled="isGeometry || geometryFormatOptions.length == 1"
-				:items="geometryFormatOptions"
+				:disabled="isGeometry || compatibleFormats.length == 1"
+				:items="compatibleFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
 			/>
 		</div>
 		<div class="field half-right">
@@ -13,8 +13,9 @@
 			<v-select
 				v-model="geometryType"
 				:placeholder="$t('any')"
+				:showDeselect="true"
 				:disabled="hasGeometryType || geometryFormat == 'lnglat'"
-				:items="geometryTypeOptions"
+				:items="geometryTypes.map((value) => ({ value, text: value }))"
 			/>
 		</div>
 		<div class="field">
@@ -32,12 +33,11 @@
 import { Field } from '@/types';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { GeometryOptions } from '@/layouts/map/lib';
-import { geometryTypes, GeometryType } from '@/types';
-import { geometryFormats, GeometryFormat, compatibleFormatsForType } from '@/layouts/map/lib';
+import { geometryTypes, GeometryType, GeometryFormat } from '@/types';
+import { compatibleFormatsForType } from '@/layouts/map/lib';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
 import { BasemapSelectControl } from '@/layouts/map/controls';
-import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -54,23 +54,16 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const compatibleFormats = compatibleFormatsForType(props.fieldData.type);
-		const geometryFormatOptions = compatibleFormats.map((value) => ({
-			value,
-			text: i18n.t(`interfaces.map.${value}`),
-		}));
+		const isGeometry = props.fieldData.type == 'geometry';
+		const hasGeometryType = isGeometry && !!props.fieldData!.schema!.geometry_type;
+		const compatibleFormats = isGeometry
+			? [props.fieldData!.schema!.geometry_format]
+			: compatibleFormatsForType(props.fieldData.type);
 
-		const geometryTypeOptions = geometryTypes
-			.map((value) => ({ value, text: value }))
-			.concat({ text: i18n.t('any'), value: undefined } as any);
-
-		const geometryFormat = ref<GeometryFormat>(props.value?.geometryFormat ?? compatibleFormats[0]!);
+		const geometryFormat = ref<GeometryFormat>(compatibleFormats[0]!);
 		const geometryType = ref<GeometryType>(geometryFormat.value == 'lnglat' ? 'Point' : props.value?.geometryType);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 		const fitBounds = ref<boolean>(props.value?.fitBounds ?? true);
-
-		const isGeometry = props.fieldData.type == 'geometry';
-		const hasGeometryType = isGeometry && !!props.fieldData?.schema?.geometry_type;
 
 		watch(
 			[geometryFormat, geometryType, defaultView, fitBounds],
@@ -107,10 +100,9 @@ export default defineComponent({
 		return {
 			isGeometry,
 			hasGeometryType,
-			geometryFormats,
+			compatibleFormats,
 			geometryFormat,
-			geometryFormatOptions,
-			geometryTypeOptions,
+			geometryTypes,
 			geometryType,
 			mapContainer,
 			fitBounds,

@@ -18,6 +18,9 @@ export const geometryTypes = [
 ] as const;
 export type GeometryType = typeof geometryTypes[number] | 'GeometryCollection' | undefined;
 
+export const geometryFormats = ['native', 'geojson', 'wkt', 'wkb', 'lnglat'] as const;
+export type GeometryFormat = typeof geometryFormats[number];
+
 export const types = [
 	'alias',
 	'bigInteger',
@@ -77,7 +80,7 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-	schema: (Column & { geometry_type: GeometryType }) | null;
+	schema: (Column & { geometry_type: GeometryType; geometry_format: GeometryFormat }) | null;
 	meta: FieldMeta | null;
 }
 

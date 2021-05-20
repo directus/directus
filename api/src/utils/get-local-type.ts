@@ -5,7 +5,12 @@ import { FieldMeta, DataType } from '../types';
 /**
  * Typemap graciously provided by @gpetrov
  */
-type LocalTypeEntry = { type: DataType | 'unknown'; useTimezone?: boolean; geometry_type?: string };
+type LocalTypeEntry = {
+	type: DataType | 'unknown';
+	useTimezone?: boolean;
+	geometry_type?: string;
+	geometry_format?: string;
+};
 const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
 	boolean: { type: 'boolean' },
@@ -42,12 +47,12 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	numeric: { type: 'integer' },
 
 	// Geometries
-	point: { type: 'geometry', geometry_type: 'Point' },
-	linestring: { type: 'geometry', geometry_type: 'Linestring' },
-	polygon: { type: 'geometry', geometry_type: 'Polygon' },
-	multipoint: { type: 'geometry', geometry_type: 'Multipoint' },
-	multilinestring: { type: 'geometry', geometry_type: 'MultiLinestring' },
-	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon' },
+	point: { type: 'geometry', geometry_type: 'Point', geometry_format: 'native' },
+	linestring: { type: 'geometry', geometry_type: 'Linestring', geometry_format: 'native' },
+	polygon: { type: 'geometry', geometry_type: 'Polygon', geometry_format: 'native' },
+	multipoint: { type: 'geometry', geometry_type: 'Multipoint', geometry_format: 'native' },
+	multilinestring: { type: 'geometry', geometry_type: 'MultiLinestring', geometry_format: 'native' },
+	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon', geometry_format: 'native' },
 	geometry: { type: 'geometry' },
 	sdo_geometry: { type: 'geometry' },
 
@@ -107,6 +112,11 @@ export default function getLocalType(
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return { type: 'decimal' };
 	}
+
+	if (field?.special?.[0] == 'wkt') return { type: 'geometry', geometry_format: 'wkt' };
+	if (field?.special?.[0] == 'wkb') return { type: 'geometry', geometry_format: 'wkb' };
+	if (field?.special?.[0] == 'geojson') return { type: 'geometry', geometry_format: 'geojson' };
+	if (field?.special?.[0] == 'lnglat') return { type: 'geometry', geometry_format: 'lnglat' };
 
 	if (field?.special?.includes('json')) return { type: 'json' };
 	if (field?.special?.includes('hash')) return { type: 'hash' };

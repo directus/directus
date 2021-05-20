@@ -173,7 +173,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryOptions, GeometryFormat, toGeoJSON } from './lib';
+import { GeometryOptions, toGeoJSON } from './lib';
 import { layers } from './style';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
@@ -183,7 +183,7 @@ import useCollection from '@/composables/use-collection/';
 import useSync from '@/composables/use-sync/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import type { Field } from '@/types';
+import type { Field, GeometryFormat } from '@/types';
 
 import i18n from '@/lang';
 import { cloneDeep, merge } from 'lodash';

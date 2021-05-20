@@ -28,10 +28,10 @@
 					{{ geometryParsingError }}
 				</v-notice>
 				<template #append>
-					<v-button small @click="resetValue" class="reset-preset">{{ $t('reset_interface') }}</v-button>
-				</template>
-				<template #append>
-					<v-button small @click="resetValue" class="reset-preset">{{ $t('reset_interface') }}</v-button>
+					<v-card-actions>
+						<v-button small @click="resetValue(false)" class="soft-reset" secondary>{{ $t('continue') }}</v-button>
+						<v-button small @click="resetValue(true)" class="hard-reset">{{ $t('reset') }}</v-button>
+					</v-card-actions>
 				</template>
 			</v-info>
 		</transition>
@@ -66,10 +66,10 @@ import {
 	GeoJSONSerializer,
 	compatibleFormatsForType,
 } from '@/layouts/map/lib';
-import { GeometryFormat, flatten } from '@/layouts/map/lib';
+import { flatten } from '@/layouts/map/lib';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
-import { Field } from '@/types';
+import { Field, GeometryFormat } from '@/types';
 import i18n from '@/lang';
 import { TranslateResult } from 'vue-i18n';
 
@@ -124,8 +124,11 @@ export default defineComponent({
 
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
-		const geometryType = props.geometryType || props.fieldData?.schema?.geometry_type;
-		const geometryFormat = props.geometryFormat || compatibleFormatsForType(props.type)[0]!;
+
+		const geometryType = props.fieldData?.schema?.geometry_type || props.geometryType;
+
+		const geometryFormat =
+			props.fieldData?.schema?.geometry_format || props.geometryFormat || compatibleFormatsForType(props.type)[0];
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
@@ -191,6 +194,7 @@ export default defineComponent({
 				map.on('draw.create', handleDrawUpdate);
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
+				map.on('draw.modechange', handleDrawModeChange);
 			});
 
 			watch(
@@ -217,9 +221,9 @@ export default defineComponent({
 			);
 		}
 
-		function resetValue() {
-			emit('input', null);
+		function resetValue(hard: boolean) {
 			geometryParsingError.value = undefined;
+			if (hard) emit('input', null);
 		}
 
 		function addMarkerImage() {
@@ -283,7 +287,7 @@ export default defineComponent({
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
-				if (!isTypeCompatible(geometryType, initialValue!.type)) {
+				if (!props.disabled && !isTypeCompatible(geometryType, initialValue!.type)) {
 					geometryParsingError.value = i18n.t('interfaces.map.unexpected_geometry', {
 						expected: geometryType,
 						got: initialValue!.type,
@@ -327,13 +331,18 @@ export default defineComponent({
 			return result;
 		}
 
+		function handleDrawModeChange(event: any) {
+			if (!props.disabled && event.mode.startsWith('draw') && geometryType && !geometryType.startsWith('Multi')) {
+				for (const feature of controls.draw.getAll().features.slice(0, -1)) {
+					controls.draw.delete(feature.id as string);
+				}
+			}
+		}
+
 		function handleDrawUpdate() {
 			currentGeometry = getCurrentGeometry();
-			if (geometryType && !geometryType.startsWith('Multi')) {
-				controls.draw.deleteAll();
-				controls.draw.add(currentGeometry!);
-			}
 			if (!currentGeometry) {
+				controls.draw.deleteAll();
 				emit('input', null);
 			} else {
 				emit('input', serialize(currentGeometry));
@@ -397,5 +406,12 @@ export default defineComponent({
 .v-progress-circular {
 	--v-progress-circular-background-color: var(--primary-25);
 	--v-progress-circular-color: var(--primary-75);
+}
+
+.v-button.hard-reset {
+	--v-button-background-color: var(--danger-10);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
 }
 </style>
