@@ -22,6 +22,7 @@ create_webhook: Buat Webhook
 invite_users: Undang Pengguna Lain
 email_examples: 'admin@website.com, user@website.com...'
 invite: Undang
+email_already_invited: Email "{email}" sudah diundang
 emails: Surel
 connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
@@ -80,6 +81,8 @@ validationError:
   null: Nilai harus kosong
   nnull: Nilai tidak boleh kosong
   required: Nilai diperlukan
+  unique: Nilai harus unik
+  regex: Format nilai tidak tepat
 all_access: Semua Akses
 no_access: Tidak Ada Akses
 use_custom: Gunakan Kustom
@@ -414,6 +417,7 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
 role: Peran
