@@ -129,8 +129,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns the file contents.
 	 */
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
-		location = this._fullPath(location);
-
 		const bufferResult = await this.getBuffer(location);
 
 		return {
