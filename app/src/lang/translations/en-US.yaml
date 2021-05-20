@@ -983,7 +983,7 @@ interfaces:
     invalid_options: Invalid options
     invalid_format: Invalid format ( {format} )
     invalid_crs: Invalid CRS ( {crs} )
-    unexpected_geometry: Expeted {expected}, got {found}.
+    unexpected_geometry: Expeted {expected}, got {got}.
     fit_bounds: Fit view to data
     native: Native
     geojson: GeoJSON

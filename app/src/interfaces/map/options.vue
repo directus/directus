@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { Field } from '@/types';
-import { ref, defineComponent, PropType, computed, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { GeometryOptions } from '@/layouts/map/lib';
 import { geometryTypes, GeometryType } from '@/types';
 import { geometryFormats, GeometryFormat, compatibleFormatsForType } from '@/layouts/map/lib';

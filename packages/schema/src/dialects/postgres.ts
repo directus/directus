@@ -74,7 +74,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			if (column.is_identity || column.default_value?.startsWith('nextval(')) {
 				column.default_value = 'AUTO_INCREMENT';
 			} else {
-				column.default_value = this.parseDefaultValue(column.default_value);
+				column.default_value = parseDefaultValue(column.default_value);
 			}
 
 			if (column.table_name in overview === false) {

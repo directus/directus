@@ -40,10 +40,9 @@
 						<div class="label type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 						<v-select
 							:disabled="isExisting"
+							:showDeselect="true"
 							:placeholder="$t('any')"
-							:items="
-								geometryTypes.map((value) => ({ value, text: value })).concat({ text: $t('any'), value: undefined })
-							"
+							:items="geometryTypes.map((value) => ({ value, text: value }))"
 							v-model="fieldData.schema.geometry_type"
 							@input="fieldData.meta.options = { ...fieldData.meta.options, geometryType: $event }"
 						/>

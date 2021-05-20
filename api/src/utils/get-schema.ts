@@ -122,7 +122,7 @@ export async function getSchema(options?: {
 		const existing = result.collections[field.collection].fields[field.field];
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
-		const { type = 'alias', ...info } = existing ? getLocalType(column, { special }) : {};
+		const { type = 'alias' } = existing ? getLocalType(column, { special }) : {};
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,

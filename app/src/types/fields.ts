@@ -15,7 +15,7 @@ export const geometryTypes = [
 	'MultiLineString',
 	'MultiPolygon',
 ] as const;
-export type GeometryType = typeof geometryTypes[number] | undefined;
+export type GeometryType = typeof geometryTypes[number] | 'GeometryCollection' | undefined;
 
 export const types = [
 	'alias',

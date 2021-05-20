@@ -28,7 +28,10 @@
 					{{ geometryParsingError }}
 				</v-notice>
 				<template #append>
-					<v-button small @click="resetInterface" class="reset-preset">{{ $t('reset_interface') }}</v-button>
+					<v-button small @click="resetValue" class="reset-preset">{{ $t('reset_interface') }}</v-button>
+				</template>
+				<template #append>
+					<v-button small @click="resetValue" class="reset-preset">{{ $t('reset_interface') }}</v-button>
 				</template>
 			</v-info>
 		</transition>
@@ -67,6 +70,8 @@ import { GeometryFormat, flatten } from '@/layouts/map/lib';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
 import { Field } from '@/types';
+import i18n from '@/lang';
+import { TranslateResult } from 'vue-i18n';
 
 import { GeometryType } from '@/types';
 type _Geometry = SimpleGeometry | MultiGeometry;
@@ -100,7 +105,7 @@ export default defineComponent({
 			type: String as PropType<GeometryFormat>,
 		},
 		geometryType: {
-			type: String as PropType<GeometryType | undefined>,
+			type: String as PropType<GeometryType>,
 		},
 		defaultView: {
 			type: Object,
@@ -118,8 +123,8 @@ export default defineComponent({
 		let currentGeometry: Geometry | null | undefined;
 
 		const geometryOptionsError = ref<string | null>();
-		const geometryParsingError = ref<string | null>();
-		const geometryType = props.geometryType || props.fieldData?.schema?.geometry_type || 'GeometryCollection';
+		const geometryParsingError = ref<string | TranslateResult>();
+		const geometryType = props.geometryType || props.fieldData?.schema?.geometry_type;
 		const geometryFormat = props.geometryFormat || compatibleFormatsForType(props.type)[0]!;
 
 		let parse: GeoJSONParser;
@@ -155,9 +160,9 @@ export default defineComponent({
 		return {
 			container,
 			mapLoading,
+			resetValue,
 			geometryParsingError,
 			geometryOptionsError,
-			resetInterface,
 		};
 
 		function setupMap() {
@@ -191,17 +196,17 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(value) => {
-					if (value) {
-						if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
-							addInitialValue();
-						}
-					} else {
+					if (!value) {
 						controls.draw.deleteAll();
 						currentGeometry = null;
-						if (geometryType !== 'GeometryCollection') {
+						if (geometryType) {
 							const snaked = snakeCase(geometryType.replace('Multi', ''));
-							const mode = `draw_${snaked}` as 'draw_polygon' | 'draw_point' | 'static';
+							const mode = `draw_${snaked}` as any;
 							controls.draw.changeMode(mode);
+						}
+					} else {
+						if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
+							loadValueFromProps();
 						}
 					}
 					if (props.disabled) {
@@ -210,6 +215,11 @@ export default defineComponent({
 				},
 				{ immediate: true }
 			);
+		}
+
+		function resetValue() {
+			emit('input', null);
+			geometryParsingError.value = undefined;
 		}
 
 		function addMarkerImage() {
@@ -222,11 +232,6 @@ export default defineComponent({
 			});
 		}
 
-		function resetInterface() {
-			emit('input', null);
-			geometryParsingError.value = null;
-		}
-
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
 				map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
@@ -237,7 +242,7 @@ export default defineComponent({
 			}
 		}
 
-		function getDrawOptions(type: GeometryType | 'GeometryCollection'): any {
+		function getDrawOptions(type: GeometryType): any {
 			const options = {
 				styles,
 				controls: {},
@@ -250,7 +255,7 @@ export default defineComponent({
 			if (props.disabled) {
 				return options;
 			}
-			if (type == 'GeometryCollection') {
+			if (!type) {
 				options.controls.line_string = true;
 				options.controls.polygon = true;
 				options.controls.point = true;
@@ -264,15 +269,31 @@ export default defineComponent({
 			}
 		}
 
-		function addInitialValue() {
+		function isTypeCompatible(a?: GeometryType, b?: GeometryType): boolean {
+			if (!a || !b) {
+				return true;
+			}
+			if (a.startsWith('Multi')) {
+				return a.replace('Multi', '') == b.replace('Multi', '');
+			}
+			return a == b;
+		}
+
+		function loadValueFromProps() {
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
+				if (!isTypeCompatible(geometryType, initialValue!.type)) {
+					geometryParsingError.value = i18n.t('interfaces.map.unexpected_geometry', {
+						expected: geometryType,
+						got: initialValue!.type,
+					});
+				}
 				const flattened = flatten(initialValue);
 				for (const geometry of flattened) {
 					controls.draw.add(geometry);
 				}
-				currentGeometry = getDrawGeometry();
+				currentGeometry = getCurrentGeometry();
 				currentGeometry!.bbox = getBBox(currentGeometry!);
 				if (props.fitBounds) {
 					fitDataBounds({ duration: 0 });
@@ -282,32 +303,36 @@ export default defineComponent({
 			}
 		}
 
-		function getDrawGeometry(): Geometry | null {
+		function getCurrentGeometry(): Geometry | null {
 			const features = controls.draw.getAll().features;
 			const geometries = features.map((f) => f.geometry) as _Geometry[];
+			let result: Geometry;
 			if (geometries.length == 0) {
 				return null;
-			} else if (geometryType == 'GeometryCollection') {
+			} else if (!geometryType) {
 				if (geometries.length > 1) {
-					return { type: 'GeometryCollection', geometries };
+					result = { type: 'GeometryCollection', geometries };
+				} else {
+					result = geometries[0];
 				}
-				return geometries[0];
 			} else if (geometryType.startsWith('Multi')) {
 				const coordinates = geometries
 					.filter(({ type }) => `Multi${type}` == geometryType)
 					.map(({ coordinates }) => coordinates);
-				return { type: geometryType, coordinates } as Geometry;
+				result = { type: geometryType, coordinates } as Geometry;
 			} else {
-				const geometry = geometries[geometries.length - 1];
-				controls.draw.deleteAll();
-				controls.draw.add(geometry!);
-				return geometry;
+				result = geometries[geometries.length - 1];
 			}
+			result!.bbox = getBBox(result!);
+			return result;
 		}
 
 		function handleDrawUpdate() {
-			currentGeometry = getDrawGeometry();
-			currentGeometry!.bbox = getBBox(currentGeometry!);
+			currentGeometry = getCurrentGeometry();
+			if (geometryType && !geometryType.startsWith('Multi')) {
+				controls.draw.deleteAll();
+				controls.draw.add(currentGeometry!);
+			}
 			if (!currentGeometry) {
 				emit('input', null);
 			} else {
