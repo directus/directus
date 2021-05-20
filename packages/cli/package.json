@@ -71,7 +71,7 @@
 		"pretty-ms": "^7.0.1",
 		"shimmer": "^1.2.1",
 		"strip-ansi": "^6.0.0",
-		"strip-indent": "^3.0.0",
+		"strip-indent": "^4.0.0",
 		"yargs": "^17.0.1",
 		"yargs-parser": "^20.2.7"
 	},
