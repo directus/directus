@@ -22,7 +22,7 @@
 			:collection="translationsCollection"
 			:primary-key="editing"
 			:edits="edits"
-			:circular-field="translationsRelation.many_field"
+			:circular-field="translationsRelation.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
+import { useRelationsStore, useFieldsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -64,6 +64,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
 		const {
@@ -100,7 +101,7 @@ export default defineComponent({
 		};
 
 		function useRelations() {
-			const relationsForField = computed(() => {
+			const relationsForField = computed<Relation[]>(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field);
 			});
 
@@ -108,19 +109,20 @@ export default defineComponent({
 				if (!relationsForField.value) return null;
 				return (
 					relationsForField.value.find(
-						(relation: Relation) => relation.one_collection === props.collection && relation.one_field === props.field
+						(relation: Relation) =>
+							relation.related_collection === props.collection && relation.meta?.one_field === props.field
 					) || null
 				);
 			});
 
 			const translationsCollection = computed(() => {
 				if (!translationsRelation.value) return null;
-				return translationsRelation.value.many_collection;
+				return translationsRelation.value.collection;
 			});
 
-			const translationsPrimaryKeyField = computed(() => {
+			const translationsPrimaryKeyField = computed<string>(() => {
 				if (!translationsRelation.value) return null;
-				return translationsRelation.value.many_primary;
+				return fieldsStore.getPrimaryKeyFieldForCollection(translationsRelation.value.collection).field;
 			});
 
 			const languagesRelation = computed(() => {
@@ -130,17 +132,17 @@ export default defineComponent({
 
 			const languagesCollection = computed(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.one_collection;
+				return languagesRelation.value.related_collection;
 			});
 
-			const languagesPrimaryKeyField = computed(() => {
+			const languagesPrimaryKeyField = computed<string>(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.one_primary;
+				return fieldsStore.getPrimaryKeyFieldForCollection(languagesRelation.value.related_collection).field;
 			});
 
 			const translationsLanguageField = computed(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.many_field;
+				return languagesRelation.value.field;
 			});
 
 			return {
@@ -220,13 +222,15 @@ export default defineComponent({
 			return { startEditing, editing, edits, stageEdits, cancelEdit };
 
 			function startEditing(language: string | number) {
+				if (!translationsLanguageField.value) return;
+
 				edits.value = {
 					[translationsLanguageField.value]: language,
 				};
 
 				const existingEdits = (props.value || []).find((val) => {
 					if (typeof val === 'string' || typeof val === 'number') return false;
-					return val[translationsLanguageField.value] === language;
+					return val[translationsLanguageField.value!] === language;
 				});
 
 				if (existingEdits) {
@@ -237,7 +241,7 @@ export default defineComponent({
 				}
 
 				const primaryKey =
-					keyMap.value?.find((record) => record[translationsLanguageField.value] === language)?.[
+					keyMap.value?.find((record) => record[translationsLanguageField.value!] === language)?.[
 						translationsPrimaryKeyField.value
 					] || '+';
 
@@ -255,7 +259,10 @@ export default defineComponent({
 				if (!props.value) return;
 				if (keyMap.value) return;
 
-				const collection = translationsRelation.value.many_collection;
+				const collection = translationsRelation.value?.collection;
+
+				if (!collection) return;
+
 				const fields = [translationsPrimaryKeyField.value, translationsLanguageField.value];
 
 				loading.value = true;
@@ -281,11 +288,13 @@ export default defineComponent({
 			}
 
 			function stageEdits(edits: any) {
+				if (!translationsLanguageField.value) return;
+
 				const editedLanguage = edits[translationsLanguageField.value];
 
 				const languageAlreadyEdited = !!(props.value || []).find((val) => {
 					if (typeof val === 'string' || typeof val === 'number') return false;
-					return val[translationsLanguageField.value] === editedLanguage;
+					return val[translationsLanguageField.value!] === editedLanguage;
 				});
 
 				if (languageAlreadyEdited === true) {
@@ -294,7 +303,7 @@ export default defineComponent({
 						props.value.map((val) => {
 							if (typeof val === 'string' || typeof val === 'number') return val;
 
-							if (val[translationsLanguageField.value] === editedLanguage) {
+							if (val[translationsLanguageField.value!] === editedLanguage) {
 								return edits;
 							}
 

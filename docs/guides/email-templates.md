@@ -12,8 +12,8 @@ Custom email templates are stored in the `templates` folder in your extensions f
 /extensions/templates/<template-name>.liquid
 ```
 
-To replace a system template with your own, simply name it `password-reset` or `user-invitation` for the password reset or
-user invite emails respectively.
+To replace a system template with your own, simply name it `password-reset` or `user-invitation` for the password reset
+or user invite emails respectively.
 
 ::: tip Variables
 

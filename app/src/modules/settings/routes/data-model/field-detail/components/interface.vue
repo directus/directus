@@ -113,7 +113,7 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta?.interface);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);

@@ -51,18 +51,18 @@ export default defineComponent({
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
 			const m2o = props.relations.find(
-				(relation) => relation.many_collection === props.collection && relation.many_field === field
+				(relation) => relation.collection === props.collection && relation.field === field
 			);
 			const o2m = props.relations.find(
-				(relation) => relation.one_collection === props.collection && relation.one_field === field
+				(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
 			);
 
 			if (m2o !== undefined) {
-				return m2o?.one_collection || null;
+				return m2o?.related_collection || null;
 			}
 
 			if (o2m !== undefined) {
-				return o2m?.many_collection || null;
+				return o2m?.collection || null;
 			}
 
 			return null;

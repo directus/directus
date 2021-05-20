@@ -56,21 +56,13 @@ export default async function runAST(
 	async function run(collection: string, children: (NestedCollectionNode | FieldNode)[], query: Query) {
 		// Retrieve the database columns to select in the current AST
 		const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
+			schema,
 			collection,
-			children,
-			schema
+			children
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(
-			knex,
-			collection,
-			columnsToSelect,
-			query,
-			primaryKeyField,
-			schema,
-			options?.nested
-		);
+		const dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -83,14 +75,14 @@ export default async function runAST(
 		if (!items || items.length === 0) return items;
 
 		// Apply the `_in` filters to the nested collection batches
-		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
+		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
 			const nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(nestedItems, items, nestedNode, true);
+				items = mergeWithParentItems(schema, nestedItems, items, nestedNode, true);
 			}
 		}
 
@@ -99,7 +91,7 @@ export default async function runAST(
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
 		if (options?.nested !== true && options?.stripNonRequested !== false) {
-			items = removeTemporaryFields(items, originalAST, primaryKeyField);
+			items = removeTemporaryFields(schema, items, originalAST, primaryKeyField);
 		}
 
 		return items;
@@ -107,9 +99,9 @@ export default async function runAST(
 }
 
 async function parseCurrentLevel(
+	schema: SchemaOverview,
 	collection: string,
-	children: (NestedCollectionNode | FieldNode)[],
-	schema: SchemaOverview
+	children: (NestedCollectionNode | FieldNode)[]
 ) {
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
@@ -129,12 +121,12 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelectInternal.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.field);
 		}
 
 		if (child.type === 'm2a') {
-			columnsToSelectInternal.push(child.relation.many_field);
-			columnsToSelectInternal.push(child.relation.one_collection_field!);
+			columnsToSelectInternal.push(child.relation.field);
+			columnsToSelectInternal.push(child.relation.meta!.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
@@ -152,12 +144,11 @@ async function parseCurrentLevel(
 }
 
 function getDBQuery(
+	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
 	columns: string[],
 	query: Query,
-	primaryKeyField: string,
-	schema: SchemaOverview,
 	nested?: boolean
 ): Knex.QueryBuilder {
 	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
@@ -178,7 +169,11 @@ function getDBQuery(
 	return dbQuery;
 }
 
-function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], parentItem: Item | Item[]) {
+function applyParentFilters(
+	schema: SchemaOverview,
+	nestedCollectionNodes: NestedCollectionNode[],
+	parentItem: Item | Item[]
+) {
 	const parentItems = toArray(parentItem);
 
 	for (const nestedNode of nestedCollectionNodes) {
@@ -189,29 +184,29 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 				...nestedNode.query,
 				filter: {
 					...(nestedNode.query.filter || {}),
-					[nestedNode.relation.one_primary!]: {
-						_in: uniq(parentItems.map((res) => res[nestedNode.relation.many_field])).filter((id) => id),
+					[schema.collections[nestedNode.relation.related_collection!].primary]: {
+						_in: uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id),
 					},
 				},
 			};
 		} else if (nestedNode.type === 'o2m') {
 			const relatedM2OisFetched = !!nestedNode.children.find((child) => {
-				return child.type === 'field' && child.name === nestedNode.relation.many_field;
+				return child.type === 'field' && child.name === nestedNode.relation.field;
 			});
 
 			if (relatedM2OisFetched === false) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.many_field });
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.field });
 			}
 
-			if (nestedNode.relation.sort_field) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.sort_field });
+			if (nestedNode.relation.meta?.sort_field) {
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.meta.sort_field });
 			}
 
 			nestedNode.query = {
 				...nestedNode.query,
 				filter: {
 					...(nestedNode.query.filter || {}),
-					[nestedNode.relation.many_field]: {
+					[nestedNode.relation.field]: {
 						_in: uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id),
 					},
 				},
@@ -220,9 +215,9 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
 			for (const parentItem of parentItems) {
-				const collection = parentItem[nestedNode.relation.one_collection_field!];
+				const collection = parentItem[nestedNode.relation.meta!.one_collection_field!];
 				if (!keysPerCollection[collection]) keysPerCollection[collection] = [];
-				keysPerCollection[collection].push(parentItem[nestedNode.relation.many_field]);
+				keysPerCollection[collection].push(parentItem[nestedNode.relation.field]);
 			}
 
 			for (const relatedCollection of nestedNode.names) {
@@ -247,6 +242,7 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 }
 
 function mergeWithParentItems(
+	schema: SchemaOverview,
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
@@ -258,7 +254,10 @@ function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
-				return nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey];
+				return (
+					nestedItem[schema.collections[nestedNode.relation.related_collection!].primary] ==
+					parentItem[nestedNode.fieldKey]
+				);
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
@@ -268,12 +267,14 @@ function mergeWithParentItems(
 			let itemChildren = nestedItems
 				.filter((nestedItem) => {
 					if (nestedItem === null) return false;
-					if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
+					if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
 
 					return (
-						nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
-						nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
-							parentItem[nestedNode.relation.one_primary!]
+						nestedItem[nestedNode.relation.field] ==
+							parentItem[schema.collections[nestedNode.relation.related_collection!].primary] ||
+						nestedItem[nestedNode.relation.field]?.[
+							schema.collections[nestedNode.relation.related_collection!].primary
+						] == parentItem[schema.collections[nestedNode.relation.related_collection!].primary]
 					);
 				})
 				.sort((a, b) => {
@@ -299,12 +300,12 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {
-			if (!nestedNode.relation.one_collection_field) {
+			if (!nestedNode.relation.meta?.one_collection_field) {
 				parentItem[nestedNode.fieldKey] = null;
 				continue;
 			}
 
-			const relatedCollection = parentItem[nestedNode.relation.one_collection_field];
+			const relatedCollection = parentItem[nestedNode.relation.meta.one_collection_field];
 
 			if (!(nestedItem as Record<string, any[]>)[relatedCollection]) {
 				parentItem[nestedNode.fieldKey] = null;
@@ -323,6 +324,7 @@ function mergeWithParentItems(
 }
 
 function removeTemporaryFields(
+	schema: SchemaOverview,
 	rawItem: Item | Item[],
 	ast: AST | NestedCollectionNode,
 	primaryKeyField: string,
@@ -350,7 +352,7 @@ function removeTemporaryFields(
 		}
 
 		for (const rawItem of rawItems) {
-			const relatedCollection: string = parentItem?.[ast.relation.one_collection_field!];
+			const relatedCollection: string = parentItem?.[ast.relation.meta!.one_collection_field!];
 
 			if (rawItem === null || rawItem === undefined) return rawItem;
 
@@ -358,9 +360,10 @@ function removeTemporaryFields(
 
 			for (const nestedNode of nestedCollectionNodes[relatedCollection]) {
 				item[nestedNode.fieldKey] = removeTemporaryFields(
+					schema,
 					item[nestedNode.fieldKey],
 					nestedNode,
-					nestedNode.relation.many_primary,
+					schema.collections[nestedNode.relation.collection].primary,
 					item
 				);
 			}
@@ -389,9 +392,12 @@ function removeTemporaryFields(
 
 			for (const nestedNode of nestedCollectionNodes) {
 				item[nestedNode.fieldKey] = removeTemporaryFields(
+					schema,
 					item[nestedNode.fieldKey],
 					nestedNode,
-					nestedNode.type === 'm2o' ? nestedNode.relation.one_primary! : nestedNode.relation.many_primary,
+					nestedNode.type === 'm2o'
+						? schema.collections[nestedNode.relation.related_collection!].primary
+						: schema.collections[nestedNode.relation.collection].primary,
 					item
 				);
 			}

@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="relation.many_collection !== relation.one_collection">
+	<v-notice type="warning" v-if="relation.collection !== relation.related_collection">
 		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
@@ -9,8 +9,8 @@
 			:collection="collection"
 			:tree="stagedValues || []"
 			:primary-key-field="primaryKeyField.field"
-			:children-field="relation.one_field"
-			:parent-field="relation.many_field"
+			:children-field="relation.meta.one_field"
+			:parent-field="relation.field"
 			:disabled="disabled"
 			root
 			@change="onDraggableChange"
@@ -30,7 +30,7 @@
 			:collection="collection"
 			:primary-key="'+'"
 			:edits="{}"
-			:circular-field="relation.many_field"
+			:circular-field="relation.field"
 			@input="addNew"
 			@update:active="addNewActive = false"
 		/>
@@ -101,7 +101,7 @@ export default defineComponent({
 		const openItems = ref([]);
 
 		const { relation } = useRelation();
-		const { info, primaryKeyField } = useCollection(relation.value.one_collection);
+		const { info, primaryKeyField } = useCollection(relation.value.related_collection!);
 		const { loading, error, stagedValues, fetchValues, emitValue } = useValues();
 
 		const { stageSelection, selectDrawer, selectionFilters } = useSelection();
@@ -162,7 +162,7 @@ export default defineComponent({
 						},
 					});
 
-					stagedValues.value = response.data.data?.[relation.value.one_field!] ?? [];
+					stagedValues.value = response.data.data?.[relation.value.meta!.one_field!] ?? [];
 				} catch (err) {
 					error.value = err;
 				} finally {
@@ -172,12 +172,16 @@ export default defineComponent({
 
 			function getFieldsToFetch() {
 				const fields = [
-					...new Set([primaryKeyField.value.field, relation.value.one_field, ...getFieldsFromTemplate(template.value)]),
+					...new Set([
+						primaryKeyField.value.field,
+						relation.value.meta!.one_field,
+						...getFieldsFromTemplate(template.value),
+					]),
 				];
 
 				const result: string[] = [];
 
-				const prefix = `${relation.value.one_field}.`;
+				const prefix = `${relation.value.meta!.one_field}.`;
 
 				for (let i = 1; i <= 5; i++) {
 					for (const field of fields) {
@@ -191,7 +195,7 @@ export default defineComponent({
 			function emitValue(value: Record<string, any>[]) {
 				stagedValues.value = value;
 
-				if (relation.value.sort_field) {
+				if (relation.value.meta?.sort_field) {
 					return emit('input', addSort(value));
 				}
 
@@ -201,8 +205,8 @@ export default defineComponent({
 					return (value || []).map((item, index) => {
 						return {
 							...item,
-							[relation.value.sort_field!]: index,
-							[relation.value.one_field!]: addSort(item[relation.value.one_field!]),
+							[relation.value.meta!.sort_field!]: index,
+							[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
 						};
 					});
 				}
@@ -237,7 +241,7 @@ export default defineComponent({
 					for (const value of values) {
 						if (!value[pkField]) continue;
 						pks.push(value[pkField]);
-						const childPKs = getPKs(value[relation.value.one_field!]);
+						const childPKs = getPKs(value[relation.value.meta!.one_field!]);
 						pks.push(...childPKs);
 					}
 
@@ -260,7 +264,7 @@ export default defineComponent({
 					},
 					{
 						key: 'parent',
-						field: relation.value.many_field,
+						field: relation.value.field,
 						operator: 'null',
 						value: true,
 						locked: true,
@@ -276,12 +280,16 @@ export default defineComponent({
 				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
 
 				const fields = [
-					...new Set([primaryKeyField.value.field, relation.value.one_field, ...getFieldsFromTemplate(template.value)]),
+					...new Set([
+						primaryKeyField.value.field,
+						relation.value.meta!.one_field,
+						...getFieldsFromTemplate(template.value),
+					]),
 				];
 
 				const result: string[] = [];
 
-				const prefix = `${relation.value.one_field}.`;
+				const prefix = `${relation.value.meta!.one_field}.`;
 
 				for (let i = 1; i <= 5; i++) {
 					for (const field of fields) {
