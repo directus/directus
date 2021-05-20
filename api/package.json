@@ -77,6 +77,7 @@
 		"@godaddy/terminus": "^4.7.2",
 		"argon2": "^0.27.0",
 		"async": "^3.2.0",
+		"async-mutex": "^0.3.1",
 		"atob": "^2.1.2",
 		"axios": "^0.21.0",
 		"body-parser": "^1.19.0",

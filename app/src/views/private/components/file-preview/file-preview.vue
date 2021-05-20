@@ -1,12 +1,12 @@
 <template>
-	<div class="file-preview" v-if="type">
+	<div class="file-preview" v-if="type && !imgError">
 		<div
 			v-if="type === 'image'"
 			class="image"
 			:class="{ svg: isSVG, 'max-size': inModal === false }"
 			@click="$emit('click')"
 		>
-			<img :src="src" :width="width" :height="height" :alt="title" />
+			<img :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -47,6 +47,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const imgError = ref(false);
+
 		const type = computed<'image' | 'video' | 'audio' | null>(() => {
 			if (props.mime === null) return null;
 
@@ -67,7 +69,7 @@ export default defineComponent({
 
 		const isSVG = computed(() => props.mime.includes('svg'));
 
-		return { type, isSVG };
+		return { type, isSVG, imgError };
 	},
 });
 </script>

@@ -125,14 +125,13 @@ needs, you can extend the above environment variables to configure any of
 
 ## Cache
 
-| Variable           | Description                                                                                                | Default Value    |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------- |
-| `ASSETS_CACHE_TTL` | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`            |
-| `CACHE_ENABLED`    | Whether or not caching is enabled.                                                                         | `false`          |
-| `CACHE_TTL`        | How long the cache is persisted.                                                                           | `30m`            |
-| `CACHE_AUTO_PURGE` | Automatically purge the cache on `create`/`update`/`delete` actions.                                       | `false`          |
-| `CACHE_NAMESPACE`  | How to scope the cache data.                                                                               | `directus-cache` |
-| `CACHE_STORE`      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                    | `memory`         |
+| Variable           | Description                                                             | Default Value    |
+| ------------------ | ----------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`    | Whether or not caching is enabled.                                      | `false`          |
+| `CACHE_TTL`        | How long the cache is persisted.                                        | `30m`            |
+| `CACHE_AUTO_PURGE` | Automatically purge the cache on `create`/`update`/`delete` actions.    | `false`          |
+| `CACHE_NAMESPACE`  | How to scope the cache data.                                            | `directus-cache` |
+| `CACHE_STORE`      | Where to store the cache data. Either `memory`, `redis`, or `memcache`. | `memory`         |
 
 Based on the `CACHE_STORE` used, you must also provide the following configurations:
 
@@ -252,6 +251,17 @@ If you don't provide any configuration for storage adapters, Directus will defau
 STORAGE_LOCATIONS="local"
 STORAGE_LOCAL_ROOT="./uploads"
 ```
+
+## Assets
+
+| Variable                               | Description                                                                                                | Default Value |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`         |
+| `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | 4             |
+| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | 6000          |
+
+Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
+we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
 
 ## OAuth
 
