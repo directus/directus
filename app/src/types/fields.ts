@@ -1,4 +1,5 @@
 import { TranslateResult } from 'vue-i18n';
+import { Column } from 'knex-schema-inspector/dist/types/column';
 
 type Translations = {
 	language: string;
@@ -53,26 +54,6 @@ export const localTypes = [
 ] as const;
 export type LocalType = typeof localTypes[number];
 
-export type FieldSchema = {
-	/** @todo import this from @directus/schema when that's launched */
-	name: string;
-	table: string;
-	type: string;
-	default_value: any | null;
-	max_length: number | null;
-	is_nullable: boolean;
-	is_primary_key: boolean;
-	has_auto_increment: boolean;
-	foreign_key_column: string | null;
-	foreign_key_table: string | null;
-	comment: string | null;
-	geometry_type?: GeometryType;
-
-	// Postgres Only
-	schema?: string;
-	foreign_key_schema?: string | null;
-};
-
 export type FieldMeta = {
 	id: number;
 	collection: string;
@@ -96,7 +77,7 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-	schema: FieldSchema | null;
+	schema: (Column & { geometry_type: GeometryType }) | null;
 	meta: FieldMeta | null;
 }
 

@@ -91,7 +91,7 @@ class OASSpecsService implements SpecificationSubService {
 	async generate() {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
-		const relations = (await this.relationsService.readByQuery({})) as Relation[];
+		const relations = (await this.relationsService.readAll()) as Relation[];
 		const permissions = this.schema.permissions;
 
 		const tags = await this.generateTags(collections);
@@ -387,8 +387,8 @@ class OASSpecsService implements SpecificationSubService {
 
 		const relation = relations.find(
 			(relation) =>
-				(relation.many_collection === field.collection && relation.many_field === field.field) ||
-				(relation.one_collection === field.collection && relation.one_field === field.field)
+				(relation.collection === field.collection && relation.field === field.field) ||
+				(relation.related_collection === field.collection && relation.meta?.one_field === field.field)
 		);
 
 		if (!relation) {
@@ -404,9 +404,9 @@ class OASSpecsService implements SpecificationSubService {
 			});
 
 			if (relationType === 'm2o') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.one_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.related_collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.one_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.related_collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -420,9 +420,9 @@ class OASSpecsService implements SpecificationSubService {
 					},
 				];
 			} else if (relationType === 'o2m') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.many_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.many_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -439,7 +439,7 @@ class OASSpecsService implements SpecificationSubService {
 					],
 				};
 			} else if (relationType === 'm2a') {
-				const relatedTags = tags.filter((tag) => relation.one_allowed_collections!.includes(tag['x-collection']));
+				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
 				propertyObject.items = {

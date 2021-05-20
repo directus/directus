@@ -279,10 +279,13 @@ export default defineComponent({
 
 		const defaultValue = computed({
 			get() {
-				return state.fieldData.schema.default_value;
+				return state.fieldData.schema?.default_value;
 			},
 			set(newVal: any) {
-				state.fieldData.schema.default_value = newVal;
+				state.fieldData.schema = {
+					...(state.fieldData.schema || {}),
+					default_value: newVal,
+				};
 			},
 		});
 
@@ -326,7 +329,7 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -344,7 +347,7 @@ export default defineComponent({
 
 			const onCreateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onCreateSpecials) {
 						if (specials.includes(special)) {
@@ -355,9 +358,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onCreateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onCreateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
@@ -387,7 +393,7 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -405,7 +411,7 @@ export default defineComponent({
 
 			const onUpdateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onUpdateSpecials) {
 						if (specials.includes(special)) {
@@ -416,9 +422,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onUpdateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onUpdateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];

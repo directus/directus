@@ -22,6 +22,7 @@ create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
 email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
 invite: Inviter
+email_already_invited: '"{email}" a déjà été invité'
 emails: E-mails
 connection_excellent: Excellente connexion
 connection_good: Bonne connexion
@@ -54,15 +55,10 @@ os_totalmem: Mémoire de l'OS
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
-  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces
-  {count} éléments ?
+  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
-reset_system_permissions_copy:
-  Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du
-  système. Êtes-vous sûr ?
-the_following_are_minimum_permissions:
-  Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de
-  permissions, mais pas les restreindre.
+reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
+the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de permissions, mais pas les restreindre.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -90,6 +86,9 @@ validationError:
 all_access: Accès total
 no_access: Aucun accès
 use_custom: Personnalisé
+nullable: Peut être nul
+allow_null_value: Autoriser la valeur NULL
+enter_value_to_replace_nulls: Veuillez entrer une nouvelle valeur pour remplacer les NULL actuellement dans ce champ.
 field_standard: Standard
 field_presentation: Présentation & Alias
 field_file: Fichier unique
@@ -144,6 +143,7 @@ decimal: Décimal
 float: Décimal
 integer: Entier
 json: JSON
+xml: XML
 string: Chaine de caractères
 text: Texte
 time: Date et heure
@@ -163,8 +163,7 @@ this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires
 click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
-  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le
-  gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
+  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
@@ -235,6 +234,7 @@ item_delete_success: Élément supprimé | Éléments supprimés
 this_collection: Cette collection
 related_collection: Collection associée
 related_collections: Collections associées
+translations_collection: Collection de traduction
 languages_collection: Collection de langues
 export_data: Exporter les données
 format: Format
@@ -321,6 +321,10 @@ save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
+creating_items: Création d'éléments
+enable_create_button: Activer le bouton de création
+selecting_items: Sélection d'éléments
+enable_select_button: Activer le bouton de sélection
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -335,7 +339,7 @@ interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
-list-m2a: Builder (M2A)
+list-m2a: Constructeur (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
@@ -402,6 +406,8 @@ errors:
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Introuvable
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
+  USER_SUSPENDED: Utilisateur suspendu
+  CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   UNKNOWN: Erreur inconnue
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
@@ -433,8 +439,7 @@ start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtré
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments
-  qu'elle contient. Cette action est irréversible.
+  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -479,6 +484,8 @@ operators:
   has: Contient certaines de ces clés
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
+item: Élément
+items: Éléments
 upload_file: Envoyer le fichier
 upload_file_indeterminate: Envoi du fichier...
 upload_file_success: Fichier envoyé
@@ -537,6 +544,7 @@ display_text: Afficher le texte
 display_text_placeholder: Entrez un texte d'affichage...
 tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
+unlimited: Illimité
 open_link_in: Ouvrir le lien dans
 new_tab: Nouvel onglet
 current_tab: Onglet actif
@@ -595,8 +603,10 @@ deselect_all: Tout désélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
-creating_in: "Création de l'élément dans {collection}"
-editing_in: "Modification de l'élément dans {collection}"
+creating_in: 'Création de l''élément dans {collection}'
+editing_in: 'Modification de l''élément dans {collection}'
+creating_unit: 'Création de {unit}'
+editing_unit: 'Édition de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
@@ -604,6 +614,7 @@ settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
 settings_presets: Préréglages et favoris
+one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 select: Sélectionner...
 layout: Mise en page
@@ -618,38 +629,28 @@ unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
-page_help_collections_overview:
-  '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
+page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise
-  en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour
-  un accès rapide.
+  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_collections_item: >-
-  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également
-  un historique complet des révisions et des commentaires intégrés.
+  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
 page_help_activity_collection: >-
   **Parcourez l'activité** — Une liste complète de tous votre système et contenu de l'activité utilisateur.
 page_help_docs_global: >-
   **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
 page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les
-  filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès
-  rapide.
+  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
-  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et
-  de mise à jour des paramètres d'accès.
-page_help_settings_project: '**Paramètres du projet** — Les options de configuration globale de votre projet.'
+  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
+page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
 page_help_settings_datamodel_collections: >-
-  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles,
-  cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
+  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection:
-  '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
+page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris
-  globaux et les vues par défaut.
+  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
 page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
@@ -664,9 +665,7 @@ all: Tout
 none: Aucun
 no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée pour le moment
 batch_delete_confirm: >-
-  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir
-  en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en
-  arrière !
+  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
 cancel: Annuler
 collection: Collection
 collections: Collections
@@ -691,12 +690,14 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
+    translations: Traductions de nommage de collection
     archive_app_filter: Filtrer les valeurs archivées dans l'application
     archive_value: Valeur pour archivage
     unarchive_value: Valeur au désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
   directus_files:
+    $thumbnail: Miniature
     title: Titre
     description: Description
     tags: Étiquettes
@@ -844,12 +845,13 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
     presentation-links: Bouton de liens
     links: Liens
-    description: Boutons de liens configurables pour lancer des URL
+    description: Boutons de lien configurables pour le lancement d'URL dynamiques
     style: Style
     primary: Primaire
     link: Liens
@@ -863,6 +865,9 @@ interfaces:
     items_shown: Éléments affichés
   input-code:
     code: Code
+    description: Écrire ou partager des extraits de code
+    line_number: Numéro de ligne
+    placeholder: Entrez le code ici...
   collection:
     collection: Collection
     description: Sélectionner parmi les collections existantes
@@ -873,6 +878,11 @@ interfaces:
     include_system_collections: Inclure les collections système
   select-color:
     color: Couleur
+    description: Entrez ou sélectionnez une valeur de couleur
+    placeholder: Choisir une couleur...
+    preset_colors: Couleurs prédéfinies
+    preset_colors_add_label: Ajouter une nouvelle couleur...
+    name_placeholder: Entrer le nom de la couleur...
   datetime:
     datetime: Date / Heure
     description: Saisir des dates et des heures
@@ -881,11 +891,13 @@ interfaces:
     use_24: Utiliser le format 24h
   system-display-template:
     display-template: Modèle d'affichage
+    description: Mélanger du texte statique et des valeurs de champs dynamiques
+    collection_field: Champ de collection
     collection_field_not_setup: L'option de champ de collection est mal configurée
     select_a_collection: Sélectionner une collection
   presentation-divider:
     divider: Séparateur
-    description: Étiqueter et diviser les champs en sections
+    description: Étiqueter et diviser les champs dans les sections
     title_placeholder: Entrez un titre...
     inline_title: Titre en ligne
     inline_title_label: Afficher le titre à l'intérieur de la ligne
@@ -911,8 +923,13 @@ interfaces:
     description: Sélectionner ou Transférer plusieurs fichiers
   input-hash:
     hash: Hash
+    description: Entrer une valeur à hacher
+    masked: Masqué
+    masked_label: Cacher les valeurs marquées "vrai"
   select-icon:
     icon: Icône
+    description: Sélectionner une icône depuis une liste déroulante
+    search_for_icon: Rechercher une icône...
   file-image:
     image: Image
     description: Sélectionner ou envoyer une image
@@ -924,10 +941,10 @@ interfaces:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
   list-m2m:
-    many-to-many: Plusieurs à plusieurs
+    many-to-many: Many to Many
     description: Sélectionner plusieurs éléments de jonction liés
   select-dropdown-m2o:
-    many-to-one: Plusieurs à un
+    many-to-one: Many to One
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
   input-rich-text-md:
@@ -943,12 +960,6 @@ interfaces:
     notice: Remarque
     description: Afficher une courte remarque
     text: Entrez le contenu de la remarque ici...
-  numeric:
-    numeric: Numérique
-    description: Entrez un nombre
-    minimum_value: Valeur minimale
-    maximum_value: Valeur maximale
-    step_interval: Intervalle
   list-o2m:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
@@ -959,7 +970,8 @@ interfaces:
   list:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
-    edit_fields: Modifier les champs
+    edit_fields: Éditer les champs
+    add_label: 'Libellé "Créer Nouveau"'
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
   slider:
@@ -981,26 +993,33 @@ interfaces:
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
   input:
-    text-input: Champ de texte
-    description: Entrer un texte d'une seule ligne
-    trim: Espaces aux extrêmités
-    trim_label: Enlever les espaces en première et dernière position
+    input: Entrée
+    description: Entrer manuellement une valeur
+    trim: Supprimer les espaces aux extrémités
+    trim_label: Enlever les espaces au début et à la fin
     mask: Masqué
     mask_label: Cacher la valeur réelle
     clear: Valeur effacée
     clear_label: Enregistrer en tant que chaîne vide
+    minimum_value: Valeur minimale
+    maximum_value: Valeur maximale
+    step_interval: Intervalle d'étape
+    slug: Transformer en Slug
+    slug_label: Rendre l'URL de la valeur sécurisée
   input-multiline:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
   boolean:
     toggle: Activer/Désactiver
+    description: Basculer entre l'activation et la désactivation
+    label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
   list-o2m-tree-view:
-    description: Arborescence pour les éléments récursifs imbriqués de type "un vers plusieurs"
-    recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
+    description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
+    recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
   user:
     user: Utilisateur
     description: Sélectionner un utilisateur directus existant
@@ -1011,10 +1030,17 @@ interfaces:
       modal: Modal
   input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Un éditeur de texte enrichi pouvant contenir du HTML
+    description: Un éditeur de texte enrichi pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
     options_override: Remplacement des options
+  input-autocomplete-api:
+    input-autocomplete-api: Champ Autocomplété (API)
+    description: Un type de recherche pour les valeurs d'API externes.
+    results_path: Chemin des résultats
+    value_path: Chemin de la valeur
+    trigger: Déclencheur
+    rate: Débit
 displays:
   boolean:
     boolean: Booléen
@@ -1040,12 +1066,11 @@ displays:
     description: Afficher les valeurs liées à l'heure
     format: Format
     format_note: >-
-      Le format personnalisé accepte le __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Le format personnalisé accepte le __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Court
     relative: Relatif
-    relative_label: "Afficher l'heure relative, par exemple: il y a 5 minutes"
+    relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1118,6 +1143,10 @@ layouts:
     comfortable: Confortable
     compact: Compact
     cozy: Intermédiaire
+  calendar:
+    calendar: Calendrier
+    start_date_field: Champ Date de début
+    end_date_field: Champ Date de fin
   map:
     map: Carte
     layers: Couches

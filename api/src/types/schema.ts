@@ -16,6 +16,7 @@ type CollectionsOverview = {
 				defaultValue: any;
 				nullable: boolean;
 				type: typeof types[number] | 'unknown' | 'alias';
+				dbType: string | null;
 				precision: number | null;
 				scale: number | null;
 				special: string[];

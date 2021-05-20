@@ -56,6 +56,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	year: { type: 'integer' },
 	blob: { type: 'binary' },
 	mediumblob: { type: 'binary' },
+	'int unsigned': { type: 'integer' },
 
 	// MS SQL
 	bit: { type: 'boolean' },
