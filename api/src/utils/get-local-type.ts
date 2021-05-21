@@ -53,8 +53,8 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	multipoint: { type: 'geometry', geometry_type: 'Multipoint', geometry_format: 'native' },
 	multilinestring: { type: 'geometry', geometry_type: 'MultiLinestring', geometry_format: 'native' },
 	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon', geometry_format: 'native' },
-	geometry: { type: 'geometry' },
-	sdo_geometry: { type: 'geometry' },
+	geometry: { type: 'geometry', geometry_format: 'native' },
+	sdo_geometry: { type: 'geometry', geometry_format: 'native' },
 
 	// MySQL
 	string: { type: 'text' },

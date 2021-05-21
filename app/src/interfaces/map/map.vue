@@ -300,7 +300,12 @@ export default defineComponent({
 				currentGeometry = getCurrentGeometry();
 				currentGeometry!.bbox = getBBox(currentGeometry!);
 				if (props.fitBounds) {
-					fitDataBounds({ duration: 0 });
+					if (geometryParsingError.value) {
+						const bbox = getBBox(initialValue!) as LngLatBoundsLike;
+						map.fitBounds(bbox, { padding: 80, maxZoom: 8, duration: 0 });
+					} else {
+						fitDataBounds({ duration: 0 });
+					}
 				}
 			} catch (error) {
 				geometryParsingError.value = error;

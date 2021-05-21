@@ -1108,6 +1108,7 @@ function clearLocalStore(): void {
 				numeric_precision: null,
 				numeric_scale: null,
 				geometry_type: undefined,
+				geometry_format: undefined,
 			},
 			meta: {
 				hidden: false,
