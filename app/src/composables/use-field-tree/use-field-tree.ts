@@ -45,7 +45,7 @@ export default function useFieldTree(
 				...(inject?.value?.relations.filter((relation: Relation) => {
 					return (
 						(relation.collection === collection && relation.field === field.field) ||
-						(relation.collection === collection && relation.meta?.one_field === field.field)
+						(relation.related_collection === collection && relation.meta?.one_field === field.field)
 					);
 				}) || []),
 			];
@@ -53,7 +53,7 @@ export default function useFieldTree(
 			const relation = relations.find(
 				(relation: Relation) =>
 					(relation.collection === collection && relation.field === field.field) ||
-					(relation.collection === collection && relation.meta?.one_field === field.field)
+					(relation.related_collection === collection && relation.meta?.one_field === field.field)
 			);
 
 			if (!relation) continue;
