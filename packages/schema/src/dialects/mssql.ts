@@ -32,6 +32,7 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 			INNER JOIN
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.TABLES as t
 			ON [c].[TABLE_NAME] = [t].[TABLE_NAME]
+			AND [c].[TABLE_CATALOG] = [t].[TABLE_CATALOG]
 			AND [t].TABLE_TYPE = 'BASE TABLE'
 			`
 		);
