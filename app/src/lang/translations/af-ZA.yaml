@@ -32,8 +32,7 @@ choices: Keuses
 add_new: Voeg nuwe
 all: Alle
 batch_delete_confirm: >-
-  Geen items is gekies nie | Is jy seker jy wil hierdie item uitwis? Hierdie aksie kan nie ontdoen word nie. | Is jy
-  seker jy wil hierdie {count} items uitwis? Hierdie aksie kan nie ontdoen word nie.
+  Geen items is gekies nie | Is jy seker jy wil hierdie item uitwis? Hierdie aksie kan nie ontdoen word nie. | Is jy seker jy wil hierdie {count} items uitwis? Hierdie aksie kan nie ontdoen word nie.
 cancel: Kanselleer
 collection: Versameling
 fields:
@@ -90,15 +89,10 @@ email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: Keuse Boksies
-    allow_other: Laat Ander Toe
   input-code:
     code: Kode
   collection:
     collection: Versameling
-  select-dropdown:
-    allow_other: Laat Ander Toe
   files:
     files: Lêers
   tags:

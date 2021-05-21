@@ -55,15 +55,10 @@ os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
-  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente
-  wirklich archivieren?
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
-reset_system_permissions_copy:
-  Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die
-  System-Sammlungen angewendet haben. Sind Sie sicher?
-the_following_are_minimum_permissions:
-  Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die
-  Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
+reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
+the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
@@ -93,8 +88,7 @@ no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 nullable: Nullbar
 allow_null_value: NULL-Wert erlauben
-enter_value_to_replace_nulls:
-  Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
+enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
 field_presentation: Darstellung & Aliasse
 field_file: Eine Datei
@@ -167,8 +161,7 @@ this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Fe
 click_here: Hier klicken
 to_manually_setup_translations: um die Übersetzung manuell einzurichten.
 click_to_manage_translated_fields: >-
-  Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um
-  es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
+  Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
@@ -344,7 +337,6 @@ interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
-list-m2a: Builder (Many-to-Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
@@ -400,7 +392,7 @@ account_created_successfully: Konto wurde erfolgreich erstellt
 auto_fill: Autom. ausfüllen
 corresponding_field: Korrespondierendes Feld
 errors:
-  COLLECTION_NOT_FOUND: 'Sammlung existiert nicht'
+  COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
@@ -414,6 +406,7 @@ errors:
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   UNKNOWN: Unerwarteter Fehler
+  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
@@ -444,8 +437,7 @@ start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elemen
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
-  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente
-  löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -636,36 +628,26 @@ discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und
-  Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen
-  schnelleren Zugriff.
+  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_collections_item: >-
-  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen
-  vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
   **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
-  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten
-  sind.
+  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten sind.
 page_help_files_collection: >-
-  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und
-  Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen
-  schnelleren Zugriff.
+  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_files_item: >-
-  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur
-  Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: '**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts.'
+  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: "**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts."
 page_help_settings_datamodel_collections: >-
-  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und
-  Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
+  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection:
-  '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
-page_help_settings_roles_item: '**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten.'
+page_help_settings_roles_collection: '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
+page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
-  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen,
-  sowie Standardansichten.
+  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
 page_help_settings_presets_item: >-
   **Preset-Detail** — Ein Formular zur Verwaltung von Lesezeichen und Sammlung-Presets.
 page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Listet alle Webhooks im Projekt auf.'
@@ -680,9 +662,7 @@ all: Alles
 none: Kein/e
 no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
 batch_delete_confirm: >-
-  Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht
-  rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht
-  rückgängig gemacht werden.
+  Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 collection: Sammlung
 collections: Sammlungen
@@ -865,20 +845,7 @@ view_project: Projekt anzeigen
 report_error: Fehler melden
 interfaces:
   presentation-links:
-    presentation-links: Button-Links
-    links: Links
-    description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
-    style: Style
     primary: Primär
-    link: Links
-    button: Buttons
-    error: Aktion kann nicht ausgeführt werden
-  select-multiple-checkbox:
-    checkboxes: Kontrollkästchen
-    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
-    allow_other: Andere erlauben
-    show_more: 'Zeige {count} mehr'
-    items_shown: Angezeigte Elemente
   input-code:
     code: Code
   collection:
@@ -903,24 +870,8 @@ interfaces:
     select_a_collection: Sammlung auswählen
   presentation-divider:
     divider: Divider
-    description: Felder beschriften und in Abschnitte teilen
-    title_placeholder: Titel eingeben...
-    inline_title: Inline-Titel
-    inline_title_label: Titel in Zeile anzeigen
-    margin_top: Oberer Rand
-    margin_top_label: Oberen Rand erhöhen
   select-dropdown:
-    description: Wert aus einer Dropdown-Liste auswählen
-    choices_placeholder: Neue Auswahl hinzufügen
-    allow_other: Andere erlauben
-    allow_other_label: Andere Werte erlauben
-    allow_none: Keine Auswahl zulassen
-    allow_none_label: Keine Auswahl zulassen
-    choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Dropdown (Mehrfachauswahl)
-    description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei
     description: Datei auswählen oder hochladen
@@ -933,54 +884,10 @@ interfaces:
     icon: Symbol
   file-image:
     image: Bild
-    description: Bild auswählen oder hochladen
   system-interface:
     interface: Benutzeroberfläche
-    description: Vorhandene Schnittstelle auswählen
-    placeholder: Schnittstelle auswählen...
-  system-interface-options:
-    interface-options: Schnittstellenoptionen
-    description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
-  list-m2m:
-    many-to-many: n:n-Beziehung
-    description: Mehrere verwandte Elemente auswählen
   select-dropdown-m2o:
-    many-to-one: n:1-Beziehung
-    description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
-  input-rich-text-md:
-    markdown: Markdown
-    description: Markdown eingeben und Vorschau anzeigen
-    customSyntax: Benutzerdefinierte Blöcke
-    customSyntax_label: Eigene Syntaxtypen hinzufügen
-    customSyntax_add: Eigene Syntax hinzufügen
-    box: Block / Inline
-    imageToken: Bild-Token
-    imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
-  presentation-notice:
-    notice: Anmerkung
-    description: Kurze Anmerkung anzeigen
-    text: Inhalt der Anmerkung eingeben...
-  numeric:
-    numeric: Numerisch
-    description: Nummer eingeben
-    minimum_value: Minimalwert
-    maximum_value: Maximalwert
-    step_interval: Schrittintervall
-  list-o2m:
-    one-to-many: 1 zu n
-    description: Mehrere verwandte Elemente auswählen
-    no_collection: Die Sammlung konnte nicht gefunden werden
-  select-radio:
-    radio-buttons: Radio Buttons
-    description: Eine von mehreren Optionen auswählen
-  list:
-    repeater: Repeater
-    description: Mehrere Einträge derselben Struktur erstellen
-    edit_fields: Felder bearbeiten
-    add_label: 'Neues Element erstellen'
-    field_name_placeholder: Feldnamen eingeben...
-    field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -999,27 +906,12 @@ interfaces:
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
     add_tags: Tags hinzufügen...
-  input:
-    text-input: Texteingabe
-    description: Einen einzeiligen Text eingeben
-    trim: Beschneiden
-    trim_label: Anfang und Ende kürzen
-    mask: Maskiert
-    mask_label: Tatsächlichen Wert ausblenden
-    clear: Gelöschter Wert
-    clear_label: Als leeren String abspeichern
-  input-multiline:
-    textarea: Textfeld
-    description: Mehrzeiligen Klartext eingeben
   boolean:
     toggle: Umschalten
     label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
-  list-o2m-tree-view:
-    description: Baumansicht für verschachtelte rekursive 1:n-Elemente
-    recursive_only: Die Baumansicht funktioniert nur für rekursive Abhängigkeiten.
   user:
     user: Benutzer
     description: Bestehenden Benutzer auswählen
@@ -1028,12 +920,6 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    description: Rich-Text-Editor, der HTML-Inhalte erzeugt
-    toolbar: Symbolleiste
-    custom_formats: Benutzerdefiniertes Format
-    options_override: Optionen überschreiben
 displays:
   boolean:
     boolean: Boolean
@@ -1059,8 +945,7 @@ displays:
     description: Werte in Bezug zur Zeit anzeigen
     format: Format
     format_note: >-
-      Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Short
     relative: Relativ

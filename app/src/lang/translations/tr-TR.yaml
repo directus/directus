@@ -55,11 +55,9 @@ os_totalmem: OS Hafıza
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
-  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin
-  misiniz?
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
-reset_system_permissions_copy:
-  Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
@@ -160,8 +158,7 @@ this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri
 click_here: Buraya tıklayın
 to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
-  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı
-  tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
 no_collections_found: Koleksiyon bulunamadı.
 new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
@@ -362,6 +359,7 @@ errors:
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
   UNKNOWN: Beklenmeyen hata
+  INTERNAL_SERVER_ERROR: Beklenmeyen hata
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
 edit_bookmark: Yer imini düzenle
@@ -412,7 +410,7 @@ operators:
   gte: Büyük veya eşittir
   in: Bunlardan biri
   nin: Bunlardan biri değil
-  null: 'Null'
+  null: "Null"
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
@@ -510,8 +508,7 @@ keep_editing: Düzenlemeye Devam Et
 add_new: Yeni ekle
 all: Tümü
 batch_delete_confirm: >-
-  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count}
-  ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 collection: Koleksiyon
 collections: Koleksiyonlar
@@ -652,16 +649,7 @@ view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
   presentation-links:
-    presentation-links: Buton Linki
-    links: Linkler
-    style: Stil
     primary: Birincil
-    link: Linkler
-    button: Butonlar
-    error: İşlem gerçekleştirilemiyor
-  select-multiple-checkbox:
-    checkboxes: Onay Kutuları
-    allow_other: Diğerlerine İzin Ver
   input-code:
     code: Kod
   collection:
@@ -678,7 +666,6 @@ interfaces:
   presentation-divider:
     divider: Ayırıcı
   select-dropdown:
-    allow_other: Diğerlerine İzin Ver
     choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
@@ -688,28 +675,10 @@ interfaces:
     hash: Hash
   select-icon:
     icon: İkon
-    search_for_icon: Simge ara...
   system-interface:
     interface: Arayüz
-    placeholder: Arayüz seçin...
-  system-interface-options:
-    interface-options: Arayüz Ayarları
-  list-m2m:
-    many-to-many: Çoktan Çoka
   select-dropdown-m2o:
-    many-to-one: Çoktan Bire
     display_template: Görüntüleme Şablonu
-  input-rich-text-md:
-    markdown: Markdown
-  numeric:
-    numeric: Sayısal
-    description: Bir sayı girin
-  list-o2m:
-    one-to-many: Bire Çok
-  select-radio:
-    radio-buttons: Radyo Düğmeleri
-  list:
-    repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı
   tags:
@@ -717,12 +686,6 @@ interfaces:
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
-  input:
-    text-input: Metin Girişi
-    trim: Kırp
-    mask: Maskeli
-  input-multiline:
-    textarea: Metin Alanı
   boolean:
     label_default: Etkin
   translations:
@@ -734,10 +697,6 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    toolbar: Araç Çubuğu
-    custom_formats: Özel Biçimler
 displays:
   boolean:
     boolean: Evet/Hayır

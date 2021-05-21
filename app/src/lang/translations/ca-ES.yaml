@@ -47,8 +47,7 @@ os_totalmem: Memòria del SO
 archive: Arxiu
 archive_confirm: Estàs segur de que vols arxivar aquest element?
 archive_confirm_count: >-
-  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count}
-  elements?
+  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
 unarchive: Desarxivar
 unarchive_confirm: Segur que voleu desarxivar aquest element?
 language: Idioma
@@ -105,8 +104,7 @@ editing_in_batch: 'Editant {count} elements'
 add_new: Afegir nou
 all: Tots
 batch_delete_confirm: >-
-  No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. |
-  Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
+  No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. | Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
 cancel: Cancel · la
 collection: Coŀlecció
 collections: Col·leccions
@@ -174,9 +172,6 @@ otp: Contrasenya d'un sol ús
 password: Contrasenya
 template: Plantilla
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: Caselles
-    allow_other: Permet altres
   input-code:
     code: Codi
   collection:
@@ -191,18 +186,10 @@ interfaces:
     display-template: Mostra la plantilla
   presentation-divider:
     divider: Separador
-  select-dropdown:
-    allow_other: Permet altres
   files:
     files: Arxius
-  system-interface-options:
-    interface-options: Opcions d'Interfície
   select-dropdown-m2o:
     display_template: Mostra la plantilla
-  list-o2m:
-    one-to-many: Un a Molts
-  select-radio:
-    radio-buttons: Botons de selecció
   tags:
     tags: Etiquetes
   translations:
