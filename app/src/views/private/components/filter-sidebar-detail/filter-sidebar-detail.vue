@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch, toRefs } from '@vue/composition-api';
-import { Filter } from '@/types';
+import { Field, Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
@@ -129,7 +129,7 @@ export default defineComponent({
 		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
-			const field = fieldsStore.getField(props.collection, fieldKey);
+			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
 			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
 
 			emit('input', [
@@ -138,7 +138,7 @@ export default defineComponent({
 					key: nanoid(),
 					field: fieldKey,
 					operator: defaultOperator || 'contains',
-					value: '',
+					value: field.type === 'boolean' ? true : '',
 				},
 			]);
 		}
