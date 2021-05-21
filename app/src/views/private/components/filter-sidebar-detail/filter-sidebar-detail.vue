@@ -20,7 +20,7 @@
 				</v-input>
 			</template>
 
-			<v-list :multiple="false">
+			<v-list>
 				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
 			</v-list>
 		</v-menu>
