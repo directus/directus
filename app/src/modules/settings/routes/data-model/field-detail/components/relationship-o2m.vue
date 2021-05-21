@@ -330,6 +330,20 @@ export default defineComponent({
 				);
 			});
 
+			/**
+			 * These are the system endpoints that don't have full/regular CRUD operations available.
+			 */
+			const collectionsDenyList = [
+				'directus_activity',
+				'directus_collections',
+				'directus_fields',
+				'directus_migrations',
+				'directus_relations',
+				'directus_revisions',
+				'directus_sessions',
+				'directus_settings',
+			];
+
 			const systemCollections = computed(() => {
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
@@ -337,7 +351,7 @@ export default defineComponent({
 					}),
 					['collection'],
 					['asc']
-				);
+				).filter((collection) => collectionsDenyList.includes(collection.collection) === false);
 			});
 
 			const currentCollectionPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
