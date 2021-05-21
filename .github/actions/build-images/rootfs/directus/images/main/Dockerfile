@@ -69,16 +69,19 @@ WORKDIR /directus
 # Global requirements
 RUN npm install -g yargs pino pino-colada
 
+# Copy files
+COPY ./rootfs /
+
+RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print && \
+    chown node:node /directus
+
 # Install Directus
+USER node
 COPY --from=builder /directus/package.json .
 RUN npm install
 
-# Copy files
-COPY ./rootfs /
 # Keep the updated package.json
 COPY --from=builder /directus/package.json .
-
-RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print
 
 # Create directories
 RUN \
