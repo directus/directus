@@ -56,7 +56,7 @@
 		"@vue/cli-plugin-vuex": "^4.5.8",
 		"@vue/cli-service": "^4.5.13",
 		"@vue/composition-api": "^0.6.7",
-		"@vue/test-utils": "^1.1.1",
+		"@vue/test-utils": "^1.2.0",
 		"axios": "^0.21.1",
 		"base-64": "^1.0.0",
 		"codemirror": "^5.61.0",
