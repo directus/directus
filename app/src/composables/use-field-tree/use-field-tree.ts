@@ -62,7 +62,7 @@ export default function useFieldTree(
 
 			if (relationType === 'm2o') {
 				field.children = parseLevel(
-					relation.collection,
+					relation.related_collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);
