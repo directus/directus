@@ -978,6 +978,9 @@ interfaces:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
+    add_label: 'Label für "Neu erstellen"'
+    field_name_placeholder: Feldnamen eingeben...
+    field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -997,15 +1000,32 @@ interfaces:
     alphabetize_label: Alphabetische Reihenfolge erzwingen
     add_tags: Tags hinzufügen...
   input:
+    input: Eingabe
+    description: Wert manuell eingeben
+    trim: Leerzeichen entfernen
+    trim_label: Leerzeichen am Anfang und Ende entfernen
     mask: Maskiert
+    mask_label: Tatsächlichen Wert ausblenden
+    clear: Gelöschter Wert
+    clear_label: Als leeren String abspeichern
+    minimum_value: Minimalwert
+    maximum_value: Maximalwert
+    step_interval: Schrittintervall
+    slug_label: Eingegebenen Wert URL-sicher machen
+  input-multiline:
+    textarea: Textfeld (mehrzeilig)
+    description: Mehrzeiligen Klartext eingeben
   boolean:
     toggle: Umschalten
+    description: Zwischen Ein und Aus wechseln
+    label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
+    recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
   user:
     user: Benutzer
     description: Bestehenden Benutzer auswählen
@@ -1015,6 +1035,10 @@ interfaces:
       dropdown: Dropdown
       modal: Modal
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
+    toolbar: Toolbar
+    custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
