@@ -39,7 +39,6 @@
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@directus/drive": "9.0.0-rc.51",
 		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
 		"@types/node": "^15.3.1",
