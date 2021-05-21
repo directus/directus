@@ -274,7 +274,8 @@ export class AuthorizationService {
 			const nestedErrors = flatten<FailedValidationException>(
 				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payload))
 			);
-			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
+
+			const allErrored = subValidation.length === nestedErrors.length;
 
 			if (allErrored) {
 				errors.push(...nestedErrors);
