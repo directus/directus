@@ -3,7 +3,7 @@
 		<template #activator>
 			<v-input
 				:disabled="disabled"
-				:placeholder="$t('interfaces.color.placeholder')"
+				:placeholder="$t('interfaces.select-color.placeholder')"
 				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"

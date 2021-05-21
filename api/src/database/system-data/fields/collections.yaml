@@ -16,11 +16,17 @@ fields:
     options:
       font: monospace
     readonly: true
-    width: half
+    width: full
 
   - field: icon
     interface: select-icon
     options:
+    width: half
+
+  - field: icon_color
+    interface: select-color
+    options:
+      placeholder: Choose a color...
     width: half
 
   - field: note
