@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-map" ref="layoutElement">
 		<portal to="layout-options">
-			<template v-if="availableFields.length == 0">
+			<template v-if="geometryFields.length == 0">
 				<div class="field">
 					<v-input type="text" disabled :prefix="'No compatible fields'"></v-input>
 				</div>
@@ -10,7 +10,10 @@
 				<template>
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.field') }}</div>
-						<v-select v-model="geometryField" :items="availableFields" />
+						<v-select
+							v-model="geometryField"
+							:items="geometryFields.map(({ name, field }) => ({ text: name, value: field }))"
+						/>
 					</div>
 				</template>
 			</template>
@@ -123,13 +126,6 @@
 					</v-button>
 				</template>
 			</v-info>
-			<v-info
-				v-else-if="!geometryOptions"
-				type="warning"
-				icon="not_listed_location"
-				center
-				:title="$t('layouts.map.field_not_found')"
-			></v-info>
 			<v-info
 				v-else-if="geojsonError"
 				type="warning"
@@ -276,7 +272,7 @@ export default defineComponent({
 		const fitBoundsAnimate = syncOption(_layoutOptions, 'fitBoundsAnimate', true);
 		const fitBoundsPadding = syncOption(_layoutOptions, 'fitBoundsPadding', 100);
 		const fitBoundsSpeed = syncOption(_layoutOptions, 'fitBoundsSpeed', 1.4);
-		const clusterActive = syncOption(_layoutOptions, 'clusterActive', true);
+		const clusterActive = syncOption(_layoutOptions, 'clusterActive', false);
 		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
 		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
 		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
@@ -292,13 +288,29 @@ export default defineComponent({
 			},
 		});
 
+		const geometryFields = computed(() => {
+			return (fieldsInCollection.value as Field[]).filter(
+				({ type, meta }) => type == 'geometry' || meta?.interface == 'map'
+			);
+		});
+
+		watch(
+			() => geometryFields.value,
+			(fields) => {
+				if (!geometryField.value && fields.length > 0) {
+					geometryField.value = fields[0].field;
+				}
+			},
+			{ immediate: true }
+		);
+
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
 			if (!field) return undefined;
 			if (field.type == 'geometry') {
 				return {
 					geometryField: field.field,
-					geometryFormat: 'native',
+					geometryFormat: field.schema.geometry_format,
 				} as GeometryOptions;
 			}
 			if (field?.meta?.interface == 'map') {
@@ -444,12 +456,6 @@ export default defineComponent({
 			return _filters.value.filter((filter) => !filter.locked).length;
 		});
 
-		const availableFields = computed(() => {
-			return (fieldsInCollection.value as Field[])
-				.filter(({ type, meta }) => type == 'geometry' || meta?.interface == 'map')
-				.map(({ name, field }) => ({ text: name, value: field }));
-		});
-
 		return {
 			template,
 			_selection,
@@ -497,7 +503,7 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
-			availableFields,
+			geometryFields,
 			customLayerDrawerOpen,
 		};
 
