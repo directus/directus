@@ -216,6 +216,8 @@ export const useFieldsStore = createStore({
 
 						return field;
 					});
+
+					this.translateFields();
 				}
 			} catch (err) {
 				// reset the changes if the api sync failed
