@@ -57,34 +57,33 @@ ENV \
   EMAIL_SENDMAIL_NEW_LINE="unix" \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
-RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash ssmtp util-linux
-
-SHELL ["/bin/bash", "-c"]
-
 WORKDIR /directus
-
-# Global requirements
-RUN npm install -g yargs pino pino-colada
 
 # Copy files
 COPY ./rootfs /
 
-RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print && \
-    chown node:node /directus
+RUN \
+  apk update && \
+  apk upgrade && \
+  apk add bash ssmtp util-linux && \
+# Global requirements
+  npm install -g yargs pino pino-colada && \
+  chmod +x /usr/bin/entrypoint /usr/bin/print && \
+  chown node:node /directus && \
+# clean up as root
+  rm -rf /tmp/* /var/cache/apk/*
 
 # Install Directus
 USER node
-COPY --from=builder /directus/package.json .
-RUN npm install
 
-# Keep the updated package.json
 COPY --from=builder /directus/package.json .
-
-# Create directories
 RUN \
+# Backup the updated package.json
+  cp /directus/package.json /tmp && \
+  npm install && \
+# Restore the updated package.json
+  mv /tmp/package.json . && \
+# Create directories
   mkdir -p extensions/displays && \
   mkdir -p extensions/interfaces && \
   mkdir -p extensions/layouts && \
@@ -92,10 +91,11 @@ RUN \
   mkdir -p database && \
   mkdir -p uploads
 
-EXPOSE 8055
 VOLUME \
   /directus/database \
   /directus/extensions \
   /directus/uploads
 
+EXPOSE 8055
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["entrypoint"]
