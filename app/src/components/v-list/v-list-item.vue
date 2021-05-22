@@ -133,6 +133,7 @@ body {
 	color: var(--v-list-item-color);
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius);
+	pointer-events: all;
 
 	&.dashed {
 		&::after {
