@@ -16,6 +16,7 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
+	GraphQLNullableType,
 	GraphQLObjectType,
 	GraphQLResolveInfo,
 	GraphQLScalarType,
@@ -319,8 +320,21 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
+						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type);
+
+						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
+						// can't non-null in update, as that would require every not-nullable field to be
+						// submitted on updates
+						if (field.nullable === false && action !== 'update') {
+							type = GraphQLNonNull(type);
+						}
+
+						if (collection.primary === field.field) {
+							type = GraphQLID;
+						}
+
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type,
 							description: field.note,
 						};
 
