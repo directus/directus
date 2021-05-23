@@ -1,4 +1,4 @@
-import { Field, RawField } from '../types/field';
+import { Field, FieldOverview, RawField } from '../types';
 import { Knex } from 'knex';
 
 export function createGeometryColumn(
@@ -19,14 +19,12 @@ export function createGeometryColumn(
 			return table.string(field.field);
 		default:
 			throw new Error(`Unknown geometry format: ${format}.`);
-			break;
 	}
 	const type = field.schema?.geometry_type || 'geometry';
 	const client = knex.client.config.client;
 	switch (client) {
 		case 'mysql':
 		case 'mariadb':
-			return table.specificType(field.field, type);
 			return table.specificType(field.field, type);
 		case 'pg':
 			return table.specificType(field.field, `geometry(${type})`);
@@ -38,7 +36,7 @@ export function createGeometryColumn(
 		case 'sqlite3':
 			// Not sure how to deal with this ?
 			// return knex.raw(`select AddGeometryColumnfield(??, ??, 4326, ?, 'XY')`, (table as any)._tableName, field.field, type);
-			// This works too, but it's not an *actual* geometry column to Spatialite
+			// This works too, but it won't be added to the geometry_columns schema (maybe there are other difference ?)
 			return table.specificType(field.field, type);
 		default:
 			throw new Error(`Native geometric types not supported on ${client}.`);
@@ -94,6 +92,39 @@ const dbGeometricTypes = new Set([
 	'user-defined',
 ]);
 
-export function isNativeGeometry(type?: string | null): boolean {
-	return !!type && dbGeometricTypes.has(type.toLowerCase());
+export function isNativeGeometry(field: FieldOverview): boolean {
+	const { type, dbType } = field;
+	return type == 'geometry' && dbGeometricTypes.has(dbType!.toLowerCase());
 }
+
+// Might be usefull somehow if we can pass that information to the client ?
+// export async function geometrySupport(knex: Knex) {
+// 	const client = knex.client.config.client;
+// 	switch (client) {
+// 		case 'mysql':
+// 			const version = await knex.select(knex.raw('version()'));
+// 			return { types: true, srid: Number(version[0]) >= 8 };
+// 		case 'mariadb':
+// 			return { types: true, srid: false };
+// 		case 'mssql':
+// 		case 'redshift':
+// 		case 'oracledb':
+// 			return { types: false, srid: false };
+// 		case 'sqlite3':
+// 			try {
+// 				await knex.select(knex.raw('spatialite_version()'))
+// 				return { types: true, srid: true };
+// 			} catch(error) {
+// 				return undefined;
+// 			}
+// 		case 'pg':
+// 			try {
+// 				await knex.select(knex.raw('postgis_version()'))
+// 				return { types: true, srid: true };
+// 			} catch(error) {
+// 				return undefined;
+// 			}
+// 		default:
+// 			return undefined;
+// 	}
+// }

@@ -146,8 +146,8 @@ async function parseCurrentLevel(
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	return function (column: string): Knex.Raw<string> {
-		const { type, dbType } = schema.collections[table].fields[column];
-		if (type == 'geometry' && isNativeGeometry(dbType)) {
+		const field = schema.collections[table].fields[column];
+		if (isNativeGeometry(field)) {
 			return queryGeometryAsText(knex, table, column);
 		}
 		return knex.raw('??.??', [table, column]);

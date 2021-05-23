@@ -180,8 +180,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import i18n from '@/lang';
 import { state } from '../store';
-import { geometryTypes, geometryFormats, GeometryFormat } from '@/types';
-import { DataType } from '@/types';
+import { geometryTypes, geometryFormats, GeometryFormat, DataType } from '@/types';
 import { TranslateResult } from 'vue-i18n';
 
 export const fieldTypes: Array<{ value: DataType; text: TranslateResult | string } | { divider: true }> = [

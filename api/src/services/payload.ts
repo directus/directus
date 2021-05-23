@@ -169,17 +169,16 @@ export class PayloadService {
 			})
 		);
 
-		await this.processGeometries(processedPayload, action);
-		await this.processDates(processedPayload, action);
+		this.processGeometries(processedPayload, action);
+		this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (
-						Array.isArray(value) ||
-						(typeof value === 'object' && !(value instanceof Date) && value !== null && !value.isRawInstance)
-					) {
-						record[key] = JSON.stringify(value);
+					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
+						if (!value.isRawInstance) {
+							record[key] = JSON.stringify(value);
+						}
 					}
 				}
 			});
@@ -218,13 +217,17 @@ export class PayloadService {
 		return value;
 	}
 
+	/**
+	 * Native geometries are stored in custom binary format. We need to insert them with
+	 * the function st_geomfromtext. For this to work, that function call must not be
+	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
+	 * to check if the value is a raw instance before stringifying it in the next step.
+	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		if (action == 'read') return payloads;
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => {
-			return field.type == 'geometry' && isNativeGeometry(field.dbType);
-		});
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
 				if (name in payload) {
@@ -238,10 +241,7 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(
-		payloads: Partial<Record<string, any>>[],
-		action: Action
-	): Promise<Partial<Record<string, any>>[]> {
+	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
