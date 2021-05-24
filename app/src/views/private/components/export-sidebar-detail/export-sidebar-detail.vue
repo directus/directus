@@ -4,15 +4,15 @@
 			<div class="field full">
 				<p class="type-label">{{ $t('format') }}</p>
 				<v-select :items="formats" v-model="format" />
-				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
+				<v-checkbox v-show="!isXliff()" v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
-			<div class="field full" v-show="isXliff && hasMoreThanOneTranslationFields">
+			<div class="field full" v-show="isXliff() && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('translation_field') }}</p>
 				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
 			</div>
-			<div class="field full" v-if="isXliff && translationField">
+			<div class="field full" v-if="isXliff() && translationsField">
 				<p class="type-label">{{ $t('language') }}</p>
-				<language-select @input="onSelectLanguage" :collection="collection" :field="translationField" />
+				<language-select @input="onSelectLanguage" :collection="collection" :field="translationsField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">
@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Filter } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { Field, Collection } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -106,10 +106,7 @@ export default defineComponent({
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
 		isExportDisabled(): boolean {
-			return this.isXliff && (!this.language || !this.translationField);
-		},
-		isXliff(): boolean {
-			return ['xliff', 'xliff2'].includes(this.format);
+			return this.isXliff() && (!this.language || !this.translationsField);
 		},
 	},
 	watch: {
@@ -130,21 +127,26 @@ export default defineComponent({
 		const format = ref('csv');
 		const useFilters = ref(true);
 		const language = ref<any>(null);
-		const translationField = ref<any>(null);
+		const translationsField = ref<any>(null);
 
 		return {
 			collectionInfo,
 			format,
 			language,
-			translationField,
+			translationsField,
 			useFilters,
 			exportData,
+			isXliff,
 			onSelectTranslationField,
 			onSelectLanguage,
 		};
 
+		function isXliff(): boolean {
+			return ['xliff', 'xliff2'].includes(format.value);
+		}
+
 		function onSelectTranslationField(selection: string) {
-			translationField.value = selection;
+			translationsField.value = selection;
 		}
 
 		function onSelectLanguage(selection: string) {
@@ -152,7 +154,7 @@ export default defineComponent({
 		}
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection}`;
+			let url = getRootPath() + 'items/';
 
 			let params: Record<string, any> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
@@ -162,15 +164,27 @@ export default defineComponent({
 				case 'csv':
 				case 'json':
 				case 'xml':
+					url += props.collection;
 					params.export = format.value;
 					break;
 				case 'xliff':
 				case 'xliff2':
-					params.optional = JSON.stringify({
-						language: language.value,
-						field: translationField.value,
-					});
-					params.export = format.value;
+					{
+						const relationsStore = useRelationsStore();
+						const [languageRelation, parentRelation] = relationsStore.getRelationsForField(
+							props.collection,
+							translationsField.value
+						);
+						params.optional = JSON.stringify({
+							language: language.value,
+							languageField: languageRelation.junction_field,
+							parentKeyField: parentRelation.junction_field,
+							parentCollection: props.collection,
+							languagesCollection: languageRelation.one_collection,
+						});
+						url += languageRelation.many_collection;
+						params.export = format.value;
+					}
 					break;
 			}
 
