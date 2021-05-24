@@ -16,7 +16,13 @@ fields:
     options:
       font: monospace
     readonly: true
-    width: full
+    width: half
+
+  - field: note
+    interface: input
+    options:
+      placeholder: A description of this collection...
+    width: half
 
   - field: icon
     interface: select-icon
@@ -28,12 +34,6 @@ fields:
     options:
       placeholder: Choose a color...
     width: half
-
-  - field: note
-    interface: input
-    options:
-      placeholder: A description of this collection...
-    width: full
 
   - field: display_template
     interface: system-display-template
