@@ -47,7 +47,7 @@
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
 		"cli-highlight": "^2.1.11",
-		"cli-table3": "^0.5.1",
+		"cli-table3": "^0.6.0",
 		"cli-ux": "^5.5.1",
 		"cosmiconfig": "^7.0.0",
 		"csv": "^5.4.0",
