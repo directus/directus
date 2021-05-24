@@ -24,8 +24,8 @@ export class TranslationsService {
 			.map((field) => field.field)
 			.filter((f) => f === translationsFieldName);
 		const relation = this.schema.relations.find(
-			(relation: any) =>
-				relation.one_collection === collectionName && translationsFieldsNames.includes(relation.one_field)
+			(relation: Relation) =>
+				relation.collection === collectionName && translationsFieldsNames.includes(relation.meta?.one_field as string)
 		);
 		if (!relation) {
 			throw new InvalidPayloadException(

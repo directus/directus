@@ -61,7 +61,7 @@ export default defineComponent({
 		function useTemplate() {
 			const regex = /\{\{(.*?)\}\}/g;
 
-			const applyTemplate = (template: String, item: any) => {
+			const applyTemplate = (template: string, item: any) => {
 				const result = template.replace(regex, (_, token) => {
 					const fieldKey = token.replace(/{{/g, '').replace(/}}/g, '').trim();
 					return item[fieldKey];
@@ -80,14 +80,15 @@ export default defineComponent({
 				if (!relationsForField.value) return null;
 				return (
 					relationsForField.value.find(
-						(relation: Relation) => relation.one_collection === props.collection && relation.one_field === props.field
+						(relation: Relation) =>
+							relation.meta?.one_collection === props.collection && relation.meta?.one_field === props.field
 					) || null
 				);
 			});
 
 			const translationsCollection = computed(() => {
 				if (!translationsRelation.value) return null;
-				return translationsRelation.value.many_collection;
+				return translationsRelation.value.meta?.many_collection;
 			});
 
 			const languagesRelation = computed(() => {
@@ -97,12 +98,12 @@ export default defineComponent({
 
 			const languagesCollection = computed(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.one_collection;
+				return languagesRelation.value.meta?.one_collection;
 			});
 
 			const languagesPrimaryKeyField = computed(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.one_primary;
+				return languagesRelation.value.schema?.foreign_key_column;
 			});
 
 			return {

@@ -293,10 +293,10 @@ router.post(
 				try {
 					const translationsRelation = translationsService.getTranslationsRelation(collectionKey, field);
 					const savedKeys = await xliffService.fromXliff(
-						translationsRelation.many_collection,
+						translationsRelation.meta?.many_collection as string,
 						collectionKey,
-						translationsRelation.many_field,
-						translationsRelation.junction_field,
+						translationsRelation.meta?.many_field as string,
+						translationsRelation.meta?.junction_field as string,
 						res.locals.data
 					);
 					res.locals.payload = { data: savedKeys || null };

@@ -177,18 +177,18 @@ export default defineComponent({
 						);
 						params.optional = JSON.stringify({
 							language: language.value,
-							languageField: languageRelation.junction_field,
-							parentKeyField: parentRelation.junction_field,
+							languageField: languageRelation.meta?.junction_field,
+							parentKeyField: parentRelation.meta?.junction_field,
 							parentCollection: props.collection,
-							languagesCollection: languageRelation.one_collection,
+							languagesCollection: languageRelation.meta?.one_collection,
 						});
-						url += languageRelation.many_collection;
+						url += languageRelation.meta?.many_collection;
 						params.export = format.value;
 					}
 					break;
 			}
 
-			if (useFilters.value === true) {
+			if (!isXliff() && useFilters.value === true) {
 				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
 				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
 				if (props.searchQuery) params.search = props.searchQuery;
