@@ -11,7 +11,7 @@
 	],
 	"dependencies": {
 		"@directus/sdk-js": "^9.0.0-rc.53",
-		"@lnfusion/gatsby-source-graphql": "0.0.3",
+		"@lnfusion/gatsby-source-graphql": "0.0.4",
 		"chalk": "^4.1.1",
 		"gatsby-source-filesystem": "^3.5.0",
 		"invariant": "^2.2.4",

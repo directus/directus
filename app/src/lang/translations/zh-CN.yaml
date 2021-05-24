@@ -311,7 +311,6 @@ interface_not_found: '未找到接口 "{interface}"。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
-list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
 no_items_copy: 此集合中没有项目。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
@@ -366,7 +365,7 @@ account_created_successfully: 账号成功创建！
 auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
-  COLLECTION_NOT_FOUND: '集合不存在'
+  COLLECTION_NOT_FOUND: "集合不存在"
   FIELD_NOT_FOUND: 空格未找到
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
@@ -376,6 +375,7 @@ errors:
   ITEM_NOT_FOUND: 找不到项目
   ROUTE_NOT_FOUND: 未找到
   UNKNOWN: 未知错误
+  INTERNAL_SERVER_ERROR: 未知错误
 bookmark_name: 书签名称
 edit_bookmark: 编辑书签
 bookmarks: 书签
@@ -722,13 +722,12 @@ value: 值
 interfaces:
   presentation-links:
     primary: 主要的
-  select-multiple-checkbox:
-    checkboxes: 复选框
-    allow_other: 允许其他选项
   input-code:
     code: 代码
   collection:
     collection: 集合
+    description: 在现有集合之间选择
+    include_system_collections: 包含系统集合
   system-collections:
     collections: 集合
     description: 在现有集合之间选择
@@ -743,22 +742,8 @@ interfaces:
     select_a_collection: 选择一个集合
   presentation-divider:
     divider: 分隔线
-    inline_title: 内嵌标题
-    inline_title_label: 在行内显示标题
-    margin_top: 上边距
-    margin_top_label: 增加上边距
   select-dropdown:
-    description: 从下拉列表中选择一个值
-    choices_placeholder: 添加一个新的选项
-    allow_other: 允许其他选项
-    allow_other_label: 允许其他值
-    allow_none: 允许 None
-    allow_none_label: 允许不选择
-    choices_name_placeholder: 输入一个名称...
     choices_value_placeholder: 输入值...
-  select-multiple-dropdown:
-    select-multiple-dropdown: 下拉(多次)
-    description: 从下拉列表中选择多个值
   file:
     file: 文件
     description: 选择或上传文件
@@ -769,30 +754,12 @@ interfaces:
     hash: Hash
   select-icon:
     icon: 图标
-  system-interface-options:
-    interface-options: 界面选项
-  list-m2m:
-    many-to-many: 多对多
   select-dropdown-m2o:
-    many-to-one: 多对一
     display_template: 显示模板
-  input-rich-text-md:
-    markdown: Markdown
-  numeric:
-    numeric: 数字
-  list-o2m:
-    one-to-many: 一对多
-  select-radio:
-    radio-buttons: 单选按钮
-  list:
-    repeater: 中继器
   slider:
     slider: 滑块
   tags:
     tags: 标签
-  input:
-    text-input: 文本输入
-    trim: 修剪
   boolean:
     toggle: 切换
     label_default: 已启用
@@ -802,8 +769,6 @@ interfaces:
     user: 用户
     modes:
       dropdown: 下拉列表
-  input-rich-text-html:
-    custom_formats: 自定义格式
 displays:
   boolean:
     boolean: 布尔值

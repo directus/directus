@@ -35,7 +35,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
 	protected $root: string;
-	protected $acl: string;
+	protected $acl?: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
@@ -49,7 +49,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		this.$bucket = config.bucket;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
-		this.$acl = config.acl ? config.acl : '';
+		this.$acl = config.acl;
 	}
 
 	/**

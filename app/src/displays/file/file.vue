@@ -1,11 +1,12 @@
 <template>
 	<img
-		v-if="imageThumbnail"
+		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type.includes('svg') }"
 		:alt="value.title"
+		@error="imgError = true"
 	/>
-	<div ref="previewEl" v-else class="preview" :class="{ 'has-file': value }" :style="{ width: height + 'px' }">
+	<div ref="previewEl" v-else class="preview">
 		<span class="extension" v-if="fileExtension">
 			{{ fileExtension }}
 		</span>
@@ -35,6 +36,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const previewEl = ref<Element>();
+		const imgError = ref(false);
 
 		const fileExtension = computed(() => {
 			if (!props.value) return null;
@@ -50,16 +52,17 @@ export default defineComponent({
 
 		const { height } = useElementSize(previewEl);
 
-		return { fileExtension, imageThumbnail, previewEl, height };
+		return { fileExtension, imageThumbnail, previewEl, height, imgError };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 img {
-	width: auto;
-	max-height: 100%;
+	height: 100%;
+	object-fit: cover;
 	border-radius: var(--border-radius);
+	aspect-ratio: 1;
 }
 
 .preview {
@@ -73,6 +76,7 @@ img {
 	overflow: hidden;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
+	aspect-ratio: 1;
 
 	&.has-file {
 		background-color: var(--primary-alt);

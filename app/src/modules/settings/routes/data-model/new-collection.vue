@@ -225,7 +225,10 @@ export default defineComponent({
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					await api.post('/relations', relations);
+					for (const relation of relations) {
+						await api.post('/relations', relation);
+					}
+
 					await relationsStore.hydrate();
 				}
 
