@@ -49,8 +49,7 @@ os_totalmem: Memoria SO
 archive: Arhivează
 archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
 archive_confirm_count: >-
-  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi
-  aceste {count} elemente?
+  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
 unarchive: Dezarhivare
 unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
 nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
@@ -90,8 +89,7 @@ discard_changes: Renunță la modificări
 add_new: Adaugare intrare nouă
 all: Tot
 batch_delete_confirm: >-
-  Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur
-  doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
+  Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
 cancel: Anulează
 collection: Colecție
 collections: Colecții

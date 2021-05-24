@@ -15,12 +15,16 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 		case 'status':
 		case 'slug':
 		case 'lang':
-		case 'uuid':
 		case 'hash':
 		case 'string':
 			return {
 				type: 'text',
 				operators: ['contains', 'ncontains', 'eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+			};
+		case 'uuid':
+			return {
+				type: 'text',
+				operators: ['eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
 			};
 		// Boolean
 		case 'boolean':

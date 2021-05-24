@@ -220,7 +220,7 @@ export class GoogleCloudStorage extends Storage {
 
 		try {
 			if (isReadableStream(content)) {
-				const destStream = file.createWriteStream();
+				const destStream = file.createWriteStream({ resumable: false });
 				await pipeline(content, destStream);
 				return { raw: undefined };
 			}

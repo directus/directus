@@ -1,0 +1,10 @@
+{
+	"$schema": "https://unpkg.com/@changesets/config@1.6.0/schema.json",
+	"changelog": ["@changesets/changelog-github", { "repo": "directus/directus" }],
+	"commit": false,
+	"linked": [["*"]],
+	"access": "public",
+	"baseBranch": "main",
+	"updateInternalDependencies": "patch",
+	"ignore": []
+}

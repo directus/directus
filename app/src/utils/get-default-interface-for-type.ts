@@ -4,7 +4,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	alias: 'input',
 	bigInteger: 'input',
 	binary: 'input',
-	boolean: 'toggle',
+	boolean: 'boolean',
 	date: 'datetime',
 	dateTime: 'datetime',
 	decimal: 'input',

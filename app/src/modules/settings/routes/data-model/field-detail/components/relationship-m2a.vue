@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].one_collection" />
+				<v-input disabled :value="relations[0].related_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
@@ -30,8 +30,8 @@
 								<v-list-item
 									v-for="collection in availableCollections"
 									:key="collection.collection"
-									:active="relations[0].many_collection === collection.collection"
-									@click="relations[0].many_collection = collection.collection"
+									:active="relations[0].collection === collection.collection"
+									@click="relations[0].collection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -45,8 +45,8 @@
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
-										:active="relations[0].many_collection === collection.collection"
-										@click="relations[0].many_collection = collection.collection"
+										:active="relations[0].collection === collection.collection"
+										@click="relations[0].collection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -72,18 +72,18 @@
 					item-text="name"
 					item-disabled="meta.singleton"
 					multiple
-					v-model="relations[1].one_allowed_collections"
+					v-model="relations[1].meta.one_allowed_collections"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
 			<v-input disabled>
 				<template #input>
-					<v-text-overflow :text="relations[0].one_primary" />
+					<v-text-overflow :text="currentPrimaryKeyField" />
 				</template>
 			</v-input>
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
-				v-model="relations[0].many_field"
+				:class="{ matches: junctionFieldExists(relations[0].field) }"
+				v-model="relations[0].field"
 				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
@@ -104,9 +104,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[0].many_field === item.value"
+								:active="relations[0].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].many_field = item.value"
+								@click="relations[0].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -117,15 +117,15 @@
 				</template>
 
 				<template #input v-if="isExisting">
-					<v-text-overflow :text="relations[0].many_field" />
+					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
-			<div class="related-collections-preview">{{ (relations[1].one_allowed_collections || []).join(', ') }}</div>
+			<div class="related-collections-preview">{{ (relations[1].meta.one_allowed_collections || []).join(', ') }}</div>
 			<div class="spacer" />
 			<v-input
 				class="one-collection-field"
-				:class="{ matches: junctionFieldExists(relations[0].one_collection_field) }"
-				v-model="relations[1].one_collection_field"
+				:class="{ matches: junctionFieldExists(relations[0].meta.one_collection_field) }"
+				v-model="relations[1].meta.one_collection_field"
 				:nullable="false"
 				:placeholder="$t('collection_key') + '...'"
 				:disabled="autoFill || isExisting"
@@ -146,9 +146,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[0].many_field === item.value"
+								:active="relations[0].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].many_field = item.value"
+								@click="relations[0].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -159,13 +159,13 @@
 				</template>
 
 				<template #input v-if="isExisting">
-					<v-text-overflow :text="relations[1].one_collection_field" />
+					<v-text-overflow :text="relations[1].meta.one_collection_field" />
 				</template>
 			</v-input>
 			<div class="spacer" />
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
-				v-model="relations[1].many_field"
+				:class="{ matches: junctionFieldExists(relations[1].field) }"
+				v-model="relations[1].field"
 				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
@@ -186,9 +186,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[1].many_field === item.value"
+								:active="relations[1].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[1].many_field = item.value"
+								@click="relations[1].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -199,7 +199,7 @@
 				</template>
 
 				<template #input v-if="isExisting">
-					<v-text-overflow :text="relations[1].many_field" />
+					<v-text-overflow :text="relations[1].field" />
 				</template>
 			</v-input>
 			<v-input disabled :value="$t('primary_key')" />
@@ -214,8 +214,8 @@
 			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
 
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
-				v-model="relations[0].sort_field"
+				:class="{ matches: junctionFieldExists(relations[0].meta.sort_field) }"
+				v-model="relations[0].meta.sort_field"
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
 			>
@@ -229,9 +229,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[0].sort_field === item.value"
+								:active="relations[0].meta.sort_field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].sort_field = item.value"
+								@click="relations[0].meta.sort_field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -241,6 +241,72 @@
 					</v-menu>
 				</template>
 			</v-input>
+		</div>
+
+		<div class="relational-triggers">
+			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+
+			<div class="field">
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label_m2o', {
+							collection: currentCollectionName || 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].schema.on_delete"
+					:disabled="relations[0].collection === relations[0].related_collection"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
+							value: 'SET NULL',
+						},
+						{
+							text: $t('referential_action_set_default', { field: m2oFieldName }),
+							value: 'SET DEFAULT',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relatedCollectionName,
+								field: m2oFieldName,
+							}),
+							value: 'CASCADE',
+						},
+						{
+							text: $t('referential_action_no_action'),
+							value: 'NO ACTION',
+						},
+					]"
+				/>
+			</div>
+			<div class="field">
+				<div class="type-label">
+					{{
+						$t('referential_action_field_label_o2m', {
+							collection: relatedCollectionName || 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="relations[0].meta.one_deselect_action"
+					:placeholder="$t('choose_action') + '...'"
+					:items="[
+						{
+							text: $t('referential_action_set_null', { field: m2oFieldName }),
+							value: 'nullify',
+						},
+						{
+							text: $t('referential_action_cascade', {
+								collection: relatedCollectionName,
+								field: m2oFieldName,
+							}),
+							value: 'delete',
+						},
+					]"
+				/>
+			</div>
 		</div>
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
@@ -262,6 +328,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
+import formatTitle from '@directus/format-title';
 
 import { state, generationInfo } from '../store';
 
@@ -280,7 +347,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -315,16 +382,16 @@ export default defineComponent({
 
 		const junctionCollection = computed({
 			get() {
-				return state.relations[0].many_collection;
+				return state.relations[0].collection;
 			},
-			set(collection: string) {
-				state.relations[0].many_collection = collection;
-				state.relations[1].many_collection = collection;
+			set(collection: string | undefined) {
+				state.relations[0].collection = collection;
+				state.relations[1].collection = collection;
 			},
 		});
 
 		const junctionCollectionExists = computed(() => {
-			return collectionsStore.getCollection(junctionCollection.value) !== null;
+			return junctionCollection.value && collectionsStore.getCollection(junctionCollection.value) !== null;
 		});
 
 		const junctionFields = computed(() => {
@@ -334,10 +401,38 @@ export default defineComponent({
 				text: field.field,
 				value: field.field,
 				disabled:
-					state.relations[0].many_field === field.field ||
+					state.relations?.[0]?.field === field.field ||
 					field.schema?.is_primary_key ||
-					state.relations[1].many_field === field.field,
+					state.relations?.[1]?.field === field.field,
 			}));
+		});
+
+		const currentPrimaryKeyField = computed<string | undefined>(() => {
+			return fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field;
+		});
+
+		const relatedCollectionName = computed(() => {
+			if (!state.relations[0].collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].collection)?.name ||
+				formatTitle(state.relations[0].collection)
+			);
+		});
+
+		const currentCollectionName = computed(() => {
+			if (!state.relations[0].related_collection) return null;
+			return (
+				collectionsStore.getCollection(state.relations[0].related_collection)?.name ||
+				formatTitle(state.relations[0].related_collection)
+			);
+		});
+
+		const m2oFieldName = computed(() => {
+			if (!state.relations[0].collection || !state.relations[0].field) return null;
+			return (
+				fieldsStore.getField(state.relations[0].collection, state.relations[0].field)?.name ||
+				formatTitle(state.relations[0].field)
+			);
 		});
 
 		return {
@@ -350,6 +445,10 @@ export default defineComponent({
 			junctionCollectionExists,
 			junctionFieldExists,
 			generationInfo,
+			currentPrimaryKeyField,
+			relatedCollectionName,
+			currentCollectionName,
+			m2oFieldName,
 		};
 
 		function junctionFieldExists(fieldKey: string) {
@@ -361,6 +460,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
 .grid {
 	--v-select-font-family: var(--family-monospace);
 	--v-input-font-family: var(--family-monospace);
@@ -446,6 +547,18 @@ export default defineComponent({
 	.v-divider {
 		margin-top: 48px;
 		margin-bottom: 24px;
+	}
+}
+
+.relational-triggers {
+	--form-horizontal-gap: 12px;
+	--form-vertical-gap: 24px;
+
+	@include form-grid;
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 0;
 	}
 }
 </style>

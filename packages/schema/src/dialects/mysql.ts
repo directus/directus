@@ -1,4 +1,4 @@
-import KnexMySQL from 'knex-schema-inspector/dist/dialects/mysql';
+import KnexMySQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mysql';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
@@ -11,7 +11,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				C.COLUMN_NAME as column_name,
 				C.COLUMN_DEFAULT as default_value,
 				C.IS_NULLABLE as is_nullable,
-				C.DATA_TYPE as data_type,
+				C.COLUMN_TYPE as data_type,
 				C.COLUMN_KEY as column_key,
 				C.EXTRA as extra
 			FROM
@@ -39,8 +39,9 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : column.default_value,
+				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
+				data_type: column.data_type.split('(')[0],
 			};
 		}
 

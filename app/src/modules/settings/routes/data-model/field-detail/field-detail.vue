@@ -127,9 +127,7 @@ import SetupDisplay from './components/display.vue';
 import { i18n } from '@/lang';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
-import { Relation, Collection } from '@/types';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
@@ -304,36 +302,34 @@ export default defineComponent({
 				if (['o2m', 'm2o', 'file'].includes(localType.value)) {
 					return (
 						state.relations.length === 0 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_collection) ||
-						isEmpty(state.relations[0].one_primary)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].related_collection)
 					);
 				}
 
 				if (['m2m', 'files', 'translations'].includes(localType.value)) {
 					return (
 						state.relations.length !== 2 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_field) ||
-						isEmpty(state.relations[1].many_collection) ||
-						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection) ||
-						isEmpty(state.relations[1].one_primary)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].meta?.one_field) ||
+						isEmpty(state.relations[1].collection) ||
+						isEmpty(state.relations[1].field) ||
+						isEmpty(state.relations[1].related_collection)
 					);
 				}
 
 				if (localType.value === 'm2a') {
 					return (
 						state.relations.length !== 2 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_field) ||
-						isEmpty(state.relations[1].many_collection) ||
-						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection_field) ||
-						isEmpty(state.relations[1].one_allowed_collections)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].meta?.one_field) ||
+						isEmpty(state.relations[1].collection) ||
+						isEmpty(state.relations[1].field) ||
+						isEmpty(state.relations[1].meta?.one_collection_field) ||
+						isEmpty(state.relations[1].meta?.one_allowed_collections)
 					);
 				}
 
@@ -365,30 +361,32 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newCollections.map((newCollection: Partial<Collection> & { $type?: string }) => {
+					state.newCollections.map((newCollection) => {
 						delete newCollection.$type;
 						return api.post(`/collections`, newCollection);
 					})
 				);
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field> & { $type?: string }) => {
+					state.newFields.map((newField) => {
 						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
 
 				await Promise.all(
-					state.updateFields.map((updateField: Partial<Field> & { $type?: string }) => {
+					state.updateFields.map((updateField) => {
 						delete updateField.$type;
 						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})
 				);
 
 				await Promise.all(
-					state.relations.map((relation: Partial<Relation>) => {
-						if (relation.id) {
-							return api.patch(`/relations/${relation.id}`, relation);
+					state.relations.map((relation) => {
+						const relationExists = !!relationsStore.getRelationForField(relation.collection, relation.field);
+
+						if (relationExists) {
+							return api.patch(`/relations/${relation.collection}/${relation.field}`, relation);
 						} else {
 							return api.post(`/relations`, relation);
 						}

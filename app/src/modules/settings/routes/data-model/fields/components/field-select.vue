@@ -60,7 +60,7 @@
 			</template>
 
 			<template #input>
-				<div class="label" v-tooltip="field.name + ' (' + interfaceName + ')'">
+				<div class="label" v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name">
 					<span class="name">
 						{{ field.field }}
 						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
@@ -224,8 +224,15 @@ export default defineComponent({
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating, duplicable } =
-			useDuplicate();
+		const {
+			duplicateActive,
+			duplicateName,
+			collections,
+			duplicateTo,
+			saveDuplicate,
+			duplicating,
+			duplicable,
+		} = useDuplicate();
 
 		const interfaceName = computed(() => {
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
@@ -365,12 +372,14 @@ export default defineComponent({
 				if (localType.value !== 'translations') return null;
 
 				const relation = relationsStore.state.relations.find((relation: Relation) => {
-					return relation.one_collection === props.field.collection && relation.one_field === props.field.field;
+					return (
+						relation.related_collection === props.field.collection && relation.meta?.one_field === props.field.field
+					);
 				});
 
 				if (!relation) return null;
 
-				return relation.many_collection;
+				return relation.collection;
 			});
 
 			const translationsFieldsCount = computed(() => {

@@ -62,7 +62,7 @@ export const useFieldsStore = createStore({
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 
-			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
+			this.state.fields = this.adjustSortForSystem([...fields.map(this.parseField), fakeFilesField]);
 
 			this.translateFields();
 		},
@@ -105,6 +105,24 @@ export const useFieldsStore = createStore({
 					...field,
 					name,
 				};
+			});
+		},
+		/**
+		 * System collections have system fields. We'll have to adjust all custom fields to have their
+		 * sort values incremented by the amount of system fields, to ensure the fields are sorted
+		 * correctly after the system fields. (#5520)
+		 */
+		adjustSortForSystem(fields: FieldRaw[]) {
+			const systemFields = fields.filter((field) => field.meta?.system === true);
+
+			if (systemFields.length === 0) {
+				return systemFields;
+			}
+
+			return fields.map((field) => {
+				if (field.meta?.system === true) return field;
+				if (field.meta?.sort) field.meta.sort += systemFields.length;
+				return field;
 			});
 		},
 		async createField(collectionKey: string, newField: Field) {
@@ -198,6 +216,8 @@ export const useFieldsStore = createStore({
 
 						return field;
 					});
+
+					this.translateFields();
 				}
 			} catch (err) {
 				// reset the changes if the api sync failed
@@ -220,12 +240,11 @@ export const useFieldsStore = createStore({
 				unexpectedError(err);
 			}
 		},
-		getPrimaryKeyFieldForCollection(collection: string) {
+		getPrimaryKeyFieldForCollection(collection: string): Field {
 			/** @NOTE it's safe to assume every collection has a primary key */
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const primaryKeyField = this.state.fields.find(
 				(field) => field.collection === collection && field.schema?.is_primary_key === true
-			);
+			)!;
 
 			return primaryKeyField;
 		},
@@ -263,11 +282,13 @@ export const useFieldsStore = createStore({
 
 			const relation = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
+				?.find(
+					(relation: Relation) => relation.field === parts[0] || relation.meta?.one_field === parts[0]
+				) as Relation;
 
 			if (relation === undefined) return false;
 
-			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
+			const relatedCollection = relation.field === parts[0] ? relation.related_collection : relation.collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

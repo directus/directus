@@ -118,13 +118,7 @@ export default defineComponent({
 		const id = computed(() => nanoid());
 		const popper = ref<HTMLElement | null>(null);
 
-		const {
-			start,
-			stop,
-			styles,
-			arrowStyles,
-			placement: popperPlacement,
-		} = usePopper(
+		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
 			reference,
 			popper,
 			computed(() => ({
@@ -233,8 +227,8 @@ export default defineComponent({
 			return !activator.value?.contains(e.target as Node);
 		}
 
-		function onContentClick() {
-			if (props.closeOnContentClick === true) {
+		function onContentClick(e: Event) {
+			if (props.closeOnContentClick === true && e.target !== e.currentTarget) {
 				deactivate();
 			}
 		}

@@ -69,7 +69,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
-			:circular-field="relation.one_field"
+			:circular-field="relation.meta.one_field"
 			@input="stageEdits"
 		/>
 
@@ -318,7 +318,7 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.one_collection)!;
+				return collectionsStore.getCollection(relation.value.related_collection)!;
 			});
 
 			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);

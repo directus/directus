@@ -45,6 +45,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	year: { type: 'integer' },
 	blob: { type: 'binary' },
 	mediumblob: { type: 'binary' },
+	'int unsigned': { type: 'integer' },
 
 	// MS SQL
 	bit: { type: 'boolean' },
@@ -56,6 +57,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	nchar: { type: 'text' },
 	binary: { type: 'binary' },
 	varbinary: { type: 'binary' },
+	uniqueidentifier: { type: 'uuid' },
 
 	// Postgres
 	json: { type: 'json' },

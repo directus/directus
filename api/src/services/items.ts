@@ -351,6 +351,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 
+		if (keys.length === 0) return [];
+
 		return await this.updateMany(keys, data, opts);
 	}
 
@@ -587,6 +589,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const itemsToDelete = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
+
+		if (keys.length === 0) return [];
+
 		return await this.deleteMany(keys);
 	}
 
