@@ -208,7 +208,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params: S3.GetObjectRequest = {
 			Key: location,
 			Bucket: this.$bucket,
-			Range: range ? `${range.start}-${range.end || ''}` : undefined,
+			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
 		};
 
 		return this.$driver.getObject(params).createReadStream();
