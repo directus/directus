@@ -313,7 +313,7 @@ export default defineComponent({
 					geometryFormat: field.schema.geometry_format,
 				} as GeometryOptions;
 			}
-			if (field?.meta?.interface == 'map') {
+			if (field.meta && field.meta.interface == 'map' && field.meta.options) {
 				return {
 					geometryField: field.field,
 					geometryFormat: field.meta.options.geometryFormat,
