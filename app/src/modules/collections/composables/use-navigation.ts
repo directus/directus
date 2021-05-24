@@ -20,6 +20,16 @@ export type NavItemGroup = {
 let activeGroups: Ref<string[]>;
 let hiddenShown: Ref<boolean>;
 
+function collectionToNavItem(collection: Collection): NavItem {
+	return {
+		collection: collection.collection,
+		name: collection.name,
+		icon: collection.meta?.icon || 'label',
+		note: collection.meta?.note || null,
+		to: `/collections/${collection.collection}`,
+	};
+}
+
 export default function useNavigation(searchQuery?: Ref<string | null>): Record<string, any> {
 	const collectionsStore = useCollectionsStore();
 	const userStore = useUserStore();
@@ -33,22 +43,10 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 				name: groupRaw.group_name,
 				accordion: groupRaw.accordion,
 				items: groupRaw.collections
-					.map(({ collection }) => {
-						const collectionInfo = collectionsStore.getCollection(collection);
-
-						if (!collectionInfo) return null;
-
-						const navItem: NavItem = {
-							collection: collection,
-							name: collectionInfo.name,
-							icon: collectionInfo.meta?.icon || 'label',
-							note: collectionInfo.meta?.note || null,
-							to: `/collections/${collection}`,
-						};
-
-						return navItem;
-					})
-					.filter((c) => c) as NavItem[],
+					.map(({ collection }) => collectionsStore.getCollection(collection) as Collection)
+					.filter((collection) => !!collection)
+					.map(collectionToNavItem)
+					.filter(search),
 			};
 
 			return group;
@@ -57,17 +55,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 
 	const navItems = computed<NavItem[]>(() => {
 		return collectionsStore.visibleCollections.value
-			.map((collection: Collection) => {
-				const navItem: NavItem = {
-					collection: collection.collection,
-					name: collection.name,
-					icon: collection.meta?.icon || 'label',
-					note: collection.meta?.note || null,
-					to: `/collections/${collection.collection}`,
-				};
-
-				return navItem;
-			})
+			.map(collectionToNavItem)
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
 			})
@@ -76,17 +64,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 
 	const hiddenNavItems = computed<NavItem[]>(() => {
 		return collectionsStore.hiddenCollections.value
-			.map((collection: Collection) => {
-				const navItem: NavItem = {
-					collection: collection.collection,
-					name: collection.name,
-					icon: collection.meta?.icon || 'label',
-					note: collection.meta?.note || null,
-					to: `/collections/${collection.collection}`,
-				};
-
-				return navItem;
-			})
+			.map(collectionToNavItem)
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
 			})
@@ -95,9 +73,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 
 	if (!activeGroups) {
 		activeGroups = ref(
-			customNavItems.value
-				? customNavItems.value.filter((navItem) => navItem.accordion === 'start_open').map((navItem) => navItem.name)
-				: []
+			customNavItems.value?.filter(({ accordion }) => accordion === 'start_open').map(({ name }) => name) ?? []
 		);
 	}
 
@@ -108,9 +84,8 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown, search };
 
 	function search(item: NavItem) {
-		return (
-			typeof item.name !== 'string' ||
-			item.name.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
-		);
+		if (!searchQuery?.value) return true;
+		if (typeof item.name !== 'string') return true;
+		return item.name.toLocaleLowerCase().includes(searchQuery.value.toLocaleLowerCase());
 	}
 }
