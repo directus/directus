@@ -69,7 +69,7 @@
 		"html-entities": "^2.3.2",
 		"joi": "^17.4.0",
 		"jsonlint-mod": "^1.7.6",
-		"marked": "^2.0.3",
+		"marked": "^2.0.5",
 		"micromustache": "^8.0.3",
 		"mitt": "^2.1.0",
 		"nanoid": "^3.1.22",
