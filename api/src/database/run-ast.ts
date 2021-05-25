@@ -132,8 +132,11 @@ async function parseCurrentLevel(
 		nestedCollectionNodes.push(child);
 	}
 
-	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+	/**
+	 * Always fetch primary key in case there's a nested relation that needs it
+	 */
+	const childrenContainRelational = children.some((child) => child.type !== 'field');
+	if (childrenContainRelational && columnsToSelectInternal.includes(primaryKeyField) === false) {
 		columnsToSelectInternal.push(primaryKeyField);
 	}
 
@@ -382,6 +385,17 @@ function removeTemporaryFields(
 			} else {
 				fields.push(child.fieldKey);
 				nestedCollectionNodes.push(child);
+			}
+		}
+
+		// Make sure any new aliased aggregate fields are included
+		if (ast.query?.aggregate) {
+			for (const [_operation, aliasMap] of Object.entries(ast.query.aggregate)) {
+				if (!aliasMap) continue;
+
+				for (const [_column, alias] of Object.entries(aliasMap)) {
+					fields.push(alias);
+				}
 			}
 		}
 
