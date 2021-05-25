@@ -38,7 +38,6 @@ RUN \
 
 SHELL ["/bin/bash", "-c"]
 
-WORKDIR /directus
 
 # Global requirements
 RUN npm install -g yargs pino pino-colada
@@ -46,10 +45,9 @@ RUN npm install -g yargs pino pino-colada
 # Copy rootfs files
 COPY ./rootfs /
 
-RUN chown node:node /directus
-
-# Install Directus
+# Switch to user 'node'
 USER node
+WORKDIR /directus
 
 COPY package.json .
 # Install Directus (retry if it fails for some reason) and runtime dependencies
