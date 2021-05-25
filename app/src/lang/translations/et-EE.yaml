@@ -84,6 +84,8 @@ validationError:
 all_access: Ligipääs kõigele
 no_access: Ei ole ligipääsu
 use_custom: Kasuta kohandatud
+nullable: Nullitav
+allow_null_value: Luba NULL väärtus
 field_standard: Standard
 field_presentation: Kujundus ja aliased
 field_file: Üksik fail
@@ -138,11 +140,13 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Tekst
 time: Kellaaeg
 timestamp: Timestamp
 uuid: UUID
+hash: Hash (räsi)
 not_available_for_type: Pole selle tüübi korral saadaval
 create_translations: Lisa tõlkeid
 auto_refresh: Automaatne värskendamine
@@ -313,6 +317,9 @@ save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
 save_as_copy: Salvesta koopiana
 add_existing: Lisa olemasolev
+creating_items: Kirjete loomine
+enable_create_button: Luba lisamise nupp
+enable_select_button: Luba valimise nupp
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
 click_to_expand: Kliki suurendamiseks
@@ -327,6 +334,7 @@ interface_not_found: '"{interface}" liidest ei leitud.'
 reset_interface: Nulli liides
 display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
+list-m2a: Ehitaja (M2A)
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
 no_items_copy: Selles kogus pole veel ühtegi kiret.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'
@@ -393,6 +401,8 @@ errors:
   ITEM_NOT_FOUND: Kirjet ei leitud
   ROUTE_NOT_FOUND: Ei leitud
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
+  USER_SUSPENDED: Kasutajakonto on suletud
+  CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
 value_hashed: Väärtus salastati
@@ -426,6 +436,7 @@ one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
 delete_collection_are_you_sure: >-
   Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
+collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
 show_hidden_collections: Näita peidetud andmekogusid
@@ -469,6 +480,8 @@ operators:
   has: Sisaldab neid võtmeid
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
+item: Kirje
+items: Kirjed
 upload_file: Lae fail üles
 upload_file_indeterminate: Laen faili...
 upload_file_success: Fail on laetud
@@ -486,6 +499,8 @@ value_unique: Väärtus peab olema unikaalne
 all_activity: Kõik tegevused
 create_item: Loo kirje
 display_template: Vaate mall
+language_display_template: Keele templiit
+translations_display_template: Tõlgete templiit
 n_items_selected: 'Kirjeid pole valitud | Valitud 1 kirje | {n} kirjet valitud'
 per_page: Lehe kohta
 all_files: Kõik failid
@@ -524,8 +539,10 @@ height: Kõrgus
 source: Allikas
 url_placeholder: Sisesta URL
 display_text: Kuva teksti
+display_text_placeholder: Sisesta kuvamise tekst...
 tooltip: Vihje
 tooltip_placeholder: Sisesta vihje...
+unlimited: Piiramatu
 open_link_in: Ava link
 new_tab: Uus vahekaart
 current_tab: Praegune vahekaart
@@ -572,18 +589,45 @@ wysiwyg_options:
   removeformat: Eemalda vormistus
   selectall: Vali Kõik
   table: Tabel
+  visualaid: Vaata peidetud elemente
+  source_code: Muuda lähtekoodi
   fullscreen: Täisekraan
+  directionality: Suund
 dropdown: Rippmenüü
 choices: Valikud
+choices_option_configured_incorrectly: Valikud pole korrektselt seadistatud
 deselect: Tühista valik
+deselect_all: Tühista kõik valikud
+other: Muu...
+adding_user: Kasutaja lisamine
+unknown_user: Tundmatu kasutaja
+creating_in: 'Kirje loomine: {collection}'
+editing_in: 'Kirje muutmine: {collection}'
+creating_unit: 'Lisa {unit}'
+editing_unit: '{unit} muutmine'
 editing_in_batch: '{count} kirje hulgi muutmine'
+no_options_available: Valikud puuduvad
+settings_data_model: Andmemudel
 settings_permissions: Rollid ja õigused
 settings_project: Projekti seaded
 settings_webhooks: Webhooks
+settings_presets: Eelseaded ja järjehoidjad
+one_or_more_options_are_missing: Üks või mitu valikut puuduvad
+scope: Ulatus
+select: Vali...
+layout: Paigutus
+tree_view: Puuvaade
+changes_are_permanent: Muudatused on lõplikud
+preset_name_placeholder: Toimib vaikeväärtusena, kui puudub...
+preset_search_placeholder: Otsingupäring...
+editing_preset: Muuda eelseadistust
+layout_preview: Paigutuse eelvaade
+layout_setup: Paigutuse seadistus
 unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
+page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
 add_new: Lisa uus
 create_new: Loo Uus
 all: Kõik
@@ -614,8 +658,12 @@ fields:
     description: Kirjeldus
     tags: Sildid
     location: Asukoht
+    filename_disk: Failinimi (kettal)
+    filename_download: Faili nimi (alla laadimisel)
     metadata: Metaandmed
+    type: MIME tüüp
     filesize: Failisuurus
+    modified_by: Muutja
     modified_on: Muudetud
     created_on: Loodud
     created_by: Autor
@@ -642,10 +690,20 @@ fields:
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
     role: Roll
+    token: Kontrollkood
     last_page: Viimane leht
     last_access: Viimati vaadatud
   directus_settings:
     project_name: Projekti nimi
+    project_url: Projekti URL
+    project_color: Projekti värv
+    project_logo: Projekti logo
+    public_foreground: Avalik põhivärv
+    public_background: Avalik taustavärv
+    public_note: Avalik märkus
+    auth_password_policy: Salasõna reeglid
+    auth_login_attempts: Sisselogimise katseid
+    custom_css: Kohandatud CSS
   directus_fields:
     note: Märkus
     hidden: Peidetud
@@ -654,6 +712,11 @@ fields:
   directus_roles:
     name: Rolli nimi
     description: Kirjeldus
+field_options:
+  directus_collections:
+    track_activity_revisions: Salvesta muudatuste statistika
+block: Blokeeri
+inline: Tekstisisene
 comment: Kommentaar
 continue: Continue
 default: Vaikimisi
@@ -698,7 +761,7 @@ sort_direction: Sorteerimise suund
 sort_asc: Sorteeri kasvavalt
 sort_desc: Sorteeri kahanevalt
 template: Mall
-translation: Tõlkija
+translation: Tõlge
 value: Väärtus
 interfaces:
   presentation-links:
@@ -725,6 +788,8 @@ interfaces:
     file: Fail
   files:
     files: Failid
+  input-hash:
+    hash: Hash (räsi)
   select-icon:
     icon: Ikoon
   system-interface:
