@@ -20,10 +20,9 @@ pageClass: page-reference
 - [Sort](#sort)
 - [Limit](#limit)
 - [Offset](#offset) / [Page](#page)
+- [Group](#group)
+- [Aggregate](#aggregate) (sum/avg/min/max/count)
 - [Deep](#deep)
-- [Metadata](#metadata)
-  - [Total Count](#total-count)
-  - [Filter Count](#filter-count)
 - [Export](#export)
 
 </div>
@@ -444,6 +443,66 @@ query {
 
 ---
 
+## Group
+
+<div class="two-up">
+<div class="left">
+
+Group allows you to group the output items based on (a) shared value(s).
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?group=year
+?group=year,status
+```
+
+### GraphQL
+
+TBD
+
+</div>
+</div>
+
+---
+
+## Aggregate
+
+<div class="two-up">
+<div class="left">
+
+Aggregate allows you to retrieve the output of several functions in your items. In the syntax listed to the right,
+`<type>` is one of `avg`, `sum`, `min`, `max`, or `count`, `<field>` is the column you'd like to run the function on,
+and `<alias>` is how the result should be returned.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?aggregate[<type>][<field>]=<alias>
+```
+
+##### Example
+
+```
+?aggregate[avg][price]=average_sale
+&aggregate[sum][price]=revenue
+```
+
+### GraphQL
+
+TBD
+
+</div>
+</div>
+
+---
+
 ## Deep
 
 <div class="two-up">
@@ -512,50 +571,6 @@ query {
 	}
 }
 ```
-
-</div>
-</div>
-
----
-
-## Metadata
-
-<div class="two-up">
-<div class="left">
-
-Metadata allows you to retrieve some additional information about the items in the collection you're fetching. `*` can
-be used as a wildcard to retrieve all metadata.
-
-</div>
-</div>
-
-<div class="two-up">
-<div class="left">
-
-### Total Count
-
-Returns the total item count of the collection you're querying.
-
-### Filter Count
-
-Returns the item count of the collection you're querying, taking the current filter/search parameters into account.
-
-</div>
-<div class="right">
-
-### REST API
-
-```
-?meta=total_count
-
-?meta=filter_count
-
-?meta=*
-```
-
-### GraphQL
-
-n/a
 
 </div>
 </div>
