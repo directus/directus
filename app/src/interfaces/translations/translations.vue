@@ -403,7 +403,8 @@ export default defineComponent({
 								? (props.value.find(
 										(edit) =>
 											isPlainObject(edit) &&
-											edit[languagesRelation.value!.field] === language[languagesPrimaryKeyField.value]
+											(edit as Record<string, any>)[languagesRelation.value!.field] ===
+												language[languagesPrimaryKeyField.value]
 								  ) as Record<string, any>)
 								: {};
 
