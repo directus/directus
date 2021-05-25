@@ -5,6 +5,7 @@ import { Query } from '../types';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
+	group: Joi.array().items(Joi.string()),
 	sort: Joi.array().items(
 		Joi.object({
 			column: Joi.string(),
@@ -18,6 +19,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv', 'xml'),
+	aggregate: Joi.object(),
 	deep: Joi.object(),
 }).id('query');
 
