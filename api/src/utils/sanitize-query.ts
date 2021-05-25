@@ -1,6 +1,6 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Accountability, Filter, Meta, Query, Sort } from '../types';
+import { Accountability, Aggregate, Filter, Meta, Query, Sort } from '../types';
 import { parseFilter } from '../utils/parse-filter';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
@@ -16,6 +16,14 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery.fields) {
 		query.fields = sanitizeFields(rawQuery.fields);
+	}
+
+	if (rawQuery.group) {
+		query.group = sanitizeFields(rawQuery.group);
+	}
+
+	if (rawQuery.aggregate) {
+		query.aggregate = sanitizeAggregate(rawQuery.aggregate);
 	}
 
 	if (rawQuery.sort) {
@@ -82,6 +90,20 @@ function sanitizeSort(rawSort: any) {
 		const column = field.startsWith('-') ? field.substring(1) : field;
 		return { column, order } as Sort;
 	});
+}
+
+function sanitizeAggregate(rawAggregate: any) {
+	let aggregate: Aggregate = rawAggregate;
+
+	if (typeof rawAggregate === 'string') {
+		try {
+			aggregate = JSON.parse(rawAggregate);
+		} catch {
+			logger.warn('Invalid value passed for filter query parameter.');
+		}
+	}
+
+	return aggregate;
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
