@@ -6,6 +6,7 @@ import {
 	useCollectionsStore,
 	useFieldsStore,
 	useLatencyStore,
+	useInsightsStore,
 	usePermissionsStore,
 	usePresetsStore,
 	useRelationsStore,
@@ -35,6 +36,7 @@ export function useStores(
 		useLatencyStore,
 		useRelationsStore,
 		usePermissionsStore,
+		useInsightsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];

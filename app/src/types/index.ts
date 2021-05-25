@@ -1,6 +1,7 @@
 export * from './collections';
 export * from './error';
 export * from './fields';
+export * from './insights';
 export * from './items';
 export * from './notifications';
 export * from './permissions';
