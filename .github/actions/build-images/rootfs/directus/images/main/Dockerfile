@@ -1,29 +1,3 @@
-#
-# Builder
-#
-
-FROM node:14-alpine AS builder
-
-ARG VERSION
-
-RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash
-
-SHELL ["/bin/bash", "-c"]
-
-WORKDIR /directus
-
-COPY package.json .
-
-RUN for i in {1..60}; do npm install "directus@${VERSION}" && break || sleep 30; done
-
-RUN cat package.json
-
-#
-# Image
-#
 FROM node:14-alpine
 
 ARG VERSION
@@ -76,11 +50,12 @@ RUN chown node:node /directus
 
 # Install Directus
 USER node
-COPY --from=builder /directus/package.json .
-RUN npm install
 
-# Keep the updated package.json
-COPY --from=builder /directus/package.json .
+COPY package.json .
+# Install Directus (retry if it fails for some reason) and runtime dependencies
+RUN \
+  for i in $(seq 10); do npm install "directus@${VERSION}" && break || sleep 30; done && \
+  npm install
 
 # Create directories
 RUN \
