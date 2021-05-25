@@ -63,7 +63,7 @@
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",
 		"json5": "^2.2.0",
-		"liquidjs": "^9.23.4",
+		"liquidjs": "^9.25.0",
 		"marked": "^2.0.5",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
