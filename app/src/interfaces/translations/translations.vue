@@ -12,7 +12,7 @@
 			block
 		>
 			<v-icon class="translate" name="translate" left />
-			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
+			<render-template :template="_languageTemplate" :collection="languagesCollection" :item="languageItem" />
 			<div class="spacer" />
 		</v-list-item>
 
@@ -54,7 +54,11 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		template: {
+		languageTemplate: {
+			type: String,
+			default: null,
+		},
+		translationsTemplate: {
 			type: String,
 			default: null,
 		},
@@ -78,7 +82,7 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, template: languagesTemplate } = useLanguages();
+		const { languages, loading: languagesLoading, template: _languageTemplate } = useLanguages();
 
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 
@@ -88,7 +92,7 @@ export default defineComponent({
 			translationsCollection,
 			languagesRelation,
 			languages,
-			languagesTemplate,
+			_languageTemplate,
 			languagesCollection,
 			languagesPrimaryKeyField,
 			languagesLoading,
@@ -166,8 +170,9 @@ export default defineComponent({
 
 			const template = computed(() => {
 				if (!languagesPrimaryKeyField.value) return '';
+
 				return (
-					props.template ||
+					props.languageTemplate ||
 					languagesCollectionInfo.value?.meta?.display_template ||
 					`{{ ${languagesPrimaryKeyField.value} }}`
 				);
