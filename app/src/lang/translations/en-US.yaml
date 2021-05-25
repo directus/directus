@@ -540,6 +540,11 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+insights: Insights
+dashboard: Dashboard
+panel: Panel
+no_dashboards: No Dashboards
+no_dashboards_copy: You don’t have any Dashboards yet.
 image_url: Image Url
 alt_text: Alternative Text
 media: Media

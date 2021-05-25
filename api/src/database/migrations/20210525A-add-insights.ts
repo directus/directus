@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').primary();
 		table.string('name');
 		table.string('icon', 30);
+		table.text('note');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
@@ -28,6 +29,6 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTable('directus_dashboards');
 	await knex.schema.dropTable('directus_panels');
+	await knex.schema.dropTable('directus_dashboards');
 }
