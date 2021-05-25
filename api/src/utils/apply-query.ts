@@ -2,8 +2,8 @@ import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { InvalidQueryException } from '../exceptions';
-import { Filter, Query, Relation, SchemaOverview } from '../types';
+import { ForbiddenException, InvalidQueryException } from '../exceptions';
+import { Aggregate, Filter, Query, Relation, SchemaOverview } from '../types';
 import { getRelationType } from './get-relation-type';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -45,6 +45,14 @@ export default function applyQuery(
 
 	if (query.search) {
 		applySearch(schema, dbQuery, query.search, collection);
+	}
+
+	if (query.group) {
+		dbQuery.groupBy(query.group);
+	}
+
+	if (query.aggregate) {
+		applyAggregate(dbQuery, query.aggregate);
 	}
 }
 
@@ -469,6 +477,34 @@ export async function applySearch(
 			}
 		});
 	});
+}
+
+export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate) {
+	for (const [operation, aliasMap] of Object.entries(aggregate)) {
+		if (!aliasMap) continue;
+
+		for (const [column, alias] of Object.entries(aliasMap)) {
+			if (operation === 'avg') {
+				dbQuery.avg(column, { as: alias });
+			}
+
+			if (operation === 'min') {
+				dbQuery.min(column, { as: alias });
+			}
+
+			if (operation === 'max') {
+				dbQuery.max(column, { as: alias });
+			}
+
+			if (operation === 'count') {
+				dbQuery.count(column, { as: alias });
+			}
+
+			if (operation === 'sum') {
+				dbQuery.sum(column, { as: alias });
+			}
+		}
+	}
 }
 
 function getFilterPath(key: string, value: Record<string, any>) {
