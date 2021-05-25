@@ -22,6 +22,7 @@ create_webhook: Loo veebikonks
 invite_users: Kutsu kasutajaid
 email_examples: 'admin@example.com, user@example.com...'
 invite: Kutsu
+email_already_invited: Meilile "{email}" on kutse juba saadetud
 emails: E-mail
 connection_excellent: Suurepärane ühendus
 connection_good: Hea ühendus
@@ -362,7 +363,7 @@ file_moved: Fail on liigutatud
 collection_created: Andmekogu on lisatud
 modified_on: Muudetud
 card_size: Kaardi suurus
-sort_field: Sorteeti välja
+sort_field: Sorteerimisväli
 add_sort_field: "Lisa sorteerimisväli\n"
 sort: Sorteeri
 status: Staatus
@@ -607,7 +608,7 @@ fields:
     note: Märkus
     display_template: Vaate mall
     hidden: Peidetud
-    sort_field: Sorteeti välja
+    sort_field: Sorteerimisväli
   directus_files:
     title: Pealkiri
     description: Kirjeldus
@@ -694,6 +695,8 @@ sign_out: Logi välja
 sign_out_confirm: Kas oled kindel, et soovid välja logida?
 something_went_wrong: Midagi läks valesti.
 sort_direction: Sorteerimise suund
+sort_asc: Sorteeri kasvavalt
+sort_desc: Sorteeri kahanevalt
 template: Mall
 translation: Tõlkija
 value: Väärtus
