@@ -786,6 +786,14 @@ save_current_datetime: Zapisz bieżącą datę/czas
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+relational_triggers: Wyzwalacze relacji
+referential_action_field_label_m2o: Po usunięciu {collection}...
+referential_action_field_label_o2m: Po odznaczeniu {collection}...
+referential_action_no_action: Zapobiegaj usunięciu
+referential_action_cascade: Usuń {collection} element (kaskada)
+referential_action_set_null: Pola oznaczone jako bez wartości {field}
+referential_action_set_default: Ustaw {field} na wartość domyślną
+choose_action: Wybierz akcję
 continue: Kontynuuj
 continue_as: >-
   <b>{name}</b> jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
@@ -847,6 +855,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
