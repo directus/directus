@@ -50,7 +50,28 @@ export default async function getASTFromQuery(
 		children: [],
 	};
 
-	const fields = query.fields || ['*'];
+	let fields = ['*'];
+
+	if (query.fields) {
+		fields = query.fields;
+	}
+
+	/**
+	 * When using aggregate functions, you can't have any other regular fields
+	 * selected. This makes sure you never end up in a nonaggregate fields selection error
+	 */
+	if (Object.keys(query.aggregate || {}).length > 0) {
+		fields = [];
+	}
+
+	/**
+	 * Similarly, when grouping on a specific field, you can't have other non-aggregated fields.
+	 * The group query will override the fields query
+	 */
+	if (query.group) {
+		fields = query.group;
+	}
+
 	const deep = query.deep || {};
 
 	// Prevent fields/deep from showing up in the query object in further use
@@ -58,8 +79,26 @@ export default async function getASTFromQuery(
 	delete query.deep;
 
 	if (!query.sort) {
-		const sortField = schema.collections[collection]?.sortField;
-		query.sort = [{ column: sortField || schema.collections[collection].primary, order: 'asc' }];
+		// We'll default to the primary key for the standard sort output
+		let sortField = schema.collections[collection].primary;
+
+		// If a custom manual sort field is configured, use that
+		if (schema.collections[collection]?.sortField) {
+			sortField = schema.collections[collection].sortField as string;
+		}
+
+		// When group by is used, default to the first column provided in the group by clause
+		if (query.group?.[0]) {
+			sortField = query.group[0];
+		}
+
+		query.sort = [{ column: sortField, order: 'asc' }];
+	}
+
+	// When no group by is supplied, but an aggregate function is used, only a single row will be
+	// returned. In those cases, we'll ignore the sort field altogether
+	if (query.aggregate && Object.keys(query.aggregate).length && !query.group?.[0]) {
+		delete query.sort;
 	}
 
 	ast.children = await parseFields(collection, fields, deep);
