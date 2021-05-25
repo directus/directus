@@ -393,7 +393,9 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				await itemsService.updateOne(relatedPrimaryKey, relatedRecord);
+				await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
+					onRevisionCreate: (id) => revisions.push(id),
+				});
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (id) => revisions.push(id),
@@ -474,7 +476,9 @@ export class PayloadService {
 					});
 				}
 
-				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords);
+				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords, {
+					onRevisionCreate: (id) => revisions.push(id),
+				});
 
 				const query: Query = {
 					filter: {
@@ -495,9 +499,16 @@ export class PayloadService {
 
 				// Nullify all related items that aren't included in the current payload
 				if (relation.meta.one_deselect_action === 'delete') {
+					// There's no revision for a deletion
 					await itemsService.deleteByQuery(query);
 				} else {
-					await itemsService.updateByQuery(query, { [relation.field]: null });
+					await itemsService.updateByQuery(
+						query,
+						{ [relation.field]: null },
+						{
+							onRevisionCreate: (id) => revisions.push(id),
+						}
+					);
 				}
 			}
 			// "Updates" object w/ create/update/delete
@@ -511,7 +522,10 @@ export class PayloadService {
 						alterations.create.map((item) => ({
 							...item,
 							[relation.field]: parent || payload[currentPrimaryKeyField],
-						}))
+						})),
+						{
+							onRevisionCreate: (id) => revisions.push(id),
+						}
 					);
 				}
 
@@ -519,10 +533,16 @@ export class PayloadService {
 					const primaryKeyField = this.schema.collections[this.collection].primary;
 
 					for (const item of alterations.update) {
-						await itemsService.updateOne(item[primaryKeyField], {
-							...item,
-							[relation.field]: parent || payload[currentPrimaryKeyField],
-						});
+						await itemsService.updateOne(
+							item[primaryKeyField],
+							{
+								...item,
+								[relation.field]: parent || payload[currentPrimaryKeyField],
+							},
+							{
+								onRevisionCreate: (id) => revisions.push(id),
+							}
+						);
 					}
 				}
 
@@ -547,7 +567,13 @@ export class PayloadService {
 					if (relation.meta.one_deselect_action === 'delete') {
 						await itemsService.deleteByQuery(query);
 					} else {
-						await itemsService.updateByQuery(query, { [relation.field]: null });
+						await itemsService.updateByQuery(
+							query,
+							{ [relation.field]: null },
+							{
+								onRevisionCreate: (id) => revisions.push(id),
+							}
+						);
 					}
 				}
 			}
