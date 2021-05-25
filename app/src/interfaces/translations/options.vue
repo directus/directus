@@ -36,7 +36,6 @@ import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Relation } from '@/types/relations';
 import { useCollectionsStore } from '@/stores/';
-import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	props: {
