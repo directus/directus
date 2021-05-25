@@ -98,6 +98,16 @@ export class AuthorizationService {
 
 				const allowedFields = permissions.fields || [];
 
+				if (ast.query.aggregate && allowedFields.includes('*') === false) {
+					for (const [_operation, aliasMap] of Object.entries(ast.query.aggregate)) {
+						if (!aliasMap) continue;
+
+						for (const [column, _alias] of Object.entries(aliasMap)) {
+							if (allowedFields.includes(column) === false) throw new ForbiddenException();
+						}
+					}
+				}
+
 				for (const childNode of ast.children) {
 					if (childNode.type !== 'field') {
 						validateFields(childNode);
