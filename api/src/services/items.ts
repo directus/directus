@@ -130,7 +130,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			try {
-				await trx.insert(payloadWithoutAliases).into(this.collection);
+				await trx.insert(payloadWithTypeCasting).into(this.collection);
 			} catch (err) {
 				throw await translateDatabaseError(err);
 			}

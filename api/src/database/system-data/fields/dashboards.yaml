@@ -5,6 +5,8 @@ fields:
     special: uuid
   - field: name
   - field: icon
+  - field: panels
+    special: o2m
   - field: date_created
     special: date-created
   - field: user_created

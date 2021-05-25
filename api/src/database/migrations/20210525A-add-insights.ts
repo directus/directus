@@ -5,12 +5,13 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').primary();
 		table.string('name');
 		table.string('icon', 30);
-		table.timestamp('date_created');
-		table.timestamp('user_created');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 
 	await knex.schema.createTable('directus_panels', (table) => {
 		table.uuid('id').primary();
+		table.uuid('dashboard').notNullable().references('id').inTable('directus_dashboards').onDelete('CASCADE');
 		table.string('name');
 		table.string('icon', 30);
 		table.string('color', 10);
@@ -21,8 +22,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.integer('width');
 		table.integer('height');
 		table.json('options');
-		table.timestamp('date_created');
-		table.timestamp('user_created');
+		table.timestamp('date_created').defaultTo(knex.fn.now());
+		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 	});
 }
 
