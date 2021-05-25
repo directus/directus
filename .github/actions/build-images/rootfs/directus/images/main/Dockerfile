@@ -31,14 +31,14 @@ ENV \
   EMAIL_SENDMAIL_NEW_LINE="unix" \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
+# Install system dependencies
+# - 'bash' for entrypoint script
+# - 'ssmtp' to be able to send mails
 RUN \
   apk upgrade --no-cache && \
   apk add --no-cache bash ssmtp util-linux
 
-SHELL ["/bin/bash", "-c"]
-
-
-# Global requirements
+# Install global node dependencies
 RUN npm install -g yargs pino pino-colada
 
 # Copy rootfs files
@@ -63,10 +63,11 @@ RUN \
   mkdir -p database && \
   mkdir -p uploads
 
-EXPOSE 8055
 VOLUME \
   /directus/database \
   /directus/extensions \
   /directus/uploads
 
+EXPOSE 8055
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["entrypoint"]
