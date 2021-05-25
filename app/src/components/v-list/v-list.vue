@@ -90,5 +90,9 @@ body {
 		max-width: calc(100% - 16px);
 		margin: 8px;
 	}
+
+	::v-deep .v-button {
+		pointer-events: all;
+	}
 }
 </style>

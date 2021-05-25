@@ -6,6 +6,26 @@
 			</v-button>
 		</template>
 
+		<template #navigation>
+			<insights-navigation />
+		</template>
+
+		<template #actions>
+			<create-dashboard-dialog v-model="createDialogActive">
+				<template #activator="{ on }">
+					<v-button
+						@click="on"
+						rounded
+						icon
+						v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+						:disabled="createAllowed === false"
+					>
+						<v-icon name="add" />
+					</v-button>
+				</template>
+			</create-dashboard-dialog>
+		</template>
+
 		<v-table
 			v-if="dashboards.length > 0"
 			:headers.sync="tableHeaders"
@@ -26,17 +46,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { useInsightsStore, usePermissionsStore } from '@/stores';
 import i18n from '@/lang';
 import { Dashboard } from '@/types';
 import router from '@/router';
+import InsightsNavigation from '../components/navigation.vue';
+import CreateDashboardDialog from '../components/create-dashboard-dialog.vue';
 
 export default defineComponent({
 	name: 'InsightsOverview',
+	components: { InsightsNavigation, CreateDashboardDialog },
 	setup() {
 		const insightsStore = useInsightsStore();
 		const permissionsStore = usePermissionsStore();
+
+		const createDialogActive = ref(false);
 
 		const createAllowed = computed<boolean>(() => {
 			return permissionsStore.hasPermission('directus_dashboards', 'create');
@@ -61,7 +86,13 @@ export default defineComponent({
 			},
 		];
 
-		return { dashboards: insightsStore.state.dashboards, createAllowed, tableHeaders, navigateToDashboard };
+		return {
+			dashboards: insightsStore.state.dashboards,
+			createAllowed,
+			tableHeaders,
+			navigateToDashboard,
+			createDialogActive,
+		};
 
 		function navigateToDashboard(dashboard: Dashboard) {
 			router.push(`/insights/${dashboard.id}`);

@@ -545,6 +545,8 @@ dashboard: Dashboard
 panel: Panel
 no_dashboards: No Dashboards
 no_dashboards_copy: You don’t have any Dashboards yet.
+create_dashboard: Create Dashboard
+dashboard_name: Dashboard Name
 image_url: Image Url
 alt_text: Alternative Text
 media: Media
