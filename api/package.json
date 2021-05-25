@@ -139,7 +139,7 @@
 		"connect-redis": "^5.2.0",
 		"connect-session-knex": "^2.1.0",
 		"ioredis": "^4.27.2",
-		"keyv-memcache": "^1.0.1",
+		"keyv-memcache": "^1.2.5",
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.3",
