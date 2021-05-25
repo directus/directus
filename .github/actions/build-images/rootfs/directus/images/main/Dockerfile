@@ -32,9 +32,8 @@ ENV \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
 RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash ssmtp util-linux
+  apk upgrade --no-cache && \
+  apk add --no-cache bash ssmtp util-linux
 
 SHELL ["/bin/bash", "-c"]
 
