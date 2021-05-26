@@ -1176,3 +1176,7 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+panels:
+  metric:
+    name: Metric
+    description: Show a single value based on a query

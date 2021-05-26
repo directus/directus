@@ -8,6 +8,10 @@
 		</template>
 
 		<template #actions>
+			<v-button v-if="editMode" rounded icon outlined :to="`/insights/${currentDashboard.id}/panel/+`">
+				<v-icon name="add" />
+			</v-button>
+
 			<v-button rounded icon @click="editMode = !editMode">
 				<v-icon :name="editMode ? 'check' : 'edit'" />
 			</v-button>
@@ -17,7 +21,11 @@
 			<insights-navigation />
 		</template>
 
-		<div class="workspace" :class="{ editing: editMode }"></div>
+		<div class="workspace" :class="{ editing: editMode }">
+			<!-- <div class="dummy" /> -->
+		</div>
+
+		<router-view name="detail" :dashboard-key="primaryKey" />
 	</private-view>
 </template>
 
@@ -44,7 +52,13 @@ export default defineComponent({
 			insightsStore.state.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
-		return { currentDashboard, editMode };
+		const stagedPanels = ref([]);
+
+		const panels = computed(() => {
+			return currentDashboard.value?.panels || [];
+		});
+
+		return { currentDashboard, editMode, panels };
 	},
 });
 </script>
@@ -61,6 +75,10 @@ export default defineComponent({
 	overflow: visible;
 }
 
+.workspace > * {
+	z-index: 2;
+}
+
 .workspace::before {
 	position: absolute;
 	top: -4px;
@@ -68,7 +86,7 @@ export default defineComponent({
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(#efefef 25%, transparent 25%);
+	background-image: radial-gradient(#efefef 20%, transparent 20%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;
@@ -80,4 +98,17 @@ export default defineComponent({
 .workspace.editing::before {
 	opacity: 1;
 }
+
+/* .dummy {
+	--pos-x: 5;
+	--pos-y: 5;
+	--width: 5;
+	--height: 5;
+
+	display: block;
+	grid-row: var(--pos-y) / span var(--height);
+	grid-column: var(--pos-x) / span var(--width);
+	background-color: var(--primary);
+	border-radius: var(--border-radius);
+} */
 </style>
