@@ -64,7 +64,7 @@ export default defineComponent({
 	props: {
 		panel: {
 			type: Object as PropType<Partial<Panel>>,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -78,6 +78,8 @@ export default defineComponent({
 			color: undefined,
 			width: undefined,
 			height: undefined,
+			position_x: 0,
+			position_y: 0,
 			...(props.panel || {}),
 		});
 

@@ -8,13 +8,21 @@
 		</template>
 
 		<template #actions>
-			<v-button v-if="editMode" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
-				<v-icon name="add" />
-			</v-button>
+			<template v-if="editMode">
+				<v-button rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+					<v-icon name="add" />
+				</v-button>
 
-			<v-button rounded icon @click="editMode = !editMode">
-				<v-icon :name="editMode ? 'check' : 'edit'" />
-			</v-button>
+				<v-button rounded icon @click="saveChanges" :loading="saving">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<template v-else>
+				<v-button rounded icon @click="editMode = !editMode">
+					<v-icon name="edit" />
+				</v-button>
+			</template>
 		</template>
 
 		<template #navigation>
@@ -50,6 +58,9 @@ import { Panel } from '@/types';
 import { nanoid } from 'nanoid';
 import { merge } from 'lodash';
 import router from '@/router';
+import { omit } from 'lodash';
+import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -61,11 +72,12 @@ export default defineComponent({
 		},
 		panelKey: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props) {
 		const editMode = ref(false);
+		const saving = ref(false);
 		const insightsStore = useInsightsStore();
 
 		const currentDashboard = computed(() =>
@@ -91,7 +103,7 @@ export default defineComponent({
 			];
 		});
 
-		return { currentDashboard, editMode, panels, stagePanelEdits, stagedPanels };
+		return { currentDashboard, editMode, panels, stagePanelEdits, stagedPanels, saving, saveChanges };
 
 		function stagePanelEdits(edits: Partial<Panel>) {
 			if (props.panelKey === '+') {
@@ -125,6 +137,36 @@ export default defineComponent({
 			}
 
 			router.push(`/insights/${props.primaryKey}`);
+		}
+
+		async function saveChanges() {
+			if (!currentDashboard.value) return;
+
+			saving.value = true;
+
+			const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
+
+			const updatedPanels = [
+				...currentIDs.map((id) => {
+					return stagedPanels.value.find((panel) => panel.id === id) || id;
+				}),
+				...stagedPanels.value.filter((panel) => '$tempID' in panel).map((panel) => omit(panel, '$tempID')),
+			];
+
+			try {
+				await api.patch(`/dashboards/${props.primaryKey}`, {
+					panels: updatedPanels,
+				});
+
+				await insightsStore.hydrate();
+
+				stagedPanels.value = [];
+				editMode.value = false;
+			} catch (err) {
+				unexpectedError(err);
+			} finally {
+				saving.value = false;
+			}
 		}
 	},
 });
