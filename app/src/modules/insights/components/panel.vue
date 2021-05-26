@@ -1,5 +1,11 @@
 <template>
-	<div class="panel" :style="positioning" :class="{ editing: editMode, dragging }" @pointerdown="onPointerDown">
+	<div
+		class="panel"
+		:style="positioning"
+		:class="{ editing: editMode, dragging }"
+		data-move
+		@pointerdown="onPointerDown('move', $event)"
+	>
 		<div class="header" v-if="panel.show_header">
 			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
 			<v-text-overflow class="name" :text="panel.name" />
@@ -16,10 +22,22 @@
 				@click="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
 		</div>
+
+		<div class="resize-handlers" v-if="editMode">
+			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
+			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
+			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
+			<div class="left" @pointerdown.stop="onPointerDown('resize-left', $event)" />
+			<div class="top-left" @pointerdown.stop="onPointerDown('resize-top-left', $event)" />
+			<div class="top-right" @pointerdown.stop="onPointerDown('resize-top-right', $event)" />
+			<div class="bottom-right" @pointerdown.stop="onPointerDown('resize-bottom-right', $event)" />
+			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { getPanels } from '@/panels';
 import { Panel } from '@/types';
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { throttle } from 'lodash';
@@ -37,6 +55,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { panels } = getPanels();
+
+		const panelTypeInfo = computed(() => {
+			return panels.value.find((panelConfig) => {
+				return panelConfig.id === props.panel.type;
+			});
+		});
+
 		const positioning = computed(() => {
 			return {
 				'--pos-x': props.panel.position_x,
@@ -59,8 +85,24 @@ export default defineComponent({
 
 			let pointerStartPosX = 0;
 			let pointerStartPosY = 0;
+
 			let panelStartPosX = 0;
 			let panelStartPosY = 0;
+			let panelStartWidth = 0;
+			let panelStartHeight = 0;
+
+			type Operation =
+				| 'move'
+				| 'resize-top'
+				| 'resize-right'
+				| 'resize-bottom'
+				| 'resize-left'
+				| 'resize-top-left'
+				| 'resize-top-right'
+				| 'resize-bottom-right'
+				| 'resize-bottom-left';
+
+			let operation: Operation = 'move';
 
 			const onPointerMove = throttle((event: PointerEvent) => {
 				if (props.editMode === false) return;
@@ -69,18 +111,59 @@ export default defineComponent({
 				const pointerDeltaX = event.pageX - pointerStartPosX;
 				const pointerDeltaY = event.pageY - pointerStartPosY;
 
-				const edits: { position_x?: number; position_y?: number } = {
-					position_x: panelStartPosX + Math.round(pointerDeltaX / 20),
-					position_y: panelStartPosY + Math.round(pointerDeltaY / 20),
-				};
+				const gridDeltaX = Math.round(pointerDeltaX / 20);
+				const gridDeltaY = Math.round(pointerDeltaY / 20);
 
-				emit('update', edits);
+				if (operation === 'move') {
+					const edits = {
+						position_x: panelStartPosX + gridDeltaX,
+						position_y: panelStartPosY + gridDeltaY,
+					};
+
+					if (edits.position_x < 1) edits.position_x = 1;
+					if (edits.position_y < 1) edits.position_y = 1;
+
+					emit('update', edits);
+				} else {
+					let edits: Partial<Panel> = {};
+
+					if (operation.includes('top')) {
+						edits.height = panelStartHeight - gridDeltaY;
+						edits.position_y = panelStartPosY + gridDeltaY;
+					}
+
+					if (operation.includes('right')) {
+						edits.width = panelStartWidth + gridDeltaX;
+					}
+
+					if (operation.includes('bottom')) {
+						edits.height = panelStartHeight + gridDeltaY;
+					}
+
+					if (operation.includes('left')) {
+						edits.width = panelStartWidth - gridDeltaX;
+						edits.position_x = panelStartPosX + gridDeltaX;
+					}
+
+					const minWidth = panelTypeInfo.value?.minWidth || 6;
+					const minHeight = panelTypeInfo.value?.minHeight || 6;
+
+					if (edits.position_x && edits.position_x < 1) edits.position_x = 1;
+					if (edits.position_y && edits.position_y < 1) edits.position_y = 1;
+					if (edits.width && edits.width < minWidth) edits.width = minWidth;
+					if (edits.height && edits.height < minHeight) edits.height = minHeight;
+
+					return emit('update', edits);
+				}
 			}, 50);
 
 			return { dragging, onPointerDown, onPointerUp, onPointerMove };
 
-			function onPointerDown(event: PointerEvent) {
+			function onPointerDown(op: Operation, event: PointerEvent) {
 				if (props.editMode === false) return;
+
+				operation = op;
+
 				dragging.value = true;
 
 				pointerStartPosX = event.pageX;
@@ -88,6 +171,9 @@ export default defineComponent({
 
 				panelStartPosX = props.panel.position_x;
 				panelStartPosY = props.panel.position_y;
+
+				panelStartWidth = props.panel.width;
+				panelStartHeight = props.panel.height;
 
 				window.addEventListener('pointerup', onPointerUp);
 				window.addEventListener('pointermove', onPointerMove);
@@ -106,10 +192,10 @@ export default defineComponent({
 
 <style scoped>
 .panel {
-	--pos-x: 5;
-	--pos-y: 5;
-	--width: 5;
-	--height: 5;
+	--pos-x: 1;
+	--pos-y: 1;
+	--width: 6;
+	--height: 6;
 
 	position: relative;
 	display: block;
@@ -117,8 +203,9 @@ export default defineComponent({
 	grid-column: var(--pos-x) / span var(--width);
 	overflow: hidden;
 	background-color: var(--background-page);
+	border: 1px solid var(--border-normal);
 	border-radius: var(--border-radius-outline);
-	box-shadow: 0 0 0 2px var(--border-normal);
+	box-shadow: 0 0 0 1px var(--border-normal);
 }
 
 .panel:hover {
@@ -130,11 +217,13 @@ export default defineComponent({
 }
 
 .panel.editing:hover {
-	box-shadow: 0 0 0 2px var(--border-normal-alt);
+	border-color: var(--border-normal-alt);
+	box-shadow: 0 0 0 1px var(--border-normal-alt);
 }
 
 .panel.editing.dragging {
-	box-shadow: 0 0 0 2px var(--primary);
+	border-color: var(--primary);
+	box-shadow: 0 0 0 1px var(--primary);
 }
 
 .header {
@@ -174,5 +263,71 @@ export default defineComponent({
 	align-items: center;
 	padding: 12px;
 	background-color: var(--background-page);
+}
+
+.resize-handlers div {
+	position: absolute;
+}
+
+.resize-handlers .top {
+	top: 0;
+	width: 100%;
+	height: 4px;
+	cursor: ns-resize;
+}
+
+.resize-handlers .right {
+	top: 0;
+	right: 0;
+	width: 4px;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.resize-handlers .bottom {
+	bottom: 0;
+	width: 100%;
+	height: 4px;
+	cursor: ns-resize;
+}
+
+.resize-handlers .left {
+	top: 0;
+	left: 0;
+	width: 4px;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.resize-handlers .top-left {
+	top: 0;
+	left: 0;
+	width: 12px;
+	height: 12px;
+	cursor: nwse-resize;
+}
+
+.resize-handlers .top-right {
+	top: 0;
+	right: 0;
+	width: 12px;
+	height: 12px;
+	cursor: nesw-resize;
+}
+
+.resize-handlers .bottom-right {
+	right: 0;
+	bottom: 0;
+	width: 12px;
+	height: 12px;
+	cursor: nwse-resize;
+}
+
+.resize-handlers .bottom-left {
+	bottom: 0;
+	left: 0;
+	width: 12px;
+	height: 12px;
+	cursor: nesw-resize;
 }
 </style>
