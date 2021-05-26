@@ -7,7 +7,19 @@ export default definePanel({
 	description: '$t:panels.metric.description',
 	icon: 'functions',
 	component: PanelMetric,
-	options: [],
+	options: [
+		{
+			field: 'all',
+			name: 'All Options (Debug)',
+			type: 'json',
+			meta: {
+				interface: 'code',
+				options: {
+					language: 'json',
+				},
+			},
+		},
+	],
 	minWidth: 16,
 	minHeight: 6,
 });

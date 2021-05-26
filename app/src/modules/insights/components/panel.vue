@@ -33,6 +33,10 @@
 			<div class="bottom-right" @pointerdown.stop="onPointerDown('resize-bottom-right', $event)" />
 			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
 		</div>
+
+		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
+			<component :is="`panel-${panel.type}`" v-bind="panel" />
+		</div>
 	</div>
 </template>
 
@@ -229,6 +233,7 @@ export default defineComponent({
 .header {
 	display: flex;
 	align-items: center;
+	height: 48px;
 	padding: 12px;
 }
 
@@ -253,6 +258,15 @@ export default defineComponent({
 .edit-icon {
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--foreground-normal);
+}
+
+.panel-content {
+	width: 100%;
+	height: 100%;
+}
+
+.panel-content.has-header {
+	height: calc(100% - 48px);
 }
 
 .edit-actions {
