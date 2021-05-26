@@ -2,11 +2,15 @@ import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { systemRelationRows } from '../database/system-data/relations';
+import { InvalidQueryException } from '../exceptions';
 import { Filter, Query, Relation, SchemaOverview } from '../types';
+import { getRelationType } from './get-relation-type';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
+/**
+ * Apply the Query to a given Knex query builder instance
+ */
 export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
@@ -44,6 +48,44 @@ export default function applyQuery(
 	}
 }
 
+/**
+ * Apply a given filter object to the Knex QueryBuilder instance.
+ *
+ * Relational nested filters, like the following example:
+ *
+ * ```json
+ * // Fetch pages that have articles written by Rijk
+ *
+ * {
+ *   "articles": {
+ *     "author": {
+ *       "name": {
+ *         "_eq": "Rijk"
+ *       }
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * are handled by joining the nested tables, and using a where statement on the top level on the
+ * nested field through the join. This allows us to filter the top level items based on nested data.
+ * The where on the root is done with a subquery to prevent duplicates, any nested joins are done
+ * with aliases to prevent naming conflicts.
+ *
+ * The output SQL for the above would look something like:
+ *
+ * ```sql
+ * SELECT *
+ * FROM pages
+ * WHERE
+ *   pages.id in (
+ *     SELECT articles.page_id AS page_id
+ *     FROM articles
+ *     LEFT JOIN authors AS xviqp ON articles.author = xviqp.id
+ *     WHERE xviqp.name = 'Rijk'
+ *   )
+ * ```
+ */
 export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
@@ -51,7 +93,7 @@ export function applyFilter(
 	collection: string,
 	subQuery = false
 ): void {
-	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
+	const relations: Relation[] = schema.relations;
 
 	const aliasMap: Record<string, string> = {};
 
@@ -86,42 +128,83 @@ export function applyFilter(
 			followRelation(path);
 
 			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
+				/**
+				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 */
+				const pathRoot = pathParts[0].split(':')[0];
+
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+						(relation.collection === parentCollection && relation.field === pathRoot) ||
+						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
 					);
 				});
 
 				if (!relation) return;
 
-				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
 
 				const alias = generateAlias();
 
 				set(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts, alias);
 
-				if (isM2O) {
+				if (relationType === 'm2o') {
 					dbQuery.leftJoin(
-						{ [alias]: relation.one_collection! },
-						`${parentAlias || parentCollection}.${relation.many_field}`,
-						`${alias}.${relation.one_primary}`
+						{ [alias]: relation.related_collection! },
+						`${parentAlias || parentCollection}.${relation.field}`,
+						`${alias}.${schema.collections[relation.related_collection!].primary}`
 					);
+				}
+
+				if (relationType === 'm2a') {
+					const pathScope = pathParts[0].split(':')[1];
+
+					if (!pathScope) {
+						throw new InvalidQueryException(
+							`You have to provide a collection scope when filtering on a many-to-any item`
+						);
+					}
+
+					dbQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
+						joinClause
+							.on(
+								`${parentAlias || parentCollection}.${relation.field}`,
+								'=',
+								`${alias}.${schema.collections[pathScope].primary}`
+							)
+							.andOnVal(relation.meta!.one_collection_field!, '=', pathScope);
+					});
 				}
 
 				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
-				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
+				if (relationType === 'o2m' && (subQuery === true || parentAlias !== undefined)) {
 					dbQuery.leftJoin(
-						{ [alias]: relation.many_collection },
-						`${parentAlias || parentCollection}.${relation.one_primary}`,
-						`${alias}.${relation.many_field}`
+						{ [alias]: relation.collection },
+						`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!].primary}`,
+						`${alias}.${relation.field}`
 					);
 				}
 
-				if (isM2O || subQuery === true) {
-					pathParts.shift();
+				if (relationType === 'm2o' || subQuery === true) {
+					let parent: string;
 
-					const parent = isM2O ? relation.one_collection! : relation.many_collection;
+					if (relationType === 'm2o') {
+						parent = relation.related_collection!;
+					} else if (relationType === 'm2a') {
+						const pathScope = pathParts[0].split(':')[1];
+
+						if (!pathScope) {
+							throw new InvalidQueryException(
+								`You have to provide a collection scope when filtering on a many-to-any item`
+							);
+						}
+
+						parent = pathScope;
+					} else {
+						parent = relation.collection;
+					}
+
+					pathParts.shift();
 
 					if (pathParts.length) {
 						followRelation(pathParts, parent, alias);
@@ -141,8 +224,9 @@ export function applyFilter(
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
-				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
 					continue;
+				}
 
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery[logical].where((subQuery) => {
@@ -155,23 +239,42 @@ export function applyFilter(
 			}
 
 			const filterPath = getFilterPath(key, value);
-			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			const o2mRelation = relations.find((relation) => {
-				return relation.one_collection === collection && relation.one_field === filterPath[0];
+			/**
+			 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+			 */
+			const pathRoot = filterPath[0].split(':')[0];
+
+			const relation = relations.find((relation) => {
+				return (
+					(relation.collection === collection && relation.field === pathRoot) ||
+					(relation.related_collection === collection && relation.meta?.one_field === pathRoot)
+				);
 			});
 
-			if (!!o2mRelation && subQuery === false) {
-				const pkField = `${collection}.${o2mRelation.one_primary}`;
+			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
+
+			const relationType = relation ? getRelationType({ relation, collection: collection, field: pathRoot }) : null;
+
+			if (relationType === 'm2o' || relationType === 'm2a' || relationType === null) {
+				if (filterPath.length > 1) {
+					const columnName = getWhereColumn(filterPath, collection);
+					if (!columnName) continue;
+					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+				} else {
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+				}
+			} else if (subQuery === false) {
+				const pkField = `${collection}.${schema.collections[relation!.related_collection!].primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
-					const field = o2mRelation.many_field;
-					const collection = o2mRelation.many_collection;
+					const field = relation!.field;
+					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
 					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
-						o2mRelation.many_collection,
+						relation!.collection,
 						subQueryKnex,
 						{
 							filter: value,
@@ -180,14 +283,6 @@ export function applyFilter(
 						true
 					);
 				});
-			} else {
-				if (filterPath.length > 1) {
-					const columnName = getWhereColumn(filterPath, collection);
-					if (!columnName) continue;
-					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
-				} else {
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
-				}
 			}
 		}
 
@@ -295,8 +390,6 @@ export function applyFilter(
 		}
 
 		function getWhereColumn(path: string[], collection: string) {
-			path = clone(path);
-
 			return followRelation(path);
 
 			function followRelation(
@@ -304,21 +397,45 @@ export function applyFilter(
 				parentCollection: string = collection,
 				parentAlias?: string
 			): string | void {
+				/**
+				 * For M2A fields, the path can contain an optional collection scope <field>:<scope>
+				 */
+				const pathRoot = pathParts[0].split(':')[0];
+
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+						(relation.collection === parentCollection && relation.field === pathRoot) ||
+						(relation.related_collection === parentCollection && relation.meta?.one_field === pathRoot)
 					);
 				});
 
-				if (!relation) return;
+				if (!relation) {
+					throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
+				}
 
-				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				const relationType = getRelationType({ relation, collection: parentCollection, field: pathRoot });
+
 				const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
 
 				const remainingParts = pathParts.slice(1);
 
-				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+				let parent: string;
+
+				if (relationType === 'm2a') {
+					const pathScope = pathParts[0].split(':')[1];
+
+					if (!pathScope) {
+						throw new InvalidQueryException(
+							`You have to provide a collection scope when filtering on a many-to-any item`
+						);
+					}
+
+					parent = pathScope;
+				} else if (relationType === 'm2o') {
+					parent = relation.related_collection!;
+				} else {
+					parent = relation.collection;
+				}
 
 				if (remainingParts.length === 1) {
 					return `${alias || parent}.${remainingParts[0]}`;

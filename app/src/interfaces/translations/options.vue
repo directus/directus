@@ -3,14 +3,28 @@
 		{{ $t('interfaces.translations.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
-		<div class="field full">
-			<p class="type-label">{{ $t('display_template') }}</p>
+		<div class="field half">
+			<p class="type-label">{{ $t('language_display_template') }}</p>
 			<v-field-template
-				:collection="relatedCollection"
-				v-model="template"
+				:collection="languageCollection"
+				v-model="languageTemplate"
 				:depth="2"
 				:placeholder="
-					relatedCollectionInfo && relatedCollectionInfo.meta && relatedCollectionInfo.meta.display_template
+					languageCollectionInfo && languageCollectionInfo.meta && languageCollectionInfo.meta.display_template
+				"
+			/>
+		</div>
+
+		<div class="field half">
+			<p class="type-label">{{ $t('translations_display_template') }}</p>
+			<v-field-template
+				:collection="translationsCollection"
+				v-model="translationsTemplate"
+				:depth="2"
+				:placeholder="
+					translationsCollectionInfo &&
+					translationsCollectionInfo.meta &&
+					translationsCollectionInfo.meta.display_template
 				"
 			/>
 		</div>
@@ -45,33 +59,73 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 
-		const template = computed({
+		const translationsTemplate = computed({
 			get() {
-				return props.value?.template;
+				return props.value?.translationsTemplate;
 			},
 			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					template: newTemplate,
+					translationsTemplate: newTemplate,
 				});
 			},
 		});
 
-		const relatedCollection = computed(() => {
+		const languageTemplate = computed({
+			get() {
+				return props.value?.languageTemplate;
+			},
+			set(newTemplate: string) {
+				emit('input', {
+					...(props.value || {}),
+					languageTemplate: newTemplate,
+				});
+			},
+		});
+
+		const translationsRelation = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
-			const relation = props.relations.find(
-				(relation) => relation.one_collection === props.collection && relation.one_field === field
+			return (
+				props.relations.find(
+					(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
+				) ?? null
 			);
-			return relation?.many_collection || null;
 		});
 
-		const relatedCollectionInfo = computed(() => {
-			if (!relatedCollection.value) return null;
-			return collectionsStore.getCollection(relatedCollection.value);
+		const languageRelation = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			if (!translationsRelation.value) return null;
+			return (
+				props.relations.find(
+					(relation) =>
+						relation.collection === translationsRelation.value?.collection &&
+						relation.meta?.junction_field === translationsRelation.value?.field
+				) ?? null
+			);
 		});
 
-		return { template, relatedCollection, relatedCollectionInfo };
+		const translationsCollection = computed(() => translationsRelation.value?.collection ?? null);
+		const languageCollection = computed(() => languageRelation.value?.related_collection ?? null);
+
+		const translationsCollectionInfo = computed(() => {
+			if (!translationsCollection.value) return null;
+			return collectionsStore.getCollection(translationsCollection.value);
+		});
+
+		const languageCollectionInfo = computed(() => {
+			if (!languageCollection.value) return null;
+			return collectionsStore.getCollection(languageCollection.value);
+		});
+
+		return {
+			languageTemplate,
+			translationsTemplate,
+			translationsCollection,
+			translationsCollectionInfo,
+			languageCollection,
+			languageCollectionInfo,
+		};
 	},
 });
 </script>

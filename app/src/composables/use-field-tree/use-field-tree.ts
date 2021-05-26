@@ -44,16 +44,16 @@ export default function useFieldTree(
 				...relationsStore.getRelationsForField(collection, field.field),
 				...(inject?.value?.relations.filter((relation: Relation) => {
 					return (
-						(relation.many_collection === collection && relation.many_field === field.field) ||
-						(relation.one_collection === collection && relation.one_field === field.field)
+						(relation.collection === collection && relation.field === field.field) ||
+						(relation.related_collection === collection && relation.meta?.one_field === field.field)
 					);
 				}) || []),
 			];
 
 			const relation = relations.find(
 				(relation: Relation) =>
-					(relation.many_collection === collection && relation.many_field === field.field) ||
-					(relation.one_collection === collection && relation.one_field === field.field)
+					(relation.collection === collection && relation.field === field.field) ||
+					(relation.related_collection === collection && relation.meta?.one_field === field.field)
 			);
 
 			if (!relation) continue;
@@ -62,13 +62,13 @@ export default function useFieldTree(
 
 			if (relationType === 'm2o') {
 				field.children = parseLevel(
-					relation.one_collection,
+					relation.related_collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);
 			} else if (strict === false) {
 				field.children = parseLevel(
-					relation.many_collection,
+					relation.collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);

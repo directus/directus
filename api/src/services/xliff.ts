@@ -1,7 +1,7 @@
 import xliff from 'xliff';
 import { omit, groupBy } from 'lodash';
 import { InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, SchemaOverview, Relation } from '../types';
 import { ItemsService } from './items';
 
 export enum XliffSupportedFormats {
@@ -199,10 +199,10 @@ export class XliffService {
 	// validates if language related to specific translations collection
 	private async validateLanguage(collection: string, field: string, language: string): Promise<boolean> {
 		const relation = this.schema.relations.find(
-			(relation: any) => relation.many_collection === collection && relation.many_field === field
+			(relation: Relation) => relation.meta?.many_collection === collection && relation.meta?.many_field === field
 		);
 		if (relation) {
-			const itemsService = new ItemsService(relation.one_collection as string, {
+			const itemsService = new ItemsService(relation.meta?.one_collection as string, {
 				accountability: this.accountability,
 				schema: this.schema,
 			});

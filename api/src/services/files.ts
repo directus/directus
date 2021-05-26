@@ -60,6 +60,7 @@ export class FilesService extends ItemsService {
 		} catch (err) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
 		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);

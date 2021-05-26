@@ -3,6 +3,28 @@
 > Directus is offered completely free and open-source for anyone wishing to self-host the platform. If you have
 > questions along the way, there are many resources, both free and paid, to help you get up-and-running smoothly.
 
+## Troubleshooting Steps
+
+If you're experiencing issues or think you have found a problem in Directus, be sure to follow these steps before
+[Reporting a Bug](/contributing/introduction/#bug-reporting):
+
+1. Ensure your server/database meet the
+   [minimum requirements](/guides/installation/cli/#_1-confirm-minimum-requirements)
+2. Ensure you’re on the [latest version of Directus](https://github.com/directus/directus/releases/latest)
+3. Stop (`CTRL+C`) and restart the server (`npx directus start`)
+4. Run the database migration script: `directus database migrate:latest` (backup your database first)
+5. Disable any data-caching within your project
+6. Test any App issues with browser extensions and cache disabled (eg: Incognito Mode)
+7. Confirm the issue is not related to your own custom code
+8. Check for [existing Issues](https://github.com/directus/directus/issues?q=is%3Aissue) (and
+   [Discussions](https://github.com/directus/directus/discussions)) that match your problem
+
+::: tip Source Contributors Those who have installed from source should also remove all dependencies
+(`npx lerna clean -y`) and then reinstall them (`npm install`). :::
+
+If you're still experiencing a problem after completing the above steps, you can chat through things on our
+[community support](#community-support) or [report a bug](/contributing/introduction/#bug-reporting).
+
 ## Community Support
 
 [Github Discussions](https://github.com/directus/directus/discussions) is great first place to reach out for help. Our

@@ -109,8 +109,12 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 
 		const { _active } = useActiveState();
-		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } =
-			useJunction();
+		const {
+			junctionFieldInfo,
+			junctionRelatedCollection,
+			junctionRelatedCollectionInfo,
+			setJunctionEdits,
+		} = useJunction();
 		const { _edits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
@@ -335,14 +339,15 @@ export default defineComponent({
 				// If this is a m2m/m2a, there will be 2 relations associated with this field
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
 
-				const relationForField = relations.find((relation: Relation) => {
-					return relation.many_collection === props.collection && relation.many_field === props.junctionField;
+				const relationForField: Relation = relations.find((relation: Relation) => {
+					return relation.collection === props.collection && relation.field === props.junctionField;
 				});
 
-				if (relationForField.one_collection) return relationForField.one_collection;
-				if (relationForField.one_collection_field)
+				if (relationForField.related_collection) return relationForField.related_collection;
+				if (relationForField.meta?.one_collection_field)
 					return (
-						props.edits[relationForField.one_collection_field] || item.value?.[relationForField.one_collection_field]
+						props.edits[relationForField.meta.one_collection_field] ||
+						item.value?.[relationForField.meta.one_collection_field]
 					);
 				return null;
 			});

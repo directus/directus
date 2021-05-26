@@ -16,6 +16,7 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
+	GraphQLNullableType,
 	GraphQLObjectType,
 	GraphQLResolveInfo,
 	GraphQLScalarType,
@@ -97,7 +98,13 @@ export const GraphQLDate = new GraphQLScalarType({
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
-const SYSTEM_DENY_LIST = ['directus_collections', 'directus_fields', 'directus_migrations', 'directus_sessions'];
+const SYSTEM_DENY_LIST = [
+	'directus_collections',
+	'directus_fields',
+	'directus_relations',
+	'directus_migrations',
+	'directus_sessions',
+];
 const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
@@ -313,8 +320,21 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
+						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type);
+
+						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
+						// can't non-null in update, as that would require every not-nullable field to be
+						// submitted on updates
+						if (field.nullable === false && action !== 'update') {
+							type = GraphQLNonNull(type);
+						}
+
+						if (collection.primary === field.field) {
+							type = GraphQLID;
+						}
+
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type,
 							description: field.note,
 						};
 
@@ -324,27 +344,27 @@ export class GraphQLService {
 			}
 
 			for (const relation of schema[action].relations) {
-				if (relation.one_collection) {
-					CollectionTypes[relation.many_collection]?.addFields({
-						[relation.many_field]: {
-							type: CollectionTypes[relation.one_collection],
+				if (relation.related_collection) {
+					CollectionTypes[relation.collection]?.addFields({
+						[relation.field]: {
+							type: CollectionTypes[relation.related_collection],
 						},
 					});
 
-					if (relation.one_field) {
-						CollectionTypes[relation.one_collection]?.addFields({
-							[relation.one_field]: {
-								type: [CollectionTypes[relation.many_collection]],
+					if (relation.meta?.one_field) {
+						CollectionTypes[relation.related_collection]?.addFields({
+							[relation.meta.one_field]: {
+								type: [CollectionTypes[relation.collection]],
 							},
 						});
 					}
-				} else if (relation.one_allowed_collections && action === 'read') {
+				} else if (relation.meta?.one_allowed_collections && action === 'read') {
 					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
-					CollectionTypes[relation.many_collection]?.addFields({
-						[relation.many_field]: {
+					CollectionTypes[relation.collection]?.addFields({
+						[relation.field]: {
 							type: new GraphQLUnionType({
-								name: `${relation.many_collection}_${relation.many_field}_union`,
-								types: relation.one_allowed_collections.map((collection) => CollectionTypes[collection].getType()),
+								name: `${relation.collection}_${relation.field}_union`,
+								types: relation.meta.one_allowed_collections.map((collection) => CollectionTypes[collection].getType()),
 								resolveType(value, context, info) {
 									let path: (string | number)[] = [];
 									let currentPath = info.path;
@@ -362,7 +382,7 @@ export class GraphQLService {
 										parent = parent[pathPart];
 									}
 
-									const collection = parent[relation.one_collection_field!];
+									const collection = parent[relation.meta!.one_collection_field!];
 									return CollectionTypes[collection].getType();
 								},
 							}),
@@ -586,13 +606,13 @@ export class GraphQLService {
 			}
 
 			for (const relation of schema.read.relations) {
-				if (relation.one_collection) {
-					ReadableCollectionFilterTypes[relation.many_collection]?.addFields({
-						[relation.many_field]: ReadableCollectionFilterTypes[relation.one_collection],
+				if (relation.related_collection) {
+					ReadableCollectionFilterTypes[relation.collection]?.addFields({
+						[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
 					});
 
-					ReadCollectionTypes[relation.many_collection]?.addFieldArgs(relation.many_field, {
-						filter: ReadableCollectionFilterTypes[relation.one_collection],
+					ReadCollectionTypes[relation.collection]?.addFieldArgs(relation.field, {
+						filter: ReadableCollectionFilterTypes[relation.related_collection],
 						sort: {
 							type: new GraphQLList(GraphQLString),
 						},
@@ -610,13 +630,13 @@ export class GraphQLService {
 						},
 					});
 
-					if (relation.one_field) {
-						ReadableCollectionFilterTypes[relation.one_collection]?.addFields({
-							[relation.one_field]: ReadableCollectionFilterTypes[relation.many_collection],
+					if (relation.meta?.one_field) {
+						ReadableCollectionFilterTypes[relation.related_collection]?.addFields({
+							[relation.meta.one_field]: ReadableCollectionFilterTypes[relation.collection],
 						});
 
-						ReadCollectionTypes[relation.one_collection]?.addFieldArgs(relation.one_field, {
-							filter: ReadableCollectionFilterTypes[relation.many_collection],
+						ReadCollectionTypes[relation.related_collection]?.addFieldArgs(relation.meta.one_field, {
+							filter: ReadableCollectionFilterTypes[relation.collection],
 							sort: {
 								type: new GraphQLList(GraphQLString),
 							},
@@ -634,7 +654,7 @@ export class GraphQLService {
 							},
 						});
 					}
-				} else if (relation.one_allowed_collections) {
+				} else if (relation.meta?.one_allowed_collections) {
 					/**
 					 * @TODO
 					 * Looking to add nested typed filters per union type? This is where that's supposed to go.
@@ -1089,8 +1109,6 @@ export class GraphQLService {
 				return new PermissionsService(opts);
 			case 'directus_presets':
 				return new PresetsService(opts);
-			case 'directus_relations':
-				return new RelationsService(opts);
 			case 'directus_revisions':
 				return new RevisionsService(opts);
 			case 'directus_roles':
@@ -1312,6 +1330,10 @@ export class GraphQLService {
 
 		const Field = schemaComposer.createObjectTC({
 			name: 'directus_fields',
+		});
+
+		const Relation = schemaComposer.createObjectTC({
+			name: 'directus_relations',
 		});
 
 		/**
@@ -1707,6 +1729,79 @@ export class GraphQLService {
 			});
 		}
 
+		if ('directus_relations' in schema.read.collections) {
+			Relation.addFields({
+				collection: GraphQLString,
+				field: GraphQLString,
+				related_collection: GraphQLString,
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_relations_schema',
+					fields: {
+						table: GraphQLNonNull(GraphQLString),
+						column: GraphQLNonNull(GraphQLString),
+						foreign_key_table: GraphQLNonNull(GraphQLString),
+						foreign_key_column: GraphQLNonNull(GraphQLString),
+						constraint_name: GraphQLString,
+						on_update: GraphQLNonNull(GraphQLString),
+						on_delete: GraphQLNonNull(GraphQLString),
+					},
+				}),
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_relations_meta',
+					fields: Object.values(schema.read.collections['directus_relations'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				relations: {
+					type: [Relation],
+					resolve: async () => {
+						const service = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll();
+					},
+				},
+				relations_in_collection: {
+					type: [Relation],
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll(args.collection);
+					},
+				},
+				relations_by_name: {
+					type: Relation,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						return await service.readOne(args.collection, args.field);
+					},
+				},
+			});
+		}
+
 		if (this.accountability?.admin === true) {
 			schemaComposer.Mutation.addFields({
 				create_collections_item: {
@@ -1822,6 +1917,62 @@ export class GraphQLService {
 						await service.deleteField(args.collection, args.field);
 						const { collection, field } = args;
 						return { collection, field };
+					},
+				},
+			});
+
+			schemaComposer.Mutation.addFields({
+				create_relations_item: {
+					type: Relation,
+					args: {
+						data: toInputObjectType(Relation.clone('create_directus_relations'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await relationsService.createOne(args.data);
+						return await relationsService.readOne(args.data.collection, args.data.field);
+					},
+				},
+				update_relations_item: {
+					type: Relation,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(Relation.clone('update_directus_relations'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await relationsService.updateOne(args.collection, args.field, args.data);
+						return await relationsService.readOne(args.data.collection, args.data.field);
+					},
+				},
+				delete_relations_item: {
+					type: schemaComposer.createObjectTC({
+						name: 'delete_relation',
+						fields: {
+							collection: GraphQLString,
+							field: GraphQLString,
+						},
+					}),
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const relationsService = new RelationsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await relationsService.deleteOne(args.collection, args.field);
+						return { collection: args.collection, field: args.field };
 					},
 				},
 			});

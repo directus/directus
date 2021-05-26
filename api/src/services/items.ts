@@ -351,6 +351,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 
+		if (keys.length === 0) return [];
+
 		return await this.updateMany(keys, data, opts);
 	}
 
@@ -557,7 +559,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -574,7 +576,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Delete multiple items by query
 	 */
-	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -587,7 +589,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const itemsToDelete = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
-		return await this.deleteMany(keys);
+
+		if (keys.length === 0) return [];
+
+		return await this.deleteMany(keys, opts);
 	}
 
 	/**

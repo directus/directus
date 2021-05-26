@@ -60,17 +60,20 @@ export function reduceSchema(
 		let collectionsAllowed = true;
 		let fieldsAllowed = true;
 
-		if (Object.keys(allowedFieldsInCollection).includes(relation.many_collection) === false) {
-			collectionsAllowed = false;
-		}
-
-		if (relation.one_collection && Object.keys(allowedFieldsInCollection).includes(relation.one_collection) === false) {
+		if (Object.keys(allowedFieldsInCollection).includes(relation.collection) === false) {
 			collectionsAllowed = false;
 		}
 
 		if (
-			relation.one_allowed_collections &&
-			relation.one_allowed_collections.every((collection) =>
+			relation.related_collection &&
+			Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false
+		) {
+			collectionsAllowed = false;
+		}
+
+		if (
+			relation.meta?.one_allowed_collections &&
+			relation.meta.one_allowed_collections.every((collection) =>
 				Object.keys(allowedFieldsInCollection).includes(collection)
 			) === false
 		) {
@@ -78,19 +81,19 @@ export function reduceSchema(
 		}
 
 		if (
-			!allowedFieldsInCollection[relation.many_collection] ||
-			(allowedFieldsInCollection[relation.many_collection].includes('*') === false &&
-				allowedFieldsInCollection[relation.many_collection].includes(relation.many_field) === false)
+			!allowedFieldsInCollection[relation.collection] ||
+			(allowedFieldsInCollection[relation.collection].includes('*') === false &&
+				allowedFieldsInCollection[relation.collection].includes(relation.field) === false)
 		) {
 			fieldsAllowed = false;
 		}
 
 		if (
-			relation.one_collection &&
-			relation.one_field &&
-			(!allowedFieldsInCollection[relation.one_collection] ||
-				(allowedFieldsInCollection[relation.one_collection].includes('*') === false &&
-					allowedFieldsInCollection[relation.one_collection].includes(relation.one_field) === false))
+			relation.related_collection &&
+			relation.meta?.one_field &&
+			(!allowedFieldsInCollection[relation.related_collection] ||
+				(allowedFieldsInCollection[relation.related_collection].includes('*') === false &&
+					allowedFieldsInCollection[relation.related_collection].includes(relation.meta?.one_field) === false))
 		) {
 			fieldsAllowed = false;
 		}

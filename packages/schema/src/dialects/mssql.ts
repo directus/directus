@@ -1,4 +1,4 @@
-import KnexMSSQL from 'knex-schema-inspector/dist/dialects/mssql';
+import KnexMSSQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mssql';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
@@ -29,6 +29,11 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 			ON [c].[TABLE_NAME] = [pk].[TABLE_NAME]
 			AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
 			AND [c].[COLUMN_NAME] = [pk].[COLUMN_NAME]
+			INNER JOIN
+				[${this.knex.client.database()}].INFORMATION_SCHEMA.TABLES as t
+			ON [c].[TABLE_NAME] = [t].[TABLE_NAME]
+			AND [c].[TABLE_CATALOG] = [t].[TABLE_CATALOG]
+			AND [t].TABLE_TYPE = 'BASE TABLE'
 			`
 		);
 
@@ -46,7 +51,7 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value: column.is_identity ? 'AUTO_INCREMENT' : this.parseDefaultValue(column.default_value),
+				default_value: column.is_identity ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}

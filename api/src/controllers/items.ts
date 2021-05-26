@@ -276,27 +276,21 @@ router.post(
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data')) {
-			const { format, language, field } = res.locals.fields;
+			const { format, language, languageField, parentKeyField, parentCollection } = res.locals.fields;
 			if (['xliff', 'xliff2'].includes(format) && res.locals.data) {
-				const collectionKey = req.params.collection;
 				const xliffService = new XliffService({
 					accountability: req.accountability,
 					schema: req.schema,
 					language,
 					format,
 				});
-				const translationsService = new TranslationsService({
-					accountability: req.accountability,
-					schema: req.schema,
-				});
 
 				try {
-					const translationsRelation = translationsService.getTranslationsRelation(collectionKey, field);
 					const savedKeys = await xliffService.fromXliff(
-						translationsRelation.many_collection,
-						collectionKey,
-						translationsRelation.many_field,
-						translationsRelation.junction_field,
+						req.params.collection,
+						parentCollection,
+						parentKeyField,
+						languageField,
 						res.locals.data
 					);
 					res.locals.payload = { data: savedKeys || null };

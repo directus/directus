@@ -17,9 +17,9 @@
 				<p class="type-label">{{ $t('target_language') }}</p>
 				<language-select
 					@input="onSelectLanguage"
-					v-if="!useFileLanguage && translationField"
+					v-if="!useFileLanguage && translationsField"
 					:collection="collection"
-					:field="translationField"
+					:field="translationsField"
 				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
 			</div>
@@ -42,7 +42,7 @@ import api from '@/api';
 import i18n from '@/lang';
 import { defineComponent, ref } from '@vue/composition-api';
 import { Field } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
 import { LanguageSelect } from '../language-select';
 import { TranslationFieldSelect } from '../translation-field-select';
@@ -109,7 +109,7 @@ export default defineComponent({
 		const collectionInfo = collectionsStore.getCollection(props.collection);
 		const format = ref('xliff');
 		const language = ref<any>(null);
-		const translationField = ref<any>(null);
+		const translationsField = ref<any>(null);
 		const file = ref<File | null>(null);
 		const useFileLanguage = ref(true);
 		const clearFileSelection = ref(() => undefined);
@@ -120,7 +120,7 @@ export default defineComponent({
 			format,
 			file,
 			language,
-			translationField,
+			translationsField,
 			useFileLanguage,
 			importData,
 			importing,
@@ -136,16 +136,24 @@ export default defineComponent({
 			if (!file.value) throw new Error('[import-sidebar-detail]: You need to select a file for import.');
 			importing.value = true;
 
+			const relationsStore = useRelationsStore();
+			const [languageRelation, parentRelation] = relationsStore.getRelationsForField(
+				props.collection,
+				translationsField.value
+			);
+
 			const formData = new FormData();
 			formData.append('format', format.value);
-			formData.append('field', translationField.value);
+			formData.append('languageField', languageRelation.meta?.junction_field);
+			formData.append('parentKeyField', parentRelation.meta?.junction_field);
+			formData.append('parentCollection', props.collection);
 			if (!useFileLanguage.value) {
 				formData.append('language', language.value);
 			}
 			formData.append('file', file.value);
 
 			try {
-				const result = await api.post(`/items/${props.collection}/import`, formData);
+				const result = await api.post(`/items/${languageRelation.meta?.many_collection}/import`, formData);
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
 				const importedAmount = data ? data.length : 0;
@@ -184,7 +192,7 @@ export default defineComponent({
 		}
 
 		function onSelectTranslationField(selection: string) {
-			translationField.value = selection;
+			translationsField.value = selection;
 		}
 
 		function onFileLoad(options: any) {

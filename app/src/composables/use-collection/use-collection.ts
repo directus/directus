@@ -2,11 +2,11 @@ import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import { computed, ComputedRef, Ref, ref } from '@vue/composition-api';
 
-export function useCollection(collectionKey: string | Ref<string>): Record<string, ComputedRef> {
+export function useCollection(collectionKey: string | Ref<string | null>): Record<string, ComputedRef> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
-	const collection: Ref<string> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
+	const collection: Ref<string | null> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
 		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);

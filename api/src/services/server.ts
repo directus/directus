@@ -14,7 +14,7 @@ import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
-import mailer from './mailer';
+import mailer from '../mailer';
 import { SettingsService } from './settings';
 
 export class ServerService {

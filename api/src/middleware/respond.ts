@@ -5,9 +5,8 @@ import { getCacheKey } from '../utils/get-cache-key';
 import cache from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
-import { XliffService, XliffSupportedFormats } from '../services';
+import { XliffService } from '../services';
 import ms from 'ms';
-import { TranslationsService } from '../services/translations';
 import { parse as toXML } from 'js2xmlparser';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
@@ -85,18 +84,10 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
-			const translationsService = new TranslationsService({
-				accountability: req.accountability,
-				schema: req.schema,
-			});
-			const translationsRelation = translationsService.getTranslationsRelation(
-				req.collection,
-				req.sanitizedQuery.optional?.field
-			);
 			const output = await xliffService.toXliff(
-				translationsRelation.many_collection,
-				translationsRelation.many_field,
-				translationsRelation.junction_field,
+				req.collection,
+				req.sanitizedQuery.optional?.parentKeyField,
+				req.sanitizedQuery.optional?.languageField,
 				res.locals.payload?.data
 			);
 			return res.status(200).send(output);

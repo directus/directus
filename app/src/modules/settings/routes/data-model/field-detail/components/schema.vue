@@ -56,7 +56,7 @@
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
+			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -254,15 +254,24 @@ export default defineComponent({
 
 		const defaultValue = computed({
 			get() {
-				return state.fieldData.schema.default_value;
+				return state.fieldData.schema?.default_value;
 			},
 			set(newVal: any) {
-				state.fieldData.schema.default_value = newVal;
+				state.fieldData.schema = {
+					...(state.fieldData.schema || {}),
+					default_value: newVal,
+				};
 			},
 		});
 
 		const { onCreateOptions, onCreateValue } = useOnCreate();
 		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
+
+		const hasCreateUpdateTriggers = computed(() => {
+			return (
+				['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type || '') && props.type !== 'file'
+			);
+		});
 
 		return {
 			fieldData: state.fieldData,
@@ -274,6 +283,7 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
+			hasCreateUpdateTriggers,
 		};
 
 		function useOnCreate() {
@@ -281,7 +291,7 @@ export default defineComponent({
 
 			const onCreateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
 							text: i18n.t('do_nothing'),
 							value: null,
@@ -299,7 +309,17 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-created'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-created'].includes(value));
+					}
+
+					return options;
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -317,7 +337,7 @@ export default defineComponent({
 
 			const onCreateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onCreateSpecials) {
 						if (specials.includes(special)) {
@@ -328,9 +348,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onCreateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onCreateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
@@ -346,7 +369,7 @@ export default defineComponent({
 
 			const onUpdateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
 							text: i18n.t('do_nothing'),
 							value: null,
@@ -360,7 +383,17 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-updated'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-updated'].includes(value));
+					}
+
+					return options;
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -378,7 +411,7 @@ export default defineComponent({
 
 			const onUpdateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onUpdateSpecials) {
 						if (specials.includes(special)) {
@@ -389,9 +422,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onUpdateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onUpdateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];

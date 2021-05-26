@@ -180,6 +180,10 @@ export default defineComponent({
 			},
 		});
 
+		const startDateFieldInfo = computed<Field>(() => {
+			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
+		});
+
 		const endDateField = computed({
 			get() {
 				return _layoutOptions.value?.endDateField;
@@ -190,6 +194,10 @@ export default defineComponent({
 					endDateField: newEndDateField,
 				};
 			},
+		});
+
+		const endDateFieldInfo = computed<Field>(() => {
+			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
@@ -244,11 +252,11 @@ export default defineComponent({
 					if (!startDateField.value) return;
 
 					const itemChanges: Partial<Item> = {
-						[startDateField.value]: info.event.startStr,
+						[startDateField.value]: adjustForType(info.event.startStr, startDateFieldInfo.value.type),
 					};
 
 					if (endDateField.value && info.event.endStr) {
-						itemChanges[endDateField.value] = info.event.endStr;
+						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
 					}
 
 					const endpoint = collection.value.startsWith('directus')
@@ -263,11 +271,7 @@ export default defineComponent({
 				},
 			};
 
-			const startDateFieldInfo: Field | undefined = fieldsInCollection.value.find(
-				(field: Field) => field.field === startDateField.value
-			);
-
-			if (startDateFieldInfo?.type === 'dateTime' || startDateFieldInfo?.type === 'timestamp') {
+			if (startDateFieldInfo.value?.type === 'dateTime' || startDateFieldInfo.value?.type === 'timestamp') {
 				options.headerToolbar = {
 					...options.headerToolbar,
 					right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
@@ -345,6 +349,14 @@ export default defineComponent({
 				start: item[startDateField.value],
 				end: endDateField.value ? item[endDateField.value] : null,
 			};
+		}
+
+		function adjustForType(dateString: string, type: string) {
+			if (type === 'dateTime') {
+				return dateString.substring(0, 19);
+			}
+
+			return dateString;
 		}
 	},
 });
