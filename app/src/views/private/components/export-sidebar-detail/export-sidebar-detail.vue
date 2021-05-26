@@ -179,8 +179,6 @@ export default defineComponent({
 							language: language.value,
 							languageField: languageRelation.meta?.junction_field,
 							parentKeyField: parentRelation.meta?.junction_field,
-							parentCollection: props.collection,
-							languagesCollection: languageRelation.meta?.one_collection,
 						});
 						url += languageRelation.meta?.many_collection;
 						params.export = format.value;
