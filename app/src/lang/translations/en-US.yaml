@@ -450,6 +450,7 @@ visible_collections: Visible Collections
 hidden_collections: Hidden Collections
 show_hidden_collections: Show Hidden Collections
 hide_hidden_collections: Hide Hidden Collections
+show_header: Show Header
 unmanaged_collections: Unconfigured Collections
 system_collections: System Collections
 placeholder: Placeholder

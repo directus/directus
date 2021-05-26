@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name');
 		table.string('icon', 30).defaultTo('insert_chart');
 		table.string('color', 10);
-		table.boolean('show_header').notNullable().defaultTo(true);
+		table.boolean('show_header').notNullable().defaultTo(false);
 		table.text('note');
 		table.string('type').notNullable();
 		table.integer('position_x').notNullable();

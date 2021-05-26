@@ -389,7 +389,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
-@import '@/styles/mixins/form-grid';
 
 .full,
 .fill {
@@ -535,8 +534,6 @@ export default defineComponent({
 
 .form-grid {
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
 }
 
 .delete {
