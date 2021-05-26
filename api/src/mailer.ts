@@ -1,6 +1,6 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import env from '../env';
-import logger from '../logger';
+import env from './env';
+import logger from './logger';
 
 let transporter: Transporter | null = null;
 

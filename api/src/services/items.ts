@@ -559,7 +559,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -576,7 +576,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Delete multiple items by query
 	 */
-	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -592,7 +592,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (keys.length === 0) return [];
 
-		return await this.deleteMany(keys);
+		return await this.deleteMany(keys, opts);
 	}
 
 	/**

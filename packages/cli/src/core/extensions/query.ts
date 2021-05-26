@@ -295,7 +295,6 @@ export default (toolbox: Toolbox): void => {
 			meta: options.meta,
 			offset: options.offset,
 			page: options.page,
-			single: options.single,
 			sort: options.sort,
 		};
 
