@@ -79,7 +79,7 @@
 		"pretty-ms": "^7.0.1",
 		"qrcode": "^1.4.4",
 		"raw-loader": "^4.0.2",
-		"resize-observer": "^1.0.0",
+		"resize-observer": "^1.0.2",
 		"rimraf": "^3.0.2",
 		"sass": "^1.32.13",
 		"sass-loader": "^9.0.2",
