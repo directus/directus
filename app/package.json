@@ -42,7 +42,7 @@
 		"@types/codemirror": "^0.0.109",
 		"@types/color": "^3.0.1",
 		"@types/diff": "^5.0.0",
-		"@types/dompurify": "^2.2.1",
+		"@types/dompurify": "^2.2.2",
 		"@types/lodash": "^4.14.170",
 		"@types/markdown-it": "^12.0.1",
 		"@types/marked": "^2.0.2",
