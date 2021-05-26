@@ -29,7 +29,7 @@
 			<insights-navigation />
 		</template>
 
-		<div class="workspace" :class="{ editing: editMode }">
+		<div class="workspace" :class="{ editing: editMode }" :style="workspaceSize">
 			<insights-panel
 				v-for="panel in panels"
 				:key="panel.id"
@@ -104,6 +104,44 @@ export default defineComponent({
 			];
 		});
 
+		const workspaceSize = computed(() => {
+			const furthestPanelX = panels.value.reduce(
+				(aggr, panel) => {
+					if (panel.position_x! > aggr.position_x!) {
+						aggr.position_x = panel.position_x;
+						aggr.width = panel.width;
+					}
+
+					return aggr;
+				},
+				{ position_x: 0, width: 0 }
+			);
+
+			const furthestPanelY = panels.value.reduce(
+				(aggr, panel) => {
+					if (panel.position_y! > aggr.position_y!) {
+						aggr.position_y = panel.position_y;
+						aggr.height = panel.height;
+					}
+
+					return aggr;
+				},
+				{ position_y: 0, height: 0 }
+			);
+
+			if (editMode.value === true) {
+				return {
+					width: (furthestPanelX.position_x! + furthestPanelX.width! + 3) * 20 + 'px',
+					height: (furthestPanelY.position_y! + furthestPanelY.height! + 3) * 20 + 'px',
+				};
+			}
+
+			return {
+				width: (furthestPanelX.position_x! + furthestPanelX.width! - 1) * 20 + 'px',
+				height: (furthestPanelY.position_y! + furthestPanelY.height! - 1) * 20 + 'px',
+			};
+		});
+
 		return {
 			currentDashboard,
 			editMode,
@@ -113,6 +151,7 @@ export default defineComponent({
 			saving,
 			saveChanges,
 			stageConfiguration,
+			workspaceSize,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
@@ -187,8 +226,9 @@ export default defineComponent({
 	display: grid;
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
-	min-width: 200%;
-	min-height: 200%;
+	min-width: calc(100% - var(--content-padding) - var(--content-padding));
+	min-height: calc(100% - 120px);
+	margin-right: var(--content-padding);
 	margin-left: var(--content-padding);
 	overflow: visible;
 }

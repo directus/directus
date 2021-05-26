@@ -58,5 +58,8 @@ export default defineComponent({
 	justify-content: center;
 	width: 100%;
 	height: calc(100% - 24px);
+	font-weight: 800;
+	font-size: 42px;
+	line-height: 52px;
 }
 </style>
