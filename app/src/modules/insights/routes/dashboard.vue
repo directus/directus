@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button v-if="editMode" rounded icon outlined :to="`/insights/${currentDashboard.id}/panel/+`">
+			<v-button v-if="editMode" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 				<v-icon name="add" />
 			</v-button>
 
@@ -22,24 +22,44 @@
 		</template>
 
 		<div class="workspace" :class="{ editing: editMode }">
-			<!-- <div class="dummy" /> -->
+			<router-link
+				v-for="panel in panels"
+				:to="`/insights/${currentDashboard.id}/${panel.id || panel.$tempID}`"
+				:key="panel.id || panel.$tempID"
+			>
+				{{ panel.id || panel.$tempID }}
+			</router-link>
 		</div>
 
-		<router-view name="detail" :dashboard-key="primaryKey" />
+		<router-view
+			name="detail"
+			:dashboard-key="primaryKey"
+			:panel="panels.find((panel) => panel.id === panelKey || panel.$tempID === panelKey)"
+			@save="stagePanelEdits"
+			@cancel="$router.push(`/insights/${primaryKey}`)"
+		/>
 	</private-view>
 </template>
 
-<script>
+<script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { useInsightsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
+import { Panel } from '@/types';
+import { nanoid } from 'nanoid';
+import { merge } from 'lodash';
+import router from '@/router';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
 	components: { InsightsNotFound, InsightsNavigation },
 	props: {
 		primaryKey: {
+			type: String,
+			required: true,
+		},
+		panelKey: {
 			type: String,
 			required: true,
 		},
@@ -52,13 +72,60 @@ export default defineComponent({
 			insightsStore.state.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
-		const stagedPanels = ref([]);
+		const stagedPanels = ref<Partial<Panel & { $tempID?: string }>[]>([]);
 
 		const panels = computed(() => {
-			return currentDashboard.value?.panels || [];
+			const savedPanels = currentDashboard.value?.panels || [];
+
+			return [
+				...savedPanels.map((panel) => {
+					const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
+
+					if (updates) {
+						return merge({}, panel, updates);
+					}
+
+					return panel;
+				}),
+				...stagedPanels.value.filter((panel) => '$tempID' in panel),
+			];
 		});
 
-		return { currentDashboard, editMode, panels };
+		return { currentDashboard, editMode, panels, stagePanelEdits, stagedPanels };
+
+		function stagePanelEdits(edits: Partial<Panel>) {
+			if (props.panelKey === '+') {
+				stagedPanels.value = [
+					...stagedPanels.value,
+					{
+						$tempID: nanoid(),
+						...edits,
+					},
+				];
+			} else {
+				if (stagedPanels.value.some((panel) => panel.id === props.panelKey || panel.$tempID === props.panelKey)) {
+					stagedPanels.value = stagedPanels.value.map((panel) => {
+						if (panel.id === props.panelKey) {
+							return {
+								id: props.panelKey,
+								...edits,
+							};
+						}
+
+						if (panel.$tempID === props.panelKey) {
+							return {
+								$tempID: props.panelKey,
+								...edits,
+							};
+						}
+
+						return panel;
+					});
+				}
+			}
+
+			router.push(`/insights/${props.primaryKey}`);
+		}
 	},
 });
 </script>

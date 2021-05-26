@@ -1,11 +1,17 @@
 <template>
-	<v-drawer active :title="values.name || $t('panel')">
+	<v-drawer active :title="(panel && panel.name) || $t('panel')" @cancel="$emit('cancel')">
+		<template #actions>
+			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="$t('done')">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
 		<div class="content">
 			<p class="type-label panel-type-label">{{ $t('type') }}</p>
 
-			<v-fancy-select class="select" :items="selectItems" v-model="values.type" />
+			<v-fancy-select class="select" :items="selectItems" v-model="edits.type" />
 
-			<template v-if="values.type && selectedPanel">
+			<template v-if="edits.type && selectedPanel">
 				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
 					{{ $t('no_options_available') }}
 				</v-notice>
@@ -14,10 +20,10 @@
 					v-else-if="Array.isArray(selectedPanel.options)"
 					:fields="selectedPanel.options"
 					primary-key="+"
-					v-model="values.options"
+					v-model="edits.options"
 				/>
 
-				<component v-model="values.options" :collection="collection" :is="`panel-options-${selectedPanel.id}`" v-else />
+				<component v-model="edits.options" :collection="collection" :is="`panel-options-${selectedPanel.id}`" v-else />
 			</template>
 
 			<v-divider />
@@ -25,22 +31,22 @@
 			<div class="form-grid">
 				<div class="field half-left">
 					<p class="type-label">{{ $t('show_header') }}</p>
-					<v-checkbox block v-model="values.show_header" :label="$t('enabled')" />
+					<v-checkbox block v-model="edits.show_header" :label="$t('enabled')" />
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('name') }}</p>
-					<v-input v-model="values.name" :disabled="values.show_header !== true" />
+					<v-input v-model="edits.name" :disabled="edits.show_header !== true" />
 				</div>
 
 				<div class="field half-left">
 					<p class="type-label">{{ $t('icon') }}</p>
-					<interface-select-icon v-model="values.icon" :disabled="values.show_header !== true" />
+					<interface-select-icon v-model="edits.icon" :disabled="edits.show_header !== true" />
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('color') }}</p>
-					<interface-select-color v-model="values.color" :disabled="values.show_header !== true" width="half" />
+					<interface-select-color v-model="edits.color" :disabled="edits.show_header !== true" width="half" />
 				</div>
 			</div>
 		</div>
@@ -48,8 +54,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
-import { useInsightsStore } from '@/stores';
+import { computed, defineComponent, reactive, watch, PropType } from '@vue/composition-api';
 import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@/types';
@@ -57,31 +62,23 @@ import { Panel } from '@/types';
 export default defineComponent({
 	name: 'PanelConfiguration',
 	props: {
-		primaryKey: {
-			type: String,
-			default: '+',
-		},
-		dashboardKey: {
-			type: String,
+		panel: {
+			type: Object as PropType<Partial<Panel>>,
 			required: true,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { panels } = getPanels();
 
-		const insightsStore = useInsightsStore();
-
-		const existing = computed(() =>
-			insightsStore.state.dashboards
-				.find((dashboard) => dashboard.id === props.dashboardKey)!
-				.panels.find((panel) => panel.id === props.primaryKey)
-		);
-
-		const edits = ref<Partial<Panel>>({});
-
-		const values = computed<Partial<Panel>>(() => {
-			if (existing.value) return { ...existing.value, ...edits.value };
-			return edits.value;
+		const edits = reactive<Partial<Panel>>({
+			show_header: false,
+			type: undefined,
+			name: undefined,
+			icon: undefined,
+			color: undefined,
+			width: undefined,
+			height: undefined,
+			...(props.panel || {}),
 		});
 
 		const selectItems = computed<FancySelectItem[]>(() => {
@@ -98,10 +95,30 @@ export default defineComponent({
 		});
 
 		const selectedPanel = computed(() => {
-			return panels.value.find((panel) => panel.id === values.value.type);
+			return panels.value.find((panel) => panel.id === edits.type);
 		});
 
-		return { existing, values, selectItems, selectedPanel };
+		watch(selectedPanel, (newPanel) => {
+			if (newPanel) {
+				edits.width = newPanel.minWidth;
+				edits.height = newPanel.minHeight;
+			} else {
+				edits.width = undefined;
+				edits.height = undefined;
+			}
+		});
+
+		return {
+			selectItems,
+			selectedPanel,
+			close,
+			emitSave,
+			edits,
+		};
+
+		function emitSave() {
+			emit('save', edits);
+		}
 	},
 });
 </script>
@@ -121,14 +138,3 @@ export default defineComponent({
 	margin: 48px 0;
 }
 </style>
-
-<!--
-
-type
-options
---
-toggle name
-icon   color
-note
-
--->
