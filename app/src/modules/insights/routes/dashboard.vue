@@ -30,20 +30,20 @@
 		</template>
 
 		<div class="workspace" :class="{ editing: editMode }">
-			<router-link
+			<insights-panel
 				v-for="panel in panels"
-				:to="`/insights/${currentDashboard.id}/${panel.id || panel.$tempID}`"
-				:key="panel.id || panel.$tempID"
-			>
-				{{ panel.id || panel.$tempID }}
-			</router-link>
+				:key="panel.id"
+				:panel="panel"
+				:edit-mode="editMode"
+				@update="stagePanelEdits($event, panel.id)"
+			/>
 		</div>
 
 		<router-view
 			name="detail"
 			:dashboard-key="primaryKey"
-			:panel="panels.find((panel) => panel.id === panelKey || panel.$tempID === panelKey)"
-			@save="stagePanelEdits"
+			:panel="panels.find((panel) => panel.id === panelKey)"
+			@save="stageConfiguration"
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>
 	</private-view>
@@ -61,10 +61,11 @@ import router from '@/router';
 import { omit } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import InsightsPanel from '../components/panel.vue';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
-	components: { InsightsNotFound, InsightsNavigation },
+	components: { InsightsNotFound, InsightsNavigation, InsightsPanel },
 	props: {
 		primaryKey: {
 			type: String,
@@ -84,7 +85,7 @@ export default defineComponent({
 			insightsStore.state.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
-		const stagedPanels = ref<Partial<Panel & { $tempID?: string }>[]>([]);
+		const stagedPanels = ref<Partial<Panel>[]>([]);
 
 		const panels = computed(() => {
 			const savedPanels = currentDashboard.value?.panels || [];
@@ -99,43 +100,51 @@ export default defineComponent({
 
 					return panel;
 				}),
-				...stagedPanels.value.filter((panel) => '$tempID' in panel),
+				...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
 			];
 		});
 
-		return { currentDashboard, editMode, panels, stagePanelEdits, stagedPanels, saving, saveChanges };
+		return {
+			currentDashboard,
+			editMode,
+			panels,
+			stagePanelEdits,
+			stagedPanels,
+			saving,
+			saveChanges,
+			stageConfiguration,
+		};
 
-		function stagePanelEdits(edits: Partial<Panel>) {
-			if (props.panelKey === '+') {
+		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
+			if (key === '+') {
 				stagedPanels.value = [
 					...stagedPanels.value,
 					{
-						$tempID: nanoid(),
+						id: `_${nanoid()}`,
 						...edits,
 					},
 				];
 			} else {
-				if (stagedPanels.value.some((panel) => panel.id === props.panelKey || panel.$tempID === props.panelKey)) {
+				if (stagedPanels.value.some((panel) => panel.id === key)) {
 					stagedPanels.value = stagedPanels.value.map((panel) => {
-						if (panel.id === props.panelKey) {
+						if (panel.id === key) {
 							return {
-								id: props.panelKey,
-								...edits,
-							};
-						}
-
-						if (panel.$tempID === props.panelKey) {
-							return {
-								$tempID: props.panelKey,
+								id: key,
+								...panel,
 								...edits,
 							};
 						}
 
 						return panel;
 					});
+				} else {
+					stagedPanels.value = [...stagedPanels.value, { id: key, ...edits }];
 				}
 			}
+		}
 
+		function stageConfiguration(edits: Partial<Panel>) {
+			stagePanelEdits(edits);
 			router.push(`/insights/${props.primaryKey}`);
 		}
 
@@ -150,7 +159,7 @@ export default defineComponent({
 				...currentIDs.map((id) => {
 					return stagedPanels.value.find((panel) => panel.id === id) || id;
 				}),
-				...stagedPanels.value.filter((panel) => '$tempID' in panel).map((panel) => omit(panel, '$tempID')),
+				...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')).map((panel) => omit(panel, 'id')),
 			];
 
 			try {
@@ -178,8 +187,8 @@ export default defineComponent({
 	display: grid;
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
-	min-width: 200%; /* will be replaced by JS */
-	min-height: 200%; /* will be replaced by JS */
+	min-width: 200%;
+	min-height: 200%;
 	margin-left: var(--content-padding);
 	overflow: visible;
 }
@@ -195,7 +204,7 @@ export default defineComponent({
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(#efefef 20%, transparent 20%);
+	background-image: radial-gradient(#efefef 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;
@@ -207,17 +216,4 @@ export default defineComponent({
 .workspace.editing::before {
 	opacity: 1;
 }
-
-/* .dummy {
-	--pos-x: 5;
-	--pos-y: 5;
-	--width: 5;
-	--height: 5;
-
-	display: block;
-	grid-row: var(--pos-y) / span var(--height);
-	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--primary);
-	border-radius: var(--border-radius);
-} */
 </style>

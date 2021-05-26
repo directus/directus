@@ -78,8 +78,8 @@ export default defineComponent({
 			color: undefined,
 			width: undefined,
 			height: undefined,
-			position_x: 0,
-			position_y: 0,
+			position_x: 1,
+			position_y: 1,
 			...(props.panel || {}),
 		});
 

@@ -8,6 +8,6 @@ export default definePanel({
 	icon: 'functions',
 	component: PanelMetric,
 	options: [],
-	minWidth: 4,
-	minHeight: 4,
+	minWidth: 16,
+	minHeight: 6,
 });
