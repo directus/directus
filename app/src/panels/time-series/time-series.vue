@@ -3,9 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, PropType, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import api from '@/api';
-import { Chart } from 'frappe-charts/src/js/charts/AxisChart';
+import ApexCharts from 'apexcharts';
 
 type TimeSeriesOptions = {
 	collection: string;
@@ -31,27 +31,80 @@ export default defineComponent({
 		const loading = ref(false);
 		const error = ref();
 		const chartEl = ref();
-		const chart = ref();
+		const chart = ref<ApexCharts>();
 
-		watch(props.options, fetchData);
+		watch(props.options, fetchData, { deep: true });
 
 		fetchData();
 
 		onMounted(() => {
-			chart.value = new Chart(chartEl.value, {
-				data: getChartData(),
-				type: 'line',
-				height: props.height * 20,
-				axisOptions: {
-					xIsSeries: true,
-					xAxisMode: 'tick',
+			chart.value = new ApexCharts(chartEl.value, {
+				colors: ['var(--primary)'],
+				chart: {
+					type: 'area',
+					height: '100%',
+					toolbar: {
+						show: false,
+					},
+					selection: {
+						enabled: false,
+					},
+					zoom: {
+						enabled: false,
+					},
+					fontFamily: 'var(--family-sans-serif)',
+					foreColor: 'var(--foreground-subdued)',
 				},
-				lineOptions: {
-					regionFill: true,
-					spline: true,
-					hideDots: true,
+				series: [],
+				stroke: {
+					curve: 'smooth',
+				},
+				fill: {
+					type: 'gradient',
+					gradient: {
+						colorStops: [
+							[
+								{
+									offset: 0,
+									color: 'var(--primary-alt)',
+									opacity: 1,
+								},
+								{
+									offset: 100,
+									color: 'var(--primary-alt)',
+									opacity: 0,
+								},
+							],
+						],
+					},
+				},
+				dataLabels: {
+					enabled: false,
+				},
+				tooltip: {
+					marker: {
+						show: false,
+					},
+				},
+				xaxis: {
+					type: 'datetime',
+					tooltip: {
+						enabled: false,
+					},
+					axisTicks: {
+						show: false,
+					},
+					axisBorder: {
+						show: false,
+					},
 				},
 			});
+
+			chart.value.render();
+		});
+
+		onUnmounted(() => {
+			chart.value?.destroy();
 		});
 
 		return { chartEl, metrics, loading, error };
@@ -66,28 +119,31 @@ export default defineComponent({
 						group: props.options.dateField,
 						aggregate: {
 							[props.options.function]: {
-								[props.options.valueField]: 'value',
+								[props.options.valueField]: props.options.valueField,
 							},
 						},
 					},
 				});
 
 				metrics.value = results.data.data;
-				chart.value?.update(getChartData());
+
+				chart.value?.updateOptions({
+					xaxis: {
+						categories: metrics.value.map((metric) => metric[props.options.dateField]),
+					},
+				});
+
+				chart.value?.updateSeries([
+					{
+						name: props.options.collection,
+						data: metrics.value.map((metric) => metric[props.options.valueField]),
+					},
+				]);
 			} catch (err) {
 				error.value = err;
 			} finally {
 				loading.value = false;
 			}
-		}
-
-		function getChartData() {
-			return {
-				labels: metrics.value.map((metric) => metric[props.options.dateField]),
-				datasets: [
-					{ name: props.options.collection, values: metrics.value.map((metric) => Number(metric.value).toFixed(2)) },
-				],
-			};
 		}
 	},
 });

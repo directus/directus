@@ -13,6 +13,7 @@ fields:
   - field: width
   - field: height
   - field: options
+    special: json
   - field: date_created
     special: date-created
   - field: user_created

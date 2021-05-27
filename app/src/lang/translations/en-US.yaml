@@ -428,6 +428,7 @@ no_app_access_copy: This user isn't allowed to use the admin app.
 password_reset_sent: We've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
+filter: Filter
 editing_image: Editing Image
 square: Square
 free: Free
@@ -1183,6 +1184,7 @@ panels:
   metric:
     name: Metric
     description: Show a single value based on a query
+    field: Field
   time_series:
     name: Time Series
     description: Render a line chart based on values over time

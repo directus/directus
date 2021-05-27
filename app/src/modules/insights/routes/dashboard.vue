@@ -131,8 +131,8 @@ export default defineComponent({
 
 			if (editMode.value === true) {
 				return {
-					width: (furthestPanelX.position_x! + furthestPanelX.width! + 3) * 20 + 'px',
-					height: (furthestPanelY.position_y! + furthestPanelY.height! + 3) * 20 + 'px',
+					width: (furthestPanelX.position_x! + furthestPanelX.width! + 25) * 20 + 'px',
+					height: (furthestPanelY.position_y! + furthestPanelY.height! + 25) * 20 + 'px',
 				};
 			}
 
@@ -167,11 +167,7 @@ export default defineComponent({
 				if (stagedPanels.value.some((panel) => panel.id === key)) {
 					stagedPanels.value = stagedPanels.value.map((panel) => {
 						if (panel.id === key) {
-							return {
-								id: key,
-								...panel,
-								...edits,
-							};
+							return merge({ id: key }, panel, edits);
 						}
 
 						return panel;

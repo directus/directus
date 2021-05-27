@@ -1,6 +1,6 @@
 @import './mixins/form-grid.scss';
 
-* {
+*:not(svg *) {
 	box-sizing: border-box;
 	margin: 0;
 	color: inherit;

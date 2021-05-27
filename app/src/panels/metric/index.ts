@@ -9,9 +9,73 @@ export default definePanel({
 	component: PanelMetric,
 	options: [
 		{
-			field: 'all',
-			name: 'All Options (Debug)',
+			field: 'collection',
+			type: 'string',
+			name: '$t:collection',
+			meta: {
+				interface: 'system-collection',
+				width: 'half',
+			},
+		},
+		{
+			field: 'field',
+			type: 'string',
+			name: '$t:panels.metric.field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'function',
+			type: 'string',
+			name: '$t:aggregate_function',
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: 'Average',
+							value: 'avg',
+						},
+						{
+							text: 'Sum',
+							value: 'sum',
+						},
+						{
+							text: 'Minimum',
+							value: 'min',
+						},
+						{
+							text: 'Maximum',
+							value: 'max',
+						},
+						{
+							text: 'Count',
+							value: 'count',
+						},
+					],
+				},
+			},
+		},
+		{
+			field: 'limit',
+			type: 'integer',
+			name: '$t:limit',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+		},
+		{
+			field: 'filter',
 			type: 'json',
+			name: '$t:filter',
 			meta: {
 				interface: 'code',
 				options: {

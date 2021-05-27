@@ -29,18 +29,18 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const res = await api.get(`/items/${props.options.all.collection}`, {
+				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
 						aggregate: {
-							[props.options.all.function]: {
-								[props.options.all.field]: 'result',
+							[props.options.function]: {
+								[props.options.field]: 'result',
 							},
 						},
-						filter: props.options.all.filter,
+						filter: props.options.filter,
 					},
 				});
 
-				metric.value = Number(res.data.data[0].result).toFixed(props.options.all.decimals || 2);
+				metric.value = Number(res.data.data[0].result).toFixed(props.options.decimals || 2);
 			} catch (err) {
 				// oh no
 			} finally {
@@ -57,7 +57,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	height: calc(100% - 24px);
+	height: 100%;
 	font-weight: 800;
 	font-size: 42px;
 	line-height: 52px;

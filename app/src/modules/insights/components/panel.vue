@@ -43,7 +43,7 @@
 <script lang="ts">
 import { getPanels } from '@/panels';
 import { Panel } from '@/types';
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, reactive } from '@vue/composition-api';
 import { throttle } from 'lodash';
 
 export default defineComponent({
@@ -67,12 +67,22 @@ export default defineComponent({
 			});
 		});
 
+		/**
+		 * When drag-n-dropping for positiniong/resizing, we're
+		 */
+		const editedPosition = reactive<Partial<Panel>>({
+			position_x: undefined,
+			position_y: undefined,
+			width: undefined,
+			height: undefined,
+		});
+
 		const positioning = computed(() => {
 			return {
-				'--pos-x': props.panel.position_x,
-				'--pos-y': props.panel.position_y,
-				'--width': props.panel.width,
-				'--height': props.panel.height,
+				'--pos-x': editedPosition.position_x ?? props.panel.position_x,
+				'--pos-y': editedPosition.position_y ?? props.panel.position_y,
+				'--width': editedPosition.width ?? props.panel.width,
+				'--height': editedPosition.height ?? props.panel.height,
 			};
 		});
 
@@ -119,47 +129,39 @@ export default defineComponent({
 				const gridDeltaY = Math.round(pointerDeltaY / 20);
 
 				if (operation === 'move') {
-					const edits = {
-						position_x: panelStartPosX + gridDeltaX,
-						position_y: panelStartPosY + gridDeltaY,
-					};
+					editedPosition.position_x = panelStartPosX + gridDeltaX;
+					editedPosition.position_y = panelStartPosY + gridDeltaY;
 
-					if (edits.position_x < 1) edits.position_x = 1;
-					if (edits.position_y < 1) edits.position_y = 1;
-
-					emit('update', edits);
+					if (editedPosition.position_x < 1) editedPosition.position_x = 1;
+					if (editedPosition.position_y < 1) editedPosition.position_y = 1;
 				} else {
-					let edits: Partial<Panel> = {};
-
 					if (operation.includes('top')) {
-						edits.height = panelStartHeight - gridDeltaY;
-						edits.position_y = panelStartPosY + gridDeltaY;
+						editedPosition.height = panelStartHeight - gridDeltaY;
+						editedPosition.position_y = panelStartPosY + gridDeltaY;
 					}
 
 					if (operation.includes('right')) {
-						edits.width = panelStartWidth + gridDeltaX;
+						editedPosition.width = panelStartWidth + gridDeltaX;
 					}
 
 					if (operation.includes('bottom')) {
-						edits.height = panelStartHeight + gridDeltaY;
+						editedPosition.height = panelStartHeight + gridDeltaY;
 					}
 
 					if (operation.includes('left')) {
-						edits.width = panelStartWidth - gridDeltaX;
-						edits.position_x = panelStartPosX + gridDeltaX;
+						editedPosition.width = panelStartWidth - gridDeltaX;
+						editedPosition.position_x = panelStartPosX + gridDeltaX;
 					}
 
 					const minWidth = panelTypeInfo.value?.minWidth || 6;
 					const minHeight = panelTypeInfo.value?.minHeight || 6;
 
-					if (edits.position_x && edits.position_x < 1) edits.position_x = 1;
-					if (edits.position_y && edits.position_y < 1) edits.position_y = 1;
-					if (edits.width && edits.width < minWidth) edits.width = minWidth;
-					if (edits.height && edits.height < minHeight) edits.height = minHeight;
-
-					return emit('update', edits);
+					if (editedPosition.position_x && editedPosition.position_x < 1) editedPosition.position_x = 1;
+					if (editedPosition.position_y && editedPosition.position_y < 1) editedPosition.position_y = 1;
+					if (editedPosition.width && editedPosition.width < minWidth) editedPosition.width = minWidth;
+					if (editedPosition.height && editedPosition.height < minHeight) editedPosition.height = minHeight;
 				}
-			}, 50);
+			}, 20);
 
 			return { dragging, onPointerDown, onPointerUp, onPointerMove };
 
@@ -188,6 +190,8 @@ export default defineComponent({
 				dragging.value = false;
 				window.removeEventListener('pointerup', onPointerUp);
 				window.removeEventListener('pointermove', onPointerMove);
+
+				emit('update', editedPosition);
 			}
 		}
 	},
@@ -230,6 +234,20 @@ export default defineComponent({
 	box-shadow: 0 0 0 1px var(--primary);
 }
 
+.panel-content {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.panel-content.has-header {
+	height: calc(100% - 48px);
+}
+
+.panel.editing .panel-content {
+	pointer-events: none;
+}
+
 .header {
 	display: flex;
 	align-items: center;
@@ -260,16 +278,6 @@ export default defineComponent({
 	--v-icon-color-hover: var(--foreground-normal);
 }
 
-.panel-content {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-.panel-content.has-header {
-	height: calc(100% - 48px);
-}
-
 .edit-actions {
 	position: absolute;
 	top: 0;
@@ -282,6 +290,7 @@ export default defineComponent({
 
 .resize-handlers div {
 	position: absolute;
+	z-index: 2;
 }
 
 .resize-handlers .top {
