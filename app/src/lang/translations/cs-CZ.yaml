@@ -21,15 +21,28 @@ create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat
+email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
 connection_fair: Zhoršené připojení
 connection_poor: Špatné připojení
+primary: Primární
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
+prefix: Prefix
 reset_bookmark: Obnovit záložku
+rename_bookmark: Přejmenovat záložku
+update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
+delete_bookmark_copy: >-
+  Jste si jisti, že chcete odstranit záložku "{bookmark}"? Tuto akci nelze vrátit zpět.
+logoutReason:
+  SIGN_OUT: Odhlášen
+  SESSION_EXPIRED: Relace vypršela
+public: Veřejné
+public_description: Určuje, která API data jsou dostupná bez ověřování.
+not_allowed: Nepovoleno
 directus_version: Verze Directusu
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
@@ -288,6 +301,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
+  presentation-links:
+    primary: Primární
   collection:
     collection: Kategorie
   system-collections:
