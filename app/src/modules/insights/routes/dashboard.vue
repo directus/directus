@@ -164,6 +164,7 @@ export default defineComponent({
 					...stagedPanels.value,
 					{
 						id: `_${nanoid()}`,
+						dashboard: props.primaryKey,
 						...edits,
 					},
 				];
@@ -171,13 +172,13 @@ export default defineComponent({
 				if (stagedPanels.value.some((panel) => panel.id === key)) {
 					stagedPanels.value = stagedPanels.value.map((panel) => {
 						if (panel.id === key) {
-							return merge({ id: key }, panel, edits);
+							return merge({ id: key, dashboard: props.primaryKey }, panel, edits);
 						}
 
 						return panel;
 					});
 				} else {
-					stagedPanels.value = [...stagedPanels.value, { id: key, ...edits }];
+					stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...edits }];
 				}
 			}
 		}
@@ -244,7 +245,7 @@ export default defineComponent({
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(#efefef 10%, transparent 10%);
+	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;

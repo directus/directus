@@ -80,6 +80,9 @@ export default definePanel({
 			field: 'limit',
 			type: 'integer',
 			name: '$t:limit',
+			schema: {
+				default_value: 100,
+			},
 			meta: {
 				interface: 'input',
 				width: 'half',

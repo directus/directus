@@ -115,7 +115,7 @@ export default defineComponent({
 			try {
 				const results = await api.get(`/items/${props.options.collection}`, {
 					params: {
-						limit: props.options.limit,
+						limit: props.options.limit || 100,
 						group: props.options.dateField,
 						aggregate: {
 							[props.options.function]: {

@@ -1,5 +1,5 @@
 <template>
-	<v-drawer active :title="(panel && panel.name) || $t('panel')" @cancel="$emit('cancel')">
+	<v-drawer active :title="(panel && panel.name) || $t('panel')" @cancel="$emit('cancel')" icon="insert_chart">
 		<template #actions>
 			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="$t('done')">
 				<v-icon name="check" />
@@ -21,6 +21,7 @@
 					:fields="selectedPanel.options"
 					primary-key="+"
 					v-model="edits.options"
+					:initial-values="panel && panel.options"
 				/>
 
 				<component v-model="edits.options" :collection="collection" :is="`panel-options-${selectedPanel.id}`" v-else />
@@ -48,6 +49,11 @@
 					<p class="type-label">{{ $t('color') }}</p>
 					<interface-select-color v-model="edits.color" :disabled="edits.show_header !== true" width="half" />
 				</div>
+
+				<div class="field full">
+					<p class="type-label">{{ $t('note') }}</p>
+					<v-input v-model="edits.note" :disabled="edits.show_header !== true" />
+				</div>
 			</div>
 		</div>
 	</v-drawer>
@@ -71,16 +77,16 @@ export default defineComponent({
 		const { panels } = getPanels();
 
 		const edits = reactive<Partial<Panel>>({
-			show_header: false,
-			type: undefined,
-			name: undefined,
-			icon: undefined,
-			color: undefined,
+			show_header: props.panel?.show_header || true,
+			type: props.panel?.type || undefined,
+			name: props.panel?.name,
+			note: props.panel?.note,
+			icon: 'insert_chart',
+			color: props.panel?.color,
 			width: undefined,
 			height: undefined,
 			position_x: 1,
 			position_y: 1,
-			...(props.panel || {}),
 		});
 
 		const selectItems = computed<FancySelectItem[]>(() => {

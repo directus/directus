@@ -10,7 +10,7 @@
 			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
 			<v-text-overflow class="name" :text="panel.name" />
 			<div class="spacer" />
-			<v-icon v-if="panel.note" name="info" v-tooltip="panel.note" />
+			<v-icon class="note" v-if="panel.note" name="info" v-tooltip="panel.note" />
 		</div>
 
 		<div class="edit-actions" v-if="editMode">
@@ -209,7 +209,6 @@ export default defineComponent({
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	overflow: hidden;
 	background-color: var(--background-page);
 	border: 1px solid var(--border-normal);
 	border-radius: var(--border-radius-outline);
@@ -273,7 +272,8 @@ export default defineComponent({
 	flex-grow: 1;
 }
 
-.edit-icon {
+.edit-icon,
+.note {
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--foreground-normal);
 }
@@ -286,6 +286,7 @@ export default defineComponent({
 	align-items: center;
 	padding: 12px;
 	background-color: var(--background-page);
+	border-top-right-radius: var(--border-radius-outline);
 }
 
 .resize-handlers div {
@@ -294,7 +295,7 @@ export default defineComponent({
 }
 
 .resize-handlers .top {
-	top: 0;
+	top: -1px;
 	width: 100%;
 	height: 8px;
 	cursor: ns-resize;
@@ -302,14 +303,14 @@ export default defineComponent({
 
 .resize-handlers .right {
 	top: 0;
-	right: 0;
+	right: -1px;
 	width: 8px;
 	height: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .bottom {
-	bottom: 0;
+	bottom: -1px;
 	width: 100%;
 	height: 8px;
 	cursor: ns-resize;
@@ -317,39 +318,39 @@ export default defineComponent({
 
 .resize-handlers .left {
 	top: 0;
-	left: 0;
+	left: -1px;
 	width: 8px;
 	height: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .top-left {
-	top: 0;
-	left: 0;
+	top: -1px;
+	left: -1px;
 	width: 12px;
 	height: 12px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .top-right {
-	top: 0;
-	right: 0;
+	top: -1px;
+	right: -1px;
 	width: 12px;
 	height: 12px;
 	cursor: nesw-resize;
 }
 
 .resize-handlers .bottom-right {
-	right: 0;
-	bottom: 0;
+	right: -1px;
+	bottom: -1px;
 	width: 12px;
 	height: 12px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .bottom-left {
-	bottom: 0;
-	left: 0;
+	bottom: -1px;
+	left: -1px;
 	width: 12px;
 	height: 12px;
 	cursor: nesw-resize;

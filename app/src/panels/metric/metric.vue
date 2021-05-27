@@ -1,5 +1,8 @@
 <template>
-	<div class="metric type-title">{{ loading ? 'loading' : metric }}</div>
+	<div class="metric type-title" :class="{ 'has-header': show_header }">
+		<v-progress-circular indeterminate v-if="loading" />
+		<template v-else>{{ metric }}</template>
+	</div>
 </template>
 
 <script lang="ts">
@@ -12,6 +15,10 @@ export default defineComponent({
 			type: Object,
 			default: null,
 		},
+		show_header: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const metric = ref();
@@ -19,7 +26,7 @@ export default defineComponent({
 
 		fetchData();
 
-		watch(props.options, fetchData);
+		watch(() => props.options, fetchData, { deep: true });
 
 		return { metric, loading };
 
@@ -61,5 +68,9 @@ export default defineComponent({
 	font-weight: 800;
 	font-size: 42px;
 	line-height: 52px;
+}
+
+.metric.has-header {
+	height: calc(100% - 48px);
 }
 </style>

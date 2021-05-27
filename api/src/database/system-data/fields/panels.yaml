@@ -8,6 +8,8 @@ fields:
   - field: color
   - field: note
   - field: type
+  - field: show_header
+    special: boolean
   - field: position_x
   - field: position_y
   - field: width
