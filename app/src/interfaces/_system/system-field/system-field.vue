@@ -51,6 +51,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		allowPrimaryKey: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
@@ -66,7 +70,7 @@ export default defineComponent({
 			fields.value.map((field: Field) => {
 				let disabled = false;
 
-				if (field?.schema?.is_primary_key === true) disabled = true;
+				if (props.allowPrimaryKey === false && field?.schema?.is_primary_key === true) disabled = true;
 				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
 
 				return {
