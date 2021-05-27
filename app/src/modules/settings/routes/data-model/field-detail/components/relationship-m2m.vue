@@ -31,7 +31,7 @@
 									v-for="collection in availableCollections"
 									:key="collection.collection"
 									:active="relations[0].collection === collection.collection"
-									@click="relations[0].collection = collection.collection"
+									@click="junctionCollection = collection.collection"
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -46,7 +46,7 @@
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[0].collection === collection.collection"
-										@click="relations[0].collection = collection.collection"
+										@click="junctionCollection = collection.collection"
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -352,7 +352,7 @@
 						},
 						{
 							text: $t('referential_action_cascade', {
-								collection: relatedCollectionName,
+								collection: junctionCollectionName,
 								field: junctionRelatedM2OFieldName,
 							}),
 							value: 'CASCADE',

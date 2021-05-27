@@ -5,14 +5,20 @@
 
 	<v-list class="translations" v-else>
 		<v-list-item
-			v-for="languageItem in languages"
+			v-for="(languageItem, i) in languages"
 			:key="languageItem[languagesPrimaryKeyField]"
 			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 			class="language-row"
 			block
 		>
 			<v-icon class="translate" name="translate" left />
-			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
+			<render-template :template="_languageTemplate" :collection="languagesCollection" :item="languageItem" />
+			<render-template
+				class="preview"
+				:template="_translationsTemplate"
+				:collection="translationsCollection"
+				:item="previewItems[i]"
+			/>
 			<div class="spacer" />
 		</v-list-item>
 
@@ -38,6 +44,7 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { isPlainObject } from 'lodash';
 
 export default defineComponent({
 	components: { DrawerItem },
@@ -54,7 +61,11 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		template: {
+		languageTemplate: {
+			type: String,
+			default: null,
+		},
+		translationsTemplate: {
 			type: String,
 			default: null,
 		},
@@ -78,9 +89,9 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, template: languagesTemplate } = useLanguages();
-
+		const { languages, loading: languagesLoading, template: _languageTemplate } = useLanguages();
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
+		const { previewItems, template: _translationsTemplate } = usePreview();
 
 		return {
 			relationsForField,
@@ -88,7 +99,8 @@ export default defineComponent({
 			translationsCollection,
 			languagesRelation,
 			languages,
-			languagesTemplate,
+			_languageTemplate,
+			_translationsTemplate,
 			languagesCollection,
 			languagesPrimaryKeyField,
 			languagesLoading,
@@ -98,6 +110,7 @@ export default defineComponent({
 			stageEdits,
 			cancelEdit,
 			edits,
+			previewItems,
 		};
 
 		function useRelations() {
@@ -158,7 +171,7 @@ export default defineComponent({
 		}
 
 		function useLanguages() {
-			const languages = ref();
+			const languages = ref<Record<string, any>[]>();
 			const loading = ref(false);
 			const error = ref<any>(null);
 
@@ -166,8 +179,9 @@ export default defineComponent({
 
 			const template = computed(() => {
 				if (!languagesPrimaryKeyField.value) return '';
+
 				return (
-					props.template ||
+					props.languageTemplate ||
 					languagesCollectionInfo.value?.meta?.display_template ||
 					`{{ ${languagesPrimaryKeyField.value} }}`
 				);
@@ -337,6 +351,86 @@ export default defineComponent({
 				editing.value = false;
 			}
 		}
+
+		function usePreview() {
+			const loading = ref(false);
+			const error = ref(null);
+			const previewItems = ref<Record<string, any>[]>([]);
+
+			const { info: translationsCollectionInfo } = useCollection(translationsCollection);
+
+			const template = computed(() => {
+				if (!translationsPrimaryKeyField.value) return '';
+
+				return (
+					props.translationsTemplate ||
+					translationsCollectionInfo.value?.meta?.display_template ||
+					`{{ ${translationsPrimaryKeyField.value} }}`
+				);
+			});
+
+			watch(() => props.value, fetchPreviews, { immediate: true });
+			watch(languages, fetchPreviews, { immediate: true });
+
+			return { loading, error, previewItems, fetchPreviews, template };
+
+			async function fetchPreviews() {
+				if (!translationsRelation.value || !languagesRelation.value || !languages.value) return;
+
+				loading.value = true;
+
+				try {
+					const fields = getFieldsFromTemplate(template.value);
+
+					if (fields.includes(languagesRelation.value.field) === false) {
+						fields.push(languagesRelation.value.field);
+					}
+
+					const existing = await api.get(`/items/${translationsCollection.value}`, {
+						params: {
+							fields,
+							filter: {
+								[translationsRelation.value.field]: {
+									_eq: props.primaryKey,
+								},
+							},
+						},
+					});
+
+					previewItems.value = languages.value.map((language) => {
+						const existingEdit =
+							props.value && Array.isArray(props.value)
+								? (props.value.find(
+										(edit) =>
+											isPlainObject(edit) &&
+											(edit as Record<string, any>)[languagesRelation.value!.field] ===
+												language[languagesPrimaryKeyField.value]
+								  ) as Record<string, any>)
+								: {};
+
+						return {
+							...(existing.data.data?.find(
+								(item: Record<string, any>) =>
+									item[languagesRelation.value!.field] === language[languagesPrimaryKeyField.value]
+							) ?? {}),
+							...existingEdit,
+						};
+					});
+				} catch (err) {
+					console.log(err);
+					error.value = err;
+					previewItems.value = [];
+				} finally {
+					loading.value = false;
+				}
+			}
+		}
 	},
 });
 </script>
+
+<style scoped>
+.preview {
+	color: var(--foreground-subdued);
+}
+</style>
