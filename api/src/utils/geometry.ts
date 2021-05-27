@@ -68,12 +68,12 @@ export function queryGeometryFromText(knex: Knex, text: string): Knex.Raw {
 		case 'mariadb':
 		case 'redshift':
 		case 'sqlite3':
-			return knex.raw('st_geomfromtext(?)', text);
 		case 'pg':
+			return knex.raw('st_geomfromtext(?, 4326)', text);
 		case 'mssql':
-			return knex.raw('?', text);
+			return knex.raw('geometry::STGeomFromText(?, 4326)', text);
 		case 'oracledb':
-			return knex.raw('sdo_geometry(?)', text);
+			return knex.raw('sdo_geometry(?, 4326)', text);
 		default:
 			throw new Error(`Native geometric types not supported on ${client}.`);
 	}
