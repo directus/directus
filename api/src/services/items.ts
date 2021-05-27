@@ -190,23 +190,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			}
 
+			if (opts?.emitEvents !== false) {
+				await emitter.emitAsync(`${this.eventScope}.create`, {
+					event: `${this.eventScope}.create`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: primaryKey,
+					action: 'create',
+					payload,
+					schema: this.schema,
+					database: trx,
+				});
+			}
+
 			return primaryKey;
 		});
-
-		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.create`, {
-				event: `${this.eventScope}.create`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: primaryKey,
-				action: 'create',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: database,
-			});
-		}
 
 		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
@@ -382,38 +380,38 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			schema: this.schema,
 		});
 
-		// Run all hooks that are attached to this event so the end user has the chance to augment the
-		// item that is about to be saved
-		const hooksResult =
-			opts?.emitEvents !== false
-				? (
-						await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-							event: `${this.eventScope}.update.before`,
-							accountability: this.accountability,
-							collection: this.collection,
-							item: keys,
-							action: 'update',
-							payload,
-							schema: this.schema,
-							database: this.knex,
-						})
-				  ).filter((val) => val)
-				: [];
-
-		// The events are fired last-to-first based on when they were created. By reversing the
-		// output array of results, we ensure that the augmentations are applied in
-		// "chronological" order
-		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
-
-		if (this.accountability) {
-			await authorizationService.checkAccess('update', this.collection, keys);
-		}
-
-		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
-			: payloadAfterHooks;
-
 		await this.knex.transaction(async (trx) => {
+			// Run all hooks that are attached to this event so the end user has the chance to augment the
+			// item that is about to be saved
+			const hooksResult =
+				opts?.emitEvents !== false
+					? (
+							await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
+								event: `${this.eventScope}.update.before`,
+								accountability: this.accountability,
+								collection: this.collection,
+								item: keys,
+								action: 'update',
+								payload,
+								schema: this.schema,
+								database: trx,
+							})
+					  ).filter((val) => val)
+					: [];
+
+			// The events are fired last-to-first based on when they were created. By reversing the
+			// output array of results, we ensure that the augmentations are applied in
+			// "chronological" order
+			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
+
+			if (this.accountability) {
+				await authorizationService.checkAccess('update', this.collection, keys);
+			}
+
+			const payloadWithPresets = this.accountability
+				? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+				: payloadAfterHooks;
+
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
@@ -499,25 +497,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					}
 				}
 			}
+
+			if (opts?.emitEvents !== false) {
+				emitter.emitAsync(`${this.eventScope}.update`, {
+					event: `${this.eventScope}.update`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: keys,
+					action: 'update',
+					payload,
+					schema: this.schema,
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: trx,
+				});
+			}
 		});
 
 		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
-		}
-
-		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.update`, {
-				event: `${this.eventScope}.update`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'update',
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: database,
-			});
 		}
 
 		return keys;
@@ -615,20 +613,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
-		if (opts?.emitEvents !== false) {
-			await emitter.emitAsync(`${this.eventScope}.delete.before`, {
-				event: `${this.eventScope}.delete.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				database: this.knex,
-			});
-		}
-
 		await this.knex.transaction(async (trx) => {
+			if (opts?.emitEvents !== false) {
+				await emitter.emitAsync(`${this.eventScope}.delete.before`, {
+					event: `${this.eventScope}.delete.before`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: keys,
+					action: 'delete',
+					payload: null,
+					schema: this.schema,
+					database: trx,
+				});
+			}
+
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
@@ -645,25 +643,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					await trx.insert(activityRecords).into('directus_activity');
 				}
 			}
+
+			if (opts?.emitEvents !== false) {
+				emitter.emitAsync(`${this.eventScope}.delete`, {
+					event: `${this.eventScope}.delete`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: keys,
+					action: 'delete',
+					payload: null,
+					schema: this.schema,
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: trx,
+				});
+			}
 		});
 
 		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
-		}
-
-		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: database,
-			});
 		}
 
 		return keys;
