@@ -7,6 +7,10 @@
 			</v-button>
 		</template>
 
+		<template #headline>
+			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
+		</template>
+
 		<template #actions>
 			<template v-if="editMode">
 				<v-button rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
