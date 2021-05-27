@@ -261,6 +261,7 @@ export default defineComponent({
 }
 
 .panel-content {
+	position: relative;
 	width: 100%;
 	height: 100%;
 }
@@ -286,14 +287,14 @@ export default defineComponent({
 .resize-handlers .top {
 	top: 0;
 	width: 100%;
-	height: 4px;
+	height: 8px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
 	top: 0;
 	right: 0;
-	width: 4px;
+	width: 8px;
 	height: 100%;
 	cursor: ew-resize;
 }
@@ -301,14 +302,14 @@ export default defineComponent({
 .resize-handlers .bottom {
 	bottom: 0;
 	width: 100%;
-	height: 4px;
+	height: 8px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .left {
 	top: 0;
 	left: 0;
-	width: 4px;
+	width: 8px;
 	height: 100%;
 	cursor: ew-resize;
 }

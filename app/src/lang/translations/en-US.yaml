@@ -121,6 +121,7 @@ field_create_success: 'Created Field: "{field}"'
 field_update_success: 'Updated Field: "{field}"'
 duplicate_where_to: Where would you like to duplicate this field to?
 language: Language
+aggregate_function: Aggregate Function
 global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
@@ -827,6 +828,7 @@ delete_field_are_you_sure: >-
 description: Description
 done: Done
 duplicate: Duplicate
+limit: Limit
 email: Email
 embed: Embed
 fallback_icon: Fallback Icon
@@ -1181,3 +1183,8 @@ panels:
   metric:
     name: Metric
     description: Show a single value based on a query
+  time_series:
+    name: Time Series
+    description: Render a line chart based on values over time
+    date_field: Date Field
+    value_field: Value Field

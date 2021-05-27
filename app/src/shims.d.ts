@@ -31,6 +31,12 @@ declare module 'jsonlint-mod' {
 	export default x;
 }
 
+declare module 'frappe-charts/src/js/charts/AxisChart' {
+	export class Chart {
+		constructor(element: string, options: Record<string, any>);
+	}
+}
+
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
 type Builtin = Primitive | Function | Date | Error | RegExp;
 type IsTuple<T> = T extends [infer A]

@@ -132,6 +132,10 @@ export default defineComponent({
 	padding-bottom: var(--content-padding);
 }
 
+.select {
+	margin-bottom: 32px;
+}
+
 .panel-type-label {
 	margin-bottom: 16px;
 }
