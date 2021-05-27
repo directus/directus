@@ -58,7 +58,8 @@ export default async function runAST(
 		const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
 			collection,
-			children
+			children,
+			query
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
@@ -101,7 +102,8 @@ export default async function runAST(
 async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
-	children: (NestedCollectionNode | FieldNode)[]
+	children: (NestedCollectionNode | FieldNode)[],
+	query: Query
 ) {
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
@@ -133,10 +135,11 @@ async function parseCurrentLevel(
 	}
 
 	/**
-	 * Always fetch primary key in case there's a nested relation that needs it
+	 * Always fetch primary key in case there's a nested relation that needs it, but only if there's
+	 * no aggregation / grouping going on
 	 */
-	const childrenContainRelational = children.some((child) => child.type !== 'field');
-	if (childrenContainRelational && columnsToSelectInternal.includes(primaryKeyField) === false) {
+	const hasAggregationOrGrouping = 'aggregate' in query || 'group' in query;
+	if (columnsToSelectInternal.includes(primaryKeyField) === false && hasAggregationOrGrouping === false) {
 		columnsToSelectInternal.push(primaryKeyField);
 	}
 
