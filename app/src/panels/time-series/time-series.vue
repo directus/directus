@@ -33,7 +33,7 @@ export default defineComponent({
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
 
-		watch(props.options, fetchData, { deep: true });
+		watch(() => props.options, fetchData, { deep: true });
 
 		fetchData();
 
