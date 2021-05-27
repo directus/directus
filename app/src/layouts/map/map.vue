@@ -106,7 +106,7 @@
 			:bounds="geojsonBounds"
 			:source="directusSource"
 			:layers="directusLayers"
-			@click="gotoEdit"
+			@click="handleClick"
 			@select="updateSelection"
 			@moveend="cameraOptions = $event"
 			:animateOptions="{
@@ -440,8 +440,12 @@ export default defineComponent({
 			return props.readonly ? null : primaryKeyField.value?.field;
 		});
 
-		function gotoEdit(key: number | string) {
-			router.push(`/collections/${collection.value}/${key}`);
+		function handleClick(key: number | string) {
+			if (props.selectMode) {
+				updateSelection([key]);
+			} else {
+				router.push(`/collections/${collection.value}/${key}`);
+			}
 		}
 
 		const showingCount = computed(() => {
@@ -470,7 +474,7 @@ export default defineComponent({
 			geojsonLoading,
 			geojsonError,
 			geometryOptions,
-			gotoEdit,
+			handleClick,
 			geometryFormat,
 			geometryField,
 			cameraOptions,
