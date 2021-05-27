@@ -58,7 +58,7 @@
 		"figlet": "^1.5.0",
 		"fs-extra": "^8.1.0",
 		"gluegun": "^4.6.1",
-		"indent-string": "^4.0.0",
+		"indent-string": "^5.0.0",
 		"jaro-winkler": "^0.2.8",
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",
