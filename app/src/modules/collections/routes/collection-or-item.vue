@@ -40,15 +40,5 @@ export default defineComponent({
 
 		return { component, isSingleton };
 	},
-	beforeRouteLeave(to, from) {
-		if ((this as any).$refs?.component?.navigationGuard) {
-			return (this as any).$refs.component.navigationGuard(to, from);
-		}
-	},
-	beforeRouteUpdate(to, from) {
-		if ((this as any).$refs?.component?.navigationGuard) {
-			return (this as any).$refs.component.navigationGuard(to, from);
-		}
-	},
 });
 </script>

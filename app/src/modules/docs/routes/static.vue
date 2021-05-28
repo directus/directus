@@ -11,7 +11,7 @@
 		</template>
 
 		<template #navigation>
-			<docs-navigation :path="path" />
+			<docs-navigation :path="route.path" />
 		</template>
 
 		<div class="docs-content selectable">
@@ -28,14 +28,15 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, defineAsyncComponent, ref, computed } from 'vue';
+import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 import { md } from '@/utils/md';
 
 // @TODO3 Investigate manual chunking and prefetching
 const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
-async function getMarkdownForPath(path: string) {
+async function getMarkdownForPath(path: string): Promise<string> {
 	const pathParts = path.split('/');
 
 	while (pathParts.includes('docs')) {
@@ -56,24 +57,11 @@ async function getMarkdownForPath(path: string) {
 export default defineComponent({
 	name: 'StaticDocs',
 	components: { DocsNavigation, Markdown },
-	async beforeRouteEnter(to, from, next) {
-		const md = await getMarkdownForPath(to.path);
-
-		next((vm: any) => {
-			vm.markdown = md;
-			vm.path = to.path;
-		});
-	},
-	async beforeRouteUpdate(to, from, next) {
-		this.markdown = await getMarkdownForPath(to.path);
-		this.path = to.path;
-
-		next();
-	},
 	setup() {
 		const { t } = useI18n();
 
-		const path = ref<string | null>(null);
+		const route = useRoute();
+
 		const markdown = ref('');
 		const title = computed(() => {
 			const lines = markdown.value.split('\n');
@@ -100,7 +88,15 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { t, markdown, title, markdownWithoutTitle, md, path };
+		watch(
+			() => route.path,
+			async () => {
+				markdown.value = await getMarkdownForPath(route.path);
+			},
+			{ immediate: true, flush: 'post' }
+		);
+
+		return { t, route, markdown, title, markdownWithoutTitle, md };
 	},
 });
 </script>

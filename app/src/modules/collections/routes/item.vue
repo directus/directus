@@ -205,7 +205,7 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
-import { useRouter, NavigationGuard } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
@@ -343,13 +343,15 @@ export default defineComponent({
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
-		const navigationGuard: NavigationGuard = (to) => {
+		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
 				return false;
 			}
 		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			collection,
@@ -397,7 +399,6 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
-			navigationGuard,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
@@ -515,12 +516,6 @@ export default defineComponent({
 				...values,
 			};
 		}
-	},
-	beforeRouteLeave(to, from) {
-		return (this as any).navigationGuard(to, from);
-	},
-	beforeRouteUpdate(to, from) {
-		return (this as any).navigationGuard(to, from);
 	},
 });
 </script>

@@ -178,7 +178,7 @@ import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance 
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -200,16 +200,6 @@ import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'users-item',
-	beforeRouteLeave(to) {
-		const self = this as any;
-		const hasEdits = Object.keys(self.edits).length > 0;
-
-		if (hasEdits) {
-			self.confirmLeave = true;
-			self.leaveTo = to.fullPath;
-			return false;
-		}
-	},
 	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
 		primaryKey: {
@@ -284,6 +274,16 @@ export default defineComponent({
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
 			ref('directus_users'),

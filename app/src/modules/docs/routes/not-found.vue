@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="t('page_not_found')">
 		<template #navigation>
-			<docs-navigation :path="path" />
+			<docs-navigation :path="route.path" />
 		</template>
 
 		<div class="not-found">
@@ -14,26 +14,19 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
+import { useRoute } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 
 export default defineComponent({
 	name: 'NotFound',
 	components: { DocsNavigation },
-	async beforeRouteEnter(to, from, next) {
-		next((vm: any) => {
-			vm.path = to.path;
-		});
-	},
-	async beforeRouteUpdate(to, from, next) {
-		this.path = to.path;
-		next();
-	},
 	setup() {
 		const { t } = useI18n();
 
-		const path = ref<string | null>(null);
-		return { t, path };
+		const route = useRoute();
+
+		return { t, route };
 	},
 });
 </script>
