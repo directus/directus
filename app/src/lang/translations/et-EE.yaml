@@ -1,6 +1,6 @@
 ---
-edit_field: Redigeeri
-item_revision: Üksuse läbivaatlus
+edit_field: Muuda välja
+item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
 full_width: Täislaius
@@ -666,6 +666,7 @@ fields:
     comment: Kommentaar
     user_agent: Kasutaja agent
     ip: IP aadress
+    revisions: Versioonid
   directus_collections:
     collection: Kogud
     icon: Ikoon
@@ -769,9 +770,20 @@ inline: Tekstisisene
 comment: Kommentaar
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
+referential_action_no_action: Enneta kustutamist
+referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
+referential_action_set_null: Nulli {field} väli
+referential_action_set_default: Seadista {field} väljale vaikeväärtus
+choose_action: Vali tegevus
 continue: Continue
+continue_as: >-
+  <b>{name}</b> on selle projekti jaoks juba autenditud. Kui tunned selle konto ära, siis vajuta Jätka.
+editing_role: '{role} roll'
+creating_webhook: Loo veebikonks
 default: Vaikimisi
 delete: Kustuta
+delete_are_you_sure: >-
+  See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-
   Kas soovid kindlasti välja "{field}" kustutada? Seda toimingut ei saa tagasi võtta.
 description: Kirjeldus
@@ -779,6 +791,7 @@ done: Valmis
 duplicate: Loo koopia
 email: E-post
 embed: Põimitud
+fallback_icon: Tagavaraikoon
 field: Väli | Väljad
 file: Fail
 file_library: Failikogu
@@ -786,10 +799,16 @@ forgot_password: Unustasin parooli
 hidden: Peidetud
 icon: Ikoon
 info: Info
+normal: Tavaline
+success: Õnnestus
+warning: Hoiatus
+danger: Oht
+junction_collection: Seoste andmekogu
 latency: Latsentsus
 login: Logi sisse
 my_activity: Minu tegevus
 not_authenticated: Pole autenditud
+authenticated: Autenditud
 options: Valikud
 otp: Ühekordne parool
 password: Parool
@@ -797,11 +816,13 @@ permissions: Õigused
 relationship: Seos
 reset: Lähtesta
 reset_password: Lähtesta parool
+revisions: Versioonid
 revert: Taasta
 save: Salvesta
 schema: Skeem
 search: Otsi
 select_existing: Vali olemasolev
+select_field_type: Vali välja tüüp
 select_interface: Vali kasutajaliides
 settings: Seaded
 sign_in: Logi sisse
@@ -814,15 +835,37 @@ sort_desc: Sorteeri kahanevalt
 template: Mall
 translation: Tõlge
 value: Väärtus
+view_project: Näita projekti
+report_error: Raporteeri viga
 interfaces:
   presentation-links:
+    presentation-links: Nuppude lingid
+    links: Lingid
+    description: Seadistatavad nupud dünaamiliste URLide avamiseks
+    style: Stiil
     primary: Peamine
+    link: Lingid
+    button: Nupud
+    error: Toimingut ei saa teha
+  select-multiple-checkbox:
+    checkboxes: Märkeruudud
+    description: Tee valikud märkeruutude abil
+    allow_other: Luba muud
+    show_more: 'Näita veel {count}'
+    items_shown: Nähtavad kirjed
   input-code:
     code: Kood
+    description: Kirjuta või jaga koodilõike
+    line_number: Rea number
+    placeholder: Sisesta kood siia...
   collection:
     collection: Kogud
+    description: Vali olemasolevate andmekogude seast
+    include_system_collections: Lisa süsteemsed andmekogud
   system-collections:
     collections: Kogud
+    description: Vali olemasolevate andmekogude seast
+    include_system_collections: Lisa süsteemsed andmekogud
   select-color:
     color: Värv
     placeholder: Vali värv...
@@ -843,24 +886,74 @@ interfaces:
     select_a_collection: Vali andmekogu
   presentation-divider:
     divider: Eraldaja
+    description: Nimeta ja eralda välju sektsioonideks
+    title_placeholder: Sisesta pealkiri...
+    inline_title: Pealkiri joone sees
+    inline_title_label: Näita pealkirja keset joont
+    margin_top: Ülemine vahe
+    margin_top_label: Suurenda ülemist vahet
   select-dropdown:
+    description: Vali väärtust rippmenüüst
+    choices_placeholder: Lisa uus valik
+    allow_other: Luba muud
+    allow_other_label: Luba teised väärtused
+    allow_none: Luba tühiväärtus
+    allow_none_label: Luba jätta valimata
+    choices_name_placeholder: Sisesta nimi...
     choices_value_placeholder: Sisesta väärtus...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rippmenüü (mitmikvalikuga)
+    description: Vali mitu väärtust rippmenüüst
   file:
     file: Fail
+    description: Vali olemasolev fail või lae üles uus
   files:
     files: Failid
+    description: Vali või lae üles mitu faili
   input-hash:
     hash: Hash (räsi)
+    description: Sisesta väärtus, mida maskeerida
+    masked: Maskeeritud
+    masked_label: Peida tõese väärtus korral
   select-icon:
     icon: Ikoon
+    description: Vali ikoon rippmenüüst
+    search_for_icon: Otsi ikooni...
+  file-image:
+    image: Pilt
+    description: Vali või lae üles pilt
   system-interface:
     interface: Kasutajaliides
+    description: Vali olemasolev liides
+    placeholder: Vali kasutajaliides...
+  system-interface-options:
+    interface-options: Kasutajaliidese valikud
+    description: Kasutajaliidese valikute tegemise hüpikaken
+  list-m2m:
+    many-to-many: Mitu mitmele
+    description: Vali mitu seoetud kirjet
   select-dropdown-m2o:
+    many-to-one: Mitu ühele
+    description: Vali üksik seotud kirje
     display_template: Vaate mall
+  input-rich-text-md:
+    markdown: Markdown
+    description: Sisesta ja vaata markdown'i
+    customSyntax: Kohandatud plokid
+    customSyntax_label: Lisa kohandatud süntaksi tüüpe
+    customSyntax_add: Lisa kohandatud süntaks
+    box: Plokk / Tekstisisene
+    imageToken: Pildi kood
+    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+  presentation-notice:
+    notice: Teade
+    description: Näita lühikest teadet
   slider:
     slider: Liugur
   tags:
     tags: Sildid
+  input:
+    mask: Maskeeritud
   boolean:
     toggle: Lülita
     label_default: lubatud
@@ -870,28 +963,84 @@ interfaces:
     user: Kasutaja
     modes:
       dropdown: Rippmenüü
+  input-rich-text-html:
+    description: Tekstiredaktor HTML sisu loomiseks
+    toolbar: Tööriistariba
+    custom_formats: Kohandatud vormingud
+    options_override: Valikute ülekirjutamine
+  input-autocomplete-api:
+    input-autocomplete-api: Automaatselt täidetav väli (API)
+    description: Otsingutulemused välisest APIst
+    results_path: Tulemuste asukoht (path)
+    value_path: Väärtuse väli
+    trigger: Päästik
+    rate: Hinnang
 displays:
   boolean:
     boolean: Boolean
+    description: Näita sees/väljas seisu
+    label_on: '"Sees" nimetus'
+    label_on_placeholder: Sisesta nimetus...
+    label_off: '"Väljas" nimetus'
+    label_off_placeholder: Sisesta nimetus...
     icon_on: Ikoon sees
     icon_off: Ikoon väljas
+    color_on: '"Sees" värv'
+    color_off: '"Väljas" värv'
   collection:
     collection: Kogud
+    description: Näita andmekogu
+    icon_label: Näita andmekogu ikooni
   color:
     color: Värv
+    description: Näita värvilist punkti
+    default_color: Vaikevärv
   datetime:
     datetime: Kuupäev-kellaaeg
+    description: Näita suhtelisi aegu
     format: Vorming
+    format_note: >-
+      Ajaformaadi valikud  __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Pikk
+    short: Lühike
+    relative: Suhteline
+    relative_label: 'Näita suhtelist aega, nt 5 minutit tagasi'
   file:
     file: Fail
+    description: Näita faile
   filesize:
     filesize: Failisuurus
+    description: Näita faili suurust
+  formatted-value:
+    formatted-value: Vormistatud väärtus
+    description: Näita teksti vormistatud väärtust
+    format_title: Vorminda pealkiri
+    format_title_label: Paranda esitähed suureks
+    bold_label: Paksus kirjas
+  formatted-json-value:
+    formatted-json-value: Vormista JSON väärtusena
+    description: Näita objekti vormistatud versiooni
   icon:
     icon: Ikoon
+    description: Kuva ikooni
+    filled: Täidetud
+    filled_label: Kasuta täidetud varianti
   image:
+    image: Pilt
+    description: Kasuta väikest pildi eelvaadet
     circle: Ring
+    circle_label: Näita ümmarguselt
   labels:
+    labels: Sildid
+    description: Näita kas üksikuna või siltide nimekirjana
+    default_foreground: Vaikimisi esiplaan
+    default_background: Vaikimisi taust
+    format_label: Vormista iga silt
+    show_as_dot: Näita punktina
     choices_value_placeholder: Sisesta väärtus...
+    choices_text_placeholder: Sisesta tekst...
+  mime-type:
+    mime-type: MIME Tüüp
   rating:
     rating: Hinnang
   user:
