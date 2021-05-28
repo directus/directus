@@ -54,15 +54,10 @@ os_totalmem: OS hukommelse
 archive: Arkiver
 archive_confirm: Er du sikker på at du vil arkivere dette element?
 archive_confirm_count: >-
-  Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse
-  {count} elementer?
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
 reset_system_permissions_to: 'Nulstil systemtilladelser til:'
-reset_system_permissions_copy:
-  Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du
-  sikker?
-the_following_are_minimum_permissions:
-  Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette,
-  men ikke nedenfor.
+reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
+the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
 app_access_minimum: Minimum App-adgang
 recommended_defaults: Anbefalede Standarder
 unarchive: Fjern fra arkiv
@@ -244,8 +239,7 @@ keep_editing: Fortsæt Redigering
 add_new: Tilføj Ny
 all: Alle
 batch_delete_confirm: >-
-  Der er ingen valgte elementer | Er du sikker på at du vil slette dette element? Denne handling kan ikke fortrydes. |
-  Er du sikker på at du vil slette {count} elementer? Denne handling kan ikke fortrydes.
+  Der er ingen valgte elementer | Er du sikker på at du vil slette dette element? Denne handling kan ikke fortrydes. | Er du sikker på at du vil slette {count} elementer? Denne handling kan ikke fortrydes.
 cancel: Annuller
 collection: Samling
 collections: Samlinger
@@ -353,9 +347,6 @@ value: Værdi
 interfaces:
   presentation-links:
     primary: Primær
-  select-multiple-checkbox:
-    checkboxes: Afkrydsningsfelter
-    allow_other: Tillad Andre
   input-code:
     code: Kode
   collection:
@@ -366,18 +357,12 @@ interfaces:
     color: Farve
   datetime:
     datetime: Datotid
-  select-dropdown:
-    allow_other: Tillad Andre
   file:
     file: Fil
   files:
     files: Filer
   select-icon:
     icon: Ikon
-  system-interface-options:
-    interface-options: Interface indstillinger
-  numeric:
-    numeric: Numerisk
   tags:
     tags: Tags
 displays:

@@ -774,6 +774,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 				state.relations[0].field = `${collection}_${currentPKField}`;
 				state.relations[1].field = `${relatedCollection}_${relatedPKField}`;
+
+				if (state.relations[0].field === state.relations[1].field) {
+					state.relations[1].field = `related_${state.relations[1].field}`;
+				}
 			}
 		}
 

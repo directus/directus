@@ -22,6 +22,7 @@ create_webhook: Buat Webhook
 invite_users: Undang Pengguna Lain
 email_examples: 'admin@website.com, user@website.com...'
 invite: Undang
+email_already_invited: Email "{email}" sudah diundang
 emails: Surel
 connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
@@ -54,14 +55,10 @@ os_totalmem: Memori OS
 archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
 archive_confirm_count: >-
-  Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan
-  {count} item ini?
+  Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
 reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
-reset_system_permissions_copy:
-  Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
-the_following_are_minimum_permissions:
-  Berikut adalah perizinan minimum yang diperlukan ketika "Akses Aplikasi" diaktifkan. Anda dapat mengembangkan
-  perizinan lebih dari ini, tetapi tidak dibawahnya.
+reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
+the_following_are_minimum_permissions: Berikut adalah perizinan minimum yang diperlukan ketika "Akses Aplikasi" diaktifkan. Anda dapat mengembangkan perizinan lebih dari ini, tetapi tidak dibawahnya.
 app_access_minimum: Minimum Akses Aplikasi
 recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
@@ -84,9 +81,14 @@ validationError:
   null: Nilai harus kosong
   nnull: Nilai tidak boleh kosong
   required: Nilai diperlukan
+  unique: Nilai harus unik
+  regex: Format nilai tidak tepat
 all_access: Semua Akses
 no_access: Tidak Ada Akses
 use_custom: Gunakan Kustom
+nullable: Dapat dikosongkan
+allow_null_value: Izinkan nilai KOSONG
+enter_value_to_replace_nulls: Harap masukkan nilai baru untuk menggantikan nilai kosong pada kolom ini.
 field_standard: Standar
 field_presentation: Presentasi & Alias
 field_file: Satu Berkas
@@ -141,11 +143,13 @@ decimal: Desimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Teks
 time: Time
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
@@ -154,13 +158,11 @@ no_refresh: Jangan Segarkan
 refresh_interval_seconds: Segarkan secara Instan | Setiap Detik | Setiap {seconds} Detik
 refresh_interval_minutes: Setiap Menit | Setiap {minutes} Menit
 auto_generate: Buat Otomatis
-this_will_auto_setup_fields_relations:
-  Ini akan secara otomatis menkonfigurasi seluruh kolom dan hubungan yang dibutuhkan.
+this_will_auto_setup_fields_relations: Ini akan secara otomatis menkonfigurasi seluruh kolom dan hubungan yang dibutuhkan.
 click_here: Tekan di sini
 to_manually_setup_translations: untuk secara manual menkonfirgurasi penerjemah.
 click_to_manage_translated_fields: >-
-  Belum ada baris yang diterjemahkan. Klik disini untuk membuatnya. | Terdapat satu baris yang diterjemahan. Klik disini
-  untuk mengelolanya. | Terdapat {count} baris yang diterjemahkan. Klik disini untuk mengelola baris tersebut.
+  Belum ada baris yang diterjemahkan. Klik disini untuk membuatnya. | Terdapat satu baris yang diterjemahan. Klik disini untuk mengelolanya. | Terdapat {count} baris yang diterjemahkan. Klik disini untuk mengelola baris tersebut.
 fields_group: Grup kolom-kolom
 no_collections_found: Tidak ada koleksi ditemukan.
 new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
@@ -231,6 +233,7 @@ item_delete_success: Item telah Dihapus | Item telah Dihapus
 this_collection: Pengumpulan ini
 related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
+translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
 export_data: Ekspor Data
 format: Format
@@ -317,6 +320,10 @@ save_and_create_new: Simpan dan Buat Baru
 save_and_stay: Simpan dan Tinggal
 save_as_copy: Simpan sebagai Salinan
 add_existing: Tambahkan Yang Ada
+creating_items: Membuat Item
+enable_create_button: Aktifkan Tombol Buat Baru
+selecting_items: Memilih item
+enable_select_button: Aktifkan Tombol Pemilihan
 comments: Komentar
 no_comments: Belum Ada Komentar
 click_to_expand: Tekan Untuk Memperluas
@@ -331,7 +338,6 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
-list-m2a: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
@@ -341,7 +347,10 @@ no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
 no_webhooks_copy: Belum ada webhook.
 all_items: Semua Item
+csv: CSV
+no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
+no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
@@ -378,7 +387,7 @@ create_account: Buat Akun
 account_created_successfully: Akun Berhasil Dibuat
 auto_fill: Isi Otomatis
 errors:
-  COLLECTION_NOT_FOUND: 'Koleksi tidak tersedia'
+  COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
   FIELD_NOT_FOUND: Baris tidak ditemukan
   FORBIDDEN: Dilarang
   INVALID_CREDENTIALS: Nama pengguna atau kata sandi salah
@@ -390,6 +399,7 @@ errors:
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
   UNKNOWN: Kesalahan Tidak Terduga
+  INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
@@ -420,6 +430,7 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
 role: Peran
@@ -449,8 +460,7 @@ keep_editing: Tetap Mengedit
 add_new: Tambah Baru
 all: Semua
 batch_delete_confirm: >-
-  Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah
-  Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
+  Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
@@ -551,9 +561,6 @@ value: Nilai
 interfaces:
   presentation-links:
     primary: Primer
-  select-multiple-checkbox:
-    checkboxes: Kotak Centang
-    allow_other: Izinkan lainnya
   input-code:
     code: Kode
   collection:
@@ -569,25 +576,19 @@ interfaces:
   presentation-divider:
     divider: Pembagi/Pemecah
   select-dropdown:
-    allow_other: Izinkan lainnya
     choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
   files:
     files: Berkas
+  input-hash:
+    hash: Hash
   select-icon:
     icon: Ikon
   system-interface:
     interface: Antarmuka
-  system-interface-options:
-    interface-options: Opsi Antarmuka
-  list-m2m:
-    many-to-many: Banyak ke banyak
   select-dropdown-m2o:
-    many-to-one: Banyak ke Satu
     display_template: Tampilan Template
-  numeric:
-    numeric: Numerik
   boolean:
     label_default: Diaktifkan
   translations:

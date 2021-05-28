@@ -7,7 +7,7 @@ import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
-import mailer from '../mailer';
+import mailer from '../../mailer';
 import { SendMailOptions } from 'nodemailer';
 
 const liquidEngine = new Liquid({

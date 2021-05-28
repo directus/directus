@@ -56,7 +56,7 @@
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
+			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
 					<div class="label type-label">{{ t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -270,6 +270,12 @@ export default defineComponent({
 		const { onCreateOptions, onCreateValue } = useOnCreate();
 		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
 
+		const hasCreateUpdateTriggers = computed(() => {
+			return (
+				['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type || '') && props.type !== 'file'
+			);
+		});
+
 		return {
 			t,
 			fieldData: state.fieldData,
@@ -281,6 +287,7 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
+			hasCreateUpdateTriggers,
 		};
 
 		function useOnCreate() {
@@ -288,7 +295,7 @@ export default defineComponent({
 
 			const onCreateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
 							text: t('do_nothing'),
 							value: null,
@@ -306,6 +313,16 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-created'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-created'].includes(value));
+					}
+
+					return options;
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
@@ -356,7 +373,7 @@ export default defineComponent({
 
 			const onUpdateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
 							text: t('do_nothing'),
 							value: null,
@@ -370,6 +387,16 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-updated'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-updated'].includes(value));
+					}
+
+					return options;
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{

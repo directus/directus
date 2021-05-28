@@ -192,7 +192,7 @@ toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
 errors:
-  COLLECTION_NOT_FOUND: 'コレクションが存在しません'
+  COLLECTION_NOT_FOUND: "コレクションが存在しません"
   FORBIDDEN: アクセス禁止
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
   INVALID_OTP: ワンタイムパスワードが間違っています
@@ -202,6 +202,7 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   UNKNOWN: 予期しないエラーが発生しました
+  INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -294,8 +295,7 @@ add_new: 新規追加
 create_new: 新規作成
 all: すべて
 batch_delete_confirm: >-
-  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count}
-  個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
+  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
 collections: コレクション
 singleton: シングルトン
@@ -409,18 +409,13 @@ sort_direction: ソート順
 translation: 翻訳
 value: 値
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: チェックボックス
-  input-code:
-    description: コードスニペットでコードを共有
   system-collections:
     collections: コレクション
   select-color:
     color: 色
-    description: 色の入力または選択
-    preset_colors: プリセットカラー
+  datetime:
+    set_to_now: 現在時刻を設定
   select-dropdown:
-    description: ドロップダウンから値を選択
     choices_value_placeholder: 値を入力...
   file:
     file: ファイル
@@ -430,23 +425,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
-    description: ドロップダウンからアイコンを選択
-  presentation-notice:
-    notice: 補足
-    description: 入力に関する簡単な補足を表示できます
-    text: 補足の内容を入力してください
-  numeric:
-    numeric: 数値
-  select-radio:
-    description: 1つあるいは複数の値を選択できます
-  slug:
-    description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
   tags:
     tags: タグ
-  input:
-    text-input: テキスト入力
-    description: 単一行での文字列入力
-    mask: 入力値を非表示にします（暗号化する値など）
   translations:
     no_collection: コレクションがありません
   user:

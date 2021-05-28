@@ -74,6 +74,7 @@ export default defineComponent({
 	color: var(--v-list-color);
 	line-height: 22px;
 	border-radius: var(--border-radius);
+	pointer-events: none;
 }
 
 .large {

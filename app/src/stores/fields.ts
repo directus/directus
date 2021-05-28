@@ -61,7 +61,7 @@ export const useFieldsStore = defineStore({
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 
-			this.fields = [...fields.map(this.parseField), fakeFilesField];
+			this.fields = this.adjustSortForSystem([...fields.map(this.parseField), fakeFilesField]);
 
 			this.translateFields();
 		},
@@ -104,6 +104,24 @@ export const useFieldsStore = defineStore({
 					...field,
 					name,
 				};
+			});
+		},
+		/**
+		 * System collections have system fields. We'll have to adjust all custom fields to have their
+		 * sort values incremented by the amount of system fields, to ensure the fields are sorted
+		 * correctly after the system fields. (#5520)
+		 */
+		adjustSortForSystem(fields: FieldRaw[]) {
+			const systemFields = fields.filter((field) => field.meta?.system === true);
+
+			if (systemFields.length === 0) {
+				return systemFields;
+			}
+
+			return fields.map((field) => {
+				if (field.meta?.system === true) return field;
+				if (field.meta?.sort) field.meta.sort += systemFields.length;
+				return field;
 			});
 		},
 		async createField(collectionKey: string, newField: Field) {
@@ -197,6 +215,8 @@ export const useFieldsStore = defineStore({
 
 						return field;
 					});
+
+					this.translateFields();
 				}
 			} catch (err) {
 				// reset the changes if the api sync failed

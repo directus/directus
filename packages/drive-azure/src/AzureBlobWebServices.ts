@@ -101,8 +101,6 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
-		location = this._fullPath(location);
-
 		try {
 			const bufferResult = await this.getBuffer(location);
 			return {

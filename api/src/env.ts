@@ -48,10 +48,9 @@ const defaults: Record<string, any> = {
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
-	CACHE_TTL: '30m',
+	CACHE_TTL: '10m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
-	ASSETS_CACHE_TTL: '30m',
 
 	OAUTH_PROVIDERS: '',
 
@@ -63,6 +62,10 @@ const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+
+	ASSETS_CACHE_TTL: '30m',
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 4,
+	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

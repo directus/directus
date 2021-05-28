@@ -15,7 +15,7 @@
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled">
+		<v-list v-if="!disabled" :mandatory="false">
 			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
 		</v-list>
 	</v-menu>
