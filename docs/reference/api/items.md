@@ -197,6 +197,13 @@ Supports all [global query parameters](/reference/api/query).
 
 An array of partial [item objects](#the-item-object).
 
+::: tip Nested Data (Relations)
+
+Relational data needs to be correctly nested to add new items successfully. Check out the
+[relational data section](/reference/api/introduction/#relational-data) for more information
+
+:::
+
 ### Returns
 
 Returns the [item objects](#the-item-object) of the item that were created.
