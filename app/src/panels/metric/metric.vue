@@ -59,7 +59,6 @@ export default defineComponent({
 						},
 						filter: props.options.filter,
 						sort: sort,
-						limit: props.options.limit ?? 100,
 					},
 				});
 

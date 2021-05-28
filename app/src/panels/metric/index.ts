@@ -65,15 +65,15 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'limit',
+			field: 'decimals',
 			type: 'integer',
-			name: '$t:limit',
-			schema: {
-				default_value: 100,
-			},
+			name: '$t:decimals',
 			meta: {
 				interface: 'input',
 				width: 'half',
+			},
+			schema: {
+				default_value: 2,
 			},
 		},
 		{
@@ -137,18 +137,6 @@ export default definePanel({
 			meta: {
 				interface: 'input',
 				width: 'half',
-			},
-		},
-		{
-			field: 'decimals',
-			type: 'integer',
-			name: '$t:decimals',
-			meta: {
-				interface: 'input',
-				width: 'half',
-			},
-			schema: {
-				default_value: 2,
 			},
 		},
 	],
