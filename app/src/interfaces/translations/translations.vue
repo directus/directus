@@ -13,10 +13,10 @@
 			block
 		>
 			<v-icon class="translate" name="translate" left />
-			<render-template :template="_languageTemplate" :collection="languagesCollection" :item="languageItem" />
+			<render-template :template="internalLanguageTemplate" :collection="languagesCollection" :item="languageItem" />
 			<render-template
 				class="preview"
-				:template="_translationsTemplate"
+				:template="internalTranslationsTemplate"
 				:collection="translationsCollection"
 				:item="previewItems[i]"
 			/>
@@ -91,9 +91,9 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, template: _languageTemplate } = useLanguages();
+		const { languages, loading: languagesLoading, template: internalLanguageTemplate } = useLanguages();
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
-		const { previewItems, template: _translationsTemplate } = usePreview();
+		const { previewItems, template: internalTranslationsTemplate } = usePreview();
 
 		return {
 			relationsForField,
@@ -101,8 +101,8 @@ export default defineComponent({
 			translationsCollection,
 			languagesRelation,
 			languages,
-			_languageTemplate,
-			_translationsTemplate,
+			internalLanguageTemplate,
+			internalTranslationsTemplate,
 			languagesCollection,
 			languagesPrimaryKeyField,
 			languagesLoading,
