@@ -18,20 +18,6 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'field',
-			type: 'string',
-			name: '$t:panels.metric.field',
-			meta: {
-				interface: 'system-field',
-				options: {
-					collectionField: 'collection',
-					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
-					allowPrimaryKey: true,
-				},
-				width: 'half',
-			},
-		},
-		{
 			field: 'function',
 			type: 'string',
 			name: '$t:aggregate_function',
@@ -65,11 +51,62 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'field',
+			type: 'string',
+			name: '$t:panels.metric.field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
+					allowPrimaryKey: true,
+				},
+				width: 'half',
+			},
+		},
+		{
 			field: 'limit',
 			type: 'integer',
 			name: '$t:limit',
+			schema: {
+				default_value: 100,
+			},
 			meta: {
 				interface: 'input',
+				width: 'half',
+			},
+		},
+		{
+			field: 'sortField',
+			type: 'string',
+			name: '$t:sort_field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					allowPrimaryKey: true,
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'sortDirection',
+			type: 'string',
+			name: '$t:sort_direction',
+			meta: {
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: '$t:sort_asc',
+							value: 'asc',
+						},
+						{
+							text: '$t:sort_desc',
+							value: 'desc',
+						},
+					],
+				},
 				width: 'half',
 			},
 		},

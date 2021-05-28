@@ -44,6 +44,8 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
+				const sort =
+					props.options.sortField && `${props.options.sortDirection === 'desc' ? '-' : ''}${props.options.sortField}`;
 				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
 						aggregate: {
@@ -52,6 +54,8 @@ export default defineComponent({
 							},
 						},
 						filter: props.options.filter,
+						sort: sort,
+						limit: props.options.limit ?? 100,
 					},
 				});
 

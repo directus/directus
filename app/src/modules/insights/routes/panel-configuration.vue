@@ -40,7 +40,7 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('name') }}</p>
-					<v-input v-model="edits.name" :disabled="edits.show_header !== true" />
+					<v-input :nullable="false" v-model="edits.name" :disabled="edits.show_header !== true" />
 				</div>
 
 				<div class="field half-left">
