@@ -48,7 +48,7 @@ const defaults: Record<string, any> = {
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
-	CACHE_TTL: '30m',
+	CACHE_TTL: '10m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
 

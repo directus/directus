@@ -505,6 +505,8 @@ value_unique: La valeur doit être unique
 all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
+language_display_template: Modèle d'affichage de la langue
+translations_display_template: Modèle d'affichage des traductions
 n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par page
 all_files: Tous les fichiers
@@ -786,6 +788,14 @@ save_current_datetime: Enregistrer la date/heure actuelle
 block: Bloc
 inline: En ligne
 comment: Commentaire
+relational_triggers: Déclencheurs relationnels
+referential_action_field_label_m2o: Lors de la suppression d'un(e) {collection} ...
+referential_action_field_label_o2m: Lors de la dé-sélection d'un(e) {collection} ...
+referential_action_no_action: Empêcher la suppression
+referential_action_cascade: Supprimer l'objet {collection} (cascade)
+referential_action_set_null: Vider le champ {field}
+referential_action_set_default: Remettre {field} à sa valeur par défaut
+choose_action: Choisir une action
 continue: Continuer
 continue_as: >-
   <b>{name}</b> est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
@@ -847,6 +857,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
