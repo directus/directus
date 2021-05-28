@@ -30,7 +30,7 @@ export default defineModule({
 			],
 		},
 	],
-	order: 30,
+	order: 20,
 	preRegisterCheck(user, permissions) {
 		const admin = user.role.admin_access;
 

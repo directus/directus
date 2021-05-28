@@ -22,7 +22,7 @@ export default defineModule(() => {
 		name: '$t:documentation',
 		icon: 'info',
 		routes,
-		order: 20,
+		order: 30,
 	};
 
 	function parseRoutes(directory: Directory): RouteConfig[] {
