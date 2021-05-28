@@ -77,7 +77,7 @@ export default defineComponent({
 		const { panels } = getPanels();
 
 		const edits = reactive<Partial<Panel>>({
-			show_header: props.panel?.show_header || true,
+			show_header: props.panel?.show_header ?? true,
 			type: props.panel?.type || undefined,
 			name: props.panel?.name,
 			note: props.panel?.note,

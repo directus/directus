@@ -8,6 +8,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import api from '@/api';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -26,7 +27,14 @@ export default defineComponent({
 
 		fetchData();
 
-		watch(() => props.options, fetchData, { deep: true });
+		watch(
+			() => props.options,
+			(newOptions, oldOptions) => {
+				if (isEqual(newOptions, oldOptions)) return;
+				fetchData();
+			},
+			{ deep: true }
+		);
 
 		return { metric, loading };
 
@@ -71,6 +79,6 @@ export default defineComponent({
 }
 
 .metric.has-header {
-	height: calc(100% - 48px);
+	height: calc(100% - 24px);
 }
 </style>
