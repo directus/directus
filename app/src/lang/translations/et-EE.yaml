@@ -43,7 +43,7 @@ logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
 public: Avalik
-public_description: Kontrollib, mis API andmed on saadaval audentimata.
+public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
 node_version: Node versioon
@@ -632,14 +632,30 @@ unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
 page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
+page_help_collections_collection: >-
+  **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
+page_help_collections_item: >-
+  **Kirje detailid** - Selle kirje vaatamise ja muutmise vorm. Külgribal on ühtlasi kirje muudatuste ajalugu ning lisatud kommentaarid.
+page_help_activity_collection: >-
+  **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
+page_help_settings_presets_collection: >-
+  **Näita eelseadistusi** - Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated
+page_help_settings_presets_item: >-
+  **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
+activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
 all: Kõik
+none: Puudub
+no_layout_collection_selected_yet: Vaadet/andmekogu pole valitud
 batch_delete_confirm: >-
   Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
 cancel: Loobu
 collection: Kogud
 collections: Kogud
+singleton: Üksik
+singleton_label: Käsitle üksiku objektina
+system_fields_locked: Süsteemsed välja on lukus ja neid ei saa muuta
 fields:
   directus_activity:
     item: Kirje peamine võti
@@ -656,12 +672,20 @@ fields:
     note: Märkus
     display_template: Vaate mall
     hidden: Peidetud
+    singleton: Üksik
+    translations: Andmekogu nimetuste tõlked
+    archive_app_filter: Arhiveeri rakenduse filter
+    archive_value: Arhiveeri väärtus
+    unarchive_value: Aktiveeri väärtus
     sort_field: Sorteerimisväli
+    accountability: Tegevuste ja muudatuste jälgimine
   directus_files:
+    $thumbnail: Pisipilt
     title: Pealkiri
     description: Kirjeldus
     tags: Sildid
     location: Asukoht
+    storage: Salvestusruum
     filename_disk: Failinimi (kettal)
     filename_download: Faili nimi (alla laadimisel)
     metadata: Metaandmed
@@ -707,21 +731,44 @@ fields:
     public_note: Avalik märkus
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
+    storage_asset_presets: Salvestusruumi eelseadistused
+    storage_asset_transform: Salvestusruumi kirjete töötlus
     custom_css: Kohandatud CSS
   directus_fields:
+    collection: Andmekogu nimetus
+    icon: Andmekogu pilt
     note: Märkus
     hidden: Peidetud
+    singleton: Üksik
     translation: Väljade tõlked
     display_template: Mall
   directus_roles:
     name: Rolli nimi
+    icon: Rolli pilt
     description: Kirjeldus
+    app_access: Rakenduse ligipääs
+    admin_access: Admini ligipääs
+    ip_access: IP ligipääs
+    enforce_tfa: 2FA on nõutav
+    users: Kasutajad selles rollis
+    module_list: Moodulite näitamine
+    collection_list: Andmekogude näitamine
 field_options:
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
+    only_track_activity: Jälgi ainult aktiivsust
+    do_not_track_anything: Ära jälgi midagi
+no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
+do_nothing: Ära tee midagi
+generate_and_save_uuid: Genereeri ja salvesta UUID
+save_current_user_id: Salvesta praeguse kasutaja ID
+save_current_user_role: Salvesta praeguse kasutaja roll
+save_current_datetime: Salvesta hetke kuupäev/kellaaeg
 block: Blokeeri
 inline: Tekstisisene
 comment: Kommentaar
+referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
+referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
 continue: Continue
 default: Vaikimisi
 delete: Kustuta
@@ -778,10 +825,20 @@ interfaces:
     collections: Kogud
   select-color:
     color: Värv
+    placeholder: Vali värv...
+    preset_colors: Eelseadistuse värvid
+    preset_colors_add_label: Lisa uus värv...
+    name_placeholder: Sisesta värvi nimi...
   datetime:
     datetime: Kuupäev-kellaaeg
+    description: Sisesta kuupäevad ja kellaajad
+    include_seconds: Lisa sekundid
+    set_to_now: Seadista praegusele hetkele
+    use_24: Kasuta 24h formaati
   system-display-template:
     display-template: Vaate mall
+    description: Kombineeri staatilist teksti ja dünaamiliste väljadega
+    collection_field: Andmekogu väli
     collection_field_not_setup: Andmekogu väli on valesti seadistatud
     select_a_collection: Vali andmekogu
   presentation-divider:
