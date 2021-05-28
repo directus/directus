@@ -192,9 +192,7 @@ export default defineComponent({
 			}
 			map.addSource('__directus', { ...newSource, data: props.data });
 			map.once('sourcedata', () => {
-				for (const layer of props.layers) {
-					map.addLayer(layer);
-				}
+				setTimeout(() => props.layers.forEach((layer) => map.addLayer(layer)));
 			});
 		}
 
