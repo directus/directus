@@ -12,7 +12,7 @@ export default defineModule(() => {
 		},
 		...parseRoutes(files),
 		{
-			path: '/:path(.*)*',
+			path: '/:_(.+)+',
 			component: NotFound,
 		},
 	];

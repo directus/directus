@@ -52,7 +52,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 	},
 	{
 		name: 'private-404',
-		path: '/:path(.*)*',
+		path: '/:_(.+)+',
 		component: PrivateNotFoundRoute,
 	},
 ];
