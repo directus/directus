@@ -58,6 +58,8 @@ archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
 reset_system_permissions_to: 'Lähtesta süsteemi load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
+app_access_minimum: Rakenduse ligipääsu miinimum
 recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
@@ -86,6 +88,7 @@ no_access: Ei ole ligipääsu
 use_custom: Kasuta kohandatud
 nullable: Nullitav
 allow_null_value: Luba NULL väärtus
+enter_value_to_replace_nulls: Palun sisesta uus väärtus, et asendada kõik senised NULL väärtused sellel väljal.
 field_standard: Standard
 field_presentation: Kujundus ja aliased
 field_file: Üksik fail
@@ -319,6 +322,7 @@ save_as_copy: Salvesta koopiana
 add_existing: Lisa olemasolev
 creating_items: Kirjete loomine
 enable_create_button: Luba lisamise nupp
+selecting_items: Kirjete valimine
 enable_select_button: Luba valimise nupp
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
