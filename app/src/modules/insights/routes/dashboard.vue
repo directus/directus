@@ -257,6 +257,11 @@ export default defineComponent({
 		async function saveChanges() {
 			if (!currentDashboard.value) return;
 
+			if (stagedPanels.value.length === 0) {
+				editMode.value = false;
+				return;
+			}
+
 			saving.value = true;
 
 			const currentIDs = currentDashboard.value.panels.map((panel) => panel.id);
