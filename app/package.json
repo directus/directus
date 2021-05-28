@@ -85,7 +85,7 @@
 		"sass-loader": "^9.0.2",
 		"stylelint": "^13.13.1",
 		"tiny-async-pool": "^1.2.0",
-		"tinymce": "^5.5.1",
+		"tinymce": "^5.8.1",
 		"vue": "^2.6.12",
 		"vue-cli-plugin-yaml": "^1.0.2",
 		"vue-i18n": "^8.24.4",
