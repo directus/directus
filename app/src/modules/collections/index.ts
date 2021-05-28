@@ -6,38 +6,38 @@ import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import Overview from './routes/overview.vue';
 
-const checkForSystem: NavigationGuard = (to, from, next) => {
-	if (!to.params?.collection) return next();
+const checkForSystem: NavigationGuard = (to, from) => {
+	if (!to.params?.collection) return;
 
 	if (to.params.collection === 'directus_users') {
 		if (to.params.primaryKey) {
-			return next(`/users/${to.params.primaryKey}`);
+			return `/users/${to.params.primaryKey}`;
 		} else {
-			return next('/users');
+			return '/users';
 		}
 	}
 
 	if (to.params.collection === 'directus_files') {
 		if (to.params.primaryKey) {
-			return next(`/files/${to.params.primaryKey}`);
+			return `/files/${to.params.primaryKey}`;
 		} else {
-			return next('/files');
+			return '/files';
 		}
 	}
 
 	if (to.params.collection === 'directus_activity') {
 		if (to.params.primaryKey) {
-			return next(`/activity/${to.params.primaryKey}`);
+			return `/activity/${to.params.primaryKey}`;
 		} else {
-			return next('/activity');
+			return '/activity';
 		}
 	}
 
 	if (to.params.collection === 'directus_webhooks') {
 		if (to.params.primaryKey) {
-			return next(`/settings/webhooks/${to.params.primaryKey}`);
+			return `/settings/webhooks/${to.params.primaryKey}`;
 		} else {
-			return next('/settings/webhooks');
+			return '/settings/webhooks';
 		}
 	}
 
@@ -47,10 +47,8 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		'bookmark' in to.query === false &&
 		to.params.collection === from.params.collection
 	) {
-		return next(addQueryToPath(to.fullPath, { bookmark: from.query.bookmark }));
+		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}
-
-	return next();
 };
 
 export default defineModule({

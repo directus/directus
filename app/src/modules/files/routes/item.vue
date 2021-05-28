@@ -200,17 +200,15 @@ import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'files-item',
-	beforeRouteLeave(to, from, next) {
+	beforeRouteLeave(to) {
 		const self = this as any;
 		const hasEdits = Object.keys(self.edits).length > 0;
 
 		if (hasEdits) {
 			self.confirmLeave = true;
 			self.leaveTo = to.fullPath;
-			return next(false);
+			return false;
 		}
-
-		return next();
 	},
 	components: {
 		FilesNavigation,

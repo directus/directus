@@ -200,17 +200,15 @@ import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'users-item',
-	beforeRouteLeave(to, from, next) {
+	beforeRouteLeave(to) {
 		const self = this as any;
 		const hasEdits = Object.keys(self.edits).length > 0;
 
 		if (hasEdits) {
 			self.confirmLeave = true;
 			self.leaveTo = to.fullPath;
-			return next(false);
+			return false;
 		}
-
-		return next();
 	},
 	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
@@ -600,6 +598,7 @@ export default defineComponent({
 				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}
+
 		.title,
 		.email,
 		.location {

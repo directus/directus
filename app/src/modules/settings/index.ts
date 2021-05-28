@@ -38,10 +38,9 @@ export default defineModule({
 			name: 'settings-collections',
 			path: '/data-model',
 			component: Collections,
-			beforeEnter(to, from, next) {
+			beforeEnter() {
 				const collectionsStore = useCollectionsStore();
 				collectionsStore.hydrate();
-				next();
 			},
 			children: [
 				{
@@ -57,7 +56,7 @@ export default defineModule({
 			name: 'settings-fields',
 			path: '/data-model/:collection',
 			component: Fields,
-			async beforeEnter(to, from, next) {
+			async beforeEnter(to) {
 				const { info } = useCollection(ref(to.params.collection));
 				const fieldsStore = useFieldsStore();
 
@@ -66,8 +65,6 @@ export default defineModule({
 				}
 
 				fieldsStore.hydrate();
-
-				next();
 			},
 			props: (route) => ({
 				collection: route.params.collection,

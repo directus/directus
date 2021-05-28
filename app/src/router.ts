@@ -62,7 +62,7 @@ export const router = createRouter({
 	routes: defaultRoutes,
 });
 
-export const onBeforeEach: NavigationGuard = async (to, from, next) => {
+export const onBeforeEach: NavigationGuard = async (to, from) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
@@ -84,13 +84,11 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		appStore.hydrating = false;
 		if (appStore.authenticated === true && appStore.hydrating === false) {
 			await hydrate();
-			return next(to.fullPath);
+			return to.fullPath;
 		} else {
-			return next('/login');
+			return '/login';
 		}
 	}
-
-	return next();
 };
 
 let trackTimeout: number | null = null;

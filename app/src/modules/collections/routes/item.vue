@@ -343,14 +343,12 @@ export default defineComponent({
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
-		const navigationGuard: NavigationGuard = (to, from, next) => {
+		const navigationGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
-				return next(false);
+				return false;
 			}
-
-			return next();
 		};
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
@@ -518,11 +516,11 @@ export default defineComponent({
 			};
 		}
 	},
-	beforeRouteLeave(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
+	beforeRouteLeave(to, from) {
+		return (this as any).navigationGuard(to, from);
 	},
-	beforeRouteUpdate(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
+	beforeRouteUpdate(to, from) {
+		return (this as any).navigationGuard(to, from);
 	},
 });
 </script>
