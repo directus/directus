@@ -657,6 +657,9 @@ page_help_settings_presets_item: >-
   **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
 page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
 page_help_settings_webhooks_item: '**Veebikonksu detailid** - Vorm veebikonksude lisamiseks ja muutmiseks.'
+page_help_users_collection: '**Kasutajad** - Näitab kõiki kasutajaid.'
+page_help_users_item: >-
+  **Kasutaja detailid** - Näitab konto infot.
 activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
@@ -783,6 +786,7 @@ save_current_datetime: Salvesta hetke kuupäev/kellaaeg
 block: Blokeeri
 inline: Tekstisisene
 comment: Kommentaar
+relational_triggers: Suhtelised lülitid
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
 referential_action_no_action: Enneta kustutamist
@@ -851,6 +855,7 @@ template: Mall
 translation: Tõlge
 value: Väärtus
 view_project: Näita projekti
+weeks: { }
 report_error: Raporteeri viga
 interfaces:
   presentation-links:
