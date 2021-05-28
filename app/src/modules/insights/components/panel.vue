@@ -21,14 +21,14 @@
 		</div>
 
 		<div class="edit-actions" v-if="editMode">
+			<v-icon class="duplicate-icon" name="content_copy" v-tooltip="$t('duplicate')" @click.stop="$emit('duplicate')" />
 			<v-icon
-				small
 				class="edit-icon"
 				name="edit"
 				v-tooltip="$t('edit')"
-				@click="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
+				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
-			<v-icon small class="delete-icon" name="clear" v-tooltip="$t('delete')" @click="$emit('delete')" />
+			<v-icon class="delete-icon" name="clear" v-tooltip="$t('delete')" @click.stop="$emit('delete')" />
 		</div>
 
 		<div class="resize-handlers" v-if="editMode">
@@ -288,6 +288,7 @@ export default defineComponent({
 	flex-grow: 1;
 }
 
+.duplicate-icon,
 .edit-icon,
 .delete-icon,
 .note {

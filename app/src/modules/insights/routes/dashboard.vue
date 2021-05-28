@@ -52,6 +52,7 @@
 				:edit-mode="editMode"
 				@update="stagePanelEdits($event, panel.id)"
 				@delete="confirmDeletePanel = panel.id"
+				@duplicate="duplicatePanel(panel)"
 			/>
 		</div>
 
@@ -87,9 +88,8 @@ import { useInsightsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@/types';
 import { nanoid } from 'nanoid';
-import { merge } from 'lodash';
+import { cloneDeep, merge, omit } from 'lodash';
 import router from '@/router';
-import { omit } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import InsightsPanel from '../components/panel.vue';
@@ -234,6 +234,7 @@ export default defineComponent({
 			deletePanel,
 			confirmDeletePanel,
 			cancelChanges,
+			duplicatePanel,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
@@ -307,8 +308,11 @@ export default defineComponent({
 			deletingPanel.value = true;
 
 			try {
-				await api.delete(`/panels/${confirmDeletePanel.value}`);
-				await insightsStore.hydrate();
+				if (confirmDeletePanel.value.startsWith('_') === false) {
+					await api.delete(`/panels/${confirmDeletePanel.value}`);
+					await insightsStore.hydrate();
+				}
+				stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== confirmDeletePanel.value);
 				confirmDeletePanel.value = null;
 			} catch (err) {
 				unexpectedError(err);
@@ -320,6 +324,13 @@ export default defineComponent({
 		function cancelChanges() {
 			stagedPanels.value = [];
 			editMode.value = false;
+		}
+
+		function duplicatePanel(panel: Panel) {
+			const newPanel = omit(merge({}, panel), 'id');
+			newPanel.position_x = newPanel.position_x + 2;
+			newPanel.position_y = newPanel.position_y + 2;
+			stagePanelEdits(newPanel, '+');
 		}
 	},
 });
