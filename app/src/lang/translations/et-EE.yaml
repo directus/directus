@@ -638,10 +638,25 @@ page_help_collections_item: >-
   **Kirje detailid** - Selle kirje vaatamise ja muutmise vorm. Külgribal on ühtlasi kirje muudatuste ajalugu ning lisatud kommentaarid.
 page_help_activity_collection: >-
   **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
+page_help_docs_global: >-
+  **Dokumentatsioon**  - Selle projekti ülesehitust kirjeldav teave
+page_help_files_collection: >-
+  **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
+page_help_files_item: >-
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
+page_help_settings_datamodel_collections: >-
+  **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
+page_help_settings_datamodel_fields: >-
+  **Andmekogu** - Ükskiku andmekogu ja tema väljade muutmise vorm
+page_help_settings_roles_collection: '**Vaata rolle** - Näitab adminne, avalikku jm kasutajarolle.'
+page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
 page_help_settings_presets_collection: >-
   **Näita eelseadistusi** - Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated
 page_help_settings_presets_item: >-
   **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
+page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
+page_help_settings_webhooks_item: '**Veebikonksu detailid** - Vorm veebikonksude lisamiseks ja muutmiseks.'
 activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
@@ -868,6 +883,7 @@ interfaces:
     include_system_collections: Lisa süsteemsed andmekogud
   select-color:
     color: Värv
+    description: Sisesta või vali värv
     placeholder: Vali värv...
     preset_colors: Eelseadistuse värvid
     preset_colors_add_label: Lisa uus värv...
@@ -948,22 +964,77 @@ interfaces:
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
+    text: Sisesta teate sisu...
+  list-o2m:
+    one-to-many: Üks-mitmele
+    description: Vali mitu seotud kirjet
+    no_collection: Andmekogu ei leitud
+  select-radio:
+    radio-buttons: Raadionupud
+    description: Vali üks mitmest valikust
+  list:
+    repeater: Kordaja
+    description: Loo mitu kirjet sama struktuuriga
+    edit_fields: Muuda välju
+    add_label: '"Lisa uus" nimetus'
+    field_name_placeholder: Sisesta välja nimi...
+    field_note_placeholder: Sisesta välja märkus...
   slider:
     slider: Liugur
+    description: Vali number slaiderilt
+    always_show_value: Näita alati väärtust
   tags:
     tags: Sildid
+    description: Vali või sisesta märksõnad
+    whitespace: Tühikud
+    hyphen: Asenda sidekriipsuga
+    underscore: Asenda alakriipsuga
+    remove: Eemalda tühikud
+    capitalization: Esitähed
+    uppercase: Muuda suurtähtedeks
+    lowercase: Muuda väiketähtedeks
+    auto_formatter: Kasuta pealkirja stiili
+    alphabetize: Järjesta tähestikuliselt
+    alphabetize_label: Sorteeri tähestikuliselt ümber
+    add_tags: Lisa märksõnu...
   input:
+    input: Sisend
+    description: Sisesta väärtus käsitsi
+    trim: Kärbi
+    trim_label: Lõika maha tühi algus ja lõpp
     mask: Maskeeritud
+    mask_label: Peida algne väärtus
+    clear: Tühjendatud väärtus
+    clear_label: Salvesta tühja stringina
+    minimum_value: Minimaalne väärtus
+    maximum_value: Maksimaalne väärtus
+    step_interval: Sammu intervall
+    slug: Muuda URL-sõbralikuks
+    slug_label: Muuda väärtus URL-sõbralikuks (slug)
+  input-multiline:
+    textarea: Tekstiala
+    description: Sisesta mitmerealine tavatekst
   boolean:
     toggle: Lülita
+    description: Lülita sisse ja välja
+    label_placeholder: Sisesta silt...
     label_default: lubatud
   translations:
     display_template: Vaate mall
+    no_collection: Andmekogusid pole
+  list-o2m-tree-view:
+    description: Puuvaade mitmetasandilistele üks-mitmele kirjetele
+    recursive_only: Puuvaate kasutajaliides töötab ainult rekursiivsete seoste korral.
   user:
     user: Kasutaja
+    description: Vali olemasolev Directuse kasutaja
+    select_mode: Vali režiim
     modes:
+      auto: Automaatne
       dropdown: Rippmenüü
+      modal: Hüpikaken
   input-rich-text-html:
+    wysiwyg: WYSIWYG
     description: Tekstiredaktor HTML sisu loomiseks
     toolbar: Tööriistariba
     custom_formats: Kohandatud vormingud
@@ -1041,17 +1112,33 @@ displays:
     choices_text_placeholder: Sisesta tekst...
   mime-type:
     mime-type: MIME Tüüp
+    description: Näita faili MIME-tüüpi
+    extension_only: Ainult laiend
+    extension_only_label: Näita ainult faili laiendit
   rating:
     rating: Hinnang
+    description: Näita tähekestena
+    simple: Lihtne
+    simple_label: Näita tähekesi lihtsas formaadis
+  raw:
+    raw: Algne väärtus
+  related-values:
+    related-values: Seotud väärtused
+    description: Näita seotud väärtusi
   user:
     user: Kasutaja
+    description: Näita Directuse kasutajat
     avatar: Avatar
     name: Nimi
     both: Mõlemad
+    circle_label: Näita kasutajat ringikesena
 layouts:
   cards:
     cards: Kaardid
     image_source: Pildi allikas
+    image_fit: Pildi mahutamine
+    crop: Kärpimine
+    contain: Sisaldab
     title: Pealkiri
     subtitle: Alampealkiri
   tabular:
@@ -1061,3 +1148,7 @@ layouts:
     comfortable: Mugav
     compact: Kompaktne
     cozy: Kodune
+  calendar:
+    calendar: Kalender
+    start_date_field: Alguse kuupäev
+    end_date_field: Lõpu kuupäev
