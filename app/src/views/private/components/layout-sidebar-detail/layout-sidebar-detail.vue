@@ -10,7 +10,7 @@
 				</v-select>
 			</div>
 
-			<component class="options" :is="`layout-options-${layout}`" />
+			<component :is="`layout-options-${layout}`" />
 		</div>
 	</sidebar-detail>
 </template>
