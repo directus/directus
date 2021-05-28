@@ -317,64 +317,64 @@ export default defineComponent({
 }
 
 .resize-handlers .top {
-	top: -1px;
+	top: -3px;
 	width: 100%;
-	height: 8px;
+	height: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
 	top: 0;
-	right: -1px;
-	width: 8px;
+	right: -3px;
+	width: 10px;
 	height: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .bottom {
-	bottom: -1px;
+	bottom: -3px;
 	width: 100%;
-	height: 8px;
+	height: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .left {
 	top: 0;
-	left: -1px;
-	width: 8px;
+	left: -3px;
+	width: 10px;
 	height: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .top-left {
-	top: -1px;
-	left: -1px;
-	width: 12px;
-	height: 12px;
+	top: -3px;
+	left: -3px;
+	width: 14px;
+	height: 14px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .top-right {
-	top: -1px;
-	right: -1px;
-	width: 12px;
-	height: 12px;
+	top: -3px;
+	right: -3px;
+	width: 14px;
+	height: 14px;
 	cursor: nesw-resize;
 }
 
 .resize-handlers .bottom-right {
-	right: -1px;
-	bottom: -1px;
-	width: 12px;
-	height: 12px;
+	right: -3px;
+	bottom: -3px;
+	width: 14px;
+	height: 14px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .bottom-left {
-	bottom: -1px;
-	left: -1px;
-	width: 12px;
-	height: 12px;
+	bottom: -3px;
+	left: -3px;
+	width: 14px;
+	height: 14px;
 	cursor: nesw-resize;
 }
 
