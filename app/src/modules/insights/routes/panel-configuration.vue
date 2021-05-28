@@ -84,12 +84,12 @@ export default defineComponent({
 			type: props.panel?.type || undefined,
 			name: props.panel?.name,
 			note: props.panel?.note,
-			icon: 'insert_chart',
+			icon: props.panel?.icon ?? 'insert_chart',
 			color: props.panel?.color,
-			width: undefined,
-			height: undefined,
-			position_x: 1,
-			position_y: 1,
+			width: props.panel?.width ?? undefined,
+			height: props.panel?.height ?? undefined,
+			position_x: props.panel?.position_x ?? 1,
+			position_y: props.panel?.position_y ?? 1,
 			options: props.panel?.options ?? {},
 		});
 

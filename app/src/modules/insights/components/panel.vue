@@ -15,7 +15,7 @@
 	>
 		<div class="header" v-if="panel.show_header">
 			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
-			<v-text-overflow class="name" :text="panel.name" />
+			<v-text-overflow class="name" :text="panel.name || ''" />
 			<div class="spacer" />
 			<v-icon class="note" v-if="panel.note" name="info" v-tooltip="panel.note" />
 		</div>

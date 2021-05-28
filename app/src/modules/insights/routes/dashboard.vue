@@ -13,11 +13,22 @@
 
 		<template #actions>
 			<template v-if="editMode">
-				<v-button rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button
+					class="clear-changes"
+					v-tooltip.bottom="$t('clear_changes')"
+					rounded
+					icon
+					outlined
+					@click="cancelChanges"
+				>
+					<v-icon name="clear" />
+				</v-button>
+
+				<v-button rounded icon outlined v-tooltip.bottom="$t('add_new')" :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
 				</v-button>
 
-				<v-button rounded icon @click="saveChanges" :loading="saving">
+				<v-button rounded icon v-tooltip.bottom="$t('save')" @click="saveChanges" :loading="saving">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -222,6 +233,7 @@ export default defineComponent({
 			deletingPanel,
 			deletePanel,
 			confirmDeletePanel,
+			cancelChanges,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
@@ -304,6 +316,11 @@ export default defineComponent({
 				deletingPanel.value = false;
 			}
 		}
+
+		function cancelChanges() {
+			stagedPanels.value = [];
+			editMode.value = false;
+		}
 	},
 });
 </script>
@@ -350,5 +367,10 @@ export default defineComponent({
 	--v-button-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
+}
+
+.clear-changes {
+	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color-hover: var(--foreground);
 }
 </style>
