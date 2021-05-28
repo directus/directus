@@ -366,6 +366,7 @@ active: Active
 users: Users
 activity: Activity
 webhooks: Webhooks
+decimals: Decimals
 field_width: Field Width
 add_filter: Add Filter
 upper_limit: Upper limit...

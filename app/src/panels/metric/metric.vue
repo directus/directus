@@ -1,7 +1,11 @@
 <template>
 	<div class="metric type-title" :class="{ 'has-header': show_header }">
 		<v-progress-circular indeterminate v-if="loading" />
-		<template v-else>{{ metric }}</template>
+		<template v-else>
+			<span class="prefix">{{ options.prefix }}</span>
+			<span class="value">{{ metric }}</span>
+			<span class="suffix">{{ options.suffix }}</span>
+		</template>
 	</div>
 </template>
 
@@ -59,7 +63,7 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = Number(res.data.data[0].result).toFixed(props.options.decimals || 2);
+				metric.value = Number(res.data.data[0].result).toFixed(props.options.decimals ?? 2);
 			} catch (err) {
 				// oh no
 			} finally {
@@ -84,5 +88,12 @@ export default defineComponent({
 
 .metric.has-header {
 	height: calc(100% - 24px);
+}
+
+.suffix {
+	position: relative;
+	top: 7px;
+	font-weight: 700;
+	font-size: 24px;
 }
 </style>

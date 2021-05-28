@@ -90,6 +90,7 @@ export default defineComponent({
 			height: undefined,
 			position_x: 1,
 			position_y: 1,
+			options: props.panel?.options ?? {},
 		});
 
 		const selectItems = computed<FancySelectItem[]>(() => {

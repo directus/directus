@@ -121,6 +121,36 @@ export default definePanel({
 				},
 			},
 		},
+		{
+			field: 'prefix',
+			type: 'string',
+			name: '$t:prefix',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+		},
+		{
+			field: 'suffix',
+			type: 'string',
+			name: '$t:suffix',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+		},
+		{
+			field: 'decimals',
+			type: 'integer',
+			name: '$t:decimals',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+			schema: {
+				default_value: 2,
+			},
+		},
 	],
 	minWidth: 16,
 	minHeight: 6,
