@@ -40,6 +40,7 @@
 				:panel="panel"
 				:edit-mode="editMode"
 				@update="stagePanelEdits($event, panel.id)"
+				@delete="confirmDeletePanel = panel.id"
 			/>
 		</div>
 
@@ -50,6 +51,21 @@
 			@save="stageConfiguration"
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>
+
+		<v-dialog :active="!!confirmDeletePanel" @esc="confirmDeletePanel = null">
+			<v-card>
+				<v-card-title>{{ $t('panel_delete_confirm') }}</v-card-title>
+
+				<v-card-actions>
+					<v-button @click="confirmDeletePanel = null" secondary>
+						{{ $t('cancel') }}
+					</v-button>
+					<v-button class="action-delete" @click="deletePanel" :loading="deletingPanel">
+						{{ $t('delete') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -82,6 +98,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const editMode = ref(false);
+		const confirmDeletePanel = ref<string | null>(null);
+		const deletingPanel = ref(false);
 		const saving = ref(false);
 		const insightsStore = useInsightsStore();
 
@@ -156,6 +174,9 @@ export default defineComponent({
 			saveChanges,
 			stageConfiguration,
 			workspaceSize,
+			deletingPanel,
+			deletePanel,
+			confirmDeletePanel,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
@@ -217,6 +238,22 @@ export default defineComponent({
 				saving.value = false;
 			}
 		}
+
+		async function deletePanel() {
+			if (!currentDashboard.value || !confirmDeletePanel.value) return;
+
+			deletingPanel.value = true;
+
+			try {
+				await api.delete(`/panels/${confirmDeletePanel.value}`);
+				await insightsStore.hydrate();
+				confirmDeletePanel.value = null;
+			} catch (err) {
+				unexpectedError(err);
+			} finally {
+				deletingPanel.value = false;
+			}
+		}
 	},
 });
 </script>
@@ -256,5 +293,12 @@ export default defineComponent({
 
 .workspace.editing::before {
 	opacity: 1;
+}
+
+.action-delete {
+	--v-button-background-color: var(--danger-10);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
 }
 </style>

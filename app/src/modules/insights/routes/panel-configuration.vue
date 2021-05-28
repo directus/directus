@@ -27,12 +27,15 @@
 				<component v-model="edits.options" :collection="collection" :is="`panel-options-${selectedPanel.id}`" v-else />
 			</template>
 
-			<v-divider />
+			<v-divider :inline-title="false" large>
+				<template #icon><v-icon name="info" /></template>
+				<template #default>{{ $t('panel_header') }}</template>
+			</v-divider>
 
 			<div class="form-grid">
 				<div class="field half-left">
-					<p class="type-label">{{ $t('show_header') }}</p>
-					<v-checkbox block v-model="edits.show_header" :label="$t('enabled')" />
+					<p class="type-label">{{ $t('visible') }}</p>
+					<v-checkbox block v-model="edits.show_header" :label="$t('show_header')" />
 				</div>
 
 				<div class="field half-right">

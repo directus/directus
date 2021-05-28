@@ -21,6 +21,7 @@
 				v-tooltip="$t('edit')"
 				@click="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
+			<v-icon small class="delete-icon" name="clear" v-tooltip="$t('delete')" @click="$emit('delete')" />
 		</div>
 
 		<div class="resize-handlers" v-if="editMode">
@@ -92,7 +93,14 @@ export default defineComponent({
 
 		const { onPointerDown, onPointerUp, onPointerMove, dragging } = useDragDrop();
 
-		return { positioning, iconColor, onPointerDown, onPointerUp, onPointerMove, dragging };
+		return {
+			positioning,
+			iconColor,
+			onPointerDown,
+			onPointerUp,
+			onPointerMove,
+			dragging,
+		};
 
 		function useDragDrop() {
 			const dragging = ref(false);
@@ -210,9 +218,9 @@ export default defineComponent({
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
 	background-color: var(--background-page);
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--border-subdued);
 	border-radius: var(--border-radius-outline);
-	box-shadow: 0 0 0 1px var(--border-normal);
+	box-shadow: 0 0 0 1px var(--border-subdued);
 }
 
 .panel:hover {
@@ -220,6 +228,8 @@ export default defineComponent({
 }
 
 .panel.editing {
+	border-color: var(--border-normal);
+	box-shadow: 0 0 0 1px var(--border-normal);
 	cursor: move;
 }
 
@@ -273,9 +283,14 @@ export default defineComponent({
 }
 
 .edit-icon,
+.delete-icon,
 .note {
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--foreground-normal);
+}
+
+.delete-icon {
+	--v-icon-color-hover: var(--danger);
 }
 
 .edit-actions {
@@ -283,6 +298,7 @@ export default defineComponent({
 	top: 0;
 	right: 0;
 	display: flex;
+	gap: 4px;
 	align-items: center;
 	padding: 12px;
 	background-color: var(--background-page);
