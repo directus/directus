@@ -2,7 +2,14 @@
 	<div
 		class="panel"
 		:style="positioning"
-		:class="{ editing: editMode, dragging }"
+		:class="{
+			editing: editMode,
+			dragging,
+			'br-tl': dragging || panel.borderRadius[0],
+			'br-tr': dragging || panel.borderRadius[1],
+			'br-br': dragging || panel.borderRadius[2],
+			'br-bl': dragging || panel.borderRadius[3],
+		}"
 		data-move
 		@pointerdown="onPointerDown('move', $event)"
 	>
@@ -219,7 +226,6 @@ export default defineComponent({
 	grid-column: var(--pos-x) / span var(--width);
 	background-color: var(--background-page);
 	border: 1px solid var(--border-subdued);
-	border-radius: var(--border-radius-outline);
 	box-shadow: 0 0 0 1px var(--border-subdued);
 }
 
@@ -370,5 +376,21 @@ export default defineComponent({
 	width: 12px;
 	height: 12px;
 	cursor: nesw-resize;
+}
+
+.br-tl {
+	border-top-left-radius: var(--border-radius-outline);
+}
+
+.br-tr {
+	border-top-right-radius: var(--border-radius-outline);
+}
+
+.br-br {
+	border-bottom-right-radius: var(--border-radius-outline);
+}
+
+.br-bl {
+	border-bottom-left-radius: var(--border-radius-outline);
 }
 </style>

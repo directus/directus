@@ -82,6 +82,7 @@ import { omit } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import InsightsPanel from '../components/panel.vue';
+import { pointOnLine } from '@/utils/point-on-line';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -107,12 +108,12 @@ export default defineComponent({
 			insightsStore.state.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
-		const stagedPanels = ref<Partial<Panel>[]>([]);
+		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 
 		const panels = computed(() => {
 			const savedPanels = currentDashboard.value?.panels || [];
 
-			return [
+			const raw = [
 				...savedPanels.map((panel) => {
 					const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
 
@@ -124,14 +125,58 @@ export default defineComponent({
 				}),
 				...stagedPanels.value.filter((panel) => panel.id?.startsWith('_')),
 			];
+
+			const withCoords = raw.map((panel) => ({
+				...panel,
+				_coordinates: [
+					[panel.position_x!, panel.position_y!],
+					[panel.position_x! + panel.width!, panel.position_y!],
+					[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
+					[panel.position_x!, panel.position_y! + panel.height!],
+				] as [number, number][],
+			}));
+
+			const withBorderRadii = withCoords.map((panel) => {
+				let topLeftIntersects = false;
+				let topRightIntersects = false;
+				let bottomRightIntersects = false;
+				let bottomLeftIntersects = false;
+
+				for (const otherPanel of withCoords) {
+					if (otherPanel.id === panel.id) continue;
+
+					const borders = [
+						[otherPanel._coordinates[0], otherPanel._coordinates[1]],
+						[otherPanel._coordinates[1], otherPanel._coordinates[2]],
+						[otherPanel._coordinates[2], otherPanel._coordinates[3]],
+						[otherPanel._coordinates[3], otherPanel._coordinates[0]],
+					];
+
+					if (topLeftIntersects === false)
+						topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[0], p1, p2));
+					if (topRightIntersects === false)
+						topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[1], p1, p2));
+					if (bottomRightIntersects === false)
+						bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[2], p1, p2));
+					if (bottomLeftIntersects === false)
+						bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel._coordinates[3], p1, p2));
+				}
+
+				return {
+					...panel,
+					borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+				};
+			});
+
+			return withBorderRadii;
 		});
 
 		const workspaceSize = computed(() => {
 			const furthestPanelX = panels.value.reduce(
 				(aggr, panel) => {
 					if (panel.position_x! > aggr.position_x!) {
-						aggr.position_x = panel.position_x;
-						aggr.width = panel.width;
+						aggr.position_x = panel.position_x!;
+						aggr.width = panel.width!;
 					}
 
 					return aggr;
@@ -142,8 +187,8 @@ export default defineComponent({
 			const furthestPanelY = panels.value.reduce(
 				(aggr, panel) => {
 					if (panel.position_y! > aggr.position_y!) {
-						aggr.position_y = panel.position_y;
-						aggr.height = panel.height;
+						aggr.position_y = panel.position_y!;
+						aggr.height = panel.height!;
 					}
 
 					return aggr;
