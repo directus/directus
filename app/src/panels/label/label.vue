@@ -1,5 +1,5 @@
 <template>
-	<div class="label type-title" :class="{ 'has-header': show_header }" :style="{ color: options.color }">
+	<div class="label type-title selectable" :class="{ 'has-header': show_header }" :style="{ color: options.color }">
 		{{ options.text }}
 	</div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-	<div class="metric type-title" :class="{ 'has-header': show_header }">
+	<div class="metric type-title selectable" :class="{ 'has-header': show_header }">
 		<v-progress-circular indeterminate v-if="loading" />
 		<template v-else>
 			<span class="prefix">{{ options.prefix }}</span>
