@@ -21,7 +21,7 @@
 		</div>
 
 		<div class="edit-actions" v-if="editMode">
-			<v-icon class="duplicate-icon" name="content_copy" v-tooltip="$t('duplicate')" @click.stop="$emit('duplicate')" />
+			<v-icon class="duplicate-icon" name="control_point_duplicate" v-tooltip="$t('duplicate')" @click.stop="$emit('duplicate')" />
 			<v-icon
 				class="edit-icon"
 				name="edit"
