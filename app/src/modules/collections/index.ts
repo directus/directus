@@ -1,5 +1,6 @@
 import { defineModule } from '@/modules/define';
 import { addQueryToPath } from '@/utils/add-query-to-path';
+import routerPassthrough from '@/utils/router-passthrough';
 import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
@@ -62,21 +63,27 @@ export default defineModule({
 			component: Overview,
 		},
 		{
-			name: 'collections-collection',
 			path: ':collection',
-			component: CollectionOrItem,
-			props: (route) => ({
-				collection: route.params.collection,
-				bookmark: route.query.bookmark,
-			}),
-			beforeEnter: checkForSystem,
-		},
-		{
-			name: 'collections-item',
-			path: ':collection/:primaryKey',
-			component: Item,
-			props: true,
-			beforeEnter: checkForSystem,
+			component: routerPassthrough(),
+			children: [
+				{
+					name: 'collections-collection',
+					path: '',
+					component: CollectionOrItem,
+					props: (route) => ({
+						collection: route.params.collection,
+						bookmark: route.query.bookmark,
+					}),
+					beforeEnter: checkForSystem,
+				},
+				{
+					name: 'collections-item',
+					path: ':primaryKey',
+					component: Item,
+					props: true,
+					beforeEnter: checkForSystem,
+				},
+			],
 		},
 		{
 			name: 'collections-item-not-found',
