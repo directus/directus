@@ -58,6 +58,8 @@ export default defineComponent({
 				series: [],
 				stroke: {
 					curve: 'smooth',
+					width: 2,
+					lineCap: 'round',
 				},
 				fill: {
 					type: 'gradient',
@@ -66,12 +68,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: 'var(--primary-alt)',
-									opacity: 1,
+									color: 'var(--primary)',
+									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: 'var(--primary-alt)',
+									color: 'var(--primary)',
 									opacity: 0,
 								},
 							],
