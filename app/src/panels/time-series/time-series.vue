@@ -13,6 +13,7 @@ type TimeSeriesOptions = {
 	valueField: string;
 	function: 'avg' | 'sum' | 'min' | 'max' | 'count';
 	limit: number;
+	color: string;
 };
 
 export default defineComponent({
@@ -37,9 +38,11 @@ export default defineComponent({
 
 		fetchData();
 
+		console.log(props.options.color + "test");
+
 		onMounted(() => {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: ['var(--primary)'],
+				colors: [(props.options.color ? props.options.color : 'var(--primary)')],
 				chart: {
 					type: 'area',
 					height: '100%',
@@ -68,12 +71,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: 'var(--primary)',
+									color: (props.options.color ? props.options.color : 'var(--primary)'),
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: 'var(--primary)',
+									color: (props.options.color ? props.options.color : 'var(--primary)'),
 									opacity: 0,
 								},
 							],

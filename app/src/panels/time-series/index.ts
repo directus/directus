@@ -88,6 +88,15 @@ export default definePanel({
 				width: 'half',
 			},
 		},
+		{
+			field: 'color',
+			name: '$t:color',
+			type: 'string',
+			meta: {
+				interface: 'select-color',
+				width: 'half',
+			},
+		},
 	],
 	minWidth: 16,
 	minHeight: 8,
