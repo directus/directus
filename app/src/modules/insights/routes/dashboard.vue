@@ -34,7 +34,10 @@
 			</template>
 
 			<template v-else>
-				<v-button rounded icon @click="editMode = !editMode">
+				<v-button class="fullscreen" rounded icon outlined>
+					<v-icon name="fullscreen" />
+				</v-button>
+				<v-button rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
 			</template>
@@ -380,8 +383,11 @@ export default defineComponent({
 	--v-button-color-hover: var(--danger);
 }
 
+.fullscreen,
 .clear-changes {
+	--v-button-color: var(--foreground-normal);
+	--v-button-color-hover: var(--foreground-normal);
 	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground);
+	--v-button-background-color-hover: var(--foreground-normal);
 }
 </style>
