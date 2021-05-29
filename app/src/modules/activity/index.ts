@@ -10,7 +10,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'activity-collection',
-			path: '/',
+			path: '',
 			component: ActivityCollection,
 			props: true,
 			children: [

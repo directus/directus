@@ -10,7 +10,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'files-collection',
-			path: '/',
+			path: '',
 			component: Collection,
 			props: (route) => ({
 				queryFilters: route.query,
@@ -26,21 +26,21 @@ export default defineModule({
 			],
 		},
 		{
-			path: '/all',
+			path: 'all',
 			component: Collection,
 			props: () => ({
 				special: 'all',
 			}),
 		},
 		{
-			path: '/mine',
+			path: 'mine',
 			component: Collection,
 			props: () => ({
 				special: 'mine',
 			}),
 		},
 		{
-			path: '/recent',
+			path: 'recent',
 			component: Collection,
 			props: () => ({
 				special: 'recent',
@@ -48,7 +48,7 @@ export default defineModule({
 		},
 		{
 			name: 'files-item',
-			path: '/:primaryKey',
+			path: ':primaryKey',
 			component: Item,
 			props: true,
 		},

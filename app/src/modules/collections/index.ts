@@ -58,12 +58,12 @@ export default defineModule({
 	routes: [
 		{
 			name: 'collections-overview',
-			path: '/',
+			path: '',
 			component: Overview,
 		},
 		{
 			name: 'collections-collection',
-			path: '/:collection',
+			path: ':collection',
 			component: CollectionOrItem,
 			props: (route) => ({
 				collection: route.params.collection,
@@ -73,14 +73,14 @@ export default defineModule({
 		},
 		{
 			name: 'collections-item',
-			path: '/:collection/:primaryKey',
+			path: ':collection/:primaryKey',
 			component: Item,
 			props: true,
 			beforeEnter: checkForSystem,
 		},
 		{
 			name: 'collections-item-not-found',
-			path: '/:_(.+)+',
+			path: ':_(.+)+',
 			component: ItemNotFound,
 			beforeEnter: checkForSystem,
 		},

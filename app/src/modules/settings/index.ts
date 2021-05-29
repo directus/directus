@@ -26,17 +26,17 @@ export default defineModule({
 	color: 'var(--warning)',
 	routes: [
 		{
-			path: '/',
-			redirect: '/data-model',
+			path: '',
+			redirect: '/settings/data-model',
 		},
 		{
 			name: 'settings-project',
-			path: '/project',
+			path: 'project',
 			component: Project,
 		},
 		{
 			name: 'settings-collections',
-			path: '/data-model',
+			path: 'data-model',
 			component: Collections,
 			beforeEnter() {
 				const collectionsStore = useCollectionsStore();
@@ -54,7 +54,7 @@ export default defineModule({
 		},
 		{
 			name: 'settings-fields',
-			path: '/data-model/:collection',
+			path: 'data-model/:collection',
 			component: Fields,
 			async beforeEnter(to) {
 				const { info } = useCollection(ref(to.params.collection));
@@ -83,7 +83,7 @@ export default defineModule({
 		},
 		{
 			name: 'settings-roles-collection',
-			path: '/roles',
+			path: 'roles',
 			component: RolesCollection,
 			children: [
 				{
@@ -96,7 +96,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: '/roles/public',
+			path: 'roles/public',
 			component: RolesPublicItem,
 			props: true,
 			children: [
@@ -110,7 +110,7 @@ export default defineModule({
 		},
 		{
 			name: 'settings-roles-item',
-			path: '/roles/:primaryKey',
+			path: 'roles/:primaryKey',
 			component: RolesItem,
 			props: true,
 			children: [
@@ -124,29 +124,29 @@ export default defineModule({
 		},
 		{
 			name: 'settings-presets-collection',
-			path: '/presets',
+			path: 'presets',
 			component: PresetsCollection,
 		},
 		{
 			name: 'settings-presets-item',
-			path: '/presets/:id',
+			path: 'presets/:id',
 			component: PresetsItem,
 			props: true,
 		},
 		{
 			name: 'settings-webhooks-collection',
-			path: '/webhooks',
+			path: 'webhooks',
 			component: WebhooksCollection,
 		},
 		{
 			name: 'settings-webhooks-item',
-			path: '/webhooks/:primaryKey',
+			path: 'webhooks/:primaryKey',
 			component: WebhooksItem,
 			props: true,
 		},
 		{
 			name: 'settings-not-found',
-			path: '/:_(.+)+',
+			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],

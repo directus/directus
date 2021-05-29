@@ -9,7 +9,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'users-collection',
-			path: '/',
+			path: '',
 			component: Collection,
 			props: (route) => ({
 				queryFilters: route.query,
@@ -17,7 +17,7 @@ export default defineModule({
 		},
 		{
 			name: 'users-item',
-			path: '/:primaryKey',
+			path: ':primaryKey',
 			component: Item,
 			props: (route) => ({
 				primaryKey: route.params.primaryKey,

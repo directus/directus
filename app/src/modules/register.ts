@@ -2,17 +2,15 @@ import api from '@/api';
 import { router } from '@/router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
+import routerPassthrough from '@/utils/router-passthrough';
 // @TODO3 tiny-async-pool relies on node.js global variables
 import asyncPool from 'tiny-async-pool/lib/es7.js';
-import { RouteRecordRaw } from 'vue-router';
 import { getModules } from './index';
 import { ModuleConfig } from './types';
 
 const { modulesRaw } = getModules();
 
 let queuedModules: ModuleConfig[] = [];
-
-const removeRoutes: (() => void)[] = [];
 
 export async function loadModules(): Promise<void> {
 	const moduleModules = import.meta.globEager('./*/**/index.ts');
@@ -26,14 +24,6 @@ export async function loadModules(): Promise<void> {
 		await asyncPool(5, customModules, async (moduleName) => {
 			try {
 				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/${moduleName}/index.js`);
-
-				result.default.routes = result.default.routes.map((route: RouteRecordRaw) => {
-					if (route.path) {
-						if (route.path[0] === '/') route.path = route.path.substr(1);
-						route.path = `/${result.default.id}/${route.path}`;
-					}
-					return route;
-				});
 
 				modules.push(result.default);
 			} catch (err) {
@@ -61,22 +51,21 @@ export async function register(): Promise<void> {
 		return true;
 	});
 
-	const moduleRoutes = registeredModules
-		.map((module: any) => module.routes)
-		.filter((r: any) => r)
-		.flat() as RouteRecordRaw[];
-
-	for (const route of moduleRoutes) {
-		const removeRoute = router.addRoute(route);
-		removeRoutes.push(removeRoute);
+	for (const module of registeredModules) {
+		router.addRoute({
+			name: module.id,
+			path: `/${module.id}`,
+			component: routerPassthrough(),
+			children: module.routes,
+		});
 	}
 
 	modulesRaw.value = registeredModules;
 }
 
 export function unregister(): void {
-	for (const removeRoute of removeRoutes) {
-		removeRoute();
+	for (const module of modulesRaw.value) {
+		router.removeRoute(module.id);
 	}
 
 	modulesRaw.value = [];
