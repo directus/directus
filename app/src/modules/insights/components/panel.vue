@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="panel"
-		:style="positioning"
+		:style="positionStyling"
 		:class="{
 			editing: editMode,
 			dragging,
@@ -15,7 +15,7 @@
 	>
 		<div class="header" v-if="panel.show_header">
 			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
-			<v-text-overflow class="name" :text="panel.name || ''" />
+			<v-text-overflow class="name selectable" :text="panel.name || ''" />
 			<div class="spacer" />
 			<v-icon class="note" v-if="panel.note" name="info" v-tooltip="panel.note" />
 		</div>
@@ -29,6 +29,10 @@
 				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
 			<v-icon class="delete-icon" name="clear" v-tooltip="$t('delete')" @click.stop="$emit('delete')" />
+		</div>
+
+		<div class="resize-details">
+			({{positioning.x - 1}}:{{positioning.y - 1}}) {{positioning.width}}×{{positioning.height}}
 		</div>
 
 		<div class="resize-handlers" v-if="editMode">
@@ -87,6 +91,15 @@ export default defineComponent({
 
 		const positioning = computed(() => {
 			return {
+				x: editedPosition.position_x ?? props.panel.position_x,
+				y: editedPosition.position_y ?? props.panel.position_y,
+				width: editedPosition.width ?? props.panel.width,
+				height: editedPosition.height ?? props.panel.height,
+			};
+		});
+
+		const positionStyling = computed(() => {
+			return {
 				'--pos-x': editedPosition.position_x ?? props.panel.position_x,
 				'--pos-y': editedPosition.position_y ?? props.panel.position_y,
 				'--width': editedPosition.width ?? props.panel.width,
@@ -102,11 +115,13 @@ export default defineComponent({
 
 		return {
 			positioning,
+			positionStyling,
 			iconColor,
 			onPointerDown,
 			onPointerUp,
 			onPointerMove,
 			dragging,
+			editedPosition,
 		};
 
 		function useDragDrop() {
@@ -247,7 +262,13 @@ export default defineComponent({
 .panel.editing.dragging {
 	border-color: var(--primary);
 	box-shadow: 0 0 0 1px var(--primary);
+	z-index: 3 !important;
 }
+
+.panel.editing.dragging .resize-details {
+	opacity: 1;
+}
+
 
 .panel-content {
 	position: relative;
@@ -310,6 +331,27 @@ export default defineComponent({
 	padding: 12px;
 	background-color: var(--background-page);
 	border-top-right-radius: var(--border-radius-outline);
+}
+
+.resize-details {
+	transition: opacity var(--fast) var(--transition),
+							color var(--fast) var(--transition);
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	right: 0;
+	padding: 17px 14px;
+	color: var(--foreground-subdued);
+	font-weight: 500;
+	font-size: 15px;
+	font-family: var(--family-monospace);
+	font-style: normal;
+	line-height: 1;
+	text-align: right;
+	background-color: var(--background-page);
+	border-top-right-radius: var(--border-radius-outline);
+	pointer-events: none;
+	opacity: 0;
 }
 
 .resize-handlers div {
