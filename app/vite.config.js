@@ -12,7 +12,6 @@ export default defineConfig({
 				return data === null ? {} : undefined;
 			},
 		}),
-		moduleRelativeResolve(),
 	],
 	resolve: {
 		alias: {
@@ -30,45 +29,3 @@ export default defineConfig({
 		},
 	},
 });
-
-// @TODO3 This is a little bit of a hack to allow dynamic bare module imports with variables. Ideally vite would support this natively or we wouldn't rely on it.
-function moduleRelativeResolve() {
-	const MODULE_REGEX = /@vite-module!(@[^/]+\/[^/]+|[^@/]+)/g;
-
-	return [
-		{
-			name: 'module-relative-resolve',
-			apply: 'serve',
-			transform(code, id) {
-				if (code.indexOf('@vite-module!') !== -1) {
-					return {
-						code: code.replace(MODULE_REGEX, (_, module) => {
-							return `./${path.relative(path.dirname(id), '.')}/@fs${path.dirname(
-								require.resolve(`${module}/package.json`)
-							)}`;
-						}),
-						map: null,
-					};
-				}
-
-				return null;
-			},
-		},
-		{
-			name: 'module-relative-resolve',
-			apply: 'build',
-			transform(code, id) {
-				if (code.indexOf('@vite-module!') !== -1) {
-					return {
-						code: code.replace(MODULE_REGEX, (_, module) => {
-							return `./${path.relative(path.dirname(id), path.dirname(require.resolve(`${module}/package.json`)))}`;
-						}),
-						map: null,
-					};
-				}
-
-				return null;
-			},
-		},
-	];
-}
