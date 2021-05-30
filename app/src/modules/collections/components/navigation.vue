@@ -1,5 +1,5 @@
 <template>
-	<v-list ref="listComponent" large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu()">
+	<v-list ref="listComponent" large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu">
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
