@@ -3,7 +3,7 @@
 	"private": false,
 	"version": "9.0.0-rc.69",
 	"description": "",
-	"main": "index.json",
+	"main": "dist/index.js",
 	"scripts": {
 		"build": "node build.js",
 		"dev": "npm-watch build",

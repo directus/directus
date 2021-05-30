@@ -1,5 +1,6 @@
 import { defineModule } from '@/modules/define';
-import files, { Directory } from '@directus/docs';
+import routerPassthrough from '@/utils/router-passthrough';
+import docs, { DocsRoutes } from '@directus/docs';
 import { RouteRecordRaw } from 'vue-router';
 import NotFound from './routes/not-found.vue';
 import StaticDocs from './routes/static.vue';
@@ -10,7 +11,7 @@ export default defineModule(() => {
 			path: '',
 			redirect: '/docs/getting-started/introduction/',
 		},
-		...parseRoutes(files),
+		...getRoutes(docs),
 		{
 			path: ':_(.+)+',
 			component: NotFound,
@@ -25,25 +26,21 @@ export default defineModule(() => {
 		order: 20,
 	};
 
-	function parseRoutes(directory: Directory): RouteRecordRaw[] {
-		const routes: RouteRecordRaw[] = [];
-
-		for (const doc of directory.children) {
-			if (doc.type === 'file') {
-				routes.push({
-					path: doc.path.replace('.md', ''),
+	function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
+		return routes.map((route) => {
+			if (!('children' in route)) {
+				return {
+					path: route.name,
 					component: StaticDocs,
-				});
-			} else if (doc.type === 'directory') {
-				if (doc.path && doc.children && doc.children.length > 0)
-					routes.push({
-						path: doc.path.replace('.md', ''),
-						redirect: '/' + doc.children![0].path.replace('.md', ''),
-					});
-
-				routes.push(...parseRoutes(doc));
+				};
+			} else {
+				return {
+					path: route.name,
+					redirect: `/docs/${route.children[0].path}`,
+					component: routerPassthrough(),
+					children: getRoutes(route.children),
+				};
 			}
-		}
-		return routes;
+		});
 	}
 });
