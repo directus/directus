@@ -118,6 +118,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+:global(#app) {
+	height: 100%;
+}
+
 #directus {
 	height: 100%;
 }
