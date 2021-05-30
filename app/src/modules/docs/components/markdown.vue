@@ -147,9 +147,6 @@ export default defineComponent({
 .md {
 	max-width: 740px;
 	color: var(--foreground-normal-alt);
-}
-
-.md :deep(*) {
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 27px;
