@@ -1,6 +1,6 @@
 import { isEmpty, notEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
-import { computed, inject, nextTick, onBeforeUnmount, provide, ref, Ref, watch } from 'vue';
+import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
 type GroupableInstance = {
 	active: Ref<boolean>;
@@ -105,7 +105,7 @@ export function useGroupableParent(
 	group = 'item-group'
 ): Record<string, any> {
 	// References to the active state and value of the individual child items
-	const items = ref<GroupableInstance[]>([]);
+	const items = shallowRef<GroupableInstance[]>([]);
 
 	// Internal copy of the selection. This allows the composition to work without the state option
 	// being passed
@@ -240,7 +240,7 @@ export function useGroupableParent(
 	// of the parent
 	function updateChildren() {
 		items.value.forEach((item) => {
-			item.active = selection.value.includes(getValueForItem(item));
+			item.active.value = selection.value.includes(getValueForItem(item));
 		});
 	}
 }
