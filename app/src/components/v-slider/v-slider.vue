@@ -1,6 +1,6 @@
 <template>
 	<div class="v-slider" :style="styles">
-		<div v-if="$slots['prepend']" class="prepend">
+		<div v-if="$slots.prepend" class="prepend">
 			<slot name="prepend" :value="modelValue" />
 		</div>
 		<div class="slider" :class="{ disabled }">
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="$slots['append']" class="append">
+		<div v-if="$slots.append" class="append">
 			<slot name="append" :value="modelValue" />
 		</div>
 	</div>
@@ -245,6 +245,7 @@ body {
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+
 			&.visible {
 				opacity: 1;
 			}
@@ -254,6 +255,7 @@ body {
 		&:focus-within:not(.disabled) {
 			input {
 				height: 4px;
+
 				&::-webkit-slider-thumb {
 					width: 12px;
 					height: 12px;
@@ -270,6 +272,7 @@ body {
 					cursor: ew-resize;
 				}
 			}
+
 			.thumb-label {
 				opacity: 1;
 			}
