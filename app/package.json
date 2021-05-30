@@ -20,7 +20,11 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"serve": "vite preview"
+		"serve": "vite preview",
+		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
+		"predev": "npm run copy-docs-images",
+		"prebuild": "npm run copy-docs-images",
+		"prepublishOnly": "npm run build"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
@@ -58,6 +62,7 @@
 		"axios": "^0.21.1",
 		"base-64": "^1.0.0",
 		"codemirror": "^5.61.0",
+		"copyfiles": "^2.4.1",
 		"cropperjs": "^1.5.11",
 		"date-fns": "^2.21.1",
 		"dompurify": "^2.2.7",
@@ -73,6 +78,7 @@
 		"prettier": "^2.3.0",
 		"pretty-ms": "^7.0.1",
 		"qrcode": "^1.4.4",
+		"rimraf": "^3.0.2",
 		"sass": "^1.32.13",
 		"tiny-async-pool": "^1.2.0",
 		"tinymce": "^5.7.1",
