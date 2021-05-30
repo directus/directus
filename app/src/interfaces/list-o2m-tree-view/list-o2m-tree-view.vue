@@ -336,7 +336,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-:deep(ul, li) {
+:deep(:is(ul, li)) {
 	list-style: none;
 }
 

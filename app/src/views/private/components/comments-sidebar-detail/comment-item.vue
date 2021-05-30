@@ -147,7 +147,7 @@ export default defineComponent({
 	border-top: 2px solid var(--border-normal);
 }
 
-.comment-item .content :deep(h1, h2, h3, h4, h5, h6) {
+.comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;

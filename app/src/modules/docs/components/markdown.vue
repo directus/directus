@@ -209,7 +209,7 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 }
 
-.md :deep(code, tt) {
+.md :deep(:is(code, tt)) {
 	margin: 0 1px;
 	padding: 0 4px;
 	font-size: 15px;
@@ -335,93 +335,95 @@ export default defineComponent({
 	display: inline-block;
 }
 
-.md > :deep(h3:first-child, h4:first-child, h5:first-child, h6:first-child) {
+.md > :deep(:is(h3:first-child, h4:first-child, h5:first-child, h6:first-child)) {
 	margin-top: 0;
 	padding-top: 0;
 }
 
-.md :deep(a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6) {
+.md
+	:deep(:is(a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child
+			h6)) {
 	margin-top: 0;
 	padding-top: 0;
 }
 
-.md :deep(table tr th :first-child, table tr td :first-child) {
+.md :deep(:is(table tr th :first-child, table tr td :first-child)) {
 	margin-top: 0;
 }
 
-.md :deep(table tr th :last-child, table tr td :last-child) {
+.md :deep(:is(table tr th :last-child, table tr td :last-child)) {
 	margin-bottom: 0;
 }
 
-.md :deep(h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover) {
+.md :deep(:is(h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover)) {
 	text-decoration: underline;
 }
 
-.md :deep(h1:hover a, h2:hover a, h3:hover a, h4:hover a, h5:hover a, h6:hover a) {
+.md :deep(:is(h1:hover a, h2:hover a, h3:hover a, h4:hover a, h5:hover a, h6:hover a)) {
 	opacity: 1;
 }
 
-.md :deep(pre code, pre tt) {
+.md :deep(:is(pre code, pre tt)) {
 	background-color: transparent;
 	border: none;
 }
 
-.md :deep(h1 tt, h1 code) {
+.md :deep(:is(h1 tt, h1 code)) {
 	font-size: inherit;
 }
 
-.md :deep(h2 tt, h2 code) {
+.md :deep(:is(h2 tt, h2 code)) {
 	font-size: inherit;
 }
 
-.md :deep(h3 tt, h3 code) {
+.md :deep(:is(h3 tt, h3 code)) {
 	font-size: inherit;
 }
 
-.md :deep(h4 tt, h4 code) {
+.md :deep(:is(h4 tt, h4 code)) {
 	font-size: inherit;
 }
 
-.md :deep(h5 tt, h5 code) {
+.md :deep(:is(h5 tt, h5 code)) {
 	font-size: inherit;
 }
 
-.md :deep(h6 tt, h6 code) {
+.md :deep(:is(h6 tt, h6 code)) {
 	font-size: inherit;
 }
 
-.md :deep(p, blockquote, ul, ol, dl, li, table, pre) {
+.md :deep(:is(p, blockquote, ul, ol, dl, li, table, pre)) {
 	margin: 8px 0;
 }
 
-.md :deep(h1 p, h2 p, h3 p, h4 p, h5 p, h6 p) {
+.md :deep(:is(h1 p, h2 p, h3 p, h4 p, h5 p, h6 p)) {
 	margin-top: 0;
 }
 
-.md :deep(ul, ol) {
+.md :deep(:is(ul, ol)) {
 	margin: 20px 0;
 	padding-left: 20px;
 }
 
-.md :deep(ul li, ol li) {
+.md :deep(:is(ul li, ol li)) {
 	margin: 8px 0;
 	line-height: 24px;
 }
 
-.md :deep(ul ul, ul ol, ol ul, ol ol) {
+.md :deep(:is(ul ul, ul ol, ol ul, ol ol)) {
 	margin: 4px 0;
 }
 
-.md :deep(ul ul li, ul ol li, ol ul li, ol ol li) {
+.md :deep(:is(ul ul li, ul ol li, ol ul li, ol ol li)) {
 	margin: 4px 0;
 	line-height: 24px;
 }
 
-.md :deep(.table-of-contents ul, .table-of-contents ol) {
+.md :deep(:is(.table-of-contents ul, .table-of-contents ol)) {
 	margin-top: 0;
 }
 
-.md :deep(.table-of-contents ul li, .table-of-contents ol li) {
+.md :deep(:is(.table-of-contents ul li, .table-of-contents ol li)) {
 	margin: 4px 0;
 }
 
@@ -541,7 +543,7 @@ export default defineComponent({
 		position: sticky;
 		top: 100px;
 	}
-	.md :deep(.two-up .left > *:first-child, .two-up .right > *:first-child) {
+	.md :deep(:is(.two-up .left > *:first-child, .two-up .right > *:first-child)) {
 		margin-top: 0 !important;
 	}
 }

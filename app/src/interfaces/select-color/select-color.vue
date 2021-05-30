@@ -322,7 +322,7 @@ export default defineComponent({
 
 .color-data-inputs
 	.color-data-input
-	:deep(.input:focus-within, .input:active, .input:focus, .input:hover, .input.active) {
+	:deep(:is(.input:focus-within, .input:active, .input:focus, .input:hover, .input.active)) {
 	z-index: 1;
 }
 

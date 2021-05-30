@@ -101,8 +101,8 @@ export default defineComponent({
 }
 
 .new-comment
-	:deep(.expand-on-focus:focus textarea, .expand-on-focus:focus-within textarea, .expand-on-focus.has-content
-		textarea) {
+	:deep(:is(.expand-on-focus:focus textarea, .expand-on-focus:focus-within textarea, .expand-on-focus.has-content
+			textarea)) {
 	margin-bottom: 36px;
 }
 
