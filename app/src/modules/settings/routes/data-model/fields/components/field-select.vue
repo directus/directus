@@ -430,6 +430,7 @@ export default defineComponent({
 }
 
 .duplicate {
+
 	.type-label {
 		margin-bottom: 4px;
 	}
@@ -479,13 +480,13 @@ export default defineComponent({
 	--input-padding: 8px;
 
 	:deep(.input) {
-		background-color: var(--card-face-color);
-		border: none;
-		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+		background-color: var(--card-face-color) !important;
+		border: none !important;
+		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2) !important;
 	}
 
 	:deep(.input:hover) {
-		background-color: var(--card-face-color);
+		background-color: var(--card-face-color) !important;
 	}
 
 	.label {
@@ -512,7 +513,9 @@ export default defineComponent({
 	}
 
 	&:hover {
+
 		.label {
+
 			.interface {
 				opacity: 1;
 			}
@@ -527,6 +530,7 @@ export default defineComponent({
 }
 
 .icons {
+
 	.v-icon + .v-icon:not(:last-child) {
 		margin-left: 8px;
 	}
