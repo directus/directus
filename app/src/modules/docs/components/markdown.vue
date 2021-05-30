@@ -166,6 +166,22 @@ export default defineComponent({
 	text-decoration: none;
 }
 
+.md :deep(:is(h1, h2, h3, h4, h5, h6)) {
+	position: relative;
+	margin: 40px 0 8px;
+	padding: 0;
+	font-weight: 700;
+	cursor: text;
+	color: var(--foreground-normal-alt);
+}
+
+.md :deep(:is(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a)) {
+	position: absolute;
+	right: 100%;
+	padding-right: 4px;
+	opacity: 0;
+}
+
 .md :deep(h1) {
 	margin-bottom: 40px;
 	font-size: 35px;
