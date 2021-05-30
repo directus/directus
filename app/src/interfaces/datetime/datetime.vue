@@ -10,8 +10,8 @@
 				:disabled="disabled"
 				:placeholder="t('enter_a_value')"
 			>
-				<template #append>
-					<v-icon v-if="!disabled" :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
+				<template v-if="!disabled" #append>
+					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
 				</template>
 			</v-input>
 		</template>

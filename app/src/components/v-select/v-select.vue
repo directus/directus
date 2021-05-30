@@ -22,7 +22,7 @@
 				:disabled="disabled"
 				:active="active"
 			>
-				<template #prepend><slot name="prepend" /></template>
+				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
 				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
 			</v-input>
 		</template>

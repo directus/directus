@@ -36,8 +36,8 @@
 				:placeholder="t('enter_a_value')"
 				autofocus
 			>
-				<template #append>
-					<v-icon v-if="csvValue.length > 1" name="close" @click="removeCSV(val)" />
+				<template v-if="csvValue.length > 1" #append>
+					<v-icon name="close" @click="removeCSV(val)" />
 				</template>
 			</v-input>
 			<v-button outlined full-width dashed @click="addCSV" :disabled="disabled">

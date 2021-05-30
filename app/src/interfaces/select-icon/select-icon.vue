@@ -9,8 +9,8 @@
 				:class="{ 'has-value': value }"
 				:nullable="false"
 			>
-				<template #prepend>
-					<v-icon v-if="value" clickable @click="activate" :name="value" :class="{ active: value }" />
+				<template v-if="value" #prepend>
+					<v-icon clickable @click="activate" :name="value" :class="{ active: value }" />
 				</template>
 
 				<template #append>

@@ -6,7 +6,7 @@
 			:disabled="disabled"
 			v-if="allowCustom"
 		>
-			<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
+			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
 		</v-input>
 		<div class="tags" v-if="presetVals.length > 0 || customVals.length > 0">
