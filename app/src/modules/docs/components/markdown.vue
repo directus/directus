@@ -408,10 +408,6 @@ export default defineComponent({
 	font-size: inherit;
 }
 
-.md :deep(:is(p, blockquote, ul, ol, dl, li, table, pre)) {
-	margin: 8px 0;
-}
-
 .md :deep(:is(h1 p, h2 p, h3 p, h4 p, h5 p, h6 p)) {
 	margin-top: 0;
 }
