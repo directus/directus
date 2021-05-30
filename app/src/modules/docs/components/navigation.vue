@@ -42,7 +42,8 @@ export default defineComponent({
 			(newPath) => {
 				if (newPath === null) return;
 				selection.value = spreadPath(newPath.replace('/docs', ''));
-			}
+			},
+			{ immediate: true }
 		);
 
 		return { navSections: navLinks, selection };
