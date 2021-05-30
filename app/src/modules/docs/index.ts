@@ -32,6 +32,9 @@ export default defineModule(() => {
 				return {
 					path: route.name,
 					component: StaticDocs,
+					meta: {
+						import: route.import,
+					},
 				};
 			} else {
 				return {

@@ -29,28 +29,17 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, RouteLocation } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 import { md } from '@/utils/md';
 
 // @TODO3 Investigate manual chunking and prefetching
 const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
-async function getMarkdownForPath(path: string): Promise<string> {
-	const pathParts = path.split('/');
+async function getMarkdownForRoute(route: RouteLocation): Promise<string> {
+	const importDocs = route.meta.import as () => Promise<{ default: string }>;
 
-	while (pathParts.includes('docs')) {
-		pathParts.shift();
-	}
-
-	let docsPath = pathParts.join('/');
-
-	if (docsPath.endsWith('/')) {
-		docsPath = docsPath.slice(0, -1);
-	}
-
-	const mdModule = await import(`@vite-module!@directus/docs/${docsPath}.md?raw`);
-
+	const mdModule = await importDocs();
 	return mdModule.default;
 }
 
@@ -91,7 +80,7 @@ export default defineComponent({
 		watch(
 			() => route.path,
 			async () => {
-				markdown.value = await getMarkdownForPath(route.path);
+				markdown.value = await getMarkdownForRoute(route);
 			},
 			{ immediate: true, flush: 'post' }
 		);
