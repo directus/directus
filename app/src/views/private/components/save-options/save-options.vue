@@ -44,17 +44,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.v-icon {
-	color: var(--foreground-subdued);
+<style scoped>
+:deep(.v-icon) {
+	color: var(--foreground-subdued) !important;
+}
 
-	&:hover:not(.disabled) {
-		color: var(--foreground-normal);
-	}
+:deep(.v-icon:hover:not(.disabled)) {
+	color: var(--foreground-normal) !important;
+}
 
-	&.disabled {
-		cursor: not-allowed;
-	}
+:deep(.v-icon.disabled) {
+	cursor: not-allowed;
 }
 
 .v-list-item {
