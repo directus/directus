@@ -60,7 +60,7 @@ body {
 		margin-right: 16px;
 		color: var(--v-divider-label-color);
 
-		.v-icon {
+		:slotted(.v-icon) {
 			margin-right: 4px;
 			transform: translateY(-1px);
 		}
