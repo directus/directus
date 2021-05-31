@@ -22,7 +22,7 @@
 }
 
 .CodeMirror .CodeMirror-placeholder{
-	color: var(--foreground-subdued);
+	color: var(--foreground-subdued) !important;
 }
 
 .CodeMirror:hover {
