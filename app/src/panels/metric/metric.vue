@@ -62,7 +62,7 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = Number(res.data.data[0].result).toFixed(props.options.decimals ?? 2);
+				metric.value = Number(res.data.data[0].result).toLocaleString(undefined, {minimumFractionDigits: props.options.decimals ?? 2});
 			} catch (err) {
 				// oh no
 			} finally {
