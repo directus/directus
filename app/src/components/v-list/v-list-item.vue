@@ -2,9 +2,9 @@
 	<component
 		:is="component"
 		v-bind="disabled === false && $attrs"
-		active-class="active"
+		:active-class="!exact && to ? 'active' : null"
+		:exact-active-class="exact && to ? 'active' : null"
 		class="v-list-item"
-		:exact="exact"
 		:to="to"
 		:class="{
 			active,
@@ -140,6 +140,7 @@ body {
 	pointer-events: all;
 
 	&.dashed {
+
 		&::after {
 			// Borders normally render outside the element, this is a way of showing it as inner
 			position: absolute;
@@ -182,12 +183,14 @@ body {
 	}
 
 	&.dense {
+
 		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
+
 			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
@@ -249,6 +252,7 @@ body {
 	}
 
 	@at-root {
+
 		.v-list.large {
 			#{$this}:not(.dense) {
 				--v-list-item-min-height: var(--v-list-item-min-height-large);

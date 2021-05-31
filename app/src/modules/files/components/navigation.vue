@@ -30,21 +30,21 @@
 
 		<v-divider />
 
-		<v-list-item to="/files/all" exact>
+		<v-list-item to="/files/all">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/mine" exact>
+		<v-list-item to="/files/mine">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/recent" exact>
+		<v-list-item to="/files/recent">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('recent_files')" />

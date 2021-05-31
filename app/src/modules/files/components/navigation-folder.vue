@@ -4,7 +4,6 @@
 			v-if="folder.children === undefined"
 			:to="`/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
-			exact
 			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
@@ -19,7 +18,6 @@
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
-			exact
 			disable-groupable-parent
 			@contextmenu.prevent.stop="activateContextMenu"
 		>

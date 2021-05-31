@@ -159,7 +159,7 @@
 
 		<template #navigation>
 			<collections-navigation-search />
-			<collections-navigation exact />
+			<collections-navigation />
 		</template>
 
 		<v-info

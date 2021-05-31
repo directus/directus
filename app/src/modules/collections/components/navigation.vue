@@ -150,7 +150,7 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.router-link-exact-active.active.link');
+			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.active.link');
 			activeEl?.scrollIntoView({ block: 'center' });
 		});
 
