@@ -20,6 +20,7 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
+email_examples: 'admin@example.com, user@example.com...'
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
@@ -31,6 +32,7 @@ primary: Primární
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
 prefix: Prefix
+suffix: Přípona
 reset_bookmark: Obnovit záložku
 rename_bookmark: Přejmenovat záložku
 update_bookmark: Aktualizovat záložku
@@ -44,8 +46,11 @@ public: Veřejné
 public_description: Určuje, která API data jsou dostupná bez ověřování.
 not_allowed: Nepovoleno
 directus_version: Verze Directusu
+node_version: Node verze
+node_uptime: Doba provozu Node
 os_type: Typ OS
 os_version: Verze OS
+os_uptime: Dobra provozu operačního systému
 os_totalmem: Pamět OS
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
