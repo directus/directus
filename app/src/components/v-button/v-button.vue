@@ -4,8 +4,8 @@
 		<component
 			v-focus="autofocus"
 			:is="component"
-			:active-class="to ? 'activated' : null"
-			:exact="exact"
+			:active-class="!exact && to ? 'activated' : null"
+			:exact-active-class="exact && to ? 'activated' : null"
 			:download="download"
 			class="button"
 			:class="[
