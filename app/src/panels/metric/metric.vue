@@ -86,7 +86,7 @@ export default defineComponent({
 }
 
 .metric.has-header {
-	height: calc(100% - 24px);
+	height: calc(100% - 16px);
 }
 
 .suffix {
