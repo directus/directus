@@ -93,7 +93,7 @@
 		"destroy": "^1.0.4",
 		"dotenv": "^9.0.2",
 		"eventemitter2": "^6.4.3",
-		"execa": "^4.1.0",
+		"execa": "^5.0.1",
 		"exif-reader": "^1.0.3",
 		"express": "^4.17.1",
 		"express-pino-logger": "^6.0.0",
