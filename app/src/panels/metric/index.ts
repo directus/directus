@@ -71,6 +71,9 @@ export default definePanel({
 			meta: {
 				interface: 'input',
 				width: 'half',
+				options: {
+					placeholder: '$t:decimals_placeholder',
+				},
 			},
 			schema: {
 				default_value: 2,
@@ -116,8 +119,10 @@ export default definePanel({
 			name: '$t:filter',
 			meta: {
 				interface: 'code',
+				note: '[Learn More: Filter Rules](/admin/docs/reference/filter-rules)',
 				options: {
 					language: 'json',
+					placeholder: '{\n\t<field>: {\n\t\t<operator>: <value>\n\t}\n}',
 				},
 			},
 		},
@@ -128,6 +133,9 @@ export default definePanel({
 			meta: {
 				interface: 'input',
 				width: 'half',
+				options: {
+					placeholder: '$t:prefix_placeholder',
+				},
 			},
 		},
 		{
@@ -137,6 +145,9 @@ export default definePanel({
 			meta: {
 				interface: 'input',
 				width: 'half',
+				options: {
+					placeholder: '$t:suffix_placeholder',
+				},
 			},
 		},
 	],

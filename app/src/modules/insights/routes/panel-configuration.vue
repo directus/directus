@@ -40,7 +40,7 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ $t('name') }}</p>
-					<v-input :nullable="false" v-model="edits.name" :disabled="edits.show_header !== true" />
+					<v-input :nullable="false" v-model="edits.name" :disabled="edits.show_header !== true" :placeholder="$t('panel_name_placeholder')" />
 				</div>
 
 				<div class="field half-left">
@@ -55,7 +55,7 @@
 
 				<div class="field full">
 					<p class="type-label">{{ $t('note') }}</p>
-					<v-input v-model="edits.note" :disabled="edits.show_header !== true" />
+					<v-input v-model="edits.note" :disabled="edits.show_header !== true" :placeholder="$t('panel_note_placeholder')" />
 				</div>
 			</div>
 		</div>
@@ -85,7 +85,7 @@ export default defineComponent({
 			name: props.panel?.name,
 			note: props.panel?.note,
 			icon: props.panel?.icon ?? 'insert_chart',
-			color: props.panel?.color,
+			color: props.panel?.color ?? '#00C897',
 			width: props.panel?.width ?? undefined,
 			height: props.panel?.height ?? undefined,
 			position_x: props.panel?.position_x ?? 1,

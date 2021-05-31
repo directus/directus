@@ -12,7 +12,7 @@
 		:value="value"
 		:disabled="disabled"
 		:items="selectItems"
-		:placeholder="placeholder"
+		:placeholder="$t('select_a_field')"
 	/>
 </template>
 
