@@ -126,24 +126,24 @@ export default defineComponent({
 	--v-card-background-color: var(--background-page);
 }
 
-.container :slotted(.v-card .v-card-title) {
+.container :slotted(.v-card) .v-card-title {
 	padding-bottom: 8px;
 }
 
-.container :slotted(.v-card .v-card-actions) {
+.container :slotted(.v-card) .v-card-actions {
 	flex-direction: column-reverse;
 	flex-wrap: wrap;
 }
 
-.container :slotted(.v-card .v-card-actions .v-button) {
+.container :slotted(.v-card) .v-card-actions .v-button {
 	width: 100%;
 }
 
-.container :slotted(.v-card .v-card-actions .v-button .button) {
+.container :slotted(.v-card) .v-card-actions .v-button .button {
 	width: 100%;
 }
 
-.container :slotted(.v-card .v-card-actions > .v-button + .v-button) {
+.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
 	margin-bottom: 20px;
 	margin-left: 0;
 }
@@ -158,30 +158,32 @@ export default defineComponent({
 }
 
 @media (min-width: 600px) {
+
 	.container :slotted(.v-card) {
 		--v-card-min-width: 540px;
 	}
 
-	.container :slotted(.v-card .v-card-actions) {
+	.container :slotted(.v-card) .v-card-actions {
 		flex-direction: inherit;
 		flex-wrap: nowrap;
 	}
 
-	.container :slotted(.v-card .v-card-actions .v-button) {
+	.container :slotted(.v-card) .v-card-actions .v-button {
 		width: auto;
 	}
 
-	.container :slotted(.v-card .v-card-actions .v-button .button) {
+	.container :slotted(.v-card) .v-card-actions .v-button .button {
 		width: auto;
 	}
 
-	.container :slotted(.v-card .v-card-actions > .v-button + .v-button) {
+	.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
 		margin-bottom: 0;
 		margin-left: 12px;
 	}
 }
 
 @keyframes nudge {
+
 	0% {
 		transform: scale(1);
 	}
@@ -196,6 +198,7 @@ export default defineComponent({
 }
 
 @keyframes shake {
+
 	0% {
 		transform: scaleX(1);
 	}
