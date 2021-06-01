@@ -91,11 +91,27 @@ export async function up(knex: Knex): Promise<void> {
 				logger.warn(err);
 			}
 
+			/**
+			 * MySQL won't delete the index when you drop the foreign key constraint. Gotta make
+			 * sure to clean those up as well
+			 */
+			if (knex.client.constructor.name === 'Client_MySQL') {
+				try {
+					await knex.schema.alterTable(update.table, (table) => {
+						// Knex uses a default convention for index names: `table_column_type`
+						table.dropIndex([constraint.column], `${update.table}_${constraint.column}_foreign`);
+					});
+				} catch (err) {
+					logger.warn(
+						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
+					);
+					logger.warn(err);
+				}
+			}
+
 			try {
 				await knex.schema.alterTable(update.table, (table) => {
-					for (const constraint of update.constraints) {
-						table.foreign(constraint.column).references(constraint.references).onDelete(constraint.on_delete);
-					}
+					table.foreign(constraint.column).references(constraint.references).onDelete(constraint.on_delete);
 				});
 			} catch (err) {
 				logger.warn(`Couldn't add foreign key to ${update.table}.${constraint.column}->${constraint.references}`);
@@ -115,6 +131,24 @@ export async function down(knex: Knex): Promise<void> {
 			} catch (err) {
 				logger.warn(`Couldn't drop foreign key ${update.table}.${constraint.column}->${constraint.references}`);
 				logger.warn(err);
+			}
+
+			/**
+			 * MySQL won't delete the index when you drop the foreign key constraint. Gotta make
+			 * sure to clean those up as well
+			 */
+			if (knex.client.constructor.name === 'Client_MySQL') {
+				try {
+					await knex.schema.alterTable(update.table, (table) => {
+						// Knex uses a default convention for index names: `table_column_type`
+						table.dropIndex([constraint.column], `${update.table}_${constraint.column}_foreign`);
+					});
+				} catch (err) {
+					logger.warn(
+						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
+					);
+					logger.warn(err);
+				}
 			}
 
 			try {
