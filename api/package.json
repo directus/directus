@@ -103,7 +103,7 @@
 		"graphql": "^15.5.0",
 		"graphql-compose": "^8.1.0",
 		"icc": "^2.0.0",
-		"inquirer": "^8.0.0",
+		"inquirer": "^8.1.0",
 		"joi": "^17.3.0",
 		"js-yaml": "^4.1.0",
 		"js2xmlparser": "^4.0.1",
