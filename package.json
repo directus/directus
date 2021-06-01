@@ -38,7 +38,7 @@
 		"eslint-plugin-prettier-vue": "^3.1.0",
 		"eslint-plugin-vue": "^7.10.0",
 		"globby": "^11.0.3",
-		"jest": "^26.6.3",
+		"jest": "^27.0.3",
 		"knex": "^0.95.6",
 		"lerna": "^4.0.0",
 		"lint-staged": "^10.5.4",
@@ -59,7 +59,7 @@
 		"stylelint-scss": "^3.19.0",
 		"supertest": "^6.1.3",
 		"tedious": "^11.0.8",
-		"ts-jest": "^26.5.6",
+		"ts-jest": "^27.0.2",
 		"ts-node": "^10.0.0"
 	},
 	"simple-git-hooks": {
