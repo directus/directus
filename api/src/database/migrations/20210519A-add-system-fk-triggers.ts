@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import logger from '../../logger';
 
 /**
  * Things to keep in mind:
@@ -80,22 +81,50 @@ const updates = [
 
 export async function up(knex: Knex): Promise<void> {
 	for (const update of updates) {
-		await knex.schema.alterTable(update.table, (table) => {
-			for (const constraint of update.constraints) {
-				table.dropForeign([constraint.column]);
-				table.foreign(constraint.column).references(constraint.references).onDelete(constraint.on_delete);
+		for (const constraint of update.constraints) {
+			try {
+				await knex.schema.alterTable(update.table, (table) => {
+					table.dropForeign([constraint.column]);
+				});
+			} catch (err) {
+				logger.warn(`Couldn't drop foreign key ${update.table}.${constraint.column}->${constraint.references}`);
+				logger.warn(err);
 			}
-		});
+
+			try {
+				await knex.schema.alterTable(update.table, (table) => {
+					for (const constraint of update.constraints) {
+						table.foreign(constraint.column).references(constraint.references).onDelete(constraint.on_delete);
+					}
+				});
+			} catch (err) {
+				logger.warn(`Couldn't add foreign key to ${update.table}.${constraint.column}->${constraint.references}`);
+				logger.warn(err);
+			}
+		}
 	}
 }
 
 export async function down(knex: Knex): Promise<void> {
 	for (const update of updates) {
-		await knex.schema.alterTable(update.table, (table) => {
-			for (const constraint of update.constraints) {
-				table.dropForeign([constraint.column]);
-				table.foreign(constraint.column).references(constraint.references);
+		for (const constraint of update.constraints) {
+			try {
+				await knex.schema.alterTable(update.table, (table) => {
+					table.dropForeign([constraint.column]);
+				});
+			} catch (err) {
+				logger.warn(`Couldn't drop foreign key ${update.table}.${constraint.column}->${constraint.references}`);
+				logger.warn(err);
 			}
-		});
+
+			try {
+				await knex.schema.alterTable(update.table, (table) => {
+					table.foreign(constraint.column).references(constraint.references);
+				});
+			} catch (err) {
+				logger.warn(`Couldn't add foreign key to ${update.table}.${constraint.column}->${constraint.references}`);
+				logger.warn(err);
+			}
+		}
 	}
 }
