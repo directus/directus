@@ -51,6 +51,7 @@
 version: '3.1'
 services:
   postgres:
+    restart: always
     image: postgres:12-alpine
     environment:
       POSTGRES_PASSWORD: secret
@@ -59,6 +60,7 @@ services:
       - 5100:5432
 
   mysql:
+    restart: always
     image: mysql:8
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -68,6 +70,7 @@ services:
       - 5101:3306
 
   maria:
+    restart: always
     image: mariadb:10.5
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -76,6 +79,7 @@ services:
       - 5102:3306
 
   mssql:
+    restart: always
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
@@ -84,6 +88,7 @@ services:
       - 5103:1433
 
   oracle:
+    restart: always
     image: quillbuilduser/oracle-18-xe-micro-sq
     ports:
       - 5104:1521
@@ -93,17 +98,20 @@ services:
     shm_size: '1gb' # more like smh-size ammirite 🥁
 
   redis:
+    restart: always
     image: redis:6-alpine
     ports:
       - 5105:6379
 
   minio:
+    restart: always
     image: minio/minio:latest
     command: server /data/minio/
     ports:
       - 5106:9000
 
   azure:
+    restart: always
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - 5107:10000
