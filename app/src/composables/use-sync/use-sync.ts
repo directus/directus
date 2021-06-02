@@ -10,7 +10,7 @@ export default function useSync<
 			return props[key];
 		},
 		set(newVal) {
-			emit(`update:${key}` as `update:${K}`, newVal);
+			emit(`update:${key}` as const, newVal);
 		},
 	});
 }
