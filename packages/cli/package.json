@@ -64,7 +64,7 @@
 		"js-yaml": "^4.1.0",
 		"json5": "^2.2.0",
 		"liquidjs": "^9.25.0",
-		"marked": "^2.0.5",
+		"marked": "^2.0.7",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
 		"open": "^8.2.0",
