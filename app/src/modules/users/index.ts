@@ -9,21 +9,15 @@ export default defineModule({
 	icon: 'people_alt',
 	routes: [
 		{
+			name: 'users-collection',
 			path: '',
-			component: RouterPass,
-			children: [
-				{
-					name: 'users-collection',
-					path: '',
-					component: Collection,
-				},
-				{
-					name: 'users-item',
-					path: ':primaryKey',
-					component: Item,
-					props: true,
-				},
-			],
+			component: Collection,
+		},
+		{
+			name: 'users-item',
+			path: ':primaryKey',
+			component: Item,
+			props: true,
 		},
 		{
 			path: 'roles',

@@ -1,5 +1,4 @@
 import { defineModule } from '@/modules/define';
-import RouterPass from '@/utils/router-passthrough';
 import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
@@ -10,30 +9,24 @@ export default defineModule({
 	icon: 'folder',
 	routes: [
 		{
+			name: 'files-collection',
 			path: '',
-			component: RouterPass,
+			component: Collection,
 			children: [
 				{
-					name: 'files-collection',
-					path: '',
-					component: Collection,
-					children: [
-						{
-							path: '+',
-							name: 'add-file',
-							components: {
-								addNew: AddNew,
-							},
-						},
-					],
-				},
-				{
-					name: 'files-item',
-					path: ':primaryKey',
-					component: Item,
-					props: true,
+					path: '+',
+					name: 'add-file',
+					components: {
+						addNew: AddNew,
+					},
 				},
 			],
+		},
+		{
+			name: 'files-item',
+			path: ':primaryKey',
+			component: Item,
+			props: true,
 		},
 		{
 			path: 'folders',
