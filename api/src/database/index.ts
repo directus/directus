@@ -9,7 +9,7 @@ import { validateEnv } from '../utils/validate-env';
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
 
-export default function getDatabase() {
+export default function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}
@@ -78,7 +78,7 @@ export default function getDatabase() {
 	return database;
 }
 
-export function getSchemaInspector() {
+export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
 	if (inspector) {
 		return inspector;
 	}
