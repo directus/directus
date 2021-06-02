@@ -53,7 +53,7 @@ export default defineComponent({
 					.map((module: ModuleConfig) => ({
 						...module,
 						href: module.link || null,
-						to: module.link === undefined ? `/${module.id}/` : null,
+						to: module.link === undefined ? `/${module.id}` : null,
 					}))
 					.filter((module: ModuleConfig) => {
 						if (module.hidden !== undefined && unref(module.hidden) === true) {
