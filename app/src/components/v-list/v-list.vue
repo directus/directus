@@ -86,8 +86,7 @@ export default defineComponent({
 	margin: 8px;
 }
 
-:slotted(.v-button),
-:slotted(.v-list-item) {
+:slotted(*) {
 	pointer-events: all;
 }
 </style>
