@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import {
 	FailedValidationException,
@@ -29,7 +29,7 @@ export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
 		this.schema = options.schema;

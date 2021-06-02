@@ -6,7 +6,7 @@ import { once } from 'lodash';
 import qs from 'qs';
 import url from 'url';
 import createApp from './app';
-import database from './database';
+import getDatabase from './database';
 import { emitAsyncSafe } from './emitter';
 import logger from './logger';
 
@@ -94,6 +94,7 @@ export default async function createServer(): Promise<http.Server> {
 	}
 
 	async function onSignal() {
+		const database = getDatabase();
 		await database.destroy();
 		logger.info('Database connections destroyed');
 	}

@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
-import { schemaInspector } from '..';
 import logger from '../../logger';
 import { RelationMeta } from '../../types';
 
@@ -22,8 +21,8 @@ export async function up(knex: Knex): Promise<void> {
 	for (const constraint of constraintsToAdd) {
 		if (!constraint.one_collection) continue;
 
-		const currentPrimaryKeyField = await schemaInspector.primary(constraint.many_collection);
-		const relatedPrimaryKeyField = await schemaInspector.primary(constraint.one_collection);
+		const currentPrimaryKeyField = await inspector.primary(constraint.many_collection);
+		const relatedPrimaryKeyField = await inspector.primary(constraint.one_collection);
 		if (!currentPrimaryKeyField || !relatedPrimaryKeyField) continue;
 
 		const rowsWithIllegalFKValues = await knex
@@ -67,8 +66,8 @@ export async function up(knex: Knex): Promise<void> {
 		// to `unsigned`, but defaults `.integer()` to `int`. This means that created m2o fields
 		// have the wrong type. This step will force the m2o `int` field into `unsigned`, but only
 		// if both types are integers, and only if we go from `int` to `int unsigned`.
-		const columnInfo = await schemaInspector.columnInfo(constraint.many_collection, constraint.many_field);
-		const relatedColumnInfo = await schemaInspector.columnInfo(constraint.one_collection!, relatedPrimaryKeyField);
+		const columnInfo = await inspector.columnInfo(constraint.many_collection, constraint.many_field);
+		const relatedColumnInfo = await inspector.columnInfo(constraint.one_collection!, relatedPrimaryKeyField);
 
 		try {
 			await knex.schema.alterTable(constraint.many_collection, (table) => {

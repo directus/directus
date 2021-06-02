@@ -7,20 +7,20 @@ import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
-import database, { schemaInspector } from '../database';
+import getDatabase, { getSchemaInspector } from '../database';
 
 export class RelationsService {
 	knex: Knex;
 	permissionsService: PermissionsService;
-	schemaInspector: typeof schemaInspector;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.relationsItemService = new ItemsService('directus_relations', {

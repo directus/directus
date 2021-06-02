@@ -4,7 +4,7 @@ import Joi from 'joi';
 import { Knex } from 'knex';
 import { clone, cloneDeep, isObject, isPlainObject } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import database from '../database';
+import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
@@ -43,7 +43,7 @@ export class PayloadService {
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.collection = collection;
 		this.schema = options.schema;
 
