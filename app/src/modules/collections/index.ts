@@ -53,6 +53,16 @@ export default defineModule({
 			component: Overview,
 		},
 		{
+			path: ':collection',
+			redirect: (to) => ({
+				name: 'collections-collection',
+				params: {
+					collection: to.params.collection,
+					bookmark: '-',
+				},
+			}),
+		},
+		{
 			path: ':collection/:bookmark',
 			component: routerPassthrough(),
 			children: [
