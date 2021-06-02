@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, without } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
@@ -55,7 +55,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
@@ -204,7 +204,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -516,7 +516,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -665,7 +665,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 

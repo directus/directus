@@ -5,7 +5,7 @@ import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
 import { toArray } from '../utils/to-array';
-import database from './index';
+import getDatabase from './index';
 
 type RunASTOptions = {
 	/**
@@ -39,7 +39,7 @@ export default async function runAST(
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
-	const knex = options?.knex || database;
+	const knex = options?.knex || getDatabase();
 
 	if (ast.type === 'm2a') {
 		const results: { [collection: string]: null | Item | Item[] } = {};

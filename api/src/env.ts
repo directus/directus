@@ -92,6 +92,22 @@ env = processValues(env);
 
 export default env;
 
+/**
+ * When changes have been made during runtime, like in the CLI, we can refresh the env object with
+ * the newly created variables
+ */
+export function refreshEnv() {
+	env = {
+		...defaults,
+		...getEnv(),
+		...process.env,
+	};
+
+	process.env = env;
+
+	env = processValues(env);
+}
+
 function getEnv() {
 	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 

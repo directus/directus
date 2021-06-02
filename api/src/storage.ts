@@ -1,7 +1,6 @@
 import { LocalFileSystemStorage, Storage, StorageManager, StorageManagerConfig } from '@directus/drive';
 import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
 import { GoogleCloudStorage } from '@directus/drive-gcs';
-/** @todo dynamically load these storage adapters */
 import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';

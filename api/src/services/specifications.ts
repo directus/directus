@@ -5,7 +5,7 @@ import { cloneDeep, mergeWith } from 'lodash';
 import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import {
 	AbstractServiceOptions,
@@ -37,7 +37,7 @@ export class SpecificationService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = new FieldsService(options);
@@ -80,7 +80,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = fieldsService;
@@ -541,7 +541,7 @@ class GraphQLSpecsService implements SpecificationSubService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.items = new GraphQLService({ ...options, scope: 'items' });
