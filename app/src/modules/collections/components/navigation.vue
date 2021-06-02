@@ -1,5 +1,11 @@
 <template>
-	<v-list ref="listComponent" large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu">
+	<v-list
+		ref="listComponent"
+		large
+		class="collections-navigation"
+		@contextmenu.prevent.stop="activateContextMenu"
+		:mandatory="false"
+	>
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
@@ -197,9 +203,9 @@ export default defineComponent({
 }
 
 .empty {
-	color: var(--foreground-subdued);
 
 	.v-button {
+		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}
