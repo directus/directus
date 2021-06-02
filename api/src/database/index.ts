@@ -19,7 +19,23 @@ const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 
 const poolConfig = getConfigFromEnv('DB_POOL');
 
-validateEnv(['DB_CLIENT']);
+const requiredKeys = ['DB_CLIENT'];
+
+if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
+	requiredKeys.push('DB_FILENAME');
+} else if (env.DB_CLIENT && env.DB_CLIENT === 'oracledb') {
+	requiredKeys.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
+} else {
+	if (env.DB_CLIENT === 'pg') {
+		if (!env.DB_CONNECTION_STRING) {
+			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
+		}
+	} else {
+		requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+	}
+}
+
+validateEnv(requiredKeys);
 
 const knexConfig: Knex.Config = {
 	client: env.DB_CLIENT,
