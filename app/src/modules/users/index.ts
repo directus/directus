@@ -24,25 +24,19 @@ export default defineModule({
 			redirect: '/users',
 		},
 		{
+			name: 'roles-collection',
 			path: 'roles/:role',
-			component: RouterPass,
-			children: [
-				{
-					name: 'roles-collection',
-					path: '',
-					component: Collection,
-					props: true,
-				},
-				{
-					name: 'roles-item-add',
-					path: '+',
-					component: Item,
-					props: (route) => ({
-						primaryKey: '+',
-						role: route.params.role,
-					}),
-				},
-			],
+			component: Collection,
+			props: true,
+		},
+		{
+			name: 'roles-item-add',
+			path: 'roles/:role/+',
+			component: Item,
+			props: (route) => ({
+				primaryKey: '+',
+				role: route.params.role,
+			}),
 		},
 	],
 	order: 10,
