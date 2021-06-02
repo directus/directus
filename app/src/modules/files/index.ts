@@ -23,6 +23,16 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'files-item',
+			path: ':primaryKey',
+			component: Item,
+			props: true,
+		},
+		{
+			path: 'folders',
+			redirect: '/files',
+		},
+		{
 			name: 'folders-collection',
 			path: 'folders/:folder',
 			component: Collection,
@@ -57,12 +67,6 @@ export default defineModule({
 			props: {
 				special: 'recent',
 			},
-		},
-		{
-			name: 'files-item',
-			path: ':primaryKey',
-			component: Item,
-			props: true,
 		},
 	],
 	order: 15,

@@ -19,6 +19,10 @@ export default defineModule({
 			props: true,
 		},
 		{
+			path: 'roles',
+			redirect: '/users',
+		},
+		{
 			name: 'roles-collection',
 			path: 'roles/:role',
 			component: Collection,
