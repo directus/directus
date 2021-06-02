@@ -1,5 +1,5 @@
 # IIS (Internet Information Services)
-Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), an entrypoint file, and some specific web.config sonfigurations
+Deploying directus to IIS will require [iisnode](https://github.com/Azure/iisnode), an entrypoint file, and some specific web.config configurations.
 
 # iisnode
 iisnode can be downloaded from the [azure/iisnode releases](https://github.com/Azure/iisnode/releases) page.
