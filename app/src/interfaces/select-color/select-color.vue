@@ -1,6 +1,6 @@
 <template>
-	<v-menu attached :disabled="disabled" v-model="menuActive" :close-on-content-click="false">
-		<template #activator>
+	<v-menu attached :disabled="disabled" :close-on-content-click="false">
+		<template #activator="{ activate }">
 			<v-input
 				:disabled="disabled"
 				:placeholder="t('interfaces.select-color.placeholder')"
@@ -8,7 +8,7 @@
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="7"
-				@focus="menuActive = true"
+				@focus="activate"
 			>
 				<template #prepend>
 					<v-input type="color" class="html-color-select" v-model="hex" ref="htmlColorInput" />
@@ -169,8 +169,6 @@ export default defineComponent({
 
 		const { hsl, rgb, hex, color } = useColor();
 
-		const menuActive = ref(false);
-
 		return {
 			t,
 			colorTypes,
@@ -181,7 +179,6 @@ export default defineComponent({
 			htmlColorInput,
 			activateColorPicker,
 			isValidColor,
-			menuActive,
 			Color,
 			setValue,
 			lowContrast,
