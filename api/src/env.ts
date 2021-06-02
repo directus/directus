@@ -96,7 +96,7 @@ export default env;
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
-export function refreshEnv() {
+export function refreshEnv(): void {
 	env = {
 		...defaults,
 		...getEnv(),
