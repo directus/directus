@@ -1,6 +1,6 @@
 import { defineModule } from '@/modules/define';
 import RouterPass from '@/utils/router-passthrough';
-import docs, { DocsRoutes } from '@directus/docs';
+import docs, { DocsFolder, DocsRoutes } from '@directus/docs';
 import { RouteRecordRaw } from 'vue-router';
 import NotFound from './routes/not-found.vue';
 import StaticDocs from './routes/static.vue';
@@ -27,23 +27,27 @@ export default defineModule(() => {
 	};
 
 	function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {
-		return routes.map((route) => {
+		const updatedRoutes: RouteRecordRaw[] = [];
+
+		for (const route of routes) {
 			if (!('children' in route)) {
-				return {
-					path: route.name,
+				updatedRoutes.push({
+					path: route.path,
 					component: StaticDocs,
 					meta: {
 						import: route.import,
 					},
-				};
+				});
 			} else {
-				return {
-					path: route.name,
-					redirect: `/docs/${route.children[0].path}`,
-					component: RouterPass,
-					children: getRoutes(route.children),
-				};
+				updatedRoutes.push({
+					path: route.path,
+					redirect: '/docs' + route.children![0].path,
+				});
+
+				updatedRoutes.push(...getRoutes(route.children));
 			}
-		});
+		}
+
+		return updatedRoutes;
 	}
 });

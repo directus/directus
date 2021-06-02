@@ -1,5 +1,5 @@
 <template>
-	<v-list large :multiple="false" v-model="selection" :mandatory="false">
+	<v-list large v-model="selection" :mandatory="false">
 		<navigation-item v-for="item in navSections" :key="item.name" :section="item" />
 	</v-list>
 </template>
@@ -41,7 +41,7 @@ export default defineComponent({
 			() => props.path,
 			(newPath) => {
 				if (newPath === null) return;
-				selection.value = spreadPath(newPath.replace('/docs', ''));
+				selection.value = [...(selection.value || []), ...spreadPath(newPath.replace('/docs', ''))];
 			},
 			{ immediate: true }
 		);
