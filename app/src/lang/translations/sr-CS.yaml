@@ -39,11 +39,61 @@ logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Sesija je istekla
 public: Javno
+public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
+field_permissions: Dozvole kolona
+delete_field: Obriši Kolonu
+fields_and_layout: Kolone i Izgled
+field_create_success: 'Kreirana Kolona: "{field}"'
+field_update_success: 'Ažurirana Kolona: "{field}"'
+duplicate_where_to: U koju tabelu želite da smjestite ovu dupliranu kolonu?
+language: Jezik
+admins_have_all_permissions: Administratori imaju sve dozvole
+camera: Kamera
+exposure: Ekspozicija
+shutter: Okidač
+iso: ISO
+create_field: Napravi Kolonu
+creating_new_field: 'Nova Kolona ({collection})'
+hidden_field: Sakrivena Kolona
+key: Ključ
+create_translations: Kreiraj Prevode
+auto_refresh: Automatsko osvjеžavanjе
+click_here: Klikni ovdje
+fields_group: Grupe Kolona
+no_collections_found: Tabele nisu pronađene.
+search_collection: Pretraži Tabelu...
+new_field: 'Nova Kolona'
+new_collection: 'Nova Tabela'
+reset_to_default: Vrati na podrazumijevano
+undo_changes: Poništi izmjene
+notifications: Obavještenja
+show_all_activity: Prikaži svu aktivnost
+page_not_found: Stranica nijе pronađеna
+page_not_found_body: Stranica koju tražite nije moguće pronaći.
+title: Naslov
+revision_delta_created: Kreiran
+revision_delta_deleted: Obrisano
+submit: Pošalji
+move_to_folder: Prebaci u fasciklu
+move: Premjesti
+system: Sistem
+today: Danas
+yesterday: Juče
+delete_comment: Obriši komentar
+created: Kreiran
 fields:
+  directus_files:
+    title: Naslov
+  directus_users:
+    title: Naslov
+    language: Jezik
   directus_roles:
     name: Naziv uloge
 interfaces:
   presentation-links:
     primary: Primarni
+layouts:
+  cards:
+    title: Naslov
