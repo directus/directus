@@ -1,5 +1,5 @@
 import { defineModule } from '@/modules/define';
-import routerPassthrough from '@/utils/router-passthrough';
+import RouterPass from '@/utils/router-passthrough';
 import docs, { DocsRoutes } from '@directus/docs';
 import { RouteRecordRaw } from 'vue-router';
 import NotFound from './routes/not-found.vue';
@@ -40,7 +40,7 @@ export default defineModule(() => {
 				return {
 					path: route.name,
 					redirect: `/docs/${route.children[0].path}`,
-					component: routerPassthrough(),
+					component: RouterPass,
 					children: getRoutes(route.children),
 				};
 			}

@@ -1,5 +1,5 @@
 import { defineModule } from '@/modules/define';
-import routerPassthrough from '@/utils/router-passthrough';
+import RouterPass from '@/utils/router-passthrough';
 import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
@@ -64,7 +64,7 @@ export default defineModule({
 		},
 		{
 			path: ':collection/:bookmark',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'collections-collection',

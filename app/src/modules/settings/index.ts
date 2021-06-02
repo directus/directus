@@ -2,7 +2,7 @@ import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
 import { defineModule } from '@/modules/define';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import routerPassthrough from '@/utils/router-passthrough';
+import RouterPass from '@/utils/router-passthrough';
 import { ref } from 'vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -37,7 +37,7 @@ export default defineModule({
 		},
 		{
 			path: 'data-model',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'settings-collections',
@@ -90,7 +90,7 @@ export default defineModule({
 		},
 		{
 			path: 'roles',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'settings-roles-collection',
@@ -137,7 +137,7 @@ export default defineModule({
 		},
 		{
 			path: 'presets',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'settings-presets-collection',
@@ -154,7 +154,7 @@ export default defineModule({
 		},
 		{
 			path: 'webhooks',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'settings-webhooks-collection',

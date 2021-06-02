@@ -1,5 +1,5 @@
 import { defineModule } from '@/modules/define';
-import routerPassthrough from '@/utils/router-passthrough';
+import RouterPass from '@/utils/router-passthrough';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 
@@ -10,7 +10,7 @@ export default defineModule({
 	routes: [
 		{
 			path: '',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'users-collection',
@@ -31,7 +31,7 @@ export default defineModule({
 		},
 		{
 			path: 'roles/:role',
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: [
 				{
 					name: 'roles-collection',

@@ -2,7 +2,7 @@ import api from '@/api';
 import { router } from '@/router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
-import routerPassthrough from '@/utils/router-passthrough';
+import RouterPass from '@/utils/router-passthrough';
 // @TODO3 tiny-async-pool relies on node.js global variables
 import asyncPool from 'tiny-async-pool/lib/es7.js';
 import { getModules } from './index';
@@ -55,7 +55,7 @@ export async function register(): Promise<void> {
 		router.addRoute({
 			name: module.id,
 			path: `/${module.id}`,
-			component: routerPassthrough(),
+			component: RouterPass,
 			children: module.routes,
 		});
 	}
