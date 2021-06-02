@@ -80,7 +80,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="queryFilters && queryFilters.role" />
+			<users-navigation :current-role="role" />
 		</template>
 
 		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
@@ -101,7 +101,9 @@
 					{{ t('no_users_copy') }}
 
 					<template v-if="canInviteUsers" #append>
-						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ t('create_user') }}</v-button>
+						<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							{{ t('create_user') }}
+						</v-button>
 					</template>
 				</v-info>
 			</template>
@@ -126,7 +128,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, reactive, PropType } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
@@ -149,8 +151,8 @@ export default defineComponent({
 	name: 'users-collection',
 	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
-		queryFilters: {
-			type: Object as PropType<Record<string, string>>,
+		role: {
+			type: String,
 			default: null,
 		},
 	},
@@ -173,19 +175,15 @@ export default defineComponent({
 
 		const layoutFilters = computed<any[]>({
 			get() {
-				if (props.queryFilters !== null) {
-					const urlFilters = [];
+				if (props.role !== null) {
+					const roleFilter = {
+						locked: true,
+						operator: 'eq',
+						field: 'role',
+						value: props.role,
+					};
 
-					for (const [field, value] of Object.entries(props.queryFilters)) {
-						urlFilters.push({
-							locked: true,
-							operator: 'eq',
-							field,
-							value,
-						});
-					}
-
-					return [...urlFilters, ...filters.value];
+					return [roleFilter, ...filters.value];
 				}
 
 				return filters.value;
@@ -292,7 +290,7 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/users/+`;
+				return props.role ? `/users/roles/${props.role}/+` : '/users/+';
 			});
 
 			return { addNewLink };
@@ -300,7 +298,7 @@ export default defineComponent({
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
-				if (!props.queryFilters?.role) return null;
+				if (!props.role) return null;
 
 				return [
 					{
@@ -311,8 +309,8 @@ export default defineComponent({
 			});
 
 			const title = computed(() => {
-				if (!props.queryFilters?.role) return t('user_directory');
-				return roles.value?.find((role: Role) => role.id === props.queryFilters.role)?.name;
+				if (!props.role) return t('user_directory');
+				return roles.value?.find((role: Role) => role.id === props.role)?.name;
 			});
 
 			return { breadcrumb, title };

@@ -95,7 +95,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="(item && item.role) || (preset && preset.role)" />
+			<users-navigation :current-role="(item && item.role) || role" />
 		</template>
 
 		<div class="user-item">
@@ -206,9 +206,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		preset: {
-			type: Object,
-			default: () => ({}),
+		role: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -245,9 +245,9 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_users'), primaryKey);
 
-		if (props.preset) {
+		if (props.role) {
 			edits.value = {
-				...props.preset,
+				role: props.role,
 				...edits.value,
 			};
 		}
@@ -365,7 +365,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: t('user_directory'),
-					to: `/users/`,
+					to: `/users`,
 				},
 			]);
 

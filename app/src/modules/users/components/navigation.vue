@@ -13,7 +13,7 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users?role=${id}`" :active="currentRole === id">
+		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users/roles/${id}`" :active="currentRole === id">
 			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
 			<v-list-item-content>{{ name }}</v-list-item-content>
 		</v-list-item>

@@ -11,17 +11,26 @@ export default defineModule({
 			name: 'users-collection',
 			path: '',
 			component: Collection,
-			props: (route) => ({
-				queryFilters: route.query,
-			}),
 		},
 		{
 			name: 'users-item',
 			path: ':primaryKey',
 			component: Item,
+			props: true,
+		},
+		{
+			name: 'roles-collection',
+			path: 'roles/:role',
+			component: Collection,
+			props: true,
+		},
+		{
+			name: 'roles-item-add',
+			path: 'roles/:role/+',
+			component: Item,
 			props: (route) => ({
-				primaryKey: route.params.primaryKey,
-				preset: route.query,
+				primaryKey: '+',
+				role: route.params.role,
 			}),
 		},
 	],
