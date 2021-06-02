@@ -71,7 +71,7 @@ const defaults: Record<string, any> = {
 // Allows us to force certain environment variable into a type, instead of relying
 // on the auto-parsed type in processValues. ref #3705
 const typeMap: Record<string, string> = {
-	PORT: 'number',
+	PORT: 'string',
 
 	DB_NAME: 'string',
 	DB_USER: 'string',
