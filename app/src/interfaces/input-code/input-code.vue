@@ -1,6 +1,6 @@
 <template>
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
-		<textarea ref="codemirrorEl" :value="stringValue" />
+		<div ref="codemirrorEl"></div>
 
 		<v-button small icon secondary v-if="template" v-tooltip.left="t('fill_template')" @click="fillTemplate">
 			<v-icon name="playlist_add" />
@@ -12,7 +12,7 @@
 import { useI18n } from 'vue-i18n';
 import CodeMirror from 'codemirror';
 
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from 'vue';
+import { defineComponent, computed, ref, onMounted, watch, markRaw } from 'vue';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';
@@ -69,17 +69,24 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
-		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
+		let codemirror: CodeMirror.Editor | null;
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
-				const codemirrorElVal = codemirrorEl.value;
-
 				await getImports(cmOptions.value);
-				codemirror.value = CodeMirror.fromTextArea(codemirrorElVal, cmOptions.value);
-				codemirror.value.setValue(stringValue.value || '');
+
+				await importCodemirrorMode(cmOptions.value.mode);
+
+				codemirror = CodeMirror(codemirrorEl.value, {
+					...cmOptions.value,
+					value: stringValue.value,
+				});
+
+				codemirror.setOption('mode', { name: 'javascript ' });
+
 				await setLanguage();
-				codemirror.value.on('change', (cm, { origin }) => {
+
+				codemirror.on('change', (cm, { origin }) => {
 					if (origin === 'setValue') return;
 
 					const content = cm.getValue();
@@ -101,10 +108,6 @@ export default defineComponent({
 			}
 		});
 
-		onUnmounted(() => {
-			codemirror.value?.toTextArea();
-		});
-
 		const stringValue = computed(() => {
 			if (props.value == null) return '';
 
@@ -123,13 +126,13 @@ export default defineComponent({
 		);
 
 		watch(stringValue, () => {
-			if (codemirror.value?.getValue() !== stringValue.value) {
-				codemirror.value?.setValue(stringValue.value || '');
+			if (codemirror?.getValue() !== stringValue.value) {
+				codemirror?.setValue(stringValue.value || '');
 			}
 		});
 
 		async function setLanguage() {
-			if (codemirror.value) {
+			if (codemirror) {
 				const lang = props.language.toLowerCase();
 
 				if (lang === 'json') {
@@ -138,7 +141,7 @@ export default defineComponent({
 
 					const jsonlint = (await import('jsonlint-mod')) as any;
 
-					codemirror.value.setOption('mode', { name: 'javascript', json: true });
+					codemirror.setOption('mode', { name: 'javascript', json: true });
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
 						const found: Record<string, any> = [];
@@ -162,10 +165,10 @@ export default defineComponent({
 						return found;
 					});
 				} else if (lang === 'plaintext') {
-					codemirror.value.setOption('mode', { name: null });
+					codemirror.setOption('mode', { name: null });
 				} else {
 					await importCodemirrorMode(lang);
-					codemirror.value.setOption('mode', { name: lang });
+					codemirror.setOption('mode', { name: lang });
 				}
 			}
 		}
@@ -203,8 +206,8 @@ export default defineComponent({
 		}
 
 		const lineCount = computed(() => {
-			if (codemirror.value) {
-				return codemirror.value.lineCount();
+			if (codemirror) {
+				return codemirror.lineCount();
 			}
 			return 0;
 		});
@@ -244,7 +247,7 @@ export default defineComponent({
 		watch(
 			() => props.disabled,
 			(disabled) => {
-				codemirror.value?.setOption('readOnly', disabled ? 'nocursor' : false);
+				codemirror?.setOption('readOnly', disabled ? 'nocursor' : false);
 			},
 			{ immediate: true }
 		);
@@ -255,7 +258,7 @@ export default defineComponent({
 				if (!altOptions || altOptions.size === 0) return;
 				await getImports(altOptions);
 				for (const key in altOptions) {
-					codemirror.value?.setOption(key as any, altOptions[key]);
+					codemirror?.setOption(key as any, altOptions[key]);
 				}
 			}
 		);
@@ -263,7 +266,7 @@ export default defineComponent({
 		watch(
 			() => props.lineNumber,
 			(lineNumber) => {
-				codemirror.value?.setOption('lineNumbers', lineNumber);
+				codemirror?.setOption('lineNumbers', lineNumber);
 			}
 		);
 

@@ -127,7 +127,7 @@
 			</v-item-group>
 		</div>
 
-		<textarea ref="codemirrorEl" :value="value" />
+		<div ref="codemirrorEl"></div>
 
 		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
 
@@ -147,13 +147,13 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType } from 'vue';
+import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType, markRaw } from 'vue';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
-import { useEdit, CustomSyntax } from './composables/use-edit';
+import { edit, CustomSyntax } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
 import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
@@ -190,7 +190,7 @@ export default defineComponent({
 
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
-		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
+		let codemirror: CodeMirror.Editor | null = null;
 
 		const view = ref(['editor']);
 
@@ -198,36 +198,36 @@ export default defineComponent({
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
-				codemirror.value = CodeMirror.fromTextArea(codemirrorEl.value, {
+				codemirror = CodeMirror(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
 					placeholder: props.placeholder,
+					value: props.value || '',
 				});
-				codemirror.value.setValue(props.value || '');
-				codemirror.value.on('change', (cm, { origin }) => {
-					if (origin === 'setValue') return;
+
+				codemirror.on('change', (cm) => {
 					const content = cm.getValue();
 					emit('input', content);
 				});
 			}
 		});
 
-		onUnmounted(() => {
-			codemirror.value?.toTextArea();
-		});
-
-		// @TODO3 This is causing issues somehow
 		watch(
 			() => props.value,
 			(newValue) => {
-				if (codemirror.value?.getValue() !== newValue) {
-					codemirror.value?.setValue(props.value || '');
+				if (!codemirror) return;
+
+				const existingValue = codemirror.getValue();
+
+				if (existingValue !== newValue) {
+					codemirror.setValue('');
+					codemirror.clearHistory();
+					codemirror.setValue(newValue);
+					codemirror.refresh();
 				}
 			}
 		);
-
-		const { edit } = useEdit(codemirror);
 
 		const html = computed(() => {
 			let mdString = props.value || '';
@@ -253,18 +253,18 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		useShortcut('meta+b', () => edit('bold'), markdownInterface);
-		useShortcut('meta+i', () => edit('italic'), markdownInterface);
-		useShortcut('meta+k', () => edit('link'), markdownInterface);
-		useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
-		useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
-		useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
-		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
-		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
-		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
-		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
-		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
-		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
+		useShortcut('meta+b', () => edit(codemirror, 'bold'), markdownInterface);
+		useShortcut('meta+i', () => edit(codemirror, 'italic'), markdownInterface);
+		useShortcut('meta+k', () => edit(codemirror, 'link'), markdownInterface);
+		useShortcut('meta+alt+d', () => edit(codemirror, 'strikethrough'), markdownInterface);
+		useShortcut('meta+alt+q', () => edit(codemirror, 'blockquote'), markdownInterface);
+		useShortcut('meta+alt+c', () => edit(codemirror, 'code'), markdownInterface);
+		useShortcut('meta+alt+1', () => edit(codemirror, 'heading', { level: 1 }), markdownInterface);
+		useShortcut('meta+alt+2', () => edit(codemirror, 'heading', { level: 2 }), markdownInterface);
+		useShortcut('meta+alt+3', () => edit(codemirror, 'heading', { level: 3 }), markdownInterface);
+		useShortcut('meta+alt+4', () => edit(codemirror, 'heading', { level: 4 }), markdownInterface);
+		useShortcut('meta+alt+5', () => edit(codemirror, 'heading', { level: 5 }), markdownInterface);
+		useShortcut('meta+alt+6', () => edit(codemirror, 'heading', { level: 6 }), markdownInterface);
 
 		return {
 			t,
@@ -281,7 +281,7 @@ export default defineComponent({
 		};
 
 		function onImageUpload(image: any) {
-			if (!codemirror.value) return;
+			if (!codemirror) return;
 
 			let url = getPublicURL() + `assets/` + image.id;
 
@@ -289,7 +289,7 @@ export default defineComponent({
 				url += '?access_token=' + props.imageToken;
 			}
 
-			codemirror.value.replaceSelection(`![](${url})`);
+			codemirror.replaceSelection(`![](${url})`);
 
 			imageDialogOpen.value = false;
 		}
