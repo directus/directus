@@ -22,6 +22,7 @@ create_webhook: Crear Webhook
 invite_users: Invitar Usuarios
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invitar
+email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
@@ -81,9 +82,13 @@ validationError:
   nnull: El valor no puede ser nulo
   required: El valor es requerido
   unique: El Valor tiene que ser único
+  regex: El valor no tiene el formato correcto
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
+nullable: Acepta valores nulos
+allow_null_value: Permitir valor NULL
+enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
 field_presentation: Presentación y Alias
 field_file: Un Archivo
@@ -138,6 +143,7 @@ decimal: Decimal
 float: Número Flotante
 integer: Número Entero
 json: JSON
+xml: XML
 string: Cadena de Texto
 text: Texto
 time: Hora
