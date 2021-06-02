@@ -23,9 +23,7 @@
   - [`02089a6`](https://github.com/directus/directus/commit/02089a6227575a340bbf5b926cf9717a89941138) set the default
     TTL for cache to a more reasonable 10 minutes (from 30) ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **App**
-  - set the default value for boolean filters to `true`, preventing confusion around the state of the toggle in advanced
-    [`4277de0`](https://github.com/directus/directus/commit/4277de088988a65f9ea4ea18a4121488a24a8e87) filters
-    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [`4277de0`](https://github.com/directus/directus/commit/4277de088988a65f9ea4ea18a4121488a24a8e87) set the default value for boolean filters to `true`, preventing confusion around the state of the toggle in advanced filters ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`a5cba0d`](https://github.com/directus/directus/commit/a5cba0dc7e3a1566095deb58d10297f3b7bbe9bd) prevent unusable
     collections from being selected in the relational setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`4beccb6`](https://github.com/directus/directus/commit/4beccb6a8a9e33d0ae0e47333bfacd60741a91bc) don't allow using
@@ -56,9 +54,7 @@
 - **App**
   - [#5810](https://github.com/directus/directus/pull/) fixed custom fields on system collections not aligning to the
     configured sort order ([@rijkvanzanten5810](https://github.com/rijkvanzanten5810))
-  - fixed a small issue that would prevent the advanced filter field selection from allowing multiple nested fields from
-    [`158316f`](https://github.com/directus/directus/commit/158316f86318e83de5d5e6e203306a5603458c6d) being opened
-    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [`158316f`](https://github.com/directus/directus/commit/158316f86318e83de5d5e6e203306a5603458c6d) fixed a small issue that would prevent the advanced filter field selection from allowing multiple nested fields from being opened ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`246c552`](https://github.com/directus/directus/commit/246c55266b78ae063408dbc1b04d1797bd85e476) fixed an issue
     that would require non-null fields to be submitted in every GraphQL mutation
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
@@ -67,19 +63,13 @@
   - [`b782eba`](https://github.com/directus/directus/commit/b782eba859d0a91d08dfd39ab41e6952db0c94b7) fixed an issue
     that would make custom field translations disappear when reordering the fields in settings
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - fixed an issue that would cause the relational setup to auto generate an invalid name when making a recursive
-    [`bd6cab8`](https://github.com/directus/directus/commit/bd6cab8989ea8a8af3b0848c51ee9b3fae289ab3) many-to-many field
-    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [`bd6cab8`](https://github.com/directus/directus/commit/bd6cab8989ea8a8af3b0848c51ee9b3fae289ab3) fixed an issue that would cause the relational setup to auto generate an invalid name when making a recursive many-to-many field ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`8590eec`](https://github.com/directus/directus/commit/8590eec662364ce8c865b529394f271b8b46a1c7) fix collection
     search when using custom nav override structure ([@Oreilles](https://github.com/Oreilles))
-  - fixed an issue where dragging an event in the calendar layout could save with the wrong timezone when using a
-    [`dee8160`](https://github.com/directus/directus/commit/dee8160f184af4f041580d76ce88da5dc3eb0d12) datetime field
-    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [`dee8160`](https://github.com/directus/directus/commit/dee8160f184af4f041580d76ce88da5dc3eb0d12) fixed an issue where dragging an event in the calendar layout could save with the wrong timezone when using a datetime field ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`374e6e5`](https://github.com/directus/directus/commit/374e6e5a7dd3d752a25c352df7ce5f661a5b15c1) don't let v-error
     messages overflow the bounding box of the dialog ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - fixed an issue that would prevent the user from continuing in field setup when using an existing junction table for
-    [`2660c39`](https://github.com/directus/directus/commit/2660c3995426dd3d8d36a8022893cddcd27ed53f) a many-to-many
-    relationship ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [`2660c39`](https://github.com/directus/directus/commit/2660c3995426dd3d8d36a8022893cddcd27ed53f) fixed an issue that would prevent the user from continuing in field setup when using an existing junction table for a many-to-many relationship ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [`de0b962`](https://github.com/directus/directus/commit/de0b9627365b392d4af0589a52b122cf0b5ec927) fixed the
     highlight color of a selected folder in the move-folder dialog ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **drive-azure**
