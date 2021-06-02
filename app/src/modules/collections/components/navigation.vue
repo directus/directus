@@ -189,8 +189,8 @@ export default defineComponent({
 			}
 		}
 
-		function activateContextMenu() {
-			contextMenu.value.activate();
+		function activateContextMenu(event: PointerEvent) {
+			contextMenu.value.activate(event);
 		}
 	},
 });
@@ -203,7 +203,6 @@ export default defineComponent({
 }
 
 .empty {
-
 	.v-button {
 		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color: var(--foreground-subdued);

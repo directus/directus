@@ -159,8 +159,8 @@ export default defineComponent({
 			}
 		}
 
-		function activateContextMenu() {
-			contextMenu.value.activate();
+		function activateContextMenu(event: PointerEvent) {
+			contextMenu.value.activate(event);
 		}
 	},
 });
