@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, computed } from 'vue';
+import { defineComponent, computed, unref } from 'vue';
 
 import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
@@ -56,10 +56,8 @@ export default defineComponent({
 						to: module.link === undefined ? `/${module.id}/` : null,
 					}))
 					.filter((module: ModuleConfig) => {
-						if (module.hidden !== undefined) {
-							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
-								return false;
-							}
+						if (module.hidden !== undefined && unref(module.hidden) === true) {
+							return false;
 						}
 						return true;
 					}),
