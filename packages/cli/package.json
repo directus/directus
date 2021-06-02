@@ -56,7 +56,7 @@
 		"dotenv": "^9.0.2",
 		"eventemitter2": "^6.4.4",
 		"figlet": "^1.5.0",
-		"fs-extra": "^8.1.0",
+		"fs-extra": "^10.0.0",
 		"gluegun": "^4.6.1",
 		"indent-string": "^5.0.0",
 		"jaro-winkler": "^0.2.8",
