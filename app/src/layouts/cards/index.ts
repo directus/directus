@@ -43,9 +43,9 @@ export default defineLayout({
 
 				const relation = relationsStore.relations.find((relation) => {
 					return (
-						relation.many_collection === props.collection &&
-						relation.many_field === field.field &&
-						relation.one_collection === 'directus_files'
+						relation.collection === props.collection &&
+						relation.field === field.field &&
+						relation.related_collection === 'directus_files'
 					);
 				});
 
