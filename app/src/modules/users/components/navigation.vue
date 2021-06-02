@@ -1,6 +1,6 @@
 <template>
 	<v-list large>
-		<v-list-item to="/users" exact :active="currentRole === null">
+		<v-list-item to="/users" :active="currentRole === null">
 			<v-list-item-icon><v-icon name="folder_shared" outline /></v-list-item-icon>
 			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
 		</v-list-item>
@@ -13,7 +13,7 @@
 			</v-list-item>
 		</template>
 
-		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users/roles/${id}`" :active="currentRole === id">
+		<v-list-item v-for="{ name, id, icon } in roles" :key="id" :to="`/users/roles/${id}`">
 			<v-list-item-icon><v-icon :name="icon" outline /></v-list-item-icon>
 			<v-list-item-content>{{ name }}</v-list-item-content>
 		</v-list-item>

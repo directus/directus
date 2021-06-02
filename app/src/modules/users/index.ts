@@ -1,4 +1,5 @@
 import { defineModule } from '@/modules/define';
+import routerPassthrough from '@/utils/router-passthrough';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 
@@ -8,34 +9,46 @@ export default defineModule({
 	icon: 'people_alt',
 	routes: [
 		{
-			name: 'users-collection',
 			path: '',
-			component: Collection,
-		},
-		{
-			name: 'users-item',
-			path: ':primaryKey',
-			component: Item,
-			props: true,
+			component: routerPassthrough(),
+			children: [
+				{
+					name: 'users-collection',
+					path: '',
+					component: Collection,
+				},
+				{
+					name: 'users-item',
+					path: ':primaryKey',
+					component: Item,
+					props: true,
+				},
+			],
 		},
 		{
 			path: 'roles',
 			redirect: '/users',
 		},
 		{
-			name: 'roles-collection',
 			path: 'roles/:role',
-			component: Collection,
-			props: true,
-		},
-		{
-			name: 'roles-item-add',
-			path: 'roles/:role/+',
-			component: Item,
-			props: (route) => ({
-				primaryKey: '+',
-				role: route.params.role,
-			}),
+			component: routerPassthrough(),
+			children: [
+				{
+					name: 'roles-collection',
+					path: '',
+					component: Collection,
+					props: true,
+				},
+				{
+					name: 'roles-item-add',
+					path: '+',
+					component: Item,
+					props: (route) => ({
+						primaryKey: '+',
+						role: route.params.role,
+					}),
+				},
+			],
 		},
 	],
 	order: 10,
