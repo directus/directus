@@ -21,8 +21,6 @@
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"
 	},
 	"devDependencies": {
-		"@changesets/changelog-github": "^0.4.0",
-		"@changesets/cli": "^2.16.0",
 		"@types/dockerode": "^3.2.3",
 		"@types/jest": "^26.0.22",
 		"@types/listr": "^0.14.3",
