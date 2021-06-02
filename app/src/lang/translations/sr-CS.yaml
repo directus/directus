@@ -83,12 +83,19 @@ today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
 created: Kreiran
+report_bug: Prijavi Propust
+settings_project: Podešavanje Projekta
 fields:
   directus_files:
     title: Naslov
   directus_users:
     title: Naslov
     language: Jezik
+  directus_settings:
+    project_name: Ime Projekta
+    project_color: Boja Projekta
+    project_logo: Logotip Projekta
+    public_note: Opis Projekta
   directus_roles:
     name: Naziv uloge
 interfaces:
