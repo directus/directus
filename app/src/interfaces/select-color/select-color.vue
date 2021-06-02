@@ -3,7 +3,7 @@
 		<template #activator>
 			<v-input
 				:disabled="disabled"
-				:placeholder="t('interfaces.color.placeholder')"
+				:placeholder="t('interfaces.select-color.placeholder')"
 				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
@@ -320,9 +320,11 @@ export default defineComponent({
 	--border-radius: 0px;
 }
 
-.color-data-inputs
-	.color-data-input
-	:deep(:is(.input:focus-within, .input:active, .input:focus, .input:hover, .input.active)) {
+.color-data-inputs .color-data-input :deep(.input:focus-within),
+.color-data-inputs .color-data-input :deep(.input:active),
+.color-data-inputs .color-data-input :deep(.input:focus),
+.color-data-inputs .color-data-input :deep(.input:hover),
+.color-data-inputs .color-data-input :deep(.input.active) {
 	z-index: 1;
 }
 
