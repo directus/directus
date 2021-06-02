@@ -23,6 +23,7 @@ These options are only recommended for developers familiar with these services a
 While Directus is always completely free, you will likely need to pay for these services.
 
 - [Generic Ubuntu](/guides/installation/ubuntu)
+- [Internet Information Services (IIS)](/guides/installation/iis)
 - [Amazon AWS](/guides/installation/aws)
 - [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
 
