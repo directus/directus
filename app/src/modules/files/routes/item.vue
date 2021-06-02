@@ -280,7 +280,7 @@ export default defineComponent({
 		];
 
 		const to = computed(() => {
-			if (item.value && item.value?.folder) return `/files?folder=${item.value.folder}`;
+			if (item.value && item.value?.folder) return `/files/folders/${item.value.folder}`;
 			else return '/files';
 		});
 
@@ -367,12 +367,7 @@ export default defineComponent({
 				return [
 					{
 						name: t('file_library'),
-						to: {
-							path: `/files/`,
-							query: {
-								folder: item?.value?.folder,
-							},
-						},
+						to: { path: `/files/folders/${item.value.folder}` },
 					},
 				];
 			});

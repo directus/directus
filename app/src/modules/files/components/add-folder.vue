@@ -74,7 +74,7 @@ export default defineComponent({
 				dialogActive.value = false;
 				newFolderName.value = null;
 
-				router.push({ path: '/files', query: { folder: newFolder.data.data.id } });
+				router.push({ path: `/files/folders/${newFolder.data.data.id}` });
 			} catch (err) {
 				unexpectedError(err);
 			} finally {

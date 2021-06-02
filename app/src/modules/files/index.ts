@@ -12,9 +12,6 @@ export default defineModule({
 			name: 'files-collection',
 			path: '',
 			component: Collection,
-			props: (route) => ({
-				queryFilters: route.query,
-			}),
 			children: [
 				{
 					path: '+',
@@ -26,25 +23,40 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'folders-collection',
+			path: 'folders/:folder',
+			component: Collection,
+			props: true,
+			children: [
+				{
+					path: '+',
+					name: 'add-file-folder',
+					components: {
+						addNew: AddNew,
+					},
+				},
+			],
+		},
+		{
 			path: 'all',
 			component: Collection,
-			props: () => ({
+			props: {
 				special: 'all',
-			}),
+			},
 		},
 		{
 			path: 'mine',
 			component: Collection,
-			props: () => ({
+			props: {
 				special: 'mine',
-			}),
+			},
 		},
 		{
 			path: 'recent',
 			component: Collection,
-			props: () => ({
+			props: {
 				special: 'recent',
-			}),
+			},
 		},
 		{
 			name: 'files-item',

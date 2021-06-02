@@ -17,7 +17,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="queryFilters && queryFilters.folder" :disabled="createFolderAllowed !== true" />
+			<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
@@ -88,7 +88,7 @@
 				rounded
 				icon
 				class="add-new"
-				:to="{ path: '/files/+', query: queryFilters }"
+				:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
@@ -97,7 +97,7 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="queryFilters && queryFilters.folder" />
+			<files-navigation :current-folder="folder" />
 		</template>
 
 		<component class="layout" :is="`layout-${layout}`">
@@ -116,13 +116,15 @@
 					{{ t('no_files_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ t('add_file') }}</v-button>
+						<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+							{{ t('add_file') }}
+						</v-button>
 					</template>
 				</v-info>
 			</template>
 		</component>
 
-		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
+		<router-view name="addNew" :folder="folder" @upload="refresh" />
 
 		<drawer-batch
 			:primary-keys="selection"
@@ -187,8 +189,8 @@ export default defineComponent({
 		DrawerBatch,
 	},
 	props: {
-		queryFilters: {
-			type: Object as PropType<Record<string, string>>,
+		folder: {
+			type: String,
 			default: null,
 		},
 		special: {
@@ -225,15 +227,13 @@ export default defineComponent({
 			];
 
 			if (props.special === null) {
-				if (Object.keys(props.queryFilters).length > 0) {
-					for (const [field, value] of Object.entries(props.queryFilters)) {
-						filtersParsed.push({
-							locked: true,
-							operator: 'eq',
-							field,
-							value,
-						});
-					}
+				if (props.folder !== null) {
+					filtersParsed.push({
+						locked: true,
+						operator: 'eq',
+						field: 'folder',
+						value: props.folder,
+					});
 				} else {
 					filtersParsed.push({
 						locked: true,
@@ -384,8 +384,8 @@ export default defineComponent({
 					return t('recent_files');
 				}
 
-				if (props.queryFilters?.folder) {
-					const folder = folders.value?.find((folder: Folder) => folder.id === props.queryFilters.folder);
+				if (props.folder) {
+					const folder = folders.value?.find((folder: Folder) => folder.id === props.folder);
 
 					if (folder) {
 						return folder.name;
@@ -432,7 +432,7 @@ export default defineComponent({
 					selection.value = [];
 
 					if (selectedFolder.value) {
-						router.push(`/files?folder=${selectedFolder.value}`);
+						router.push(`/files/folders/${selectedFolder.value}`);
 					}
 
 					await nextTick();
@@ -606,9 +606,9 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, {
-					preset: props.queryFilters?.folder
+					preset: props.folder
 						? {
-								folder: props.queryFilters.folder,
+								folder: props.folder,
 						  }
 						: {},
 					onProgressChange: (progress) => {

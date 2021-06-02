@@ -270,7 +270,7 @@ export default defineComponent({
 				if (folder.value === null) {
 					return `/files`;
 				}
-				return `/files/?folder=${folder.value.id}`;
+				return `/files/folders/${folder.value.id}`;
 			});
 
 			watch(() => props.file, fetchFolder, { immediate: true });

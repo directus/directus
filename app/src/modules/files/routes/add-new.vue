@@ -3,7 +3,7 @@
 		<v-card>
 			<v-card-title>{{ t('add_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="preset" multiple @input="close" from-url />
+				<v-upload :preset="{ folder }" multiple @input="close" from-url />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ t('done') }}</v-button>
@@ -19,9 +19,9 @@ import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	props: {
-		preset: {
-			type: Object,
-			default: () => ({}),
+		folder: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -32,7 +32,7 @@ export default defineComponent({
 		return { t, close };
 
 		function close() {
-			router.push({ path: '/files', query: props.preset });
+			router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
 		}
 	},
 });
