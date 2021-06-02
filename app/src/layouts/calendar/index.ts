@@ -184,7 +184,7 @@ export default defineLayout({
 					const endpoint = collection.value.startsWith('directus')
 						? collection.value.substring(9)
 						: `/collections/${collection.value}`;
-					router.push(`${endpoint}/${primaryKey}`);
+					router.push(`${endpoint}/-/${primaryKey}`);
 				},
 				async eventChange(info) {
 					if (!startDateField.value) return;

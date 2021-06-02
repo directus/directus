@@ -66,7 +66,7 @@ export default defineLayout({
 		});
 
 		const newLink = computed(() => {
-			return `/collections/${collection.value}/+`;
+			return `/collections/${collection.value}/-/+`;
 		});
 
 		const showingCount = computed(() => {
@@ -258,7 +258,7 @@ export default defineLayout({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${encodeURIComponent(item[primaryKeyField.value!.field])}`;
+			return `/collections/${props.collection}/-/${encodeURIComponent(item[primaryKeyField.value!.field])}`;
 		}
 
 		function selectAll() {

@@ -85,7 +85,7 @@ export default defineComponent({
 
 		const openItemLink = computed(() => {
 			if (!item.value) return;
-			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+			return `/collections/${item.value.collection}/-/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });

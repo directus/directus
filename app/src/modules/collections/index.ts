@@ -1,5 +1,4 @@
 import { defineModule } from '@/modules/define';
-import { addQueryToPath } from '@/utils/add-query-to-path';
 import routerPassthrough from '@/utils/router-passthrough';
 import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
@@ -7,7 +6,7 @@ import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import Overview from './routes/overview.vue';
 
-const checkForSystem: NavigationGuard = (to, from) => {
+const checkForSystem: NavigationGuard = (to) => {
 	if (!to.params?.collection) return;
 
 	if (to.params.collection === 'directus_users') {
@@ -41,15 +40,6 @@ const checkForSystem: NavigationGuard = (to, from) => {
 			return '/settings/webhooks';
 		}
 	}
-
-	if (
-		'bookmark' in from.query &&
-		typeof from.query.bookmark === 'string' &&
-		'bookmark' in to.query === false &&
-		to.params.collection === from.params.collection
-	) {
-		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
-	}
 };
 
 export default defineModule({
@@ -63,17 +53,14 @@ export default defineModule({
 			component: Overview,
 		},
 		{
-			path: ':collection',
+			path: ':collection/:bookmark',
 			component: routerPassthrough(),
 			children: [
 				{
 					name: 'collections-collection',
 					path: '',
 					component: CollectionOrItem,
-					props: (route) => ({
-						collection: route.params.collection,
-						bookmark: route.query.bookmark,
-					}),
+					props: true,
 					beforeEnter: checkForSystem,
 				},
 				{

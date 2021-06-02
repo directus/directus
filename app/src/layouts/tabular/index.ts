@@ -344,7 +344,7 @@ export default defineLayout({
 					const primaryKey = item[primaryKeyField.value!.field];
 
 					// @TODO3 Why was there an emtpy function as callback?
-					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					router.push(`/collections/${collection.value}/-/${encodeURIComponent(primaryKey)}`);
 				}
 			}
 

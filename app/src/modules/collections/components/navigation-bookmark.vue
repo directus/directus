@@ -142,7 +142,7 @@ export default defineComponent({
 					let navigateTo: string | null = null;
 
 					if (+route.query?.bookmark === props.bookmark.id) {
-						navigateTo = `/collections/${props.bookmark.collection}`;
+						navigateTo = `/collections/${props.bookmark.collection}/-`;
 					}
 
 					await presetsStore.delete(props.bookmark.id);

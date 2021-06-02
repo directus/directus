@@ -419,7 +419,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: collectionInfo.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/collections/${props.collection}/-`,
 				},
 			]);
 
@@ -431,7 +431,7 @@ export default defineComponent({
 
 			try {
 				await save();
-				if (props.singleton === false) router.push(`/collections/${props.collection}`);
+				if (props.singleton === false) router.push(`/collections/${props.collection}/-`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -448,7 +448,7 @@ export default defineComponent({
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+					router.replace(`/collections/${props.collection}/-/${encodeURIComponent(newPrimaryKey)}`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -464,7 +464,7 @@ export default defineComponent({
 				if (isNew.value === true) {
 					refresh();
 				} else {
-					router.push(`/collections/${props.collection}/+`);
+					router.push(`/collections/${props.collection}/-/+`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -474,7 +474,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/-/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -483,7 +483,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/collections/${props.collection}`);
+				router.push(`/collections/${props.collection}/-`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -494,7 +494,7 @@ export default defineComponent({
 				await archive();
 
 				if (isArchived.value === true) {
-					router.push(`/collections/${props.collection}`);
+					router.push(`/collections/${props.collection}/-`);
 				} else {
 					confirmArchive.value = false;
 				}

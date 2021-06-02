@@ -25,7 +25,7 @@ function collectionToNavItem(collection: Collection): NavItem {
 		name: collection.name,
 		icon: collection.meta?.icon || 'label',
 		note: collection.meta?.note || null,
-		to: `/collections/${collection.collection}`,
+		to: `/collections/${collection.collection}/-`,
 	};
 }
 

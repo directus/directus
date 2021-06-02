@@ -1,6 +1,6 @@
 <template>
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="bookmark ? bookmarkTitle : currentCollection.name">
+	<private-view v-else :title="bookmark !== '-' ? bookmarkTitle : currentCollection.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="currentCollection.icon" />
@@ -8,14 +8,14 @@
 		</template>
 
 		<template #headline>
-			<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
+			<v-breadcrumb v-if="bookmark !== '-'" :items="breadcrumb" />
 			<v-breadcrumb v-else :items="[{ name: t('collections'), to: '/collections' }]" />
 		</template>
 
 		<template #title-outer:append>
 			<div class="bookmark-controls">
 				<bookmark-add
-					v-if="!bookmark"
+					v-if="bookmark === '-'"
 					class="add"
 					v-model="bookmarkDialogActive"
 					@save="createBookmark"
@@ -57,7 +57,7 @@
 				</bookmark-add>
 
 				<v-icon
-					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					v-if="bookmark !== '-' && !bookmarkSaving && bookmarkSaved === false"
 					name="settings_backup_restore"
 					clickable
 					@click="clearLocalSave"
@@ -164,7 +164,7 @@
 
 		<v-info
 			type="warning"
-			v-if="bookmark && bookmarkExists === false"
+			v-if="bookmark !== '-' && bookmarkExists === false"
 			:title="t('bookmark_doesnt_exist')"
 			icon="bookmark"
 			center
@@ -194,7 +194,7 @@
 					{{ t('no_items_copy') }}
 
 					<template #append v-if="createAllowed">
-						<v-button :to="`/collections/${collection}/+`">{{ t('create_item') }}</v-button>
+						<v-button :to="`/collections/${collection}/-/+`">{{ t('create_item') }}</v-button>
 					</template>
 				</v-info>
 			</template>
@@ -296,7 +296,7 @@ export default defineComponent({
 		const permissionsStore = usePermissionsStore();
 
 		const { collection } = toRefs(props);
-		const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
+		const bookmarkID = computed(() => (props.bookmark !== '-' ? +props.bookmark : null));
 
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
@@ -413,7 +413,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: currentCollection.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/collections/${props.collection}/-`,
 				},
 			]);
 
@@ -493,11 +493,11 @@ export default defineComponent({
 
 		function useLinks() {
 			const addNewLink = computed<string>(() => {
-				return `/collections/${props.collection}/+`;
+				return `/collections/${props.collection}/-/+`;
 			});
 
 			const currentCollectionLink = computed<string>(() => {
-				return `/collections/${props.collection}`;
+				return `/collections/${props.collection}/-`;
 			});
 
 			return { addNewLink, currentCollectionLink };
@@ -521,7 +521,7 @@ export default defineComponent({
 
 				try {
 					const newBookmark = await saveCurrentAsBookmark({ bookmark: name });
-					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
+					router.push(`/collections/${newBookmark.collection}/${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
 				} catch (err) {

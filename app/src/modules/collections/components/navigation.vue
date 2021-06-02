@@ -136,7 +136,7 @@ export default defineComponent({
 
 						return {
 							...preset,
-							to: `/collections/${preset.collection}?bookmark=${preset.id}`,
+							to: `/collections/${preset.collection}/${preset.id}`,
 							scope,
 						};
 					}),
