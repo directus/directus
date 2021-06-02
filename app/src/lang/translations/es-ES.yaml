@@ -875,6 +875,7 @@ interfaces:
     code: Código
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
+    placeholder: Ingrese el código aquí...
   collection:
     collection: Colección
     description: Seleccionar entre colecciones existentes
@@ -885,6 +886,11 @@ interfaces:
     include_system_collections: Incluir Colecciones del Sistema
   select-color:
     color: Color
+    description: Introduzca o seleccione un valor de color
+    placeholder: Seleccione un color...
+    preset_colors: Colores preestablecidos
+    preset_colors_add_label: Añadir nuevo color...
+    name_placeholder: Introduce el nombre del color...
   datetime:
     datetime: Fecha/hora
     description: Ingrese fechas y horas
@@ -893,6 +899,7 @@ interfaces:
     use_24: Usar Formato 24 horas
   system-display-template:
     display-template: Plantilla de Presentación
+    description: Combinar texto estático y valores de campos dinámicos
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   presentation-divider:
