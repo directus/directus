@@ -48,6 +48,7 @@ export class AxiosTransport implements ITransport {
 			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
 			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? true;
 			options.headers = options.headers ?? {};
+			options.onUploadProgress = options.onUploadProgress ?? undefined;
 
 			if (options.refreshTokenIfNeeded) {
 				await this._refresh();
@@ -59,6 +60,7 @@ export class AxiosTransport implements ITransport {
 				data: data,
 				params: options.params,
 				headers: options.headers,
+				onUploadProgress: options.onUploadProgress,
 			};
 
 			const token = this._storage.auth_token;
