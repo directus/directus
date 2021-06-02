@@ -53,7 +53,7 @@ export function usePopper(
 			popperInstance.value.forceUpdate();
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			observer.observe(popper.value!, {
-				attributes: true,
+				attributes: false,
 				childList: true,
 				characterData: true,
 				subtree: true,

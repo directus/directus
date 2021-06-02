@@ -37,9 +37,7 @@
 				>
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div class="v-menu-content" @click.stop="onContentClick">
-						<!-- @TODO3 Is binding "active" twice intended? -->
 						<slot
-							:active="isActive"
 							v-bind="{
 								toggle: toggle,
 								active: isActive,
