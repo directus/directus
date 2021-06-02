@@ -1,29 +1,3 @@
-#
-# Builder
-#
-
-FROM node:14-alpine AS builder
-
-ARG VERSION
-
-RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash
-
-SHELL ["/bin/bash", "-c"]
-
-WORKDIR /directus
-
-COPY package.json .
-
-RUN for i in {1..60}; do npm install "directus@${VERSION}" && break || sleep 30; done
-
-RUN cat package.json
-
-#
-# Image
-#
 FROM node:14-alpine
 
 ARG VERSION
@@ -57,28 +31,28 @@ ENV \
   EMAIL_SENDMAIL_NEW_LINE="unix" \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
+# Install system dependencies
+# - 'bash' for entrypoint script
+# - 'ssmtp' to be able to send mails
 RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash ssmtp util-linux
+  apk upgrade --no-cache && \
+  apk add --no-cache bash ssmtp util-linux
 
-SHELL ["/bin/bash", "-c"]
-
-WORKDIR /directus
-
-# Global requirements
+# Install global node dependencies
 RUN npm install -g yargs pino pino-colada
 
-# Install Directus
-COPY --from=builder /directus/package.json .
-RUN npm install
-
-# Copy files
+# Copy rootfs files
 COPY ./rootfs /
-# Keep the updated package.json
-COPY --from=builder /directus/package.json .
 
-RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print
+# Switch to user 'node'
+USER node
+WORKDIR /directus
+
+COPY package.json .
+# Install Directus (retry if it fails for some reason) and runtime dependencies
+RUN \
+  for i in $(seq 10); do npm install "directus@${VERSION}" && break || sleep 30; done && \
+  npm install
 
 # Create directories
 RUN \
@@ -89,10 +63,11 @@ RUN \
   mkdir -p database && \
   mkdir -p uploads
 
-EXPOSE 8055
 VOLUME \
   /directus/database \
   /directus/extensions \
   /directus/uploads
 
+EXPOSE 8055
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["entrypoint"]

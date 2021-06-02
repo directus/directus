@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.71",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -34,7 +34,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "9.0.0-rc.70",
+		"@directus/drive": "9.0.0-rc.71",
 		"aws-sdk": "^2.911.0",
 		"normalize-path": "^3.0.0"
 	},
@@ -45,7 +45,7 @@
 		"@types/node": "^15.6.0",
 		"@types/normalize-path": "^3.0.0",
 		"dotenv": "^9.0.2",
-		"fs-extra": "^9.1.0",
+		"fs-extra": "^10.0.0",
 		"jest": "^27.0.3",
 		"npm-run-all": "^4.1.5",
 		"ts-jest": "^27.0.2",

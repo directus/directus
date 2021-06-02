@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.71",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -35,7 +35,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"fs-extra": "^9.1.0",
+		"fs-extra": "^10.0.0",
 		"node-exceptions": "^4.0.1"
 	},
 	"publishConfig": {

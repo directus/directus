@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.71",
 	"description": "",
 	"main": "index.json",
 	"scripts": {
@@ -31,7 +31,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"directory-tree": "^2.2.9",
-		"fs-extra": "^9.1.0",
+		"fs-extra": "^10.0.0",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
 		"npm-watch": "^0.9.0",

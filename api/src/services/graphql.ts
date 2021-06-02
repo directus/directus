@@ -44,7 +44,7 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
@@ -115,7 +115,7 @@ export class GraphQLService {
 
 	constructor(options: AbstractServiceOptions & { scope: 'items' | 'system' }) {
 		this.accountability = options?.accountability || null;
-		this.knex = options?.knex || database;
+		this.knex = options?.knex || getDatabase();
 		this.schema = options.schema;
 		this.scope = options.scope;
 	}

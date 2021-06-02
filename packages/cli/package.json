@@ -1,6 +1,6 @@
 {
 	"name": "@directus/cli",
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.71",
 	"description": "The official Directus CLI",
 	"repository": {
 		"type": "git",
@@ -41,8 +41,8 @@
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/format-title": "9.0.0-rc.70",
-		"@directus/sdk": "9.0.0-rc.70",
+		"@directus/format-title": "9.0.0-rc.71",
+		"@directus/sdk": "9.0.0-rc.71",
 		"@types/yargs": "^16.0.1",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
@@ -56,7 +56,7 @@
 		"dotenv": "^9.0.2",
 		"eventemitter2": "^6.4.4",
 		"figlet": "^1.5.0",
-		"fs-extra": "^8.1.0",
+		"fs-extra": "^10.0.0",
 		"gluegun": "^4.6.1",
 		"indent-string": "^5.0.0",
 		"jaro-winkler": "^0.2.8",
@@ -64,7 +64,7 @@
 		"js-yaml": "^4.1.0",
 		"json5": "^2.2.0",
 		"liquidjs": "^9.25.0",
-		"marked": "^2.0.5",
+		"marked": "^2.0.7",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
 		"open": "^8.2.0",
