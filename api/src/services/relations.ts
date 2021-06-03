@@ -201,15 +201,19 @@ export class RelationsService {
 		await this.knex.transaction(async (trx) => {
 			if (existingRelation.related_collection) {
 				await trx.schema.alterTable(collection, async (table) => {
+					// undefined == default to knex's default
+					let constraintName: string | null | undefined = undefined;
+
 					// If the FK already exists in the DB, drop it first
 					if (existingRelation?.schema) {
-						table.dropForeign(field);
+						constraintName = existingRelation.schema.constraint_name;
+						table.dropForeign(field, existingRelation.schema.constraint_name || undefined);
 					}
 
 					this.alterType(table, relation);
 
 					table
-						.foreign(field)
+						.foreign(field, constraintName || undefined)
 						.references(
 							`${existingRelation.related_collection!}.${
 								this.schema.collections[existingRelation.related_collection!].primary
@@ -261,7 +265,7 @@ export class RelationsService {
 		await this.knex.transaction(async (trx) => {
 			if (existingRelation.schema) {
 				await trx.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field);
+					table.dropForeign(existingRelation.field, existingRelation.schema?.constraint_name || undefined);
 				});
 			}
 
