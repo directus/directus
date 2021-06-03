@@ -2,12 +2,12 @@ import fse from 'fs-extra';
 import { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import path from 'path';
-import database from '../../database';
+import getDatabase from '../../database';
 import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
-import mailer from '../mailer';
+import mailer from '../../mailer';
 import { SendMailOptions } from 'nodemailer';
 
 const liquidEngine = new Liquid({
@@ -30,7 +30,7 @@ export class MailService {
 	constructor(opts: AbstractServiceOptions) {
 		this.schema = opts.schema;
 		this.accountability = opts.accountability || null;
-		this.knex = opts?.knex || database;
+		this.knex = opts?.knex || getDatabase();
 	}
 
 	async send(options: EmailOptions): Promise<void> {

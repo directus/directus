@@ -134,8 +134,7 @@ auto_generate: Generuoti Automatiškai
 this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
 click_here: Spauskite čia
 click_to_manage_translated_fields: >-
-  Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia
-  norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
+  Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
 add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
@@ -294,7 +293,6 @@ interface_not_found: 'Sąsaja "{interface}" nerasta.'
 reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
-list-m2a: Redaktorius (M2A)
 item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'
@@ -316,7 +314,7 @@ select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
 users: Vartotojai
 activity: Veiksmas
-webhooks: "„Webhook“'ai"
+webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
 add_filter: Pridėti filtrą
 upper_limit: Viršutinis limitas...
@@ -349,7 +347,7 @@ account_created_successfully: Paskyra sukurta sėkmingai
 auto_fill: Automatinis užpildymas
 corresponding_field: Atitinkamas laukas
 errors:
-  COLLECTION_NOT_FOUND: 'Kolekcija neegzistuoja'
+  COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
   FIELD_NOT_FOUND: Laukas nerastas
   FORBIDDEN: Draudžiama
   INVALID_CREDENTIALS: Klaidingas prisijungimo vardas ir slaptažodis
@@ -360,6 +358,7 @@ errors:
   ITEM_NOT_FOUND: Elementas nerastas
   ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
+  INTERNAL_SERVER_ERROR: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
@@ -387,8 +386,7 @@ update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
 start_end_of_count_items: '{start}-{end} iš {count} elementų'
 delete_collection_are_you_sure: >-
-  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo
-  atstatyti negalima.
+  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo atstatyti negalima.
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
@@ -537,7 +535,7 @@ no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
 settings_permissions: Grupės ir leidimai
 settings_project: Projekto nustatymai
-settings_webhooks: "„Webhook“'ai"
+settings_webhooks: '„Webhook“''ai'
 settings_presets: Ruošiniai ir žymos
 scope: Apimtis
 layout: Išdėstymas
@@ -551,38 +549,29 @@ discard_changes: Atšaukti pakeitimus
 keep_editing: Redaguoti toliau
 page_help_collections_overview: '**Kolekcijų peržiūra** — Rodomos visos kolekcijos, prie kurių turite prieigą.'
 page_help_collections_collection: >-
-  **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite
-  išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip
-  žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
+  **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
-  **Elemento detalės** — forma elemento peržiūrai ir redagavimui. Šiame šoniniame lange taip pat galima peržiūrėti pilną
-  pakeitimų istoriją ir susijusius komentarus.
+  **Elemento detalės** — forma elemento peržiūrai ir redagavimui. Šiame šoniniame lange taip pat galima peržiūrėti pilną pakeitimų istoriją ir susijusius komentarus.
 page_help_activity_collection: >-
   **Peržiūrėti veiklą** — išsamus visos sistemos vartotojų veiklos sąrašas.
 page_help_docs_global: >-
   **Dokumentacijos apžvalga** — Dokumnetacija, sukurta specialiai šiam projektui ir jo duomenų schemai.
 page_help_files_collection: >-
-  ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite
-  atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo
-  konfigūraciją.
+  ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_files_item: >-
-  **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų
-  atnaujinimui.
-page_help_settings_project: '**Projekto nustatymai** — globali projekto konfigūracija.'
+  **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
+page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
 page_help_settings_datamodel_collections: >-
-  **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines
-  kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
+  **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
   **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
-page_help_settings_roles_collection:
-  '**Grupių peržiūra** — Rodomos administratoriaus, vieša ir pasirinktinos vartotojų grupės (rolės).'
-page_help_settings_roles_item: '**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus.'
+page_help_settings_roles_collection: '**Grupių peržiūra** — Rodomos administratoriaus, vieša ir pasirinktinos vartotojų grupės (rolės).'
+page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
 page_help_settings_presets_collection: >-
-  **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei
-  numatytuosius langus.
+  **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
 page_help_settings_presets_item: >-
   **Ruošinio duomenys** — forma žymų ir numatytųjų kolekcijos ruošinių valdymui.
-page_help_settings_webhooks_collection: "**Peržiūrėti Webhook'us** - Rodomi visi projekto Webhook'ai."
+page_help_settings_webhooks_collection: '**Peržiūrėti Webhook''us** - Rodomi visi projekto Webhook''ai.'
 page_help_users_collection: '**Vartotojų aplankas** — rodomi visi šio projekto vartotojai.'
 page_help_users_item: >-
   **Vartotojo duomenys** — valdykite savo paskyros informaciją arba peržiūrėkite kitų vartotojų duomenis.
@@ -593,8 +582,7 @@ all: Visi
 none: Nėra
 no_layout_collection_selected_yet: Nepasirinktas išdėstymas/kolekcija
 batch_delete_confirm: >-
-  Įrašai nepažymėti | Ar įsitikinę, jog norite trinti įrašą? Išsitrins negrįštamai. | Ar įsitikinę, jog norite trinti
-  šiuos {count} įrašus? Išsitrins negrįštamai.
+  Įrašai nepažymėti | Ar įsitikinę, jog norite trinti įrašą? Išsitrins negrįštamai. | Ar įsitikinę, jog norite trinti šiuos {count} įrašus? Išsitrins negrįštamai.
 cancel: Atšaukti
 collection: Rinkinys
 collections: Kolekcijos
@@ -758,12 +746,6 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: Žymimieji langeliai
-    description: Pasirinkite tarp kelių variantų naudodami žymimuosius langelius
-    allow_other: Leisti kita
-    show_more: 'Rodyti dar {count}'
-    items_shown: Rodomi elementai
   input-code:
     code: Kodas
   collection:
@@ -788,24 +770,8 @@ interfaces:
     select_a_collection: Pasirinkite kolekciją
   presentation-divider:
     divider: Skyriklis
-    description: Aprašyti ir padalinti laukus į skiltis
-    title_placeholder: Įvesti pavadinimą...
-    inline_title: Pavadinimas toje pačioje eilutėje
-    inline_title_label: Rodyti pavadinimą virš linijos
-    margin_top: Atitraukimas nuo viršaus
-    margin_top_label: Padidinti atitraukimą nuo viršaus
   select-dropdown:
-    description: Pasirinkite reikšmę iš sąrašo
-    choices_placeholder: Pridėti naują pasirinkimą
-    allow_other: Leisti kita
-    allow_other_label: Leisti kitas reikšmes
-    allow_none: Leisti tuščią reikšmę
-    allow_none_label: Leisti nepasirinkti nieko
-    choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Išskleidžiamasis sąrašas (kelios reikšmės)
-    description: Pasirinkite kelias reikšmes iš sąrašo
   file:
     file: Failas
     description: Pasirinkite arba įkelkite failą
@@ -818,17 +784,10 @@ interfaces:
     icon: Ikona
   file-image:
     image: Paveikslėlis
-    description: Pasirinkite arba įkelkite paveikslėlį
   system-interface:
     interface: Sąsaja
-    description: Pasirinkti egzistuojančią sąsają
-    placeholder: Pasirinkti sąsają...
-  system-interface-options:
-    interface-options: Sąsajos nustatymai
   select-dropdown-m2o:
     display_template: Rodymo šablonas
-  list:
-    field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
     whitespace: Matomi tarpai
@@ -842,16 +801,6 @@ interfaces:
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
-  input:
-    text-input: Tekstinė įvestis
-    description: Įveskite vieną teksto eilutę
-    trim: Apkarpyti
-    trim_label: Apkarpyti iš pradžios ir pabaigos
-    mask: Paslėptas
-    mask_label: Paslėpti tikrąją reikšmę
-  input-multiline:
-    textarea: Teksto sritis
-    description: Įveskite kelių eilučių neformatuotą tesktą
   boolean:
     toggle: Perjungti
     label_default: Įjungtas
@@ -866,12 +815,6 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    description: Formatuoto teksto redaktorius
-    toolbar: Įrankių juosta
-    custom_formats: Pasirinktinis formatos
-    options_override: Parinkčių perrašymas
 displays:
   boolean:
     boolean: Loginis
@@ -897,8 +840,7 @@ displays:
     description: Rodyti reikšmes susijusias su laiku
     format: Formatas
     format_note: >-
-      Pasirinktinis formatas priima __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Pasirinktinis formatas priima __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Ilgas
     short: Trumpas
     relative: Santykinis

@@ -101,26 +101,29 @@
 		</v-tabs-items>
 
 		<template #actions>
-			<v-button
-				:disabled="!collectionName || collectionName.length === 0"
-				v-if="currentTab[0] === 'collection_setup'"
-				@click="currentTab = ['optional_system_fields']"
-				v-tooltip.bottom="$t('next')"
-				icon
-				rounded
-			>
-				<v-icon name="arrow_forward" />
-			</v-button>
-			<v-button
-				v-if="currentTab[0] === 'optional_system_fields'"
-				@click="save"
-				:loading="saving"
-				v-tooltip.bottom="$t('finish_setup')"
-				icon
-				rounded
-			>
-				<v-icon name="check" />
-			</v-button>
+			<div>
+				<v-button
+					:disabled="!collectionName || collectionName.length === 0"
+					v-if="currentTab[0] === 'collection_setup'"
+					@click="currentTab = ['optional_system_fields']"
+					v-tooltip.bottom="$t('next')"
+					icon
+					rounded
+				>
+					<v-icon name="arrow_forward" />
+				</v-button>
+
+				<v-button
+					v-if="currentTab[0] === 'optional_system_fields'"
+					@click="save"
+					:loading="saving"
+					v-tooltip.bottom="$t('finish_setup')"
+					icon
+					rounded
+				>
+					<v-icon name="check" />
+				</v-button>
+			</div>
 		</template>
 	</v-drawer>
 </template>
@@ -225,7 +228,10 @@ export default defineComponent({
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					await api.post('/relations', relations);
+					for (const relation of relations) {
+						await api.post('/relations', relation);
+					}
+
 					await relationsStore.hydrate();
 				}
 

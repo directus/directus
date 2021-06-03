@@ -1,4 +1,4 @@
-import database from '../../../database';
+import getDatabase from '../../../database';
 import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
@@ -55,6 +55,8 @@ async function uniqueViolation(error: MSSQLError) {
 	if (!quoteMatches || !parenMatches) return error;
 
 	const keyName = quoteMatches[1];
+
+	const database = getDatabase();
 
 	const constraintUsage = await database
 		.select('*')

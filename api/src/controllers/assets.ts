@@ -4,7 +4,7 @@ import { pick } from 'lodash';
 import ms from 'ms';
 import validate from 'uuid-validate';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
@@ -32,11 +32,11 @@ router.get(
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
-		 * @todo move this to a validation middleware function
 		 */
 		const isValidUUID = validate(id, 4);
 		if (isValidUUID === false) throw new ForbiddenException();
 
+		const database = getDatabase();
 		const file = await database.select('id', 'storage', 'filename_disk').from('directus_files').where({ id }).first();
 		if (!file) throw new ForbiddenException();
 
@@ -51,6 +51,7 @@ router.get(
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
+		const database = getDatabase();
 		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')

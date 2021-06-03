@@ -7,7 +7,7 @@
 	>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
-				<v-icon :name="currentCollection.icon" />
+				<v-icon :name="currentCollection.icon" :color="currentCollection.meta.color" />
 			</v-button>
 		</template>
 

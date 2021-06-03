@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, without } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
@@ -56,7 +56,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
@@ -205,7 +205,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -517,7 +517,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -560,7 +560,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -577,7 +577,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Delete multiple items by query
 	 */
-	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -593,7 +593,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (keys.length === 0) return [];
 
-		return await this.deleteMany(keys);
+		return await this.deleteMany(keys, opts);
 	}
 
 	/**
@@ -666,7 +666,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 

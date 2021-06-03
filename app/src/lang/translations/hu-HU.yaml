@@ -49,8 +49,7 @@ os_totalmem: Operációs rendszer memóriája
 archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
-  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count}
-  elemet?
+  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
@@ -109,8 +108,7 @@ this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes s
 click_here: Kattints ide
 to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
-  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a
-  szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
+  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
@@ -295,7 +293,7 @@ account_created_successfully: Fiók sikeresen létrehozva
 auto_fill: Automatikus kitöltés
 corresponding_field: Megfelelő mező
 errors:
-  COLLECTION_NOT_FOUND: 'Gyűjtemény nem létezik'
+  COLLECTION_NOT_FOUND: "Gyűjtemény nem létezik"
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
@@ -304,6 +302,7 @@ errors:
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
   UNKNOWN: Váratlan hiba történt
+  INTERNAL_SERVER_ERROR: Váratlan hiba történt
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -353,7 +352,7 @@ operators:
   gte: Nagyobb vagy egyenlő
   in: egy ebből
   nin: nem egy ebből
-  null: 'null'
+  null: "null"
   nnull: nem null
   contains: Tartalmaz
   ncontains: nem tartalmaz
@@ -482,8 +481,7 @@ create_new: Új létrehozása
 all: Összes
 none: Egyik sem
 batch_delete_confirm: >-
-  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni
-  szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
+  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
 collection: Gyűjtemény
 collections: Gyűjtemények
@@ -630,13 +628,7 @@ view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
   presentation-links:
-    presentation-links: Gomb hivatkozás
     primary: Elsődleges
-    button: Gombok
-  select-multiple-checkbox:
-    checkboxes: Jelölőnégyzetek
-    show_more: '{count} további mutatása'
-    items_shown: Megjelenített elemek
   input-code:
     code: Kód
   collection:
@@ -656,16 +648,6 @@ interfaces:
     select_a_collection: Gyűjtemény kiválasztása
   presentation-divider:
     divider: Elválasztó
-    title_placeholder: Írja be a címet...
-    margin_top: Felső margó
-    margin_top_label: Felső margó növelése
-  select-dropdown:
-    description: Válasszon elemet a listából
-    choices_placeholder: Új lehetőség hozzáadása
-    choices_name_placeholder: Adjon meg egy nevet...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Lenyíló lista (többválasztós)
-    description: Válasszon elemeket a listából
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
@@ -680,30 +662,8 @@ interfaces:
     image: Kép
   system-interface:
     interface: Kezelőfelület
-  system-interface-options:
-    interface-options: Kinézet beállításai
   select-dropdown-m2o:
     display_template: Megjelenítési sablon
-  input-rich-text-md:
-    customSyntax: Egyéni blokkok
-  presentation-notice:
-    notice: Megjegyzés
-  numeric:
-    numeric: Szám
-    description: Szám megadása
-    minimum_value: Minimum érték
-    maximum_value: Maximum érték
-    step_interval: Lépésköz
-  list-o2m:
-    no_collection: A gyűjtemény nem található
-  select-radio:
-    radio-buttons: Választó gombok
-    description: Válasszon ki egy vagy több elemet
-  list:
-    repeater: Ismétlés
-    edit_fields: Mezők szerkesztése
-    field_name_placeholder: Név megadása...
-    field_note_placeholder: Megjegyzés megadása...
   slider:
     slider: Csúszka
   tags:
@@ -715,11 +675,6 @@ interfaces:
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
-  input:
-    text-input: Szövegmező
-    trim: Vágás
-  input-multiline:
-    textarea: Szövegdoboz
   boolean:
     toggle: Váltás
     label_default: Engedélyezve
@@ -733,11 +688,6 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    toolbar: Eszköztár
-    custom_formats: Egyéni formátum
-    options_override: Beállítás felülírása
 displays:
   boolean:
     boolean: Logikai

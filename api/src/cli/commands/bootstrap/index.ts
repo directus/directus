@@ -4,6 +4,8 @@ import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
+import { RolesService, UsersService, SettingsService } from '../../../services';
+import getDatabase, { isInstalled, hasDatabaseConnection } from '../../../database';
 
 export default async function bootstrap(): Promise<void> {
 	logger.info('Initializing bootstrap...');
@@ -13,10 +15,7 @@ export default async function bootstrap(): Promise<void> {
 		process.exit(1);
 	}
 
-	const { isInstalled, default: database } = require('../../../database');
-	const { RolesService } = require('../../../services/roles');
-	const { UsersService } = require('../../../services/users');
-	const { SettingsService } = require('../../../services/settings');
+	const database = getDatabase();
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
@@ -66,8 +65,6 @@ export default async function bootstrap(): Promise<void> {
 }
 
 async function isDatabaseAvailable() {
-	const { hasDatabaseConnection } = require('../../../database');
-
 	const tries = 5;
 	const secondsBetweenTries = 5;
 

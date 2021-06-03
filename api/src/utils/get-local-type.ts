@@ -73,6 +73,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	nchar: { type: 'text' },
 	binary: { type: 'binary' },
 	varbinary: { type: 'binary' },
+	uniqueidentifier: { type: 'uuid' },
 
 	// Postgres
 	json: { type: 'json' },

@@ -6,10 +6,18 @@
 			</div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<p v-if="type" class="type type-title">{{ type }}</p>
+				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<img class="image" loading="lazy" v-if="imageSource" :src="imageSource" alt="" role="presentation" />
-					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" />
+					<img
+						class="image"
+						loading="lazy"
+						v-if="imageSource"
+						:src="imageSource"
+						alt=""
+						role="presentation"
+						@error="imgError = true"
+					/>
+					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
 					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
@@ -23,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import router from '@/router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
@@ -80,9 +88,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const imgError = ref(false);
+
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image')) return null;
+			if (!imgError.value && props.file.type.startsWith('image')) return null;
 			return readableMimeType(props.file.type, true);
 		});
 
@@ -116,7 +126,7 @@ export default defineComponent({
 			return props.value.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick };
+		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError };
 
 		function toggleSelection() {
 			if (!props.item) return null;

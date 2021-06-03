@@ -1,6 +1,6 @@
 ---
-edit_field: Redigeeri
-item_revision: Üksuse läbivaatlus
+edit_field: Muuda välja
+item_revision: Kirje parandamine
 duplicate_field: Korduv väli
 half_width: Pool laiust
 full_width: Täislaius
@@ -22,6 +22,7 @@ create_webhook: Loo veebikonks
 invite_users: Kutsu kasutajaid
 email_examples: 'admin@example.com, user@example.com...'
 invite: Kutsu
+email_already_invited: Meilile "{email}" on kutse juba saadetud
 emails: E-mail
 connection_excellent: Suurepärane ühendus
 connection_good: Hea ühendus
@@ -42,7 +43,7 @@ logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
 public: Avalik
-public_description: Kontrollib, mis API andmed on saadaval audentimata.
+public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
 node_version: Node versioon
@@ -54,11 +55,11 @@ os_totalmem: OS Mälu
 archive: Arhiveeri
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
-  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid
-  {count} üksuseid?
+  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
 reset_system_permissions_to: 'Lähtesta süsteemi load:'
-reset_system_permissions_copy:
-  See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
+app_access_minimum: Rakenduse ligipääsu miinimum
 recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
@@ -85,6 +86,9 @@ validationError:
 all_access: Ligipääs kõigele
 no_access: Ei ole ligipääsu
 use_custom: Kasuta kohandatud
+nullable: Nullitav
+allow_null_value: Luba NULL väärtus
+enter_value_to_replace_nulls: Palun sisesta uus väärtus, et asendada kõik senised NULL väärtused sellel väljal.
 field_standard: Standard
 field_presentation: Kujundus ja aliased
 field_file: Üksik fail
@@ -139,11 +143,13 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Tekst
 time: Kellaaeg
 timestamp: Timestamp
 uuid: UUID
+hash: Hash (räsi)
 not_available_for_type: Pole selle tüübi korral saadaval
 create_translations: Lisa tõlkeid
 auto_refresh: Automaatne värskendamine
@@ -156,8 +162,7 @@ this_will_auto_setup_fields_relations: See seadistab automaatselt kõik väljad 
 click_here: Kliki siia
 to_manually_setup_translations: et käsitsi tõlkeid uuendada.
 click_to_manage_translated_fields: >-
-  Tõlkeid ei leitud. Lisamiseks klõpsa siia. | Leiti üks tõlgitud väli. Muutmiseks klõpsa siia. | Leiti {count} tõlgitud
-  välja. Nende muutmiseks klõpsa siia.
+  Tõlkeid ei leitud. Lisamiseks klõpsa siia. | Leiti üks tõlgitud väli. Muutmiseks klõpsa siia. | Leiti {count} tõlgitud välja. Nende muutmiseks klõpsa siia.
 fields_group: Väljade grupp
 no_collections_found: Andmedkogusid ei leitud.
 new_data_alert: 'Sinu andmemudelisse lisatakse:'
@@ -315,6 +320,10 @@ save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
 save_as_copy: Salvesta koopiana
 add_existing: Lisa olemasolev
+creating_items: Kirjete loomine
+enable_create_button: Luba lisamise nupp
+selecting_items: Kirjete valimine
+enable_select_button: Luba valimise nupp
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
 click_to_expand: Kliki suurendamiseks
@@ -329,7 +338,7 @@ interface_not_found: '"{interface}" liidest ei leitud.'
 reset_interface: Nulli liides
 display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
-list-m2a: M2A koostamine
+list-m2a: Ehitaja (M2A)
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
 no_items_copy: Selles kogus pole veel ühtegi kiret.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'
@@ -366,7 +375,7 @@ file_moved: Fail on liigutatud
 collection_created: Andmekogu on lisatud
 modified_on: Muudetud
 card_size: Kaardi suurus
-sort_field: Sorteeti välja
+sort_field: Sorteerimisväli
 add_sort_field: "Lisa sorteerimisväli\n"
 sort: Sorteeri
 status: Staatus
@@ -385,7 +394,7 @@ account_created_successfully: Konto edukalt loodud
 auto_fill: Täida automaatselt
 corresponding_field: Seotud väli
 errors:
-  COLLECTION_NOT_FOUND: 'Andmekogu ei leitud'
+  COLLECTION_NOT_FOUND: "Andmekogu ei leitud"
   FIELD_NOT_FOUND: "Välja ei leitud\n"
   FORBIDDEN: Keelatud
   INVALID_CREDENTIALS: Vale kasutajanimi või parool
@@ -396,7 +405,10 @@ errors:
   ITEM_NOT_FOUND: Kirjet ei leitud
   ROUTE_NOT_FOUND: Ei leitud
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
+  USER_SUSPENDED: Kasutajakonto on suletud
+  CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   UNKNOWN: Ootamatu viga
+  INTERNAL_SERVER_ERROR: Ootamatu viga
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -428,6 +440,7 @@ one_item: '1 kirje'
 one_filtered_item: '1 filtreeritud kirje'
 delete_collection_are_you_sure: >-
   Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
+collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
 show_hidden_collections: Näita peidetud andmekogusid
@@ -471,6 +484,8 @@ operators:
   has: Sisaldab neid võtmeid
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
+item: Kirje
+items: Kirjed
 upload_file: Lae fail üles
 upload_file_indeterminate: Laen faili...
 upload_file_success: Fail on laetud
@@ -488,6 +503,8 @@ value_unique: Väärtus peab olema unikaalne
 all_activity: Kõik tegevused
 create_item: Loo kirje
 display_template: Vaate mall
+language_display_template: Keele templiit
+translations_display_template: Tõlgete templiit
 n_items_selected: 'Kirjeid pole valitud | Valitud 1 kirje | {n} kirjet valitud'
 per_page: Lehe kohta
 all_files: Kõik failid
@@ -526,8 +543,10 @@ height: Kõrgus
 source: Allikas
 url_placeholder: Sisesta URL
 display_text: Kuva teksti
+display_text_placeholder: Sisesta kuvamise tekst...
 tooltip: Vihje
 tooltip_placeholder: Sisesta vihje...
+unlimited: Piiramatu
 open_link_in: Ava link
 new_tab: Uus vahekaart
 current_tab: Praegune vahekaart
@@ -574,27 +593,87 @@ wysiwyg_options:
   removeformat: Eemalda vormistus
   selectall: Vali Kõik
   table: Tabel
+  visualaid: Vaata peidetud elemente
+  source_code: Muuda lähtekoodi
   fullscreen: Täisekraan
+  directionality: Suund
 dropdown: Rippmenüü
 choices: Valikud
+choices_option_configured_incorrectly: Valikud pole korrektselt seadistatud
 deselect: Tühista valik
+deselect_all: Tühista kõik valikud
+other: Muu...
+adding_user: Kasutaja lisamine
+unknown_user: Tundmatu kasutaja
+creating_in: 'Kirje loomine: {collection}'
+editing_in: 'Kirje muutmine: {collection}'
+creating_unit: 'Lisa {unit}'
+editing_unit: '{unit} muutmine'
 editing_in_batch: '{count} kirje hulgi muutmine'
+no_options_available: Valikud puuduvad
+settings_data_model: Andmemudel
 settings_permissions: Rollid ja õigused
 settings_project: Projekti seaded
 settings_webhooks: Webhooks
+settings_presets: Eelseaded ja järjehoidjad
+one_or_more_options_are_missing: Üks või mitu valikut puuduvad
+scope: Ulatus
+select: Vali...
+layout: Paigutus
+tree_view: Puuvaade
+changes_are_permanent: Muudatused on lõplikud
+preset_name_placeholder: Toimib vaikeväärtusena, kui puudub...
+preset_search_placeholder: Otsingupäring...
+editing_preset: Muuda eelseadistust
+layout_preview: Paigutuse eelvaade
+layout_setup: Paigutuse seadistus
 unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
+page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
+page_help_collections_collection: >-
+  **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
+page_help_collections_item: >-
+  **Kirje detailid** - Selle kirje vaatamise ja muutmise vorm. Külgribal on ühtlasi kirje muudatuste ajalugu ning lisatud kommentaarid.
+page_help_activity_collection: >-
+  **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
+page_help_docs_global: >-
+  **Dokumentatsioon**  - Selle projekti ülesehitust kirjeldav teave
+page_help_files_collection: >-
+  **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
+page_help_files_item: >-
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
+page_help_settings_datamodel_collections: >-
+  **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
+page_help_settings_datamodel_fields: >-
+  **Andmekogu** - Ükskiku andmekogu ja tema väljade muutmise vorm
+page_help_settings_roles_collection: '**Vaata rolle** - Näitab adminne, avalikku jm kasutajarolle.'
+page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
+page_help_settings_presets_collection: >-
+  **Näita eelseadistusi** - Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated
+page_help_settings_presets_item: >-
+  **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
+page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
+page_help_settings_webhooks_item: '**Veebikonksu detailid** - Vorm veebikonksude lisamiseks ja muutmiseks.'
+page_help_users_collection: '**Kasutajad** - Näitab kõiki kasutajaid.'
+page_help_users_item: >-
+  **Kasutaja detailid** - Näitab konto infot.
+activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
 all: Kõik
+none: Puudub
+no_layout_collection_selected_yet: Vaadet/andmekogu pole valitud
 batch_delete_confirm: >-
-  Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. |
-  Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
+  Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
 cancel: Loobu
 collection: Kogud
 collections: Kogud
+singleton: Üksik
+singleton_label: Käsitle üksiku objektina
+system_fields_locked: Süsteemsed välja on lukus ja neid ei saa muuta
 fields:
   directus_activity:
     item: Kirje peamine võti
@@ -605,20 +684,33 @@ fields:
     comment: Kommentaar
     user_agent: Kasutaja agent
     ip: IP aadress
+    revisions: Versioonid
   directus_collections:
     collection: Kogud
     icon: Ikoon
     note: Märkus
     display_template: Vaate mall
     hidden: Peidetud
-    sort_field: Sorteeti välja
+    singleton: Üksik
+    translations: Andmekogu nimetuste tõlked
+    archive_app_filter: Arhiveeri rakenduse filter
+    archive_value: Arhiveeri väärtus
+    unarchive_value: Aktiveeri väärtus
+    sort_field: Sorteerimisväli
+    accountability: Tegevuste ja muudatuste jälgimine
   directus_files:
+    $thumbnail: Pisipilt
     title: Pealkiri
     description: Kirjeldus
     tags: Sildid
     location: Asukoht
+    storage: Salvestusruum
+    filename_disk: Failinimi (kettal)
+    filename_download: Faili nimi (alla laadimisel)
     metadata: Metaandmed
+    type: MIME tüüp
     filesize: Failisuurus
+    modified_by: Muutja
     modified_on: Muudetud
     created_on: Loodud
     created_by: Autor
@@ -645,22 +737,72 @@ fields:
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
     role: Roll
+    token: Kontrollkood
     last_page: Viimane leht
     last_access: Viimati vaadatud
   directus_settings:
     project_name: Projekti nimi
+    project_url: Projekti URL
+    project_color: Projekti värv
+    project_logo: Projekti logo
+    public_foreground: Avalik põhivärv
+    public_background: Avalik taustavärv
+    public_note: Avalik märkus
+    auth_password_policy: Salasõna reeglid
+    auth_login_attempts: Sisselogimise katseid
+    storage_asset_presets: Salvestusruumi eelseadistused
+    storage_asset_transform: Salvestusruumi kirjete töötlus
+    custom_css: Kohandatud CSS
   directus_fields:
+    collection: Andmekogu nimetus
+    icon: Andmekogu pilt
     note: Märkus
     hidden: Peidetud
+    singleton: Üksik
     translation: Väljade tõlked
     display_template: Mall
   directus_roles:
     name: Rolli nimi
+    icon: Rolli pilt
     description: Kirjeldus
+    app_access: Rakenduse ligipääs
+    admin_access: Admini ligipääs
+    ip_access: IP ligipääs
+    enforce_tfa: 2FA on nõutav
+    users: Kasutajad selles rollis
+    module_list: Moodulite näitamine
+    collection_list: Andmekogude näitamine
+field_options:
+  directus_collections:
+    track_activity_revisions: Salvesta muudatuste statistika
+    only_track_activity: Jälgi ainult aktiivsust
+    do_not_track_anything: Ära jälgi midagi
+no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
+do_nothing: Ära tee midagi
+generate_and_save_uuid: Genereeri ja salvesta UUID
+save_current_user_id: Salvesta praeguse kasutaja ID
+save_current_user_role: Salvesta praeguse kasutaja roll
+save_current_datetime: Salvesta hetke kuupäev/kellaaeg
+block: Blokeeri
+inline: Tekstisisene
 comment: Kommentaar
+relational_triggers: Suhtelised lülitid
+referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
+referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
+referential_action_no_action: Enneta kustutamist
+referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
+referential_action_set_null: Nulli {field} väli
+referential_action_set_default: Seadista {field} väljale vaikeväärtus
+choose_action: Vali tegevus
 continue: Continue
+continue_as: >-
+  <b>{name}</b> on selle projekti jaoks juba autenditud. Kui tunned selle konto ära, siis vajuta Jätka.
+editing_role: '{role} roll'
+creating_webhook: Loo veebikonks
 default: Vaikimisi
 delete: Kustuta
+delete_are_you_sure: >-
+  See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-
   Kas soovid kindlasti välja "{field}" kustutada? Seda toimingut ei saa tagasi võtta.
 description: Kirjeldus
@@ -668,6 +810,7 @@ done: Valmis
 duplicate: Loo koopia
 email: E-post
 embed: Põimitud
+fallback_icon: Tagavaraikoon
 field: Väli | Väljad
 file: Fail
 file_library: Failikogu
@@ -675,10 +818,16 @@ forgot_password: Unustasin parooli
 hidden: Peidetud
 icon: Ikoon
 info: Info
+normal: Tavaline
+success: Õnnestus
+warning: Hoiatus
+danger: Oht
+junction_collection: Seoste andmekogu
 latency: Latsentsus
 login: Logi sisse
 my_activity: Minu tegevus
 not_authenticated: Pole autenditud
+authenticated: Autenditud
 options: Valikud
 otp: Ühekordne parool
 password: Parool
@@ -686,11 +835,13 @@ permissions: Õigused
 relationship: Seos
 reset: Lähtesta
 reset_password: Lähtesta parool
+revisions: Versioonid
 revert: Taasta
 save: Salvesta
 schema: Skeem
 search: Otsi
 select_existing: Vali olemasolev
+select_field_type: Vali välja tüüp
 select_interface: Vali kasutajaliides
 settings: Seaded
 sign_in: Logi sisse
@@ -698,108 +849,301 @@ sign_out: Logi välja
 sign_out_confirm: Kas oled kindel, et soovid välja logida?
 something_went_wrong: Midagi läks valesti.
 sort_direction: Sorteerimise suund
+sort_asc: Sorteeri kasvavalt
+sort_desc: Sorteeri kahanevalt
 template: Mall
-translation: Tõlkija
+translation: Tõlge
 value: Väärtus
+view_project: Näita projekti
+weeks: { }
+report_error: Raporteeri viga
 interfaces:
   presentation-links:
+    presentation-links: Nuppude lingid
+    links: Lingid
+    description: Seadistatavad nupud dünaamiliste URLide avamiseks
+    style: Stiil
     primary: Peamine
+    link: Lingid
+    button: Nupud
+    error: Toimingut ei saa teha
   select-multiple-checkbox:
     checkboxes: Märkeruudud
+    description: Tee valikud märkeruutude abil
     allow_other: Luba muud
+    show_more: 'Näita veel {count}'
+    items_shown: Nähtavad kirjed
   input-code:
     code: Kood
+    description: Kirjuta või jaga koodilõike
+    line_number: Rea number
+    placeholder: Sisesta kood siia...
   collection:
     collection: Kogud
+    description: Vali olemasolevate andmekogude seast
+    include_system_collections: Lisa süsteemsed andmekogud
   system-collections:
     collections: Kogud
+    description: Vali olemasolevate andmekogude seast
+    include_system_collections: Lisa süsteemsed andmekogud
   select-color:
     color: Värv
+    description: Sisesta või vali värv
+    placeholder: Vali värv...
+    preset_colors: Eelseadistuse värvid
+    preset_colors_add_label: Lisa uus värv...
+    name_placeholder: Sisesta värvi nimi...
   datetime:
     datetime: Kuupäev-kellaaeg
+    description: Sisesta kuupäevad ja kellaajad
+    include_seconds: Lisa sekundid
+    set_to_now: Seadista praegusele hetkele
+    use_24: Kasuta 24h formaati
   system-display-template:
     display-template: Vaate mall
+    description: Kombineeri staatilist teksti ja dünaamiliste väljadega
+    collection_field: Andmekogu väli
     collection_field_not_setup: Andmekogu väli on valesti seadistatud
     select_a_collection: Vali andmekogu
   presentation-divider:
     divider: Eraldaja
+    description: Nimeta ja eralda välju sektsioonideks
+    title_placeholder: Sisesta pealkiri...
+    inline_title: Pealkiri joone sees
+    inline_title_label: Näita pealkirja keset joont
+    margin_top: Ülemine vahe
+    margin_top_label: Suurenda ülemist vahet
   select-dropdown:
+    description: Vali väärtust rippmenüüst
+    choices_placeholder: Lisa uus valik
     allow_other: Luba muud
+    allow_other_label: Luba teised väärtused
+    allow_none: Luba tühiväärtus
+    allow_none_label: Luba jätta valimata
+    choices_name_placeholder: Sisesta nimi...
     choices_value_placeholder: Sisesta väärtus...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rippmenüü (mitmikvalikuga)
+    description: Vali mitu väärtust rippmenüüst
   file:
     file: Fail
+    description: Vali olemasolev fail või lae üles uus
   files:
     files: Failid
+    description: Vali või lae üles mitu faili
+  input-hash:
+    hash: Hash (räsi)
+    description: Sisesta väärtus, mida maskeerida
+    masked: Maskeeritud
+    masked_label: Peida tõese väärtus korral
   select-icon:
     icon: Ikoon
+    description: Vali ikoon rippmenüüst
+    search_for_icon: Otsi ikooni...
+  file-image:
+    image: Pilt
+    description: Vali või lae üles pilt
   system-interface:
     interface: Kasutajaliides
+    description: Vali olemasolev liides
+    placeholder: Vali kasutajaliides...
   system-interface-options:
     interface-options: Kasutajaliidese valikud
+    description: Kasutajaliidese valikute tegemise hüpikaken
   list-m2m:
     many-to-many: Mitu mitmele
+    description: Vali mitu seoetud kirjet
   select-dropdown-m2o:
     many-to-one: Mitu ühele
+    description: Vali üksik seotud kirje
     display_template: Vaate mall
   input-rich-text-md:
     markdown: Markdown
-  numeric:
-    numeric: Numbriline
+    description: Sisesta ja vaata markdown'i
+    customSyntax: Kohandatud plokid
+    customSyntax_label: Lisa kohandatud süntaksi tüüpe
+    customSyntax_add: Lisa kohandatud süntaks
+    box: Plokk / Tekstisisene
+    imageToken: Pildi kood
+    imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+  presentation-notice:
+    notice: Teade
+    description: Näita lühikest teadet
+    text: Sisesta teate sisu...
+  list-o2m:
+    one-to-many: Üks-mitmele
+    description: Vali mitu seotud kirjet
+    no_collection: Andmekogu ei leitud
   select-radio:
     radio-buttons: Raadionupud
+    description: Vali üks mitmest valikust
   list:
     repeater: Kordaja
+    description: Loo mitu kirjet sama struktuuriga
+    edit_fields: Muuda välju
+    add_label: '"Lisa uus" nimetus'
+    field_name_placeholder: Sisesta välja nimi...
+    field_note_placeholder: Sisesta välja märkus...
   slider:
     slider: Liugur
+    description: Vali number slaiderilt
+    always_show_value: Näita alati väärtust
   tags:
     tags: Sildid
+    description: Vali või sisesta märksõnad
+    whitespace: Tühikud
+    hyphen: Asenda sidekriipsuga
+    underscore: Asenda alakriipsuga
+    remove: Eemalda tühikud
+    capitalization: Esitähed
+    uppercase: Muuda suurtähtedeks
+    lowercase: Muuda väiketähtedeks
+    auto_formatter: Kasuta pealkirja stiili
+    alphabetize: Järjesta tähestikuliselt
+    alphabetize_label: Sorteeri tähestikuliselt ümber
+    add_tags: Lisa märksõnu...
   input:
-    text-input: Tekstisisestus
+    input: Sisend
+    description: Sisesta väärtus käsitsi
     trim: Kärbi
+    trim_label: Lõika maha tühi algus ja lõpp
+    mask: Maskeeritud
+    mask_label: Peida algne väärtus
+    clear: Tühjendatud väärtus
+    clear_label: Salvesta tühja stringina
+    minimum_value: Minimaalne väärtus
+    maximum_value: Maksimaalne väärtus
+    step_interval: Sammu intervall
+    slug: Muuda URL-sõbralikuks
+    slug_label: Muuda väärtus URL-sõbralikuks (slug)
+  input-multiline:
+    textarea: Tekstiala
+    description: Sisesta mitmerealine tavatekst
   boolean:
     toggle: Lülita
+    description: Lülita sisse ja välja
+    label_placeholder: Sisesta silt...
     label_default: lubatud
   translations:
     display_template: Vaate mall
+    no_collection: Andmekogusid pole
+  list-o2m-tree-view:
+    description: Puuvaade mitmetasandilistele üks-mitmele kirjetele
+    recursive_only: Puuvaate kasutajaliides töötab ainult rekursiivsete seoste korral.
   user:
     user: Kasutaja
+    description: Vali olemasolev Directuse kasutaja
+    select_mode: Vali režiim
     modes:
+      auto: Automaatne
       dropdown: Rippmenüü
+      modal: Hüpikaken
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Tekstiredaktor HTML sisu loomiseks
+    toolbar: Tööriistariba
     custom_formats: Kohandatud vormingud
+    options_override: Valikute ülekirjutamine
+  input-autocomplete-api:
+    input-autocomplete-api: Automaatselt täidetav väli (API)
+    description: Otsingutulemused välisest APIst
+    results_path: Tulemuste asukoht (path)
+    value_path: Väärtuse väli
+    trigger: Päästik
+    rate: Hinnang
 displays:
   boolean:
     boolean: Boolean
+    description: Näita sees/väljas seisu
+    label_on: '"Sees" nimetus'
+    label_on_placeholder: Sisesta nimetus...
+    label_off: '"Väljas" nimetus'
+    label_off_placeholder: Sisesta nimetus...
     icon_on: Ikoon sees
     icon_off: Ikoon väljas
+    color_on: '"Sees" värv'
+    color_off: '"Väljas" värv'
   collection:
     collection: Kogud
+    description: Näita andmekogu
+    icon_label: Näita andmekogu ikooni
   color:
     color: Värv
+    description: Näita värvilist punkti
+    default_color: Vaikevärv
   datetime:
     datetime: Kuupäev-kellaaeg
+    description: Näita suhtelisi aegu
     format: Vorming
+    format_note: >-
+      Ajaformaadi valikud  __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Pikk
+    short: Lühike
+    relative: Suhteline
+    relative_label: 'Näita suhtelist aega, nt 5 minutit tagasi'
   file:
     file: Fail
+    description: Näita faile
   filesize:
     filesize: Failisuurus
+    description: Näita faili suurust
+  formatted-value:
+    formatted-value: Vormistatud väärtus
+    description: Näita teksti vormistatud väärtust
+    format_title: Vorminda pealkiri
+    format_title_label: Paranda esitähed suureks
+    bold_label: Paksus kirjas
+  formatted-json-value:
+    formatted-json-value: Vormista JSON väärtusena
+    description: Näita objekti vormistatud versiooni
   icon:
     icon: Ikoon
+    description: Kuva ikooni
+    filled: Täidetud
+    filled_label: Kasuta täidetud varianti
   image:
+    image: Pilt
+    description: Kasuta väikest pildi eelvaadet
     circle: Ring
+    circle_label: Näita ümmarguselt
   labels:
+    labels: Sildid
+    description: Näita kas üksikuna või siltide nimekirjana
+    default_foreground: Vaikimisi esiplaan
+    default_background: Vaikimisi taust
+    format_label: Vormista iga silt
+    show_as_dot: Näita punktina
     choices_value_placeholder: Sisesta väärtus...
+    choices_text_placeholder: Sisesta tekst...
+  mime-type:
+    mime-type: MIME Tüüp
+    description: Näita faili MIME-tüüpi
+    extension_only: Ainult laiend
+    extension_only_label: Näita ainult faili laiendit
   rating:
     rating: Hinnang
+    description: Näita tähekestena
+    simple: Lihtne
+    simple_label: Näita tähekesi lihtsas formaadis
+  raw:
+    raw: Algne väärtus
+  related-values:
+    related-values: Seotud väärtused
+    description: Näita seotud väärtusi
   user:
     user: Kasutaja
+    description: Näita Directuse kasutajat
     avatar: Avatar
     name: Nimi
     both: Mõlemad
+    circle_label: Näita kasutajat ringikesena
 layouts:
   cards:
     cards: Kaardid
     image_source: Pildi allikas
+    image_fit: Pildi mahutamine
+    crop: Kärpimine
+    contain: Sisaldab
     title: Pealkiri
     subtitle: Alampealkiri
   tabular:
@@ -808,4 +1152,8 @@ layouts:
     spacing: Vahed
     comfortable: Mugav
     compact: Kompaktne
-    cozy: Kodune
+    cozy: Tavaline
+  calendar:
+    calendar: Kalender
+    start_date_field: Alguse kuupäev
+    end_date_field: Lõpu kuupäev

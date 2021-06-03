@@ -55,15 +55,10 @@ os_totalmem: Operativsystemets minne
 archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
-  Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa
-  {count} objekt?
+  Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
 reset_system_permissions_to: 'Återställ systemrättigheter till:'
-reset_system_permissions_copy:
-  Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna.
-  Är du säker?
-the_following_are_minimum_permissions:
-  Följande är minimirättigheter som krävs när "App Access" är aktiverat. Du kan utöka behörigheterna utöver detta, men
-  inte nedan.
+reset_system_permissions_copy: Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna. Är du säker?
+the_following_are_minimum_permissions: Följande är minimirättigheter som krävs när "App Access" är aktiverat. Du kan utöka behörigheterna utöver detta, men inte nedan.
 app_access_minimum: Minsta tillgång till applikationen
 recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
@@ -163,8 +158,7 @@ this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in a
 click_here: Klicka här
 to_manually_setup_translations: för att manuellt konfigurera översättningar.
 click_to_manage_translated_fields: >-
-  Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att
-  administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
+  Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
 no_collections_found: Inga kollektioner hittades.
 new_data_alert: 'Följande kommer att skapas inom din datamodell:'
@@ -334,7 +328,6 @@ interface_not_found: 'Gränssnittet "{interface}" hittades inte.'
 reset_interface: Återställ gränssnitt
 display_not_found: 'Vyn "{display}" hittades inte.'
 reset_display: Återställ visning
-list-m2a: Byggare (M2A)
 item_count: 'Inga objekt | Ett objekt | {count} objekt'
 no_items_copy: Det finns inga objekt i denna kollektion ännu.
 file_count: 'Inga filer | En fil | {count} filer'
@@ -390,7 +383,7 @@ account_created_successfully: Kontot har skapats
 auto_fill: Automatisk ifyllning
 corresponding_field: Motsvarande fält
 errors:
-  COLLECTION_NOT_FOUND: 'Kollektionen finns inte'
+  COLLECTION_NOT_FOUND: "Kollektionen finns inte"
   FIELD_NOT_FOUND: Fältet hittades inte
   FORBIDDEN: Otillåten
   INVALID_CREDENTIALS: Fel användarnamn eller lösenord
@@ -403,6 +396,7 @@ errors:
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
   UNKNOWN: Oväntat fel
+  INTERNAL_SERVER_ERROR: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
@@ -433,8 +427,7 @@ start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
 one_item: '1 objekt'
 one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
-  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den.
-  Denna åtgärd är permanent.
+  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
@@ -620,33 +613,26 @@ discard_changes: Ignorera ändringar
 keep_editing: Fortsätt redigera
 page_help_collections_overview: '**Översikt kollektioner** — Lista över alla kollektioner du har tillgång till.'
 page_help_collections_collection: >-
-  **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering
-  för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
+  **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_collections_item: >-
-  **Detaljvy för objekt** — Ett formulär för att visa och hantera detta objekt. Sidopanelen innehåller också en
-  fullständig historik över revisioner och inbäddade kommentarer.
+  **Detaljvy för objekt** — Ett formulär för att visa och hantera detta objekt. Sidopanelen innehåller också en fullständig historik över revisioner och inbäddade kommentarer.
 page_help_activity_collection: >-
   **Bläddra i aktivitetshistoriken** — En omfattande lista över alla dina användares system- och innehållsaktiviteter.
 page_help_docs_global: >-
   **Översikt dokumentation** — Dokument som är skräddarsydda specifikt för projektets version och schema.
 page_help_files_collection: >-
-  **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att
-  skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
+  **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_files_item: >-
-  **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera
-  åtkomstinställningar.
-page_help_settings_project: '**Projektinställningar** — Projektets globala konfigurationsalternativ.'
+  **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera åtkomstinställningar.
+page_help_settings_project: "**Projektinställningar** — Projektets globala konfigurationsalternativ."
 page_help_settings_datamodel_collections: >-
-  **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och
-  systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
+  **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
-page_help_settings_roles_collection:
-  '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
-page_help_settings_roles_item: '**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar.'
+page_help_settings_roles_collection: '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
+page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
 page_help_settings_presets_collection: >-
-  **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala
-  bokmärken, samt standardvyer.
+  **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
 page_help_settings_presets_item: >-
   **Förinställda detaljer** — Ett formulär för att hantera bokmärken och förinställningar för standardinsamling.
 page_help_settings_webhooks_collection: '**Bläddra bland webhooks** — Listar alla webhooks i projektet.'
@@ -661,8 +647,7 @@ all: Alla
 none: Ingen
 no_layout_collection_selected_yet: Ingen layout/kollektion vald ännu
 batch_delete_confirm: >-
-  Inga objekt har valts | Är du säker på att du vill radera det här objektet? Den här åtgärden kan inte ångras. | Är du
-  säker på att du vill radera de här {count} objekten? Den här åtgärden kan inte ångras.
+  Inga objekt har valts | Är du säker på att du vill radera det här objektet? Den här åtgärden kan inte ångras. | Är du säker på att du vill radera de här {count} objekten? Den här åtgärden kan inte ångras.
 cancel: Avbryt
 collection: Kollektion
 collections: Kollektioner
@@ -838,20 +823,7 @@ view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
   presentation-links:
-    presentation-links: Knappens länkar
-    links: Länkar
-    description: Konfigurerbara länkknappar för att starta dynamiska URL:er
-    style: Stil
     primary: Primär
-    link: Länkar
-    button: Knappar
-    error: Kan inte utföra åtgärd
-  select-multiple-checkbox:
-    checkboxes: Kryssrutor
-    description: Välj mellan flera alternativ av kryssrutor
-    allow_other: Tillåt annan
-    show_more: 'Visa {count} till'
-    items_shown: Objekt som visas
   input-code:
     code: Kod
   collection:
@@ -876,24 +848,8 @@ interfaces:
     select_a_collection: Välj en kollektion
   presentation-divider:
     divider: Avdelare
-    description: Märk och dela upp fält i sektioner
-    title_placeholder: Ange en titel...
-    inline_title: Infogad titel
-    inline_title_label: Visa rubrik inuti raden
-    margin_top: Marginal över
-    margin_top_label: Öka övre marginal
   select-dropdown:
-    description: Välj ett värde från flervalslista
-    choices_placeholder: Lägg till ett nytt alternativ
-    allow_other: Tillåt annan
-    allow_other_label: Tillåt andra värden
-    allow_none: Tillåt inga
-    allow_none_label: Tillåt inga val
-    choices_name_placeholder: Ange ett namn...
     choices_value_placeholder: Ange ett värde...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Flervalslista (flera)
-    description: Välj flera värden från en flervalslista
   file:
     file: Fil
     description: Välj eller ladda upp en fil
@@ -906,53 +862,10 @@ interfaces:
     icon: Ikon
   file-image:
     image: Bild
-    description: Välj eller ladda upp en bild
   system-interface:
     interface: Gränssnitt
-    description: Välj ett befintligt gränssnitt
-    placeholder: Välj ett gränssnitt...
-  system-interface-options:
-    interface-options: Alternativ för gränssnitt
-    description: En popup för att välja alternativ för ett gränssnitt
-  list-m2m:
-    many-to-many: Många till många
-    description: Välj flera relaterade kopplingsobjekt
   select-dropdown-m2o:
-    many-to-one: Många till en
-    description: Välj ett relaterat objekt
     display_template: Visningsmall
-  input-rich-text-md:
-    markdown: Markdown
-    description: Ange och förhandsgranska markdown
-    customSyntax: Anpassade block
-    customSyntax_label: Lägg till anpassade syntaxtyper
-    customSyntax_add: Lägg till anpassad syntax
-    box: Block / Infogad
-    imageToken: Bildnyckel
-    imageToken_label: Vilken (statisk) nyckel att lägga till på bildkällor
-  presentation-notice:
-    notice: Notis
-    description: Visa en kort notis
-    text: Ange notisens innehåll här...
-  numeric:
-    numeric: Numerisk
-    description: Ange ett nummer
-    minimum_value: Minsta värde
-    maximum_value: Högsta värde
-    step_interval: Steg intervall
-  list-o2m:
-    one-to-many: One to Many
-    description: Välj flera relaterade objekt
-    no_collection: Kollektionen kunde inte hittas
-  select-radio:
-    radio-buttons: Radioknappar
-    description: Välj ett av flera val
-  list:
-    repeater: Repeterare
-    description: Skapa flera poster av samma struktur
-    edit_fields: Redigera fält
-    field_name_placeholder: Ange fältnamn...
-    field_note_placeholder: Ange fältanteckning...
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -971,26 +884,12 @@ interfaces:
     alphabetize: Alfabetisera
     alphabetize_label: Tvinga alfabetisk ordning
     add_tags: Lägg till taggar...
-  input:
-    text-input: Textfält
-    description: Ange en rad text
-    trim: Beskär
-    trim_label: Trimma början och slut
-    mask: Maskerad
-    mask_label: Dölj det riktiga värdet
-    clear_label: Spara som tom sträng
-  input-multiline:
-    textarea: Textfält
-    description: Ange fritext på flera rader
   boolean:
     toggle: Växla
     label_default: Aktiverad
   translations:
     display_template: Visningsmall
     no_collection: Ingen kollektion
-  list-o2m-tree-view:
-    description: Trädvy för kapslade rekursiva en-till-många objekt
-    recursive_only: Trädvyns gränssnitt fungerar bara för rekursiva relationer.
   user:
     user: Användare
     description: Välj en befintlig Directus användare
@@ -999,12 +898,6 @@ interfaces:
       auto: Automatisk
       dropdown: Rullgardinsmeny
       modal: Popup
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    description: En textredigerare som skriver HTML-innehåll
-    toolbar: Verktygsfält
-    custom_formats: Anpassade format
-    options_override: Skriv över alternativ
 displays:
   boolean:
     boolean: Boolean
@@ -1030,8 +923,7 @@ displays:
     description: Visa värden relaterade till tid
     format: Format
     format_note: >-
-      Det anpassade formatet accepterar __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Det anpassade formatet accepterar __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lång
     short: Kort
     relative: Relativ

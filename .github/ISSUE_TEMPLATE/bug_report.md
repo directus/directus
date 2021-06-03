@@ -8,11 +8,11 @@ assignees: ''
 
 <!--
 
-Hi, thank you for taking the time to create an issue.
+Hi, thank you for taking the time to create an issue! Before continuing, you must first have completed all Troubleshooting Steps:
 
-Please make sure you're on the latest version of Directus. There's a chance your issue might've been resolved already 🙂
+https://docs.directus.io/getting-started/support/#troubleshooting-steps
 
-Can you please provide:
+If the above steps do not resolve your issue, please complete the following:
 
 1) The issue and what you expected to happen
     The _ _ does _ _ when _ _ while it should _ _

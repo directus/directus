@@ -85,8 +85,8 @@ export class UIBuilder implements IUIComposer {
 			reflowText: true,
 			showSectionPrefix: false,
 			tab: this.indentSize,
-			codespan: (text) => chalk.reset.bgGray.white(`${text}`),
-			blockquote: (text) =>
+			codespan: (text: string) => chalk.reset.bgGray.white(`${text}`),
+			blockquote: (text: string) =>
 				palette.quote(
 					stripAnsi(text)
 						.split('\n')
