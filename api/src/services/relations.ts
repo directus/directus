@@ -8,6 +8,7 @@ import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
+import { getDefaultIndexName } from '../utils/get-default-index-name';
 
 export class RelationsService {
 	knex: Knex;
@@ -159,8 +160,10 @@ export class RelationsService {
 				await trx.schema.alterTable(relation.collection!, async (table) => {
 					this.alterType(table, relation);
 
+					const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+
 					table
-						.foreign(relation.field!)
+						.foreign(relation.field!, constraintName)
 						.references(
 							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
 						)
@@ -201,13 +204,12 @@ export class RelationsService {
 		await this.knex.transaction(async (trx) => {
 			if (existingRelation.related_collection) {
 				await trx.schema.alterTable(collection, async (table) => {
-					// undefined == default to knex's default
-					let constraintName: string | null | undefined = undefined;
+					let constraintName: string = getDefaultIndexName('foreign', collection, field);
 
 					// If the FK already exists in the DB, drop it first
 					if (existingRelation?.schema) {
-						constraintName = existingRelation.schema.constraint_name;
-						table.dropForeign(field, existingRelation.schema.constraint_name || undefined);
+						constraintName = existingRelation.schema.constraint_name || constraintName;
+						table.dropForeign(field, constraintName);
 					}
 
 					this.alterType(table, relation);
@@ -263,9 +265,9 @@ export class RelationsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			if (existingRelation.schema) {
+			if (existingRelation.schema?.constraint_name) {
 				await trx.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field, existingRelation.schema?.constraint_name || undefined);
+					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
 			}
 

@@ -2,6 +2,7 @@ import { Knex } from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
 import logger from '../../logger';
 import { RelationMeta } from '../../types';
+import { getDefaultIndexName } from '../../utils/get-default-index-name';
 
 export async function up(knex: Knex): Promise<void> {
 	const inspector = SchemaInspector(knex);
@@ -102,8 +103,10 @@ export async function up(knex: Knex): Promise<void> {
 					table.specificType(constraint.many_field, 'int unsigned').alter();
 				}
 
+				const indexName = getDefaultIndexName('foreign', constraint.many_collection, constraint.many_field);
+
 				table
-					.foreign(constraint.many_field)
+					.foreign(constraint.many_field, indexName)
 					.references(relatedPrimaryKeyField)
 					.inTable(constraint.one_collection!)
 					.onDelete(action);
