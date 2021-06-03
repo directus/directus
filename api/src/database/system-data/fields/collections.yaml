@@ -29,7 +29,7 @@ fields:
     options:
     width: half
 
-  - field: icon_color
+  - field: color
     interface: select-color
     options:
       placeholder: Choose a color...

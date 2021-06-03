@@ -8,7 +8,7 @@ export type NavItem = {
 	name: string | VueI18n.TranslateResult;
 	to: string;
 	icon: string;
-	icon_color: string | null | undefined;
+	color: string | null | undefined;
 	note: string | null;
 };
 
@@ -43,7 +43,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 							collection: collection,
 							name: collectionInfo.name,
 							icon: collectionInfo.meta?.icon || 'label',
-							icon_color: collectionInfo.meta?.icon_color || 'label',
+							color: collectionInfo.meta?.color || 'label',
 							note: collectionInfo.meta?.note || null,
 							to: `/collections/${collection}`,
 						};
@@ -64,7 +64,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.meta?.icon || 'label',
-					icon_color: collection.meta?.icon_color,
+					color: collection.meta?.color,
 					note: collection.meta?.note || null,
 					to: `/collections/${collection.collection}`,
 				};
@@ -84,7 +84,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.meta?.icon || 'label',
-					icon_color: collection.meta?.icon_color,
+					color: collection.meta?.color,
 					note: collection.meta?.note || null,
 					to: `/collections/${collection.collection}`,
 				};

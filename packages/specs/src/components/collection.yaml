@@ -20,8 +20,8 @@ properties:
         type: string
         example: people
         nullable: true
-      icon_color:
-        description: Choose the color for the icon assigned to this collection.
+      color:
+        description: Choose an accent color for this collection.
         type: string
         example: '#00C897'
         nullable: true

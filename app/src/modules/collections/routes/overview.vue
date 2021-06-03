@@ -20,7 +20,7 @@
 			@click:row="navigateToCollection"
 		>
 			<template #item.icon="{ item }">
-				<v-icon class="icon" :name="item.icon" :color="item.icon_color" />
+				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 		</v-table>
 

@@ -3,7 +3,7 @@
 	<private-view v-else :title="bookmark ? bookmarkTitle : currentCollection.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
-				<v-icon :name="currentCollection.icon" :color="currentCollection.meta.icon_color" />
+				<v-icon :name="currentCollection.icon" :color="currentCollection.meta.color" />
 			</v-button>
 		</template>
 

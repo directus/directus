@@ -14,7 +14,7 @@ export interface CollectionRaw {
 		hidden: boolean;
 		singleton: boolean;
 		icon: string | null;
-		icon_color: string | null;
+		color: string | null;
 		translations: Translations[] | null;
 		display_template: string | null;
 		sort_field: string | null;
