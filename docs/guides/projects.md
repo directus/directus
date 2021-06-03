@@ -106,3 +106,11 @@ installed. Any external services connecting to your database's project tables di
 working normally.
 
 :::
+
+## Reverting A Project 
+
+Directus can be reverted to an earlier version if in any case the current installed version is throwing errors or is not working as intended by going to your terminal and navigating into your project folder and then entering the following commands
+> Run `npm install directus@9.0.0-rc.69`
+ Were `rc.69` is the particular build you want to revert to.
+You will need to do a database migration too once you have reverted back to your preferred build. So run the following command right after the one above.
+> Run `npx directus database migrate:down`
