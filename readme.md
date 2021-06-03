@@ -50,38 +50,13 @@ important to keep your projects up-to-date.
 
 ## :rocket: One-Click Deployments
 
-### DigitalOcean
+If you would like to completely avoid the manual installation process, the following self-hosted one-click apps will
+handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
+services.
 
-Our pre-built image contains everything you need to quickly get up and running with Directus.
-
-[https://marketplace.digitalocean.com/apps/directus](https://marketplace.digitalocean.com/apps/directus)
-
-### Heroku
-
-You can quickly deploy a project on Heroku using our
-[community maintained template](https://github.com/directus-community/heroku-template).
-
-<a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template">
-	<img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px">
-</a>
-
-### Platform.sh
-
-An empty [Directus project](https://github.com/platformsh-templates/directus) repository is maintained by
-[Platform.sh](https://platform.sh) that you can quickly deploy using the button below.
-
-<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform">
-	<img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px">
-</a>
-
-### Zeet
-
-You can quickly deploy a new instance on Zeet using our
-[community maintained template](https://github.com/directus-community/heroku-template).
-
-<a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template">
-	<img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px">
-</a>
+| DigitalOcean                                                                                                                        | Heroku                                                                                                                                                                                              | Platform.sh                                                                                                                                                                                                                                                                                                                                                                             | Zeet                                                                                                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://images.prismic.io/www-static/49aa0a09-06d2-4bba-ad20-4bcbe56ac507_logo.png?auto=compress,format" width="180px" /> | <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px"></a> | <a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px"></a> | <a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template"><img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px"></a> |
 
 ## 📌 Requirements
 
