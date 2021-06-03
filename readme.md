@@ -61,21 +61,27 @@ Our pre-built image contains everything you need to quickly get up and running w
 You can quickly deploy a project on Heroku using our
 [community maintained template](https://github.com/directus-community/heroku-template).
 
-[![](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
+<a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template">
+	<img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy on Heroku" width="180px">
+</a>
 
 ### Platform.sh
 
 An empty [Directus project](https://github.com/platformsh-templates/directus) repository is maintained by
 [Platform.sh](https://platform.sh) that you can quickly deploy using the button below.
 
-[![](https://platform.sh/images/deploy/lg-blue.svg)](https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform)
+<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform">
+	<img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px">
+</a>
 
 ### Zeet
 
 You can quickly deploy a new instance on Zeet using our
 [community maintained template](https://github.com/directus-community/heroku-template).
 
-[![](https://deploy.zeet.co/directus.svg)](https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template)
+<a href="https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template">
+	<img src="https://deploy.zeet.co/directus.svg" alt="Deploy on Zeet" width="180px">
+</a>
 
 ## 📌 Requirements
 
