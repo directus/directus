@@ -24,6 +24,7 @@ export type TransportOptions = {
 	headers?: any;
 	refreshTokenIfNeeded?: boolean;
 	sendAuthorizationHeaders?: boolean;
+	onUploadProgress?: ((progressEvent: any) => void) | undefined;
 };
 
 export interface ITransport {
