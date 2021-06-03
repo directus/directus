@@ -48,26 +48,34 @@ important to keep your projects up-to-date.
 
 <br>
 
-## :rocket: Deploy on Platform.sh
+## :rocket: One-Click Deployments
+
+### DigitalOcean
+
+Our pre-built image contains everything you need to quickly get up and running with Directus.
+
+[https://marketplace.digitalocean.com/apps/directus](https://marketplace.digitalocean.com/apps/directus)
+
+### Heroku
+
+You can quickly deploy a project on Heroku using our
+[community maintained template](https://github.com/directus-community/heroku-template).
+
+[![](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
+
+### Platform.sh
 
 An empty [Directus project](https://github.com/platformsh-templates/directus) repository is maintained by
 [Platform.sh](https://platform.sh) that you can quickly deploy using the button below.
 
-<p align="center">
-<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform">
-    <img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" />
-</a>
-</p>
+[![](https://platform.sh/images/deploy/lg-blue.svg)](https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform)
 
-## :rocket: Deploy on Heroku
+### Zeet
 
-You can quickly deploy a project on Heroku using our community maintained template.
+You can quickly deploy a new instance on Zeet using our
+[community maintained template](https://github.com/directus-community/heroku-template).
 
-<p align="center">
-    <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template">
-        <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
-    </a>
-</p>
+[![](https://deploy.zeet.co/directus.svg)](https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template)
 
 ## 📌 Requirements
 
