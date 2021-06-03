@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import CodeMirror from 'codemirror';
+import CodeMirror, { ModeSpec } from 'codemirror';
 
 import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
 
@@ -133,7 +133,7 @@ export default defineComponent({
 
 					const jsonlint = (await import('jsonlint-mod')) as any;
 
-					codemirror.value.setOption('mode', { name: 'javascript', json: true });
+					codemirror.value.setOption('mode', { name: 'javascript', json: true } as ModeSpec<{ json: boolean }>);
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
 						const found: Record<string, any> = [];
@@ -157,7 +157,7 @@ export default defineComponent({
 						return found;
 					});
 				} else if (lang === 'plaintext') {
-					codemirror.value.setOption('mode', { name: null });
+					codemirror.value.setOption('mode', { name: 'text/plain' });
 				} else {
 					await import(`codemirror/mode/${lang}/${lang}.js`);
 					codemirror.value.setOption('mode', { name: lang });
