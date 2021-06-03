@@ -13,7 +13,7 @@
 	"dependencies": {
 		"chalk": "^4.1.1",
 		"commander": "^7.2.0",
-		"execa": "^5.0.1",
+		"execa": "^5.1.0",
 		"fs-extra": "^10.0.0",
 		"ora": "^5.4.0"
 	},

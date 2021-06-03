@@ -28,15 +28,44 @@ lines_. The broadest goal of our platform is to present data in a simple, orderl
 
 :::
 
-## What makes it unique?
+## Database Mirroring
 
-**Directus dynamically generates custom API endpoints based on your SQL database's schema in real-time — something we
-call "Database Mirroring".** Whether you install fresh or on top of an existing database, you always maintain end-to-end
-control over your actual database, including: tables, columns, datatypes, default values, indexes, relationships, etc.
+**What makes Directus so unique is that it dynamically generates custom API endpoints based on your SQL database's
+schema in real-time — something we call "[Database Mirroring](/concepts/databases/#database-mirroring)".** Whether you
+install fresh or on top of an existing database, you always maintain end-to-end control over your actual database,
+including: tables, columns, datatypes, default values, indexes, relationships, etc.
+
+Below is an overview to how Directus mirrors the database, and our non-technical naming convention.
+
+- **[Project](/concepts/projects/)** — A Database (also includes asset storage and the config file)
+- **[Collection](/concepts/collections/)** — A Database Table
+- **[Fields](/concepts/fields/)** — A Database Column
+- **[Item](/concepts/items/)** — A Database Record/Row
+- **[Relationships](/concepts/relationships/)** — A Database Relationship, including additional non-standard types
+- **[Type](/concepts/types/)** — A Database Data Type, including additional non-standard types
+- **[Users](/concepts/users/)** — A Directus User (App or API), not to be confused with a Database User
 
 Perhaps one of the biggest advantages of _Database Mirroring_ is that you have direct access to your pure and unaltered
 data. That means you have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with
 proper SQL queries. This effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
+
+## Modular & Extensible
+
+What makes Directus so flexible is that it has been designed from the ground up with complete extensibility, helping
+avoid a feature ceiling. In addition to offering our software's codebase as open-source, we've included the following
+extension types in the platform's App and API.
+
+- **[Modules](/concepts/modules/)** — (App) The highest and broadest level of organization within the App
+- **[Layouts](/concepts/layouts/)** — (App) How you browse, view or interact with a set of Items in a Collection
+- **[Interfaces](/concepts/interfaces/)** — (App) How you view or interact with a field and its value
+- **[Displays](/concepts/displays/)** — (App) A small inline preview of a field's value
+- **[Panes](#)** — (App) A way to view dashboard data within the Insights Module
+- **[Styles](/guides/styles/)** — (App) Whitelabeling through App Themes and CSS Overrides
+- **[Endpoints](/guides/api-endpoints/)** — (API) Custom registered API endpoints
+- **[Hooks](/guides/api-hooks/)** — (API) Event and interval hooks for triggering custom logic
+- **[Email Templates](/guides/email-templates/)** — (API) Custom structure and formatting for emails
+
+## Core Principles
 
 Directus is a simple solution for complex problems, with a data-first approach guided by the following core principles:
 
