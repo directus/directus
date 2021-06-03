@@ -171,7 +171,15 @@ export class RelationsService {
 				});
 			}
 
-			await this.relationsItemService.createOne(metaRow);
+			const relationsItemService = new ItemsService('directus_relations', {
+				knex: trx,
+				schema: this.schema,
+				// We don't set accountability here. If you have read access to certain fields, you are
+				// allowed to extract the relations regardless of permissions to directus_relations. This
+				// happens in `filterForbidden` down below
+			});
+
+			await relationsItemService.createOne(metaRow);
 		});
 	}
 
@@ -225,11 +233,19 @@ export class RelationsService {
 				});
 			}
 
+			const relationsItemService = new ItemsService('directus_relations', {
+				knex: trx,
+				schema: this.schema,
+				// We don't set accountability here. If you have read access to certain fields, you are
+				// allowed to extract the relations regardless of permissions to directus_relations. This
+				// happens in `filterForbidden` down below
+			});
+
 			if (relation.meta) {
 				if (existingRelation?.meta) {
-					await this.relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
+					await relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
 				} else {
-					await this.relationsItemService.createOne({
+					await relationsItemService.createOne({
 						...(relation.meta || {}),
 						many_collection: relation.collection,
 						many_field: relation.field,
