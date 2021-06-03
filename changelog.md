@@ -2,6 +2,45 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.72 (June 3, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#5818](https://github.com/directus/directus/pull/5818) Add support for adding a collection accent color ([@Oreilles](https://github.com/Oreilles))
+
+### :rocket: Improvements
+
+- **API**
+  - [#6040](https://github.com/directus/directus/pull/6040) Handle illegal/corrupt relational rows better during foreign key migration ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6035](https://github.com/directus/directus/pull/6035) Extract IPTC title and keywords ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#6025](https://github.com/directus/directus/pull/6025) Improve `disabled` state on the file interface ([@nickluger](https://github.com/nickluger))
+- **sdk-js**
+  - [#6007](https://github.com/directus/directus/pull/6007) Pass onUploadProgress function through to the axios request ([@moekify](https://github.com/moekify))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#6045](https://github.com/directus/directus/pull/6045) Fix external query during transaction in foreign key constraint creation ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6043](https://github.com/directus/directus/pull/6043) Prevent foreign key constraint names from exceeding 64 characters ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6042](https://github.com/directus/directus/pull/6042) Fixed issue that would prevent relationship updates on foreign key constraints with a custom index name ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Docker**
+  - [#6044](https://github.com/directus/directus/pull/6044) Reduce the image layers by combining RUN statements; and fix build permissions for issue #6023 ([@t7tran](https://github.com/t7tran))
+
+### :memo: Documentation
+
+- [#6037](https://github.com/directus/directus/pull/6037) Update one-clicks in readme/docs ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6033](https://github.com/directus/directus/pull/6033) Fix wrong reference to not-yet-existing /backup endpoint ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#6032](https://github.com/directus/directus/pull/6032) Upgrade dependencies ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6022](https://github.com/directus/directus/pull/6022) Bump sass from 1.34.0 to 1.34.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6021](https://github.com/directus/directus/pull/6021) Bump argon2 from 0.27.2 to 0.28.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6020](https://github.com/directus/directus/pull/6020) Bump eslint from 7.26.0 to 7.27.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6018](https://github.com/directus/directus/pull/6018) Bump @types/node from 15.6.0 to 15.9.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## v9.0.0-rc.71 (June 2, 2021)
 
 ### :rocket: Improvements
