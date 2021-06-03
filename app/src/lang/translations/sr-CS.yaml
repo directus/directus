@@ -6,7 +6,7 @@ half_width: Pola širine
 full_width: Puna širina
 fill_width: Popunjeno
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
-add_field: Dodaj polje
+add_field: Dodaj Polje
 role_name: Naziv uloge
 db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje '
 show_archived_items: Prikaži arhivirane stavke
@@ -42,11 +42,47 @@ public: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
-field_permissions: Dozvole kolona
-delete_field: Obriši Kolonu
-fields_and_layout: Kolone i Izgled
-field_create_success: 'Kreirana Kolona: "{field}"'
-field_update_success: 'Ažurirana Kolona: "{field}"'
+archive: Arhiviraj
+archive_confirm: Da li ste sigurni da želite da arhivirate ovu stavku?
+reset_system_permissions_to: 'Poništi Sistemske Dozvole na:'
+reset_system_permissions_copy: Ova operacija će prepisati sve prilagođene dozvole koje ste primjenili na sistemske kolekcije. Da li ste sigurni?
+app_access_minimum: Minimalan pristup aplikaciji
+recommended_defaults: Preporučene postavke
+unarchive: Vrati iz arhive
+unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
+nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
+unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
+validationError:
+  eq: Vrijednost treba biti {valid}
+  neq: Vrijednost ne može biti {invalid}
+  in: Vrijednost mora da bude jedna od {valid}
+  nin: Vrijednost ne može biti nijedna od {invalid}
+  contains: Vrijednost mora da sadrži {substring}
+  ncontains: Vrijednost ne može da sadrži {substring}
+  gt: Vrijednost mora da bude veća od {valid}
+  gte: Vrijednost mora da bude veća ili jednaka {valid}
+  lt: Vrijednost mora da bude manja od {valid}
+  lte: Vrijednost mora da bude manja ili jednaka {valid}
+  empty: Vrijednost mora biti prazna
+  nempty: Vrijednost ne može biti prazna
+  null: Vrijednost mora biti null
+  nnull: Vrijednost ne može biti null
+  required: Vrijednost je obavezna
+  unique: Vrijednost mora biti jedinstvena
+all_access: Potpun Pristup
+no_access: Bez Pristupa
+allow_null_value: Dozvoli NULL vrijednost
+field_standard: Uobičajeno
+field_m2o: M2O Relacija
+field_m2a: M2A Relacija
+field_o2m: O2M Relacija
+field_m2m: M2M Relacija
+item_permissions: Dozvole na stavkama
+field_permissions: Dozvole na Poljima
+delete_field: Obriši Polje
+fields_and_layout: Polja & Izgled
+field_create_success: 'Kreirano Polje: "{field}"'
+field_update_success: 'Ažurirano Polje: "{field}"'
 duplicate_where_to: U koju tabelu želite da smjestite ovu dupliranu kolonu?
 language: Jezik
 admins_have_all_permissions: Administratori imaju sve dozvole
@@ -54,18 +90,20 @@ camera: Kamera
 exposure: Ekspozicija
 shutter: Okidač
 iso: ISO
-create_field: Napravi Kolonu
-creating_new_field: 'Nova Kolona ({collection})'
-hidden_field: Sakrivena Kolona
+create_field: Kreiraj Polje
+creating_new_field: 'Novo Polje ({collection})'
+field_in_collection: '{field} ({collection})'
+hidden_field: Sakriveno Polje
 key: Ključ
 create_translations: Kreiraj Prevode
 auto_refresh: Automatsko osvjеžavanjе
 click_here: Klikni ovdje
-fields_group: Grupe Kolona
-no_collections_found: Tabele nisu pronađene.
-search_collection: Pretraži Tabelu...
-new_field: 'Nova Kolona'
-new_collection: 'Nova Tabela'
+fields_group: Grupe Polja
+no_collections_found: Kolekcije nisu pronađene.
+search_collection: Pretraži Kolekciju...
+new_field: 'Novo Polje'
+new_collection: 'Nova Kolekcija'
+standard_field: Standardno Polje
 reset_to_default: Vrati na podrazumijevano
 undo_changes: Poništi izmjene
 notifications: Obavještenja
@@ -84,6 +122,7 @@ yesterday: Juče
 delete_comment: Obriši komentar
 created: Kreiran
 report_bug: Prijavi Propust
+value_unique: Vrijednost mora biti jedinstvena
 settings_project: Podešavanje Projekta
 fields:
   directus_files:
