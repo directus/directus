@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import database from '../database';
+import getDatabase from '../database';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
@@ -15,7 +15,7 @@ export class ImportService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}

@@ -16,6 +16,7 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
+	GraphQLNullableType,
 	GraphQLObjectType,
 	GraphQLResolveInfo,
 	GraphQLScalarType,
@@ -43,7 +44,7 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
@@ -114,7 +115,7 @@ export class GraphQLService {
 
 	constructor(options: AbstractServiceOptions & { scope: 'items' | 'system' }) {
 		this.accountability = options?.accountability || null;
-		this.knex = options?.knex || database;
+		this.knex = options?.knex || getDatabase();
 		this.schema = options.schema;
 		this.scope = options.scope;
 	}
@@ -319,8 +320,21 @@ export class GraphQLService {
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
+						let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type);
+
+						// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
+						// can't non-null in update, as that would require every not-nullable field to be
+						// submitted on updates
+						if (field.nullable === false && action !== 'update') {
+							type = GraphQLNonNull(type);
+						}
+
+						if (collection.primary === field.field) {
+							type = GraphQLID;
+						}
+
 						acc[field.field] = {
-							type: field.nullable ? getGraphQLType(field.type) : GraphQLNonNull(getGraphQLType(field.type)),
+							type,
 							description: field.note,
 						};
 

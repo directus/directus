@@ -80,6 +80,7 @@ body {
 	color: var(--v-list-color);
 	line-height: 22px;
 	border-radius: var(--border-radius);
+	pointer-events: none;
 
 	&.large {
 		--v-list-padding: 12px;

@@ -2,7 +2,7 @@ import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import cache from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import database, { schemaInspector } from '../database';
+import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -27,13 +27,13 @@ export type RawCollection = {
 export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
-	schemaInspector: typeof schemaInspector;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 	}
 

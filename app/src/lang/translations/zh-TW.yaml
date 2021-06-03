@@ -298,7 +298,7 @@ create_account: 建立帳號
 account_created_successfully: 帳號建立成功
 auto_fill: 自動填入
 errors:
-  COLLECTION_NOT_FOUND: '集合不存在'
+  COLLECTION_NOT_FOUND: "集合不存在"
   FIELD_NOT_FOUND: 找不到欄位
   FORBIDDEN: 被禁止
   INVALID_CREDENTIALS: 錯誤的帳號或密碼
@@ -306,6 +306,7 @@ errors:
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
   UNKNOWN: 未預期的錯誤
+  INTERNAL_SERVER_ERROR: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
@@ -580,9 +581,6 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: 複選框
-    allow_other: 允許其他選項
   input-code:
     code: 程式碼
   collection:
@@ -599,13 +597,7 @@ interfaces:
   presentation-divider:
     divider: 分隔線
   select-dropdown:
-    allow_other: 允許其他選項
-    allow_other_label: 允許其他值
-    choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
-  select-multiple-dropdown:
-    select-multiple-dropdown: 下拉 (多個)
-    description: 從下拉選單選擇多個值
   file:
     file: 檔案
     description: 選擇或上傳檔案
@@ -618,44 +610,10 @@ interfaces:
     icon: 圖示
   file-image:
     image: 圖像
-    description: 選擇或上傳圖像
   system-interface:
     interface: 介面
-    description: 選擇現有介面
-    placeholder: 選擇一個介面...
-  system-interface-options:
-    interface-options: 介面選項
-  list-m2m:
-    many-to-many: 多對多
   select-dropdown-m2o:
-    many-to-one: 多對一
     display_template: 顯示模板
-  input-rich-text-md:
-    markdown: Markdown
-    description: 輸入和預覽 Markdown
-    customSyntax_label: 新增自訂語法類型
-    customSyntax_add: 新增自訂語法
-    imageToken: 圖像權杖
-  presentation-notice:
-    notice: 通知
-    description: 顯示簡短通知
-    text: 在此輸入通知內容...
-  numeric:
-    numeric: 數字
-    description: 輸入一個數字
-    minimum_value: 最小值
-    maximum_value: 最大值
-  list-o2m:
-    one-to-many: 一對多
-    description: 選擇多個關聯項目
-    no_collection: 找不到該集合
-  select-radio:
-    radio-buttons: 單選按鈕
-  list:
-    repeater: 重複者
-    edit_fields: 編輯欄位
-    field_name_placeholder: 輸入欄位名稱...
-    field_note_placeholder: 輸入欄位備忘...
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -669,14 +627,6 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  input:
-    text-input: 文字輸入
-    description: 輸入單行文本
-    trim: 去除內容前後空格
-    trim_label: 修剪開頭與結尾
-  input-multiline:
-    textarea: 文本區
-    description: 輸入多行純文本
   boolean:
     toggle: 切換
     label_default: 已啟用
@@ -688,9 +638,6 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  input-rich-text-html:
-    toolbar: 工具列
-    custom_formats: 自訂格式
 displays:
   boolean:
     description: 顯示開關狀態

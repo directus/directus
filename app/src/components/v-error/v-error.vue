@@ -29,7 +29,13 @@ export default defineComponent({
 		});
 
 		const message = computed(() => {
-			return props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+			let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+
+			if (message.length > 200) {
+				message = message.substring(0, 197) + '...';
+			}
+
+			return message;
 		});
 
 		const copied = ref(false);

@@ -54,15 +54,10 @@ os_totalmem: OS minne
 archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
 archive_confirm_count: >-
-  Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse
-  {count} elementene?
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
 reset_system_permissions_to: 'Tilbakestill systemtillatelser til:'
-reset_system_permissions_copy:
-  Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du
-  sikker?
-the_following_are_minimum_permissions:
-  Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette,
-  men ikke nedenfor.
+reset_system_permissions_copy: Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du sikker?
+the_following_are_minimum_permissions: Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette, men ikke nedenfor.
 app_access_minimum: App Minimumstilgang
 recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
@@ -159,8 +154,7 @@ this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle oblig
 click_here: Klikk her
 to_manually_setup_translations: for manuelt å sette opp oversettelser.
 click_to_manage_translated_fields: >-
-  Der er ingen oversatte felter enda. Klikk her for å lage dem. | Der er ett oversatt felt. Klikk her for å redigere det
-  | Der er {count} oversatte felter. Klikk her for å redigere dem.
+  Der er ingen oversatte felter enda. Klikk her for å lage dem. | Der er ett oversatt felt. Klikk her for å redigere det | Der er {count} oversatte felter. Klikk her for å redigere dem.
 fields_group: Feltgruppe
 no_collections_found: Ingen kolleksjoner funnet.
 new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
@@ -337,7 +331,7 @@ account_created_successfully: Kontoen ble opprettet
 auto_fill: Autofyll
 corresponding_field: Tilsvarende felt
 errors:
-  COLLECTION_NOT_FOUND: 'Kolleksjonen eksisterer ikke'
+  COLLECTION_NOT_FOUND: "Kolleksjonen eksisterer ikke"
   FIELD_NOT_FOUND: Feltet ble ikke funnet
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
@@ -373,8 +367,7 @@ keep_editing: Fortsett å rediger
 add_new: Legg til ny
 all: Alle
 batch_delete_confirm: >-
-  Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er
-  du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
+  Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
 cancel: Avbryt
 collection: Kolleksjon
 collections: Kolleksjoner

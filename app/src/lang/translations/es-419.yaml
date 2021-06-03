@@ -54,15 +54,10 @@ os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count}
-  elementos?
+  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
-reset_system_permissions_copy:
-  Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está
-  seguro?
-the_following_are_minimum_permissions:
-  Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá
-  de esto, pero no más abajo.
+reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
+the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Mínimo acceso a App
 recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
@@ -161,8 +156,7 @@ this_will_auto_setup_fields_relations: Esto configurará automáticamente todos 
 click_here: Clic aquí
 to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
-  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para
-  administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
+  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
@@ -332,7 +326,6 @@ interface_not_found: 'Interfaz "{interface}" no encontrada.'
 reset_interface: Restablecer Interfaz
 display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
-list-m2a: Constructor (M2A)
 item_count: 'Sin Elementos | Un Elemento | {count} Elementos'
 no_items_copy: Aún no hay Elementos en esta colección.
 file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
@@ -388,7 +381,7 @@ account_created_successfully: La Cuenta ha sido creada exitósamente
 auto_fill: Auto Rellenar
 corresponding_field: Campo Correspondiente
 errors:
-  COLLECTION_NOT_FOUND: 'La Colección no existe'
+  COLLECTION_NOT_FOUND: "La Colección no existe"
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
@@ -400,6 +393,7 @@ errors:
   ROUTE_NOT_FOUND: No encontrado
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   UNKNOWN: Error Inesperado
+  INTERNAL_SERVER_ERROR: Error Inesperado
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
@@ -430,8 +424,7 @@ start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es
-  permanente y no reversible.
+  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -599,38 +592,30 @@ discard_changes: Descartar Cambios
 keep_editing: Seguir Editando
 page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
 page_help_collections_collection: >-
-  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el
-  Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para
-  un rápido acceso.
+  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_collections_item: >-
-  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un
-  historial completo de revisiones y comentarios incluidos.
+  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
 page_help_activity_collection: >-
   **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
 page_help_docs_global: >-
   **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
 page_help_files_collection: >-
-  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y
-  Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_files_item: >-
-  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes
-  de acceso.
-page_help_settings_project: '**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto.'
+  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
+page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
 page_help_settings_datamodel_collections: >-
-  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas
-  y del sistema, así como las tablas de base de datos que pueden ser agregadas.
+  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
-page_help_settings_roles_item: '**Detalle de Rol** — Administra los permisos del Rol y otros ajustes.'
+page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
-  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y
-  global, así como vistas por defecto.
+  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
 page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
 page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item:
-  '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -641,8 +626,7 @@ all: Todos
 none: Nada
 no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
-  Ningún elemento ha sido seleccionado | ¿Estás seguro que quieres eliminar este elemento?, Esta acción es permanente. |
-  ¿Estás seguro que quieres eliminar estos {count} elementos?, Esta acción es permanente.
+  Ningún elemento ha sido seleccionado | ¿Estás seguro que quieres eliminar este elemento?, Esta acción es permanente. | ¿Estás seguro que quieres eliminar estos {count} elementos?, Esta acción es permanente.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
@@ -817,20 +801,7 @@ view_project: Ver Proyecto
 report_error: Reportar Error
 interfaces:
   presentation-links:
-    presentation-links: Enlaces de botón
-    links: Enlaces
-    description: Botones de enlace configurables para lanzar URLs dinámicas
-    style: Estilo
     primary: Principal
-    link: Enlaces
-    button: Botones
-    error: No se puede realizar la acción
-  select-multiple-checkbox:
-    checkboxes: Casillas De Selección
-    description: Elegir entre múltiples opciones a través de casillas de selección
-    allow_other: Permitir Otro
-    show_more: 'Mostrar {count} más'
-    items_shown: Elementos Mostrados
   input-code:
     code: Código
   collection:
@@ -855,24 +826,8 @@ interfaces:
     select_a_collection: Seleccionar una Colección
   presentation-divider:
     divider: Separador
-    description: Etiqueta y a la vez permite dividir los campos en secciones
-    title_placeholder: Ingresar un título...
-    inline_title: Titulo en línea
-    inline_title_label: Mostrar título en línea
-    margin_top: Margen Superior
-    margin_top_label: Aumentar Margen Superior
   select-dropdown:
-    description: Seleccine un valor de la lista desplegable
-    choices_placeholder: Agregar una nueva opción
-    allow_other: Permitir Otro
-    allow_other_label: Permitir Otros Valores
-    allow_none: Permitir "Nada"
-    allow_none_label: Permitir No Selección
-    choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Lista Desplegable (Múltiple)
-    description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
     description: Seleccionar o subir un archivo
@@ -885,53 +840,10 @@ interfaces:
     icon: Ícono
   file-image:
     image: Imagen
-    description: Seleccionar o subir una imagen
   system-interface:
     interface: Interfaz
-    description: Seleccionar una interfaz existente
-    placeholder: Seleccionar una interfaz...
-  system-interface-options:
-    interface-options: Opciones de Interfaz
-    description: Un diálogo para seleccionar opciones de una interfaz
-  list-m2m:
-    many-to-many: Muchos a Muchos
-    description: Seleccionar múltiples elementos de unión relacionados
   select-dropdown-m2o:
-    many-to-one: Muchos a Uno
-    description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
-  input-rich-text-md:
-    markdown: Markdown
-    description: Ingresar y previsualizar Markdown
-    customSyntax: Bloques personalizados
-    customSyntax_label: Añadir tipos de sintaxis personalizados
-    customSyntax_add: Añadir sintaxis personalizada
-    box: Bloque / Alineación
-    imageToken: Token de Imagen
-    imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
-  presentation-notice:
-    notice: Aviso
-    description: Presentar un aviso corto
-    text: Ingresar contenido del aviso aquí...
-  numeric:
-    numeric: Numérico
-    description: Ingresar un número
-    minimum_value: Valor Mínimo
-    maximum_value: Valor Máximo
-    step_interval: Intervalo de Pasos
-  list-o2m:
-    one-to-many: Uno a Muchos
-    description: Seleccionar múltiples elementos relacionados
-    no_collection: No se encontró la colección
-  select-radio:
-    radio-buttons: Botones de Radio
-    description: Seleccionar una de las opciones múltiples
-  list:
-    repeater: Repetidor
-    description: Crear múltiples entradas para la misma estructura
-    edit_fields: Editar Campos
-    field_name_placeholder: Ingrese el nombre del campo...
-    field_note_placeholder: Ingrese la nota del campo...
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -950,25 +862,12 @@ interfaces:
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
-  input:
-    text-input: Campo de Texto
-    description: Ingresar texto de una línea
-    trim: Eliminar Espacios en Blanco
-    trim_label: Eliminar espacios al inicio y al final
-    mask: Enmascarado
-    mask_label: Ocultar el valor real
-  input-multiline:
-    textarea: Área de Texto
-    description: Ingresar texto plano multi-línea
   boolean:
     toggle: Alternar
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
-  list-o2m-tree-view:
-    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
-    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus
@@ -977,12 +876,6 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    description: Un editor de texto enriquecido para escribir contenido HTML
-    toolbar: Barra de Herramientas
-    custom_formats: Formatos Personalizados
-    options_override: Sobrescribir Opciones
 displays:
   boolean:
     boolean: Booleano
@@ -1008,8 +901,7 @@ displays:
     description: Presentar valores relacionados a la hora
     format: Formato
     format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa

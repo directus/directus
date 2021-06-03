@@ -233,8 +233,8 @@ export default defineComponent({
 			return !activator.value?.contains(e.target as Node);
 		}
 
-		function onContentClick() {
-			if (props.closeOnContentClick === true) {
+		function onContentClick(e: Event) {
+			if (props.closeOnContentClick === true && e.target !== e.currentTarget) {
 				deactivate();
 			}
 		}

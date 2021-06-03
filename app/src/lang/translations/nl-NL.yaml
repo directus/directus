@@ -53,14 +53,10 @@ os_totalmem: OS Geheugen
 archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
 archive_confirm_count: >-
-  Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items
-  wilt archiveren?
+  Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
 reset_system_permissions_to: 'Systeemrechten resetten naar:'
-reset_system_permissions_copy:
-  Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
-the_following_are_minimum_permissions:
-  De volgende permissies zijn de minimale permissies wanneer "App Access" is ingeschakeld. U kunt permissies toevoegen
-  vanaf dit punt, maar niet verminderen.
+reset_system_permissions_copy: Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
+the_following_are_minimum_permissions: De volgende permissies zijn de minimale permissies wanneer "App Access" is ingeschakeld. U kunt permissies toevoegen vanaf dit punt, maar niet verminderen.
 app_access_minimum: Minimale apptoegang
 recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
@@ -154,8 +150,7 @@ this_will_auto_setup_fields_relations: Dit zal automatisch alle vereiste velden 
 click_here: Klik hier
 to_manually_setup_translations: om de vertalingen handmatig in te stellen.
 click_to_manage_translated_fields: >-
-  Er zijn nog geen vertaalde velden. Klik hier om ze aan te maken. | Er is één vertaald veld. Klik hier om het te
-  beheren. | Er zijn {count} vertaalde velden. Klik hier om ze te beheren.
+  Er zijn nog geen vertaalde velden. Klik hier om ze aan te maken. | Er is één vertaald veld. Klik hier om het te beheren. | Er zijn {count} vertaalde velden. Klik hier om ze te beheren.
 fields_group: Veld-Groep
 new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 new_field: 'Nieuw veld'
@@ -324,7 +319,6 @@ interface_not_found: 'Interface "{interface}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
-list-m2a: Bouwer (M2A)
 item_count: 'Geen items | Één item | {count} items'
 no_items_copy: Er zijn nog geen items in deze collectie.
 file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
@@ -380,7 +374,7 @@ account_created_successfully: Account succesvol aangemaakt
 auto_fill: Automatisch vullen
 corresponding_field: Corresponderende veld
 errors:
-  COLLECTION_NOT_FOUND: 'Collectie bestaat niet'
+  COLLECTION_NOT_FOUND: "Collectie bestaat niet"
   FIELD_NOT_FOUND: Veld niet gevonden
   FORBIDDEN: Verboden
   INVALID_CREDENTIALS: Verkeerde gebruikersnaam of wachtwoord
@@ -391,6 +385,7 @@ errors:
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
   UNKNOWN: Onverwachte fout
+  INTERNAL_SERVER_ERROR: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
@@ -421,8 +416,7 @@ start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
 one_filtered_item: '1 gefilterd item'
 delete_collection_are_you_sure: >-
-  Weet je zeker dat je deze collectie wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen
-  verwijderen. Deze actie is permanent.
+  Weet je zeker dat je deze collectie wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
 collections_shown: Collecties getoond
 visible_collections: Zichtbare collecties
 hidden_collections: Verborgen collecties
@@ -589,33 +583,26 @@ discard_changes: Wijzigingen ongedaan maken
 keep_editing: Blijf wijzigen
 page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
-  **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen
-  en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
+  **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
-  **Item detail** - Een formulier voor het bekijken en beheren van dit item. Deze zijbalk bevat ook een volledige
-  geschiedenis van herzieningen en ingesloten reacties.
+  **Item detail** - Een formulier voor het bekijken en beheren van dit item. Deze zijbalk bevat ook een volledige geschiedenis van herzieningen en ingesloten reacties.
 page_help_activity_collection: >-
   **Blader door activiteit** - Een uitgebreide lijst van alles wat er zich afgespeeld heeft.
 page_help_docs_global: >-
   **Documentatie overzicht** — Docs die specifiek zijn afgestemd op de versie en schema van dit project.
 page_help_files_collection: >-
-  **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering
-  aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
+  **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_files_item: >-
-  **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele
-  bestand en het bijwerken van toegangsinstellingen.
-page_help_settings_project: '**Projectinstellingen** - De algemene configuratieopties van je project.'
+  **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
+page_help_settings_project: "**Projectinstellingen** - De algemene configuratieopties van je project."
 page_help_settings_datamodel_collections: >-
-  **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en
-  systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
+  **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
-page_help_settings_roles_collection:
-  '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
-page_help_settings_roles_item: '**Rol Detail** - Beheer de rechten van de rol en andere instellingen.'
+page_help_settings_roles_collection: '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
+page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
-  **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en
-  standaard views.
+  **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
 page_help_settings_presets_item: >-
   **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
@@ -630,8 +617,7 @@ all: Alle
 none: Geen
 no_layout_collection_selected_yet: Geen layout/collectie geselecteerd
 batch_delete_confirm: >-
-  Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet
-  je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+  Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 cancel: Annuleer
 collection: Collectie
 collections: Collecties
@@ -806,20 +792,7 @@ view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
   presentation-links:
-    presentation-links: Knopkoppelingen
-    links: Koppelingen
-    description: Configureerbare linkknoppen voor het openen van dynamische URL's
-    style: Stijl
     primary: Primair
-    link: Koppelingen
-    button: Knoppen
-    error: Kan actie niet uitvoeren
-  select-multiple-checkbox:
-    checkboxes: Vinkjes
-    description: Kies tussen meerdere opties via selectievakjes
-    allow_other: Andere toestaan
-    show_more: 'Toon {count} meer'
-    items_shown: Items weergegeven
   input-code:
     code: Code
   collection:
@@ -844,24 +817,8 @@ interfaces:
     select_a_collection: Selecteer een collectie
   presentation-divider:
     divider: Scheidingslijn
-    description: Label en verdeel velden in secties
-    title_placeholder: Voer een titel in...
-    inline_title: Inline titel
-    inline_title_label: Toon titel binnen regel
-    margin_top: Marge boven
-    margin_top_label: Verhoog Top Marge
   select-dropdown:
-    description: Selecteer een waarde uit een dropdown
-    choices_placeholder: Voeg een nieuwe keuze toe
-    allow_other: Andere toestaan
-    allow_other_label: Andere waarden toestaan
-    allow_none: Niets toestaan
-    allow_none_label: Geen selectie toestaan
-    choices_name_placeholder: Naam invoeren...
     choices_value_placeholder: Voer een waarde in...
-  select-multiple-dropdown:
-    select-multiple-dropdown: Dropdown (meerdere)
-    description: Selecteer meerdere waarden uit een dropdown
   file:
     file: Bestand
     description: Selecteer of upload een bestand
@@ -874,53 +831,10 @@ interfaces:
     icon: Icoon
   file-image:
     image: Afbeelding
-    description: Selecteer of upload een afbeelding
   system-interface:
     interface: Interface
-    description: Selecteer een bestaande interface
-    placeholder: Selecteer een interface...
-  system-interface-options:
-    interface-options: Interface opties
-    description: Een modal voor het selecteren van opties van een interface
-  list-m2m:
-    many-to-many: Veel op Veel
-    description: Selecteer meerdere gerelateerde items
   select-dropdown-m2o:
-    many-to-one: Veel op één
-    description: Selecteer één gerelateerd item
     display_template: Weergavesjabloon
-  input-rich-text-md:
-    markdown: Markdown
-    description: Markdown invoeren en bekijken
-    customSyntax: Aangepaste blokken
-    customSyntax_label: Voeg aangepaste syntaxistypes toe
-    customSyntax_add: Aangepaste syntax toevoegen
-    box: Blok / Inline
-    imageToken: Afbeeldingstoken
-    imageToken_label: Welke (statische) token toe te voegen aan afbeeldingsbronnen
-  presentation-notice:
-    notice: Melding
-    description: Een korte melding weergeven
-    text: Voer melding bericht hier in...
-  numeric:
-    numeric: Nummer
-    description: Voer een nummer in
-    minimum_value: Minimale Waarde
-    maximum_value: Maximale waarde
-    step_interval: Stap Interval
-  list-o2m:
-    one-to-many: Één op veel
-    description: Selecteer meerdere gerelateerde items
-    no_collection: De collectie kon niet worden gevonden
-  select-radio:
-    radio-buttons: Keuzerondjes
-    description: Selecteer een van de meerdere keuzes
-  list:
-    repeater: Herhaler
-    description: Meerdere invoergegevens van dezelfde structuur aanmaken
-    edit_fields: Velden bewerken
-    field_name_placeholder: Voer een veldnaam in...
-    field_note_placeholder: Veldnotitie invoeren...
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -939,16 +853,6 @@ interfaces:
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
     add_tags: Tags toevoegen...
-  input:
-    text-input: Tekstinvoer
-    description: Voer een tekst van een enkele regel in
-    trim: Bijsnijden
-    trim_label: Begin en einde bijsnijden
-    mask: Gemaskeerd
-    mask_label: De echte waarde verbergen
-  input-multiline:
-    textarea: Tekstvlak
-    description: Voer multiline tekst in
   boolean:
     toggle: Schakel
     label_default: Ingeschakeld
@@ -963,12 +867,6 @@ interfaces:
       auto: Automatisch
       dropdown: Keuzemenu
       modal: Modal
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    description: Een tekstverwerker die HTML-inhoud schrijft
-    toolbar: Werkbalk
-    custom_formats: Aangepaste formaten
-    options_override: Opties overschrijven
 displays:
   boolean:
     boolean: Boolean
@@ -994,8 +892,7 @@ displays:
     description: Toon waarden gerelateerd aan tijd
     format: Format
     format_note: >-
-      Het aangepaste formaat accepteert de __[Date Field Symbol
-      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Het aangepaste formaat accepteert de __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lang
     short: Kort
     relative: Relatief

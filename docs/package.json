@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.69",
+	"version": "9.0.0-rc.71",
 	"description": "",
 	"main": "index.json",
 	"scripts": {
@@ -31,12 +31,12 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"directory-tree": "^2.2.9",
-		"fs-extra": "^9.1.0",
+		"fs-extra": "^10.0.0",
 		"lodash.get": "^4.4.2",
-		"micromark": "^2.10.1",
+		"micromark": "^2.11.4",
 		"npm-watch": "^0.9.0",
-		"slugify": "^1.4.6",
-		"vuepress": "^1.7.1",
+		"slugify": "^1.5.3",
+		"vuepress": "^1.8.2",
 		"vuepress-plugin-clean-urls": "^1.1.2"
 	}
 }

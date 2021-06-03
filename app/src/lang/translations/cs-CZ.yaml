@@ -20,33 +20,83 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
+email_examples: 'admin@example.com, user@example.com...'
 invite: Pozvat
+email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
 connection_fair: Zhoršené připojení
 connection_poor: Špatné připojení
+primary: Primární
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
+prefix: Prefix
+suffix: Přípona
 reset_bookmark: Obnovit záložku
+rename_bookmark: Přejmenovat záložku
+update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
+delete_bookmark_copy: >-
+  Jste si jisti, že chcete odstranit záložku "{bookmark}"? Tuto akci nelze vrátit zpět.
+logoutReason:
+  SIGN_OUT: Odhlášen
+  SESSION_EXPIRED: Relace vypršela
+public: Veřejné
+public_description: Určuje, která API data jsou dostupná bez ověřování.
+not_allowed: Nepovoleno
 directus_version: Verze Directusu
+node_version: Node verze
+node_uptime: Doba provozu Node
+os_type: Typ OS
+os_version: Verze OS
+os_uptime: Dobra provozu operačního systému
+os_totalmem: Pamět OS
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
+archive_confirm_count: >-
+  Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
+reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
+reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
+the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
+recommended_defaults: Doporučené výchozí hodnoty
+unarchive: Vyjmout z archivu
 unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
 nested_files_folders_will_be_moved: Vnořené soubory a složky budou přesunuty o úroveň výše.
+unknown_validation_errors: 'Došlo k chybám validace pro následující skrytá pole:'
 validationError:
+  eq: Hodnota musí být {valid}
+  neq: Hodnota nemůže být {invalid}
+  in: Hodnota musí být jedna z {valid}
+  nin: Hodnota nemůže být jedna z {invalid}
+  contains: Hodnota musí obsahovat {substring}
   ncontains: Hodnota nesmí obsahovat {substring}
   gt: Hodnota musí být větší než {valid}
   gte: Hodnota musí být větší nebo rovna {valid}
   lt: Hodnota musí být menší než {valid}
+  lte: Hodnota musí být menší nebo rovna {valid}
   empty: Hodnota musí být prázdná
   nempty: Hodnota nesmí být prázdná
   null: Hodnota musí být null
   nnull: Hodnota nesmí být null
   required: Hodnota je povinná
+  unique: Hodnota musí být unikátní
+  regex: Hodnota nemá správný formát
+all_access: Veškerý přístup
+no_access: Žádný přístup
+use_custom: Použít vlastní
+allow_null_value: Povolit NULL hodnotu
+enter_value_to_replace_nulls: Zadejte novou hodnotu, která nahradí všechny NULL, které jsou aktuálně v tomto poli.
 field_standard: Standardní
+field_m2o: M2O vazba
+field_m2a: M2A vazba
+field_o2m: O2M vazba
+field_m2m: M2M vazba
+item_permissions: Oprávnění položky
+field_permissions: Oprávnění pole
 field_validation: Validace pole
+permissions_for_role: 'Položky, které {role} role může {action}.'
+fields_for_role: 'Pole, které {role} role může {action}.'
 delete_field: Smazat pole
 language: Jazyk
 global: Globální
@@ -142,6 +192,7 @@ upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
 upload_files_success: 'Nahráno {count} souborů'
 drag_file_here: Přetáhněte sem soubor
 layout_options: Možnosti rozvržení
+value_unique: Hodnota musí být unikátní
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
@@ -182,8 +233,7 @@ keep_editing: Ne, vrátit se k úpravám
 add_new: Přidat nový
 all: Vše
 batch_delete_confirm: >-
-  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním
-  těchto {count} položek? Operace je nevratná.
+  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
 collection: Kategorie
 collections: Kategorie
@@ -289,8 +339,8 @@ sort_direction: Směr řazení
 translation: Překlad
 value: Hodnota
 interfaces:
-  input-code:
-    line_number: Číslo řádku
+  presentation-links:
+    primary: Primární
   collection:
     collection: Kategorie
   system-collections:
@@ -305,10 +355,6 @@ interfaces:
     description: Vyberte nebo nahrajte soubory
   select-icon:
     icon: Ikona
-  numeric:
-    numeric: Číselné
-  list:
-    edit_fields: Upravit pole
   tags:
     tags: Štítky
   user:

@@ -1,0 +1,106 @@
+---
+edit_field: Izmijeni
+item_revision: Revizija stavke
+duplicate_field: Dupliraj
+half_width: Pola širine
+full_width: Puna širina
+fill_width: Popunjeno
+enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
+add_field: Dodaj polje
+role_name: Naziv uloge
+db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje '
+show_archived_items: Prikaži arhivirane stavke
+edited: Vrijednost izmijenjena
+required: Obavezno
+required_for_app_access: Obavezno za pristup aplikaciji
+requires_value: Zahtijeva vrijednost
+create_role: Napravi ulogu
+create_user: Napravi korisnika
+invite_users: Pozovi korisnike
+invite: Pozovi
+email_already_invited: Na ovu "{email}" adresu je već poslat poziv
+emails: Email adrese
+connection_excellent: Odlična konekcija
+connection_good: Dobra konekcija
+connection_fair: Solidna konekcija
+connection_poor: Loša konekcija
+primary: Primarni
+rename_folder: Preimenuj Fasciklu
+delete_folder: Obriši Fasciklu
+prefix: Prefiks
+suffix: Sufiks
+reset_bookmark: Poništi postavljanje oznake
+rename_bookmark: Preimenuj oznaku
+update_bookmark: Ažuriraj oznaku
+delete_bookmark: Obriši oznaku
+delete_bookmark_copy: >-
+  Da li ste sigurni da želite da obrišete "{bookmark}" oznaku? Ova operacija je trajna.
+logoutReason:
+  SIGN_OUT: Odjavljen
+  SESSION_EXPIRED: Sesija je istekla
+public: Javno
+public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
+not_allowed: Nije dozvoljeno
+directus_version: Directus verzija
+field_permissions: Dozvole kolona
+delete_field: Obriši Kolonu
+fields_and_layout: Kolone i Izgled
+field_create_success: 'Kreirana Kolona: "{field}"'
+field_update_success: 'Ažurirana Kolona: "{field}"'
+duplicate_where_to: U koju tabelu želite da smjestite ovu dupliranu kolonu?
+language: Jezik
+admins_have_all_permissions: Administratori imaju sve dozvole
+camera: Kamera
+exposure: Ekspozicija
+shutter: Okidač
+iso: ISO
+create_field: Napravi Kolonu
+creating_new_field: 'Nova Kolona ({collection})'
+hidden_field: Sakrivena Kolona
+key: Ključ
+create_translations: Kreiraj Prevode
+auto_refresh: Automatsko osvjеžavanjе
+click_here: Klikni ovdje
+fields_group: Grupe Kolona
+no_collections_found: Tabele nisu pronađene.
+search_collection: Pretraži Tabelu...
+new_field: 'Nova Kolona'
+new_collection: 'Nova Tabela'
+reset_to_default: Vrati na podrazumijevano
+undo_changes: Poništi izmjene
+notifications: Obavještenja
+show_all_activity: Prikaži svu aktivnost
+page_not_found: Stranica nijе pronađеna
+page_not_found_body: Stranica koju tražite nije moguće pronaći.
+title: Naslov
+revision_delta_created: Kreiran
+revision_delta_deleted: Obrisano
+submit: Pošalji
+move_to_folder: Prebaci u fasciklu
+move: Premjesti
+system: Sistem
+today: Danas
+yesterday: Juče
+delete_comment: Obriši komentar
+created: Kreiran
+report_bug: Prijavi Propust
+settings_project: Podešavanje Projekta
+fields:
+  directus_files:
+    title: Naslov
+  directus_users:
+    title: Naslov
+    language: Jezik
+  directus_settings:
+    project_name: Ime Projekta
+    project_color: Boja Projekta
+    project_logo: Logotip Projekta
+    public_note: Opis Projekta
+  directus_roles:
+    name: Naziv uloge
+interfaces:
+  presentation-links:
+    primary: Primarni
+layouts:
+  cards:
+    title: Naslov
