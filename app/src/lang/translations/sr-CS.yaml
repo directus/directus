@@ -6,7 +6,7 @@ half_width: Pola širine
 full_width: Puna širina
 fill_width: Popunjeno
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
-add_field: Dodaj polje
+add_field: Dodaj Polje
 role_name: Naziv uloge
 db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje '
 show_archived_items: Prikaži arhivirane stavke
@@ -42,39 +42,143 @@ public: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
-field_permissions: Dozvole kolona
-delete_field: Obriši Kolonu
-fields_and_layout: Kolone i Izgled
-field_create_success: 'Kreirana Kolona: "{field}"'
-field_update_success: 'Ažurirana Kolona: "{field}"'
+archive: Arhiviraj
+archive_confirm: Da li ste sigurni da želite da arhivirate ovu stavku?
+reset_system_permissions_to: 'Poništi Sistemske Dozvole na:'
+reset_system_permissions_copy: Ova operacija će prepisati sve prilagođene dozvole koje ste primjenili na sistemske kolekcije. Da li ste sigurni?
+app_access_minimum: Minimalan pristup aplikaciji
+recommended_defaults: Preporučene postavke
+unarchive: Vrati iz arhive
+unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
+nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
+unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
+validationError:
+  eq: Vrijednost treba biti {valid}
+  neq: Vrijednost ne može biti {invalid}
+  in: Vrijednost mora da bude jedna od {valid}
+  nin: Vrijednost ne može biti nijedna od {invalid}
+  contains: Vrijednost mora da sadrži {substring}
+  ncontains: Vrijednost ne može da sadrži {substring}
+  gt: Vrijednost mora da bude veća od {valid}
+  gte: Vrijednost mora da bude veća ili jednaka {valid}
+  lt: Vrijednost mora da bude manja od {valid}
+  lte: Vrijednost mora da bude manja ili jednaka {valid}
+  empty: Vrijednost mora biti prazna
+  nempty: Vrijednost ne može biti prazna
+  null: Vrijednost mora biti null
+  nnull: Vrijednost ne može biti null
+  required: Vrijednost je obavezna
+  unique: Vrijednost mora biti jedinstvena
+all_access: Potpun Pristup
+no_access: Bez Pristupa
+allow_null_value: Dozvoli NULL vrijednost
+enter_value_to_replace_nulls: Molimo unesite novu vrijednost kako biste zamijenili sve NULL vrijednosti u sklopu ovog polja.
+field_standard: Uobičajeno
+field_m2o: M2O Relacija
+field_m2a: M2A Relacija
+field_o2m: O2M Relacija
+field_m2m: M2M Relacija
+field_translations: Prevodi
+item_permissions: Dozvole na stavkama
+field_permissions: Dozvole na Poljima
+field_validation: Validacija Polja
+permissions_for_role: 'Sve stavke {role} Role mogu {action}.'
+fields_for_role: 'Sva polja {role} Role mogu {action}.'
+revision_post_update: Ovako će ova stavka izgledati nakon ažuriranja...
+changes_made: Postoje specifične izmjene koji su napravljene...
+no_relational_data: Zapamtite da ovo ne uključuje relacione podatke.
+hide_field_on_detail: Sakrij Polje u sekciji Detalji
+delete_field: Obriši Polje
+fields_and_layout: Polja & Izgled
+field_create_success: 'Kreirano Polje: "{field}"'
+field_update_success: 'Ažurirano Polje: "{field}"'
 duplicate_where_to: U koju tabelu želite da smjestite ovu dupliranu kolonu?
 language: Jezik
+global: Globalno
 admins_have_all_permissions: Administratori imaju sve dozvole
 camera: Kamera
 exposure: Ekspozicija
 shutter: Okidač
 iso: ISO
-create_field: Napravi Kolonu
-creating_new_field: 'Nova Kolona ({collection})'
-hidden_field: Sakrivena Kolona
+create_field: Kreiraj Polje
+creating_new_field: 'Novo Polje ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Resetuj Podešavanja Stranice
+hidden_field: Sakriveno Polje
+hidden_on_detail: Sakriveno u sekciji Detalji
 key: Ključ
+boolean: Boolean
+json: JSON
+xml: XML
+string: String
+text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+not_available_for_type: Nije Dostupno za ovaj Tip
 create_translations: Kreiraj Prevode
 auto_refresh: Automatsko osvjеžavanjе
+refresh_interval: Period Osvježavanja
+refresh_interval_seconds: Trenutno Osvježavanje | Svake Sekunde | Svakih {seconds} Sekundi
+refresh_interval_minutes: Svake Minute | Svakih {minutes} Minuta
+this_will_auto_setup_fields_relations: Ovo će automatski podesiti sva obavezna polja i relacije.
 click_here: Klikni ovdje
-fields_group: Grupe Kolona
-no_collections_found: Tabele nisu pronađene.
-search_collection: Pretraži Tabelu...
-new_field: 'Nova Kolona'
-new_collection: 'Nova Tabela'
+to_manually_setup_translations: za ručno podešavanje prevoda.
+fields_group: Grupe Polja
+no_collections_found: Kolekcije nisu pronađene.
+new_data_alert: 'Sljedeće će biti kreirano u sklopu Modela Podataka:'
+search_collection: Pretraži Kolekciju...
+new_field: 'Novo Polje'
+new_collection: 'Nova Kolekcija'
+choose_a_type: Izaberi Tip...
+determined_by_relationship: Određeno Relacijom
+add_note: Dodaj korisnu napomenu korisnicima...
+standard_field: Standardno Polje
+invalid_item: Nevažeća Stavka
+next: Sljedeća
+field_name: Naziv Polja
+translations: Prevodi
+note: Napomena
+enter_a_value: Unesi vrijednost...
+length: Dužina
+unique: Jedinstveno
+updated_on: Ažurirano
+updated_by: Ažurirano od strane
+dismiss: Ignoriši
+clear_value: Obriši vrijednost
 reset_to_default: Vrati na podrazumijevano
 undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna
 page_not_found_body: Stranica koju tražite nije moguće pronaći.
+confirm_revert: Potvrdi Vraćanje
+display: Prikaz
+settings_update_success: Podešavanja ažurirana
 title: Naslov
 revision_delta_created: Kreiran
+revision_delta_updated: 'Ažurirano 1 Polje | Ažuirano {count} Polja'
 revision_delta_deleted: Obrisano
+revision_delta_reverted: Vraćeno na staro
+revision_delta_by: '{date} po {user}'
+private_user: Privatni Korisnik
+updates_made: Napravljena Ažuriranja
+leave_comment: Ostavi komentar...
+post_comment_success: Komentar objavljen
+item_create_success: Stavka Kreirana | Stavke Kreirane
+item_delete_success: Stavka Obrisana | Stavke Obrisane
+this_collection: Ova Kolekcija
+related_collections: Povezane Kolekcije
+languages_collection: Jezička Kolekcija
+export_data: Izvoz Podataka
+use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
+export_collection: 'Izvoz {collection}'
+last_page: Posljednja Stranica
+last_access: Posljednji Pristup
+fill_template: Popuni sa vrijednošću šablona
+a_unique_table_name: Jedinstven naziv tabele...
+enable_custom_values: Omogući prilagođene vrijednosti
 submit: Pošalji
 move_to_folder: Prebaci u fasciklu
 move: Premjesti
@@ -82,25 +186,78 @@ system: Sistem
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+year: Godina
+select_all: Odaberi Sve
+months:
+  january: Januar
+  february: Februar
+  march: Mart
+  april: April
+  may: Maj
+  june: Jun
+  july: Jul
+  august: Avgust
+  september: Septembar
+  october: Oktobar
+  november: Novembar
+  december: Decembar
+url: URL adresa
+import: Uvezi
+file_details: Detalji Fajla
+dimensions: Dimenzije
+size: Veličina
 created: Kreiran
+modified: Izmijenjeno
+checksum: Kontrolni zbir
+owner: Vlasnik
+edited_by: Izmijenjeno od
+folder: Fascikla
+zoom: Uvеćanjе
+download: Preuzmi
+open: Otvori
+open_in_new_window: Otvori u Novom Prozoru
+download_file: Preuzmi Fajl
 report_bug: Prijavi Propust
+value_unique: Vrijednost mora biti jedinstvena
+wysiwyg_options:
+  selectall: Odaberi Sve
 settings_project: Podešavanje Projekta
 fields:
+  directus_collections:
+    note: Napomena
   directus_files:
     title: Naslov
+    folder: Fascikla
   directus_users:
     title: Naslov
     language: Jezik
+    last_page: Posljednja Stranica
+    last_access: Posljednji Pristup
   directus_settings:
     project_name: Ime Projekta
     project_color: Boja Projekta
     project_logo: Logotip Projekta
     public_note: Opis Projekta
+  directus_fields:
+    note: Napomena
   directus_roles:
     name: Naziv uloge
 interfaces:
   presentation-links:
     primary: Primarni
+  select-dropdown:
+    choices_value_placeholder: Unesi vrijednost...
+  input-hash:
+    hash: Hash
+displays:
+  boolean:
+    boolean: Boolean
+  labels:
+    choices_value_placeholder: Unesi vrijednost...
 layouts:
   cards:
     title: Naslov
