@@ -77,7 +77,7 @@ See [Styles > Custom CSS](/guides/styles/#custom-css)
 
 1. Make a copy of the **files within each storage adapter**, and store them in a safe place
 2. Make a copy of the **Env file** (`/api/.env`), and store it in a safe place
-3. Run the **Backup API Endpoint** (`/backup`) to create a SQL dump of your database
+3. Create a database dump
 
 ## Migrating a Project
 
