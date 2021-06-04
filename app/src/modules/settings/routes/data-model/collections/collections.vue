@@ -45,7 +45,7 @@
 							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
 						:name="item.icon"
-						:color="item.meta.color"
+						:color="item.color"
 					/>
 				</template>
 
