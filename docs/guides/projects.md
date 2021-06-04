@@ -91,6 +91,14 @@ of Directus.
 
 :::
 
+## Downgrading a Project
+
+Directus can be reverted to an earlier version by going to your terminal, navigating into your project folder and
+running `npm install directus@<version>`.
+
+If you ran any database migrations for a newer version, you can revert those by running
+`npx directus database migrate:down`
+
 ## Deleting a Project
 
 1. Optional: **Backup any local files** stored within the project's root directory

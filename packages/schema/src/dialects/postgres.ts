@@ -14,6 +14,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           , c.column_name
           , c.column_default as default_value
           , c.data_type
+			 		, c.character_maximum_length as max_length
           , CASE WHEN c.is_identity = 'YES' THEN true ELSE false END is_identity
           , CASE WHEN c.is_nullable = 'YES' THEN true ELSE false END is_nullable
         FROM
@@ -102,7 +103,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		// Call the parent columnInfo()
 		// @ts-ignore
 		const columns = await super.columnInfo(table, column);
-		if (!columns || !columns.length) {
+		if (!columns?.length) {
 			return columns;
 		}
 		try {

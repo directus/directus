@@ -29,4 +29,6 @@ export interface CollectionRaw {
 
 export interface Collection extends CollectionRaw {
 	name: string | VueI18n.TranslateResult;
+	icon: string;
+	color?: string | null;
 }

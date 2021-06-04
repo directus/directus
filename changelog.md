@@ -2,6 +2,41 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.73 (June 4, 2021)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6060](https://github.com/directus/directus/pull/6060) Fixed issue that would prevent the corresponding o2m field
+    from being created on m2o relational setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6056](https://github.com/directus/directus/pull/6056) Fixed issue that would cause the whole row to be draggable
+    in the list-type interfaces ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6053](https://github.com/directus/directus/pull/6053) Fixed issue that would prevent the display tab to show for
+    o2m type fields in field-setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6052](https://github.com/directus/directus/pull/6052) Fixed issue in collection color reading for tables that
+    weren't configured in directus yet ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6049](https://github.com/directus/directus/pull/6049) Fixed right click handler not extending beyond nav items
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#6059](https://github.com/directus/directus/pull/6059) Fixed unique constraint violation error extraction for MySQL
+    5.7 ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6058](https://github.com/directus/directus/pull/6058) Fixed issue that would prevent creation relations to an
+    unsigned auto-incremented primary key in MariaDB ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6055](https://github.com/directus/directus/pull/6055) Fixed an issue that would cause "text" fields to show up as
+    varchar with length -1 in MS SQL ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6054](https://github.com/directus/directus/pull/6054) Fixed issue that would prevent usage of limit -1 on deep
+    limit ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6048](https://github.com/directus/directus/pull/6048) Fixed issue that could trigger update actions of children on
+    manual sorting of a parent o2m instance ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **schema**
+  - [#6058](https://github.com/directus/directus/pull/6058) Fixed issue that would prevent creation relations to an
+    unsigned auto-incremented primary key in MariaDB ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#6051](https://github.com/directus/directus/pull/6051) Update projects.md
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
 ## v9.0.0-rc.72 (June 3, 2021)
 
 ### :sparkles: New Features
