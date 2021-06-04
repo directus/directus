@@ -33,6 +33,7 @@ export const useCollectionsStore = createStore({
 
 			this.state.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
+				const color = collection.meta?.color;
 				const name = formatTitle(collection.collection);
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
@@ -57,6 +58,7 @@ export const useCollectionsStore = createStore({
 					...collection,
 					name,
 					icon,
+					color,
 				};
 			});
 
