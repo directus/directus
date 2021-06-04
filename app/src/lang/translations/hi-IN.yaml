@@ -1,1 +1,17 @@
 ---
+edit_field: एडिट फील्ड
+item_revision: आइटम संशोधन
+duplicate_field: डुप्लिकेट फ़ील्ड
+half_width: आधी चौड़ाई
+full_width: पुरी चौड़ाई
+fill_width: संपूर्ण चौड़ाई
+field_name_translations: फ़ील्ड नाम अनुवाद
+enter_password_to_enable_tfa: टू-फैक्टर ऑथेंटिकेशन को सक्षम करने के लिए अपना पासवर्ड दर्ज करें
+add_field: नया क्षेत्र
+role_name: भूमिका नाम
+db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें '
+fields:
+  directus_fields:
+    translation: फ़ील्ड नाम अनुवाद
+  directus_roles:
+    name: भूमिका नाम
