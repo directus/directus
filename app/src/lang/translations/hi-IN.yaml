@@ -86,6 +86,26 @@ validationError:
 all_access: ऑल एक्सेस
 no_access: नो एक्सेस
 use_custom: कस्टम
+nullable: Nullable
+allow_null_value: NULL मान की अनुमति दें
+enter_value_to_replace_nulls: इस क्षेत्र में वर्तमान में किसी भी NULL मान को बदलने के लिए कृपया एक नया मान दर्ज करें
+field_standard: नार्मल फील्ड
+field_presentation: प्रस्तुति और उपनाम
+field_m2o: M2O रिलेशन
+field_m2a: M2A रिलेशन
+field_o2m: O2M रिलेशन
+field_m2m: M2M रिलेशन
+item_permissions: आइटम अनुमतियां
+field_permissions: फील्ड अनुमतियाँ
+field_validation: फील्ड मान्यकरण
+field_presets: फील्ड प्रीसेट
+permissions_for_role: 'आइटम्स जो {role} भूमिका {action} कर सकते हैं'
+fields_for_role: 'फ़ील्ड्स जो {role} भूमिका {action} कर सकते हैं'
+validation_for_role: 'फील्ड {action} नियमों जो {role} भूमिका पालन करना चाहिए'
+presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
+presentation_and_aliases: प्रस्तुति और उपनाम
+revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
+language: भाषा
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
@@ -101,12 +121,121 @@ reset_page_preferences: पेज सेटिंग्स रिसेट क�
 hidden_field: हिडन फील्ड
 hidden_on_detail: विवरण पर हिडन
 disabled_editing_value: डेटा संपादित करने से रोकें
+key: Key
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
+date: Date
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+xml: XML
+string: String
+text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: महीना
+year: साल
+select_all: सभी चुनें
+months:
+  january: जनवरी
+  february: फ़रवरी
+  march: मार्च
+  april: अप्रैल
+  may: मई
+  june: जून
+  july: जुलाई
+  august: अगस्त
+  september: सितम्बर
+  october: अक्तूबर
+  november: नवम्बर
+  december: दिसंबर
+url: URL
+size: साइज़
+owner: मालिक
+download: डाउनलोड
+name: नाम
+csv: CSV
+webhooks: Webhooks
+sidebar: साइड बार
+duration: अवधि
+modified_on: संशोधन का समय
+card_size: Card Size
+sort_field: Sort Field
+add_sort_field: Add Sort Field
+sort: सॉर्ट
+flip_horizontal: फ्लिप हॉरिजॉन्टल
+one_item: '1 समान'
+font: फ़ॉन्ट
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Divider
+color: Color
+circle: Circle
+operators:
+  eq: Equals
+loading: लोड हो रहा है...
+item: समान
+columns: कॉलमस
 value_unique: मान अद्वितीय होना चाहिए
+all_files: सभी फाइलें
+my_files: मेरी फ़ाइलें
+recent_files: हाल की फ़ाइल
+create_folder: फोल्डर बनाएं
+folder_name: फ़ोल्डर का नाम
+add_file: ऐड फाइल
+replace_file: फ़ाइल बदलें
+no_results: कोई परिणाम नहीं मिला
+role: भूमिका
+user: यूज़र
+create: Create
+read: Read
+update: Update
+wysiwyg_options:
+  selectall: सभी चुनें
+settings_webhooks: Webhooks
 fields:
+  directus_collections:
+    sort_field: Sort Field
+  directus_files:
+    modified_on: संशोधन का समय
+    duration: अवधि
+  directus_users:
+    language: भाषा
+    role: भूमिका
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
+delete: Delete
 interfaces:
   presentation-links:
     primary: प्राइमरी
+  select-color:
+    color: Color
+  presentation-divider:
+    divider: Divider
+  input-hash:
+    hash: Hash
+  user:
+    user: यूज़र
+displays:
+  boolean:
+    boolean: Boolean
+  color:
+    color: Color
+  image:
+    circle: Circle
+  user:
+    user: यूज़र
+    name: नाम
