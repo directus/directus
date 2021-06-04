@@ -4,13 +4,14 @@
 #
 # Ports:
 #   Postgres:        5100
-#   MySQL:           5101
+#   MySQL (8):       5101
 #   MariaDB:         5102
 #   MS SQL:          5103
 #   Oracle:          5104
 #   Redis:           5105
 #   Minio (S3):      5106
 #   Azure            5107
+#   MySQL (5.7):     5108
 #
 # Credentials:
 #   Postgres:
@@ -107,3 +108,11 @@ services:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - 5107:10000
+
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5108:3306
