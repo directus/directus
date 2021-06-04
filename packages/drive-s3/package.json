@@ -35,14 +35,14 @@
 	},
 	"dependencies": {
 		"@directus/drive": "9.0.0-rc.73",
-		"aws-sdk": "^2.911.0",
+		"aws-sdk": "^2.921.0",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "^2.0.0",
 		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
-		"@types/node": "^15.9.0",
+		"@types/node": "^15.12.0",
 		"@types/normalize-path": "^3.0.0",
 		"dotenv": "^9.0.2",
 		"fs-extra": "^10.0.0",
