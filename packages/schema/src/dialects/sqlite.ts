@@ -1,6 +1,6 @@
 import KnexSQLite from 'knex-schema-inspector/dist/dialects/sqlite';
-import extractMaxLength from 'knex-schema-inspector/lib/utils/extract-max-length';
-import extractType from 'knex-schema-inspector/lib/utils/extract-type';
+import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
+import extractType from 'knex-schema-inspector/dist/utils/extract-type';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
