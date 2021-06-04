@@ -65,7 +65,7 @@ export const useCollectionsStore = createStore({
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
+			this.state.collections = this.state.collections.map((collection: Collection) => {
 				let name: string | VueI18n.TranslateResult;
 
 				if (i18n.te(`collection_names.${collection.collection}`)) {

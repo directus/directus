@@ -13,6 +13,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				C.IS_NULLABLE as is_nullable,
 				C.COLUMN_TYPE as data_type,
 				C.COLUMN_KEY as column_key,
+				C.CHARACTER_MAXIMUM_LENGTH as max_length,
 				C.EXTRA as extra
 			FROM
 				INFORMATION_SCHEMA.COLUMNS AS C
