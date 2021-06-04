@@ -41,7 +41,7 @@
 	"devDependencies": {
 		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
-		"@types/node": "^15.9.0",
+		"@types/node": "^15.12.0",
 		"@types/normalize-path": "^3.0.0",
 		"dotenv": "^9.0.2",
 		"fs-extra": "^10.0.0",
