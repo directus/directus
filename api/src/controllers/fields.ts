@@ -67,7 +67,7 @@ const newFieldSchema = Joi.object({
 	type: Joi.string()
 		.valid(...types, ...ALIAS_TYPES)
 		.allow(null)
-		.required(),
+		.optional(),
 	schema: Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
