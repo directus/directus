@@ -74,7 +74,7 @@
 		"@directus/format-title": "9.0.0-rc.73",
 		"@directus/schema": "9.0.0-rc.73",
 		"@directus/specs": "9.0.0-rc.73",
-		"@godaddy/terminus": "^4.7.2",
+		"@godaddy/terminus": "^4.9.0",
 		"argon2": "^0.28.1",
 		"async": "^3.2.0",
 		"async-mutex": "^0.3.1",
