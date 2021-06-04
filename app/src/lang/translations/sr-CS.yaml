@@ -269,8 +269,15 @@ save_as_copy: Sačuvaj kao Kopiju
 add_existing: Dodaj Postojeći
 creating_items: Kreiranje stavki
 enable_create_button: Omogući Dugme za Kreiranje
+enable_select_button: Omogući Dugme za Odabir
 comments: Komentari
 no_comments: Nema komentara
+click_to_expand: Klikni za proširivanje
+select_item: Odaberi Stavku
+no_items: Nema stavki
+search_items: Pretraži Stavke...
+disabled: Isključeno
+information: Informacija
 report_bug: Prijavi Propust
 reset_interface: Resetuj Interfejs
 display_not_found: 'Prikaz "{display}" nije pronađen.'
