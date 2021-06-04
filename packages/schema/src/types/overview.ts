@@ -10,6 +10,7 @@ export type SchemaOverview = {
 				data_type: string;
 				numeric_precision: number | null;
 				numeric_scale: number | null;
+				max_length: number | null;
 			};
 		};
 	};
