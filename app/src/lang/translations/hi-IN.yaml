@@ -63,6 +63,29 @@ app_access_minimum: App Access न्यूनतम
 recommended_defaults: अनुशंसित डिफ़ॉल्ट
 unarchive: अनआर्काइव
 unarchive_confirm: क्या आप वाकई इस आइटम को अनआर्काइव करना चाहते हैं?
+nested_files_folders_will_be_moved: नेस्टेड फ़ाइलें और फ़ोल्डर एक स्तर ऊपर ले जाया जाएगा
+unknown_validation_errors: 'निम्न छिपा क्षेत्रों में मान्यकरण त्रुटियों थे:'
+validationError:
+  eq: मान {valid} होना चाहिए
+  neq: मान {invalid} नहीं हो सकता
+  in: मान {valid} में से एक होना चाहिए
+  nin: मान {invalid} में से एक नहीं हो सकता
+  contains: मान में {substring} शामिल होना चाहिए
+  ncontains: मान में {substring} नहीं हो सकता
+  gt: मान {valid} से ज़्यादा होना चाहिए
+  gte: मान {valid} से बड़ा या उसके बराबर होना चाहिए
+  lt: मान {valid} से कम होना चाहिए
+  lte: मान {valid} से कम या उसके बराबर होना चाहिए
+  empty: मान खाली होना चाहिए
+  nempty: मान खाली नहीं हो सकता
+  null: मान null होना चाहिए
+  nnull: मान null नहीं हो सकता
+  required: मान आवश्यक है
+  unique: मान अद्वितीय होना चाहिए
+  regex: मान का प्रारूप सही नहीं है
+all_access: ऑल एक्सेस
+no_access: नो एक्सेस
+use_custom: कस्टम
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
@@ -77,6 +100,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: पेज सेटिंग्स रिसेट करे
 hidden_field: हिडन फील्ड
 hidden_on_detail: विवरण पर हिडन
+disabled_editing_value: डेटा संपादित करने से रोकें
+value_unique: मान अद्वितीय होना चाहिए
 fields:
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
