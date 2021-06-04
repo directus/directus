@@ -44,8 +44,11 @@ not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
 archive: Arhiviraj
 archive_confirm: Da li ste sigurni da želite da arhivirate ovu stavku?
+archive_confirm_count: >-
+  Nema odabranih stavki | Da li ste sigurni da želite da arhivirate ovu stavku? | Da li ste sigurni da želite da arhivirate ovih {count} stavki?
 reset_system_permissions_to: 'Poništi Sistemske Dozvole na:'
 reset_system_permissions_copy: Ova operacija će prepisati sve prilagođene dozvole koje ste primjenili na sistemske kolekcije. Da li ste sigurni?
+the_following_are_minimum_permissions: Sljedeće su minimalne dozvole koje su potrebne kada je omogućen "Pristup Aplikaciji". Možete proširiti dozvole i izvan ovoga, ali ne i ispod.
 app_access_minimum: Minimalan pristup aplikaciji
 recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
@@ -69,11 +72,14 @@ validationError:
   nnull: Vrijednost ne može biti null
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinstvena
+  regex: Vrijednost ne sadrži ispravan format
 all_access: Potpun Pristup
 no_access: Bez Pristupa
 allow_null_value: Dozvoli NULL vrijednost
 enter_value_to_replace_nulls: Molimo unesite novu vrijednost kako biste zamijenili sve NULL vrijednosti u sklopu ovog polja.
 field_standard: Uobičajeno
+field_file: Single File
+field_files: Multiple Files
 field_m2o: M2O Relacija
 field_m2a: M2A Relacija
 field_o2m: O2M Relacija
@@ -88,6 +94,7 @@ revision_post_update: Ovako će ova stavka izgledati nakon ažuriranja...
 changes_made: Postoje specifične izmjene koji su napravljene...
 no_relational_data: Zapamtite da ovo ne uključuje relacione podatke.
 hide_field_on_detail: Sakrij Polje u sekciji Detalji
+show_field_on_detail: Prikaži Polje u sekciji Detalji
 delete_field: Obriši Polje
 fields_and_layout: Polja & Izgled
 field_create_success: 'Kreirano Polje: "{field}"'
@@ -107,7 +114,14 @@ reset_page_preferences: Resetuj Podešavanja Stranice
 hidden_field: Sakriveno Polje
 hidden_on_detail: Sakriveno u sekciji Detalji
 key: Ključ
+alias: Alias
+bigInteger: Big Integer
 boolean: Boolean
+date: Date
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
 json: JSON
 xml: XML
 string: String
@@ -122,6 +136,7 @@ auto_refresh: Automatsko osvjеžavanjе
 refresh_interval: Period Osvježavanja
 refresh_interval_seconds: Trenutno Osvježavanje | Svake Sekunde | Svakih {seconds} Sekundi
 refresh_interval_minutes: Svake Minute | Svakih {minutes} Minuta
+auto_generate: Automatsko generisanje
 this_will_auto_setup_fields_relations: Ovo će automatski podesiti sva obavezna polja i relacije.
 click_here: Klikni ovdje
 to_manually_setup_translations: za ručno podešavanje prevoda.
@@ -134,7 +149,10 @@ new_collection: 'Nova Kolekcija'
 choose_a_type: Izaberi Tip...
 determined_by_relationship: Određeno Relacijom
 add_note: Dodaj korisnu napomenu korisnicima...
+default_value: Podrazumijevana Vrijednost
 standard_field: Standardno Polje
+single_file: Single File
+multiple_files: Multiple Files
 invalid_item: Nevažeća Stavka
 next: Sljedeća
 field_name: Naziv Polja
@@ -145,6 +163,7 @@ length: Dužina
 unique: Jedinstveno
 updated_on: Ažurirano
 updated_by: Ažurirano od strane
+finish_setup: Završi podešavanje
 dismiss: Ignoriši
 clear_value: Obriši vrijednost
 reset_to_default: Vrati na podrazumijevano
@@ -167,22 +186,26 @@ updates_made: Napravljena Ažuriranja
 leave_comment: Ostavi komentar...
 post_comment_success: Komentar objavljen
 item_create_success: Stavka Kreirana | Stavke Kreirane
+item_update_success: Stavka Ažurirana | Stavke Ažurirane
 item_delete_success: Stavka Obrisana | Stavke Obrisane
 this_collection: Ova Kolekcija
 related_collections: Povezane Kolekcije
 languages_collection: Jezička Kolekcija
 export_data: Izvoz Podataka
+format: Format
 use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
 export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
 a_unique_table_name: Jedinstven naziv tabele...
+a_unique_column_name: Jedinstven naziv kolone...
 enable_custom_values: Omogući prilagođene vrijednosti
 submit: Pošalji
 move_to_folder: Prebaci u fasciklu
 move: Premjesti
 system: Sistem
+interface: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -190,6 +213,9 @@ date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: Mjesec
 year: Godina
 select_all: Odaberi Sve
 months:
@@ -205,6 +231,9 @@ months:
   october: Oktobar
   november: Novembar
   december: Decembar
+drag_mode: Režim Prevlačenja
+cancel_crop: Poništi Isjecanje
+original: Originalno
 url: URL adresa
 import: Uvezi
 file_details: Detalji Fajla
@@ -220,8 +249,44 @@ zoom: Uvеćanjе
 download: Preuzmi
 open: Otvori
 open_in_new_window: Otvori u Novom Prozoru
+upload_from_device: Otpremi Fajl sa Uređaja
+choose_from_library: Odaberi Fajl iz Biblioteke
+import_from_url: Uvezi Fajl sa URL adrese
+replace_from_device: Zamijeni Fajl iz Uređaja
+replace_from_library: Zamijeni Fajl iz Biblioteke
+no_file_selected: Nema odabranih fajlova
 download_file: Preuzmi Fajl
+collection_key: Ključ Kolekcije
+name: Ime
+type: Tip
+creating_new_collection: Kreiranje Nove Kolekcije
+created_by: Kreirao
+created_on: Kreirano
+generated_uuid: Kreiran UUID
+save_and_create_new: Sačuvaj i Napravi Novi
+save_and_stay: Sačuvaj i Ostani
+save_as_copy: Sačuvaj kao Kopiju
+add_existing: Dodaj Postojeći
+creating_items: Kreiranje stavki
+enable_create_button: Omogući Dugme za Kreiranje
+comments: Komentari
+no_comments: Nema komentara
 report_bug: Prijavi Propust
+reset_interface: Resetuj Interfejs
+display_not_found: 'Prikaz "{display}" nije pronađen.'
+reset_display: Resetuj Prikaz
+no_items_copy: Trenutno ne postoji nijedna stavka u ovoj kolekciji.
+file_count: 'Nema Fajlova | Jedan Fajl | {count} Fajlova'
+no_files_copy: Ovdje nema fajlova.
+user_count: 'Nema Korisnika | Jedan Korisnik | {count} Korisnika'
+no_users_copy: Ne postoji nijedan korisnik u ovoj roli.
+all_items: Sve Stavke
+csv: CSV
+no_collections: Nema Kolekcija
+create_collection: Napravi Kolekciju
+select_a_collection: Izaberi Kolekciju
+users: Korisnici
+activity: Aktivnost
 value_unique: Vrijednost mora biti jedinstvena
 wysiwyg_options:
   selectall: Odaberi Sve
@@ -231,6 +296,8 @@ fields:
     note: Napomena
   directus_files:
     title: Naslov
+    created_on: Kreirano
+    created_by: Kreirao
     folder: Fascikla
   directus_users:
     title: Naslov
@@ -249,15 +316,23 @@ fields:
 interfaces:
   presentation-links:
     primary: Primarni
+  system-display-template:
+    select_a_collection: Izaberi Kolekciju
   select-dropdown:
     choices_value_placeholder: Unesi vrijednost...
   input-hash:
     hash: Hash
+  system-interface:
+    interface: Interfejs
 displays:
   boolean:
     boolean: Boolean
+  datetime:
+    format: Format
   labels:
     choices_value_placeholder: Unesi vrijednost...
+  user:
+    name: Ime
 layouts:
   cards:
     title: Naslov
