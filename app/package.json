@@ -32,7 +32,7 @@
 		"@fullcalendar/core": "^5.7.0",
 		"@fullcalendar/daygrid": "^5.7.0",
 		"@fullcalendar/interaction": "^5.7.0",
-		"@fullcalendar/list": "^5.7.0",
+		"@fullcalendar/list": "^5.7.2",
 		"@fullcalendar/timegrid": "^5.7.0",
 		"@popperjs/core": "^2.9.1",
 		"@sindresorhus/slugify": "^2.1.0",
