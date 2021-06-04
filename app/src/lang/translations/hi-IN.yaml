@@ -54,6 +54,26 @@ os_uptime: OS उप टाइम
 os_totalmem: OS मेमोरी
 archive: आर्काइव
 archive_confirm: क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं?
+archive_confirm_count: >-
+  कोई आइटम नहीं चुना गया | क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं? | क्या आप वाकई इन {count} आइटम्स को आर्काइव करना चाहते हैं?
+reset_system_permissions_to: 'सिस्टम अनुमतियां रीसेट करें:'
+reset_system_permissions_copy: यह क्रिया किसी भी कस्टम अनुमतियों को अधिलेखित कर देगी जिन्हें आपने सिस्टम संग्रह पर लागू किया होगा। क्या आप वास्तव में इसे करना चाहते हैं?
+the_following_are_minimum_permissions: '"App Access" सक्षम होने पर निम्नलिखित न्यूनतम अनुमतियों की आवश्यकता होती है। आप इससे आगे की अनुमतियां बढ़ा सकते हैं, लेकिन नीचे नहीं।'
+app_access_minimum: App Access न्यूनतम
+recommended_defaults: अनुशंसित डिफ़ॉल्ट
+unarchive: अनआर्काइव
+unarchive_confirm: क्या आप वाकई इस आइटम को अनआर्काइव करना चाहते हैं?
+global: ग्लोबल
+admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
+camera: कैमरा
+exposure: एक्सपोज़र
+shutter: शटर
+iso: ISO
+focal_length: फोकल लेंथ
+schema_setup_key: इस फ़ील्ड का डेटाबेस कॉलम नाम और API key
+create_field: फ़ील्ड बनाएं
+creating_new_field: 'नया फ़ील्ड ({collection})'
+field_in_collection: '{field} ({collection})'
 fields:
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
