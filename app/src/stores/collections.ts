@@ -6,6 +6,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
+import { TranslateResult } from 'vue-i18n';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -32,6 +33,7 @@ export const useCollectionsStore = defineStore({
 
 			this.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
+				const color = collection.meta?.color;
 				const name = formatTitle(collection.collection);
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
@@ -56,14 +58,15 @@ export const useCollectionsStore = defineStore({
 					...collection,
 					name,
 					icon,
+					color,
 				};
 			});
 
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.collections = this.collections.map((collection: CollectionRaw) => {
-				let name: string;
+			this.collections = this.collections.map((collection: Collection) => {
+				let name: string | TranslateResult;
 
 				if (i18n.global.te(`collection_names.${collection.collection}`)) {
 					name = i18n.global.t(`collection_names.${collection.collection}`);

@@ -21,7 +21,7 @@
 				:model-value="sortedItems"
 				@update:model-value="sortItems($event)"
 				item-key="id"
-				handler=".drag-handle"
+				handle=".drag-handle"
 				:disabled="!relation.meta.sort_field"
 			>
 				<template #item="{ element }">

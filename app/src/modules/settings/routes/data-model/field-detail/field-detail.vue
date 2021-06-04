@@ -253,7 +253,7 @@ export default defineComponent({
 					},
 				];
 
-				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
+				if (props.type !== 'presentation') {
 					tabs.push({
 						text: t('display'),
 						value: 'display',

@@ -1,6 +1,6 @@
 <template>
 	<div class="file">
-		<v-menu attached :disabled="disabled || loading">
+		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle }">
 				<div>
 					<v-skeleton-loader type="input" v-if="loading" />
@@ -10,7 +10,6 @@
 						@click="toggle"
 						readonly
 						:placeholder="t('no_file_selected')"
-						:disabled="disabled"
 						:model-value="file && file.title"
 					>
 						<template #prepend>
@@ -31,7 +30,13 @@
 						<template #append>
 							<template v-if="file">
 								<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editDrawerActive = true" />
-								<v-icon class="deselect" name="close" @click.stop="$emit('input', null)" v-tooltip="t('deselect')" />
+								<v-icon
+									v-if="!disabled"
+									class="deselect"
+									name="close"
+									@click.stop="$emit('input', null)"
+									v-tooltip="t('deselect')"
+								/>
 							</template>
 							<v-icon v-else name="attach_file" />
 						</template>
@@ -46,33 +51,35 @@
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
-					<v-divider />
+					<v-divider v-if="!disabled" />
 				</template>
-				<v-list-item clickable @click="activeDialog = 'upload'">
-					<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
-					</v-list-item-content>
-				</v-list-item>
+				<template v-if="!disabled">
+					<v-list-item clickable @click="activeDialog = 'upload'">
+						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
+						</v-list-item-content>
+					</v-list-item>
 
-				<v-list-item clickable @click="activeDialog = 'choose'">
-					<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
-					</v-list-item-content>
-				</v-list-item>
+					<v-list-item clickable @click="activeDialog = 'choose'">
+						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
+						</v-list-item-content>
+					</v-list-item>
 
-				<v-list-item clickable @click="activeDialog = 'url'">
-					<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-					<v-list-item-content>
-						{{ t(file ? 'replace_from_url' : 'import_from_url') }}
-					</v-list-item-content>
-				</v-list-item>
+					<v-list-item clickable @click="activeDialog = 'url'">
+						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
+						<v-list-item-content>
+							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 
 		<drawer-item
-			v-if="!disabled && file"
+			v-if="file"
 			v-model:active="editDrawerActive"
 			collection="directus_files"
 			:primary-key="file.id"

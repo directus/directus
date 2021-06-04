@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.73",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -51,10 +51,10 @@
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
 		"@types/jest": "^26.0.22",
-		"argon2": "^0.27.1",
+		"argon2": "^0.28.1",
 		"dotenv": "^9.0.2",
 		"jest": "^27.0.3",
-		"jest-environment-jsdom": "^26.6.2",
+		"jest-environment-jsdom": "^27.0.3",
 		"jest-environment-jsdom-global": "^2.0.4",
 		"mockdate": "^3.0.5",
 		"nock": "^13.0.10",

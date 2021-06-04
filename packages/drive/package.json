@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.70",
+	"version": "9.0.0-rc.73",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -35,7 +35,7 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"fs-extra": "^9.1.0",
+		"fs-extra": "^10.0.0",
 		"node-exceptions": "^4.0.1"
 	},
 	"publishConfig": {
@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
-		"@types/node": "^15.6.0",
+		"@types/node": "^15.9.0",
 		"dotenv": "^9.0.2",
 		"jest": "^27.0.3",
 		"npm-run-all": "^4.1.5",

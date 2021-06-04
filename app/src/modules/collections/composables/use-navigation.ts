@@ -7,6 +7,7 @@ export type NavItem = {
 	name: string;
 	to: string;
 	icon: string;
+	color: string | null | undefined;
 	note: string | null;
 };
 
@@ -24,6 +25,7 @@ function collectionToNavItem(collection: Collection): NavItem {
 		collection: collection.collection,
 		name: collection.name,
 		icon: collection.meta?.icon || 'label',
+		color: collection.meta?.color,
 		note: collection.meta?.note || null,
 		to: `/collections/${collection.collection}/-`,
 	};

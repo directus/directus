@@ -1,3 +1,5 @@
+import { TranslateResult } from 'vue-i18n';
+
 type Translations = {
 	language: string;
 	translation: string;
@@ -12,6 +14,7 @@ export interface CollectionRaw {
 		hidden: boolean;
 		singleton: boolean;
 		icon: string | null;
+		color: string | null;
 		translations: Translations[] | null;
 		display_template: string | null;
 		sort_field: string | null;
@@ -25,5 +28,7 @@ export interface CollectionRaw {
 }
 
 export interface Collection extends CollectionRaw {
-	name: string;
+	name: string | TranslateResult;
+	icon: string;
+	color?: string | null;
 }

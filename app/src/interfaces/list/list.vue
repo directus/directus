@@ -10,7 +10,7 @@
 				:model-value="value"
 				@update:model-value="$emit('input', $event)"
 				item-key="id"
-				handler=".drag-handle"
+				handle=".drag-handle"
 			>
 				<template #item="{ element, index }">
 					<v-list-item :dense="value.length > 4" block @click="active = index">

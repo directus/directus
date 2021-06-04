@@ -1,6 +1,5 @@
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import expressLogger from 'express-pino-logger';
 import fse from 'fs-extra';
 import path from 'path';
@@ -72,12 +71,14 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitAsyncSafe('middlewares.init.before', { app });
 
-	app.use(expressLogger({ logger }));
+	app.use(expressLogger({ logger }) as RequestHandler);
 
 	app.use((req, res, next) => {
-		bodyParser.json({
-			limit: env.MAX_PAYLOAD_SIZE,
-		})(req, res, (err) => {
+		(
+			express.json({
+				limit: env.MAX_PAYLOAD_SIZE,
+			}) as RequestHandler
+		)(req, res, (err: any) => {
 			if (err) {
 				return next(new InvalidPayloadException(err.message));
 			}

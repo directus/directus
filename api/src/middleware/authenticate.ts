@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
@@ -20,6 +20,8 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	};
 
 	if (!req.token) return next();
+
+	const database = getDatabase();
 
 	if (isJWT(req.token)) {
 		let payload: { id: string };
