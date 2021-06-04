@@ -269,6 +269,7 @@ save_as_copy: Sačuvaj kao Kopiju
 add_existing: Dodaj Postojeći
 creating_items: Kreiranje stavki
 enable_create_button: Omogući Dugme za Kreiranje
+selecting_items: Odabir stavki
 enable_select_button: Omogući Dugme za Odabir
 comments: Komentari
 no_comments: Nema komentara
@@ -279,9 +280,12 @@ search_items: Pretraži Stavke...
 disabled: Isključeno
 information: Informacija
 report_bug: Prijavi Propust
+request_feature: Zatraži novu funkcionalnost
+interface_not_found: 'Interfejs "{interface}" nije pronađen.'
 reset_interface: Resetuj Interfejs
 display_not_found: 'Prikaz "{display}" nije pronađen.'
 reset_display: Resetuj Prikaz
+item_count: 'Nema Stavki | Jedna Stavka | {count} stavki'
 no_items_copy: Trenutno ne postoji nijedna stavka u ovoj kolekciji.
 file_count: 'Nema Fajlova | Jedan Fajl | {count} Fajlova'
 no_files_copy: Ovdje nema fajlova.
@@ -291,9 +295,66 @@ all_items: Sve Stavke
 csv: CSV
 no_collections: Nema Kolekcija
 create_collection: Napravi Kolekciju
+no_collections_copy_admin: Trenutno nemate Kolekcija. Kliknite na dugme ispod da započnete dodavanje.
+no_collections_copy: Trenutno nemate Kolekcija. Molimo kontaktirajte Vašeg sistemskog administratora.
+relationship_not_setup: Relacija nije konfigurisana ispravno
+display_template_not_setup: Šablon za grafički prikaz nije ispravno konfigurisan
+collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
 users: Korisnici
 activity: Aktivnost
+field_width: Širina Polja
+add_filter: Dodaj Filter
+upper_limit: Gornja granica...
+lower_limit: Donja granica...
+user_directory: Korisnički Direktorijum
+documentation: Dokumentacija
+sidebar: Bočna traka
+duration: Trajanje
+charset: Set karaktera
+file_moved: Fajl je premješten
+collection_created: Kolekcija Napravljena
+modified_on: Izmijenjeno
+card_size: Veličina Kartice
+sort_field: Polje za Sortiranje
+add_sort_field: Dodaj Polje za Sortiranje
+sort: Sortiranje
+toggle_manual_sorting: Uključi Ručno Sortiranje
+bookmark_doesnt_exist: Oznaka ne postoji
+bookmark_doesnt_exist_copy: Oznaku koju pokušavate otvoriti nije moguće pronaći.
+bookmark_doesnt_exist_cta: Povratak na kolekciju
+select_an_item: Odaberi stavku...
+edit: Izmijeni
+enabled: Omogućen
+disable_tfa: Isključi 2FA
+enter_otp_to_disable_tfa: Unesite OTP kako biste isključili 2FA
+create_account: Napravi Korisnički nalog
+account_created_successfully: Korisnički nalog je uspješno kreiran
+auto_fill: Automatsko popunjavanje
+corresponding_field: Odgovarajuće polje
+errors:
+  COLLECTION_NOT_FOUND: "Kolekcija ne postoji"
+  FIELD_NOT_FOUND: Polje nije pronađeno
+  FORBIDDEN: Zabranjeno
+  INVALID_CREDENTIALS: Pogrešno korisničko ime ili lozinka
+  INVALID_OTP: Pogrešna jednokratna lozinka
+  ITEM_NOT_FOUND: Stavka nije pronađena
+  ROUTE_NOT_FOUND: Nije pronađeno
+  RECORD_NOT_UNIQUE: Detektovana je dupla vrijednost
+  USER_SUSPENDED: Suspendovan Korisnik
+  CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
+  UNKNOWN: Neočekivana greška
+  INTERNAL_SERVER_ERROR: Neočekivana greška
+bookmark_name: Naziv oznake...
+create_bookmark: Napravi Oznaku
+edit_bookmark: Ažuriraj Oznaku
+bookmarks: Oznake
+unexpected_error: Neočekivana greška
+copy_details: Kopiraj Detalje
+no_app_access: Bez pristupa Aplikaciji
+no_app_access_copy: Ovom korisniku nije dozvoljeno da koristi administratorsku aplikaciju.
+password_reset_sent: Poslali smo Vam sigurnosni link za resetovanje lozinke
+back: Nazad
 value_unique: Vrijednost mora biti jedinstvena
 wysiwyg_options:
   selectall: Odaberi Sve
@@ -301,11 +362,15 @@ settings_project: Podešavanje Projekta
 fields:
   directus_collections:
     note: Napomena
+    sort_field: Polje za Sortiranje
   directus_files:
     title: Naslov
+    modified_on: Izmijenjeno
     created_on: Kreirano
     created_by: Kreirao
     folder: Fascikla
+    charset: Set karaktera
+    duration: Trajanje
   directus_users:
     title: Naslov
     language: Jezik
@@ -324,6 +389,7 @@ interfaces:
   presentation-links:
     primary: Primarni
   system-display-template:
+    collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
     select_a_collection: Izaberi Kolekciju
   select-dropdown:
     choices_value_placeholder: Unesi vrijednost...
@@ -331,6 +397,8 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interfejs
+  boolean:
+    label_default: Omogućen
 displays:
   boolean:
     boolean: Boolean
