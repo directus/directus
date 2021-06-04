@@ -20,7 +20,7 @@
 				:force-fallback="true"
 				:value="sortedItems"
 				@input="sortItems($event)"
-				handler=".drag-handle"
+				handle=".drag-handle"
 				:disabled="!relation.meta.sort_field"
 			>
 				<v-list-item

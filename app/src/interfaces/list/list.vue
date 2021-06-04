@@ -5,7 +5,7 @@
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
-			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
+			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handle=".drag-handle">
 				<v-list-item
 					:dense="value.length > 4"
 					v-for="(item, index) in value"
