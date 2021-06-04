@@ -1,4 +1,6 @@
 import KnexSQLite from 'knex-schema-inspector/dist/dialects/sqlite';
+import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
+import extractType from 'knex-schema-inspector/dist/utils/extract-type';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
@@ -39,7 +41,8 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 							? 'AUTO_INCREMENT'
 							: column.dflt_value,
 					is_nullable: column.notnull == 0,
-					data_type: column.type,
+					data_type: extractType(column.type),
+					max_length: extractMaxLength(column.type),
 					numeric_precision: null,
 					numeric_scale: null,
 				};

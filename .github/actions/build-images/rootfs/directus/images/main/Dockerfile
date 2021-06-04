@@ -31,31 +31,29 @@ ENV \
   EMAIL_SENDMAIL_NEW_LINE="unix" \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
+# Copy rootfs files
+COPY ./rootfs /
+
 # Install system dependencies
 # - 'bash' for entrypoint script
 # - 'ssmtp' to be able to send mails
 RUN \
   apk upgrade --no-cache && \
-  apk add --no-cache bash ssmtp util-linux
-
+  apk add --no-cache bash ssmtp util-linux && \
 # Install global node dependencies
-RUN npm install -g yargs pino pino-colada
-
-# Copy rootfs files
-COPY ./rootfs /
+  npm install -g yargs pino pino-colada && \
+# prepare for user space
+  chown -R node:node /directus
 
 # Switch to user 'node'
 USER node
 WORKDIR /directus
 
-COPY package.json .
 # Install Directus (retry if it fails for some reason) and runtime dependencies
 RUN \
   for i in $(seq 10); do npm install "directus@${VERSION}" && break || sleep 30; done && \
-  npm install
-
+  npm install && \
 # Create directories
-RUN \
   mkdir -p extensions/displays && \
   mkdir -p extensions/interfaces && \
   mkdir -p extensions/layouts && \

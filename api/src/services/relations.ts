@@ -8,6 +8,7 @@ import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
+import { getDefaultIndexName } from '../utils/get-default-index-name';
 
 export class RelationsService {
 	knex: Knex;
@@ -159,8 +160,10 @@ export class RelationsService {
 				await trx.schema.alterTable(relation.collection!, async (table) => {
 					this.alterType(table, relation);
 
+					const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+
 					table
-						.foreign(relation.field!)
+						.foreign(relation.field!, constraintName)
 						.references(
 							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
 						)
@@ -168,7 +171,15 @@ export class RelationsService {
 				});
 			}
 
-			await this.relationsItemService.createOne(metaRow);
+			const relationsItemService = new ItemsService('directus_relations', {
+				knex: trx,
+				schema: this.schema,
+				// We don't set accountability here. If you have read access to certain fields, you are
+				// allowed to extract the relations regardless of permissions to directus_relations. This
+				// happens in `filterForbidden` down below
+			});
+
+			await relationsItemService.createOne(metaRow);
 		});
 	}
 
@@ -201,15 +212,18 @@ export class RelationsService {
 		await this.knex.transaction(async (trx) => {
 			if (existingRelation.related_collection) {
 				await trx.schema.alterTable(collection, async (table) => {
+					let constraintName: string = getDefaultIndexName('foreign', collection, field);
+
 					// If the FK already exists in the DB, drop it first
 					if (existingRelation?.schema) {
-						table.dropForeign(field);
+						constraintName = existingRelation.schema.constraint_name || constraintName;
+						table.dropForeign(field, constraintName);
 					}
 
 					this.alterType(table, relation);
 
 					table
-						.foreign(field)
+						.foreign(field, constraintName || undefined)
 						.references(
 							`${existingRelation.related_collection!}.${
 								this.schema.collections[existingRelation.related_collection!].primary
@@ -219,11 +233,19 @@ export class RelationsService {
 				});
 			}
 
+			const relationsItemService = new ItemsService('directus_relations', {
+				knex: trx,
+				schema: this.schema,
+				// We don't set accountability here. If you have read access to certain fields, you are
+				// allowed to extract the relations regardless of permissions to directus_relations. This
+				// happens in `filterForbidden` down below
+			});
+
 			if (relation.meta) {
 				if (existingRelation?.meta) {
-					await this.relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
+					await relationsItemService.updateOne(existingRelation.meta.id, relation.meta);
 				} else {
-					await this.relationsItemService.createOne({
+					await relationsItemService.createOne({
 						...(relation.meta || {}),
 						many_collection: relation.collection,
 						many_field: relation.field,
@@ -259,9 +281,9 @@ export class RelationsService {
 		}
 
 		await this.knex.transaction(async (trx) => {
-			if (existingRelation.schema) {
+			if (existingRelation.schema?.constraint_name) {
 				await trx.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field);
+					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
 			}
 

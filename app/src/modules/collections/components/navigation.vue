@@ -11,7 +11,7 @@
 					v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0"
 				>
 					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
-						<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+						<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 						<v-list-item-content>
 							<v-text-overflow :text="navItem.name" />
 						</v-list-item-content>
@@ -27,7 +27,7 @@
 						@toggle="toggleActive(group.name)"
 					>
 						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
-							<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+							<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 							<v-list-item-content>
 								<v-text-overflow :text="navItem.name" />
 							</v-list-item-content>
@@ -38,7 +38,7 @@
 		</template>
 
 		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
-			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
 			</v-list-item-content>
@@ -72,7 +72,7 @@
 				:key="navItem.to"
 				:to="navItem.to"
 			>
-				<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+				<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="navItem.name" />
 				</v-list-item-content>
