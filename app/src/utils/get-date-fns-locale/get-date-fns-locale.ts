@@ -12,7 +12,6 @@ export async function getDateFNSLocale(): Promise<Locale> {
 
 	for (const l of localesToTry) {
 		try {
-			// @TODO3 Investigate manual chunking
 			const mod = await importDateLocale(l);
 
 			locale = mod.default;

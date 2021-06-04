@@ -9,7 +9,6 @@
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
-				<!-- @TODO3 `$attrs` now contains class and style attributes as well. With `inheritAttrs: false` they are applied to the input element. -->
 				<input
 					v-bind="attributes"
 					v-focus="autofocus"
@@ -405,6 +404,7 @@ body {
 		}
 
 		/* Firefox */
+
 		&[type='number'] {
 			-moz-appearance: textfield;
 		}
@@ -427,6 +427,7 @@ body {
 
 		input {
 			pointer-events: none;
+
 			.prefix,
 			.suffix {
 				color: var(--foreground-subdued);

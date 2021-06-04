@@ -133,10 +133,9 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 
 		let fieldsToFetch = [...fields.value];
 
-		// @TODO3 Should those `fields.value !== ['*']` be replaced by deep equal?
 		// Make sure the primary key is always fetched
 		if (
-			fields.value !== ['*'] &&
+			fields.value.includes('*') === false &&
 			primaryKeyField.value &&
 			fieldsToFetch.includes(primaryKeyField.value.field) === false
 		) {
@@ -144,7 +143,7 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 		}
 
 		// Make sure all fields that are used to filter are fetched
-		if (fields.value !== ['*']) {
+		if (fields.value.includes('*') === false) {
 			filters.value.forEach((filter) => {
 				if (fieldsToFetch.includes(filter.field) === false) {
 					fieldsToFetch.push(filter.field);
@@ -153,7 +152,7 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 		}
 
 		// Make sure that the field we're sorting on is fetched
-		if (fields.value !== ['*'] && sortField.value && sort.value) {
+		if (fields.value.includes('*') === false && sortField.value && sort.value) {
 			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
 			if (fieldsToFetch.includes(sortFieldKey) === false) {
 				fieldsToFetch.push(sortFieldKey);

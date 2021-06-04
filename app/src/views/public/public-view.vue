@@ -100,8 +100,6 @@ export default defineComponent({
 	height: 100%;
 	color: #263238;
 
-	// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
-
 	:slotted(.v-icon) {
 		--v-icon-color: var(--foreground-subdued);
 
@@ -129,8 +127,6 @@ export default defineComponent({
 		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 		transition: max-width var(--medium) var(--transition);
-
-		// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
 
 		:slotted(.type-title) {
 			font-weight: 800;

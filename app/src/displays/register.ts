@@ -1,7 +1,6 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-// @TODO3 tiny-async-pool relies on node.js global variables
-import asyncPool from 'tiny-async-pool/lib/es7.js';
+import { asyncPool } from '@/utils/async-pool';
 import { App } from 'vue';
 import { getDisplays } from './index';
 import { DisplayConfig } from './types';

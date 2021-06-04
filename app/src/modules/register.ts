@@ -3,8 +3,7 @@ import { router } from '@/router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
-// @TODO3 tiny-async-pool relies on node.js global variables
-import asyncPool from 'tiny-async-pool/lib/es7.js';
+import { asyncPool } from '@/utils/async-pool';
 import { getModules } from './index';
 import { ModuleConfig } from './types';
 

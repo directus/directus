@@ -1,7 +1,6 @@
 import { defineInterface } from '@/interfaces/define';
 import { defineAsyncComponent } from 'vue';
 
-// @TODO3 Investigate manual chunking and prefetching
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 
 export default defineInterface({

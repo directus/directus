@@ -33,7 +33,6 @@ import { useRoute, RouteLocation } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 import { md } from '@/utils/md';
 
-// @TODO3 Investigate manual chunking and prefetching
 const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
 async function getMarkdownForRoute(route: RouteLocation): Promise<string> {

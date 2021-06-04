@@ -590,9 +590,8 @@ export default defineComponent({
 				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
-					// @TODO3 Are those named interpolations still needed?
 					title: t(
-						'upload_file_indeterminate',
+						'upload_files_indeterminate',
 						{
 							done: 0,
 							total: files.length,
@@ -618,9 +617,8 @@ export default defineComponent({
 						const done = progress.filter((p) => p === 100).length;
 
 						notificationsStore.update(fileUploadNotificationID, {
-							// @TODO3 Are those named interpolations still needed?
 							title: t(
-								'upload_file_indeterminate',
+								'upload_files_indeterminate',
 								{
 									done,
 									total,

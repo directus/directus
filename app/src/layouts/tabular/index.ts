@@ -343,7 +343,6 @@ export default defineLayout({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const primaryKey = item[primaryKeyField.value!.field];
 
-					// @TODO3 Why was there an emtpy function as callback?
 					router.push(`/collections/${collection.value}/-/${encodeURIComponent(primaryKey)}`);
 				}
 			}

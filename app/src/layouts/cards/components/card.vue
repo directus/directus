@@ -148,7 +148,6 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
-				// @TODO3 Why was there an emtpy function as callback?
 				router.push(props.to);
 			}
 		}

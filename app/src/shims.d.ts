@@ -7,13 +7,6 @@ declare module '*.vue' {
 	export default Component;
 }
 
-// @TODO3 Is this still needed?
-declare module '*.svg' {
-	import { ComponentOptions } from 'vue';
-	const Component: ComponentOptions;
-	export default Component;
-}
-
 declare module '*.md' {
 	const value: string;
 	export default value;
