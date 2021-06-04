@@ -10,8 +10,55 @@ enter_password_to_enable_tfa: टू-फैक्टर ऑथेंटिके
 add_field: नया क्षेत्र
 role_name: भूमिका नाम
 db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें '
+show_archived_items: आर्काइव आइटम दिखाएं
+edited: डेटा संपादित
+required: आवश्यक
+required_for_app_access: ऐप एक्सेस के लिए आवश्यक
+requires_value: डेटा की आवश्यकता है
+create_preset: प्रीसेट बनाएं
+create_role: भूमिका बनाएं
+create_user: यूजर बनाएं
+create_webhook: Webhook बनाएं
+invite_users: यूज़र आमंत्रित करें
+email_examples: 'admin@example.com, user@example.com...'
+invite: आमंत्रित करें
+email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
+emails: इमेल्स
+connection_excellent: उत्तम कनेक्शन
+connection_good: अच्छा कनेक्शन
+connection_fair: ठीक ठाक कनेक्शन
+connection_poor: खराब कनेक्शन
+primary: प्राइमरी
+rename_folder: रीनेम फोल्डर
+delete_folder: डिलीट फोल्डर
+prefix: प्रीफिक्स
+suffix: सफिक्स
+reset_bookmark: रीसेट बुकमार्क
+rename_bookmark: रीनेम बुकमार्क
+update_bookmark: अपडेट बुकमार्क
+delete_bookmark: डिलीट बुकमार्क
+delete_bookmark_copy: >-
+  क्या आप वाकई "{bookmark}" बुकमार्क हटाना चाहते हैं? इसको आप अनडू नहीं कर सकते
+logoutReason:
+  SIGN_OUT: साइंड आउट
+  SESSION_EXPIRED: समय बीत गया
+public: पब्लिक
+public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
+not_allowed: अनुमति नहीं हैं
+directus_version: Directus वर्शन
+node_version: Node वर्शन
+node_uptime: Node उप टाइम
+os_type: OS टाइप
+os_version: OS वर्शन
+os_uptime: OS उप टाइम
+os_totalmem: OS मेमोरी
+archive: आर्काइव
+archive_confirm: क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं?
 fields:
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
+interfaces:
+  presentation-links:
+    primary: प्राइमरी
