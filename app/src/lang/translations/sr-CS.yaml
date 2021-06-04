@@ -350,18 +350,102 @@ create_bookmark: Napravi Oznaku
 edit_bookmark: Ažuriraj Oznaku
 bookmarks: Oznake
 unexpected_error: Neočekivana greška
+unexpected_error_copy: Desila se neočekivana greška. Molimo pokušajte kasnije.
 copy_details: Kopiraj Detalje
 no_app_access: Bez pristupa Aplikaciji
 no_app_access_copy: Ovom korisniku nije dozvoljeno da koristi administratorsku aplikaciju.
 password_reset_sent: Poslali smo Vam sigurnosni link za resetovanje lozinke
+password_reset_successful: Lozinka je uspješno resetovana
 back: Nazad
+editing_image: Uređivanje Fotografije
+square: Kvadrat
+free: Slobodan
+flip_horizontal: Okreni Horizontalno
+flip_vertical: Okreni Vertikalno
+rotate: Rotiraj
+all_users: Svi korisnici
+delete_collection: Obriši Kolekciju
+update_collection_success: Ažurirana Kolekcija
+delete_collection_success: Obrisana Kolekcija
+start_end_of_count_items: '{start}-{end} od {count} stavki'
+start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
+one_item: '1 Stavka'
+one_filtered_item: '1 Filtrirana Stavka'
+delete_collection_are_you_sure: >-
+  Da li ste sigurni da želite da obrišete ovu kolekciju? Ova operacija će obrisati kolekciju i sve stavke unutar iste. Ova operacija je trajna.
+collections_shown: Prikazano Kolekcija
+visible_collections: Vidljive Kolekcije
+hidden_collections: Sakrivene Kolekcije
+show_hidden_collections: Prikaži Sakrivene Kolekcije
+hide_hidden_collections: Sakrij Sakrivene Kolekcije
+unmanaged_collections: Nekonfigurisane Kolekcije
+system_collections: Sistemske Kolekcije
+icon_left: Ikonica Lijevo
+icon_right: Ikonica Desno
+count_other_revisions: '{count} Ostalih Revizija'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+color: Boja
+circle: Krug
+empty_item: Prazna Stavka
+log_in_with: 'Prijavite se sa {provider}'
+advanced_filter: Napredni Filter
+delete_advanced_filter: Obriši Filter
+operators:
+  eq: Jednako
+  neq: Nije jednako
+  lt: Manje od
+  gt: Veće od
+  lte: Manje ili jednako od
+  gte: Veće ili jednako od
+  in: Je jedan od
+  nin: Nijedan od
+  null: Je null
+  nnull: Nije null
+  contains: Sadrži
+  ncontains: Ne sadrži
+  between: Je između
+  nbetween: Nije između
+  empty: Je Prazno
+  nempty: Nije Prazno
+  all: Sadrži sljedeće ključeve
+  has: Sadrži neke od sljedećih ključeva
+loading: Učitavanje...
+drop_to_upload: Prenesi za Otpremanje
+item: Stavka
+items: Stavke
+upload_file_indeterminate: Otpremanje Fajla...
+click_to_browse: Klikni za Pretraživanje
+layout_options: Opcije Izgleda
+rows: Redova
+columns: Kolona
+collection_setup: Podešavanje Kolekcije
+optional_system_fields: Neobavezna Sistemska Polja
 value_unique: Vrijednost mora biti jedinstvena
+all_activity: Sva Aktivnost
+create_item: Napravi Stavku
+display_template: Šablon za Prikaz
+language_display_template: Šablon za prikaz jezika
+translations_display_template: Šablon za prikaz Prevoda
+n_items_selected: 'Nema Odabranih Stavki | 1 Stavka Odabrana | {n} Stavki Odabrano'
+per_page: Po Stranici
+all_files: Svi Fajlovi
+my_files: Moji Fajlovi
+recent_files: Skorašnji Fajlovi
+create_folder: Napravi Fasciklu
+folder_name: Naziv Fascikle...
+add_file: Dodaj Fajl
+replace_file: Zamijeni Fajl
+no_results: Nema rezultata
+no_results_copy: Prilagodi ili obriši filtere pretrage kako biste vidjeli rezultate.
 wysiwyg_options:
   selectall: Odaberi Sve
 settings_project: Podešavanje Projekta
 fields:
   directus_collections:
     note: Napomena
+    display_template: Šablon za Prikaz
     sort_field: Polje za Sortiranje
   directus_files:
     title: Naslov
@@ -388,7 +472,10 @@ fields:
 interfaces:
   presentation-links:
     primary: Primarni
+  select-color:
+    color: Boja
   system-display-template:
+    display-template: Šablon za Prikaz
     collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
     select_a_collection: Izaberi Kolekciju
   select-dropdown:
@@ -397,13 +484,21 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interfejs
+  select-dropdown-m2o:
+    display_template: Šablon za Prikaz
   boolean:
     label_default: Omogućen
+  translations:
+    display_template: Šablon za Prikaz
 displays:
   boolean:
     boolean: Boolean
+  color:
+    color: Boja
   datetime:
     format: Format
+  image:
+    circle: Krug
   labels:
     choices_value_placeholder: Unesi vrijednost...
   user:
