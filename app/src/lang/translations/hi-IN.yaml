@@ -74,6 +74,9 @@ schema_setup_key: इस फ़ील्ड का डेटाबेस कॉ�
 create_field: फ़ील्ड बनाएं
 creating_new_field: 'नया फ़ील्ड ({collection})'
 field_in_collection: '{field} ({collection})'
+reset_page_preferences: पेज सेटिंग्स रिसेट करे
+hidden_field: हिडन फील्ड
+hidden_on_detail: विवरण पर हिडन
 fields:
   directus_fields:
     translation: फ़ील्ड नाम अनुवाद
