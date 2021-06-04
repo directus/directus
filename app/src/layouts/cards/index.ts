@@ -6,7 +6,6 @@ import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
 import { toRefs, inject, computed, ref } from 'vue';
-import { FieldMeta } from '@/types';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -15,7 +14,23 @@ import { useRelationsStore } from '@/stores/';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { clone } from 'lodash';
 
-export default defineLayout({
+type LayoutOptions = {
+	size?: number;
+	icon?: string;
+	imageSource?: string;
+	title?: string;
+	subtitle?: string;
+	imageFit?: 'crop' | 'contain';
+};
+
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+	limit?: number;
+	page?: number;
+};
+
+export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
 	name: '$t:layouts.cards.cards',
 	icon: 'grid_4',
@@ -38,7 +53,7 @@ export default defineLayout({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const fileFields = computed(() => {
-			return fieldsInCollection.value.filter((field: FieldMeta) => {
+			return fieldsInCollection.value.filter((field) => {
 				if (field.field === '$thumbnail') return true;
 
 				const relation = relationsStore.relations.find((relation) => {
@@ -53,8 +68,8 @@ export default defineLayout({
 			});
 		});
 
-		const { size, icon, imageSource, title, subtitle, imageFit } = uselayoutOptions();
-		const { sort, limit, page, fields } = uselayoutQuery();
+		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
+		const { sort, limit, page, fields } = useLayoutQuery();
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
@@ -62,7 +77,7 @@ export default defineLayout({
 			page,
 			fields: fields,
 			filters: filters,
-			searchQuery: searchQuery as any,
+			searchQuery: searchQuery,
 		});
 
 		const newLink = computed(() => {
@@ -151,7 +166,7 @@ export default defineLayout({
 			});
 		}
 
-		function uselayoutOptions() {
+		function useLayoutOptions() {
 			const size = createViewOption<number>('size', 4);
 			const icon = createViewOption('icon', 'box');
 			const title = createViewOption<string>('title', null);
@@ -161,7 +176,7 @@ export default defineLayout({
 
 			return { size, icon, imageSource, title, subtitle, imageFit };
 
-			function createViewOption<T>(key: string, defaultValue: any) {
+			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
 						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value?.[key] : defaultValue;
@@ -176,7 +191,7 @@ export default defineLayout({
 			}
 		}
 
-		function uselayoutQuery() {
+		function useLayoutQuery() {
 			const page = computed({
 				get() {
 					return layoutQuery.value?.page || 1;
@@ -191,7 +206,7 @@ export default defineLayout({
 
 			const sort = computed({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value.field;
+					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
 				},
 				set(newSort: string) {
 					layoutQuery.value = {
@@ -216,7 +231,7 @@ export default defineLayout({
 			});
 
 			const fields = computed<string[]>(() => {
-				if (!primaryKeyField.value) return [];
+				if (!primaryKeyField.value || !props.collection) return [];
 				const fields = [primaryKeyField.value.field];
 
 				if (imageSource.value) {
@@ -258,12 +273,13 @@ export default defineLayout({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/-/${encodeURIComponent(item[primaryKeyField.value!.field])}`;
+			return `/collections/${props.collection}/-/${encodeURIComponent(item[primaryKeyField.value.field])}`;
 		}
 
 		function selectAll() {
 			if (!primaryKeyField.value) return;
-			selection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
+			const pk = primaryKeyField.value;
+			selection.value = clone(items.value).map((item) => item[pk.field]);
 		}
 	},
 });

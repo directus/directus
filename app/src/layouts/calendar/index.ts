@@ -10,7 +10,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { ref, watch, toRefs, computed } from 'vue';
+import { ref, watch, toRefs, computed, Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { Item, Filter, Field } from '@/types';
 import useItems from '@/composables/use-items';
@@ -22,7 +22,7 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-type layoutOptions = {
+type LayoutOptions = {
 	template?: string;
 	startDateField?: string;
 	endDateField?: string;
@@ -32,7 +32,7 @@ type layoutOptions = {
 	};
 };
 
-export default defineLayout({
+export default defineLayout<LayoutOptions>({
 	id: 'calendar',
 	name: '$t:layouts.calendar.calendar',
 	icon: 'event',
@@ -86,7 +86,7 @@ export default defineLayout({
 			get() {
 				return layoutOptions.value?.template;
 			},
-			set(newTemplate: string | null) {
+			set(newTemplate: string | undefined) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
 					template: newTemplate,
@@ -94,11 +94,11 @@ export default defineLayout({
 			},
 		});
 
-		const viewInfo = computed<layoutOptions['viewInfo']>({
+		const viewInfo = computed({
 			get() {
-				return layoutOptions.value?.viewInfo || {};
+				return layoutOptions.value?.viewInfo;
 			},
-			set(newViewInfo: layoutOptions['viewInfo']) {
+			set(newViewInfo: LayoutOptions['viewInfo']) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
 					viewInfo: newViewInfo,
@@ -110,7 +110,7 @@ export default defineLayout({
 			get() {
 				return layoutOptions.value?.startDateField;
 			},
-			set(newStartDateField: string | null) {
+			set(newStartDateField: string | undefined) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
 					startDateField: newStartDateField,
@@ -118,7 +118,7 @@ export default defineLayout({
 			},
 		});
 
-		const startDateFieldInfo = computed<Field>(() => {
+		const startDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
 		});
 
@@ -126,7 +126,7 @@ export default defineLayout({
 			get() {
 				return layoutOptions.value?.endDateField;
 			},
-			set(newEndDateField: string | null) {
+			set(newEndDateField: string | undefined) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
 					endDateField: newEndDateField,
@@ -134,17 +134,19 @@ export default defineLayout({
 			},
 		});
 
-		const endDateFieldInfo = computed<Field>(() => {
+		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
-				sort: computed(() => primaryKeyField.value.field),
+				sort: computed(() => primaryKeyField.value?.field || ''),
 				page: ref(1),
 				limit: ref(-1),
 				fields: computed(() => {
+					if (!primaryKeyField.value) return [];
+
 					const fields = [primaryKeyField.value.field];
 					if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 					if (startDateField.value) fields.push(startDateField.value);
@@ -157,8 +159,8 @@ export default defineLayout({
 			false
 		);
 
-		const events = computed(
-			() => items.value?.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
+		const events: Ref<EventInput> = computed(
+			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
 		);
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
@@ -180,6 +182,8 @@ export default defineLayout({
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
 				eventClick(info) {
+					if (!collection.value) return;
+
 					const primaryKey = info.event.id;
 					const endpoint = collection.value.startsWith('directus')
 						? collection.value.substring(9)
@@ -187,13 +191,13 @@ export default defineLayout({
 					router.push(`${endpoint}/-/${primaryKey}`);
 				},
 				async eventChange(info) {
-					if (!startDateField.value) return;
+					if (!collection.value || !startDateField.value || !startDateFieldInfo.value) return;
 
 					const itemChanges: Partial<Item> = {
 						[startDateField.value]: adjustForType(info.event.startStr, startDateFieldInfo.value.type),
 					};
 
-					if (endDateField.value && info.event.endStr) {
+					if (endDateField.value && endDateFieldInfo.value && info.event.endStr) {
 						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
 					}
 
@@ -239,6 +243,8 @@ export default defineLayout({
 		);
 
 		const showingCount = computed(() => {
+			if (!itemCount.value) return null;
+
 			return t('item_count', itemCount.value);
 		});
 
@@ -279,12 +285,12 @@ export default defineLayout({
 			calendar.value?.destroy();
 		}
 
-		function parseEvent(item: Item) {
-			if (!startDateField.value) return null;
+		function parseEvent(item: Item): EventInput | null {
+			if (!startDateField.value || !primaryKeyField.value) return null;
 
 			return {
 				id: item[primaryKeyField.value.field],
-				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item),
+				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
 				end: endDateField.value ? item[endDateField.value] : null,
 			};

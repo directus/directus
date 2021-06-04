@@ -85,11 +85,12 @@
 				<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
-			<component :is="`layout-sidebar-${values.layout}`" class="layout-sidebar" />
+			<!-- @TODO3 class="layout-sidebar" doesn't work here as layout sidebar has multiple root elements -->
+			<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
 
 			<sidebar-detail class="layout-sidebar" icon="layers" :title="t('layout_options')">
 				<div class="layout-options">
-					<component :is="`layout-options-${values.layout}`" />
+					<component v-if="values.layout && values.collection" :is="`layout-options-${values.layout}`" />
 				</div>
 			</sidebar-detail>
 		</template>
@@ -161,9 +162,9 @@ export default defineComponent({
 		});
 
 		useLayout(
-			values.value.layout,
+			computed(() => values.value.layout || 'tabular'),
 			reactive({
-				collection: values.value.collection,
+				collection: computed(() => values.value.collection),
 				selection: [],
 				layoutOptions,
 				layoutQuery,
@@ -266,12 +267,20 @@ export default defineComponent({
 		}
 
 		function useValues() {
-			const edits = ref<any>({});
+			const edits = ref<Record<string, any>>({});
 
 			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 			const initialValues = computed(() => {
-				const defaultValues = { scope: 'all', layout: 'tabular' };
+				const defaultValues = {
+					collection: null,
+					layout: 'tabular',
+					search: null,
+					scope: 'all',
+					layout_query: null,
+					layout_options: null,
+					filters: null,
+				};
 				if (isNew.value === true) return defaultValues;
 				if (preset.value === null) return defaultValues;
 
@@ -318,7 +327,7 @@ export default defineComponent({
 						...edits.value,
 						layout_query: {
 							...edits.value.layout_query,
-							[values.value.layout]: newQuery,
+							[values.value.layout || 'tabular']: newQuery,
 						},
 					};
 				},
@@ -336,7 +345,7 @@ export default defineComponent({
 						...edits.value,
 						layout_options: {
 							...edits.value.layout_options,
-							[values.value.layout]: newOptions,
+							[values.value.layout || 'tabular']: newOptions,
 						},
 					};
 				},

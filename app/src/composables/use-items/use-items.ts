@@ -15,14 +15,31 @@ type Query = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, query: Query, fetchOnInit = true): Record<string, any> {
+type ManualSortData = {
+	item: string | number;
+	to: string | number;
+};
+
+type ItemsInfo = {
+	itemCount: Ref<number | null>;
+	totalCount: Ref<number | null>;
+	items: Ref<Item[]>;
+	totalPages: Ref<number>;
+	loading: Ref<boolean>;
+	error: Ref<Error | null>;
+	changeManualSort: (data: ManualSortData) => Promise<void>;
+	getItems: () => Promise<void>;
+};
+
+export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): ItemsInfo {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
-	let loadingTimeout: any = null;
+	let loadingTimeout: number | null = null;
 
 	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
+		if (!collection.value) return null;
 		return collection.value.startsWith('directus_')
 			? `/${collection.value.substring(9)}`
 			: `/items/${collection.value}`;
@@ -30,7 +47,7 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
-	const error = ref(null);
+	const error = ref<Error | null>(null);
 
 	const itemCount = ref<number | null>(null);
 	const totalCount = ref<number | null>(null);
@@ -123,7 +140,7 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
-		if (loadingTimeout) return;
+		if (loadingTimeout || !endpoint.value) return;
 
 		error.value = null;
 
@@ -212,7 +229,7 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 	}
 
 	async function getItemCount() {
-		if (!primaryKeyField.value) return;
+		if (!primaryKeyField.value || !endpoint.value) return;
 
 		const response = await api.get(endpoint.value, {
 			params: {
@@ -239,11 +256,6 @@ export function useItems(collection: Ref<string>, query: Query, fetchOnInit = tr
 		const descending = sortBy.startsWith('-');
 		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
 	}
-
-	type ManualSortData = {
-		item: string | number;
-		to: string | number;
-	};
 
 	async function changeManualSort({ item, to }: ManualSortData) {
 		const pk = primaryKeyField.value?.field;

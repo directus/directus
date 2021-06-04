@@ -18,7 +18,22 @@ import hideDragImage from '@/utils/hide-drag-image';
 import useShortcut from '@/composables/use-shortcut';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 
-export default defineLayout({
+type LayoutOptions = {
+	widths?: {
+		[field: string]: number;
+	};
+	limit?: number;
+	spacing?: 'comfortable' | 'cozy' | 'compact';
+};
+
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+	page?: number;
+	limit?: number;
+};
+
+export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
 	name: '$t:layouts.tabular.tabular',
 	icon: 'reorder',
@@ -93,7 +108,9 @@ export default defineLayout({
 		useShortcut(
 			'meta+a',
 			() => {
-				selection.value = clone(items.value).map((item: any) => item[primaryKeyField.value.field]);
+				if (!primaryKeyField.value) return;
+				const pk = primaryKeyField.value;
+				selection.value = clone(items.value).map((item) => item[pk.field]);
 			},
 			table
 		);
@@ -162,7 +179,7 @@ export default defineLayout({
 
 			const sort = computed({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field;
+					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
 				},
 				set(newSort: string) {
 					layoutQuery.value = {
@@ -220,7 +237,10 @@ export default defineLayout({
 				},
 			});
 
-			const fieldsWithRelational = computed(() => adjustFieldsForDisplays(fields.value, props.collection));
+			const fieldsWithRelational = computed(() => {
+				if (!props.collection) return [];
+				return adjustFieldsForDisplays(fields.value, props.collection);
+			});
 
 			return { sort, limit, page, fields, fieldsWithRelational };
 		}
@@ -332,7 +352,7 @@ export default defineLayout({
 			};
 
 			function onRowClick(item: Item) {
-				if (props.readonly === true) return;
+				if (props.readonly === true || !primaryKeyField.value) return;
 
 				if (props.selectMode || selection.value?.length > 0) {
 					(table.value as any).onItemSelected({
@@ -340,8 +360,7 @@ export default defineLayout({
 						value: selection.value?.includes(item[primaryKeyField.value.field]) === false,
 					});
 				} else {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					const primaryKey = item[primaryKeyField.value!.field];
+					const primaryKey = item[primaryKeyField.value.field];
 
 					router.push(`/collections/${collection.value}/-/${encodeURIComponent(primaryKey)}`);
 				}

@@ -28,14 +28,14 @@ export function renderStringTemplate(
 	return { fieldsInTemplate, displayValue };
 }
 
-export function renderPlainStringTemplate(template: string, item?: Record<string, any> | null): string | false {
+export function renderPlainStringTemplate(template: string, item?: Record<string, any> | null): string | null {
 	const fieldsInTemplate = getFieldsFromTemplate(template);
 
-	if (!item || !template || !fieldsInTemplate) return false;
+	if (!item || !template || !fieldsInTemplate) return null;
 
 	try {
 		return render(template, item, { propsExist: true });
 	} catch {
-		return false;
+		return null;
 	}
 }

@@ -2,7 +2,7 @@ import { Component, ComponentPublicInstance } from 'vue';
 import { Item } from '@/components/v-table/types';
 import { Filter } from '@/types';
 
-export interface LayoutConfig {
+export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
 	name: string;
 	icon: string;
@@ -12,14 +12,14 @@ export interface LayoutConfig {
 		sidebar: Component;
 		actions: Component;
 	};
-	setup: (LayoutOptions: LayoutProps) => any;
+	setup: (LayoutOptions: LayoutProps<Options, Query>) => any;
 }
 
-export interface LayoutProps {
-	collection: string;
+export interface LayoutProps<Options = any, Query = any> {
+	collection: string | null;
 	selection: Item[];
-	layoutOptions: any;
-	layoutQuery: any;
+	layoutOptions: Options;
+	layoutQuery: Query;
 	filters: Filter[];
 	searchQuery: string | null;
 	selectMode: boolean;
@@ -29,7 +29,9 @@ export interface LayoutProps {
 
 export type LayoutContext = Record<string, any>;
 
-export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
+export type LayoutDefineParam<Options = any, Query = any> =
+	| LayoutConfig<Options, Query>
+	| ((context: LayoutContext) => LayoutConfig<Options, Query>);
 
 export interface LayoutComponent extends ComponentPublicInstance {
 	refresh: () => Promise<void>;

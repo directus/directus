@@ -25,7 +25,7 @@
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ t('export_collection', { collection: collection.name }) }}
+					{{ t('export_collection', { collection }) }}
 				</v-button>
 			</div>
 		</div>
