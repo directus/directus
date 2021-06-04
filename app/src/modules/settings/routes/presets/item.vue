@@ -85,7 +85,6 @@
 				<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
-			<!-- @TODO3 class="layout-sidebar" doesn't work here as layout sidebar has multiple root elements -->
 			<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
 
 			<sidebar-detail class="layout-sidebar" icon="layers" :title="t('layout_options')">
