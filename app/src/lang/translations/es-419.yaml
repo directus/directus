@@ -38,9 +38,9 @@ rename_bookmark: Renombrar marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
-  ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
+  ¿Estás seguro que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
 logoutReason:
-  SIGN_OUT: Sesión terminada
+  SIGN_OUT: Cerrar sesión
   SESSION_EXPIRED: Sesión expirada
 public: Público
 public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
