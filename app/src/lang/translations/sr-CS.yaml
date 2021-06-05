@@ -439,8 +439,72 @@ add_file: Dodaj Fajl
 replace_file: Zamijeni Fajl
 no_results: Nema rezultata
 no_results_copy: Prilagodi ili obriši filtere pretrage kako biste vidjeli rezultate.
+clear_filters: Poništi Filtere
+role: Uloga
+user: Korisnik
+bold: Podebljano
+icon_on: Ikonica Na
+icon_off: Bez Ikonice
+label: Oznaka
+image_url: Url slike
+alt_text: Alternativni tekst
+media: Medij
+source: Izvor
+url_placeholder: Unesi url...
+display_text: Prikaži tekst
+display_text_placeholder: Unesi tekst za prikaz...
+unlimited: Neograničeno
+open_link_in: Otvori vezu u
+new_tab: Nova kartica
+current_tab: Trenutna kartica
 wysiwyg_options:
+  aligncenter: Poravnanje po sredini
+  alignleft: Lijevo poravnanje
+  alignright: Desno poravnanje
+  bold: Podebljano
+  italic: Kurziv
+  underline: Podvučeno
+  strikethrough: Precrtano
+  codeblock: Kod
+  blockquote: Citat
+  numlist: Numerisana lista
+  link: Dodaj/Uredi Vezu
+  unlink: Ukloni link
+  image: Dodaj/Uredi Sliku
+  copy: Kopiraj
+  paste: Nalijepi
+  heading: Naslov
+  h1: Zaglavlje 1
+  h2: Zaglavlje 2
+  h3: Zaglavlje 3
+  h4: Zaglavlje 4
+  h5: Zaglavlje 5
+  h6: Zaglavlje 6
+  fontselect: Odaberi Pismo
+  fontsizeselect: Odaberi Veličinu Pisma
+  indent: Uvlačenje
+  undo: Poništi
+  redo: Vrati poništeno
+  remove: Ukloni
+  removeformat: Ukloni formatiranje
   selectall: Odaberi Sve
+  table: Tabela
+  visualaid: Pregledaj Nevidljive elemente
+  source_code: Uredi Izvorni Kod
+  fullscreen: Pun ekran
+dropdown: Padajuća lista
+choices: Izbori
+deselect: Odznači
+deselect_all: Odznači sve
+other: Ostalo...
+adding_user: Dodavanje Korisnika
+unknown_user: Nepoznat korisnik
+creating_in: 'Kreiranje Stavke u {collection}'
+editing_in: 'Uređivanje Stavke u {collection}'
+creating_unit: 'Kreiranje {unit}'
+editing_unit: 'Uređivanje {unit}'
+no_options_available: Nema dostupnih opcija
+settings_permissions: Uloge & Dozvole
 settings_project: Podešavanje Projekta
 fields:
   directus_collections:
@@ -458,6 +522,7 @@ fields:
   directus_users:
     title: Naslov
     language: Jezik
+    role: Uloga
     last_page: Posljednja Stranica
     last_access: Posljednji Pristup
   directus_settings:
@@ -472,6 +537,8 @@ fields:
 interfaces:
   presentation-links:
     primary: Primarni
+  input-code:
+    code: Kod
   select-color:
     color: Boja
   system-display-template:
@@ -490,9 +557,15 @@ interfaces:
     label_default: Omogućen
   translations:
     display_template: Šablon za Prikaz
+  user:
+    user: Korisnik
+    modes:
+      dropdown: Padajuća lista
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Ikonica Na
+    icon_off: Bez Ikonice
   color:
     color: Boja
   datetime:
@@ -502,7 +575,10 @@ displays:
   labels:
     choices_value_placeholder: Unesi vrijednost...
   user:
+    user: Korisnik
     name: Ime
 layouts:
   cards:
     title: Naslov
+  tabular:
+    tabular: Tabela
