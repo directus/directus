@@ -157,7 +157,7 @@ refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
 refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
 refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
-auto_generate: Auto-Generado
+auto_generate: Auto Generado
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
 to_manually_setup_translations: configurar manualmente las traducciones.
@@ -286,7 +286,7 @@ dimensions: Dimensiones
 size: Tamaño
 created: Creado
 modified: Modificado
-checksum: Cadena de Verificación
+checksum: Cadena de verificación
 owner: Propietario
 edited_by: Editado por
 folder: Directorio
@@ -422,7 +422,7 @@ no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
 password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
 password_reset_successful: Contraseña restablecida exitósamente
-back: Atrás
+back: Regresar
 editing_image: Editar Imagen
 square: Cuadrado
 free: Libre
@@ -661,13 +661,13 @@ page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usua
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
 activity_feed: Actividad
-add_new: Agregar uno Nuevo
+add_new: Agregar Nuevo
 create_new: Crear Nuevo
 all: Todos
 none: Nada
 no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
-  Ningún elemento ha sido seleccionado | ¿Estás seguro que quieres eliminar este elemento?, Esta acción es permanente. | ¿Estás seguro que quieres eliminar estos {count} elementos?, Esta acción es permanente.
+  Ningún registro ha sido seleccionado | ¿Estás seguro que quieres eliminar este registro?, Esta acción es permanente. | ¿Estás seguro que quieres eliminar estos {count} registros?, Esta acción es permanente.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
@@ -676,7 +676,7 @@ singleton_label: Tratar como un sólo objeto
 system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 fields:
   directus_activity:
-    item: Clave Primaria del Ítem
+    item: Clave Primaria del registro
     action: Acción
     collection: Colección
     timestamp: Realizado en
@@ -715,7 +715,7 @@ fields:
     created_on: Creado El
     created_by: Creado Por
     embed: Incrustado
-    uploaded_by: Subido por
+    uploaded_by: Actualizado por
     folder: Directorio
     width: Ancho
     uploaded_on: Subido el
