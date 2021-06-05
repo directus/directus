@@ -59,8 +59,8 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Mínimo acceso a App
-recommended_defaults: Valores predeterminados recomendados
+app_access_minimum: Minimo Acceso a la Aplicación
+recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
@@ -77,7 +77,7 @@ validationError:
   lt: El valor tiene que ser menor a {valid}
   lte: El valor tiene que ser menor o igual a {valid}
   empty: El valor tiene que estar vacío
-  nempty: El valor no puede estar vacío
+  nempty: Este valor no puede quedar vacío
   null: El valor tiene que ser nulo
   nnull: El valor no puede ser nulo
   required: Valor requerido
@@ -89,15 +89,15 @@ use_custom: Usar personalizado
 nullable: Deshabilitable
 allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
-field_standard: Estándar
+field_standard: Standar
 field_presentation: Presentación y Alias
-field_file: Un Archivo
+field_file: Un solo Archivo
 field_files: Múltiples Archivos
 field_m2o: Relación N:1
 field_m2a: Relación M2A
 field_o2m: Relación 1:N
 field_m2m: Relación M:N
-field_translations: Traducciones
+field_translations: Traducciónes
 item_permissions: Permisos de registro
 field_permissions: Permisos de campo
 field_validation: Validación de campo
@@ -112,7 +112,7 @@ changes_made: Estos son los cambios específicos que se hicieron...
 no_relational_data: Tener en cuenta que esto no incluye datos relacionales.
 hide_field_on_detail: Ocultar campo en el Detalle
 show_field_on_detail: Mostrar campo en el Detalle
-delete_field: Eliminar Campo
+delete_field: Borrar Campo
 fields_and_layout: Campos y Diseño
 field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
@@ -132,7 +132,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
 hidden_field: Campo oculto
 hidden_on_detail: Oculto en el Detalle
-disabled_editing_value: Desactivar edición de valor
+disabled_editing_value: Deshabilitar la edición del valor
 key: Llave
 alias: Alias
 bigInteger: Número Entero (Grande)
@@ -150,7 +150,7 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
-not_available_for_type: No disponible para este Tipo
+not_available_for_type: No habilitado para este Tipo
 create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
 refresh_interval: Intervalo de actualización
@@ -169,38 +169,38 @@ new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
-add_m2o_to_collection: 'Agregar Muchos-A-Uno a "{collection}"'
-add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
-add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
+add_m2o_to_collection: 'Agregar Muchos-a-Uno a "{collection}"'
+add_o2m_to_collection: 'Agregar Uno-a-Muchos a "{collection}"'
+add_m2m_to_collection: 'Agregar Muchos-a-Muchos a "{collection}"'
 choose_a_type: Elegir un Tipo...
-determined_by_relationship: Determinado por la Relación
+determined_by_relationship: Determinar por relación
 add_note: Agrega una nota de ayuda para los usuarios...
 default_value: Valor Predeterminado
-standard_field: Campo Estándar
-single_file: Un Archivo
+standard_field: Campo Standar
+single_file: Un solo Archivo
 multiple_files: Múltiples Archivos
-m2o_relationship: Relación Muchos-a-Uno
-o2m_relationship: Relación Uno-A-Muchos
-m2m_relationship: Relación Muchos-A-Muchos
-m2a_relationship: Relación Muchos-A-Cualquiera
-invalid_item: Artículo inválido
+m2o_relationship: Relación Muchos a Uno
+o2m_relationship: Relación Uno a Muchos
+m2m_relationship: Relación Muchos a Muchos
+m2a_relationship: Relación Muchos a Cualquiera
+invalid_item: Registro invalido
 next: Siguiente
 field_name: Nombre del Campo
-translations: Traducciones
+translations: Traducciónes
 note: Nota
-enter_a_value: Ingrese un valor...
+enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
-length: Longitud
+length: Largó
 precision_scale: Precisión y Escala
-readonly: Sólo lectura
+readonly: Solo Lectura
 unique: Único
 updated_on: Actualizado el
-updated_by: Actualizado por
+updated_by: Actualizado Por
 primary_key: Llave Primaria
 foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Ignorar
-raw_value: Valor Plano
+raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
@@ -906,7 +906,7 @@ interfaces:
     divider: Separador
   select-dropdown:
     allow_other: Permitir otro
-    choices_value_placeholder: Ingrese un valor...
+    choices_value_placeholder: Ingresa un valor...
   file:
     file: Archivo
     description: Seleccionar o subir un archivo
@@ -1017,7 +1017,7 @@ displays:
     default_background: Fondo por defecto
     format_label: Formatear cada etiqueta
     show_as_dot: Presentar como Punto
-    choices_value_placeholder: Ingrese un valor...
+    choices_value_placeholder: Ingresa un valor...
     choices_text_placeholder: Ingresar un texto...
   mime-type:
     mime-type: Tipo MIME
