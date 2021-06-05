@@ -754,8 +754,8 @@ fields:
     storage_asset_transform: Transformación de Activos en Almacenamiento
     custom_css: CSS Personalizado
   directus_fields:
-    collection: Nombre de Colección
-    icon: Ícono de Colección
+    collection: Nombre de la Colección
+    icon: Icono de la Colección
     note: Nota
     hidden: Oculto
     singleton: Singleton
