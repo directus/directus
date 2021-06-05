@@ -504,15 +504,40 @@ editing_in: 'Uređivanje Stavke u {collection}'
 creating_unit: 'Kreiranje {unit}'
 editing_unit: 'Uređivanje {unit}'
 no_options_available: Nema dostupnih opcija
+settings_data_model: Model Podataka
 settings_permissions: Uloge & Dozvole
 settings_project: Podešavanje Projekta
+one_or_more_options_are_missing: Jedna ili više opcija nedostaje
+layout: Izgled
+changes_are_permanent: Izmjene su trajne
+discard_changes: Poništi Promjene
+keep_editing: Nastavi uređivanje
+add_new: Dodaj Novi
+create_new: Kreiraj Novi
+all: Svi
+none: Nijedan
+cancel: Odustani
+collection: Kolekcija
+collections: Kolekcije
+singleton_label: Tretiraj kao jedinstven objekat
 fields:
+  directus_activity:
+    action: Akcija
+    collection: Kolekcija
+    ip: IP adresa
   directus_collections:
+    collection: Kolekcija
     note: Napomena
     display_template: Šablon za Prikaz
+    archive_value: Arhiviraj Vrijednost
     sort_field: Polje za Sortiranje
   directus_files:
     title: Naslov
+    description: Opis
+    tags: Tagovi
+    location: Lokacija
+    storage: Skladište
+    filename_disk: Ime Fajla (Disk)
     modified_on: Izmijenjeno
     created_on: Kreirano
     created_by: Kreirao
@@ -520,7 +545,10 @@ fields:
     charset: Set karaktera
     duration: Trajanje
   directus_users:
+    location: Lokacija
     title: Naslov
+    description: Opis
+    tags: Tagovi
     language: Jezik
     role: Uloga
     last_page: Posljednja Stranica
@@ -534,11 +562,17 @@ fields:
     note: Napomena
   directus_roles:
     name: Naziv uloge
+    description: Opis
+description: Opis
 interfaces:
   presentation-links:
     primary: Primarni
   input-code:
     code: Kod
+  collection:
+    collection: Kolekcija
+  system-collections:
+    collections: Kolekcije
   select-color:
     color: Boja
   system-display-template:
@@ -553,6 +587,8 @@ interfaces:
     interface: Interfejs
   select-dropdown-m2o:
     display_template: Šablon za Prikaz
+  tags:
+    tags: Tagovi
   boolean:
     label_default: Omogućen
   translations:
@@ -566,6 +602,8 @@ displays:
     boolean: Boolean
     icon_on: Ikonica Na
     icon_off: Bez Ikonice
+  collection:
+    collection: Kolekcija
   color:
     color: Boja
   datetime:
