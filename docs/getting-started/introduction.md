@@ -18,8 +18,8 @@ developers and an intuitive App for non-technical users.** Written entirely in J
 [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org)), Directus is completely open-source, modular, and
 extensible, allowing it to be fully tailored to the requirements of any project.
 
-The platform can be used as a headless content management, or for democratizing data (customer, inventory, business, 
-project, etc) across an organization.
+The platform can be used for an individual purpose, such as headless content management, or more broadly to democratize an entire organization's data (customers, inventory, business intelligence, 
+projects, etc).
 
 ::: tip What's in a name?
 
