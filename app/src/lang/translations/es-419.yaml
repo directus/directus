@@ -2,7 +2,7 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Campo duplicado
-half_width: Anchura 50%
+half_width: Ancho a la Mitad
 full_width: Ancho completo
 fill_width: Ajustar ancho
 field_name_translations: Traducciónes del nombre de campo
@@ -66,11 +66,11 @@ unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
 unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
-  eq: El valor tiene que ser {valid}
+  eq: El valor debe de ser {valid}
   neq: El valor no puede ser {invalid}
   in: 'El valor tiene que ser uno de estos: {valid}'
   nin: 'El valor no puede ser uno de estos: {invalid}'
-  contains: El valor tiene que contener {substring}
+  contains: El valor debe de Contener {substring}
   ncontains: El valor no puede contener {substring}
   gt: El valor tiene que ser mayor a {valid}
   gte: El valor tiene que ser mayor o igual a {valid}
@@ -213,7 +213,7 @@ page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
 confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
 display: Mostrar
-settings_update_success: Ajustes actualizados
+settings_update_success: Configuraciones Actualizadas
 title: Título
 revision_delta_created: Creado
 revision_delta_created_externally: Creado Externamente
@@ -227,14 +227,14 @@ revision_preview: Vista Previa de Revisión
 updates_made: Actualizaciones Realizadas
 leave_comment: Deja un comentario...
 post_comment_success: Comentario publicado
-item_create_success: Elemento Creado | Elementos Creados
-item_update_success: Elemento Actualizado | Elementos Actualizados
-item_delete_success: Elemento Eliminado | Elementos Eliminados
+item_create_success: Registro Creado | Registros Creados
+item_update_success: Registro Actualizado | Registros Actualizados
+item_delete_success: Registro Borrado | Registros Borrados
 this_collection: Esta Colección
 related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de la Colección
-languages_collection: Colección de Idiomas
+languages_collection: Coleccion de Idiomas
 export_data: Exportar datos
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
@@ -242,18 +242,18 @@ export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último acceso
 fill_template: Rellenar con Valor de Plantilla
-a_unique_table_name: Un nombre de tabla único...
-a_unique_column_name: Un nombre de columna único...
+a_unique_table_name: Un Nombre de Tabla Único...
+a_unique_column_name: Un nombre de Columna Único...
 enable_custom_values: Habilitar valores personalizados
 submit: Enviar
 move_to_folder: Mover a Carpeta
 move: Mover
 system: Sistema
-add_field_related: Agregar Campo a Colección Relacionada
+add_field_related: Agregar Campo a la Colección Relacionada
 interface: Interfaz
 today: Hoy
 yesterday: Ayer
-delete_comment: Eliminar Comentario
+delete_comment: Borrar Comentario
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -262,7 +262,7 @@ date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 month: Mes
 year: Año
-select_all: Seleccionar Todo
+select_all: Seleccionar Todos
 months:
   january: Enero
   february: Febrero
@@ -310,7 +310,7 @@ primary_key_field: Campo Llave Primaria
 type: Tipo
 creating_new_collection: Crear Nueva Colección
 created_by: Creado Por
-created_on: Creado El
+created_on: Creado el
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
@@ -320,15 +320,15 @@ save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
 add_existing: Agregar Existente
-creating_items: Creando elementos
-enable_create_button: Habilitar el botón Crear
-selecting_items: Seleccionando elementos
+creating_items: Registros Creados
+enable_create_button: Habilitar Botón de Crear
+selecting_items: Registros Seleccionados
 enable_select_button: Habilitar el botón Seleccionar
 comments: Comentarios
-no_comments: Aún Sin Comentarios
+no_comments: Aún sin comentarios
 click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
-no_items: Sin Elementos
+no_items: Sin Registros
 search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
@@ -591,7 +591,7 @@ wysiwyg_options:
   redo: Rehacer
   remove: Eliminar
   removeformat: Quitar Formato
-  selectall: Seleccionar Todo
+  selectall: Seleccionar Todos
   table: Tabla
   visualaid: Ver elementos invisibles
   source_code: Editar código fuente
@@ -712,7 +712,7 @@ fields:
     filesize: Tamaño del archivo
     modified_by: Modificado por
     modified_on: Modificado en
-    created_on: Creado El
+    created_on: Creado el
     created_by: Creado Por
     embed: Incrustado
     uploaded_by: Actualizado por
@@ -900,10 +900,12 @@ interfaces:
   system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
+    collection_field: Campo de colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   presentation-divider:
     divider: Separador
+    description: Etiqueta y divide los campos en secciones
   select-dropdown:
     allow_other: Permitir otro
     choices_value_placeholder: Ingresa un valor...
