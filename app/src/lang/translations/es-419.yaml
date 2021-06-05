@@ -44,16 +44,16 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public: Público
 public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
-not_allowed: No Permitido
+not_allowed: No permitido
 directus_version: Versión de Directus
-node_version: Versión de Node
+node_version: Versión Node
 node_uptime: Tiempo de actividad de Node
 os_type: Tipo de SO
 os_version: Versión del sistema operativo
 os_uptime: Tiempo de actividad del SO
 os_totalmem: Memoria del SO
 archive: Archivar
-archive_confirm: '¿Está seguro que desea archivar este elemento?'
+archive_confirm: '¿Está seguro de querer archivar este registro?'
 archive_confirm_count: >-
   Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
@@ -80,27 +80,27 @@ validationError:
   nempty: El valor no puede estar vacío
   null: El valor tiene que ser nulo
   nnull: El valor no puede ser nulo
-  required: El valor es requerido
-  unique: El Valor tiene que ser único
-  regex: El valor no tiene el formato correcto
-all_access: Todos los accesos
-no_access: Sin Acceso
-use_custom: Personalizar
-nullable: Acepta valores nulos
+  required: Valor requerido
+  unique: El valor debe de ser único
+  regex: El valor no cuenta con el formato correcto
+all_access: Acceso total
+no_access: Sin acceso
+use_custom: Usar personalizado
+nullable: Deshabilitable
 allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
 field_presentation: Presentación y Alias
 field_file: Un Archivo
 field_files: Múltiples Archivos
-field_m2o: Relación MAU
+field_m2o: Relación N:1
 field_m2a: Relación M2A
-field_o2m: Relación UAM
-field_m2m: Relación MAM
+field_o2m: Relación 1:N
+field_m2m: Relación M:N
 field_translations: Traducciones
-item_permissions: Permisos de Elemento
-field_permissions: Permisos de Campo
-field_validation: Validación de Campo
+item_permissions: Permisos de registro
+field_permissions: Permisos de campo
+field_validation: Validación de campo
 field_presets: Predefinidos para Campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
@@ -126,11 +126,11 @@ shutter: Obturación
 iso: ISO
 focal_length: Distancia Focal
 schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
-create_field: Crear Campo
-creating_new_field: 'Nuevo Campo ({collection})'
+create_field: Crear campo
+creating_new_field: 'Nuevo campo ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
-hidden_field: Campo Oculto
+hidden_field: Campo oculto
 hidden_on_detail: Oculto en el Detalle
 disabled_editing_value: Desactivar edición de valor
 key: Llave
@@ -140,7 +140,7 @@ boolean: Booleano
 date: Fecha
 datetime: Fecha y Hora
 decimal: Decimal
-float: Número Flotante
+float: Flotante
 integer: Número Entero
 json: JSON
 xml: XML
@@ -151,8 +151,8 @@ timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
 not_available_for_type: No disponible para este Tipo
-create_translations: Crear Traducciones
-auto_refresh: Actualización automática
+create_translations: Crear traducción
+auto_refresh: Actualizar automáticamente
 refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
 refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
@@ -168,7 +168,7 @@ no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 new_field: 'Nuevo Campo'
-new_collection: 'Colección Nueva'
+new_collection: 'Nueva Colección'
 add_m2o_to_collection: 'Agregar Muchos-A-Uno a "{collection}"'
 add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
@@ -196,10 +196,10 @@ readonly: Sólo lectura
 unique: Único
 updated_on: Actualizado el
 updated_by: Actualizado por
-primary_key: Llave primaria
+primary_key: Llave Primaria
 foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
-dismiss: Cerrar
+dismiss: Ignorar
 raw_value: Valor Plano
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
@@ -207,8 +207,8 @@ clear_value: Limpiar valor
 reset_to_default: Restablecer ajustes
 undo_changes: Deshacer cambios
 notifications: Notificaciones
-show_all_activity: Presentar toda la actividad
-page_not_found: Página No Encontrada
+show_all_activity: Mostrar Toda La Actividad
+page_not_found: Página no encontrada
 page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
 confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
@@ -218,7 +218,7 @@ title: Título
 revision_delta_created: Creado
 revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
-revision_delta_deleted: Eliminado
+revision_delta_deleted: Borrado
 revision_delta_reverted: Revertido
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
@@ -233,20 +233,20 @@ item_delete_success: Elemento Eliminado | Elementos Eliminados
 this_collection: Esta Colección
 related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
-translations_collection: Traducción de Colección
+translations_collection: Traducción de la Colección
 languages_collection: Colección de Idiomas
-export_data: Exportar Datos
+export_data: Exportar datos
 format: Formato
 use_current_filters_settings: Usar Filtros y Ajustes Actuales
 export_collection: 'Exportar {collection}'
-last_page: Última Página
-last_access: Último Acceso
+last_page: Última página
+last_access: Último acceso
 fill_template: Rellenar con Valor de Plantilla
 a_unique_table_name: Un nombre de tabla único...
 a_unique_column_name: Un nombre de columna único...
 enable_custom_values: Habilitar valores personalizados
 submit: Enviar
-move_to_folder: Mover a Directorio
+move_to_folder: Mover a Carpeta
 move: Mover
 system: Sistema
 add_field_related: Agregar Campo a Colección Relacionada
@@ -276,12 +276,12 @@ months:
   october: Octubre
   november: Noviembre
   december: Diciembre
-drag_mode: Modo Arrastrar
-cancel_crop: No Cortar
+drag_mode: Modo arrastrar
+cancel_crop: Cancelar corte
 original: Original
 url: URL
 import: Importar
-file_details: Detalles de Archivo
+file_details: Detalles del archivo
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
@@ -289,16 +289,16 @@ modified: Modificado
 checksum: Cadena de Verificación
 owner: Propietario
 edited_by: Editado por
-folder: Directorio
-zoom: Zoom
+folder: Carpeta
+zoom: Lupa
 download: Descargar
 open: Abrir
-open_in_new_window: Abrir en Nueva Ventana
+open_in_new_window: Abrir en una ventana nueva
 foreground_color: Color de Letra
 background_color: Color de Fondo
 upload_from_device: Subir Archivo desde Dispositivo
 choose_from_library: Seleccionar Archivo desde Biblioteca
-import_from_url: Importar Archivo desde URL
+import_from_url: Importar archivo desde una URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
@@ -499,7 +499,7 @@ rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
 optional_system_fields: Campos Opcionales del Sistema
-value_unique: El Valor tiene que ser único
+value_unique: El valor debe de ser único
 all_activity: Toda la Actividad
 create_item: Crear Elemento
 display_template: Plantilla de Presentación
@@ -716,7 +716,7 @@ fields:
     created_by: Creado Por
     embed: Incrustado
     uploaded_by: Actualizado por
-    folder: Directorio
+    folder: Carpeta
     width: Ancho
     uploaded_on: Uploaded On
     height: Alto
@@ -738,8 +738,8 @@ fields:
     status: Estatus
     role: Rol
     token: Token
-    last_page: Última Página
-    last_access: Último Acceso
+    last_page: Última página
+    last_access: Último acceso
   directus_settings:
     project_name: Nombre del Proyecto
     project_url: URL del Proyecto
