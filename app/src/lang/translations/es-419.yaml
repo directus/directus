@@ -43,7 +43,7 @@ logoutReason:
   SIGN_OUT: Cerrar sesión
   SESSION_EXPIRED: Sesión expirada
 public: Público
-public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
+public_description: Control de datos disponibles por API sin autentificación.
 not_allowed: No permitido
 directus_version: Versión de Directus
 node_version: Versión Node
@@ -55,8 +55,8 @@ os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro de querer archivar este registro?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
+  Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
+reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Mínimo acceso a App
