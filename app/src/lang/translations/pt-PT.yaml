@@ -92,8 +92,8 @@ allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
 field_presentation: Apresentação & Pseudônimos
-field_file: Arquivo Único
-field_files: Vários Arquivos
+field_file: Ficheiro Único
+field_files: Vários Ficheiros
 field_m2o: Relação Muitos para Um
 field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
@@ -178,8 +178,8 @@ determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...
 default_value: Valor padrão
 standard_field: Campo Padrão
-single_file: Arquivo Único
-multiple_files: Vários Arquivos
+single_file: Ficheiro Único
+multiple_files: Vários Ficheiros
 m2o_relationship: Relacionamento Muitos para Um
 o2m_relationship: Relacionamento Um para Muitos
 m2m_relationship: Relacionamento Muitos para Muitos
@@ -210,6 +210,7 @@ undo_changes: Anular alterações
 notifications: Notificações
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página Não Encontrada
+page_not_found_body: A página que esta à procura não existe.
 confirm_revert: Confirmar a reversão
 confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
 display: Visualização
@@ -262,7 +263,44 @@ date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: dd MMM
 month: Mês
 year: Ano
+select_all: Selecionar Tudo
+months:
+  january: Janeiro
+  february: Fevereiro
+  march: Março
+  april: Abril
+  may: Maio
+  june: Junho
+  july: Julho
+  august: Agosto
+  september: Setembro
+  october: Outubro
+  november: Novembro
+  december: Dezembro
+drag_mode: Modo de Arrasto
+cancel_crop: Cancelar Recorte
+original: Original
+url: URL
+import: Importar
+file_details: Detalhes do ficheiro
+dimensions: Dimensões
+size: Tamanho
 created: Criado
+modified: Modificado
+checksum: Soma de verificação
+owner: Proprietário
+edited_by: Editado por
+folder: Pasta
+zoom: Zoom
+download: Transferir
+open: Abrir
+open_in_new_window: Abrir numa Nova Janela
+foreground_color: Cor principal
+background_color: Cor de Fundo
+upload_from_device: Carregar ficheiro a partir do dispositivo
+choose_from_library: Escolher Ficheiro da Biblioteca
+import_from_url: Importar ficheiro a partir do URL
+replace_from_device: Substituir Ficheiro do Dispositivo
 created_by: Criado por
 created_on: Criada em
 save_and_create_new: Guardar e criar novo
@@ -317,6 +355,19 @@ charset: Codificação
 second: Segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
+errors:
+  FIELD_NOT_FOUND: Campo não encontrado
+  FORBIDDEN: Proibido
+  INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
+  INVALID_OTP: Senha de uso único errada
+  INVALID_PAYLOAD: Payload inválido
+  INVALID_QUERY: Consulta inválida
+  ITEM_LIMIT_REACHED: Limite de itens atingido
+  ITEM_NOT_FOUND: Item não encontrado
+  ROUTE_NOT_FOUND: Não encontrado
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
+  USER_SUSPENDED: Utilizador suspenso
+  CONTAINS_NULL_VALUES: Campo contém valores nulos
 bookmarks: Favoritos
 back: Voltar
 delete_collection: Remover coleção
@@ -337,6 +388,9 @@ unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
 value_unique: O valor tem de ser único
 wysiwyg_options:
+  forecolor: Cor principal
+  backcolor: Cor de Fundo
+  selectall: Selecionar Tudo
   table: Tabela
 choices: Opções
 settings_webhooks: Webhooks
@@ -370,6 +424,7 @@ fields:
     location: Localização
     created_on: Criada em
     created_by: Criado por
+    folder: Pasta
     charset: Codificação
     duration: Duração
   directus_users:
