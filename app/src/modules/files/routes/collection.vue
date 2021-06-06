@@ -586,12 +586,13 @@ export default defineComponent({
 					loading: true,
 				});
 
+				const preset = {
+					storage: props.queryFilters.storage,
+					folder: props.queryFilters.folder && props.queryFilters.folder,
+				};
+
 				await uploadFiles(files, {
-					preset: props.queryFilters?.folder
-						? {
-								folder: props.queryFilters.folder,
-						  }
-						: {},
+					preset,
 					onProgressChange: (progress) => {
 						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 

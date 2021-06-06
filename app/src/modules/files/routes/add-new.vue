@@ -4,6 +4,7 @@
 			<v-card-title>{{ $t('add_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload :preset="preset" multiple @input="close" from-url />
+				<v-select v-model="storage" :items="providers" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ $t('done') }}</v-button>
@@ -13,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import router from '@/router';
 
 export default defineComponent({
@@ -22,13 +23,37 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
+		providers: {
+			type: Array,
+			default: () => [
+				{
+					text: 'Local',
+					value: 'local',
+				},
+				{
+					text: 'AWS S3',
+					value: 's3',
+				},
+				{
+					text: 'Azure Blob',
+					value: 'azure',
+				},
+				{
+					text: 'Google Cloud Storage',
+					value: 'gcs',
+				},
+			],
+		},
 	},
 	setup(props) {
-		return { close };
+		let storage = ref('local');
 
 		function close() {
-			router.push({ path: '/files', query: props.preset });
+			const query = { storage: storage.value, ...props.preset };
+			router.push({ path: '/files', query });
 		}
+
+		return { close, storage };
 	},
 });
 </script>
