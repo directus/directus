@@ -26,6 +26,7 @@ export function useLayout<Options = any, Query = any>(
 	});
 
 	provide(layoutSymbol, layoutState);
+
 	return layoutState;
 }
 
@@ -33,5 +34,8 @@ export function useLayoutState<T extends Record<string, any> = Record<string, an
 	UnwrapRef<LayoutState<Record<string, any>, Options, Query>>
 > {
 	const layoutState = inject<Ref<UnwrapRef<LayoutState<T, Options, Query>>>>(layoutSymbol);
-	return layoutState!;
+
+	if (!layoutState) throw new Error('[useLayoutState]: This function has to be used inside a layout component.');
+
+	return layoutState;
 }
