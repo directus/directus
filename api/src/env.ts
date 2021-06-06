@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
-import logger from './logger';
+import logger from './logger-no-env';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from './utils/to-array';
 
@@ -145,7 +145,7 @@ function getEnv() {
 	}
 
 	// Default to env vars plain text files
-	return dotenv.parse(fs.readFileSync(configPath).toString());
+	return dotenv.parse(fs.readFileSync(configPath, { encoding: 'utf8' }));
 }
 
 function getVariableType(variable: string) {
@@ -175,7 +175,16 @@ function getEnvironmentValueByType(envVariableString: string) {
 function processValues(env: Record<string, any>) {
 	env = clone(env);
 
-	for (const [key, value] of Object.entries(env)) {
+	for (let [key, value] of Object.entries(env)) {
+		if (key.endsWith('_FILE')) {
+			try {
+				value = `string:${fs.readFileSync(value, { encoding: 'utf8' })}`;
+				key = key.slice(0, -5);
+			} catch {
+				logger.warn(`Failed to read value from file '${value}', defined in env variable '${key}'.`);
+			}
+		}
+
 		if (typeof value === 'string' && acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
