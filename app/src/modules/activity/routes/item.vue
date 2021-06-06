@@ -1,5 +1,5 @@
 <template>
-	<v-drawer :model-value="true" title="Activity Item" @update:model-value="close" @cancel="close">
+	<v-drawer :model-value="isOpen" title="Activity Item" @update:model-value="close" @cancel="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<div class="content" v-else-if="error">
@@ -52,6 +52,7 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 type ActivityRecord = {
 	user: {
@@ -79,6 +80,9 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const router = useRouter();
+
+		const isOpen = useDialogRoute();
+
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
 		const error = ref<any>(null);
@@ -90,7 +94,7 @@ export default defineComponent({
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });
 
-		return { t, item, loading, error, close, openItemLink, userName };
+		return { t, isOpen, item, loading, error, close, openItemLink, userName };
 
 		async function loadActivity() {
 			loading.value = true;
