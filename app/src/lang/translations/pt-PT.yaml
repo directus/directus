@@ -22,6 +22,7 @@ create_webhook: Criar webhook
 invite_users: Convidar utlizadores
 email_examples: 'admin@example.com, user@example.com...'
 invite: Convidar
+email_already_invited: Este e-mail já foi convidado
 emails: Emails
 connection_excellent: Excelente Conexão
 connection_good: Boa conexão
@@ -81,9 +82,14 @@ validationError:
   null: O valor tem de ser nulo
   nnull: O valor não pode ser nulo
   required: O valor é obrigatório
+  unique: O valor tem de ser único
+  regex: O valor não tem o formato correto
 all_access: Acesso Global
 no_access: Sem Acesso
 use_custom: Usar personalizado
+nullable: Nulo
+allow_null_value: Permitir valor NULL
+enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
 field_m2o: Relação Muitos para Um
 field_m2a: Relação Muitos para Alguns
@@ -280,6 +286,7 @@ show_hidden_collections: Mostrar coleções ocultas
 hide_hidden_collections: Esconder coleções ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
+value_unique: O valor tem de ser único
 wysiwyg_options:
   table: Tabela
 choices: Opções
