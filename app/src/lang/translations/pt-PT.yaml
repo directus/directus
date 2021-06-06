@@ -91,16 +91,23 @@ nullable: Nulo
 allow_null_value: Permitir valor NULL
 enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
+field_presentation: Apresentação & Pseudônimos
+field_file: Arquivo Único
+field_files: Vários Arquivos
 field_m2o: Relação Muitos para Um
 field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
 field_m2m: Relação Muitos para Muitos
+field_translations: Traduções
 item_permissions: Permissões do documento
 field_permissions: Permisões do campo
 field_validation: Validação do Campo
 field_presets: Predefinições para o campo
 permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
 fields_for_role: 'Campos que o estatuto {role} pode {action}.'
+validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
+presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
+presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_update: Aqui está como este documento ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em atenção que isto não inclui dados relacionais.
@@ -137,11 +144,13 @@ decimal: Decimal
 float: Ponto flutuante
 integer: Inteiro
 json: JSON
+xml: XML
 string: String
 text: Texto
 time: Hora
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar traduções
 auto_refresh: Atualização Automática
@@ -150,17 +159,57 @@ no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
 refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
 auto_generate: Geração Automatica
+this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
+to_manually_setup_translations: para configurar manualmente as traduções.
+click_to_manage_translated_fields: >-
+  Não há campos traduzidos ainda. Clique aqui para os criar. Há um campo traduzido. Clique aqui para gerenciar. Há {count} campos traduzidos. Clique aqui para os gerir.
+fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
+new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
 search_collection: Procurar coleção...
+new_field: 'Novo Campo'
 new_collection: 'Nova coleção'
 add_m2o_to_collection: 'Adicionar muitos-para-um a "{collection}"'
 add_o2m_to_collection: 'Adicionar um-para-um a "{collection}"'
 add_m2m_to_collection: 'Adicionar muitos-para-muitos a "{collection}"'
+choose_a_type: Escolha um Tipo...
+determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...
+default_value: Valor padrão
+standard_field: Campo Padrão
+single_file: Arquivo Único
+multiple_files: Vários Arquivos
+m2o_relationship: Relacionamento Muitos para Um
+o2m_relationship: Relacionamento Um para Muitos
+m2m_relationship: Relacionamento Muitos para Muitos
+m2a_relationship: Relacionamento Muitos para qualquer
+invalid_item: Item inválido
+next: Seguinte
+field_name: Nome do campo
+translations: Traduções
+note: Nota
+enter_a_value: Insira um valor...
+enter_a_placeholder: Insira um placeholder...
+length: Comprimento
+precision_scale: Precisão e Escala
+readonly: Apenas de Leitura
 unique: Único
+updated_on: Atualizado em
+updated_by: Actualizado por
+primary_key: Chave primária
+foreign_key: Chave estrangeira
+finish_setup: Concluir a Configuração
+dismiss: Dispensar
+raw_value: Valor bruto
+edit_raw_value: Editar Valor Bruto
+enter_raw_value: Insira valor bruto...
 clear_value: Limpar valor
+reset_to_default: Restaurar predefinições
 undo_changes: Anular alterações
+notifications: Notificações
+show_all_activity: Mostrar todas as atividades
+page_not_found: Página Não Encontrada
 confirm_revert: Confirmar a reversão
 confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
 display: Visualização
@@ -313,6 +362,7 @@ fields:
     ip: Endereço IP
   directus_collections:
     collection: Coleção
+    note: Nota
   directus_files:
     title: Título
     description: Descrição
@@ -331,6 +381,7 @@ fields:
     last_page: Última página
     last_access: Último Acesso
   directus_fields:
+    note: Nota
     translation: Nome do campo para as traduções
   directus_roles:
     name: Nome do cargo
@@ -346,8 +397,12 @@ interfaces:
   system-display-template:
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
+  select-dropdown:
+    choices_value_placeholder: Insira um valor...
   files:
     files: Ficheiros
+  input-hash:
+    hash: Hash
   system-interface:
     interface: Interface
   tags:
@@ -359,6 +414,8 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+  labels:
+    choices_value_placeholder: Insira um valor...
   user:
     both: Ambos
 layouts:
