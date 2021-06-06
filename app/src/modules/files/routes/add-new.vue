@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="true" @update:model-value="close" @esc="close">
+	<v-dialog :model-value="isOpen" @update:model-value="close" @esc="close">
 		<v-card>
 			<v-card-title>{{ t('add_file') }}</v-card-title>
 			<v-card-text>
@@ -16,6 +16,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	props: {
@@ -29,7 +30,9 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		return { t, close };
+		const isOpen = useDialogRoute();
+
+		return { t, isOpen, close };
 
 		function close() {
 			router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
