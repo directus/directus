@@ -2,6 +2,96 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.73 (June 4, 2021)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6060](https://github.com/directus/directus/pull/6060) Fixed issue that would prevent the corresponding o2m field
+    from being created on m2o relational setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6056](https://github.com/directus/directus/pull/6056) Fixed issue that would cause the whole row to be draggable
+    in the list-type interfaces ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6053](https://github.com/directus/directus/pull/6053) Fixed issue that would prevent the display tab to show for
+    o2m type fields in field-setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6052](https://github.com/directus/directus/pull/6052) Fixed issue in collection color reading for tables that
+    weren't configured in directus yet ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6049](https://github.com/directus/directus/pull/6049) Fixed right click handler not extending beyond nav items
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#6059](https://github.com/directus/directus/pull/6059) Fixed unique constraint violation error extraction for MySQL
+    5.7 ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6058](https://github.com/directus/directus/pull/6058) Fixed issue that would prevent creation relations to an
+    unsigned auto-incremented primary key in MariaDB ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6055](https://github.com/directus/directus/pull/6055) Fixed an issue that would cause "text" fields to show up as
+    varchar with length -1 in MS SQL ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6054](https://github.com/directus/directus/pull/6054) Fixed issue that would prevent usage of limit -1 on deep
+    limit ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6048](https://github.com/directus/directus/pull/6048) Fixed issue that could trigger update actions of children on
+    manual sorting of a parent o2m instance ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **schema**
+  - [#6058](https://github.com/directus/directus/pull/6058) Fixed issue that would prevent creation relations to an
+    unsigned auto-incremented primary key in MariaDB ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#6051](https://github.com/directus/directus/pull/6051) Update projects.md
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+## v9.0.0-rc.72 (June 3, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#5818](https://github.com/directus/directus/pull/5818) Add support for adding a collection accent color
+    ([@Oreilles](https://github.com/Oreilles))
+
+### :rocket: Improvements
+
+- **API**
+  - [#6040](https://github.com/directus/directus/pull/6040) Handle illegal/corrupt relational rows better during foreign
+    key migration ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6035](https://github.com/directus/directus/pull/6035) Extract IPTC title and keywords
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#6025](https://github.com/directus/directus/pull/6025) Improve `disabled` state on the file interface
+    ([@nickluger](https://github.com/nickluger))
+- **sdk-js**
+  - [#6007](https://github.com/directus/directus/pull/6007) Pass onUploadProgress function through to the axios request
+    ([@moekify](https://github.com/moekify))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#6045](https://github.com/directus/directus/pull/6045) Fix external query during transaction in foreign key
+    constraint creation ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6043](https://github.com/directus/directus/pull/6043) Prevent foreign key constraint names from exceeding 64
+    characters ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6042](https://github.com/directus/directus/pull/6042) Fixed issue that would prevent relationship updates on
+    foreign key constraints with a custom index name ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Docker**
+  - [#6044](https://github.com/directus/directus/pull/6044) Reduce the image layers by combining RUN statements; and fix
+    build permissions for issue #6023 ([@t7tran](https://github.com/t7tran))
+
+### :memo: Documentation
+
+- [#6037](https://github.com/directus/directus/pull/6037) Update one-clicks in readme/docs
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6033](https://github.com/directus/directus/pull/6033) Fix wrong reference to not-yet-existing /backup endpoint
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#6032](https://github.com/directus/directus/pull/6032) Upgrade dependencies
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6022](https://github.com/directus/directus/pull/6022) Bump sass from 1.34.0 to 1.34.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6021](https://github.com/directus/directus/pull/6021) Bump argon2 from 0.27.2 to 0.28.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6020](https://github.com/directus/directus/pull/6020) Bump eslint from 7.26.0 to 7.27.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6018](https://github.com/directus/directus/pull/6018) Bump @types/node from 15.6.0 to 15.9.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## v9.0.0-rc.71 (June 2, 2021)
 
 ### :rocket: Improvements

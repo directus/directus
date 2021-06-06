@@ -14,6 +14,7 @@ export interface CollectionRaw {
 		hidden: boolean;
 		singleton: boolean;
 		icon: string | null;
+		color: string | null;
 		translations: Translations[] | null;
 		display_template: string | null;
 		sort_field: string | null;
@@ -28,4 +29,6 @@ export interface CollectionRaw {
 
 export interface Collection extends CollectionRaw {
 	name: string | VueI18n.TranslateResult;
+	icon: string;
+	color?: string | null;
 }

@@ -40,6 +40,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			NUMERIC_PRECISION: number | null;
 			NUMERIC_SCALE: number | null;
 			COLUMN_KEY: string;
+			MAX_LENGTH: number | null;
 		};
 
 		type RawColumnLowercase = {
@@ -51,6 +52,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			numeric_precision: number | null;
 			numeric_scale: number | null;
 			column_key: string;
+			max_length: number | null;
 		};
 
 		const columns = await this.knex.raw<RawColumn[]>(`
@@ -62,7 +64,8 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				"USER_TAB_COLUMNS"."DATA_TYPE" AS DATA_TYPE,
 				"USER_TAB_COLUMNS"."DATA_PRECISION" AS NUMERIC_PRECISION,
 				"USER_TAB_COLUMNS"."DATA_SCALE" AS NUMERIC_SCALE,
-				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS COLUMN_KEY
+				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS COLUMN_KEY,
+				"USER_TAB_COLUMNS"."CHAR_LENGTH" as MAX_LENGTH
 			FROM
 				"USER_TAB_COLUMNS"
 				LEFT JOIN "USER_CONS_COLUMNS" ON "USER_TAB_COLUMNS"."TABLE_NAME" = "USER_CONS_COLUMNS"."TABLE_NAME"

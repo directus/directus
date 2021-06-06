@@ -33,9 +33,10 @@ If you would like to completely avoid the manual installation process, the follo
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these
 services.
 
-- [Directus DigitalOcean App](https://marketplace.digitalocean.com/apps/directus?action=deploy&refcode=4c0b6062c16e)
-- [Directus Platform.sh App](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)
-- [Heroku App](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
+- [DigitalOcean](https://marketplace.digitalocean.com/apps/directus?action=deploy&refcode=4c0b6062c16e)
+- [Heroku](https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template)
+- [Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)
+- [Zeet](https://deploy.zeet.co/?url=https://github.com/directus-community/heroku-template)
 
 ## Directus Cloud
 
