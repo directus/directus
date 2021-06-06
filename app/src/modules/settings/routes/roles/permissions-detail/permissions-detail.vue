@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:title="modalTitle"
-		:model-value="true"
+		:model-value="isOpen"
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
@@ -60,6 +60,7 @@ import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appMinimalPermissions } from '../app-permissions';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	emits: ['refresh'],
@@ -80,6 +81,8 @@ export default defineComponent({
 		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
+
+		const isOpen = useDialogRoute();
 
 		const permission = ref<Permission>();
 		const role = ref<Role>();
@@ -170,7 +173,7 @@ export default defineComponent({
 			);
 		});
 
-		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
+		return { isOpen, permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
 
 		function close() {
 			router.push(`/settings/roles/${props.roleKey || 'public'}`);
