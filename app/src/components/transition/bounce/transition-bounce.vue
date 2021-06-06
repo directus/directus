@@ -1,11 +1,12 @@
 <template>
-	<transition-group name="bounce" tag="div">
+	<transition-group name="bounce" tag="div" v-bind="$attrs">
 		<slot />
 	</transition-group>
 </template>
 
 <style lang="scss">
 /** @NOTE this is not scoped on purpose. The children are outsisde of the tree (teleport) */
+
 .bounce-enter-active,
 .bounce-leave-active {
 	transition: opacity var(--fast) var(--transition);

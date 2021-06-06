@@ -19,7 +19,7 @@
 		</div>
 
 		<teleport to="#menu-outlet">
-			<transition-bounce appear>
+			<transition-bounce>
 				<div
 					v-if="isActive"
 					class="v-menu-popper"
@@ -312,6 +312,7 @@ body {
 }
 
 .arrow {
+
 	&::before,
 	&::after {
 		background: var(--card-face-color);
@@ -437,13 +438,16 @@ body {
 }
 
 .attached {
+
 	&[data-placement^='top'] {
+
 		> .v-menu-content {
 			transform: translateY(-2px);
 		}
 	}
 
 	&[data-placement^='bottom'] {
+
 		> .v-menu-content {
 			transform: translateY(2px);
 		}

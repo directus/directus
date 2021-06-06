@@ -3,7 +3,7 @@
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
 		<teleport to="#dialog-outlet">
-			<transition-dialog appear>
+			<transition-dialog @after-leave="leave">
 				<div v-if="internalActive" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
@@ -17,6 +17,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { nanoid } from 'nanoid';
 import useShortcut from '@/composables/use-shortcut';
+import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	emits: ['esc', 'update:modelValue'],
@@ -58,7 +59,9 @@ export default defineComponent({
 			},
 		});
 
-		return { emitToggle, className, nudge, id, internalActive };
+		const leave = useDialogRouteLeave();
+
+		return { emitToggle, className, nudge, leave, id, internalActive };
 
 		function emitToggle() {
 			if (props.persistent === false) {
