@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="true" persistent @esc="router.push('/settings/roles')">
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')">
 		<v-card>
 			<v-card-title>
 				{{ t('create_role') }}
@@ -36,6 +36,7 @@ import api from '@/api';
 import { useRouter } from 'vue-router';
 import { appRecommendedPermissions } from './app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	setup() {
@@ -43,13 +44,15 @@ export default defineComponent({
 
 		const router = useRouter();
 
+		const isOpen = useDialogRoute();
+
 		const roleName = ref<string | null>(null);
 		const appAccess = ref(true);
 		const adminAccess = ref(false);
 
 		const { saving, save } = useSave();
 
-		return { t, router, roleName, saving, save, appAccess, adminAccess };
+		return { t, router, isOpen, roleName, saving, save, appAccess, adminAccess };
 
 		function useSave() {
 			const saving = ref(false);
