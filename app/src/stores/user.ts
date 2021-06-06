@@ -12,11 +12,11 @@ export const useUserStore = defineStore({
 		error: null,
 	}),
 	getters: {
-		fullName() {
+		fullName(): string | null {
 			if (this.currentUser === null) return null;
 			return userName(this.currentUser);
 		},
-		isAdmin() {
+		isAdmin(): boolean {
 			return this.currentUser?.role.admin_access === true || false;
 		},
 	},

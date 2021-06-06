@@ -81,7 +81,7 @@ export const useNotificationsStore = defineStore({
 		},
 	},
 	getters: {
-		lastFour() {
+		lastFour(): Notification[] {
 			const all = [...this.queue, ...this.previous.filter((l) => l.dialog !== true)];
 			const chronologicalAll = reverse(sortBy(all, ['timestamp']));
 			const newestFour = chronologicalAll.slice(0, 4);

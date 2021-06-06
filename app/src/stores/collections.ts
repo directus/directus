@@ -14,12 +14,12 @@ export const useCollectionsStore = defineStore({
 		collections: [] as Collection[],
 	}),
 	getters: {
-		visibleCollections() {
+		visibleCollections(): Collection[] {
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
-		hiddenCollections() {
+		hiddenCollections(): Collection[] {
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== false);

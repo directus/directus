@@ -7,7 +7,7 @@ export const useRequestsStore = defineStore({
 		queue: [] as string[],
 	}),
 	getters: {
-		queueHasItems() {
+		queueHasItems(): boolean {
 			return this.queue.length > 0;
 		},
 	},
