@@ -993,6 +993,7 @@ interfaces:
     add_tags: Adicionar tags...
   input:
     input: Entrada
+    trim: Recortar
     mask: Mascarado
     mask_label: Ocultar o valor real
     clear: Limpar valor
