@@ -26,7 +26,7 @@ type ItemsInfo = {
 	items: Ref<Item[]>;
 	totalPages: Ref<number>;
 	loading: Ref<boolean>;
-	error: Ref<Error | null>;
+	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
 };
@@ -47,7 +47,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
-	const error = ref<Error | null>(null);
+	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
 	const totalCount = ref<number | null>(null);
