@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:title="t('creating_new_collection')"
-		:model-value="true"
+		:model-value="isOpen"
 		class="new-collection"
 		persistent
 		@cancel="router.push('/settings/data-model')"
@@ -128,6 +128,7 @@ import api from '@/api';
 import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -140,6 +141,8 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const isOpen = useDialogRoute();
 
 		const currentTab = ref(['collection_setup']);
 
@@ -198,6 +201,7 @@ export default defineComponent({
 		return {
 			t,
 			router,
+			isOpen,
 			currentTab,
 			save,
 			systemFields,
