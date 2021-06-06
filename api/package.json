@@ -68,9 +68,6 @@
 	"dependencies": {
 		"@directus/app": "9.0.0-rc.71",
 		"@directus/drive": "9.0.0-rc.71",
-		"@directus/drive-azure": "9.0.0-rc.71",
-		"@directus/drive-gcs": "9.0.0-rc.71",
-		"@directus/drive-s3": "9.0.0-rc.71",
 		"@directus/format-title": "9.0.0-rc.71",
 		"@directus/schema": "9.0.0-rc.71",
 		"@directus/specs": "9.0.0-rc.71",
@@ -134,6 +131,9 @@
 		"uuid-validate": "0.0.3"
 	},
 	"optionalDependencies": {
+    "@directus/drive-azure": "9.0.0-rc.71",
+		"@directus/drive-gcs": "9.0.0-rc.71",
+		"@directus/drive-s3": "9.0.0-rc.71",
 		"@keyv/redis": "^2.1.2",
 		"connect-memcached": "^1.0.0",
 		"connect-redis": "^5.2.0",
