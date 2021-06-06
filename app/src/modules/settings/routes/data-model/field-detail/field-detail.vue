@@ -1,7 +1,7 @@
 <template>
 	<v-dialog
 		persistent
-		:model-value="true"
+		:model-value="isOpen"
 		@esc="cancelField"
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
@@ -29,7 +29,7 @@
 
 	<v-drawer
 		v-else
-		:model-value="true"
+		:model-value="isOpen"
 		@update:model-value="cancelField"
 		@cancel="cancelField"
 		:title="title"
@@ -129,6 +129,7 @@ import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
@@ -173,6 +174,8 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
+		const isOpen = useDialogRoute();
+
 		const translationsManual = ref(false);
 
 		const { collection } = toRefs(props);
@@ -213,6 +216,7 @@ export default defineComponent({
 
 		return {
 			t,
+			isOpen,
 			tabs,
 			currentTab,
 			fieldData: state.fieldData,
