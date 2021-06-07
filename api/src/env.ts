@@ -176,20 +176,30 @@ function processValues(env: Record<string, any>) {
 	env = clone(env);
 
 	for (let [key, value] of Object.entries(env)) {
-		if (key.endsWith('_FILE')) {
+		// If key ends with '_FILE', try to get the value from the file defined in this variable
+		// and store it in the variable with the same name but without '_FILE' at the end
+		let newKey;
+		if (key.length > 5 && key.endsWith('_FILE')) {
+			newKey = key.slice(0, -5);
 			try {
-				value = `string:${fs.readFileSync(value, { encoding: 'utf8' })}`;
-				key = key.slice(0, -5);
+				value = fs.readFileSync(value, { encoding: 'utf8' });
+				if (newKey in env) {
+					logger.warn(`Environment variables '${key}' and '${newKey}' are both set, ${key} takes precedence.`);
+				}
+				key = newKey;
 			} catch {
-				logger.warn(`Failed to read value from file '${value}', defined in env variable '${key}'.`);
+				logger.warn(`Failed to read value from file '${value}', defined in environment variable '${key}'.`);
 			}
 		}
 
+		// Convert values with a type prefix
+		// (see https://docs.directus.io/reference/environment-variables/#environment-syntax-prefix)
 		if (typeof value === 'string' && acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}
 
+		// Convert values where the key is defined in typeMap
 		if (typeMap[key]) {
 			switch (typeMap[key]) {
 				case 'number':
@@ -202,14 +212,30 @@ function processValues(env: Record<string, any>) {
 					env[key] = toArray(value);
 					break;
 			}
-
 			continue;
 		}
 
-		if (value === 'true') env[key] = true;
-		if (value === 'false') env[key] = false;
-		if (value === 'null') env[key] = null;
-		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) env[key] = Number(value);
+		// Try to convert remaining values:
+		// - boolean values to boolean
+		// - 'null' to null
+		// - number values (greater than 0) to number
+		if (value === 'true' || value === 'false') {
+			env[key] = !!value;
+			continue;
+		}
+		if (value === 'null') {
+			env[key] = null;
+			continue;
+		}
+		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) {
+			env[key] = Number(value);
+			continue;
+		}
+
+		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
+		if (newKey) {
+			env[key] = value;
+		}
 	}
 
 	return env;
