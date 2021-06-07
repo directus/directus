@@ -11,6 +11,7 @@ add_field: Aggiungi campo
 role_name: Nome ruolo
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
+edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
@@ -21,6 +22,7 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invita
+email_already_invited: Email "{email}" è già stata invitata
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Buona connessione
@@ -57,6 +59,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
 the_following_are_minimum_permissions: Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i permessi, ma non ridurli.
+app_access_minimum: Accesso App Minimo
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
@@ -79,9 +82,12 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  regex: Il valore non ha il formato corretto
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
+allow_null_value: Consenti valore NULL
+enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
@@ -130,6 +136,7 @@ decimal: Decimale
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Testo
 time: Ora
@@ -138,6 +145,9 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
+auto_refresh: Aggiornamento automatico
+refresh_interval: Intervallo di aggiornamento
+no_refresh: Non aggiornare
 auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
@@ -378,12 +388,15 @@ square: Quadrato
 free: Libero
 flip_horizontal: Rifletti Orizzontalmente
 flip_vertical: Rifletti Verticalmente
+aspect_ratio: Proporzione
 rotate: Ruota
 all_users: Tutti gli Utenti
 delete_collection: Elimina Raccolta
 update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
+one_item: '1 elemento'
+one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
 collections_shown: Raccolte Mostrate
@@ -394,6 +407,7 @@ system_collections: Raccolte di Sistema
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
+font: Tipo di carattere
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -401,7 +415,10 @@ divider: Separatore
 color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
+log_in_with: 'Accedi con {provider}'
+advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
+change_advanced_filter_operator: Cambia Operatore
 operators:
   eq: Uguale
   neq: Non è uguale
@@ -418,21 +435,32 @@ operators:
   between: È compresa tra
   nbetween: Non è compresa tra
   empty: È vuoto
+  nempty: Non è vuoto
+  all: Contiene queste chiavi
+  has: Contiene alcune di queste chiavi
 loading: Caricamento in corso...
+drop_to_upload: Rilascia per caricare
+item: Elemento
+items: Elementi
 upload_file: Carica File
 upload_file_indeterminate: Caricamento File...
 upload_file_success: File Caricato
 upload_files_indeterminate: 'Caricamento file {done}/{total}'
 upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
+drag_file_here: Trascina e rilascia il file qui
+click_to_browse: Clicca per Sfogliare
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
+optional_system_fields: Campi di Sistema Opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
+language_display_template: Modello Visualizzazione Lingua
+translations_display_template: Modello Visualizzazione Traduzioni
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
 all_files: Tutti i File
@@ -444,6 +472,7 @@ add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
+clear_filters: Pulisci filtri
 saves_automatically: Salva Automaticamente
 role: Ruolo
 user: Utente
@@ -451,34 +480,70 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 create: Creare
+on_create: Alla Creazione
 on_update: In aggiornamento
 read: Leggere
 update: Aggiornare
 select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
+toggle: Interrutore
 label: Etichetta
+image_url: URL immagine
+alt_text: Testo alternativo
+media: Media
 width: Larghezza
 height: Altezza
+source: Sorgente
+url_placeholder: Inserisci url...
+display_text: Visualizza testo
+unlimited: Illimitato
+new_tab: Nuova scheda
+current_tab: Scheda corrente
 wysiwyg_options:
+  aligncenter: Centrato
+  alignjustify: Giustificato
+  alignleft: Allineamento a sinistra
+  alignnone: Senza allineamento
+  alignright: Allineamento a destra
   forecolor: Colore di primo piano
   backcolor: Colore dello sfondo
   bold: Grassetto
   italic: Corsivo
   underline: Sottolineato
   strikethrough: Barrato
+  subscript: Pedice
+  superscript: Apice
   codeblock: Codice
+  blockquote: Citazione
+  bullist: Elenco Puntato
+  numlist: Elenco Numerato
+  hr: Riga Orizzontale
+  link: Aggiungi/Modifica Collegamento
   unlink: Rimuovi link
+  media: Aggiungi/Modifica Media
+  image: Aggiungi/Modifica Immagine
   copy: Copia
   cut: Taglia
   paste: Incolla
+  heading: Intestazione
+  h1: Intestazione 1
+  h2: Intestazione 2
+  h3: Intestazione 3
+  h4: Intestazione 4
+  h5: Intestazione 5
+  h6: Intestazione 6
+  fontselect: Seleziona il tipo di carattere
   undo: Annulla
   redo: Ripristina
   remove: Rimuovere
   removeformat: Rimuovi Formato
   selectall: Seleziona tutto
   table: Tabella
+  visualaid: Visualizza elementi invisibili
+  source_code: Modifica Codice Sorgente
   fullscreen: Schermo Intero
+  directionality: Direzionalità
 dropdown: Menu a tendina
 choices: Scelta multipla
 deselect: Deseleziona
@@ -492,7 +557,12 @@ settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
+one_or_more_options_are_missing: Mancano una o più opzioni
+select: Seleziona...
 layout: Layout
+tree_view: Struttura ad albero
+changes_are_permanent: Modifiche sono permanenti
+preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
@@ -510,15 +580,18 @@ page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
 page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
+activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
 all: Tutti
+none: Nessuno
 no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 collection: Raccolta
 collections: Raccolte
+singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
   directus_activity:
@@ -538,13 +611,20 @@ fields:
     display_template: Display Template
     hidden: Nascosto
     sort_field: Ordina per
+    accountability: Monitoraggio Attività e Revisione
   directus_files:
+    $thumbnail: Miniatura
     title: Titolo
     description: Descrizione
     tags: Tags
     location: Percorso
+    storage: Archiviazione
+    filename_disk: Nome File (Disco)
+    filename_download: Nome File (Download)
     metadata: Metadati
+    type: Tipo MIME
     filesize: Dimensione file
+    modified_by: Modificato da
     modified_on: Modificato il
     created_on: Creato il
     created_by: Creato da
@@ -571,6 +651,7 @@ fields:
     tfa_secret: Autenticazione a due fattori
     status: Stato
     role: Ruolo
+    token: Token
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
@@ -578,8 +659,15 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    public_foreground: Primo Piano Pubblico
+    public_background: Sfondo Pubblico
+    public_note: Nota Pubblica
+    auth_password_policy: Criteri Password di accesso
+    auth_login_attempts: Tentativi di accesso
+    custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
+    icon: Icona Collezione
     note: Nota
     hidden: Nascosto
     translation: Traduzioni nome del campo
@@ -592,15 +680,27 @@ fields:
     admin_access: Accesso Amministratore
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
+    users: Utenti nel ruolo
     collection_list: Navigazione Raccolta
+field_options:
+  directus_collections:
+    track_activity_revisions: Traccia Attività e Revisioni
+    only_track_activity: Traccia solo Attività
+    do_not_track_anything: Non Tracciare nulla
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
 save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
+block: Blocco
 comment: Commento
+referential_action_field_label_m2o: Alla cancellazione di {collection}...
+referential_action_set_default: Imposta {field} al suo valore predefinito
+choose_action: Scegli azione
 continue: Continua
+continue_as: >-
+  <b>{name}</b> è già autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
 default: Predefinito
 delete: Elimina
@@ -660,8 +760,13 @@ view_project: Visualizza Progetto
 interfaces:
   presentation-links:
     primary: Principale
+  select-multiple-checkbox:
+    items_shown: Elementi Visualizzati
   input-code:
     code: Codice
+    description: Scrivi o condividi frammenti di codice
+    line_number: Numero di riga
+    placeholder: Inserisci il codice qui...
   collection:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
@@ -672,6 +777,9 @@ interfaces:
     include_system_collections: Includi Raccolte di Sistema
   select-color:
     color: Colore
+    placeholder: Scegli un colore...
+    preset_colors: Colori Predefiniti
+    preset_colors_add_label: Aggiungi nuovo colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
@@ -695,21 +803,59 @@ interfaces:
     hash: Hash
   select-icon:
     icon: Icon
+    description: Seleziona un'icona dal menu a discesa
+    search_for_icon: Cerca un'icona...
   file-image:
     image: Immagine
+    description: Seleziona o carica un'immagine
   system-interface:
     interface: Interfaccia
+    description: Seleziona un'interfaccia esistente
+    placeholder: Seleziona un'interfaccia...
+  system-interface-options:
+    interface-options: Opzioni interfaccia
+  list-m2m:
+    many-to-many: Molti a Molti
   select-dropdown-m2o:
+    many-to-one: Molti a Uno
+    description: Seleziona un singolo elemento correlato
     display_template: Display Template
+  input-rich-text-md:
+    markdown: Markdown
+    customSyntax: Blocchi Personalizzati
+    customSyntax_add: Aggiungi sintassi personalizzata
+    imageToken: Token Immagine
+  presentation-notice:
+    notice: Avviso
+    description: Mostra un avviso breve
+    text: Inserisci qui il contenuto dell'avviso...
+  list-o2m:
+    one-to-many: Uno a Molti
+    description: Seleziona più elementi correlati
+    no_collection: Impossibile trovare la collezione
+  list:
+    repeater: Ripetitore
+    edit_fields: Modifica Campi
+    field_name_placeholder: Inserisci il nome del campo...
+    field_note_placeholder: Inserisci la nota del campo...
   slider:
     slider: Cursore
     always_show_value: Mostra sempre il valore
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag
+    capitalization: Capitalizzazione
+    uppercase: Converti Maiuscole
+    lowercase: Converti Minuscole
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
+  input:
+    input: Input
+    description: Inserisci manualmente un valore
+    mask_label: Nascondi il valore reale
+    clear_label: Salva come stringa vuota
   boolean:
+    toggle: Interrutore
     label_default: Abilitato
   translations:
     display_template: Display Template
@@ -723,39 +869,61 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    color_off: Colore Disattivato
   collection:
     collection: Raccolta
     description: Mostra una raccolta
     icon_label: Mostra l'icona della raccolta
   color:
     color: Colore
+    description: Mostra un punto colorato
+    default_color: Colore Predefinito
   datetime:
     datetime: Data e ora
+    description: Visualizza valori relativi al tempo
     format: Formato
+    long: Lungo
+    short: Breve
+    relative: Relativo
+    relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
   file:
     file: File
     description: Visualizza file
   filesize:
     filesize: Dimensione File
     description: Visualizza la dimensione di un file
+  formatted-value:
+    formatted-value: Valore Formattato
+    description: Mostra una versione formattata del testo
+  formatted-json-value:
+    formatted-json-value: Valore JSON formattato
+    description: Visualizza una versione formattata dell'oggetto
   icon:
     icon: Icon
     description: Visualizza un'icona
+    filled: Riempito
   image:
     image: Immagine
     description: Visualizza una piccola anteprima dell'immagine
     circle: Cerchio
     circle_label: Visualizza come un cerchio
   labels:
+    labels: Etichette
+    default_foreground: Primo Piano Predefinito
+    default_background: Sfondo Predefinito
+    format_label: Formatta ogni etichetta
     choices_value_placeholder: Inserisci un valore...
     choices_text_placeholder: Inserisci un testo...
   mime-type:
+    mime-type: Tipo MIME
+    description: Mostra il tipo MIME del file
     extension_only: Solo Estensione
     extension_only_label: Mostra solo l'estensione del file
   rating:
     rating: Valutazione
     simple: Semplice
   related-values:
+    related-values: Valori Correlati
     description: Visualizza i valori relativi
   user:
     user: Utente
@@ -767,6 +935,7 @@ layouts:
   cards:
     cards: Schede
     image_source: Origine immagine
+    image_fit: Adatta immagini
     crop: Ritaglia
     title: Titolo
     subtitle: Sottotitolo
@@ -777,3 +946,7 @@ layouts:
     comfortable: Confortevole
     compact: Compatto
     cozy: Accogliente
+  calendar:
+    calendar: Calendario
+    start_date_field: Campo Data inizio
+    end_date_field: Campo Data fine

@@ -75,32 +75,88 @@ validationError:
   gt: يجب أن تكون القيمة أكبر من {valid}
   gte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
   lt: يجب أن تكون القيمة أقل من {valid}
+  lte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
   empty: يجب أن تكون القيمة فارغة
   nempty: لا يمكن أن تكون القيمة فارغة
+  null: القيمة يجب أن تكون
+  nnull: لا يمكن أن تكون القيمة فارغة
+  required: هذه القيمة مطلوبة
+  unique: القيمة يجب أن تكون
+  regex: القيمة لا تحتوي على التنسيق الصحيح
+all_access: دخول كامل للترجمات
+no_access: ممنوع الدخول
+use_custom: تخصيص
+nullable: لا يمكن
+allow_null_value: السماح بقيمة الالتفاف
+enter_value_to_replace_nulls: الرجاء إدخال قيمة جديدة لاستبدال أي ULLL حاليا داخل هذا الحقل.
+field_standard: قياسي
+field_presentation: Presentation & Aliases
 field_file: ملف واحد
 field_files: عدة ملفات
+field_m2o: العلاقة
+field_m2a: العلاقة
+field_o2m: العلاقة
+field_m2m: العلاقة
 field_translations: الترجمة
+item_permissions: أذونات العنصر
+field_permissions: أذونات العنصر
+field_validation: مجال المصادقة
+field_presets: الإعداد المسبق للحقل
+permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
+presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث...
+changes_made: هذه هي التغييرات المحددة التي تم إجراؤها...
+no_relational_data: ولا يغيب عن البال أن هذا لا يشمل بيانات علاقية.
+hide_field_on_detail: مخفي في التفاصيل
+show_field_on_detail: مخفي في التفاصيل
 delete_field: حذف الحقل
+fields_and_layout: الحقول٪s ق وتخطيط
+field_create_success: 'حقل تم إنشاؤه: "{field}"'
+field_update_success: 'حقل تم إنشاؤه: "{field}"'
+duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+global: الإجمالي
+admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+exposure: التعرض
+shutter: الغالق
+iso: ISO
+focal_length: البعد البؤري
+schema_setup_key: اسم عمود قاعدة بيانات هذا الحقل ومفتاح API
 create_field: إنشاء حقل
+creating_new_field: 'حقل جديد ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: إعادة ضبط الإعدادات المفضّلة للتطبيقات
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+disabled_editing_value: تعطيل قيمة التحرير
 key: مفتاح
+alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+datetime: الوقت و التاريخ
 decimal: عشري
 float: عشري
 integer: رقم صحيح
 json: JSON
+xml: XML
 string: نص
 text: نص
 time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
+hash: الهاش
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
+auto_refresh: تحديث تلقائي
+refresh_interval: الفاصل الزمني للتحيين
+no_refresh: المتابعة على أية حال
+refresh_interval_seconds: تحديث فوراً <unk> كل ثانية <unk> كل {seconds} ثانية
+refresh_interval_minutes: كل دقيقة <unk> كل {minutes} دقيقة
 auto_generate: إنشاء تلقائي
 this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
 click_here: اضغط هنا
@@ -108,7 +164,9 @@ to_manually_setup_translations: لإعداد الترجمات يدوياً.
 click_to_manage_translated_fields: >-
   لا يوجد حقول لترجمتها بعد. أضغط هنا لإنشائها | لا يوجد حقول مترجمة. أضغط هنا لإدارتها. | هناك {count} حقول مترجمة. أضغط هنا لإدارتها.
 fields_group: مجموعة الحقول
+no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
+search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
 add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
@@ -161,7 +219,14 @@ revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
+revision_delta_reverted: تمت الإستعادة
+revision_delta_other: تنقيح
+revision_delta_by: '{user} {date}'
+private_user: خصخصة المستخدم
+revision_preview: معاينة التعديلات
+updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
+post_comment_success: تم ارسال التعليق
 this_collection: هذه المجموعة
 related_collection: المجموعات ذات الصلة
 format: التنسيق
@@ -189,6 +254,7 @@ owner: المالك
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+upload_from_device: استبدال الملف من الجهاز
 choose_from_library: اختر ملف من المكتبة
 import_from_url: استيراد ملف من رابط
 replace_from_device: استبدال الملف من الجهاز
@@ -212,6 +278,10 @@ save_and_create_new: حفظ وإنشاء جديد
 save_and_stay: حفظ و إستمرار
 save_as_copy: حفظ كنسخة إضافية
 add_existing: إضافة من القائمة
+creating_items: إنشاء عنصر
+enable_create_button: تفعيل زر إعادة المحاولة
+selecting_items: حدد العناصر
+enable_select_button: تمكين زر التجانب
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 click_to_expand: أضغط للمزيد
@@ -224,25 +294,70 @@ report_bug: تبليغ عن خطأ
 request_feature: طلب ميزة
 interface_not_found: 'لم يتم العثور على واجهة "{interface}".'
 reset_interface: إعادة تعيين الواجهة
+display_not_found: 'عرض "{display}" غير موجود.'
+reset_display: إعادة تعيين العرض
+list-m2a: الباني (M2A)
 item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
+no_items_copy: لا توجد عناصر في هذه المجموعة بعد.
+file_count: 'لايوجد دور أو صلاحية | دور أو صلاحية وحيدة | {count} أدوار أو صلاحيات'
+no_files_copy: لا توجد مسلسلات هنا.
+user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
+no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
+webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+no_webhooks_copy: لا يوجد أسئلة بعد.
+all_items: كافة العناصر
+csv: CSV
+no_collections: مجموعات
 create_collection: إنشاء مجموعة
+no_collections_copy_admin: ليس لديك أي مجموعات حتى الآن. انقر على الزر أدناه للبدء.
+no_collections_copy: ليس لديك أي مجموعات حتى الآن. الرجاء الاتصال بمدير النظام الخاص بك.
 relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
+display_template_not_setup: خيار قالب العرض خاطئ التكوين
+collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
+select_a_collection: حدد مجموعة
+active: مفعل
 users: المستخدمين
 activity: الأنشطة
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
+add_filter: إضافة فلتر
+upper_limit: الحد الأقصى...
+lower_limit: الحد الأقصى...
 user_directory: دليل المستخدمين
 documentation: التوثيق
+sidebar: الشريط الجانبي
 duration: المدة
+charset: اصطفاف تعليق افتراضي
+second: الثانية (Automatic Translation)
+file_moved: الملفات المنقولة
+collection_created: تم تحديث المجموعة
 modified_on: التعديل في
+card_size: حجم البطاقة
 sort_field: فرز الحقل
+add_sort_field: فرز الحقل
+sort: رتب
 status: حالة
+toggle_manual_sorting: تفعيل الترتيب اليدوي
+bookmark_doesnt_exist: الإشارة المرجعية غير موجودة
+bookmark_doesnt_exist_copy: لم يتم العثور على العلامة المرجعية التي تحاول فتحها.
+bookmark_doesnt_exist_cta: إضافة إلى مجموعة
+select_an_item: Select an item...
 edit: تعديل
+enabled: تمكين
 disable_tfa: تعطيل المصادقة الثنائية 2FA
+tfa_scan_code: مسح التعليمات البرمجية في تطبيق المصادقة الخاص بك لإنهاء إعداد 2FA
+enter_otp_to_disable_tfa: أدخل OTP لتعطيل 2FA
 create_account: إنشاء حساب
 account_created_successfully: تم إنشاء الحساب بنجاح
+auto_fill: تجديد الخدمة الذاتية
+corresponding_field: الوحدة البرمجية المقابلة
 errors:
+  COLLECTION_NOT_FOUND: "المجموعة غير موجودة"
   FIELD_NOT_FOUND: الحقل غير موجود
+  FORBIDDEN: محظور
+  INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
+  INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
+  INVALID_PAYLOAD: Invalid payload
   ROUTE_NOT_FOUND: غير موجود
 bookmarks: محفوظات
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
@@ -263,10 +378,32 @@ operators:
   gt: أكبر من
   lte: اقل او يساوي
   gte: أكبر من أو يساوي
+  nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
+  between: بين
+  nbetween: بين
   empty: فارغ
+  nempty: ليس فارغا
+  all: تتضمن هذه الوسوم
+  has: تتضمن هذه الوسوم
 loading: جار التحميل...
+drop_to_upload: إسقاط إلى التحميل
+item: عنصر
+items: العناصر
+upload_file: رفع ملف
+upload_file_indeterminate: رفع ملف...
+upload_file_success: رفع الملف
+upload_files_indeterminate: 'تحميل الملفات {done}/{total}'
+upload_files_success: 'عدد الصور التي تم تحميلها {count}'
+upload_pending: التحميل معلق
+drag_file_here: السحب والإفلات الملف هنا
+click_to_browse: انقر للتصفح
+layout_options: خيارات التصميم
+rows: الصفوف
+columns: أعمدة
+collection_setup: لا توجد مجموعات الإعداد
+value_unique: القيمة يجب أن تكون
 display_template: عرض القالب
 no_results: لا توجد نتائج
 role: الدور
@@ -334,6 +471,7 @@ fields:
     width: العرض
     uploaded_on: تم التحميل بتاريخ
     height: الارتفاع
+    charset: اصطفاف تعليق افتراضي
     duration: المدة
   directus_users:
     first_name: الاسم الأول
@@ -430,6 +568,8 @@ interfaces:
     datetime: التاريخ والوقت
   system-display-template:
     display-template: عرض القالب
+    collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
+    select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
   select-dropdown:
@@ -438,6 +578,8 @@ interfaces:
     file: ملف
   files:
     files: الملفات
+  input-hash:
+    hash: الهاش
   select-icon:
     icon: أيقونة
   select-dropdown-m2o:
@@ -447,6 +589,8 @@ interfaces:
     always_show_value: إظهار القيمة دائمًا
   tags:
     tags: الوسوم
+  boolean:
+    label_default: تمكين
   translations:
     display_template: عرض القالب
   user:
