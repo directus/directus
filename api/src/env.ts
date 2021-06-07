@@ -180,9 +180,9 @@ function processValues(env: Record<string, any>) {
 		// and store it in the variable with the same name but without '_FILE' at the end
 		let newKey;
 		if (key.length > 5 && key.endsWith('_FILE')) {
-			newKey = key.slice(0, -5);
 			try {
 				value = fs.readFileSync(value, { encoding: 'utf8' });
+				newKey = key.slice(0, -5);
 				if (newKey in env) {
 					logger.warn(`Environment variables '${key}' and '${newKey}' are both set, ${key} takes precedence.`);
 				}
