@@ -11,6 +11,7 @@ add_field: Aggiungi campo
 role_name: Nome ruolo
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
+edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
@@ -21,6 +22,7 @@ create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invita
+email_already_invited: Email "{email}" è già stata invitata
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Buona connessione
@@ -57,6 +59,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
 the_following_are_minimum_permissions: Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i permessi, ma non ridurli.
+app_access_minimum: Accesso App Minimo
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
@@ -79,9 +82,12 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  regex: Il valore non ha il formato corretto
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
+allow_null_value: Consenti valore NULL
+enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
@@ -130,6 +136,7 @@ decimal: Decimale
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Testo
 time: Ora
@@ -138,6 +145,9 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
+auto_refresh: Aggiornamento automatico
+refresh_interval: Intervallo di aggiornamento
+no_refresh: Non aggiornare
 auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
@@ -378,6 +388,7 @@ square: Quadrato
 free: Libero
 flip_horizontal: Rifletti Orizzontalmente
 flip_vertical: Rifletti Verticalmente
+aspect_ratio: Proporzione
 rotate: Ruota
 all_users: Tutti gli Utenti
 delete_collection: Elimina Raccolta
@@ -418,21 +429,31 @@ operators:
   between: È compresa tra
   nbetween: Non è compresa tra
   empty: È vuoto
+  all: Contiene queste chiavi
+  has: Contiene alcune di queste chiavi
 loading: Caricamento in corso...
+drop_to_upload: Rilascia per caricare
+item: Elemento
+items: Elementi
 upload_file: Carica File
 upload_file_indeterminate: Caricamento File...
 upload_file_success: File Caricato
 upload_files_indeterminate: 'Caricamento file {done}/{total}'
 upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
+drag_file_here: Trascina e rilascia il file qui
+click_to_browse: Clicca per Sfogliare
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
+optional_system_fields: Campi di Sistema Opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
+language_display_template: Modello Visualizzazione Lingua
+translations_display_template: Modello Visualizzazione Traduzioni
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
 all_files: Tutti i File
@@ -444,6 +465,7 @@ add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
+clear_filters: Pulisci filtri
 saves_automatically: Salva Automaticamente
 role: Ruolo
 user: Utente
@@ -451,27 +473,60 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 create: Creare
+on_create: Alla Creazione
 on_update: In aggiornamento
 read: Leggere
 update: Aggiornare
 select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
+toggle: Interrutore
 label: Etichetta
+image_url: URL immagine
+alt_text: Testo alternativo
+media: Media
 width: Larghezza
 height: Altezza
+source: Sorgente
+url_placeholder: Inserisci url...
+display_text: Visualizza testo
+unlimited: Illimitato
+new_tab: Nuova scheda
+current_tab: Scheda corrente
 wysiwyg_options:
+  aligncenter: Centrato
+  alignjustify: Giustificato
+  alignleft: Allineamento a sinistra
+  alignnone: Senza allineamento
+  alignright: Allineamento a destra
   forecolor: Colore di primo piano
   backcolor: Colore dello sfondo
   bold: Grassetto
   italic: Corsivo
   underline: Sottolineato
   strikethrough: Barrato
+  subscript: Pedice
+  superscript: Apice
   codeblock: Codice
+  blockquote: Citazione
+  bullist: Elenco Puntato
+  numlist: Elenco Numerato
+  hr: Riga Orizzontale
+  link: Aggiungi/Modifica Collegamento
   unlink: Rimuovi link
+  media: Aggiungi/Modifica Media
+  image: Aggiungi/Modifica Immagine
   copy: Copia
   cut: Taglia
   paste: Incolla
+  heading: Intestazione
+  h1: Intestazione 1
+  h2: Intestazione 2
+  h3: Intestazione 3
+  h4: Intestazione 4
+  h5: Intestazione 5
+  h6: Intestazione 6
+  fontselect: Seleziona il tipo di carattere
   undo: Annulla
   redo: Ripristina
   remove: Rimuovere
@@ -543,8 +598,11 @@ fields:
     description: Descrizione
     tags: Tags
     location: Percorso
+    filename_download: Nome File (Download)
     metadata: Metadati
+    type: Tipo MIME
     filesize: Dimensione file
+    modified_by: Modificato da
     modified_on: Modificato il
     created_on: Creato il
     created_by: Creato da
@@ -571,6 +629,7 @@ fields:
     tfa_secret: Autenticazione a due fattori
     status: Stato
     role: Ruolo
+    token: Token
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
@@ -578,6 +637,10 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    public_note: Nota Pubblica
+    auth_password_policy: Criteri Password di accesso
+    auth_login_attempts: Tentativi di accesso
+    custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
     note: Nota
@@ -592,7 +655,13 @@ fields:
     admin_access: Accesso Amministratore
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
+    users: Utenti nel ruolo
     collection_list: Navigazione Raccolta
+field_options:
+  directus_collections:
+    track_activity_revisions: Traccia Attività e Revisioni
+    only_track_activity: Traccia solo Attività
+    do_not_track_anything: Non Tracciare nulla
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
@@ -600,7 +669,12 @@ save_current_user_id: Salva l'Id Utente Attuale
 save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
 comment: Commento
+referential_action_field_label_m2o: Alla cancellazione di {collection}...
+referential_action_set_default: Imposta {field} al suo valore predefinito
+choose_action: Scegli azione
 continue: Continua
+continue_as: >-
+  <b>{name}</b> è già autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
 default: Predefinito
 delete: Elimina
@@ -662,6 +736,8 @@ interfaces:
     primary: Principale
   input-code:
     code: Codice
+    line_number: Numero di riga
+    placeholder: Inserisci il codice qui...
   collection:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
@@ -672,6 +748,9 @@ interfaces:
     include_system_collections: Includi Raccolte di Sistema
   select-color:
     color: Colore
+    placeholder: Scegli un colore...
+    preset_colors: Colori Predefiniti
+    preset_colors_add_label: Aggiungi nuovo colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
@@ -695,21 +774,57 @@ interfaces:
     hash: Hash
   select-icon:
     icon: Icon
+    description: Seleziona un'icona dal menu a discesa
+    search_for_icon: Cerca un'icona...
   file-image:
     image: Immagine
+    description: Seleziona o carica un'immagine
   system-interface:
     interface: Interfaccia
+    description: Seleziona un'interfaccia esistente
+    placeholder: Seleziona un'interfaccia...
+  system-interface-options:
+    interface-options: Opzioni interfaccia
+  list-m2m:
+    many-to-many: Molti a Molti
   select-dropdown-m2o:
+    many-to-one: Molti a Uno
+    description: Seleziona un singolo elemento correlato
     display_template: Display Template
+  input-rich-text-md:
+    markdown: Markdown
+    customSyntax: Blocchi Personalizzati
+    customSyntax_add: Aggiungi sintassi personalizzata
+    imageToken: Token Immagine
+  presentation-notice:
+    notice: Avviso
+    description: Mostra un avviso breve
+    text: Inserisci qui il contenuto dell'avviso...
+  list-o2m:
+    one-to-many: Uno a Molti
+    description: Seleziona più elementi correlati
+    no_collection: Impossibile trovare la collezione
+  list:
+    repeater: Ripetitore
+    edit_fields: Modifica Campi
+    field_name_placeholder: Inserisci il nome del campo...
+    field_note_placeholder: Inserisci la nota del campo...
   slider:
     slider: Cursore
     always_show_value: Mostra sempre il valore
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag
+    capitalization: Capitalizzazione
+    uppercase: Converti Maiuscole
+    lowercase: Converti Minuscole
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
+  input:
+    input: Input
+    description: Inserisci manualmente un valore
   boolean:
+    toggle: Interrutore
     label_default: Abilitato
   translations:
     display_template: Display Template
