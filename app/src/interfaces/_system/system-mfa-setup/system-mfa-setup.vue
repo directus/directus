@@ -33,7 +33,7 @@
 					</v-card-title>
 					<v-card-text>
 						<canvas class="qr" :id="canvasID" />
-						<output class="secret">{{ secret }}</output>
+						<output class="secret selectable">{{ secret }}</output>
 					</v-card-text>
 					<v-card-actions>
 						<v-button @click="enableActive = false">{{ $t('done') }}</v-button>
