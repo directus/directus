@@ -81,17 +81,19 @@
 				<div class="page-description" v-html="md(t('page_help_settings_presets_item'))" />
 			</sidebar-detail>
 
-			<sidebar-detail icon="search" :title="t('search')" class="layout-sidebar">
-				<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
-			</sidebar-detail>
+			<div class="layout-sidebar">
+				<sidebar-detail icon="search" :title="t('search')">
+					<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+				</sidebar-detail>
 
-			<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
+				<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
 
-			<sidebar-detail class="layout-sidebar" icon="layers" :title="t('layout_options')">
-				<div class="layout-options">
-					<component v-if="values.layout && values.collection" :is="`layout-options-${values.layout}`" />
-				</div>
-			</sidebar-detail>
+				<sidebar-detail icon="layers" :title="t('layout_options')">
+					<div class="layout-options">
+						<component v-if="values.layout && values.collection" :is="`layout-options-${values.layout}`" />
+					</div>
+				</sidebar-detail>
+			</div>
 		</template>
 	</private-view>
 </template>
