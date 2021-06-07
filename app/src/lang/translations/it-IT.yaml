@@ -562,6 +562,7 @@ select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
+preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
@@ -579,15 +580,18 @@ page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
 page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
+activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
 all: Tutti
+none: Nessuno
 no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 collection: Raccolta
 collections: Raccolte
+singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
   directus_activity:
@@ -607,11 +611,15 @@ fields:
     display_template: Display Template
     hidden: Nascosto
     sort_field: Ordina per
+    accountability: Monitoraggio Attività e Revisione
   directus_files:
+    $thumbnail: Miniatura
     title: Titolo
     description: Descrizione
     tags: Tags
     location: Percorso
+    storage: Archiviazione
+    filename_disk: Nome File (Disco)
     filename_download: Nome File (Download)
     metadata: Metadati
     type: Tipo MIME
@@ -651,12 +659,15 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    public_foreground: Primo Piano Pubblico
+    public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Criteri Password di accesso
     auth_login_attempts: Tentativi di accesso
     custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
+    icon: Icona Collezione
     note: Nota
     hidden: Nascosto
     translation: Traduzioni nome del campo
@@ -682,6 +693,7 @@ generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
 save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
+block: Blocco
 comment: Commento
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_set_default: Imposta {field} al suo valore predefinito
@@ -748,8 +760,11 @@ view_project: Visualizza Progetto
 interfaces:
   presentation-links:
     primary: Principale
+  select-multiple-checkbox:
+    items_shown: Elementi Visualizzati
   input-code:
     code: Codice
+    description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
     placeholder: Inserisci il codice qui...
   collection:
