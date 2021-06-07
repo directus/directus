@@ -395,6 +395,8 @@ delete_collection: Elimina Raccolta
 update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
+one_item: '1 elemento'
+one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
 collections_shown: Raccolte Mostrate
@@ -405,6 +407,7 @@ system_collections: Raccolte di Sistema
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
+font: Tipo di carattere
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -412,7 +415,10 @@ divider: Separatore
 color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
+log_in_with: 'Accedi con {provider}'
+advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
+change_advanced_filter_operator: Cambia Operatore
 operators:
   eq: Uguale
   neq: Non è uguale
@@ -429,6 +435,7 @@ operators:
   between: È compresa tra
   nbetween: Non è compresa tra
   empty: È vuoto
+  nempty: Non è vuoto
   all: Contiene queste chiavi
   has: Contiene alcune di queste chiavi
 loading: Caricamento in corso...
@@ -533,7 +540,10 @@ wysiwyg_options:
   removeformat: Rimuovi Formato
   selectall: Seleziona tutto
   table: Tabella
+  visualaid: Visualizza elementi invisibili
+  source_code: Modifica Codice Sorgente
   fullscreen: Schermo Intero
+  directionality: Direzionalità
 dropdown: Menu a tendina
 choices: Scelta multipla
 deselect: Deseleziona
@@ -547,7 +557,11 @@ settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
+one_or_more_options_are_missing: Mancano una o più opzioni
+select: Seleziona...
 layout: Layout
+tree_view: Struttura ad albero
+changes_are_permanent: Modifiche sono permanenti
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
@@ -823,6 +837,8 @@ interfaces:
   input:
     input: Input
     description: Inserisci manualmente un valore
+    mask_label: Nascondi il valore reale
+    clear_label: Salva come stringa vuota
   boolean:
     toggle: Interrutore
     label_default: Abilitato
@@ -838,39 +854,61 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    color_off: Colore Disattivato
   collection:
     collection: Raccolta
     description: Mostra una raccolta
     icon_label: Mostra l'icona della raccolta
   color:
     color: Colore
+    description: Mostra un punto colorato
+    default_color: Colore Predefinito
   datetime:
     datetime: Data e ora
+    description: Visualizza valori relativi al tempo
     format: Formato
+    long: Lungo
+    short: Breve
+    relative: Relativo
+    relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
   file:
     file: File
     description: Visualizza file
   filesize:
     filesize: Dimensione File
     description: Visualizza la dimensione di un file
+  formatted-value:
+    formatted-value: Valore Formattato
+    description: Mostra una versione formattata del testo
+  formatted-json-value:
+    formatted-json-value: Valore JSON formattato
+    description: Visualizza una versione formattata dell'oggetto
   icon:
     icon: Icon
     description: Visualizza un'icona
+    filled: Riempito
   image:
     image: Immagine
     description: Visualizza una piccola anteprima dell'immagine
     circle: Cerchio
     circle_label: Visualizza come un cerchio
   labels:
+    labels: Etichette
+    default_foreground: Primo Piano Predefinito
+    default_background: Sfondo Predefinito
+    format_label: Formatta ogni etichetta
     choices_value_placeholder: Inserisci un valore...
     choices_text_placeholder: Inserisci un testo...
   mime-type:
+    mime-type: Tipo MIME
+    description: Mostra il tipo MIME del file
     extension_only: Solo Estensione
     extension_only_label: Mostra solo l'estensione del file
   rating:
     rating: Valutazione
     simple: Semplice
   related-values:
+    related-values: Valori Correlati
     description: Visualizza i valori relativi
   user:
     user: Utente
@@ -882,6 +920,7 @@ layouts:
   cards:
     cards: Schede
     image_source: Origine immagine
+    image_fit: Adatta immagini
     crop: Ritaglia
     title: Titolo
     subtitle: Sottotitolo
@@ -892,3 +931,7 @@ layouts:
     comfortable: Confortevole
     compact: Compatto
     cozy: Accogliente
+  calendar:
+    calendar: Calendario
+    start_date_field: Campo Data inizio
+    end_date_field: Campo Data fine
