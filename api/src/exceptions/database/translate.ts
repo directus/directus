@@ -1,4 +1,4 @@
-import database from '../../database';
+import getDatabase from '../../database';
 import { extractError as mssql } from './dialects/mssql';
 import { extractError as mysql } from './dialects/mysql';
 import { extractError as oracle } from './dialects/oracle';
@@ -16,6 +16,8 @@ import { SQLError } from './dialects/types';
  * - Value Too Long
  */
 export async function translateDatabaseError(error: SQLError): Promise<any> {
+	const database = getDatabase();
+
 	switch (database.client.constructor.name) {
 		case 'Client_MySQL':
 			return mysql(error);

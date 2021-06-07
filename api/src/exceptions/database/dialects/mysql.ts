@@ -43,28 +43,51 @@ function uniqueViolation(error: MySQLError) {
 
 	if (!matches) return error;
 
-	const collection = matches[1].slice(1, -1).split('.')[0];
-
-	let field = null;
-
 	/**
 	 * MySQL's error doesn't return the field name in the error. In case the field is created through
 	 * Directus (/ Knex), the key name will be `<collection>_<field>_unique` in which case we can pull
 	 * the field name from the key name
 	 */
-	const indexName = matches[1].slice(1, -1).split('.')[1];
 
-	if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
-		field = indexName.slice(collection.length + 1, -7);
+	/** MySQL 8+ style error message */
+	if (matches[1].includes('.')) {
+		const collection = matches[1].slice(1, -1).split('.')[0];
+
+		let field = null;
+
+		const indexName = matches[1].slice(1, -1).split('.')[1];
+
+		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+			field = indexName.slice(collection.length + 1, -7);
+		}
+
+		const invalid = matches[0].slice(1, -1);
+
+		return new RecordNotUniqueException(field, {
+			collection,
+			field,
+			invalid,
+		});
+	} else {
+		/** MySQL 5.7 style error message */
+		const indexName = matches[1].slice(1, -1);
+
+		const collection = indexName.split('_')[0];
+
+		let field = null;
+
+		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+			field = indexName.slice(collection.length + 1, -7);
+		}
+
+		const invalid = matches[0].slice(1, -1);
+
+		return new RecordNotUniqueException(field, {
+			collection,
+			field,
+			invalid,
+		});
 	}
-
-	const invalid = matches[0].slice(1, -1);
-
-	return new RecordNotUniqueException(field, {
-		collection,
-		field,
-		invalid,
-	});
 }
 
 function numericValueOutOfRange(error: MySQLError) {

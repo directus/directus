@@ -248,7 +248,7 @@ export default defineComponent({
 					},
 				];
 
-				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
+				if (props.type !== 'presentation') {
 					tabs.push({
 						text: i18n.t('display'),
 						value: 'display',

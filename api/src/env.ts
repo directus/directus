@@ -71,7 +71,7 @@ const defaults: Record<string, any> = {
 // Allows us to force certain environment variable into a type, instead of relying
 // on the auto-parsed type in processValues. ref #3705
 const typeMap: Record<string, string> = {
-	PORT: 'number',
+	PORT: 'string',
 
 	DB_NAME: 'string',
 	DB_USER: 'string',
@@ -91,6 +91,22 @@ process.env = env;
 env = processValues(env);
 
 export default env;
+
+/**
+ * When changes have been made during runtime, like in the CLI, we can refresh the env object with
+ * the newly created variables
+ */
+export function refreshEnv(): void {
+	env = {
+		...defaults,
+		...getEnv(),
+		...process.env,
+	};
+
+	process.env = env;
+
+	env = processValues(env);
+}
 
 function getEnv() {
 	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
