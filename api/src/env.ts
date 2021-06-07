@@ -198,9 +198,19 @@ function processValues(env: Record<string, any>) {
 		}
 
 		if (value === 'true') env[key] = true;
-		if (value === 'false') env[key] = false;
-		if (value === 'null') env[key] = null;
-		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) env[key] = Number(value);
+		else if (value === 'false') env[key] = false;
+		else if (value === 'null') env[key] = null;
+		else if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0){
+			//Altho it seems that we do have a numerical value
+			//it can happen that its outside of Number.MAX_SAFE_INTEGER
+			//thus resulting in a change of the original intended value
+			//e.g oauth -> discord -> client_id
+			if(value > Number.MAX_SAFE_INTEGER)
+				env[key] = value;
+			//we're safe
+			else
+			env[key] = Number(value);
+		}
 	}
 
 	return env;
