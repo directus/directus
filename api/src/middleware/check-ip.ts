@@ -1,9 +1,11 @@
 import { RequestHandler } from 'express';
-import database from '../database';
+import getDatabase from '../database';
 import { InvalidIPException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
+	const database = getDatabase();
+
 	const role = await database
 		.select('ip_access')
 		.from('directus_roles')

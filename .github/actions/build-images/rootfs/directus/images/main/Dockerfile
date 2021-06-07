@@ -1,29 +1,23 @@
-#
-# Builder
-#
-
-FROM node:14-alpine AS builder
+# Builder image
+FROM alpine:latest AS builder
 
 ARG VERSION
+ARG REPOSITORY=directus/directus
 
-RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash
-
-SHELL ["/bin/bash", "-c"]
-
+# Get runtime dependencies from optional dependencies
+# defined in package.json of Directus API package
 WORKDIR /directus
+RUN apk add --no-cache jq \
+  && wget -O directus-api-package.json "https://raw.githubusercontent.com/${REPOSITORY}/${VERSION}/api/package.json" \
+  && jq '{ \
+  name: "directus-project", \
+  version: "1.0.0", \
+  description: "Directus Project", \
+  dependencies: .optionalDependencies \
+  }' \
+  directus-api-package.json > package.json
 
-COPY package.json .
-
-RUN for i in {1..60}; do npm install "directus@${VERSION}" && break || sleep 30; done
-
-RUN cat package.json
-
-#
-# Image
-#
+# Directus image
 FROM node:14-alpine
 
 ARG VERSION
@@ -32,6 +26,8 @@ ARG REPOSITORY=directus/directus
 LABEL directus.version="${VERSION}"
 LABEL org.opencontainers.image.source https://github.com/${REPOSITORY}
 
+# Default environment variables
+# (see https://docs.directus.io/reference/environment-variables/)
 ENV \
   PORT="8055" \
   PUBLIC_URL="/" \
@@ -58,41 +54,53 @@ ENV \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
 RUN \
-  apk update && \
-  apk upgrade && \
-  apk add bash ssmtp util-linux
+  # Install system dependencies
+  # - 'bash' for entrypoint script
+  # - 'ssmtp' to be able to send mails
+  # - 'util-linux' not sure if this is required
+  apk upgrade --no-cache && apk add --no-cache \
+  bash \
+  ssmtp \
+  util-linux \
+  # Install global node dependencies
+  && npm install -g \
+  yargs \
+  pino \
+  pino-colada \
+  # Create directory for Directus with corresponding ownership
+  # (can be omitted on newer Docker versions since WORKDIR below will do the same)
+  && mkdir /directus && chown node:node /directus
 
-SHELL ["/bin/bash", "-c"]
-
+# Switch to user 'node' and directory '/directus'
+USER node
 WORKDIR /directus
 
-# Global requirements
-RUN npm install -g yargs pino pino-colada
+# Get package.json from builder image
+COPY --from=builder --chown=node:node /directus/package.json .
 
-# Install Directus
-COPY --from=builder /directus/package.json .
-RUN npm install
-
-# Copy files
-COPY ./rootfs /
-# Keep the updated package.json
-COPY --from=builder /directus/package.json .
-
-RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print
-
-# Create directories
 RUN \
-  mkdir -p extensions/displays && \
-  mkdir -p extensions/interfaces && \
-  mkdir -p extensions/layouts && \
-  mkdir -p extensions/modules && \
-  mkdir -p database && \
-  mkdir -p uploads
+  # Install Directus and runtime dependencies
+  # (retry if it fails for some reason, e.g. release not published yet)
+  for i in $(seq 10); do npm install "directus@${VERSION}" && break || sleep 30; done && \
+  npm install \
+  # Create data directories
+  && mkdir -p \
+    database \
+    extensions/displays \
+    extensions/interfaces \
+    extensions/layouts \
+    extensions/modules \
+    uploads
 
-EXPOSE 8055
+# Expose data directories as volumes
 VOLUME \
   /directus/database \
   /directus/extensions \
   /directus/uploads
 
+# Copy rootfs files
+COPY ./rootfs /
+
+EXPOSE 8055
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["entrypoint"]

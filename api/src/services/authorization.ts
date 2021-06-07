@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { cloneDeep, flatten, merge, uniq, uniqWith } from 'lodash';
-import database from '../database';
+import getDatabase from '../database';
 import { FailedValidationException, ForbiddenException } from '../exceptions';
 import {
 	AbstractServiceOptions,
@@ -28,7 +28,7 @@ export class AuthorizationService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.payloadService = new PayloadService('directus_permissions', {

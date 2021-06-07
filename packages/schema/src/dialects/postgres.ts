@@ -15,6 +15,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
           c.column_default as default_value,
           c.is_nullable,
           c.data_type,
+			 c.character_maximum_length as max_length,
           c.is_identity
         FROM
           information_schema.columns c

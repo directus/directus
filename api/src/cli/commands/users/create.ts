@@ -1,4 +1,6 @@
 import { getSchema } from '../../../utils/get-schema';
+import { UsersService } from '../../../services';
+import getDatabase from '../../../database';
 
 export default async function usersCreate({
 	email,
@@ -9,8 +11,7 @@ export default async function usersCreate({
 	password?: string;
 	role?: string;
 }): Promise<void> {
-	const { default: database } = require('../../../database/index');
-	const { UsersService } = require('../../../services/users');
+	const database = getDatabase();
 
 	if (!email || !password || !role) {
 		console.error('Email, password, role are required');

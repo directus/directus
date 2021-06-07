@@ -5,6 +5,7 @@
 		:role="hasClick ? 'button' : null"
 		@click="emitClick"
 		:tabindex="hasClick ? 0 : null"
+		:style="{ '--v-icon-color': color }"
 	>
 		<component v-if="customIconName" :is="customIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
@@ -97,6 +98,9 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		color: {
+			type: String,
 		},
 		...sizeProps,
 	},

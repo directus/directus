@@ -11,13 +11,14 @@ import { toArray } from '../utils/to-array';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { mergePermissions } from './merge-permissions';
+import getDatabase from '../database';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
 }): Promise<SchemaOverview> {
 	// Allows for use in the CLI
-	const database = options?.database || (require('../database').default as Knex);
+	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
 
 	const result: SchemaOverview = {

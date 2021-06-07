@@ -2,9 +2,9 @@ import argon2 from 'argon2';
 import { format, formatISO, parse, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import database from '../database';
+import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
@@ -43,7 +43,7 @@ export class PayloadService {
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.collection = collection;
 		this.schema = options.schema;
 
@@ -331,7 +331,13 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				await itemsService.updateOne(relatedPrimaryKey, relatedRecord);
+				const fieldsToUpdate = omit(relatedRecord, relatedPrimary);
+
+				if (Object.keys(fieldsToUpdate).length > 0) {
+					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
+						onRevisionCreate: (id) => revisions.push(id),
+					});
+				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (id) => revisions.push(id),
@@ -393,9 +399,13 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
-					onRevisionCreate: (id) => revisions.push(id),
-				});
+				const fieldsToUpdate = omit(relatedRecord, relatedPrimaryKeyField);
+
+				if (Object.keys(fieldsToUpdate).length > 0) {
+					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
+						onRevisionCreate: (id) => revisions.push(id),
+					});
+				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (id) => revisions.push(id),
