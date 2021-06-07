@@ -98,6 +98,11 @@ export default function getLocalType(
 		return 'decimal';
 	}
 
+	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
+	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+		return 'text';
+	}
+
 	if (field?.special?.includes('json')) return 'json';
 	if (field?.special?.includes('hash')) return 'hash';
 	if (field?.special?.includes('csv')) return 'csv';

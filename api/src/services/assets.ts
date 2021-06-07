@@ -2,7 +2,7 @@ import { Range, StatResponse } from '@directus/drive';
 import { Knex } from 'knex';
 import path from 'path';
 import sharp, { ResizeOptions } from 'sharp';
-import database from '../database';
+import getDatabase from '../database';
 import { RangeNotSatisfiableException, IllegalAssetTransformation } from '../exceptions';
 import storage from '../storage';
 import { AbstractServiceOptions, Accountability, Transformation } from '../types';
@@ -23,7 +23,7 @@ export class AssetsService {
 	authorizationService: AuthorizationService;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.authorizationService = new AuthorizationService(options);
 	}
@@ -44,7 +44,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await database.select('*').from('directus_files').where({ id }).first()) as File;
+		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
 		if (range) {
 			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {

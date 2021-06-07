@@ -4,7 +4,7 @@ import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import { authenticator } from 'otplib';
-import database from '../database';
+import getDatabase from '../database';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import {
@@ -37,7 +37,7 @@ export class AuthenticationService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.activityService = new ActivityService({ knex: this.knex, schema: options.schema });
 		this.schema = options.schema;
@@ -59,7 +59,7 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		let user = await database
+		let user = await this.knex
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
@@ -114,7 +114,7 @@ export class AuthenticationService {
 			try {
 				await loginAttemptsLimiter.consume(user.id);
 			} catch (err) {
-				await database('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 
 				// This means that new attempts after the user has been re-activated will be accepted
@@ -164,7 +164,7 @@ export class AuthenticationService {
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
-		await database('directus_sessions').insert({
+		await this.knex('directus_sessions').insert({
 			token: refreshToken,
 			user: user.id,
 			expires: refreshTokenExpiration,
@@ -172,7 +172,7 @@ export class AuthenticationService {
 			user_agent: userAgent,
 		});
 
-		await database('directus_sessions').delete().where('expires', '<', new Date());
+		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
 
 		if (this.accountability) {
 			await this.activityService.createOne({
@@ -204,7 +204,7 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const record = await database
+		const record = await this.knex
 			.select<Session & { email: string; id: string }>(
 				'directus_sessions.*',
 				'directus_users.email',

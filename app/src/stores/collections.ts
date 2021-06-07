@@ -33,6 +33,7 @@ export const useCollectionsStore = createStore({
 
 			this.state.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
+				const color = collection.meta?.color;
 				const name = formatTitle(collection.collection);
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
@@ -57,13 +58,14 @@ export const useCollectionsStore = createStore({
 					...collection,
 					name,
 					icon,
+					color,
 				};
 			});
 
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
+			this.state.collections = this.state.collections.map((collection: Collection) => {
 				let name: string | VueI18n.TranslateResult;
 
 				if (i18n.te(`collection_names.${collection.collection}`)) {

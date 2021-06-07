@@ -1,8 +1,9 @@
 import { getSchema } from '../../../utils/get-schema';
+import { RolesService } from '../../../services';
+import getDatabase from '../../../database';
 
 export default async function rolesCreate({ role: name, admin }: { role: string; admin: boolean }): Promise<void> {
-	const { default: database } = require('../../../database/index');
-	const { RolesService } = require('../../../services/roles');
+	const database = getDatabase();
 
 	if (!name) {
 		console.error('Name is required');

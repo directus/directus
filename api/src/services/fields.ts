@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import cache from '../cache';
 import { ALIAS_TYPES } from '../constants';
-import database, { schemaInspector } from '../database';
+import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
@@ -26,12 +26,12 @@ export class FieldsService {
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
-	schemaInspector: typeof schemaInspector;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
+		this.knex = options.knex || getDatabase();
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
