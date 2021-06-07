@@ -80,7 +80,7 @@ export default defineComponent({
 
 		const layoutSelection = computed<any>({
 			get() {
-				return internalSelection;
+				return internalSelection.value;
 			},
 			set(newFilters) {
 				onSelect(newFilters);
