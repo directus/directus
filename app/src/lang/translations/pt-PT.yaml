@@ -22,6 +22,7 @@ create_webhook: Criar webhook
 invite_users: Convidar utlizadores
 email_examples: 'admin@example.com, user@example.com...'
 invite: Convidar
+email_already_invited: Este e-mail já foi convidado
 emails: Emails
 connection_excellent: Excelente Conexão
 connection_good: Boa conexão
@@ -81,20 +82,32 @@ validationError:
   null: O valor tem de ser nulo
   nnull: O valor não pode ser nulo
   required: O valor é obrigatório
+  unique: O valor tem de ser único
+  regex: O valor não tem o formato correto
 all_access: Acesso Global
 no_access: Sem Acesso
 use_custom: Usar personalizado
+nullable: Nulo
+allow_null_value: Permitir valor NULL
+enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
+field_presentation: Apresentação & Pseudônimos
+field_file: Ficheiro Único
+field_files: Vários Ficheiros
 field_m2o: Relação Muitos para Um
 field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
 field_m2m: Relação Muitos para Muitos
+field_translations: Traduções
 item_permissions: Permissões do documento
 field_permissions: Permisões do campo
 field_validation: Validação do Campo
 field_presets: Predefinições para o campo
 permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
 fields_for_role: 'Campos que o estatuto {role} pode {action}.'
+validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
+presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
+presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_update: Aqui está como este documento ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em atenção que isto não inclui dados relacionais.
@@ -131,11 +144,13 @@ decimal: Decimal
 float: Ponto flutuante
 integer: Inteiro
 json: JSON
+xml: XML
 string: String
 text: Texto
 time: Hora
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar traduções
 auto_refresh: Atualização Automática
@@ -144,17 +159,58 @@ no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
 refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
 auto_generate: Geração Automatica
+this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
+to_manually_setup_translations: para configurar manualmente as traduções.
+click_to_manage_translated_fields: >-
+  Não há campos traduzidos ainda. Clique aqui para os criar. Há um campo traduzido. Clique aqui para gerenciar. Há {count} campos traduzidos. Clique aqui para os gerir.
+fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
+new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
 search_collection: Procurar coleção...
+new_field: 'Novo Campo'
 new_collection: 'Nova coleção'
 add_m2o_to_collection: 'Adicionar muitos-para-um a "{collection}"'
 add_o2m_to_collection: 'Adicionar um-para-um a "{collection}"'
 add_m2m_to_collection: 'Adicionar muitos-para-muitos a "{collection}"'
+choose_a_type: Escolha um Tipo...
+determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...
+default_value: Valor padrão
+standard_field: Campo Padrão
+single_file: Ficheiro Único
+multiple_files: Vários Ficheiros
+m2o_relationship: Relacionamento Muitos para Um
+o2m_relationship: Relacionamento Um para Muitos
+m2m_relationship: Relacionamento Muitos para Muitos
+m2a_relationship: Relacionamento Muitos para qualquer
+invalid_item: Item inválido
+next: Seguinte
+field_name: Nome do campo
+translations: Traduções
+note: Nota
+enter_a_value: Insira um valor...
+enter_a_placeholder: Insira um placeholder...
+length: Comprimento
+precision_scale: Precisão e Escala
+readonly: Apenas de Leitura
 unique: Único
+updated_on: Atualizado em
+updated_by: Actualizado por
+primary_key: Chave primária
+foreign_key: Chave estrangeira
+finish_setup: Concluir a Configuração
+dismiss: Dispensar
+raw_value: Valor bruto
+edit_raw_value: Editar Valor Bruto
+enter_raw_value: Insira valor bruto...
 clear_value: Limpar valor
+reset_to_default: Restaurar predefinições
 undo_changes: Anular alterações
+notifications: Notificações
+show_all_activity: Mostrar todas as atividades
+page_not_found: Página Não Encontrada
+page_not_found_body: A página que esta à procura não existe.
 confirm_revert: Confirmar a reversão
 confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
 display: Visualização
@@ -207,7 +263,44 @@ date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: dd MMM
 month: Mês
 year: Ano
+select_all: Selecionar Tudo
+months:
+  january: Janeiro
+  february: Fevereiro
+  march: Março
+  april: Abril
+  may: Maio
+  june: Junho
+  july: Julho
+  august: Agosto
+  september: Setembro
+  october: Outubro
+  november: Novembro
+  december: Dezembro
+drag_mode: Modo de Arrasto
+cancel_crop: Cancelar Recorte
+original: Original
+url: URL
+import: Importar
+file_details: Detalhes do ficheiro
+dimensions: Dimensões
+size: Tamanho
 created: Criado
+modified: Modificado
+checksum: Soma de verificação
+owner: Proprietário
+edited_by: Editado por
+folder: Pasta
+zoom: Zoom
+download: Transferir
+open: Abrir
+open_in_new_window: Abrir numa Nova Janela
+foreground_color: Cor principal
+background_color: Cor de Fundo
+upload_from_device: Carregar ficheiro a partir do dispositivo
+choose_from_library: Escolher Ficheiro da Biblioteca
+import_from_url: Importar ficheiro a partir do URL
+replace_from_device: Substituir Ficheiro do Dispositivo
 created_by: Criado por
 created_on: Criada em
 save_and_create_new: Guardar e criar novo
@@ -262,6 +355,19 @@ charset: Codificação
 second: Segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
+errors:
+  FIELD_NOT_FOUND: Campo não encontrado
+  FORBIDDEN: Proibido
+  INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
+  INVALID_OTP: Senha de uso único errada
+  INVALID_PAYLOAD: Payload inválido
+  INVALID_QUERY: Consulta inválida
+  ITEM_LIMIT_REACHED: Limite de itens atingido
+  ITEM_NOT_FOUND: Item não encontrado
+  ROUTE_NOT_FOUND: Não encontrado
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
+  USER_SUSPENDED: Utilizador suspenso
+  CONTAINS_NULL_VALUES: Campo contém valores nulos
 bookmarks: Favoritos
 back: Voltar
 delete_collection: Remover coleção
@@ -280,7 +386,11 @@ show_hidden_collections: Mostrar coleções ocultas
 hide_hidden_collections: Esconder coleções ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
+value_unique: O valor tem de ser único
 wysiwyg_options:
+  forecolor: Cor principal
+  backcolor: Cor de Fundo
+  selectall: Selecionar Tudo
   table: Tabela
 choices: Opções
 settings_webhooks: Webhooks
@@ -306,6 +416,7 @@ fields:
     ip: Endereço IP
   directus_collections:
     collection: Coleção
+    note: Nota
   directus_files:
     title: Título
     description: Descrição
@@ -313,6 +424,7 @@ fields:
     location: Localização
     created_on: Criada em
     created_by: Criado por
+    folder: Pasta
     charset: Codificação
     duration: Duração
   directus_users:
@@ -324,6 +436,7 @@ fields:
     last_page: Última página
     last_access: Último Acesso
   directus_fields:
+    note: Nota
     translation: Nome do campo para as traduções
   directus_roles:
     name: Nome do cargo
@@ -339,8 +452,12 @@ interfaces:
   system-display-template:
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
+  select-dropdown:
+    choices_value_placeholder: Insira um valor...
   files:
     files: Ficheiros
+  input-hash:
+    hash: Hash
   system-interface:
     interface: Interface
   tags:
@@ -352,6 +469,8 @@ displays:
     collection: Coleção
   datetime:
     format: Formatar
+  labels:
+    choices_value_placeholder: Insira um valor...
   user:
     both: Ambos
 layouts:
