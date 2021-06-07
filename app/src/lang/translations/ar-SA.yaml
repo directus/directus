@@ -166,6 +166,7 @@ click_to_manage_translated_fields: >-
 fields_group: مجموعة الحقول
 no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
+search_collection: مجموعة البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
 add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
@@ -218,7 +219,14 @@ revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
+revision_delta_reverted: تمت الإستعادة
+revision_delta_other: تنقيح
+revision_delta_by: '{user} {date}'
+private_user: خصخصة المستخدم
+revision_preview: معاينة التعديلات
+updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
+post_comment_success: تم ارسال التعليق
 this_collection: هذه المجموعة
 related_collection: المجموعات ذات الصلة
 format: التنسيق
