@@ -49,15 +49,17 @@ export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
-	const registeredModules = queuedModules.filter((mod: any) => {
-		if (!userStore.state.currentUser) return false;
+	const registeredModules = [];
+	for (const mod of queuedModules) {
+		if (!userStore.state.currentUser) continue;
 
-		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions);
+		if (
+			!mod.preRegisterCheck ||
+			(await mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions))
+		) {
+			registeredModules.push(mod);
 		}
-
-		return true;
-	});
+	}
 
 	const moduleRoutes = registeredModules
 		.map((module: any) => module.routes)
