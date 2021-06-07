@@ -592,6 +592,8 @@ adding_user: Добавление Пользователя
 unknown_user: Неизвестный Пользователь
 creating_in: 'Создание Элемента в {collection}'
 editing_in: 'Редактирование Элемента в {collection}'
+creating_unit: 'Создание {unit}'
+editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных опций
 settings_data_model: Модель Данных
@@ -599,6 +601,7 @@ settings_permissions: Роли и права доступа
 settings_project: Настройки Проекта
 settings_webhooks: Webhooks
 settings_presets: Пресеты и Закладки
+one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область
 select: Выбрать...
 layout: Макет
@@ -673,6 +676,7 @@ fields:
     display_template: Шаблон отображения
     hidden: Скрыто
     singleton: Синглтон
+    translations: Переводы названия коллекции
     archive_value: Заархивировать содержимое
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
