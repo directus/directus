@@ -350,7 +350,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async enableTFA(pk: string): Promise<Record<string, string>> {
+	async generateTFA(pk: string): Promise<Record<string, string>> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
@@ -364,12 +364,20 @@ export class UsersService extends ItemsService {
 		});
 		const secret = authService.generateTFASecret();
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
-
 		return {
 			secret,
 			url: await authService.generateOTPAuthURL(pk, secret),
 		};
+	}
+
+	async enableTFA(pk: string, secret: string): Promise<void> {
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (user?.tfa_secret !== null) {
+			throw new InvalidPayloadException('TFA Secret is already set for this user');
+		}
+
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 	}
 
 	async disableTFA(pk: string): Promise<void> {
