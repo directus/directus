@@ -75,32 +75,86 @@ validationError:
   gt: يجب أن تكون القيمة أكبر من {valid}
   gte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
   lt: يجب أن تكون القيمة أقل من {valid}
+  lte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
   empty: يجب أن تكون القيمة فارغة
   nempty: لا يمكن أن تكون القيمة فارغة
+  null: القيمة يجب أن تكون
+  nnull: لا يمكن أن تكون القيمة فارغة
+  required: هذه القيمة مطلوبة
+  unique: القيمة يجب أن تكون
+  regex: القيمة لا تحتوي على التنسيق الصحيح
+all_access: دخول كامل للترجمات
+no_access: ممنوع الدخول
+use_custom: تخصيص
+nullable: لا يمكن
+allow_null_value: السماح بقيمة الالتفاف
+enter_value_to_replace_nulls: الرجاء إدخال قيمة جديدة لاستبدال أي ULLL حاليا داخل هذا الحقل.
+field_standard: قياسي
+field_presentation: Presentation & Aliases
 field_file: ملف واحد
 field_files: عدة ملفات
+field_m2o: العلاقة
+field_m2a: العلاقة
+field_o2m: العلاقة
+field_m2m: العلاقة
 field_translations: الترجمة
+item_permissions: أذونات العنصر
+field_permissions: أذونات العنصر
+field_validation: مجال المصادقة
+field_presets: الإعداد المسبق للحقل
+permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
+presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث...
+changes_made: هذه هي التغييرات المحددة التي تم إجراؤها...
+no_relational_data: ولا يغيب عن البال أن هذا لا يشمل بيانات علاقية.
+hide_field_on_detail: مخفي في التفاصيل
+show_field_on_detail: مخفي في التفاصيل
 delete_field: حذف الحقل
+fields_and_layout: الحقول٪s ق وتخطيط
+field_create_success: 'حقل تم إنشاؤه: "{field}"'
+field_update_success: 'حقل تم إنشاؤه: "{field}"'
+duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+global: الإجمالي
+admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
+exposure: التعرض
+shutter: الغالق
+iso: ISO
+focal_length: البعد البؤري
+schema_setup_key: اسم عمود قاعدة بيانات هذا الحقل ومفتاح API
 create_field: إنشاء حقل
+creating_new_field: 'حقل جديد ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: إعادة ضبط الإعدادات المفضّلة للتطبيقات
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+disabled_editing_value: تعطيل قيمة التحرير
 key: مفتاح
+alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+datetime: الوقت و التاريخ
 decimal: عشري
 float: عشري
 integer: رقم صحيح
 json: JSON
+xml: XML
 string: نص
 text: نص
 time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
+hash: الهاش
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
+auto_refresh: تحديث تلقائي
+refresh_interval: الفاصل الزمني للتحيين
+no_refresh: المتابعة على أية حال
 auto_generate: إنشاء تلقائي
 this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
 click_here: اضغط هنا
@@ -267,6 +321,7 @@ operators:
   ncontains: لا يحتوي
   empty: فارغ
 loading: جار التحميل...
+value_unique: القيمة يجب أن تكون
 display_template: عرض القالب
 no_results: لا توجد نتائج
 role: الدور
@@ -438,6 +493,8 @@ interfaces:
     file: ملف
   files:
     files: الملفات
+  input-hash:
+    hash: الهاش
   select-icon:
     icon: أيقونة
   select-dropdown-m2o:
