@@ -155,6 +155,8 @@ create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
 refresh_interval: الفاصل الزمني للتحيين
 no_refresh: المتابعة على أية حال
+refresh_interval_seconds: تحديث فوراً <unk> كل ثانية <unk> كل {seconds} ثانية
+refresh_interval_minutes: كل دقيقة <unk> كل {minutes} دقيقة
 auto_generate: إنشاء تلقائي
 this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
 click_here: اضغط هنا
@@ -162,6 +164,7 @@ to_manually_setup_translations: لإعداد الترجمات يدوياً.
 click_to_manage_translated_fields: >-
   لا يوجد حقول لترجمتها بعد. أضغط هنا لإنشائها | لا يوجد حقول مترجمة. أضغط هنا لإدارتها. | هناك {count} حقول مترجمة. أضغط هنا لإدارتها.
 fields_group: مجموعة الحقول
+no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
@@ -243,6 +246,7 @@ owner: المالك
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+upload_from_device: استبدال الملف من الجهاز
 choose_from_library: اختر ملف من المكتبة
 import_from_url: استيراد ملف من رابط
 replace_from_device: استبدال الملف من الجهاز
@@ -266,6 +270,10 @@ save_and_create_new: حفظ وإنشاء جديد
 save_and_stay: حفظ و إستمرار
 save_as_copy: حفظ كنسخة إضافية
 add_existing: إضافة من القائمة
+creating_items: إنشاء عنصر
+enable_create_button: تفعيل زر إعادة المحاولة
+selecting_items: حدد العناصر
+enable_select_button: تمكين زر التجانب
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 click_to_expand: أضغط للمزيد
@@ -278,25 +286,70 @@ report_bug: تبليغ عن خطأ
 request_feature: طلب ميزة
 interface_not_found: 'لم يتم العثور على واجهة "{interface}".'
 reset_interface: إعادة تعيين الواجهة
+display_not_found: 'عرض "{display}" غير موجود.'
+reset_display: إعادة تعيين العرض
+list-m2a: الباني (M2A)
 item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
+no_items_copy: لا توجد عناصر في هذه المجموعة بعد.
+file_count: 'لايوجد دور أو صلاحية | دور أو صلاحية وحيدة | {count} أدوار أو صلاحيات'
+no_files_copy: لا توجد مسلسلات هنا.
+user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
+no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
+webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+no_webhooks_copy: لا يوجد أسئلة بعد.
+all_items: كافة العناصر
+csv: CSV
+no_collections: مجموعات
 create_collection: إنشاء مجموعة
+no_collections_copy_admin: ليس لديك أي مجموعات حتى الآن. انقر على الزر أدناه للبدء.
+no_collections_copy: ليس لديك أي مجموعات حتى الآن. الرجاء الاتصال بمدير النظام الخاص بك.
 relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
+display_template_not_setup: خيار قالب العرض خاطئ التكوين
+collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
+select_a_collection: حدد مجموعة
+active: مفعل
 users: المستخدمين
 activity: الأنشطة
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
+add_filter: إضافة فلتر
+upper_limit: الحد الأقصى...
+lower_limit: الحد الأقصى...
 user_directory: دليل المستخدمين
 documentation: التوثيق
+sidebar: الشريط الجانبي
 duration: المدة
+charset: اصطفاف تعليق افتراضي
+second: الثانية (Automatic Translation)
+file_moved: الملفات المنقولة
+collection_created: تم تحديث المجموعة
 modified_on: التعديل في
+card_size: حجم البطاقة
 sort_field: فرز الحقل
+add_sort_field: فرز الحقل
+sort: رتب
 status: حالة
+toggle_manual_sorting: تفعيل الترتيب اليدوي
+bookmark_doesnt_exist: الإشارة المرجعية غير موجودة
+bookmark_doesnt_exist_copy: لم يتم العثور على العلامة المرجعية التي تحاول فتحها.
+bookmark_doesnt_exist_cta: إضافة إلى مجموعة
+select_an_item: Select an item...
 edit: تعديل
+enabled: تمكين
 disable_tfa: تعطيل المصادقة الثنائية 2FA
+tfa_scan_code: مسح التعليمات البرمجية في تطبيق المصادقة الخاص بك لإنهاء إعداد 2FA
+enter_otp_to_disable_tfa: أدخل OTP لتعطيل 2FA
 create_account: إنشاء حساب
 account_created_successfully: تم إنشاء الحساب بنجاح
+auto_fill: تجديد الخدمة الذاتية
+corresponding_field: الوحدة البرمجية المقابلة
 errors:
+  COLLECTION_NOT_FOUND: "المجموعة غير موجودة"
   FIELD_NOT_FOUND: الحقل غير موجود
+  FORBIDDEN: محظور
+  INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
+  INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
+  INVALID_PAYLOAD: Invalid payload
   ROUTE_NOT_FOUND: غير موجود
 bookmarks: محفوظات
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
@@ -317,10 +370,31 @@ operators:
   gt: أكبر من
   lte: اقل او يساوي
   gte: أكبر من أو يساوي
+  nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
+  between: بين
+  nbetween: بين
   empty: فارغ
+  nempty: ليس فارغا
+  all: تتضمن هذه الوسوم
+  has: تتضمن هذه الوسوم
 loading: جار التحميل...
+drop_to_upload: إسقاط إلى التحميل
+item: عنصر
+items: العناصر
+upload_file: رفع ملف
+upload_file_indeterminate: رفع ملف...
+upload_file_success: رفع الملف
+upload_files_indeterminate: 'تحميل الملفات {done}/{total}'
+upload_files_success: 'عدد الصور التي تم تحميلها {count}'
+upload_pending: التحميل معلق
+drag_file_here: السحب والإفلات الملف هنا
+click_to_browse: انقر للتصفح
+layout_options: خيارات التصميم
+rows: الصفوف
+columns: أعمدة
+collection_setup: لا توجد مجموعات الإعداد
 value_unique: القيمة يجب أن تكون
 display_template: عرض القالب
 no_results: لا توجد نتائج
@@ -389,6 +463,7 @@ fields:
     width: العرض
     uploaded_on: تم التحميل بتاريخ
     height: الارتفاع
+    charset: اصطفاف تعليق افتراضي
     duration: المدة
   directus_users:
     first_name: الاسم الأول
@@ -485,6 +560,8 @@ interfaces:
     datetime: التاريخ والوقت
   system-display-template:
     display-template: عرض القالب
+    collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
+    select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
   select-dropdown:
@@ -504,6 +581,8 @@ interfaces:
     always_show_value: إظهار القيمة دائمًا
   tags:
     tags: الوسوم
+  boolean:
+    label_default: تمكين
   translations:
     display_template: عرض القالب
   user:
