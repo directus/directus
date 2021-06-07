@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
 import cache from '../cache';
-import database, { hasDatabaseConnection } from '../database';
+import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
@@ -24,7 +24,7 @@ export class ServerService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
@@ -129,6 +129,7 @@ export class ServerService {
 		}
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+			const database = getDatabase();
 			const client = env.DB_CLIENT;
 
 			const checks: Record<string, HealthCheck[]> = {};

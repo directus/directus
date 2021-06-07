@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { ensureDir } from 'fs-extra';
 import path from 'path';
-import database from './database';
+import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
@@ -93,7 +93,7 @@ function registerHooks(hooks: string[]) {
 			}
 		}
 
-		const events = register({ services, exceptions, env, database, getSchema });
+		const events = register({ services, exceptions, env, database: getDatabase(), getSchema });
 		for (const [event, handler] of Object.entries(events)) {
 			emitter.on(event, handler);
 		}
@@ -126,6 +126,6 @@ function registerEndpoints(endpoints: string[], router: Router) {
 		const scopedRouter = express.Router();
 		router.use(`/${endpoint}/`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database, getSchema });
+		register(scopedRouter, { services, exceptions, env, database: getDatabase(), getSchema });
 	}
 }

@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import database from '../database';
+import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { Query } from '../types/query';
@@ -12,7 +12,7 @@ export class MetaService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}

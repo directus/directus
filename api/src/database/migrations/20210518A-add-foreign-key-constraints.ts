@@ -1,14 +1,15 @@
 import { Knex } from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
-import { schemaInspector } from '..';
+import logger from '../../logger';
 import { RelationMeta } from '../../types';
+import { getDefaultIndexName } from '../../utils/get-default-index-name';
 
 export async function up(knex: Knex): Promise<void> {
 	const inspector = SchemaInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
 	const relations = await knex
-		.select<RelationMeta[]>('many_collection', 'many_field', 'one_collection')
+		.select<RelationMeta[]>('id', 'many_collection', 'many_field', 'one_collection')
 		.from('directus_relations');
 
 	const constraintsToAdd = relations.filter((relation) => {
@@ -18,45 +19,82 @@ export async function up(knex: Knex): Promise<void> {
 		return exists === false;
 	});
 
-	await knex.transaction(async (trx) => {
-		for (const constraint of constraintsToAdd) {
-			if (!constraint.one_collection) continue;
+	const corruptedRelations: number[] = [];
 
-			const currentPrimaryKeyField = await schemaInspector.primary(constraint.many_collection);
-			const relatedPrimaryKeyField = await schemaInspector.primary(constraint.one_collection);
-			if (!currentPrimaryKeyField || !relatedPrimaryKeyField) continue;
+	for (const constraint of constraintsToAdd) {
+		if (!constraint.one_collection) continue;
 
-			const rowsWithIllegalFKValues = await trx
-				.select(`${constraint.many_collection}.${currentPrimaryKeyField}`)
-				.from(constraint.many_collection)
-				.leftJoin(
-					constraint.one_collection,
-					`${constraint.many_collection}.${constraint.many_field}`,
-					`${constraint.one_collection}.${relatedPrimaryKeyField}`
-				)
-				.whereNull(`${constraint.one_collection}.${relatedPrimaryKeyField}`);
+		if (
+			(await inspector.hasTable(constraint.many_collection)) === false ||
+			(await inspector.hasTable(constraint.one_collection)) === false
+		) {
+			logger.warn(
+				`Ignoring ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection}. Tables don't exist.`
+			);
 
-			if (rowsWithIllegalFKValues.length > 0) {
-				const ids: (string | number)[] = rowsWithIllegalFKValues.map<string | number>(
-					(row) => row[currentPrimaryKeyField]
-				);
+			corruptedRelations.push(constraint.id);
+			continue;
+		}
 
-				await trx(constraint.many_collection)
+		const currentPrimaryKeyField = await inspector.primary(constraint.many_collection);
+		const relatedPrimaryKeyField = await inspector.primary(constraint.one_collection);
+
+		if (constraint.many_field === currentPrimaryKeyField) {
+			logger.warn(
+				`Illegal relationship ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection} encountered. Many field equals collections primary key.`
+			);
+			corruptedRelations.push(constraint.id);
+			continue;
+		}
+
+		if (!currentPrimaryKeyField || !relatedPrimaryKeyField) continue;
+
+		const rowsWithIllegalFKValues = await knex
+			.select(`main.${currentPrimaryKeyField}`)
+			.from({ main: constraint.many_collection })
+			.leftJoin(
+				{ related: constraint.one_collection },
+				`main.${constraint.many_field}`,
+				`related.${relatedPrimaryKeyField}`
+			)
+			.whereNull(`related.${relatedPrimaryKeyField}`);
+
+		if (rowsWithIllegalFKValues.length > 0) {
+			const ids: (string | number)[] = rowsWithIllegalFKValues.map<string | number>(
+				(row) => row[currentPrimaryKeyField]
+			);
+
+			try {
+				await knex(constraint.many_collection)
 					.update({ [constraint.many_field]: null })
 					.whereIn(currentPrimaryKeyField, ids);
+			} catch (err) {
+				logger.error(
+					`${constraint.many_collection}.${constraint.many_field} contains illegal foreign keys which couldn't be set to NULL. Please fix these references and rerun this migration to complete the upgrade.`
+				);
+
+				if (ids.length < 25) {
+					logger.error(`Items with illegal foreign keys: ${ids.join(', ')}`);
+				} else {
+					logger.error(`Items with illegal foreign keys: ${ids.slice(0, 25).join(', ')} and ${ids.length} others`);
+				}
+
+				throw 'Migration aborted';
 			}
+		}
 
-			// Can't reliably have circular cascade
-			const action = constraint.many_collection === constraint.one_collection ? 'NO ACTION' : 'SET NULL';
+		// Can't reliably have circular cascade
+		const action = constraint.many_collection === constraint.one_collection ? 'NO ACTION' : 'SET NULL';
 
-			// MySQL doesn't accept FKs from `int` to `int unsigned`. `knex` defaults `.increments()`
-			// to `unsigned`, but defaults `.integer()` to `int`. This means that created m2o fields
-			// have the wrong type. This step will force the m2o `int` field into `unsigned`, but only
-			// if both types are integers, and only if we go from `int` to `int unsigned`.
-			const columnInfo = await schemaInspector.columnInfo(constraint.many_collection, constraint.many_field);
-			const relatedColumnInfo = await schemaInspector.columnInfo(constraint.one_collection!, relatedPrimaryKeyField);
+		// MySQL doesn't accept FKs from `int` to `int unsigned`. `knex` defaults `.increments()`
+		// to `unsigned`, but defaults `.integer()` to `int`. This means that created m2o fields
+		// have the wrong type. This step will force the m2o `int` field into `unsigned`, but only
+		// if both types are integers, and only if we go from `int` to `int unsigned`.
+		const columnInfo = await inspector.columnInfo(constraint.many_collection, constraint.many_field);
+		const relatedColumnInfo = await inspector.columnInfo(constraint.one_collection!, relatedPrimaryKeyField);
 
-			await trx.schema.alterTable(constraint.many_collection, (table) => {
+		try {
+			await knex.schema.alterTable(constraint.many_collection, (table) => {
 				if (
 					columnInfo.data_type !== relatedColumnInfo.data_type &&
 					columnInfo.data_type === 'int' &&
@@ -65,21 +103,48 @@ export async function up(knex: Knex): Promise<void> {
 					table.specificType(constraint.many_field, 'int unsigned').alter();
 				}
 
+				const indexName = getDefaultIndexName('foreign', constraint.many_collection, constraint.many_field);
+
 				table
-					.foreign(constraint.many_field)
+					.foreign(constraint.many_field, indexName)
 					.references(relatedPrimaryKeyField)
 					.inTable(constraint.one_collection!)
 					.onDelete(action);
 			});
+		} catch (err) {
+			logger.warn(
+				`Couldn't add foreign key constraint for ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection}`
+			);
+			logger.warn(err);
 		}
-	});
+	}
+
+	if (corruptedRelations.length > 0) {
+		logger.warn(
+			`Encountered one or more corrupted relationships. Please check the following rows in "directus_relations": ${corruptedRelations.join(
+				', '
+			)}`
+		);
+	}
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const relations = await knex.select<RelationMeta[]>('many_collection', 'many_field').from('directus_relations');
+	const relations = await knex
+		.select<RelationMeta[]>('many_collection', 'many_field', 'one_collection')
+		.from('directus_relations');
+
 	for (const relation of relations) {
-		await knex.schema.alterTable(relation.many_collection, (table) => {
-			table.dropForeign([relation.many_field]);
-		});
+		if (!relation.one_collection) continue;
+
+		try {
+			await knex.schema.alterTable(relation.many_collection, (table) => {
+				table.dropForeign([relation.many_field]);
+			});
+		} catch (err) {
+			logger.warn(
+				`Couldn't drop foreign key constraint for ${relation.many_collection}.${relation.many_field}<->${relation.one_collection}`
+			);
+			logger.warn(err);
+		}
 	}
 }
