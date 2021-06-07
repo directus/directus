@@ -103,6 +103,12 @@ module.exports = function registerHook({ exceptions }) {
 <sup>2</sup> oAuth provider name can replaced with wildcard for any oauth providers `oauth.*.login`\
 <sup>3</sup> Doesn't support `.before` modifier
 
+#### Interval (cron)
+
+Hooks support running on an interval through [`node-cron`](https://www.npmjs.com/package/node-cron). To set this up,
+provide a cron statement in the event scope as follows: `cron(<statement>)`, for example `cron(15 14 1 * *)` (at 14:15
+on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday).
+
 ## 3. Register your Hook
 
 Each custom hook is registered to its event scope using a function with the following format:
