@@ -89,7 +89,7 @@
 		"vue": "^2.6.12",
 		"vue-cli-plugin-yaml": "^1.0.2",
 		"vue-i18n": "^8.24.4",
-		"vue-loader": "^15.9.3",
+		"vue-loader": "^15.9.7",
 		"vue-router": "^3.4.8",
 		"vue-template-compiler": "^2.6.10",
 		"vuedraggable": "^2.24.3",
