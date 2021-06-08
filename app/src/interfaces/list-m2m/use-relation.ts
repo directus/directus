@@ -1,7 +1,7 @@
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import { Relation } from '@/types';
-import { computed, Ref } from '@vue/composition-api';
+import { computed, Ref } from 'vue';
 
 export type RelationInfo = {
 	junctionPkField: string;

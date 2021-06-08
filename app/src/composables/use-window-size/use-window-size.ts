@@ -1,5 +1,5 @@
-import { onBeforeMount, onMounted, onUnmounted, ref, Ref } from '@vue/composition-api';
 import { throttle } from 'lodash';
+import { onBeforeMount, onMounted, onUnmounted, ref, Ref } from 'vue';
 
 type WindowSizeOptions = {
 	throttle: number;

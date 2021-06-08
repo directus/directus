@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="relation.collection !== relation.related_collection">
-		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
+		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
 	<div v-else class="tree-view">
@@ -18,9 +18,9 @@
 		/>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect" @click="selectDrawer = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -37,7 +37,7 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectDrawer"
+			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
 			:filters="selectionFilters"
@@ -48,7 +48,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, onMounted, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
 import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
@@ -61,6 +62,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { NestedDraggable, DrawerCollection, DrawerItem },
 	props: {
 		value: {
@@ -97,6 +99,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
 
@@ -117,6 +121,7 @@ export default defineComponent({
 		const dragging = ref(false);
 
 		return {
+			t,
 			relation,
 			openItems,
 			template,
@@ -330,25 +335,23 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-::v-deep {
-	ul,
-	li {
-		list-style: none;
-	}
+<style scoped>
+:deep(ul),
+:deep(li) {
+	list-style: none;
+}
 
-	ul {
-		margin-left: 24px;
-		padding-left: 0;
-	}
+:deep(ul) {
+	margin-left: 24px;
+	padding-left: 0;
 }
 
 .actions {
 	margin-top: 12px;
+}
 
-	.v-button + .v-button {
-		margin-left: 12px;
-	}
+.actions .v-button + .v-button {
+	margin-left: 12px;
 }
 
 .existing {

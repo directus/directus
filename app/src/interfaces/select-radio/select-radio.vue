@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -19,8 +19,8 @@
 			:disabled="disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
-			:input-value="value"
-			@change="$emit('input', $event)"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
 		/>
 		<div
 			class="custom"
@@ -31,14 +31,15 @@
 				disabled,
 			}"
 		>
-			<v-icon :disabled="disabled" :name="customIcon" @click="$emit('input', otherValue)" />
-			<input v-model="otherValue" :placeholder="$t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
+			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
+			<input v-model="otherValue" :placeholder="t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, PropType } from 'vue';
 import { useCustomSelection } from '@/composables/use-custom-selection';
 
 type Option = {
@@ -47,6 +48,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -82,6 +84,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { choices, value } = toRefs(props);
 
 		const gridClass = computed(() => {
@@ -103,7 +107,7 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, emit);
+		const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => emit('input', value));
 
 		const customIcon = computed(() => {
 			if (!otherValue.value) return 'add';
@@ -111,14 +115,12 @@ export default defineComponent({
 			return props.iconOff;
 		});
 
-		return { gridClass, otherValue, usesOtherValue, customIcon };
+		return { t, gridClass, otherValue, usesOtherValue, customIcon };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .radio-buttons {
 	--columns: 1;
 
@@ -128,19 +130,19 @@ export default defineComponent({
 }
 
 .grid-2 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 4;
 	}
 }

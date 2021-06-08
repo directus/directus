@@ -1,7 +1,7 @@
 import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
-import { computed, Ref, ref, watch } from '@vue/composition-api';
+import { computed, Ref, ref, watch } from 'vue';
 
 type MediaSelection = {
 	source: string;
@@ -18,7 +18,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Rec
 
 	const mediaButton = {
 		icon: 'embed',
-		tooltip: i18n.t('wysiwyg_options.media'),
+		tooltip: i18n.global.t('wysiwyg_options.media'),
 		onAction: (buttonApi: any) => {
 			mediaDrawerOpen.value = true;
 

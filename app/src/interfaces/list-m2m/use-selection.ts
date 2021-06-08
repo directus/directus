@@ -1,6 +1,6 @@
 import { Filter } from '@/types';
-import { computed, Ref, ref } from '@vue/composition-api';
 import { get } from 'lodash';
+import { computed, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
 
 export default function useSelection(

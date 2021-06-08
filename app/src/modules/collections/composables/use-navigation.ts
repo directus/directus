@@ -1,11 +1,10 @@
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
-import { computed, Ref, ref } from '@vue/composition-api';
-import VueI18n from 'vue-i18n';
+import { computed, Ref, ref } from 'vue';
 
 export type NavItem = {
 	collection: string;
-	name: string | VueI18n.TranslateResult;
+	name: string;
 	to: string;
 	icon: string;
 	color: string | null | undefined;
@@ -28,7 +27,7 @@ function collectionToNavItem(collection: Collection): NavItem {
 		icon: collection.meta?.icon || 'label',
 		color: collection.meta?.color,
 		note: collection.meta?.note || null,
-		to: `/collections/${collection.collection}`,
+		to: `/collections/${collection.collection}/-`,
 	};
 }
 
@@ -37,10 +36,10 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
-		if (!userStore.state.currentUser) return null;
-		if (!userStore.state.currentUser.role.collection_list) return null;
+		if (!userStore.currentUser) return null;
+		if (!userStore.currentUser.role.collection_list) return null;
 
-		return userStore.state.currentUser?.role.collection_list.map((groupRaw) => {
+		return userStore.currentUser?.role.collection_list.map((groupRaw) => {
 			const group: NavItemGroup = {
 				name: groupRaw.group_name,
 				accordion: groupRaw.accordion,
@@ -56,7 +55,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	});
 
 	const navItems = computed<NavItem[]>(() => {
-		return collectionsStore.visibleCollections.value
+		return collectionsStore.visibleCollections
 			.map(collectionToNavItem)
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
@@ -65,7 +64,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	});
 
 	const hiddenNavItems = computed<NavItem[]>(() => {
-		return collectionsStore.hiddenCollections.value
+		return collectionsStore.hiddenCollections
 			.map(collectionToNavItem)
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;

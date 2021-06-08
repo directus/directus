@@ -1,7 +1,7 @@
 import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
-import { Ref, ref } from '@vue/composition-api';
+import { Ref, ref } from 'vue';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -16,7 +16,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Rec
 
 	const imageButton = {
 		icon: 'image',
-		tooltip: i18n.t('wysiwyg_options.image'),
+		tooltip: i18n.global.t('wysiwyg_options.image'),
 		onAction: (buttonApi: any) => {
 			imageDrawerOpen.value = true;
 

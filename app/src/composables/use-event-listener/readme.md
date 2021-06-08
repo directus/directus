@@ -15,7 +15,7 @@ component mounts / unmounts.
 ## Usage
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useEventListener } from '@/composables/use-event-listener';
 
 export default defineComponent({

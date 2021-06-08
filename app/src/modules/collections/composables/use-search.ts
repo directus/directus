@@ -1,4 +1,4 @@
-import { Ref, ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 
 const searchQuery = ref<string | null>(null);
 const visible = ref<number | null>(null);

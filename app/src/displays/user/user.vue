@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 import { addTokenToURL } from '@/api';

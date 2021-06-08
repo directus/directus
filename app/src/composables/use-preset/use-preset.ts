@@ -1,8 +1,8 @@
 import { useCollection } from '@/composables/use-collection';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
-import { computed, ref, Ref, watch } from '@vue/composition-api';
 import { debounce, isEqual } from 'lodash';
+import { computed, ref, Ref, watch } from 'vue';
 
 export function usePreset(
 	collection: Ref<string>,
@@ -25,7 +25,7 @@ export function usePreset(
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
 
 	/**
 	 * Saves the preset to the database
@@ -272,7 +272,7 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		data.user = userStore.state.currentUser!.id;
+		data.user = userStore.currentUser!.id;
 
 		return await savePreset(data);
 	}

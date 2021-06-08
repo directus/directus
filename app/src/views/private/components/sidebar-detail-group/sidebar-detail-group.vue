@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch } from '@vue/composition-api';
+import { defineComponent, nextTick, ref, watch } from 'vue';
 export default defineComponent({
 	props: {
 		sidebarOpen: {

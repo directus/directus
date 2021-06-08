@@ -5,8 +5,8 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 import { Field } from '@/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import { clone } from 'lodash';
+import { computed, ComputedRef, Ref } from 'vue';
 
 export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef } {
 	const { interfaces } = getInterfaces();

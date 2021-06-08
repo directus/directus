@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<v-drawer
-			v-model="_active"
-			:title="$t('item_revision')"
-			@cancel="_active = false"
-			:sidebar-label="$t(currentTab[0])"
+			v-model="internalActive"
+			:title="t('item_revision')"
+			@cancel="internalActive = false"
+			:sidebar-label="t(currentTab[0])"
 		>
 			<template #subtitle>
-				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
+				<revisions-drawer-picker :revisions="revisions" v-model:current="internalCurrent" />
 			</template>
 
 			<template #sidebar>
@@ -28,10 +28,10 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
+				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="t('revert')">
 					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="_active = false" icon rounded v-tooltip.bottom="$t('done')">
+				<v-button @click="internalActive = false" icon rounded v-tooltip.bottom="t('done')">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -40,16 +40,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import useSync from '@/composables/use-sync';
 import { Revision } from './types';
-import i18n from '@/lang';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
+	emits: ['revert', 'update:active', 'update:current'],
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
 	props: {
 		revisions: {
@@ -66,8 +67,10 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _active = useSync(props, 'active', emit);
-		const _current = useSync(props, 'current', emit);
+		const { t } = useI18n();
+
+		const internalActive = useSync(props, 'active', emit);
+		const internalCurrent = useSync(props, 'current', emit);
 
 		const currentTab = ref(['revision_preview']);
 
@@ -84,23 +87,16 @@ export default defineComponent({
 
 		const tabs = [
 			{
-				text: i18n.t('revision_preview'),
+				text: t('revision_preview'),
 				value: 'revision_preview',
 			},
 			{
-				text: i18n.t('updates_made'),
+				text: t('updates_made'),
 				value: 'updates_made',
 			},
 		];
 
-		return {
-			_active,
-			_current,
-			currentRevision,
-			currentTab,
-			tabs,
-			revert,
-		};
+		return { t, internalActive, internalCurrent, currentRevision, currentTab, tabs, revert };
 
 		function revert() {
 			if (!currentRevision.value) return;
@@ -115,7 +111,7 @@ export default defineComponent({
 
 			emit('revert', revertToValues);
 
-			_active.value = false;
+			internalActive.value = false;
 		}
 	},
 });

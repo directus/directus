@@ -1,4 +1,4 @@
-import { isRef, onBeforeUnmount, onMounted, Ref } from '@vue/composition-api';
+import { onMounted, onBeforeUnmount, Ref, isRef } from 'vue';
 
 export default function useEventListener<T extends EventTarget, E extends Event>(
 	target: T | Ref<T>,

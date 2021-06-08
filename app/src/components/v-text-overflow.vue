@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({

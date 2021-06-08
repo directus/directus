@@ -3,8 +3,8 @@
 		<module-bar-logo />
 		<div class="modules">
 			<v-button
-				v-for="module in _modules"
-				v-tooltip.right="$t(module.name)"
+				v-for="module in internalModules"
+				v-tooltip.right="module.name"
 				:key="module.id"
 				icon
 				x-large
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, computed } from '@vue/composition-api';
+import { defineComponent, computed, unref } from 'vue';
 
 import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
@@ -45,21 +45,19 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const { modules } = getModules();
 
-		const _modules = computed(() => {
-			const customModuleListing = userStore.state.currentUser?.role.module_list;
+		const internalModules = computed(() => {
+			const customModuleListing = userStore.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
 				modules.value
 					.map((module: ModuleConfig) => ({
 						...module,
 						href: module.link || null,
-						to: module.link === undefined ? `/${module.id}/` : null,
+						to: module.link === undefined ? `/${module.id}` : null,
 					}))
 					.filter((module: ModuleConfig) => {
-						if (module.hidden !== undefined) {
-							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
-								return false;
-							}
+						if (module.hidden !== undefined && unref(module.hidden) === true) {
+							return false;
 						}
 						return true;
 					}),
@@ -87,7 +85,7 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-		return { _modules, modules };
+		return { internalModules, modules };
 	},
 });
 </script>

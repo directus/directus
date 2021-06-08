@@ -1,4 +1,4 @@
-import { ref, Ref, watch } from '@vue/composition-api';
+import { ref, Ref, watch } from 'vue';
 
 export function useTitle(newTitle: string | Ref<string>): Ref | undefined {
 	if (newTitle === undefined || newTitle === null) return;

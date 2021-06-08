@@ -1,4 +1,4 @@
-import VueI18n from 'vue-i18n';
+import { TranslateResult } from 'vue-i18n';
 
 type Translations = {
 	language: string;
@@ -28,7 +28,7 @@ export interface CollectionRaw {
 }
 
 export interface Collection extends CollectionRaw {
-	name: string | VueI18n.TranslateResult;
+	name: string | TranslateResult;
 	icon: string;
 	color?: string | null;
 }

@@ -1,7 +1,6 @@
 import { isEmpty, notEmpty } from '@/utils/is-empty/';
-import { computed, inject, onBeforeUnmount, provide, ref, Ref, watch } from '@vue/composition-api';
 import { isEqual } from 'lodash';
-import Vue from 'vue';
+import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
 type GroupableInstance = {
 	active: Ref<boolean>;
@@ -106,11 +105,11 @@ export function useGroupableParent(
 	group = 'item-group'
 ): Record<string, any> {
 	// References to the active state and value of the individual child items
-	const items = ref<GroupableInstance[]>([]);
+	const items = shallowRef<GroupableInstance[]>([]);
 
 	// Internal copy of the selection. This allows the composition to work without the state option
 	// being passed
-	const _selection = ref<(number | string)[]>([]);
+	const internalSelection = ref<(number | string)[]>([]);
 
 	// Uses either the internal state, or the passed in state. Will call the onSelectionChange
 	// handler if it's passed
@@ -120,14 +119,14 @@ export function useGroupableParent(
 				return state.selection.value;
 			}
 
-			return _selection.value;
+			return internalSelection.value;
 		},
 		set(newSelection) {
 			if (notEmpty(state.onSelectionChange)) {
 				state.onSelectionChange(newSelection);
 			}
 
-			_selection.value = [...newSelection];
+			internalSelection.value = [...newSelection];
 		},
 	});
 
@@ -141,7 +140,7 @@ export function useGroupableParent(
 
 	// It takes a tick before all children are rendered, this will make sure the start state of the
 	// children matches the start selection
-	Vue.nextTick().then(updateChildren);
+	nextTick().then(updateChildren);
 
 	watch(
 		() => options?.mandatory?.value,
@@ -157,7 +156,7 @@ export function useGroupableParent(
 
 	// These aren't exported with any particular use in mind. It's mostly for testing purposes.
 	// Treat them as readonly.
-	return { items, selection, _selection, getValueForItem, updateChildren };
+	return { items, selection, internalSelection, getValueForItem, updateChildren };
 
 	// Register a child within the context of this group
 	function register(item: GroupableInstance) {

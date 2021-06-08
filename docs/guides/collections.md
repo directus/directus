@@ -94,7 +94,7 @@ To configure manual sorting for a collection:
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Create a field with the **Integer** type
-    * Optional: Set the field to be **Hidden**
+   - Optional: Set the field to be **Hidden**
 3. Select the field you just created in the **Sort Field** dropdown
 
 ::: tip Automatic Setup
@@ -106,7 +106,8 @@ field, the collection's sort settings will automatically be configured for you.
 
 ::: tip Interface Sorting
 
-To configure manual sorting within an Interface (eg: M2M, O2M, or M2A), configure as above, but also set the **Sort Field** on the field's Relationship pane.
+To configure manual sorting within an Interface (eg: M2M, O2M, or M2A), configure as above, but also set the **Sort
+Field** on the field's Relationship pane.
 
 :::
 

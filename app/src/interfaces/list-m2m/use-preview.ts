@@ -3,8 +3,8 @@ import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { Ref, ref, watch } from '@vue/composition-api';
 import { cloneDeep, get } from 'lodash';
+import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from './use-relation';
 
 export default function usePreview(

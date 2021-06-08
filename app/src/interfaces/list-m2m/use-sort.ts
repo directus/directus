@@ -1,6 +1,6 @@
 import { Sort } from '@/components/v-table/types';
-import { computed, Ref, ref } from '@vue/composition-api';
 import { sortBy } from 'lodash';
+import { computed, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
 
 export default function useSort(

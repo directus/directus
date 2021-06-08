@@ -1,5 +1,4 @@
-import { Ref, ref } from '@vue/composition-api';
-import { get, isEqual } from 'lodash';
+import { Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
 
 export default function useEdit(

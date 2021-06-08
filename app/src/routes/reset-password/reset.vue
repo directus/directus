@@ -1,25 +1,26 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input :value="email" disabled />
+		<v-input :model-value="email" disabled />
 		<v-input
-			:placeholder="$t('password')"
+			:placeholder="t('password')"
 			autofocus
 			autocomplete="username"
 			type="password"
 			v-model="password"
 			:disabled="done"
 		/>
-		<v-notice type="success" v-if="done">{{ $t('password_reset_successful') }}</v-notice>
+		<v-notice type="success" v-if="done">{{ t('password_reset_successful') }}</v-notice>
 		<v-notice type="danger" v-if="error">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ $t('reset') }}</v-button>
-		<v-button v-else large :to="signInLink">{{ $t('sign_in') }}</v-button>
+		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ t('reset') }}</v-button>
+		<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
 	</form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed } from 'vue';
 import api from '@/api';
 import { translateAPIError } from '@/lang';
 import { RequestError } from '@/api';
@@ -33,6 +34,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const password = ref(null);
 
 		const resetting = ref(false);
@@ -50,16 +53,7 @@ export default defineComponent({
 
 		const email = computed(() => jwtPayload(props.token).email);
 
-		return {
-			resetting,
-			error,
-			done,
-			password,
-			onSubmit,
-			signInLink,
-			errorFormatted,
-			email,
-		};
+		return { t, resetting, error, done, password, onSubmit, signInLink, errorFormatted, email };
 
 		async function onSubmit() {
 			resetting.value = true;

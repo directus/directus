@@ -1,22 +1,25 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 import { getRelationType } from '@/utils/get-relation-type';
-import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import { cloneDeep } from 'lodash';
+import { computed, Ref } from 'vue';
 
 type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
 export default function useFieldTree(
-	collection: Ref<string>,
+	collection: Ref<string | null>,
 	/** Only allow m2o relations to be nested */
 	strict = false,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
-): Record<string, ComputedRef> {
+): { tree: Ref<FieldOption[]> } {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
-	const tree = computed(() => parseLevel(collection.value, null));
+	const tree = computed(() => {
+		if (!collection.value) return [];
+		return parseLevel(collection.value, null);
+	});
 
 	return { tree };
 

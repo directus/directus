@@ -1,5 +1,5 @@
-import i18n from '@/lang';
-import { Ref, ref } from '@vue/composition-api';
+import { i18n } from '@/lang';
+import { Ref, ref } from 'vue';
 
 type LinkSelection = {
 	url: string | null;
@@ -19,7 +19,7 @@ export default function useLink(editor: Ref<any>): Record<string, any> {
 
 	const linkButton = {
 		icon: 'link',
-		tooltip: i18n.t('wysiwyg_options.link'),
+		tooltip: i18n.global.t('wysiwyg_options.link'),
 		onAction: (buttonApi: any) => {
 			linkDrawerOpen.value = true;
 
