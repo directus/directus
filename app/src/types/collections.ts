@@ -22,6 +22,7 @@ export interface CollectionRaw {
 		archive_value: string | null;
 		unarchive_value: string | null;
 		archive_app_filter: boolean;
+		item_duplication_fields: string[] | null;
 		accountability: 'all' | 'activity' | null;
 	} | null;
 	schema: Record<string, any>;
