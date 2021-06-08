@@ -875,7 +875,7 @@ interfaces:
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
     placeholder: Code hier eingeben...
-  collection:
+  system-collection:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen

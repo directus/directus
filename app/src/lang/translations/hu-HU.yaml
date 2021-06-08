@@ -631,7 +631,7 @@ interfaces:
     primary: Elsődleges
   input-code:
     code: Kód
-  collection:
+  system-collection:
     collection: Gyűjtemény
   system-collections:
     collections: Gyűjtemények

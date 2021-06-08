@@ -797,7 +797,7 @@ interfaces:
     primary: หลัก
   input-code:
     code: โค้ด
-  collection:
+  system-collection:
     collection: คอลเลกชัน
     description: เลือคอลเลกชันที่มีอยู่แล้ว
     include_system_collections: รวมถึงคอลเลกชันของระบบ

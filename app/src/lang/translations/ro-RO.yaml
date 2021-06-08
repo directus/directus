@@ -159,7 +159,7 @@ icon: Iconiță
 info: Info
 password: Parolă
 interfaces:
-  collection:
+  system-collection:
     collection: Colecție
   system-collections:
     collections: Colecții

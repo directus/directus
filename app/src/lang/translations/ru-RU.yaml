@@ -846,7 +846,7 @@ interfaces:
     code: Код
     line_number: Номер строки
     placeholder: Введите код сюда...
-  collection:
+  system-collection:
     collection: Коллекция
     description: Выбрать из существующих коллекций
     include_system_collections: Включить Системные Коллекции
