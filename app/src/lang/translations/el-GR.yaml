@@ -224,7 +224,7 @@ value: Τιμή
 interfaces:
   presentation-links:
     primary: Κυρίως
-  collection:
+  system-collection:
     collection: Συλλογή
   system-collections:
     collections: Συλλογές
