@@ -563,7 +563,7 @@ interfaces:
     primary: Primer
   input-code:
     code: Kode
-  collection:
+  system-collection:
     collection: Koleksi
   system-collections:
     collections: Pengumpulan
