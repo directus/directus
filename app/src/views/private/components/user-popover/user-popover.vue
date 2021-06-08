@@ -125,12 +125,15 @@ export default defineComponent({
 		&.invited {
 			color: var(--primary);
 		}
+
 		&.active {
 			color: var(--success);
 		}
+
 		&.suspended {
 			color: var(--warning);
 		}
+
 		&.deleted {
 			color: var(--danger);
 		}

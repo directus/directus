@@ -147,7 +147,6 @@ export default defineComponent({
 }
 
 .links {
-
 	.v-list-item-content {
 		height: var(--v-list-item-min-height);
 	}

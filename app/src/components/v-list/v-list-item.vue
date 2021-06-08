@@ -139,7 +139,6 @@ body {
 	border-radius: var(--v-list-item-border-radius);
 
 	&.dashed {
-
 		&::after {
 			// Borders normally render outside the element, this is a way of showing it as inner
 			position: absolute;
@@ -182,14 +181,12 @@ body {
 	}
 
 	&.dense {
-
 		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
-
 			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
@@ -251,7 +248,6 @@ body {
 	}
 
 	@at-root {
-
 		.v-list.large {
 			#{$this}:not(.dense) {
 				--v-list-item-min-height: var(--v-list-item-min-height-large);

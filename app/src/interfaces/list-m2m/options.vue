@@ -125,6 +125,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
+
 .form-grid {
 	@include form-grid;
 }

@@ -430,7 +430,6 @@ export default defineComponent({
 }
 
 .duplicate {
-
 	.type-label {
 		margin-bottom: 4px;
 	}
@@ -513,9 +512,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-
 		.label {
-
 			.interface {
 				opacity: 1;
 			}
@@ -530,7 +527,6 @@ export default defineComponent({
 }
 
 .icons {
-
 	.v-icon + .v-icon:not(:last-child) {
 		margin-left: 8px;
 	}

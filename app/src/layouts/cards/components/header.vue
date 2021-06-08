@@ -198,6 +198,7 @@ export default defineComponent({
 
 	.sort-direction {
 		transition: color var(--fast) var(--transition);
+
 		&.descending {
 			transform: scaleY(-1);
 		}

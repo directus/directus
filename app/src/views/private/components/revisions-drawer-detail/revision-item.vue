@@ -138,6 +138,7 @@ export default defineComponent({
 
 	&:hover {
 		cursor: pointer;
+
 		.header {
 			.dot {
 				border-color: var(--background-normal-alt);

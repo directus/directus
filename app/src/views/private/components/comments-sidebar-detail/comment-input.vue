@@ -90,6 +90,12 @@ export default defineComponent({
 	transition: margin-bottom var(--fast) var(--transition);
 }
 
+.new-comment :deep(.expand-on-focus:focus textarea),
+.new-comment :deep(.expand-on-focus:focus-within textarea),
+.new-comment :deep(.expand-on-focus.has-content textarea) {
+	margin-bottom: 36px;
+}
+
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
 	right: 0;
@@ -98,12 +104,6 @@ export default defineComponent({
 	height: 8px;
 	background: linear-gradient(180deg, rgba(var(--background-page-rgb), 0) 0%, rgba(var(--background-page-rgb), 1) 100%);
 	content: '';
-}
-
-.new-comment
-	:deep(:is(.expand-on-focus:focus textarea, .expand-on-focus:focus-within textarea, .expand-on-focus.has-content
-			textarea)) {
-	margin-bottom: 36px;
 }
 
 .new-comment .add-mention {

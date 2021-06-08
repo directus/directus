@@ -1,5 +1,4 @@
 import { defineModule } from '@/modules/define';
-import RouterPass from '@/utils/router-passthrough';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 

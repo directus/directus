@@ -12,7 +12,7 @@
 import { useI18n } from 'vue-i18n';
 import CodeMirror from 'codemirror';
 
-import { defineComponent, computed, ref, onMounted, watch, markRaw } from 'vue';
+import { defineComponent, computed, ref, onMounted, watch } from 'vue';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';

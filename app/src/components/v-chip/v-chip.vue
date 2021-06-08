@@ -119,6 +119,7 @@ body {
 		color: var(--v-chip-color);
 		background-color: var(--v-chip-background-color);
 		border-color: var(--v-chip-background-color);
+
 		&:hover {
 			color: var(--v-chip-color);
 			background-color: var(--v-chip-background-color);

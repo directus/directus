@@ -65,6 +65,7 @@ export default defineComponent({
 
 .v-detail:not(.disabled) .v-divider {
 	--v-divider-label-color: var(--foreground-subdued);
+
 	&:hover {
 		--v-divider-label-color: var(--foreground-normal-alt);
 

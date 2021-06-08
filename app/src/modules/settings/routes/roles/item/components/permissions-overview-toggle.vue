@@ -182,6 +182,7 @@ export default defineComponent({
 		transition: opacity var(--slow) var(--transition);
 		content: '';
 	}
+
 	&:hover::before,
 	&.has-app-minimal::before {
 		opacity: 1;

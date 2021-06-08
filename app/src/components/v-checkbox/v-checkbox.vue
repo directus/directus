@@ -193,6 +193,7 @@ body {
 		.checkbox {
 			--v-icon-color: var(--primary);
 		}
+
 		&.block {
 			background-color: var(--background-subdued);
 			border-color: var(--border-normal-alt);

@@ -149,7 +149,6 @@ export default defineComponent({
 }
 
 @media (min-width: 600px) {
-
 	.gap {
 		display: inline;
 	}
@@ -169,7 +168,6 @@ export default defineComponent({
 }
 
 @media (min-width: 600px) {
-
 	.v-button.page:not(.active) {
 		display: inline;
 	}

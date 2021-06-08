@@ -117,6 +117,7 @@ export default defineComponent({
 			content: '';
 			pointer-events: none;
 		}
+
 		> span {
 			margin-left: -16px;
 			padding-left: 16px;

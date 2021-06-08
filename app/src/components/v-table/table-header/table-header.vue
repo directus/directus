@@ -275,6 +275,7 @@ export default defineComponent({
 
 	.sortable {
 		cursor: pointer;
+
 		.sort-icon {
 			margin-left: 4px;
 			color: var(--foreground-subdued);

@@ -117,6 +117,7 @@ export default defineComponent({
 					&.all {
 						color: var(--success);
 					}
+
 					&.none {
 						color: var(--danger);
 					}

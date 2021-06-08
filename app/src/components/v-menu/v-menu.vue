@@ -312,7 +312,6 @@ body {
 }
 
 .arrow {
-
 	&::before,
 	&::after {
 		background: var(--card-face-color);
@@ -438,16 +437,13 @@ body {
 }
 
 .attached {
-
 	&[data-placement^='top'] {
-
 		> .v-menu-content {
 			transform: translateY(-2px);
 		}
 	}
 
 	&[data-placement^='bottom'] {
-
 		> .v-menu-content {
 			transform: translateY(2px);
 		}

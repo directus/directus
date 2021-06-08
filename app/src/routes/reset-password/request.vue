@@ -75,6 +75,7 @@ export default defineComponent({
 .sign-in {
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
+
 	&:hover {
 		color: var(--foreground-normal);
 	}

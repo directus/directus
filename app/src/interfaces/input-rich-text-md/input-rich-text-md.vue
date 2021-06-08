@@ -147,7 +147,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType, markRaw } from 'vue';
+import { defineComponent, computed, ref, onMounted, watch, reactive, PropType } from 'vue';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
