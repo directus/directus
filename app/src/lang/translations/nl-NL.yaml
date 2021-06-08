@@ -795,7 +795,7 @@ interfaces:
     primary: Primair
   input-code:
     code: Code
-  collection:
+  system-collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
