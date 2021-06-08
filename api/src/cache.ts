@@ -36,8 +36,8 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<a
 	if (store === 'redis') {
 		const KeyvAnyRedis = require('keyv-anyredis');
 		const Redis = require('ioredis');
-		if (env.REDIS_CLUSTER === true) {
-			const client = new Redis.Cluster(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'), {
+		if (env.CACHE_REDIS_CLUSTER === true) {
+			const client = new Redis.Cluster(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_', 'CACHE_REDIS_CLUSTER'), {
 				dnsLookup: (address: any, callback: (arg0: null, arg1: any) => any) => callback(null, address),
 			});
 			config.store = new KeyvAnyRedis(client);

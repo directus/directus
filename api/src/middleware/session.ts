@@ -7,10 +7,13 @@ let store: Store | undefined = undefined;
 if (env.SESSION_STORE === 'redis') {
 	const Redis = require('ioredis');
 	const RedisStore = require('connect-redis')(expressSession);
-	if (env.REDIS_CLUSTER === true) {
-		const redisClient = new Redis.Cluster(env.SESSION_REDIS || getConfigFromEnv('SESSION_REDIS_'), {
-			dnsLookup: (address: any, callback: (arg0: null, arg1: any) => any) => callback(null, address),
-		});
+	if (env.SESSION_REDIS_CLUSTER === true) {
+		const redisClient = new Redis.Cluster(
+			env.SESSION_REDIS || getConfigFromEnv('SESSION_REDIS_', 'SESSION_REDIS_CLUSTER'),
+			{
+				dnsLookup: (address: any, callback: (arg0: null, arg1: any) => any) => callback(null, address),
+			}
+		);
 		store = new RedisStore({ client: redisClient });
 	} else {
 		const redisClient = new Redis(env.SESSION_REDIS || getConfigFromEnv('SESSION_REDIS_'));
