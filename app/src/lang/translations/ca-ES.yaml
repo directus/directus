@@ -174,7 +174,7 @@ template: Plantilla
 interfaces:
   input-code:
     code: Codi
-  collection:
+  system-collection:
     collection: Coŀlecció
   system-collections:
     collections: Col·leccions
