@@ -826,7 +826,7 @@ interfaces:
     primary: Primär
   input-code:
     code: Kod
-  collection:
+  system-collection:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner
