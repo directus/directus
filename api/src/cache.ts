@@ -34,8 +34,17 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<a
 	};
 
 	if (store === 'redis') {
-		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
+		const KeyvAnyRedis = require('keyv-anyredis');
+		const Redis = require('ioredis');
+		if (env.REDIS_CLUSTER === true) {
+			const client = new Redis.Cluster(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'), {
+				dnsLookup: (address: any, callback: (arg0: null, arg1: any) => any) => callback(null, address),
+			});
+			config.store = new KeyvAnyRedis(client);
+		} else {
+			const client = new Redis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
+			config.store = new KeyvAnyRedis(client);
+		}
 	}
 
 	if (store === 'memcache') {
