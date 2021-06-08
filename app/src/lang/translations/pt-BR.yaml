@@ -870,7 +870,7 @@ interfaces:
     description: Escrever ou compartilhar trechos de código
     line_number: Número da linha
     placeholder: Inserir código aqui...
-  collection:
+  system-collection:
     collection: Coleção
     description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
