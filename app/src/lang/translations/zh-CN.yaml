@@ -724,7 +724,7 @@ interfaces:
     primary: 主要的
   input-code:
     code: 代码
-  collection:
+  system-collection:
     collection: 集合
     description: 在现有集合之间选择
     include_system_collections: 包含系统集合
