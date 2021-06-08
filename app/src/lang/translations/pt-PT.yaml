@@ -447,7 +447,7 @@ description: Descrição
 interfaces:
   presentation-links:
     primary: Primário
-  collection:
+  system-collection:
     collection: Coleção
   system-display-template:
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
