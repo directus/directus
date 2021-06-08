@@ -349,7 +349,7 @@ interfaces:
     primary: Primær
   input-code:
     code: Kode
-  collection:
+  system-collection:
     collection: Samling
   system-collections:
     collections: Samlinger
