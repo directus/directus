@@ -211,6 +211,10 @@ function processValues(env: Record<string, any>) {
 			else
 			env[key] = Number(value);
 		}
+		//Adds the possibility of providing custom_params for OAUTH in a JSON format
+		//e.g oauth -> discord -> custom_params -> {"consent":"none"}
+		else if(String(value).startsWith('{'))
+			env[key] = JSON.parse(String(value))
 	}
 
 	return env;
