@@ -1,5 +1,7 @@
 <template>
-	<v-form :fields="fields" v-model="options" />
+	<div>
+		<v-form :fields="fields" v-model="options" />
+	</div>
 </template>
 
 <script lang="ts">
