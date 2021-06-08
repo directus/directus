@@ -131,7 +131,7 @@ template: Шаблон
 interfaces:
   input-code:
     code: Код
-  collection:
+  system-collection:
     collection: Колекција
   files:
     files: Фајлови
