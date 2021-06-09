@@ -18,7 +18,14 @@ type GroupableOptions = {
 	watch?: boolean;
 };
 
-export function useGroupable(options?: GroupableOptions): Record<string, any> {
+type UsableGroupable = {
+	active: Ref<boolean>;
+	toggle: () => void;
+	activate: () => void;
+	deactivate: () => void;
+};
+
+export function useGroupable(options?: GroupableOptions): UsableGroupable {
 	// Injects the registration / toggle functions from the parent scope
 	const parentFunctions = inject(options?.group || 'item-group', null);
 
@@ -95,6 +102,14 @@ type GroupableParentOptions = {
 	multiple?: Ref<boolean>;
 };
 
+type UsableGroupableParent = {
+	items: Ref<GroupableInstance[]>;
+	selection: Ref<readonly (string | number)[]>;
+	internalSelection: Ref<(string | number)[]>;
+	getValueForItem: (item: GroupableInstance) => string | number;
+	updateChildren: () => void;
+};
+
 /**
  * Used to make a component a group parent component. Provides the registration / toggle functions
  * to its group children
@@ -103,7 +118,7 @@ export function useGroupableParent(
 	state: GroupableParentState = {},
 	options: GroupableParentOptions = {},
 	group = 'item-group'
-): Record<string, any> {
+): UsableGroupableParent {
 	// References to the active state and value of the individual child items
 	const items = shallowRef<GroupableInstance[]>([]);
 

@@ -6,14 +6,34 @@ import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Record<string, any> {
+type UsableItem = {
+	edits: Ref<Record<string, any>>;
+	item: Ref<Record<string, any> | null>;
+	error: Ref<any>;
+	loading: Ref<boolean>;
+	saving: Ref<boolean>;
+	refresh: () => void;
+	save: () => Promise<any>;
+	isNew: ComputedRef<boolean>;
+	remove: () => Promise<void>;
+	deleting: Ref<boolean>;
+	archive: () => Promise<void>;
+	isArchived: ComputedRef<boolean | null>;
+	archiving: Ref<boolean>;
+	saveAsCopy: () => Promise<any>;
+	isBatch: ComputedRef<boolean>;
+	getItem: () => Promise<void>;
+	validationErrors: Ref<any[]>;
+};
+
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);
-	const error = ref(null);
-	const validationErrors = ref([]);
+	const error = ref<any>(null);
+	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);

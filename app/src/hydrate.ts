@@ -16,7 +16,7 @@ import {
 } from '@/stores';
 
 type GenericStore = {
-	id: string;
+	$id: string;
 	hydrate?: () => Promise<void>;
 	dehydrate?: () => Promise<void>;
 
@@ -60,7 +60,7 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		await userStore.hydrate();
 
 		if (userStore.currentUser?.role) {
-			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
+			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
 			await setLanguage((userStore.currentUser?.language as Language) || 'en-US');
 		}

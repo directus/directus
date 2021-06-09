@@ -1,19 +1,19 @@
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Collection, Field } from '@/types';
-import { computed, Ref, ref } from 'vue';
+import { computed, ref, Ref, ComputedRef } from 'vue';
 
-type CollectionInfo = {
-	info: Ref<Collection | null>;
-	fields: Ref<Field[]>;
+type UsableCollection = {
+	info: ComputedRef<Collection | null>;
+	fields: ComputedRef<Field[]>;
 	defaults: Record<string, any>;
-	primaryKeyField: Ref<Field | null>;
-	userCreatedField: Ref<Field | null>;
-	sortField: Ref<string | null>;
-	isSingleton: Ref<boolean>;
-	accountabilityScope: Ref<'all' | 'activity' | null>;
+	primaryKeyField: ComputedRef<Field | null>;
+	userCreatedField: ComputedRef<Field | null>;
+	sortField: ComputedRef<string | null>;
+	isSingleton: ComputedRef<boolean>;
+	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
 };
 
-export function useCollection(collectionKey: string | Ref<string | null>): CollectionInfo {
+export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 

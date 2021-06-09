@@ -4,7 +4,7 @@ import { Filter, Item } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
 import moveInArray from '@/utils/move-in-array';
 import { isEqual, orderBy, throttle } from 'lodash';
-import { computed, nextTick, ref, Ref, watch } from 'vue';
+import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
 
 type Query = {
 	limit: Ref<number>;
@@ -20,18 +20,18 @@ type ManualSortData = {
 	to: string | number;
 };
 
-type ItemsInfo = {
+type UsableItems = {
 	itemCount: Ref<number | null>;
 	totalCount: Ref<number | null>;
 	items: Ref<Item[]>;
-	totalPages: Ref<number>;
+	totalPages: ComputedRef<number>;
 	loading: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
 };
 
-export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): ItemsInfo {
+export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: number | null = null;

@@ -1,7 +1,21 @@
 import { i18n } from '@/lang';
 import { Ref, ref } from 'vue';
 
-export default function useSourceCode(editor: Ref<any>): Record<string, any> {
+type SourceCodeButton = {
+	icon: string;
+	tooltip: string;
+	onAction: () => void;
+};
+
+type UsableSourceCode = {
+	codeDrawerOpen: Ref<boolean>;
+	code: Ref<string | undefined>;
+	closeCodeDrawer: () => void;
+	saveCode: () => void;
+	sourceCodeButton: SourceCodeButton;
+};
+
+export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 	const codeDrawerOpen = ref(false);
 	const code = ref<string>();
 

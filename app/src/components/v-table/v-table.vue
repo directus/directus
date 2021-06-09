@@ -276,7 +276,7 @@ export default defineComponent({
 				if (internalSort.value.desc === true) return itemsSorted.reverse();
 				return itemsSorted;
 			},
-			set: (value: Record<string, any>) => {
+			set: (value: Item[]) => {
 				emit('update:items', value);
 			},
 		});

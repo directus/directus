@@ -4,6 +4,6 @@ import { ModuleConfig } from './types';
 const modulesRaw: Ref<ModuleConfig[]> = shallowRef([]);
 const modules: Ref<ModuleConfig[]> = shallowRef([]);
 
-export function getModules(): Record<string, Ref<ModuleConfig[]>> {
+export function getModules(): { modules: Ref<ModuleConfig[]>; modulesRaw: Ref<ModuleConfig[]> } {
 	return { modules, modulesRaw };
 }

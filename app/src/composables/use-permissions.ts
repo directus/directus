@@ -5,11 +5,16 @@ import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
 import { useCollection } from './use-collection';
 
-export function usePermissions(
-	collection: Ref<string>,
-	item: Ref<any>,
-	isNew: Ref<boolean>
-): Record<string, ComputedRef> {
+type UsablePermissions = {
+	deleteAllowed: ComputedRef<boolean>;
+	saveAllowed: ComputedRef<boolean>;
+	archiveAllowed: ComputedRef<boolean>;
+	updateAllowed: ComputedRef<boolean>;
+	fields: ComputedRef<Field[]>;
+	revisionsAllowed: ComputedRef<boolean>;
+};
+
+export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>): UsablePermissions {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 

@@ -1,7 +1,7 @@
 import { Filter } from '@/types/';
 import { clone } from 'lodash';
 
-export default function filtersToQuery(filters: readonly Filter[]): any {
+export default function filtersToQuery(filters: readonly Filter[]): { filter: Record<string, any> } {
 	const filterList: Record<string, any>[] = [];
 
 	for (const filter of filters) {

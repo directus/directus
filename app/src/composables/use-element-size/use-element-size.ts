@@ -9,7 +9,10 @@ declare global {
 
 export default function useElementSize<T extends Element>(
 	target: T | Ref<T> | Ref<undefined>
-): Record<string, Ref<number>> {
+): {
+	width: Ref<number>;
+	height: Ref<number>;
+} {
 	const width = ref(0);
 	const height = ref(0);
 

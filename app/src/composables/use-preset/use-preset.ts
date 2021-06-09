@@ -2,13 +2,32 @@ import { useCollection } from '@/composables/use-collection';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
 import { debounce, isEqual } from 'lodash';
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+
+type UsablePreset = {
+	bookmarkExists: ComputedRef<boolean>;
+	layout: Ref<string | null>;
+	layoutOptions: Ref<Record<string, any>>;
+	layoutQuery: Ref<Record<string, any>>;
+	filters: Ref<readonly Filter[]>;
+	searchQuery: Ref<string | null>;
+	refreshInterval: Ref<number | null>;
+	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
+	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
+	bookmarkTitle: Ref<string | null>;
+	resetPreset: () => Promise<void>;
+	bookmarkSaved: Ref<boolean>;
+	bookmarkIsMine: ComputedRef<boolean>;
+	busy: Ref<boolean>;
+	clearLocalSave: () => void;
+	localPreset: Ref<Partial<Preset>>;
+};
 
 export function usePreset(
 	collection: Ref<string>,
 	bookmark: Ref<number | null> = ref(null),
 	temporary = false
-): Record<string, any> {
+): UsablePreset {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
