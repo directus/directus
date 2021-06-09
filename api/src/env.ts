@@ -7,11 +7,10 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
-import logger from './logger-no-env';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from './utils/to-array';
 
-const acceptableEnvTypes = ['string', 'number', 'regex', 'array'];
+const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
 
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
@@ -125,7 +124,7 @@ function getEnv() {
 			return exported;
 		}
 
-		logger.warn(
+		throw new Error(
 			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
 		);
 	}
@@ -141,7 +140,7 @@ function getEnv() {
 			return data as Record<string, string>;
 		}
 
-		logger.warn('Invalid YAML configuration. Root has to ben an object.');
+		throw new Error('Invalid YAML configuration. Root has to be an object.');
 	}
 
 	// Default to env vars plain text files
@@ -184,17 +183,19 @@ function processValues(env: Record<string, any>) {
 				value = fs.readFileSync(value, { encoding: 'utf8' });
 				newKey = key.slice(0, -5);
 				if (newKey in env) {
-					logger.warn(`Environment variables '${key}' and '${newKey}' are both set, ${key} takes precedence.`);
+					throw new Error(
+						`Duplicate environment variable encountered: you can't use "${key}" and "${newKey}" simultaneously.`
+					);
 				}
 				key = newKey;
 			} catch {
-				logger.warn(`Failed to read value from file '${value}', defined in environment variable '${key}'.`);
+				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
 			}
 		}
 
 		// Convert values with a type prefix
 		// (see https://docs.directus.io/reference/environment-variables/#environment-syntax-prefix)
-		if (typeof value === 'string' && acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+		if (typeof value === 'string' && acceptedEnvTypes.some((envType) => value.includes(`${envType}:`))) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}
