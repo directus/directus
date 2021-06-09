@@ -200,21 +200,14 @@ function processValues(env: Record<string, any>) {
 		if (value === 'true') env[key] = true;
 		else if (value === 'false') env[key] = false;
 		else if (value === 'null') env[key] = null;
-		else if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0){
-			//Altho it seems that we do have a numerical value
-			//it can happen that its outside of Number.MAX_SAFE_INTEGER
-			//thus resulting in a change of the original intended value
-			//e.g oauth -> discord -> client_id
-			if(value > Number.MAX_SAFE_INTEGER)
-				env[key] = value;
-			//we're safe
-			else
+		else if (
+			String(value).startsWith('0') === false &&
+			isNaN(value) === false &&
+			value.length > 0 &&
+			value < Number.MAX_SAFE_INTEGER // Make sure we don't treat long numeric ID strings as numbers
+		) {
 			env[key] = Number(value);
 		}
-		//Adds the possibility of providing custom_params for OAUTH in a JSON format
-		//e.g oauth -> discord -> custom_params -> {"consent":"none"}
-		else if(String(value).startsWith('{'))
-			env[key] = JSON.parse(String(value))
 	}
 
 	return env;
