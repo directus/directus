@@ -1,6 +1,6 @@
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 
 export type NavItem = {
 	collection: string;
@@ -31,7 +31,16 @@ function collectionToNavItem(collection: Collection): NavItem {
 	};
 }
 
-export default function useNavigation(searchQuery?: Ref<string | null>): Record<string, any> {
+type UsableNavigation = {
+	customNavItems: ComputedRef<NavItemGroup[] | null>;
+	navItems: ComputedRef<NavItem[]>;
+	activeGroups: Ref<string[]>;
+	hiddenNavItems: ComputedRef<NavItem[]>;
+	hiddenShown: Ref<boolean>;
+	search: (item: NavItem) => boolean;
+};
+
+export default function useNavigation(searchQuery?: Ref<string | null>): UsableNavigation {
 	const collectionsStore = useCollectionsStore();
 	const userStore = useUserStore();
 
