@@ -1,14 +1,21 @@
 import { Filter } from '@/types';
 import { get } from 'lodash';
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
+
+type UsableSelection = {
+	stageSelection: (newSelection: (number | string)[]) => void;
+	selectModalActive: Ref<boolean>;
+	selectedPrimaryKeys: ComputedRef<(string | number)[]>;
+	selectionFilters: ComputedRef<Filter[]>;
+};
 
 export default function useSelection(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
-): Record<string, any> {
+): UsableSelection {
 	const selectModalActive = ref(false);
 
 	const selectedPrimaryKeys = computed(() => {
