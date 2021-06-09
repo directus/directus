@@ -9,19 +9,32 @@ export default defineModule({
 	routes: [
 		{
 			name: 'users-collection',
-			path: '/',
+			path: '',
 			component: Collection,
-			props: (route) => ({
-				queryFilters: route.query,
-			}),
 		},
 		{
 			name: 'users-item',
-			path: '/:primaryKey',
+			path: ':primaryKey',
+			component: Item,
+			props: true,
+		},
+		{
+			path: 'roles',
+			redirect: '/users',
+		},
+		{
+			name: 'roles-collection',
+			path: 'roles/:role',
+			component: Collection,
+			props: true,
+		},
+		{
+			name: 'roles-item-add',
+			path: 'roles/:role/+',
 			component: Item,
 			props: (route) => ({
-				primaryKey: route.params.primaryKey,
-				preset: route.query,
+				primaryKey: '+',
+				role: route.params.role,
 			}),
 		},
 	],

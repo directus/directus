@@ -3,9 +3,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUpdated, inject } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUpdated, inject } from 'vue';
 
 import MarkdownIt from 'markdown-it';
+import markdownItTableOfContents from 'markdown-it-table-of-contents';
+import markdownItAnchor from 'markdown-it-anchor';
+import markdownItContainer from 'markdown-it-container';
 import fm from 'front-matter';
 
 import hljs from 'highlight.js';
@@ -13,7 +16,7 @@ import hljsGraphQL from '@/utils/hljs-graphql';
 
 import { getRootPath } from '@/utils/get-root-path';
 
-import router from '@/router';
+import { useRoute, useRouter } from 'vue-router';
 
 hljs.registerLanguage('graphql', hljsGraphQL);
 
@@ -22,7 +25,7 @@ const md = new MarkdownIt({
 	highlight(str, lang) {
 		if (lang && hljs.getLanguage(lang)) {
 			try {
-				return hljs.highlight(lang, str).value;
+				return hljs.highlight(str, { language: lang }).value;
 			} catch {
 				console.warn('There was an error highlighting in Markdown');
 			}
@@ -32,8 +35,8 @@ const md = new MarkdownIt({
 	},
 });
 
-md.use(require('markdown-it-table-of-contents'), { includeLevel: [2] });
-md.use(require('markdown-it-anchor').default, { permalink: true, permalinkSymbol: '#' });
+md.use(markdownItTableOfContents, { includeLevel: [2] });
+md.use(markdownItAnchor, { permalink: true, permalinkSymbol: '#' });
 
 function hintRenderer(type: string) {
 	return (tokens: any[], idx: number) => {
@@ -50,12 +53,15 @@ function hintRenderer(type: string) {
 	};
 }
 
-md.use(require('markdown-it-container'), 'tip', { render: hintRenderer('tip') });
-md.use(require('markdown-it-container'), 'warning', { render: hintRenderer('warning') });
-md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('danger') });
+md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
+md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
+md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
 
 export default defineComponent({
 	setup(props, { slots }) {
+		const router = useRouter();
+		const route = useRoute();
+
 		const html = ref('');
 		const pageClass = ref<string>();
 
@@ -65,12 +71,13 @@ export default defineComponent({
 		return { html, onClick, pageClass };
 
 		function generateHTML() {
-			if (slots.default === null || !slots.default()?.[0]?.text) {
+			const source = slots.default?.()[0].children;
+
+			if (!source || typeof source !== 'string') {
 				html.value = '';
 				return;
 			}
 
-			const source = slots.default()[0].text!;
 			const { attributes, body } = fm<{ pageClass?: string }>(source);
 
 			let markdown = body;
@@ -100,8 +107,8 @@ export default defineComponent({
 			// This will force the main el to scroll down to the targetted element on updates of the content
 			const mainElement = inject('main-element', ref<Element | null>(null));
 
-			if (router.currentRoute.hash) {
-				const linkedEl = document.querySelector(router.currentRoute.hash) as HTMLElement;
+			if (route.hash) {
+				const linkedEl = document.querySelector(route.hash) as HTMLElement;
 
 				if (linkedEl) {
 					mainElement.value?.scrollTo({ top: linkedEl.offsetTop - 100 });
@@ -132,498 +139,463 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-// stylelint-disable
-
+<style scoped>
 .error {
 	padding: 20vh 0;
 }
 
 .md {
-	color: var(--foreground-normal-alt);
 	max-width: 740px;
-
-	::v-deep {
-		font-weight: 400;
-		font-size: 16px;
-		line-height: 27px;
-
-		& > *:first-child {
-			margin-top: 0;
-		}
-
-		& > *:last-child {
-			margin-bottom: 0;
-		}
-
-		a {
-			color: var(--primary-110);
-			text-decoration: none;
-			font-weight: 500;
-		}
-
-		h1,
-		h2,
-		h3,
-		h4,
-		h5,
-		h6 {
-			position: relative;
-			margin: 40px 0 8px;
-			padding: 0;
-			font-weight: 700;
-			cursor: text;
-			color: var(--foreground-normal-alt);
-
-			a {
-				position: absolute;
-				right: 100%;
-				padding-right: 4px;
-				opacity: 0;
-
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-
-			&:hover a {
-				opacity: 1;
-			}
-		}
-
-		h1 {
-			margin-bottom: 40px;
-			font-size: 35px;
-			line-height: 44px;
-		}
-
-		h2 {
-			margin-top: 60px;
-			margin-bottom: 20px;
-			padding-bottom: 4px;
-			font-size: 24px;
-			line-height: 34px;
-			border-bottom: 2px solid var(--border-subdued);
-		}
-
-		h3 {
-			margin-bottom: 0px;
-			font-size: 19px;
-			line-height: 24px;
-		}
-
-		h4 {
-			font-size: 16px;
-		}
-
-		h5 {
-			font-size: 14px;
-		}
-
-		h6 {
-			color: var(--foreground-normal);
-			font-size: 14px;
-		}
-
-		.heading-link {
-			color: var(--foreground-subdued);
-			font-size: 16px;
-
-			&:hover {
-				color: var(--primary-110);
-				text-decoration: none;
-			}
-		}
-
-		pre {
-			padding: 16px 20px;
-			overflow: auto;
-			font-size: 13px;
-			line-height: 24px;
-			background-color: var(--background-normal);
-			border-radius: var(--border-radius);
-		}
-
-		code,
-		tt {
-			margin: 0 1px;
-			padding: 0 4px;
-			font-size: 15px;
-			font-family: var(--family-monospace);
-			white-space: nowrap;
-			background-color: var(--background-page);
-			border: 1px solid var(--background-normal);
-			border-radius: var(--border-radius);
-		}
-
-		pre code {
-			margin: 0;
-			padding: 0;
-			white-space: pre;
-			background: transparent;
-			border: none;
-		}
-
-		pre code,
-		pre tt {
-			background-color: transparent;
-			border: none;
-		}
-
-		h1 tt,
-		h1 code {
-			font-size: inherit;
-		}
-
-		h2 tt,
-		h2 code {
-			font-size: inherit;
-		}
-
-		h3 tt,
-		h3 code {
-			font-size: inherit;
-		}
-
-		h4 tt,
-		h4 code {
-			font-size: inherit;
-		}
-
-		h5 tt,
-		h5 code {
-			font-size: inherit;
-		}
-		h6 tt,
-		h6 code {
-			font-size: inherit;
-		}
-
-		p,
-		blockquote,
-		ul,
-		ol,
-		dl,
-		li,
-		table,
-		pre {
-			margin: 8px 0;
-		}
-
-		p {
-			margin-block-start: 1em;
-			margin-block-end: 1em;
-			margin-inline-start: 0px;
-			margin-inline-end: 0px;
-		}
-
-		h3 + p {
-			margin-block-start: 0.5em;
-		}
-
-		& > h2:first-child {
-			margin-top: 0;
-			padding-top: 0;
-		}
-
-		& > h1:first-child {
-			margin-top: 0;
-			padding-top: 0;
-		}
-
-		& > h3:first-child,
-		& > h4:first-child,
-		& > h5:first-child,
-		& > h6:first-child {
-			margin-top: 0;
-			padding-top: 0;
-		}
-
-		a:first-child h1,
-		a:first-child h2,
-		a:first-child h3,
-		a:first-child h4,
-		a:first-child h5,
-		a:first-child h6 {
-			margin-top: 0;
-			padding-top: 0;
-		}
-
-		h1 p,
-		h2 p,
-		h3 p,
-		h4 p,
-		h5 p,
-		h6 p {
-			margin-top: 0;
-		}
-
-		li p.first {
-			display: inline-block;
-		}
-
-		ul,
-		ol {
-			margin: 20px 0;
-			padding-left: 20px;
-
-			li {
-				margin: 8px 0;
-				line-height: 24px;
-			}
-
-			ul,
-			ol {
-				margin: 4px 0;
-
-				li {
-					margin: 4px 0;
-					line-height: 24px;
-				}
-			}
-		}
-
-		blockquote {
-			margin-bottom: 4rem;
-			padding: 0.25rem 0 0.25rem 1rem;
-			color: var(--foreground-subdued);
-			font-size: 18px;
-			border-left: 2px solid var(--background-normal);
-			max-width: 740px;
-		}
-
-		blockquote > :first-child {
-			margin-top: 0;
-		}
-
-		blockquote > :last-child {
-			margin-bottom: 0;
-		}
-
-		table {
-			min-width: 100%;
-			margin: 40px 0;
-			padding: 0;
-			border-collapse: collapse;
-			border-spacing: 0;
-			img {
-				margin: 0;
-			}
-		}
-
-		table tr {
-			margin: 0;
-			padding: 0;
-			border-top: 1px solid var(--border-normal);
-		}
-
-		table tr:nth-child(2n) {
-			background-color: var(--background-page);
-		}
-
-		table tr th {
-			margin: 0;
-			padding: 8px 20px;
-			font-weight: bold;
-			text-align: left;
-			border: 1px solid var(--border-normal);
-		}
-
-		table tr td {
-			margin: 0;
-			padding: 8px 20px;
-			text-align: left;
-			border: 1px solid var(--border-normal);
-		}
-
-		table tr th :first-child,
-		table tr td :first-child {
-			margin-top: 0;
-		}
-
-		table tr th :last-child,
-		table tr td :last-child {
-			margin-bottom: 0;
-		}
-
-		img {
-			max-width: 100%;
-			margin: 20px 0;
-			border-radius: 6px;
-
-			&.no-margin {
-				margin: 0;
-			}
-
-			&.full {
-				width: 100%;
-			}
-
-			&.shadow {
-				box-shadow: 0px 5px 10px 0px rgba(23, 41, 64, 0.1), 0px 2px 40px 0px rgba(23, 41, 64, 0.05);
-			}
-		}
-
-		.highlight pre {
-			padding: 8px 20px;
-			overflow: auto;
-			font-size: 13px;
-			line-height: 19px;
-			background-color: var(--background-page);
-			border: 1px solid var(--background-normal);
-			border-radius: var(--border-radius);
-		}
-
-		hr {
-			margin: 40px auto;
-			border: none;
-			border-top: 2px solid var(--background-normal);
-		}
-
-		b,
-		strong {
-			font-weight: 600;
-		}
-
-		.hint {
-			display: inline-block;
-			width: 100%;
-			margin: 20px 0;
-			padding: 0 20px;
-			background-color: var(--background-subdued);
-			border-left: 2px solid var(--primary);
-
-			&-title {
-				margin-block-start: 1em;
-				margin-block-end: 1em;
-				margin-inline-start: 0px;
-				margin-inline-end: 0px;
-				font-weight: bold;
-			}
-
-			&.tip {
-				border-left: 2px solid var(--primary);
-			}
-
-			&.warning {
-				background-color: var(--warning-10);
-				border-left: 2px solid var(--warning);
-			}
-
-			&.danger {
-				background-color: var(--danger-10);
-				border-left: 2px solid var(--danger);
-			}
-		}
-
-		.two-up {
-			margin-top: 3rem;
-		}
-
-		.two-up .right {
-			margin-top: 50px;
-
-			h5 {
-				color: var(--foreground-subdued);
-				margin-top: 20px;
-			}
-		}
-
-		.table-of-contents {
-			margin-top: -20px;
-			ul,
-			ol {
-				margin-top: 0;
-				li {
-					margin: 4px 0;
-				}
-			}
-		}
-
-		// pre,
-		// pre[class*='language-'] {
-		// 	margin-top: 0;
-		// }
-
-		@media (min-width: 1000px) {
-			.two-up {
-				display: grid;
-				grid-template-columns: minmax(0, 4fr) minmax(0, 3fr);
-				grid-gap: 40px;
-				align-items: start;
-			}
-
-			.two-up .left,
-			.two-up .right {
-				> *:first-child {
-					margin-top: 0 !important;
-				}
-			}
-
-			.two-up .right {
-				margin-top: 0;
-				position: sticky;
-				top: 100px;
-			}
-		}
+	color: var(--foreground-normal-alt);
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 27px;
+}
+
+.md > :deep(*:first-child) {
+	margin-top: 0;
+}
+
+.md > :deep(*:last-child) {
+	margin-bottom: 0;
+}
+
+.md :deep(a) {
+	color: var(--primary-110);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.md :deep(h1),
+.md :deep(h2),
+.md :deep(h3),
+.md :deep(h4),
+.md :deep(h5),
+.md :deep(h6) {
+	position: relative;
+	margin: 40px 0 8px;
+	padding: 0;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	cursor: text;
+}
+
+.md :deep(h1 a),
+.md :deep(h2 a),
+.md :deep(h3 a),
+.md :deep(h4 a),
+.md :deep(h5 a),
+.md :deep(h6 a) {
+	position: absolute;
+	right: 100%;
+	padding-right: 4px;
+	opacity: 0;
+}
+
+.md :deep(h1) {
+	margin-bottom: 40px;
+	font-size: 35px;
+	line-height: 44px;
+}
+
+.md :deep(h2) {
+	margin-top: 60px;
+	margin-bottom: 20px;
+	padding-bottom: 4px;
+	font-size: 24px;
+	line-height: 34px;
+	border-bottom: 2px solid var(--border-subdued);
+}
+
+.md :deep(h3) {
+	margin-bottom: 0px;
+	font-size: 19px;
+	line-height: 24px;
+}
+
+.md :deep(h4) {
+	font-size: 16px;
+}
+
+.md :deep(h5) {
+	font-size: 14px;
+}
+
+.md :deep(h6) {
+	color: var(--foreground-normal);
+	font-size: 14px;
+}
+
+.md :deep(pre) {
+	padding: 16px 20px;
+	overflow: auto;
+	font-size: 13px;
+	line-height: 24px;
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+}
+
+.md :deep(code),
+.md :deep(tt) {
+	margin: 0 1px;
+	padding: 0 4px;
+	font-size: 15px;
+	font-family: var(--family-monospace);
+	white-space: nowrap;
+	background-color: var(--background-page);
+	border: 1px solid var(--background-normal);
+	border-radius: var(--border-radius);
+}
+
+.md :deep(pre code) {
+	margin: 0;
+	padding: 0;
+	white-space: pre;
+	background: transparent;
+	border: none;
+}
+
+.md :deep(p) {
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+}
+
+.md :deep(h3 + p) {
+	margin-block-start: 0.5em;
+}
+
+.md > :deep(h2:first-child) {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.md > :deep(h1:first-child) {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.md > :deep(h3:first-child),
+.md > :deep(h4:first-child),
+.md > :deep(h5:first-child),
+.md > :deep(h6:first-child) {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.md :deep(blockquote) {
+	max-width: 740px;
+	margin-bottom: 4rem;
+	padding: 0.25rem 0 0.25rem 1rem;
+	color: var(--foreground-subdued);
+	font-size: 18px;
+	border-left: 2px solid var(--background-normal);
+}
+
+.md :deep(blockquote > :first-child) {
+	margin-top: 0;
+}
+
+.md :deep(blockquote > :last-child) {
+	margin-bottom: 0;
+}
+
+.md :deep(table) {
+	min-width: 100%;
+	margin: 40px 0;
+	padding: 0;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.md :deep(img) {
+	max-width: 100%;
+	margin: 20px 0;
+	border-radius: 6px;
+}
+
+.md :deep(table img) {
+	margin: 0;
+}
+
+.md :deep(table tr) {
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid var(--border-normal);
+}
+
+.md :deep(table tr:nth-child(2n)) {
+	background-color: var(--background-page);
+}
+
+.md :deep(table tr th) {
+	margin: 0;
+	padding: 8px 20px;
+	font-weight: bold;
+	text-align: left;
+	border: 1px solid var(--border-normal);
+}
+
+.md :deep(table tr td) {
+	margin: 0;
+	padding: 8px 20px;
+	text-align: left;
+	border: 1px solid var(--border-normal);
+}
+
+.md :deep(a:first-child h1),
+.md :deep(a:first-child h2),
+.md :deep(a:first-child h3),
+.md :deep(a:first-child h4),
+.md :deep(a:first-child h5),
+.md :deep(a:first-child h6) {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.md :deep(table tr th :first-child),
+.md :deep(table tr td :first-child) {
+	margin-top: 0;
+}
+
+.md :deep(table tr th :last-child),
+.md :deep(table tr td :last-child) {
+	margin-bottom: 0;
+}
+
+.md :deep(h1 a:hover),
+.md :deep(h2 a:hover),
+.md :deep(h3 a:hover),
+.md :deep(h4 a:hover),
+.md :deep(h5 a:hover),
+.md :deep(h6 a:hover) {
+	text-decoration: underline;
+}
+
+.md :deep(h1:hover a),
+.md :deep(h2:hover a),
+.md :deep(h3:hover a),
+.md :deep(h4:hover a),
+.md :deep(h5:hover a),
+.md :deep(h6:hover a) {
+	opacity: 1;
+}
+
+.md :deep(pre code),
+.md :deep(pre tt) {
+	background-color: transparent;
+	border: none;
+}
+
+.md :deep(h1 tt),
+.md :deep(h1 code),
+.md :deep(h2 tt),
+.md :deep(h2 code),
+.md :deep(h3 tt),
+.md :deep(h3 code),
+.md :deep(h4 tt),
+.md :deep(h4 code),
+.md :deep(h5 tt),
+.md :deep(h5 code),
+.md :deep(h6 tt),
+.md :deep(h6 code) {
+	font-size: inherit;
+}
+
+.md :deep(h1 p),
+.md :deep(h2 p),
+.md :deep(h3 p),
+.md :deep(h4 p),
+.md :deep(h5 p),
+.md :deep(h6 p) {
+	margin-top: 0;
+}
+
+.md :deep(ul),
+.md :deep(ol) {
+	margin: 20px 0;
+	padding-left: 20px;
+}
+
+.md :deep(ul li),
+.md :deep(ol li) {
+	margin: 8px 0;
+	line-height: 24px;
+}
+
+.md :deep(ul ul),
+.md :deep(ul ol),
+.md :deep(ol ul),
+.md :deep(ol ol) {
+	margin: 4px 0;
+}
+
+.md :deep(ul ul li),
+.md :deep(ul ol li),
+.md :deep(ol ul li),
+.md :deep(ol ol li) {
+	margin: 4px 0;
+	line-height: 24px;
+}
+
+.md :deep(img.no-margin) {
+	margin: 0;
+}
+
+.md :deep(img.full) {
+	width: 100%;
+}
+
+.md :deep(img.shadow) {
+	box-shadow: 0px 5px 10px 0px rgba(23, 41, 64, 0.1), 0px 2px 40px 0px rgba(23, 41, 64, 0.05);
+}
+
+.md.page-reference {
+	max-width: 1200px;
+}
+
+.md.page-reference :deep(hr) {
+	position: relative;
+	left: -2.5rem;
+	width: calc(100% + 5rem);
+	margin: 3rem 0;
+}
+
+.md.page-reference :deep(h2) {
+	margin-top: 3rem;
+	font-size: 2rem;
+	border-bottom: 0;
+}
+
+.md.page-reference :deep(h3) {
+	margin-top: 3rem;
+	margin-bottom: 0.5rem;
+	font-size: 1.2rem;
+}
+
+.md.page-reference :deep(h4) {
+	margin-top: 2rem;
+	margin-bottom: 0;
+}
+
+.md :deep(.heading-link) {
+	color: var(--foreground-subdued);
+	font-size: 16px;
+}
+
+.md :deep(.heading-link:hover) {
+	color: var(--primary-110);
+	text-decoration: none;
+}
+
+.md :deep(li p.first) {
+	display: inline-block;
+}
+
+.md :deep(.table-of-contents ul),
+.md :deep(.table-of-contents ol) {
+	margin-top: 0;
+}
+
+.md :deep(.table-of-contents ul li),
+.md :deep(.table-of-contents ol li) {
+	margin: 4px 0;
+}
+
+.md :deep(.hint) {
+	display: inline-block;
+	width: 100%;
+	margin: 20px 0;
+	padding: 0 20px;
+	background-color: var(--background-subdued);
+	border-left: 2px solid var(--primary);
+}
+
+.md :deep(.two-up) {
+	margin-top: 3rem;
+}
+
+.md :deep(.table-of-contents) {
+	margin-top: -20px;
+}
+
+.md :deep(.hint-title) {
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+	font-weight: bold;
+}
+
+.md :deep(.hint.tip) {
+	border-left: 2px solid var(--primary);
+}
+
+.md :deep(.hint.warning) {
+	background-color: var(--warning-10);
+	border-left: 2px solid var(--warning);
+}
+
+.md :deep(.hint.danger) {
+	background-color: var(--danger-10);
+	border-left: 2px solid var(--danger);
+}
+
+.md :deep(.two-up .right) {
+	margin-top: 50px;
+}
+
+.md :deep(.two-up .right h5) {
+	margin-top: 20px;
+	color: var(--foreground-subdued);
+}
+
+.md.page-reference :deep(.definitions) {
+	font-size: 0.9rem;
+	line-height: 1.5rem;
+}
+
+.md.page-reference :deep(.definitions > p) {
+	margin: 0;
+	padding: 0.8rem 0;
+	border-bottom: 2px solid var(--border-subdued);
+}
+
+.md.page-reference :deep(.definitions > p:first-child) {
+	border-top: 2px solid var(--border-subdued);
+}
+
+.md.page-reference :deep(.definitions > p > code:first-child) {
+	margin-right: 0.2rem;
+	padding: 0;
+	font-weight: 700;
+	font-size: 0.9rem;
+	background: transparent;
+	border: 0;
+}
+
+.md.page-reference :deep(.definitions > p > strong) {
+	color: var(--foreground-subdued);
+}
+
+@media (min-width: 1000px) {
+	.md :deep(.two-up) {
+		display: grid;
+		grid-gap: 40px;
+		grid-template-columns: minmax(0, 4fr) minmax(0, 3fr);
+		align-items: start;
 	}
 
-	&.page-reference {
-		max-width: 1200px;
+	.md :deep(.two-up .right) {
+		position: sticky;
+		top: 100px;
+		margin-top: 0;
+	}
 
-		::v-deep {
-			hr {
-				width: calc(100% + 5rem);
-				left: -2.5rem;
-				position: relative;
-				margin: 3rem 0;
-			}
-
-			h2 {
-				border-bottom: 0;
-				margin-top: 3rem;
-				font-size: 2rem;
-			}
-
-			h3 {
-				margin-top: 3rem;
-				margin-bottom: 0.5rem;
-				font-size: 1.2rem;
-			}
-
-			h4 {
-				margin-top: 2rem;
-				margin-bottom: 0;
-			}
-
-			.definitions {
-				font-size: 0.9rem;
-				line-height: 1.5rem;
-
-				> p {
-					border-bottom: 2px solid var(--border-subdued);
-					padding: 0.8rem 0;
-					margin: 0;
-
-					&:first-child {
-						border-top: 2px solid var(--border-subdued);
-					}
-
-					> code:first-child {
-						background: transparent;
-						padding: 0;
-						margin-right: 0.2rem;
-						font-weight: 700;
-						font-size: 0.9rem;
-						border: 0;
-					}
-
-					> strong {
-						color: var(--foreground-subdued);
-					}
-				}
-			}
-		}
+	.md :deep(.two-up .left > *:first-child),
+	.md :deep(.two-up .right > *:first-child) {
+		margin-top: 0 !important;
 	}
 }
 </style>

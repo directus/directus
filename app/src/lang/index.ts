@@ -1,13 +1,11 @@
 import { RequestError } from '@/api';
-import Vue from 'vue';
-import VueI18n, { TranslateResult } from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
 import dateFormats from './date-formats.yaml';
 import enUSBase from './translations/en-US.yaml';
 
-Vue.use(VueI18n);
-
-export const i18n = new VueI18n({
+export const i18n = createI18n({
+	legacy: false,
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {
@@ -21,10 +19,8 @@ export type Language = keyof typeof availableLanguages;
 
 export const loadedLanguages: Language[] = ['en-US'];
 
-export default i18n;
-
-export function translateAPIError(error: RequestError | string): TranslateResult {
-	const defaultMsg = i18n.t('unexpected_error');
+export function translateAPIError(error: RequestError | string): string {
+	const defaultMsg = i18n.global.t('unexpected_error');
 
 	let code = error;
 
@@ -36,7 +32,7 @@ export function translateAPIError(error: RequestError | string): TranslateResult
 	if (!code === undefined) return defaultMsg;
 	const key = `errors.${code}`;
 
-	const exists = i18n.te(key);
+	const exists = i18n.global.te(key);
 	if (exists === false) return defaultMsg;
-	return i18n.t(key);
+	return i18n.global.t(key);
 }

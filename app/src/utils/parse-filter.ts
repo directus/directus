@@ -14,8 +14,8 @@ export function parseFilter(filter: Record<string, any>): Record<string, any> {
 		}
 
 		if (val === '$NOW') return new Date();
-		if (val === '$CURRENT_USER') return userStore.state?.currentUser?.id || null;
-		if (val === '$CURRENT_ROLE') return userStore.state?.currentUser?.role?.id || null;
+		if (val === '$CURRENT_USER') return userStore?.currentUser?.id || null;
+		if (val === '$CURRENT_ROLE') return userStore?.currentUser?.role?.id || null;
 
 		return val;
 	});

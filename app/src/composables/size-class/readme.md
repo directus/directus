@@ -18,7 +18,7 @@ A component that uses this composition and the corresponding props will accept t
 ## Usage
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class/';
 
 export default defineComponent({

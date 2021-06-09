@@ -1,5 +1,10 @@
 <template>
-	<span v-if="_active" class="v-chip" :class="[sizeClass, { outlined, label, disabled, close }]" @click="onClick">
+	<span
+		v-if="internalActive"
+		class="v-chip"
+		:class="[sizeClass, { outlined, label, disabled, close }]"
+		@click="onClick"
+	>
 		<span class="chip-content">
 			<slot />
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
@@ -10,10 +15,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
+	emits: ['update:active', 'click', 'close'],
 	props: {
 		active: {
 			type: Boolean,
@@ -42,22 +48,22 @@ export default defineComponent({
 		...sizeProps,
 	},
 	setup(props, { emit }) {
-		const _localActive = ref(true);
+		const internalLocalActive = ref(true);
 
-		const _active = computed<boolean>({
+		const internalActive = computed<boolean>({
 			get: () => {
 				if (props.active !== null) return props.active;
-				return _localActive.value;
+				return internalLocalActive.value;
 			},
 			set: (active: boolean) => {
 				emit('update:active', active);
-				_localActive.value = active;
+				internalLocalActive.value = active;
 			},
 		});
 
 		const sizeClass = useSizeClass(props);
 
-		return { sizeClass, _active, onClick, onCloseClick };
+		return { sizeClass, internalActive, onClick, onCloseClick };
 
 		function onClick(event: MouseEvent) {
 			if (props.disabled) return;
@@ -66,7 +72,7 @@ export default defineComponent({
 
 		function onCloseClick(event: MouseEvent) {
 			if (props.disabled) return;
-			_active.value = !_active.value;
+			internalActive.value = !internalActive.value;
 			emit('close', event);
 		}
 	},
@@ -113,6 +119,7 @@ body {
 		color: var(--v-chip-color);
 		background-color: var(--v-chip-background-color);
 		border-color: var(--v-chip-background-color);
+
 		&:hover {
 			color: var(--v-chip-color);
 			background-color: var(--v-chip-background-color);

@@ -1,5 +1,5 @@
 <template>
-	<private-view class="collections-overview" :title="$tc('collections')">
+	<private-view class="collections-overview" :title="t('collections')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="box" />
@@ -13,44 +13,44 @@
 
 		<v-table
 			v-if="navItems.length > 0"
-			:headers.sync="tableHeaders"
+			v-model:headers="tableHeaders"
 			:items="navItems"
 			show-resize
 			fixed-header
 			@click:row="navigateToCollection"
 		>
-			<template #item.icon="{ item }">
+			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="$t('no_collections')" v-else center>
+		<v-info icon="box" :title="t('no_collections')" v-else center>
 			<template v-if="isAdmin">
-				{{ $t('no_collections_copy_admin') }}
-			</template>
-			<template #append v-if="isAdmin">
-				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				{{ t('no_collections_copy_admin') }}
 			</template>
 			<template v-else>
-				{{ $t('no_collections_copy') }}
+				{{ t('no_collections_copy') }}
+			</template>
+			<template #append v-if="isAdmin">
+				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 		</v-info>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_collections_overview'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_collections_overview'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
-import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../composables/use-navigation';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 
 import { md } from '@/utils/md';
@@ -63,6 +63,10 @@ export default defineComponent({
 	},
 	props: {},
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const userStore = useUserStore();
 
 		const tableHeaders = [
@@ -73,12 +77,12 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.t('name'),
+				text: t('name'),
 				value: 'name',
 				width: 240,
 			},
 			{
-				text: i18n.t('note'),
+				text: t('note'),
 				value: 'note',
 				width: 360,
 			},
@@ -86,15 +90,9 @@ export default defineComponent({
 
 		const { navItems } = useNavigation();
 
-		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return {
-			tableHeaders,
-			navItems,
-			navigateToCollection,
-			isAdmin,
-			md,
-		};
+		return { t, tableHeaders, navItems, navigateToCollection, isAdmin, md };
 
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);
@@ -107,7 +105,7 @@ export default defineComponent({
 .icon {
 	--v-icon-color: var(--foreground-subdued);
 
-	::v-deep i {
+	:deep(i) {
 		vertical-align: unset;
 	}
 }

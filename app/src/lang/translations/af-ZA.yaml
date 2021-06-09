@@ -91,7 +91,7 @@ template: Modelvorm
 interfaces:
   input-code:
     code: Kode
-  collection:
+  system-collection:
     collection: Versameling
   files:
     files: Lêers

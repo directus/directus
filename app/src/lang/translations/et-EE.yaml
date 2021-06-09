@@ -878,7 +878,7 @@ interfaces:
     description: Kirjuta või jaga koodilõike
     line_number: Rea number
     placeholder: Sisesta kood siia...
-  collection:
+  system-collection:
     collection: Kogud
     description: Vali olemasolevate andmekogude seast
     include_system_collections: Lisa süsteemsed andmekogud

@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<span class="null">--</span>
 </template>
 

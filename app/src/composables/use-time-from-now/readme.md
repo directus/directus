@@ -9,7 +9,7 @@ Composable that can be used to create a relative time format that is auto update
 ## Usage
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useTimeFromNow } from '@/composables/use-time-from-now';
 
 export default defineComponent({

@@ -161,7 +161,7 @@ value: Nilai
 interfaces:
   presentation-links:
     primary: Utama
-  collection:
+  system-collection:
     collection: Koleksi
   system-collections:
     collections: Koleksi-koleksi

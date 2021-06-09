@@ -1,18 +1,30 @@
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
-import { computed, ComputedRef, Ref, ref } from '@vue/composition-api';
+import { Collection, Field } from '@/types';
+import { computed, ref, Ref, ComputedRef } from 'vue';
 
-export function useCollection(collectionKey: string | Ref<string | null>): Record<string, ComputedRef> {
+type UsableCollection = {
+	info: ComputedRef<Collection | null>;
+	fields: ComputedRef<Field[]>;
+	defaults: Record<string, any>;
+	primaryKeyField: ComputedRef<Field | null>;
+	userCreatedField: ComputedRef<Field | null>;
+	sortField: ComputedRef<string | null>;
+	isSingleton: ComputedRef<boolean>;
+	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
+};
+
+export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
 	const collection: Ref<string | null> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
-		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);
+		return collectionsStore.collections.find(({ collection: key }) => key === collection.value) || null;
 	});
 
-	const fields = computed<Field[]>(() => {
+	const fields = computed(() => {
+		if (!collection.value) return [];
 		return fieldsStore.getFieldsForCollection(collection.value);
 	});
 
@@ -31,10 +43,10 @@ export function useCollection(collectionKey: string | Ref<string | null>): Recor
 	});
 
 	const primaryKeyField = computed(() => {
-		// Every collection has a primary key; rules of the land
-		return fields.value.find(
-			(field) => field.collection === collection.value && field.schema?.is_primary_key === true
-		)!;
+		return (
+			fields.value.find((field) => field.collection === collection.value && field.schema?.is_primary_key === true) ||
+			null
+		);
 	});
 
 	const userCreatedField = computed(() => {

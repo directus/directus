@@ -11,12 +11,12 @@
 			<p v-if="text" class="text selectable">{{ text }}</p>
 		</div>
 
-		<v-icon v-if="showClose" name="close" @click="close" class="close" />
+		<v-icon v-if="showClose" name="close" clickable @click="close" class="close" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({

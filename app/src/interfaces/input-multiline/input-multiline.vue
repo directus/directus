@@ -1,18 +1,19 @@
 <template>
 	<v-textarea
 		v-bind="{ placeholder, trim }"
-		:value="value"
+		:model-value="value"
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
-		@input="$listeners.input"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

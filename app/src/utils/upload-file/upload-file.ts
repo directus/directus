@@ -1,6 +1,6 @@
 import api from '@/api';
 import emitter, { Events } from '@/events';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '../unexpected-error';
 
@@ -39,7 +39,7 @@ export default async function uploadFile(
 
 		if (options?.notifications) {
 			notify({
-				title: i18n.t('upload_file_success'),
+				title: i18n.global.t('upload_file_success'),
 				type: 'success',
 			});
 		}
