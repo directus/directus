@@ -7,8 +7,8 @@ import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
-import mailer from '../../mailer';
-import { SendMailOptions } from 'nodemailer';
+import getMailer from '../../mailer';
+import { Transporter, SendMailOptions } from 'nodemailer';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -26,16 +26,23 @@ export class MailService {
 	schema: SchemaOverview;
 	accountability: Accountability | null;
 	knex: Knex;
+	mailer: Transporter;
 
 	constructor(opts: AbstractServiceOptions) {
 		this.schema = opts.schema;
 		this.accountability = opts.accountability || null;
 		this.knex = opts?.knex || getDatabase();
+		this.mailer = getMailer();
+
+		this.mailer.verify((error) => {
+			if (error) {
+				logger.warn(`Email connection failed:`);
+				logger.warn(error);
+			}
+		});
 	}
 
 	async send(options: EmailOptions): Promise<void> {
-		if (!mailer) return;
-
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
@@ -55,7 +62,7 @@ export class MailService {
 		}
 
 		try {
-			await mailer.sendMail({ ...emailOptions, from, html });
+			await this.mailer.sendMail({ ...emailOptions, from, html });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);
