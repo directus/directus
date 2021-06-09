@@ -8,7 +8,22 @@ type LinkSelection = {
 	newTab: boolean;
 };
 
-export default function useLink(editor: Ref<any>): Record<string, any> {
+type LinkButton = {
+	icon: string;
+	tooltip: string;
+	onAction: (buttonApi: any) => void;
+	onSetup: (buttonApi: any) => () => void;
+};
+
+type UsableLink = {
+	linkDrawerOpen: Ref<boolean>;
+	linkSelection: Ref<LinkSelection>;
+	closeLinkDrawer: () => void;
+	saveLink: () => void;
+	linkButton: LinkButton;
+};
+
+export default function useLink(editor: Ref<any>): UsableLink {
 	const linkDrawerOpen = ref(false);
 	const linkSelection = ref<LinkSelection>({
 		url: null,

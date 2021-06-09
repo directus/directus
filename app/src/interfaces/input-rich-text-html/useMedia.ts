@@ -9,7 +9,29 @@ type MediaSelection = {
 	height?: number;
 };
 
-export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
+type MediaButton = {
+	icon: string;
+	tooltip: string;
+	onAction: (buttonApi: any) => void;
+	onSetup: (buttonApi: any) => () => void;
+};
+
+type UsableMedia = {
+	mediaDrawerOpen: Ref<boolean>;
+	mediaSelection: Ref<MediaSelection | null>;
+	closeMediaDrawer: () => void;
+	openMediaTab: Ref<string[]>;
+	onMediaSelect: (media: Record<string, any>) => void;
+	embed: Ref<string>;
+	saveMedia: () => void;
+	startEmbed: Ref<string>;
+	mediaHeight: Ref<number | undefined>;
+	mediaWidth: Ref<number | undefined>;
+	mediaSource: Ref<any>;
+	mediaButton: MediaButton;
+};
+
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video']);

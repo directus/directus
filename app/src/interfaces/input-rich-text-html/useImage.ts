@@ -10,7 +10,23 @@ type ImageSelection = {
 	height?: number;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
+type ImageButton = {
+	icon: string;
+	tooltip: string;
+	onAction: (buttonApi: any) => void;
+	onSetup: (buttonApi: any) => () => void;
+};
+
+type UsableImage = {
+	imageDrawerOpen: Ref<boolean>;
+	imageSelection: Ref<ImageSelection | null>;
+	closeImageDrawer: () => void;
+	onImageSelect: (image: Record<string, any>) => void;
+	saveImage: () => void;
+	imageButton: ImageButton;
+};
+
+export default function useImage(editor: Ref<any>, imageToken: Ref<string>): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
