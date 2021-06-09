@@ -7,6 +7,7 @@
 			:exact="exact"
 			:disabled="disabled"
 			:dense="dense"
+			clickable
 			@click="onClick"
 		>
 			<slot name="activator" :active="groupActive" />
@@ -23,10 +24,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		multiple: {
 			type: Boolean,
@@ -48,6 +50,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: false,
+		},
 		scope: {
 			type: String,
 			default: undefined,
@@ -61,7 +67,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners, emit }) {
+	setup(props, { emit }) {
 		const { active: groupActive, toggle } = useGroupable({
 			group: props.scope,
 			value: props.value,
@@ -71,7 +77,7 @@ export default defineComponent({
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
-			if (listeners.click) return emit('click', event);
+			if (props.clickable) return emit('click', event);
 
 			event.stopPropagation();
 			toggle();

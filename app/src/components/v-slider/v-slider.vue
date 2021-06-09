@@ -1,13 +1,13 @@
 <template>
 	<div class="v-slider" :style="styles">
-		<div v-if="$slots['prepend']" class="prepend">
-			<slot name="prepend" :value="value" />
+		<div v-if="$slots.prepend" class="prepend">
+			<slot name="prepend" :value="modelValue" />
 		</div>
 		<div class="slider" :class="{ disabled }">
 			<input
 				:disabled="disabled"
 				type="range"
-				:value="value"
+				:value="modelValue"
 				:max="max"
 				:min="min"
 				:step="step"
@@ -20,22 +20,23 @@
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
 				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
-					<slot name="thumb-label type-text" :value="value">
-						{{ value }}
+					<slot name="thumb-label type-text" :value="modelValue">
+						{{ modelValue }}
 					</slot>
 				</div>
 			</div>
 		</div>
-		<div v-if="$slots['append']" class="append">
-			<slot name="append" :value="value" />
+		<div v-if="$slots.append" class="append">
+			<slot name="append" :value="modelValue" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['change', 'update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -65,16 +66,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Number,
 			default: 0,
 		},
 	},
 	setup(props, { emit }) {
 		const styles = computed(() => {
-			if (props.value === null) return { '--_v-slider-percentage': 50 };
+			if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
 
-			let percentage = ((props.value - props.min) / (props.max - props.min)) * 100;
+			let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
 			if (isNaN(percentage)) percentage = 0;
 			return { '--_v-slider-percentage': percentage };
 		});
@@ -92,7 +93,7 @@ export default defineComponent({
 
 		function onInput(event: InputEvent) {
 			const target = event.target as HTMLInputElement;
-			emit('input', Number(target.value));
+			emit('update:modelValue', Number(target.value));
 		}
 	},
 });
@@ -244,6 +245,7 @@ body {
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+
 			&.visible {
 				opacity: 1;
 			}
@@ -253,6 +255,7 @@ body {
 		&:focus-within:not(.disabled) {
 			input {
 				height: 4px;
+
 				&::-webkit-slider-thumb {
 					width: 12px;
 					height: 12px;
@@ -269,6 +272,7 @@ body {
 					cursor: ew-resize;
 				}
 			}
+
 			.thumb-label {
 				opacity: 1;
 			}

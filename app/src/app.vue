@@ -1,13 +1,13 @@
 <template>
-	<div id="app" :style="brandStyle">
+	<div id="directus" :style="brandStyle">
 		<transition name="fade">
 			<div class="hydrating" v-if="hydrating">
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>
 
-		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error :error="error" />
@@ -16,15 +16,13 @@
 
 		<router-view v-else-if="!hydrating" />
 
-		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
-		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
-
-		<mounting-portal mount-to="#custom-css" target-tag="style">{{ customCSS }}</mounting-portal>
+		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, toRefs, watch, computed, provide } from 'vue';
 import * as stores from '@/stores';
 import api, { addTokenToURL } from '@/api';
 import axios from 'axios';
@@ -34,27 +32,26 @@ import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { useAppStore, useUserStore, useServerStore } = stores;
 
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
 
-		const { hydrating, sidebarOpen } = toRefs(appStore.state);
+		const { hydrating, sidebarOpen } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.state.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
-		watch(
-			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
-			() => {
-				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
-			}
-		);
+		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
+			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
+		});
 
 		const { width } = useWindowSize();
 
@@ -74,7 +71,7 @@ export default defineComponent({
 		);
 
 		watch(
-			() => userStore.state.currentUser,
+			() => userStore.currentUser,
 			(newUser) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');
@@ -93,17 +90,17 @@ export default defineComponent({
 		);
 
 		watch(
-			() => serverStore.state.info?.project?.project_name,
+			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
 			}
 		);
 
 		const customCSS = computed(() => {
-			return serverStore.state?.info?.project?.custom_css || '';
+			return serverStore.info?.project?.custom_css || '';
 		});
 
-		const error = computed(() => appStore.state.error);
+		const error = computed(() => appStore.error);
 
 		/**
 		 * This allows custom extensions to use the apps internals
@@ -115,13 +112,17 @@ export default defineComponent({
 			addTokenToURL,
 		});
 
-		return { hydrating, brandStyle, error, customCSS };
+		return { t, hydrating, brandStyle, error, customCSS };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-#app {
+:global(#app) {
+	height: 100%;
+}
+
+#directus {
 	height: 100%;
 }
 
@@ -142,7 +143,7 @@ export default defineComponent({
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
 }

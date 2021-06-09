@@ -1,67 +1,62 @@
 <template>
 	<v-drawer
-		:title="$t('creating_new_collection')"
-		:active="true"
+		:title="t('creating_new_collection')"
+		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		@cancel="$router.push('/settings/data-model')"
-		:sidebar-label="$t(currentTab)"
+		@cancel="router.push('/settings/data-model')"
+		:sidebar-label="t(currentTab[0])"
 	>
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
-				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
+				<v-tab value="collection_setup">{{ t('collection_setup') }}</v-tab>
 				<v-tab value="optional_system_fields" :disabled="!collectionName">
-					{{ $t('optional_system_fields') }}
+					{{ t('optional_system_fields') }}
 				</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items class="content" v-model="currentTab">
 			<v-tab-item value="collection_setup">
-				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
+				<v-notice type="info">{{ t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
 					<div class="field half">
 						<div class="type-label">
-							{{ $t('name') }}
-							<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
+							{{ t('name') }}
+							<v-icon class="required" v-tooltip="t('required')" name="star" sup />
 						</div>
 						<v-input
 							autofocus
 							class="monospace"
 							v-model="collectionName"
 							db-safe
-							:placeholder="$t('a_unique_table_name')"
+							:placeholder="t('a_unique_table_name')"
 						/>
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ $t('singleton') }}</div>
-						<v-checkbox block :label="$t('singleton_label')" v-model="singleton" />
+						<div class="type-label">{{ t('singleton') }}</div>
+						<v-checkbox block :label="t('singleton_label')" v-model="singleton" />
 					</div>
 					<v-divider class="full" />
 					<div class="field half">
-						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input
-							class="monospace"
-							v-model="primaryKeyFieldName"
-							db-safe
-							:placeholder="$t('a_unique_column_name')"
-						/>
+						<div class="type-label">{{ t('primary_key_field') }}</div>
+						<v-input class="monospace" v-model="primaryKeyFieldName" db-safe :placeholder="t('a_unique_column_name')" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ $t('type') }}</div>
+						<div class="type-label">{{ t('type') }}</div>
 						<v-select
 							:items="[
 								{
-									text: $t('auto_increment_integer'),
+									text: t('auto_increment_integer'),
 									value: 'auto_int',
 								},
 								{
-									text: $t('generated_uuid'),
+									text: t('generated_uuid'),
 									value: 'uuid',
 								},
 								{
-									text: $t('manual_string'),
+									text: t('manual_string'),
 									value: 'manual',
 								},
 							]"
@@ -71,7 +66,7 @@
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
+				<v-notice type="info">{{ t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
 					<div
@@ -80,12 +75,13 @@
 						:key="field"
 						:class="index % 2 === 0 ? 'half' : 'half-right'"
 					>
-						<div class="type-label">{{ $t(info.label) }}</div>
+						<div class="type-label">{{ t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
-							@click.native="info.enabled = true"
+							clickable
+							@click="info.enabled = true"
 						>
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />
@@ -101,48 +97,52 @@
 		</v-tabs-items>
 
 		<template #actions>
-			<div>
-				<v-button
-					:disabled="!collectionName || collectionName.length === 0"
-					v-if="currentTab[0] === 'collection_setup'"
-					@click="currentTab = ['optional_system_fields']"
-					v-tooltip.bottom="$t('next')"
-					icon
-					rounded
-				>
-					<v-icon name="arrow_forward" />
-				</v-button>
-
-				<v-button
-					v-if="currentTab[0] === 'optional_system_fields'"
-					@click="save"
-					:loading="saving"
-					v-tooltip.bottom="$t('finish_setup')"
-					icon
-					rounded
-				>
-					<v-icon name="check" />
-				</v-button>
-			</div>
+			<v-button
+				:disabled="!collectionName || collectionName.length === 0"
+				v-if="currentTab[0] === 'collection_setup'"
+				@click="currentTab = ['optional_system_fields']"
+				v-tooltip.bottom="t('next')"
+				icon
+				rounded
+			>
+				<v-icon name="arrow_forward" />
+			</v-button>
+			<v-button
+				v-if="currentTab[0] === 'optional_system_fields'"
+				@click="save"
+				:loading="saving"
+				v-tooltip.bottom="t('finish_setup')"
+				icon
+				rounded
+			>
+				<v-icon name="check" />
+			</v-button>
 		</template>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, reactive } from 'vue';
 import api from '@/api';
 import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
-import router from '@/router';
-import i18n from '@/lang';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const isOpen = useDialogRoute();
 
 		const currentTab = ref(['collection_setup']);
 
@@ -199,6 +199,9 @@ export default defineComponent({
 		const saving = ref(false);
 
 		return {
+			t,
+			router,
+			isOpen,
 			currentTab,
 			save,
 			systemFields,
@@ -239,7 +242,7 @@ export default defineComponent({
 				await fieldsStore.hydrate();
 
 				notify({
-					title: i18n.t('collection_created'),
+					title: t('collection_created'),
 					type: 'success',
 				});
 
@@ -487,20 +490,16 @@ export default defineComponent({
 	@include form-grid;
 }
 
-.system {
-	::v-deep .v-input {
-		.input {
-			color: var(--foreground-subdued);
-		}
+.system :deep(.v-input .input) {
+	color: var(--foreground-subdued);
+}
 
-		&.active .input {
-			color: var(--foreground-normal);
-		}
-	}
+.system :deep(.v-input .active .input) {
+	color: var(--foreground-normal);
+}
 
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-	}
+.system .v-icon {
+	--v-icon-color: var(--foreground-subdued);
 }
 
 .spacer {

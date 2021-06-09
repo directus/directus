@@ -13,14 +13,14 @@ relational or nested data.
 
 #### Props
 
-| Prop            | Description                                            | Default             | Type      |
-| --------------- | ------------------------------------------------------ | ------------------- | --------- |
-| `title`\*       | The title of the drawer                                |                     | `String`  |
-| `subtitle`      | The subtitle of the drawer                             | `null`              | `String`  |
-| `active`        | Can be used with `v-model` to open or close the drawer | `undefined`         | `Boolean` |
-| `persistent`    | Disallow closing the drawer by clicking out of it      | `false`             | `Boolean` |
-| `icon`          | An icon for the drawer                                 | `'box'`             | `String`  |
-| `sidebar-label` | A label for the sidebar                                | `i18n.t('sidebar')` | `String`  |
+| Prop            | Description                                            | Default                    | Type      |
+| --------------- | ------------------------------------------------------ | -------------------------- | --------- |
+| `title`\*       | The title of the drawer                                |                            | `String`  |
+| `subtitle`      | The subtitle of the drawer                             | `null`                     | `String`  |
+| `active`        | Can be used with `v-model` to open or close the drawer | `undefined`                | `Boolean` |
+| `persistent`    | Disallow closing the drawer by clicking out of it      | `false`                    | `Boolean` |
+| `icon`          | An icon for the drawer                                 | `'box'`                    | `String`  |
+| `sidebar-label` | A label for the sidebar                                | `i18n.global.t('sidebar')` | `String`  |
 
 #### Events
 

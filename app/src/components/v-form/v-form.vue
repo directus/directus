@@ -2,15 +2,15 @@
 	<div class="v-form" ref="el" :class="gridClass">
 		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
 			<div>
-				<p>{{ $t('unknown_validation_errors') }}</p>
+				<p>{{ t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
 						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ $t('validationError.unique', validationError) }}
+							{{ t('validationError.unique', validationError) }}
 						</template>
 						<template v-else>
-							{{ $t(`validationError.${validationError.code}`, validationError) }}
+							{{ t(`validationError.${validationError.code}`, validationError) }}
 						</template>
 					</li>
 				</ul>
@@ -22,7 +22,7 @@
 			:field="field"
 			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
-			:value="(edits || {})[field.field]"
+			:model-value="(modelValue || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
 			:disabled="disabled"
 			:batch-mode="batchMode"
@@ -30,7 +30,7 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-error="validationErrors.find((err) => err.field === field.field)"
-			@input="setValue(field, $event)"
+			@update:model-value="setValue(field, $event)"
 			@unset="unsetValue(field)"
 			@toggle-batch="toggleBatchField(field)"
 		/>
@@ -38,7 +38,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
@@ -54,10 +55,8 @@ type FieldValues = {
 };
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	components: { FormField },
-	model: {
-		prop: 'edits',
-	},
 	props: {
 		collection: {
 			type: String,
@@ -71,7 +70,7 @@ export default defineComponent({
 			type: Object as PropType<FieldValues>,
 			default: null,
 		},
-		edits: {
+		modelValue: {
 			type: Object as PropType<FieldValues>,
 			default: null,
 		},
@@ -102,11 +101,13 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const el = ref<Element>();
 		const fieldsStore = useFieldsStore();
 
 		const values = computed(() => {
-			return Object.assign({}, props.initialValues, props.edits);
+			return Object.assign({}, props.initialValues, props.modelValue);
 		});
 
 		const { formFields, gridClass } = useForm();
@@ -134,6 +135,7 @@ export default defineComponent({
 		provide('values', values);
 
 		return {
+			t,
 			el,
 			formFields,
 			gridClass,
@@ -205,16 +207,16 @@ export default defineComponent({
 		}
 
 		function setValue(field: Field, value: any) {
-			const edits = props.edits ? clone(props.edits) : {};
+			const edits = props.modelValue ? clone(props.modelValue) : {};
 			edits[field.field] = value;
-			emit('input', edits);
+			emit('update:modelValue', edits);
 		}
 
 		function unsetValue(field: Field) {
-			if (field.field in props.edits || {}) {
-				const newEdits = { ...props.edits };
+			if (field.field in (props.modelValue || {})) {
+				const newEdits = { ...props.modelValue };
 				delete newEdits[field.field];
-				emit('input', newEdits);
+				emit('update:modelValue', newEdits);
 			}
 		}
 

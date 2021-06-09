@@ -878,7 +878,7 @@ interfaces:
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
     placeholder: Wprowadź kod tutaj...
-  collection:
+  system-collection:
     collection: Kolekcja
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe

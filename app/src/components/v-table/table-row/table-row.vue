@@ -1,33 +1,33 @@
-<template functional>
+<template>
 	<tr
 		class="table-row"
-		:class="{ subdued: props.subdued, clickable: props.hasClickListener }"
-		@click="listeners.click"
+		:class="{ subdued: subdued, clickable: hasClickListener }"
+		@click="$emit('click')"
 		:style="{
-			'--table-row-height': props.height + 2 + 'px',
+			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
 	>
-		<td v-if="props.showManualSort" class="manual cell" @click.stop>
-			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': props.sortedManually }" />
+		<td v-if="showManualSort" class="manual cell" @click.stop>
+			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="props.showSelect" class="select cell" @click.stop>
-			<v-checkbox :inputValue="props.isSelected" @change="listeners['item-selected']" />
+		<td v-if="showSelect" class="select cell" @click.stop>
+			<v-checkbox :model-value="isSelected" @update:model-value="$emit('item-selected', $event)" />
 		</td>
 
-		<td class="cell" :class="`align-${header.align}`" v-for="header in props.headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="props.item">
+		<td class="cell" :class="`align-${header.align}`" v-for="header in headers" :key="header.value">
+			<slot :name="`item.${header.value}`" :item="item">
 				<v-text-overflow
 					v-if="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
-						}, props.item)
+						}, item)
 					"
 					:text="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
-						}, props.item)
+						}, item)
 					"
 				/>
 				<value-null v-else />
@@ -35,17 +35,18 @@
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$scopedSlots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell" @click.stop>
 			<slot name="item-append" />
 		</td>
 	</tr>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 import { Header } from '../types';
 
 export default defineComponent({
+	emits: ['click', 'item-selected'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,

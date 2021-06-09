@@ -14,7 +14,7 @@
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
 						<v-list-item-content>
-							<v-text-overflow :text="$t('file_library')" />
+							<v-text-overflow :text="t('file_library')" />
 						</v-list-item-content>
 					</template>
 
@@ -30,41 +30,38 @@
 
 		<v-divider />
 
-		<v-list-item to="/files/all" exact>
+		<v-list-item to="/files/all">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('all_files')" />
+				<v-text-overflow :text="t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/mine" exact>
+		<v-list-item to="/files/mine">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('my_files')" />
+				<v-text-overflow :text="t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/recent" exact>
+		<v-list-item to="/files/recent">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="$t('recent_files')" />
+				<v-text-overflow :text="t('recent_files')" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, watch } from 'vue';
 import useFolders, { Folder } from '../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 
 export default defineComponent({
 	components: { NavigationFolder },
-	model: {
-		prop: 'currentFolder',
-		event: 'filter',
-	},
 	props: {
 		currentFolder: {
 			type: String,
@@ -72,13 +69,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
 
 		setOpenFolders();
 
 		watch(() => props.currentFolder, setOpenFolders);
 
-		return { folders, nestedFolders, error, loading, openFolders };
+		return { t, folders, nestedFolders, error, loading, openFolders };
 
 		function setOpenFolders() {
 			if (!folders.value) return [];
@@ -125,7 +124,7 @@ export default defineComponent({
 	width: 100%;
 	overflow-x: hidden;
 
-	::v-deep .v-list-item-content {
+	:deep(.v-list-item-content) {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

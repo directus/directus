@@ -2,7 +2,8 @@ import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
 import { defineModule } from '@/modules/define';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import { ref } from '@vue/composition-api';
+import RouterPass from '@/utils/router-passthrough';
+import { ref } from 'vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
@@ -26,130 +27,151 @@ export default defineModule({
 	color: 'var(--warning)',
 	routes: [
 		{
-			path: '/',
-			redirect: '/data-model',
+			path: '',
+			redirect: '/settings/data-model',
 		},
 		{
 			name: 'settings-project',
-			path: '/project',
+			path: 'project',
 			component: Project,
 		},
 		{
-			name: 'settings-collections',
-			path: '/data-model',
-			component: Collections,
-			beforeEnter(to, from, next) {
-				const collectionsStore = useCollectionsStore();
-				collectionsStore.hydrate();
-				next();
-			},
+			path: 'data-model',
+			component: RouterPass,
 			children: [
 				{
-					path: '+',
-					name: 'settings-add-new',
-					components: {
-						add: NewCollection,
+					name: 'settings-collections',
+					path: '',
+					component: Collections,
+					beforeEnter() {
+						const collectionsStore = useCollectionsStore();
+						collectionsStore.hydrate();
 					},
+					children: [
+						{
+							path: '+',
+							name: 'settings-add-new',
+							components: {
+								add: NewCollection,
+							},
+						},
+					],
 				},
-			],
-		},
-		{
-			name: 'settings-fields',
-			path: '/data-model/:collection',
-			component: Fields,
-			async beforeEnter(to, from, next) {
-				const { info } = useCollection(ref(to.params.collection));
-				const fieldsStore = useFieldsStore();
+				{
+					name: 'settings-fields',
+					path: ':collection',
+					component: Fields,
+					async beforeEnter(to) {
+						const { info } = useCollection(ref(to.params.collection as string));
+						const fieldsStore = useFieldsStore();
 
-				if (!info.value?.meta) {
-					await api.patch(`/collections/${to.params.collection}`, { meta: {} });
-				}
+						if (!info.value?.meta) {
+							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
+						}
 
-				fieldsStore.hydrate();
-
-				next();
-			},
-			props: (route) => ({
-				collection: route.params.collection,
-				field: route.params.field,
-				type: route.query.type,
-			}),
-			children: [
-				{
-					path: ':field',
-					name: 'settings-fields-field',
-					components: {
-						field: FieldDetail,
+						fieldsStore.hydrate();
 					},
+					props: (route) => ({
+						collection: route.params.collection,
+						field: route.params.field,
+						type: route.query.type,
+					}),
+					children: [
+						{
+							path: ':field',
+							name: 'settings-fields-field',
+							components: {
+								field: FieldDetail,
+							},
+						},
+					],
 				},
 			],
 		},
 		{
-			name: 'settings-roles-collection',
-			path: '/roles',
-			component: RolesCollection,
+			path: 'roles',
+			component: RouterPass,
 			children: [
 				{
-					path: '+',
-					name: 'settings-add-new-role',
-					components: {
-						add: NewRole,
-					},
+					name: 'settings-roles-collection',
+					path: '',
+					component: RolesCollection,
+					children: [
+						{
+							path: '+',
+							name: 'settings-add-new-role',
+							components: {
+								add: NewRole,
+							},
+						},
+					],
+				},
+				{
+					path: 'public',
+					component: RolesPublicItem,
+					props: true,
+					children: [
+						{
+							path: ':permissionKey',
+							components: {
+								permissionsDetail: RolesPermissionsDetail,
+							},
+						},
+					],
+				},
+				{
+					name: 'settings-roles-item',
+					path: ':primaryKey',
+					component: RolesItem,
+					props: true,
+					children: [
+						{
+							path: ':permissionKey',
+							components: {
+								permissionsDetail: RolesPermissionsDetail,
+							},
+						},
+					],
 				},
 			],
 		},
 		{
-			path: '/roles/public',
-			component: RolesPublicItem,
-			props: true,
+			path: 'presets',
+			component: RouterPass,
 			children: [
 				{
-					path: ':permissionKey',
-					components: {
-						permissionsDetail: RolesPermissionsDetail,
-					},
+					name: 'settings-presets-collection',
+					path: '',
+					component: PresetsCollection,
+				},
+				{
+					name: 'settings-presets-item',
+					path: ':id',
+					component: PresetsItem,
+					props: true,
 				},
 			],
 		},
 		{
-			name: 'settings-roles-item',
-			path: '/roles/:primaryKey',
-			component: RolesItem,
-			props: true,
+			path: 'webhooks',
+			component: RouterPass,
 			children: [
 				{
-					path: ':permissionKey',
-					components: {
-						permissionsDetail: RolesPermissionsDetail,
-					},
+					name: 'settings-webhooks-collection',
+					path: '',
+					component: WebhooksCollection,
+				},
+				{
+					name: 'settings-webhooks-item',
+					path: ':primaryKey',
+					component: WebhooksItem,
+					props: true,
 				},
 			],
-		},
-		{
-			name: 'settings-presets-collection',
-			path: '/presets',
-			component: PresetsCollection,
-		},
-		{
-			name: 'settings-presets-item',
-			path: '/presets/:id',
-			component: PresetsItem,
-			props: true,
-		},
-		{
-			name: 'settings-webhooks-collection',
-			path: '/webhooks',
-			component: WebhooksCollection,
-		},
-		{
-			name: 'settings-webhooks-item',
-			path: '/webhooks/:primaryKey',
-			component: WebhooksItem,
-			props: true,
 		},
 		{
 			name: 'settings-not-found',
-			path: '*',
+			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],

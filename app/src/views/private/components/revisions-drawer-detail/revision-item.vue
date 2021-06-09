@@ -11,19 +11,20 @@
 				{{ user }}
 			</user-popover>
 
-			<span v-else>{{ $t('private_user') }}</span>
+			<span v-else>{{ t('private_user') }}</span>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
-import i18n from '@/lang';
 import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		revision: {
 			type: Object as PropType<Revision>,
@@ -35,6 +36,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const revisionCount = computed(() => {
 			return Object.keys(props.revision.delta).length;
 		});
@@ -42,20 +45,20 @@ export default defineComponent({
 		const headerMessage = computed(() => {
 			switch (props.revision.activity.action.toLowerCase()) {
 				case 'create':
-					return i18n.t('revision_delta_created');
+					return t('revision_delta_created');
 				case 'update':
-					return i18n.tc('revision_delta_updated', revisionCount.value);
+					return t('revision_delta_updated', revisionCount.value);
 				case 'delete':
-					return i18n.t('revision_delta_deleted');
+					return t('revision_delta_deleted');
 				case 'revert':
-					return i18n.t('revision_delta_reverted');
+					return t('revision_delta_reverted');
 				default:
-					return i18n.t('revision_delta_other');
+					return t('revision_delta_other');
 			}
 		});
 
 		const time = computed(() => {
-			return format(new Date(props.revision.activity.timestamp), String(i18n.t('date-fns_time')));
+			return format(new Date(props.revision.activity.timestamp), String(t('date-fns_time')));
 		});
 
 		const user = computed(() => {
@@ -63,10 +66,10 @@ export default defineComponent({
 				return userName(props.revision.activity.user);
 			}
 
-			return i18n.t('private_user');
+			return t('private_user');
 		});
 
-		return { headerMessage, time, user };
+		return { t, headerMessage, time, user };
 	},
 });
 </script>
@@ -135,6 +138,7 @@ export default defineComponent({
 
 	&:hover {
 		cursor: pointer;
+
 		.header {
 			.dot {
 				border-color: var(--background-normal-alt);

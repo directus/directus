@@ -1,30 +1,25 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import registerComponent from '@/utils/register-component/';
-import asyncPool from 'tiny-async-pool';
+import { asyncPool } from '@/utils/async-pool';
+import { App } from 'vue';
 import { getLayouts } from './index';
+import { LayoutConfig } from './types';
 
 const { layoutsRaw } = getLayouts();
 
-export async function registerLayouts(): Promise<void> {
-	const context = require.context('.', true, /^.*index\.ts$/);
+export async function registerLayouts(app: App): Promise<void> {
+	const layoutModules = import.meta.globEager('./*/**/index.ts');
 
-	const modules = context
-		.keys()
-		.map((key) => context(key))
-		.map((mod) => mod.default)
-		.filter((m) => m);
+	const layouts: LayoutConfig[] = Object.values(layoutModules).map((module) => module.default);
 
 	try {
 		const customResponse = await api.get('/extensions/layouts/');
-		const layouts: string[] = customResponse.data.data || [];
+		const customLayouts: string[] = customResponse.data.data || [];
 
-		await asyncPool(5, layouts, async (layoutName) => {
+		await asyncPool(5, customLayouts, async (layoutName) => {
 			try {
-				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/layouts/${layoutName}/index.js`
-				);
-				modules.push(result.default);
+				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/${layoutName}/index.js`);
+				layouts.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
 			}
@@ -33,9 +28,12 @@ export async function registerLayouts(): Promise<void> {
 		console.warn(`Couldn't load custom layouts`);
 	}
 
-	layoutsRaw.value = modules;
+	layoutsRaw.value = layouts;
 
 	layoutsRaw.value.forEach((layout) => {
-		registerComponent('layout-' + layout.id, layout.component);
+		app.component('layout-' + layout.id, layout.component);
+		app.component('layout-options-' + layout.id, layout.slots.options);
+		app.component('layout-sidebar-' + layout.id, layout.slots.sidebar);
+		app.component('layout-actions-' + layout.id, layout.slots.actions);
 	});
 }

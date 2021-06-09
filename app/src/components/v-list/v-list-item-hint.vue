@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -30,6 +30,7 @@ export default defineComponent({
 		&:first-child {
 			margin-right: 12px;
 		}
+
 		&:last-child {
 			margin-left: 12px;
 		}
@@ -41,20 +42,24 @@ export default defineComponent({
 			#{$this} {
 				margin-top: 4px;
 				margin-bottom: 4px;
+
 				&:not(:only-child) {
 					&:first-child {
 						margin-right: 16px;
 					}
+
 					&:last-child {
 						margin-left: 16px;
 					}
 				}
 			}
+
 			&.large {
 				&.three-line,
 				&.two-line {
 					#{$this} {
 						align-self: flex-start;
+
 						&.center {
 							align-self: center;
 						}

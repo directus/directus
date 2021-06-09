@@ -3,7 +3,7 @@
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
-					{{ $t('key') }}
+					{{ t('key') }}
 					<v-icon class="required" sup name="star" />
 				</div>
 				<v-input
@@ -13,33 +13,33 @@
 					v-model="fieldData.field"
 					:nullable="false"
 					db-safe
-					:placeholder="$t('a_unique_column_name')"
+					:placeholder="t('a_unique_column_name')"
 				/>
-				<small class="note" v-html="$t('schema_setup_key')" />
+				<small class="note" v-html="t('schema_setup_key')" />
 			</div>
 
 			<div class="field half">
 				<div class="label type-label">
-					{{ $t('type') }}
+					{{ t('type') }}
 					<v-icon class="required" sup name="star" />
 				</div>
-				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :model-value="t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
-					:value="fieldData.type"
+					:model-value="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@input="fieldData.type = $event"
+					@update:model-value="fieldData.type = $event"
 				/>
 			</div>
 
 			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
 				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('length') }}</div>
+					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
 						type="number"
-						:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
+						:placeholder="fieldData.type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || fieldData.type !== 'string'"
 						v-model="fieldData.schema.max_length"
 					/>
@@ -48,7 +48,7 @@
 
 			<template v-else>
 				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('precision_scale') }}</div>
+					<div class="label type-label">{{ t('precision_scale') }}</div>
 					<div class="precision-scale">
 						<v-input type="number" :placeholder="10" v-model="fieldData.schema.numeric_precision" />
 						<v-input type="number" :placeholder="5" v-model="fieldData.schema.numeric_scale" />
@@ -58,12 +58,12 @@
 
 			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
-					<div class="label type-label">{{ $t('on_create') }}</div>
+					<div class="label type-label">{{ t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
 				</div>
 
 				<div class="field half-right">
-					<div class="label type-label">{{ $t('on_update') }}</div>
+					<div class="label type-label">{{ t('on_update') }}</div>
 					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
 				</div>
 			</template>
@@ -71,17 +71,17 @@
 			<!-- @TODO see https://github.com/directus/directus/issues/639
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('unique') }}</div>
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
-					:label="$t('value_unique')"
-					:input-value="fieldData.schema.is_unique === false"
-					@change="fieldData.schema.is_unique = !$event"
+					:label="t('value_unique')"
+					:model-value="fieldData.schema.is_unique === false"
+					@update:model-value="fieldData.schema.is_unique = !$event"
 					block
 				/>
 			</div> -->
 
 			<div class="field full" v-if="fieldData.schema && fieldData.schema.is_primary_key !== true">
-				<div class="label type-label">{{ $t('default_value') }}</div>
+				<div class="label type-label">{{ t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
@@ -130,21 +130,21 @@
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('nullable') }}</div>
+				<div class="label type-label">{{ t('nullable') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_nullable"
-					@change="fieldData.schema.is_nullable = $event"
-					:label="$t('allow_null_value')"
+					:model-value="fieldData.schema.is_nullable"
+					@update:model-value="fieldData.schema.is_nullable = $event"
+					:label="t('allow_null_value')"
 					block
 				/>
 			</div>
 
 			<div class="field half-right" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('unique') }}</div>
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_unique"
-					@change="fieldData.schema.is_unique = $event"
-					:label="$t('value_unique')"
+					:model-value="fieldData.schema.is_unique"
+					@update:model-value="fieldData.schema.is_unique = $event"
+					:label="t('value_unique')"
 					block
 				/>
 			</div>
@@ -153,73 +153,74 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
+import { i18n } from '@/lang';
 import { state } from '../store';
 
 export const fieldTypes = [
 	{
-		text: i18n.t('string'),
+		text: i18n.global.t('string'),
 		value: 'string',
 	},
 	{
-		text: i18n.t('text'),
+		text: i18n.global.t('text'),
 		value: 'text',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('boolean'),
+		text: i18n.global.t('boolean'),
 		value: 'boolean',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('integer'),
+		text: i18n.global.t('integer'),
 		value: 'integer',
 	},
 	{
-		text: i18n.t('bigInteger'),
+		text: i18n.global.t('bigInteger'),
 		value: 'bigInteger',
 	},
 	{
-		text: i18n.t('float'),
+		text: i18n.global.t('float'),
 		value: 'float',
 	},
 	{
-		text: i18n.t('decimal'),
+		text: i18n.global.t('decimal'),
 		value: 'decimal',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('timestamp'),
+		text: i18n.global.t('timestamp'),
 		value: 'timestamp',
 	},
 	{
-		text: i18n.t('datetime'),
+		text: i18n.global.t('datetime'),
 		value: 'dateTime',
 	},
 	{
-		text: i18n.t('date'),
+		text: i18n.global.t('date'),
 		value: 'date',
 	},
 	{
-		text: i18n.t('time'),
+		text: i18n.global.t('time'),
 		value: 'time',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('json'),
+		text: i18n.global.t('json'),
 		value: 'json',
 	},
 	{
-		text: i18n.t('csv'),
+		text: i18n.global.t('csv'),
 		value: 'csv',
 	},
 	{
-		text: i18n.t('uuid'),
+		text: i18n.global.t('uuid'),
 		value: 'uuid',
 	},
 	{
-		text: i18n.t('hash'),
+		text: i18n.global.t('hash'),
 		value: 'hash',
 	},
 ];
@@ -236,6 +237,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const typesWithLabels = computed(() => {
 			return fieldTypes;
 		});
@@ -246,10 +249,10 @@ export default defineComponent({
 
 		const typePlaceholder = computed(() => {
 			if (props.type === 'm2o') {
-				return i18n.t('determined_by_relationship');
+				return t('determined_by_relationship');
 			}
 
-			return i18n.t('choose_a_type');
+			return t('choose_a_type');
 		});
 
 		const defaultValue = computed({
@@ -274,6 +277,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			fieldData: state.fieldData,
 			typesWithLabels,
 			typeDisabled,
@@ -293,19 +297,19 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					const options = [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('generate_and_save_uuid'),
+							text: t('generate_and_save_uuid'),
 							value: 'uuid',
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-created',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-created',
 						},
 					];
@@ -322,11 +326,11 @@ export default defineComponent({
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-created',
 						},
 					];
@@ -371,15 +375,15 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					const options = [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-updated',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-updated',
 						},
 					];
@@ -396,11 +400,11 @@ export default defineComponent({
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-updated',
 						},
 					];
@@ -442,7 +446,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
 .form {

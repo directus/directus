@@ -9,31 +9,28 @@
 		:disabled="disabled"
 		:class="{ checked: isChecked, indeterminate, block }"
 	>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
+		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
-			<input @click.stop class="custom-input" v-else v-model="_value" />
+			<input @click.stop class="custom-input" v-else v-model="internalValue" />
 		</span>
-		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
+		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</component>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	model: {
-		prop: 'inputValue',
-		event: 'change',
-	},
+	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
 	props: {
 		value: {
 			type: String,
 			default: null,
 		},
-		inputValue: {
+		modelValue: {
 			type: [Boolean, Array],
 			default: false,
 		},
@@ -71,14 +68,14 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = useSync(props, 'value', emit);
+		const internalValue = useSync(props, 'value', emit);
 
 		const isChecked = computed<boolean>(() => {
-			if (props.inputValue instanceof Array) {
-				return props.inputValue.includes(props.value);
+			if (props.modelValue instanceof Array) {
+				return props.modelValue.includes(props.value);
 			}
 
-			return props.inputValue === true;
+			return props.modelValue === true;
 		});
 
 		const icon = computed<string>(() => {
@@ -86,15 +83,15 @@ export default defineComponent({
 			return isChecked.value ? props.iconOn : props.iconOff;
 		});
 
-		return { isChecked, toggleInput, icon, _value };
+		return { isChecked, toggleInput, icon, internalValue };
 
 		function toggleInput(): void {
 			if (props.indeterminate === true) {
 				emit('update:indeterminate', false);
 			}
 
-			if (props.inputValue instanceof Array) {
-				const newValue = [...props.inputValue];
+			if (props.modelValue instanceof Array) {
+				const newValue = [...props.modelValue];
 
 				if (isChecked.value === false) {
 					newValue.push(props.value);
@@ -102,9 +99,9 @@ export default defineComponent({
 					newValue.splice(newValue.indexOf(props.value), 1);
 				}
 
-				emit('change', newValue);
+				emit('update:modelValue', newValue);
 			} else {
-				emit('change', !isChecked.value);
+				emit('update:modelValue', !isChecked.value);
 			}
 		}
 	},
@@ -196,6 +193,7 @@ body {
 		.checkbox {
 			--v-icon-color: var(--primary);
 		}
+
 		&.block {
 			background-color: var(--background-subdued);
 			border-color: var(--border-normal-alt);

@@ -2,10 +2,9 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
-			:to="`/files?folder=${folder.id}`"
+			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
-			exact
-			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -15,13 +14,12 @@
 
 		<v-list-group
 			v-else
-			:to="`/files?folder=${folder.id}`"
+			:to="`/files/folders/${folder.id}`"
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
-			exact
 			disable-groupable-parent
-			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="activateContextMenu"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -43,28 +41,28 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item @click="renameActive = true">
+				<v-list-item clickable @click="renameActive = true">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('rename_folder')" />
+						<v-text-overflow :text="t('rename_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="moveActive = true">
+				<v-list-item clickable @click="moveActive = true">
 					<v-list-item-icon>
 						<v-icon name="folder_move" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('move_to_folder')" />
+						<v-text-overflow :text="t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="deleteActive = true">
+				<v-list-item clickable @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('delete_folder')" />
+						<v-text-overflow :text="t('delete_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -72,14 +70,14 @@
 
 		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
 			<v-card>
-				<v-card-title>{{ $t('rename_folder') }}</v-card-title>
+				<v-card-title>{{ t('rename_folder') }}</v-card-title>
 				<v-card-text>
 					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -87,28 +85,28 @@
 
 		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
 			<v-card>
-				<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 				<v-card-text>
 					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="moveActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="moveSave" :loading="moveSaving">{{ $t('save') }}</v-button>
+					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
+					<v-button @click="moveSave" :loading="moveSaving">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_folder') }}</v-card-title>
+				<v-card-title>{{ t('delete_folder') }}</v-card-title>
 				<v-card-text>
 					<v-notice>
-						{{ $t('nested_files_folders_will_be_moved') }}
+						{{ t('nested_files_folders_will_be_moved') }}
 					</v-notice>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="deleteSave" :loading="deleteSaving">{{ $t('delete') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+					<v-button @click="deleteSave" :loading="deleteSaving">{{ t('delete') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -116,11 +114,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref } from 'vue';
 import useFolders, { Folder } from '../composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -141,6 +140,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
+		const contextMenu = ref();
+
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -148,6 +153,7 @@ export default defineComponent({
 		const { fetchFolders } = useFolders();
 
 		return {
+			t,
 			renameActive,
 			renameValue,
 			renameSave,
@@ -159,6 +165,8 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
+			contextMenu,
+			activateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -265,7 +273,7 @@ export default defineComponent({
 					await api.delete(`/folders/${props.folder.id}`);
 
 					if (newParent) {
-						router.push(`/files?folder=${newParent}`);
+						router.push(`/files/folders/${newParent}`);
 					} else {
 						router.push('/files');
 					}
@@ -278,6 +286,10 @@ export default defineComponent({
 					deleteSaving.value = false;
 				}
 			}
+		}
+
+		function activateContextMenu(event: PointerEvent) {
+			contextMenu.value.activate(event);
 		}
 	},
 });

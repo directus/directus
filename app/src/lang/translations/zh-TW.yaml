@@ -583,7 +583,7 @@ value: 值
 interfaces:
   input-code:
     code: 程式碼
-  collection:
+  system-collection:
     collection: 集合
   system-collections:
     collections: 資料集

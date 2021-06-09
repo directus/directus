@@ -870,7 +870,7 @@ interfaces:
     description: Kirjoita tai jaa koodipätkiä
     line_number: Rivinumero
     placeholder: Syötä koodi tähän...
-  collection:
+  system-collection:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat

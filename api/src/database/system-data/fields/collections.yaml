@@ -179,3 +179,19 @@ fields:
         - text: '$t:field_options.directus_collections.do_not_track_anything'
           value: null
     width: half
+
+  - field: duplication_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: content_copy
+      title: Duplication
+
+  - field: item_duplication_fields
+    special:
+      - json
+    interface: code
+    options:
+      language: JSON
