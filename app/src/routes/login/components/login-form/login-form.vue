@@ -47,7 +47,7 @@ export default defineComponent({
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
-		const error = ref<RequestError | null>(null);
+		const error = ref<RequestError | string | null>(null);
 		const otp = ref<string | null>(null);
 		const requiresTFA = ref(false);
 		const userStore = useUserStore();
@@ -57,6 +57,11 @@ export default defineComponent({
 		});
 
 		const errorFormatted = computed(() => {
+			// Show "Wrong username or password" for wrongly formatted emails as well
+			if (error.value === 'INVALID_PAYLOAD') {
+				return translateAPIError('INVALID_CREDENTIALS');
+			}
+
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
@@ -89,7 +94,7 @@ export default defineComponent({
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;
 				} else {
-					error.value = err;
+					error.value = err.response?.data?.errors?.[0]?.extensions?.code || err;
 				}
 			} finally {
 				loggingIn.value = false;

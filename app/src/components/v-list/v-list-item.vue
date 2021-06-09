@@ -227,7 +227,7 @@ body {
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
-		.v-icon {
+		:slotted(.v-icon) {
 			color: var(--foreground-subdued);
 
 			&:hover {
@@ -235,15 +235,15 @@ body {
 			}
 		}
 
-		.drag-handle {
+		:slotted(.drag-handle) {
 			cursor: grab;
 		}
 
-		.drag-handle:active {
+		:slotted(.drag-handle:active) {
 			cursor: grabbing;
 		}
 
-		.spacer {
+		:slotted(.spacer) {
 			flex-grow: 1;
 		}
 

@@ -7,32 +7,46 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 ### :sparkles: New Features
 
 - **API**
-  - [#6116](https://github.com/directus/directus/pull/6116) Add support for CRON hooks (interval) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6116](https://github.com/directus/directus/pull/6116) Add support for CRON hooks (interval)
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#6112](https://github.com/directus/directus/pull/6112) Make mfa output code selectable ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6112](https://github.com/directus/directus/pull/6112) Make mfa output code selectable
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **Docker**
-  - [#6081](https://github.com/directus/directus/pull/6081) Optimize Docker image performance and formatting ([@paescuj](https://github.com/paescuj))
+  - [#6081](https://github.com/directus/directus/pull/6081) Optimize Docker image performance and formatting
+    ([@paescuj](https://github.com/paescuj))
 
 ### :memo: Documentation
 
-- [#6110](https://github.com/directus/directus/pull/6110) Improve search ability of update instructions  ([@benhaynes](https://github.com/benhaynes))
+- [#6110](https://github.com/directus/directus/pull/6110) Improve search ability of update instructions
+  ([@benhaynes](https://github.com/benhaynes))
 - [#6087](https://github.com/directus/directus/pull/6087) Fix typo ([@benhaynes](https://github.com/benhaynes))
-- [#6086](https://github.com/directus/directus/pull/6086) Update introduction.md ([@benhaynes](https://github.com/benhaynes))
+- [#6086](https://github.com/directus/directus/pull/6086) Update introduction.md
+  ([@benhaynes](https://github.com/benhaynes))
 
 ### :package: Dependency Updates
 
-- [#6109](https://github.com/directus/directus/pull/6109) Bump vue-loader from 15.9.6 to 15.9.7 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6108](https://github.com/directus/directus/pull/6108) Bump @types/yargs from 16.0.1 to 17.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6107](https://github.com/directus/directus/pull/6107) Bump mime-types from 2.1.30 to 2.1.31 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6106](https://github.com/directus/directus/pull/6106) Bump graphql-compose from 8.1.0 to 9.0.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6105](https://github.com/directus/directus/pull/6105) Bump jest from 27.0.3 to 27.0.4 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6082](https://github.com/directus/directus/pull/6082) Bump @godaddy/terminus from 4.7.2 to 4.9.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6069](https://github.com/directus/directus/pull/6069) Bump @fullcalendar/list from 5.7.0 to 5.7.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6068](https://github.com/directus/directus/pull/6068) Bump aws-sdk from 2.911.0 to 2.921.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6066](https://github.com/directus/directus/pull/6066) Bump @types/node from 15.9.0 to 15.12.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6109](https://github.com/directus/directus/pull/6109) Bump vue-loader from 15.9.6 to 15.9.7
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6108](https://github.com/directus/directus/pull/6108) Bump @types/yargs from 16.0.1 to 17.0.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6107](https://github.com/directus/directus/pull/6107) Bump mime-types from 2.1.30 to 2.1.31
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6106](https://github.com/directus/directus/pull/6106) Bump graphql-compose from 8.1.0 to 9.0.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6105](https://github.com/directus/directus/pull/6105) Bump jest from 27.0.3 to 27.0.4
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6082](https://github.com/directus/directus/pull/6082) Bump @godaddy/terminus from 4.7.2 to 4.9.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6069](https://github.com/directus/directus/pull/6069) Bump @fullcalendar/list from 5.7.0 to 5.7.2
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6068](https://github.com/directus/directus/pull/6068) Bump aws-sdk from 2.911.0 to 2.921.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6066](https://github.com/directus/directus/pull/6066) Bump @types/node from 15.9.0 to 15.12.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
 
 ## v9.0.0-rc.73 (June 4, 2021)
 

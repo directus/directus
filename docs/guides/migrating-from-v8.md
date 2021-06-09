@@ -67,7 +67,8 @@ interfaces, displays, and their options for your fields.
 
 This would also be a good time to reconfigure your permissions, to ensure they are accurate.
 
-
 ## Breaking changes
 
-- [Filter operators](/reference/filter-rules.md) have changed, now they are preceeded with an underscore eg: `/items/users?filter[comments.thread.title][like]=Directus` is now `/items/users?filter[comments][thread][title][_like]=Directus`
+- [Filter operators](/reference/filter-rules.md) have changed, now they are preceeded with an underscore eg:
+  `/items/users?filter[comments.thread.title][like]=Directus` is now
+  `/items/users?filter[comments][thread][title][_like]=Directus`

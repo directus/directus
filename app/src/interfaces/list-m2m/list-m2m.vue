@@ -312,10 +312,10 @@ export default defineComponent({
 }
 
 .actions {
-	margin-top: 12px;
+	margin-top: 8px;
 
 	.v-button + .v-button {
-		margin-left: 12px;
+		margin-left: 8px;
 	}
 }
 
