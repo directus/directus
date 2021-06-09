@@ -932,8 +932,8 @@ interfaces:
   input-hash:
     hash: Hash
     description: Introduzca un valor para ser cifrado
-    masked: Cifrado
-    masked_label: Ocultar los verdaderos valores
+    masked: Enmascarado
+    masked_label: Ocultar los valores reales
   select-icon:
     icon: Ícono
     description: Seleccione un ícono de la lista desplegable
@@ -983,7 +983,7 @@ interfaces:
     alphabetize_label: Forzar Orden Alfabético
     add_tags: Agregar etiquetas...
   input:
-    mask: Cifrado
+    mask: Enmascarado
   boolean:
     toggle: Alternar
     label_default: Habilitado
