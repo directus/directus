@@ -40,15 +40,18 @@ export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
-	const registeredModules = queuedModules.filter((mod: any) => {
-		if (!userStore.currentUser) return false;
+	const registeredModules = [];
+
+	for (const mod of queuedModules) {
+		if (!userStore.currentUser) continue;
 
 		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+			const allowed = await mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+			if (allowed) registeredModules.push(mod);
+		} else {
+			registeredModules.push(mod);
 		}
-
-		return true;
-	});
+	}
 
 	for (const module of registeredModules) {
 		router.addRoute({

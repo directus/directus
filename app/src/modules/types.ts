@@ -10,7 +10,7 @@ export interface ModuleConfig {
 	routes?: RouteRecordRaw[];
 	link?: string;
 	color?: string;
-	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;
+	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;
 	order?: number;
 	persistent?: boolean;
 }
