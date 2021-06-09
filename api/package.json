@@ -90,7 +90,7 @@
 		"date-fns": "^2.21.1",
 		"deep-map": "^2.0.0",
 		"destroy": "^1.0.4",
-		"dotenv": "^9.0.2",
+		"dotenv": "^10.0.0",
 		"eventemitter2": "^6.4.3",
 		"execa": "^5.1.1",
 		"exif-reader": "^1.0.3",
