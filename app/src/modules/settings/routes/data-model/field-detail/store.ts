@@ -61,13 +61,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter: InterfaceConfig) => {
+			.filter((inter: DisplayConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
+			.sort((a: DisplayConfig, b: DisplayConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	generationInfo = computed(() => {
