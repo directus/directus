@@ -4,6 +4,6 @@ import { LayoutConfig } from './types';
 const layoutsRaw: Ref<LayoutConfig[]> = shallowRef([]);
 const layouts: Ref<LayoutConfig[]> = shallowRef([]);
 
-export function getLayouts(): Record<string, Ref<LayoutConfig[]>> {
+export function getLayouts(): { layouts: Ref<LayoutConfig[]>; layoutsRaw: Ref<LayoutConfig[]> } {
 	return { layouts, layoutsRaw };
 }
