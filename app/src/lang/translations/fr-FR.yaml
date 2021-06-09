@@ -103,7 +103,7 @@ field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
 field_presets: Préréglages du champ
 permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
-fields_for_role: 'Champs que le rôle {role} peut {action}.'
+fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presentation_and_aliases: Présentation & Alias
