@@ -14,6 +14,15 @@ export type Folder = {
 	children?: Folder[];
 };
 
+type UsableFolders = {
+	loading: Ref<boolean>;
+	folders: Ref<Folder[] | null>;
+	nestedFolders: Ref<Folder[] | null>;
+	error: Ref<any>;
+	fetchFolders: () => Promise<void>;
+	openFolders: Ref<string[] | null>;
+};
+
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
 let nestedFolders: Ref<Folder[] | null> | null = null;
@@ -21,7 +30,7 @@ let openFolders: Ref<string[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
-export default function useFolders(): Record<string, any> {
+export default function useFolders(): UsableFolders {
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
