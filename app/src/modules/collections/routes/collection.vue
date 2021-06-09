@@ -617,7 +617,7 @@ export default defineComponent({
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-activated: var(--background-normal);
+	--v-button-background-color-active: var(--background-normal);
 	--v-button-background-color-hover: var(--background-normal-alt);
 }
 
