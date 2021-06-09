@@ -19,7 +19,7 @@ The `options` parameter can be used to set some behavioral options for the selec
 `multiple: boolean`, `max: number`, `mandatory: boolean`.
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useGroupableParent } from '@/composables/size-class/';
 
 export default defineComponent({
@@ -54,7 +54,7 @@ groupable parent. The composition returns an object with the active state, and a
 component's active state in the parent's selection.
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({

@@ -40,7 +40,6 @@ export type QueryMany<T> = QueryOne<T> & {
 	limit?: number;
 	offset?: number;
 	page?: number;
-	single?: boolean;
 	meta?: keyof ItemMetadata | '*';
 };
 

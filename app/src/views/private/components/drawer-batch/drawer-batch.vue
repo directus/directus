@@ -1,12 +1,12 @@
 <template>
 	<v-drawer
-		v-model="_active"
-		:title="$t('editing_in_batch', { count: primaryKeys.length })"
+		v-model="internalActive"
+		:title="t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
 	>
 		<template #actions>
-			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -14,7 +14,7 @@
 		<div class="drawer-batch-content">
 			<v-form
 				:collection="collection"
-				v-model="_edits"
+				v-model="internalEdits"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"
@@ -24,16 +24,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	model: {
-		prop: 'edits',
-	},
+	emits: ['update:active', 'refresh'],
 	props: {
 		active: {
 			type: Boolean,
@@ -53,25 +52,20 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { _edits } = useEdits();
-		const { _active } = useActiveState();
+		const { t } = useI18n();
+
+		const { internalEdits } = useEdits();
+		const { internalActive } = useActiveState();
 		const { save, cancel, saving, validationErrors } = useActions();
 
 		const { collection } = toRefs(props);
 
-		return {
-			_active,
-			_edits,
-			save,
-			saving,
-			cancel,
-			validationErrors,
-		};
+		return { t, internalActive, internalEdits, save, saving, cancel, validationErrors };
 
 		function useEdits() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -87,13 +81,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _edits };
+			return { internalEdits };
 		}
 
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -103,7 +97,7 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useActions() {
@@ -124,13 +118,13 @@ export default defineComponent({
 				try {
 					await api.patch(endpoint.value, {
 						keys: props.primaryKeys,
-						data: _edits.value,
+						data: internalEdits.value,
 					});
 
 					emit('refresh');
 
-					_active.value = false;
-					_edits.value = {};
+					internalActive.value = false;
+					internalEdits.value = {};
 				} catch (err) {
 					validationErrors.value = err.response.data.errors
 						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -151,8 +145,8 @@ export default defineComponent({
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

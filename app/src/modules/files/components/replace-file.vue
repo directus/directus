@@ -1,27 +1,29 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', false)" @esc="$emit('toggle', false)">
+	<v-dialog
+		:model-value="modelValue"
+		@update:model-value="$emit('update:modelValue', false)"
+		@esc="$emit('update:modelValue', false)"
+	>
 		<v-card v-if="file">
-			<v-card-title>{{ $t('replace_file') }}</v-card-title>
+			<v-card-title>{{ t('replace_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload :preset="preset" :file-id="file.id" @input="uploaded" from-url />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="$emit('toggle', false)">{{ $t('done') }}</v-button>
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['update:modelValue', 'replaced'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -35,9 +37,11 @@ export default defineComponent({
 		},
 	},
 	setup(_props, { emit }) {
-		return { uploaded };
+		const { t } = useI18n();
+
+		return { t, uploaded };
 		function uploaded() {
-			emit('toggle', false);
+			emit('update:modelValue', false);
 			emit('replaced');
 		}
 	},

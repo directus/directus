@@ -78,11 +78,7 @@ Issues. Please ensure the following for all submissions:
 - You have checked that no similar issue already exists
 - You have entered a clear and concise title
 - You have followed the issue template, with stack details and steps to reproduce
-- You have already tried the following troubleshooting steps:
-  - You are on the latest version of Directus
-  - You have stopped (`CTRL+C`) and restarted the server
-  - You have confirmed the issue is not related to your own custom code
-  - Dev Only: You have cleared and reinstalled all dependencies
+- You have already completed all [troubleshooting steps](/getting-started/support#troubleshooting-steps)
 
 ## Reporting Security Vulnerabilities
 

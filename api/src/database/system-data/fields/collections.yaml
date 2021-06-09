@@ -18,16 +18,22 @@ fields:
     readonly: true
     width: half
 
+  - field: note
+    interface: input
+    options:
+      placeholder: A description of this collection...
+    width: half
+
   - field: icon
     interface: select-icon
     options:
     width: half
 
-  - field: note
-    interface: input
+  - field: color
+    interface: select-color
     options:
-      placeholder: A description of this collection...
-    width: full
+      placeholder: Choose a color...
+    width: half
 
   - field: display_template
     interface: system-display-template
@@ -173,3 +179,19 @@ fields:
         - text: '$t:field_options.directus_collections.do_not_track_anything'
           value: null
     width: half
+
+  - field: duplication_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: content_copy
+      title: Duplication
+
+  - field: item_duplication_fields
+    special:
+      - json
+    interface: code
+    options:
+      language: JSON

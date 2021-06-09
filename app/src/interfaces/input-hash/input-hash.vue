@@ -1,10 +1,10 @@
 <template>
 	<v-input
-		:placeholder="_placeholder"
+		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
-		:value="localValue"
-		@input="emitValue"
+		:model-value="localValue"
+		@update:model-value="emitValue"
 		:class="{ hashed: isHashed && !localValue }"
 	>
 		<template #append>
@@ -14,10 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, watch } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -37,11 +38,13 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isHashed = ref(false);
 		const localValue = ref<string | null>(null);
 
-		const _placeholder = computed(() => {
-			return isHashed.value ? i18n.t('value_hashed') : props.placeholder;
+		const internalPlaceholder = computed(() => {
+			return isHashed.value ? t('value_hashed') : props.placeholder;
 		});
 
 		watch(
@@ -52,7 +55,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _placeholder, isHashed, localValue, emitValue };
+		return { internalPlaceholder, isHashed, localValue, emitValue };
 
 		function emitValue(newValue: string) {
 			emit('input', newValue);

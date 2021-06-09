@@ -1,14 +1,20 @@
 import { Sort } from '@/components/v-table/types';
-import { computed, Ref, ref } from '@vue/composition-api';
 import { sortBy } from 'lodash';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
+
+type UsableSort = {
+	sort: Ref<Sort>;
+	sortItems: (newItems: Record<string, any>[]) => void;
+	sortedItems: ComputedRef<Record<string, any>[]>;
+};
 
 export default function useSort(
 	relation: Ref<RelationInfo>,
 	fields: Ref<string[]>,
 	items: Ref<Record<string, any>[]>,
 	emit: (newVal: any[] | null) => void
-): Record<string, any> {
+): UsableSort {
 	const sort = ref<Sort>({ by: relation.value.sortField || fields.value[0], desc: false });
 
 	const sortedItems = computed(() => {

@@ -144,7 +144,7 @@ exports.sourceNodes = async (gatsby, options) => {
 		}
 
 		return Object.assign(obj, {
-			Authorization: `Bearer ${directus.auth.token}`,
+			Authorization: `Bearer ${auth?.token}`,
 		});
 	};
 

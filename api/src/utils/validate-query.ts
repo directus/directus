@@ -15,7 +15,6 @@ const querySchema = Joi.object({
 	limit: Joi.number(),
 	offset: Joi.number(),
 	page: Joi.number(),
-	single: Joi.boolean(),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv', 'xml'),

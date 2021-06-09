@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { ensureDir } from 'fs-extra';
 import path from 'path';
-import database from './database';
+import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
@@ -11,6 +11,7 @@ import * as services from './services';
 import { EndpointRegisterFunction, HookRegisterFunction } from './types';
 import { getSchema } from './utils/get-schema';
 import listFolders from './utils/list-folders';
+import { schedule, validate } from 'node-cron';
 
 export async function ensureFoldersExist(): Promise<void> {
 	const folders = ['endpoints', 'hooks', 'interfaces', 'modules', 'layouts', 'displays'];
@@ -93,9 +94,20 @@ function registerHooks(hooks: string[]) {
 			}
 		}
 
-		const events = register({ services, exceptions, env, database, getSchema });
+		const events = register({ services, exceptions, env, database: getDatabase(), getSchema });
+
 		for (const [event, handler] of Object.entries(events)) {
-			emitter.on(event, handler);
+			if (event.startsWith('cron(')) {
+				const cron = event.match(/\(([^)]+)\)/)?.[1];
+
+				if (!cron || validate(cron) === false) {
+					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
+				} else {
+					schedule(cron, handler);
+				}
+			} else {
+				emitter.on(event, handler);
+			}
 		}
 	}
 }
@@ -126,6 +138,6 @@ function registerEndpoints(endpoints: string[], router: Router) {
 		const scopedRouter = express.Router();
 		router.use(`/${endpoint}/`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database, getSchema });
+		register(scopedRouter, { services, exceptions, env, database: getDatabase(), getSchema });
 	}
 }

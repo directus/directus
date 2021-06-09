@@ -45,6 +45,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	year: { type: 'integer' },
 	blob: { type: 'binary' },
 	mediumblob: { type: 'binary' },
+	'int unsigned': { type: 'integer' },
 
 	// MS SQL
 	bit: { type: 'boolean' },
@@ -56,6 +57,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	nchar: { type: 'text' },
 	binary: { type: 'binary' },
 	varbinary: { type: 'binary' },
+	uniqueidentifier: { type: 'uuid' },
 
 	// Postgres
 	json: { type: 'json' },
@@ -94,6 +96,11 @@ export default function getLocalType(
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
+	}
+
+	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
+	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+		return 'text';
 	}
 
 	if (field?.special?.includes('json')) return 'json';

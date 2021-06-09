@@ -1,27 +1,27 @@
 <template>
 	<v-dialog
 		persistent
-		:active="true"
+		:model-value="isOpen"
 		@esc="cancelField"
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
 		<v-card class="auto-translations">
-			<v-card-title>{{ $t('create_translations') }}</v-card-title>
+			<v-card-title>{{ t('create_translations') }}</v-card-title>
 			<v-card-text>
-				<v-input v-model="fieldData.field" :placeholder="$t('field_name') + '...'" />
+				<v-input v-model="fieldData.field" :placeholder="t('field_name') + '...'" />
 				<v-notice>
 					<div>
-						{{ $t('this_will_auto_setup_fields_relations') }}
-						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
-						{{ $t('to_manually_setup_translations') }}
+						{{ t('this_will_auto_setup_fields_relations') }}
+						<button class="manual-toggle" @click="translationsManual = true">{{ t('click_here') }}</button>
+						{{ t('to_manually_setup_translations') }}
 					</div>
 				</v-notice>
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="cancelField">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="cancelField">{{ t('cancel') }}</v-button>
 				<div class="spacer" />
 				<v-button :disabled="!fieldData.field" :loading="saving" @click="saveField">
-					{{ $t('auto_generate') }}
+					{{ t('auto_generate') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -29,16 +29,16 @@
 
 	<v-drawer
 		v-else
-		:active="true"
-		@toggle="cancelField"
+		:model-value="isOpen"
+		@update:model-value="cancelField"
 		@cancel="cancelField"
 		:title="title"
-		:subtitle="localType ? $t(`field_${localType}`) : null"
+		:subtitle="localType ? t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
 	>
 		<template #sidebar>
-			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
+			<setup-tabs v-model:current="currentTab" :tabs="tabs" :type="localType" />
 		</template>
 
 		<div class="content">
@@ -89,7 +89,7 @@
 			<setup-actions
 				:saving="saving"
 				:collection="collection"
-				:current.sync="currentTab"
+				v-model:current="currentTab"
 				:tabs="tabs"
 				:is-existing="field !== '+'"
 				@save="saveField"
@@ -99,14 +99,14 @@
 
 		<v-dialog v-model="nullValuesDialog" @esc="nullValuesDialog = false">
 			<v-card>
-				<v-card-title>{{ $t('enter_value_to_replace_nulls') }}</v-card-title>
+				<v-card-title>{{ t('enter_value_to_replace_nulls') }}</v-card-title>
 				<v-card-text>
 					<v-input placeholder="NULL" v-model="nullValueOverride" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="nullValuesDialog = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="nullValuesDialog = false">{{ t('cancel') }}</v-button>
 					<v-button :disabled="nullValueOverride === null" @click="saveNullOverride" :loading="nullOverrideSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -115,7 +115,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
@@ -124,13 +125,11 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
-import { i18n } from '@/lang';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
-import { Relation, Collection } from '@/types';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { Field } from '@/types';
-import router from '@/router';
+import { useRouter } from 'vue-router';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
@@ -167,9 +166,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+
+		const isOpen = useDialogRoute();
 
 		const translationsManual = ref(false);
 
@@ -205,11 +210,13 @@ export default defineComponent({
 			const fieldName = existingField.value?.name || formatTitle(state.fieldData.field || '');
 
 			if (props.field === '+' && fieldName === '')
-				return i18n.t('creating_new_field', { collection: collectionInfo.value?.name });
-			else return i18n.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+				return t('creating_new_field', { collection: collectionInfo.value?.name });
+			else return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
 		});
 
 		return {
+			t,
+			isOpen,
 			tabs,
 			currentTab,
 			fieldData: state.fieldData,
@@ -234,25 +241,25 @@ export default defineComponent({
 			const tabs = computed(() => {
 				const tabs = [
 					{
-						text: i18n.t('schema'),
+						text: t('schema'),
 						value: 'schema',
 						disabled: false,
 					},
 					{
-						text: i18n.tc('field', 1),
+						text: t('field', 1),
 						value: 'field',
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: i18n.t('interface'),
+						text: t('interface'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
 				];
 
-				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
+				if (props.type !== 'presentation') {
 					tabs.push({
-						text: i18n.t('display'),
+						text: t('display'),
 						value: 'display',
 						disabled: interfaceDisplayDisabled(),
 					});
@@ -260,7 +267,7 @@ export default defineComponent({
 
 				if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
-						text: i18n.t('relationship'),
+						text: t('relationship'),
 						value: 'relationship',
 						disabled: relationshipDisabled(),
 					});
@@ -272,7 +279,7 @@ export default defineComponent({
 						0,
 						...[
 							{
-								text: i18n.t('translations'),
+								text: t('translations'),
 								value: 'translations',
 								disabled: translationsDisabled(),
 							},
@@ -304,36 +311,34 @@ export default defineComponent({
 				if (['o2m', 'm2o', 'file'].includes(localType.value)) {
 					return (
 						state.relations.length === 0 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_collection) ||
-						isEmpty(state.relations[0].one_primary)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].related_collection)
 					);
 				}
 
 				if (['m2m', 'files', 'translations'].includes(localType.value)) {
 					return (
 						state.relations.length !== 2 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_field) ||
-						isEmpty(state.relations[1].many_collection) ||
-						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection) ||
-						isEmpty(state.relations[1].one_primary)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].meta?.one_field) ||
+						isEmpty(state.relations[1].collection) ||
+						isEmpty(state.relations[1].field) ||
+						isEmpty(state.relations[1].related_collection)
 					);
 				}
 
 				if (localType.value === 'm2a') {
 					return (
 						state.relations.length !== 2 ||
-						isEmpty(state.relations[0].many_collection) ||
-						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_field) ||
-						isEmpty(state.relations[1].many_collection) ||
-						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection_field) ||
-						isEmpty(state.relations[1].one_allowed_collections)
+						isEmpty(state.relations[0].collection) ||
+						isEmpty(state.relations[0].field) ||
+						isEmpty(state.relations[0].meta?.one_field) ||
+						isEmpty(state.relations[1].collection) ||
+						isEmpty(state.relations[1].field) ||
+						isEmpty(state.relations[1].meta?.one_collection_field) ||
+						isEmpty(state.relations[1].meta?.one_allowed_collections)
 					);
 				}
 
@@ -365,30 +370,32 @@ export default defineComponent({
 				}
 
 				await Promise.all(
-					state.newCollections.map((newCollection: Partial<Collection> & { $type?: string }) => {
+					state.newCollections.map((newCollection) => {
 						delete newCollection.$type;
 						return api.post(`/collections`, newCollection);
 					})
 				);
 
 				await Promise.all(
-					state.newFields.map((newField: Partial<Field> & { $type?: string }) => {
+					state.newFields.map((newField) => {
 						delete newField.$type;
 						return api.post(`/fields/${newField.collection}`, newField);
 					})
 				);
 
 				await Promise.all(
-					state.updateFields.map((updateField: Partial<Field> & { $type?: string }) => {
+					state.updateFields.map((updateField) => {
 						delete updateField.$type;
 						return api.post(`/fields/${updateField.collection}/${updateField.field}`, updateField);
 					})
 				);
 
 				await Promise.all(
-					state.relations.map((relation: Partial<Relation>) => {
-						if (relation.id) {
-							return api.patch(`/relations/${relation.id}`, relation);
+					state.relations.map((relation) => {
+						const relationExists = !!relationsStore.getRelationForField(relation.collection, relation.field);
+
+						if (relationExists) {
+							return api.patch(`/relations/${relation.collection}/${relation.field}`, relation);
 						} else {
 							return api.post(`/relations`, relation);
 						}
@@ -408,12 +415,12 @@ export default defineComponent({
 
 				if (props.field !== '+') {
 					notify({
-						title: i18n.t('field_update_success', { field: props.field }),
+						title: t('field_update_success', { field: props.field }),
 						type: 'success',
 					});
 				} else {
 					notify({
-						title: i18n.t('field_create_success', { field: fieldData.field }),
+						title: t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});
 				}

@@ -21,7 +21,14 @@ os_type: Тип ОС
 os_version: Версія ОС
 os_uptime: Час роботи ОС
 validationError:
+  eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
+  in: Значення повинно бути одним з {valid}
+  nin: Значення не може бути одним з {invalid}
+  contains: Значення повинно містити {substring}
+  ncontains: Значення не може містити {substring}
+  gt: Значення має бути більше {valid}
+  gte: Значення має бути більше або дорівнювати {valid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
@@ -135,8 +142,7 @@ keep_editing: Продовжити редагування
 add_new: Створити
 all: Все
 batch_delete_confirm: >-
-  Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені,
-  що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
+  Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
 cancel: Скасувати
 collection: Колекція
 collections: Колекції
@@ -241,44 +247,30 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  select-multiple-checkbox:
-    checkboxes: Прапорці
   input-code:
     code: Код
-    line_number: Номери рядків
-  collection:
+  system-collection:
     collection: Колекція
   system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
-  select-dropdown-m2o:
-    many-to-one: Багато до одного
-  numeric:
-    numeric: Цифровий
-  list-o2m:
-    one-to-many: Один до багатьох
   tags:
     tags: Теги
-  input:
-    text-input: Текстове поле
-    trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  input-rich-text-html:
-    custom_formats: Власне форматування
 displays:
   collection:
     collection: Колекція

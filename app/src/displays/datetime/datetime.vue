@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
-import i18n from '@/lang';
 import { parseISO, parse } from 'date-fns';
 
 export default defineComponent({
@@ -30,6 +30,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const localValue = computed(() => {
 			if (!props.value) return null;
 
@@ -63,13 +65,13 @@ export default defineComponent({
 				} else {
 					let format;
 					if (props.format === 'long') {
-						format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
-						if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-						if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+						format = `${t('date-fns_date')} ${t('date-fns_time')}`;
+						if (props.type === 'date') format = String(t('date-fns_date'));
+						if (props.type === 'time') format = String(t('date-fns_time'));
 					} else if (props.format === 'short') {
-						format = `${i18n.t('date-fns_date_short')} ${i18n.t('date-fns_time_short')}`;
-						if (props.type === 'date') format = String(i18n.t('date-fns_date_short'));
-						if (props.type === 'time') format = String(i18n.t('date-fns_time_short'));
+						format = `${t('date-fns_date_short')} ${t('date-fns_time_short')}`;
+						if (props.type === 'date') format = String(t('date-fns_date_short'));
+						if (props.type === 'time') format = String(t('date-fns_time_short'));
 					} else {
 						format = props.format;
 					}

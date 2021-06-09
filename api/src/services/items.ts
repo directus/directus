@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, without } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
@@ -55,7 +55,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
@@ -114,8 +114,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// The events are fired last-to-first based on when they were created. By reversing the
 			// output array of results, we ensure that the augmentations are applied in
 			// "chronological" order
-			const payloadAfterHooks =
-				hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+			const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 			const payloadWithPresets = this.accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
@@ -205,7 +204,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -352,6 +351,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 
+		if (keys.length === 0) return [];
+
 		return await this.updateMany(keys, data, opts);
 	}
 
@@ -402,8 +403,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// The events are fired last-to-first based on when they were created. By reversing the
 		// output array of results, we ensure that the augmentations are applied in
 		// "chronological" order
-		const payloadAfterHooks =
-			hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+		const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 
 		if (this.accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
@@ -516,7 +516,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 
@@ -559,7 +559,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 
 			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { autoPurgeCache: false });
+				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
 				primaryKeys.push(primaryKey);
 			}
 
@@ -576,7 +576,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Delete multiple items by query
 	 */
-	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -589,7 +589,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const itemsToDelete = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
-		return await this.deleteMany(keys);
+
+		if (keys.length === 0) return [];
+
+		return await this.deleteMany(keys, opts);
 	}
 
 	/**
@@ -662,7 +665,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
 				// called after the transaction is done #5460
-				database: database,
+				database: getDatabase(),
 			});
 		}
 

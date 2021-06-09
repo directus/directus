@@ -55,11 +55,9 @@ os_totalmem: OS Hafıza
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
-  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin
-  misiniz?
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
-reset_system_permissions_copy:
-  Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
@@ -88,6 +86,9 @@ validationError:
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
+nullable: Boş (null) olabilir
+allow_null_value: NULL değere izin ver
+enter_value_to_replace_nulls: Bu alandaki tüm NULLları değiştirecek yeni bir değer girin.
 field_standard: Standart
 field_presentation: Sunum ve Takma Adlar
 field_file: Tek Dosya
@@ -142,6 +143,7 @@ decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
 json: JSON
+xml: XML
 string: Yazı
 text: Metin
 time: Zaman
@@ -160,8 +162,7 @@ this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri
 click_here: Buraya tıklayın
 to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
-  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı
-  tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
 no_collections_found: Koleksiyon bulunamadı.
 new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
@@ -248,10 +249,17 @@ submit: Gönder
 move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
+add_field_related: Alakalı Koleksiyona Alan Ekle
 interface: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
+date-fns_date: PPP
+date-fns_time: 's:dd:ss a'
+date-fns_time_no_seconds: 's:dd a'
+date-fns_date_short: 'AAA d, u'
+date-fns_time_short: 's:aa a'
+date-fns_date_short_no_year: AAA d
 month: Ay
 year: Yıl
 select_all: Tümünü Seç
@@ -291,9 +299,14 @@ background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
 choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
+replace_from_device: Cihazdaki Dosya ile Değiştir
+replace_from_library: Kütüphanedeki Dosya ile Değiştir
+replace_from_url: URL'deki Dosya ile Değiştir
 no_file_selected: Dosya seçilmedi
 download_file: Dosyayı İndir
+collection_key: Koleksiyonlar
 name: İsim
+primary_key_field: Birincil Anahtar Alanı
 type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
@@ -302,6 +315,7 @@ save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
 add_existing: Var olanı ekle
+creating_items: öğe oluşturma
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 click_to_expand: Genişletmek için Tıklayın
@@ -314,6 +328,10 @@ report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
 reset_interface: Arayüzü Sıfırla
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
+no_files_copy: Burada dosya yok.
+user_count: 'Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
+no_users_copy: Bu Grupta Kullanıcı Yok.
+webhooks_count: 'Webhook Yok | Bir Webhook | {count} Webhook'
 no_webhooks_copy: Henüz hiç bir webhook yok.
 all_items: Tüm öğeler
 csv: CSV
@@ -357,9 +375,15 @@ errors:
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
   INVALID_OTP: Tek kullanımlık şifre hatalı
   INVALID_QUERY: Geçersiz sorgu
+  ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
+  RECORD_NOT_UNIQUE: Kopya değer tespit edildi
+  USER_SUSPENDED: Kullanıcı Askıya Alındı
+  CONTAINS_NULL_VALUES: Alan null değer içeriyor
   UNKNOWN: Beklenmeyen hata
+  INTERNAL_SERVER_ERROR: Beklenmeyen hata
+value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
 edit_bookmark: Yer imini düzenle
@@ -410,7 +434,7 @@ operators:
   gte: Büyük veya eşittir
   in: Bunlardan biri
   nin: Bunlardan biri değil
-  null: 'Null'
+  null: "Null"
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
@@ -508,8 +532,7 @@ keep_editing: Düzenlemeye Devam Et
 add_new: Yeni ekle
 all: Tümü
 batch_delete_confirm: >-
-  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count}
-  ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 collection: Koleksiyon
 collections: Koleksiyonlar
@@ -650,34 +673,23 @@ view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
   presentation-links:
-    presentation-links: Buton Linki
-    links: Linkler
-    style: Stil
     primary: Birincil
-    link: Linkler
-    button: Butonlar
-    error: İşlem gerçekleştirilemiyor
-  select-multiple-checkbox:
-    checkboxes: Onay Kutuları
-    allow_other: Diğerlerine İzin Ver
   input-code:
     code: Kod
-    line_number: Satır Numarası
-  collection:
+  system-collection:
     collection: Koleksiyon
   system-collections:
     collections: Koleksiyonlar
-  color:
+  select-color:
     color: Renk
   datetime:
     datetime: Tarih/Saat
   system-display-template:
     display-template: Görüntüleme Şablonu
     select_a_collection: Koleksiyon Seç
-  divider:
+  presentation-divider:
     divider: Ayırıcı
   select-dropdown:
-    allow_other: Diğerlerine İzin Ver
     choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
@@ -685,46 +697,19 @@ interfaces:
     files: Dosyalar
   input-hash:
     hash: Hash
-    masked: Maskeli
-  icon:
+  select-icon:
     icon: İkon
-    search_for_icon: Simge ara...
   system-interface:
     interface: Arayüz
-    placeholder: Arayüz seçin...
-  system-interface-options:
-    interface-options: Arayüz Ayarları
-  list-m2m:
-    many-to-many: Çoktan Çoka
   select-dropdown-m2o:
-    many-to-one: Çoktan Bire
     display_template: Görüntüleme Şablonu
-  input-rich-text-md:
-    markdown: Markdown
-  numeric:
-    numeric: Sayısal
-    description: Bir sayı girin
-  list-o2m:
-    one-to-many: Bire Çok
-  select-radio:
-    radio-buttons: Radyo Düğmeleri
-  list:
-    repeater: Tekrarlayıcı
   slider:
     slider: Kaydırıcı
-  slug:
-    slug: Slug
   tags:
     tags: Etiketler
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
-  input:
-    text-input: Metin Girişi
-    trim: Kırp
-    mask: Maskeli
-  input-multiline:
-    textarea: Metin Alanı
   boolean:
     label_default: Etkin
   translations:
@@ -736,10 +721,6 @@ interfaces:
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-  input-rich-text-html:
-    wysiwyg: WYSIWYG
-    toolbar: Araç Çubuğu
-    custom_formats: Özel Biçimler
 displays:
   boolean:
     boolean: Evet/Hayır

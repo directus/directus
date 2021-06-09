@@ -11,10 +11,6 @@ export type Query = {
 	search?: string;
 	export?: 'json' | 'csv' | 'xml';
 	deep?: Record<string, Query>;
-	/**
-	 * @deprecated see https://github.com/directus/directus/discussions/5601 : use limit instead
-	 */
-	single?: boolean;
 };
 
 export type Sort = {

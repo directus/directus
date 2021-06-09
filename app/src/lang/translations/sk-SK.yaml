@@ -30,7 +30,7 @@ fields:
 email: E-mail
 password: Heslo
 interfaces:
-  collection:
+  system-collection:
     collection: Zbierka
 displays:
   collection:

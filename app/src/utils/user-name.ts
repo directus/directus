@@ -14,5 +14,5 @@ export function userName(user: Partial<User>): string {
 		return user.email;
 	}
 
-	return i18n.t('unknown_user') as string;
+	return i18n.global.t('unknown_user') as string;
 }

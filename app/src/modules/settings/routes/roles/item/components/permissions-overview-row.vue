@@ -3,9 +3,9 @@
 		<span class="name">
 			{{ collection.name }}
 			<span class="actions">
-				<span class="all" @click="setFullAccessAll">{{ $t('all') }}</span>
+				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
 				<span class="divider">/</span>
-				<span class="none" @click="setNoAccessAll">{{ $t('none') }}</span>
+				<span class="none" @click="setNoAccessAll">{{ t('none') }}</span>
 			</span>
 		</span>
 
@@ -45,7 +45,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
@@ -75,10 +76,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { collection, role, permissions } = toRefs(props);
 		const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
 
-		return { getPermission, isLoading, setFullAccessAll, setNoAccessAll };
+		return { t, getPermission, isLoading, setFullAccessAll, setNoAccessAll };
 
 		function isLoading(action: string) {
 			const permission = getPermission(action);
@@ -114,6 +117,7 @@ export default defineComponent({
 					&.all {
 						color: var(--success);
 					}
+
 					&.none {
 						color: var(--danger);
 					}

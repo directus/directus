@@ -1,7 +1,8 @@
 import run from '../../../database/migrations/run';
+import getDatabase from '../../../database';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
-	const database = require('../../../database').default;
+	const database = getDatabase();
 
 	try {
 		console.log('✨ Running migrations...');

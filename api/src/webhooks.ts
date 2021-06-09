@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ListenerFn } from 'eventemitter2';
-import database from './database';
+import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { Webhook } from './types';
@@ -9,6 +9,8 @@ let registered: { event: string; handler: ListenerFn }[] = [];
 
 export async function register(): Promise<void> {
 	unregister();
+
+	const database = getDatabase();
 
 	const webhooks = await database.select<Webhook[]>('*').from('directus_webhooks').where({ status: 'active' });
 

@@ -1,22 +1,25 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 import { getRelationType } from '@/utils/get-relation-type';
-import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import { cloneDeep } from 'lodash';
+import { computed, Ref, ComputedRef } from 'vue';
 
 type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
 export default function useFieldTree(
-	collection: Ref<string>,
+	collection: Ref<string | null>,
 	/** Only allow m2o relations to be nested */
 	strict = false,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
-): Record<string, ComputedRef> {
+): { tree: ComputedRef<FieldOption[]> } {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
-	const tree = computed(() => parseLevel(collection.value, null));
+	const tree = computed(() => {
+		if (!collection.value) return [];
+		return parseLevel(collection.value, null);
+	});
 
 	return { tree };
 
@@ -44,16 +47,16 @@ export default function useFieldTree(
 				...relationsStore.getRelationsForField(collection, field.field),
 				...(inject?.value?.relations.filter((relation: Relation) => {
 					return (
-						(relation.many_collection === collection && relation.many_field === field.field) ||
-						(relation.one_collection === collection && relation.one_field === field.field)
+						(relation.collection === collection && relation.field === field.field) ||
+						(relation.related_collection === collection && relation.meta?.one_field === field.field)
 					);
 				}) || []),
 			];
 
 			const relation = relations.find(
 				(relation: Relation) =>
-					(relation.many_collection === collection && relation.many_field === field.field) ||
-					(relation.one_collection === collection && relation.one_field === field.field)
+					(relation.collection === collection && relation.field === field.field) ||
+					(relation.related_collection === collection && relation.meta?.one_field === field.field)
 			);
 
 			if (!relation) continue;
@@ -62,13 +65,13 @@ export default function useFieldTree(
 
 			if (relationType === 'm2o') {
 				field.children = parseLevel(
-					relation.one_collection,
+					relation.related_collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);
 			} else if (strict === false) {
 				field.children = parseLevel(
-					relation.many_collection,
+					relation.collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);

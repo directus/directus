@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import {
 	FailedValidationException,
@@ -30,7 +30,7 @@ export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
 		this.schema = options.schema;
@@ -105,7 +105,7 @@ export class UsersService extends ItemsService {
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const email = data.email.toLowerCase();
 		await this.checkUniqueEmails([email]);
-		return await super.createOne(data, opts);
+		return await this.service.createOne(data, opts);
 	}
 
 	/**
@@ -125,7 +125,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
-		return await super.createMany(data, opts);
+		return await this.service.createMany(data, opts);
 	}
 
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -143,7 +143,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateOne(key, data, opts);
+		return await this.service.updateOne(key, data, opts);
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -161,7 +161,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateMany(keys, data, opts);
+		return await this.service.updateMany(keys, data, opts);
 	}
 
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -179,7 +179,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateByQuery(query, data, opts);
+		return await this.service.updateByQuery(query, data, opts);
 	}
 
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -198,7 +198,7 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
-		await super.deleteOne(key, opts);
+		await this.service.deleteOne(key, opts);
 
 		return key;
 	}
@@ -219,7 +219,7 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
-		await super.deleteMany(keys, opts);
+		await this.service.deleteMany(keys, opts);
 
 		return keys;
 	}
@@ -262,7 +262,6 @@ export class UsersService extends ItemsService {
 							url: acceptURL,
 							email,
 						},
-						system: true,
 					},
 				});
 			}
@@ -321,7 +320,6 @@ export class UsersService extends ItemsService {
 					url: acceptURL,
 					email,
 				},
-				system: true,
 			},
 		});
 	}

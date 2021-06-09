@@ -2,9 +2,17 @@ import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import { Ref, ref, watch } from '@vue/composition-api';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get } from 'lodash';
+import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from './use-relation';
+
+type UsablePreview = {
+	tableHeaders: Ref<Header[]>;
+	items: Ref<Record<string, any>[]>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+};
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -14,7 +22,7 @@ export default function usePreview(
 	getUpdatedItems: () => Record<string, any>[],
 	getNewItems: () => Record<string, any>[],
 	getPrimaryKeys: () => (string | number)[]
-): Record<string, Ref> {
+): UsablePreview {
 	// Using a ref for the table headers here means that the table itself can update the
 	// values if it needs to. This allows the user to manually resize the columns for example
 
@@ -22,7 +30,7 @@ export default function usePreview(
 	const tableHeaders = ref<Header[]>([]);
 	const loading = ref(false);
 	const items = ref<Record<string, any>[]>([]);
-	const error = ref(null);
+	const error = ref<any>(null);
 
 	watch(
 		() => value.value,
@@ -185,9 +193,11 @@ export default function usePreview(
 
 		const endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 
+		const fieldsToFetch = addRelatedPrimaryKeyToFields(collection, fields);
+
 		const response = await api.get(endpoint, {
 			params: {
-				fields: fields,
+				fields: fieldsToFetch,
 				[`filter[${filteredField}][_in]`]: primaryKeys.join(','),
 			},
 		});
