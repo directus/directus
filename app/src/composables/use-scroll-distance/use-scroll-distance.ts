@@ -1,9 +1,15 @@
 import { throttle } from 'lodash';
-import { ComponentPublicInstance, computed, isRef, onMounted, onUnmounted, ref, Ref } from 'vue';
+import { ComponentPublicInstance, computed, isRef, onMounted, onUnmounted, ref, Ref, ComputedRef } from 'vue';
+
+type UsableScrollDistance = {
+	top: Ref<number | undefined>;
+	left: Ref<number | undefined>;
+	target: ComputedRef<Element | null>;
+};
 
 export default function useScrollDistance<T extends Element>(
 	t: T | Ref<T | null | ComponentPublicInstance>
-): Record<string, Ref> {
+): UsableScrollDistance {
 	const top = ref<number>();
 	const left = ref<number>();
 
