@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :modelValue="relations[0].collection" />
+				<v-input disabled :model-value="relations[0].collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
