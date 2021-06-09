@@ -417,13 +417,6 @@ export class FieldsService {
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
-		} else if (field.schema?.data_type) {
-			// Append length to data type if it's stored in schema
-			const data_type =
-				field.schema?.max_length && field.schema.data_type !== 'longtext'
-					? `${field.schema.data_type}(${field.schema.max_length})`
-					: field.schema.data_type;
-			column = table.specificType(field.field, data_type);
 		} else if (field.type === 'string') {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
@@ -445,10 +438,6 @@ export class FieldsService {
 				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())
 			) {
 				column.defaultTo(null);
-			} else if (typeof field.schema.default_value === 'boolean') {
-				// Convert boolean values to number (required for MySQL)
-				const default_value = field.schema.default_value === true ? 1 : 0;
-				column.defaultTo(default_value);
 			} else {
 				column.defaultTo(field.schema.default_value);
 			}
