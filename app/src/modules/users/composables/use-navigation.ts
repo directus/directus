@@ -5,7 +5,7 @@ import { ref, Ref } from 'vue';
 let roles: Ref<Role[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export default function useNavigation(): Record<string, Ref> {
+export default function useNavigation(): { roles: Ref<Role[] | null>; loading: Ref<boolean> } {
 	if (roles === null) {
 		roles = ref<Role[] | null>(null);
 	}
