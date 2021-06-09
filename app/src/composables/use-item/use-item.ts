@@ -8,7 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-type Item = {
+type UsableItem = {
 	edits: Ref<Record<string, any>>;
 	item: Ref<Record<string, any> | null>;
 	error: Ref<any>;
@@ -28,7 +28,7 @@ type Item = {
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Item {
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);

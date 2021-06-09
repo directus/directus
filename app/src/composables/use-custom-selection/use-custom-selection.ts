@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-type CustomSelection = {
+type UsableCustomSelection = {
 	otherValue: Ref<string | null>;
 	usesOtherValue: ComputedRef<boolean>;
 };
@@ -10,7 +10,7 @@ export function useCustomSelection(
 	currentValue: Ref<string>,
 	items: Ref<any[]>,
 	emit: (event: string | null) => void
-): CustomSelection {
+): UsableCustomSelection {
 	const localOtherValue = ref('');
 
 	const otherValue = computed({
@@ -46,7 +46,7 @@ type OtherValue = {
 	value: string;
 };
 
-type CustomSelectionMultiple = {
+type UsableCustomSelectionMultiple = {
 	otherValues: Ref<OtherValue[]>;
 	addOtherValue: (value?: string) => void;
 	setOtherValue: (key: string, newValue: string | null) => void;
@@ -56,7 +56,7 @@ export function useCustomSelectionMultiple(
 	currentValues: Ref<string[]>,
 	items: Ref<any[]>,
 	emit: (event: string[] | null) => void
-): CustomSelectionMultiple {
+): UsableCustomSelectionMultiple {
 	const otherValues = ref<OtherValue[]>([]);
 
 	watch(currentValues, (newValue) => {

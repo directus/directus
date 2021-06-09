@@ -20,7 +20,7 @@ type ManualSortData = {
 	to: string | number;
 };
 
-type Items = {
+type UsableItems = {
 	itemCount: Ref<number | null>;
 	totalCount: Ref<number | null>;
 	items: Ref<Item[]>;
@@ -31,7 +31,7 @@ type Items = {
 	getItems: () => Promise<void>;
 };
 
-export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): Items {
+export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: number | null = null;

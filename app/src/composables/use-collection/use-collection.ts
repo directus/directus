@@ -1,9 +1,9 @@
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Collection as CollectionInfo, Field } from '@/types';
+import { Collection, Field } from '@/types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
-type Collection = {
-	info: ComputedRef<CollectionInfo | null>;
+type UsableCollection = {
+	info: ComputedRef<Collection | null>;
 	fields: ComputedRef<Field[]>;
 	defaults: Record<string, any>;
 	primaryKeyField: ComputedRef<Field | null>;
@@ -13,7 +13,7 @@ type Collection = {
 	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
 };
 
-export function useCollection(collectionKey: string | Ref<string | null>): Collection {
+export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
