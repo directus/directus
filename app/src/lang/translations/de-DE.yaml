@@ -503,6 +503,8 @@ value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
+language_display_template: Anzeigevorlage Sprache
+translations_display_template: Anzeigevorlage Übersetzungen
 n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
