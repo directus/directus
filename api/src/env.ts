@@ -218,7 +218,7 @@ function processValues(env: Record<string, any>) {
 		// Try to convert remaining values:
 		// - boolean values to boolean
 		// - 'null' to null
-		// - number values (greater than 0) to number
+		// - number values (> 0 <= Number.MAX_SAFE_INTEGER) to number
 		if (value === 'true' || value === 'false') {
 			env[key] = !!value;
 			continue;
@@ -227,7 +227,12 @@ function processValues(env: Record<string, any>) {
 			env[key] = null;
 			continue;
 		}
-		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) {
+		if (
+			String(value).startsWith('0') === false &&
+			isNaN(value) === false &&
+			value.length > 0 &&
+			value <= Number.MAX_SAFE_INTEGER
+		) {
 			env[key] = Number(value);
 			continue;
 		}
