@@ -198,9 +198,16 @@ function processValues(env: Record<string, any>) {
 		}
 
 		if (value === 'true') env[key] = true;
-		if (value === 'false') env[key] = false;
-		if (value === 'null') env[key] = null;
-		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) env[key] = Number(value);
+		else if (value === 'false') env[key] = false;
+		else if (value === 'null') env[key] = null;
+		else if (
+			String(value).startsWith('0') === false &&
+			isNaN(value) === false &&
+			value.length > 0 &&
+			value < Number.MAX_SAFE_INTEGER // Make sure we don't treat long numeric ID strings as numbers
+		) {
+			env[key] = Number(value);
+		}
 	}
 
 	return env;
