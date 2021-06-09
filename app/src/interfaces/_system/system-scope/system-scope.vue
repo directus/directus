@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :value="value" @input="onSelect" :items="options" />
+		<v-select v-else :model-value="value" @update:model-value="onSelect" :items="options" />
 		<drawer-collection
 			v-if="collection !== null"
 			:active="collection !== null"
@@ -13,13 +13,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { computed, defineComponent, ref, watch } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
+	emits: ['input'],
 	components: {
 		DrawerCollection,
 	},
@@ -30,6 +31,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const collection = ref<string | null>(null);
 		const itemName = ref<string | null>(null);
 		const loading = ref(false);
@@ -45,15 +48,15 @@ export default defineComponent({
 		const options = computed(() => {
 			let options: any[] = [
 				{
-					text: i18n.t('global') + ': ' + i18n.t('all_users'),
+					text: t('global') + ': ' + t('all_users'),
 					value: 'all',
 				},
 				{
-					text: i18n.t('user') + ': ' + i18n.t('select'),
+					text: t('user') + ': ' + t('select'),
 					value: 'directus_users',
 				},
 				{
-					text: i18n.t('role') + ': ' + i18n.t('select'),
+					text: t('role') + ': ' + t('select'),
 					value: 'directus_roles',
 				},
 			];
@@ -63,7 +66,7 @@ export default defineComponent({
 
 				options = [
 					{
-						text: i18n.t(type) + ': ' + (itemName.value || id),
+						text: t(type) + ': ' + (itemName.value || id),
 						value: props.value,
 					},
 					{ divider: true },

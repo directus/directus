@@ -1,11 +1,14 @@
-import { onBeforeMount, onMounted, onUnmounted, ref, Ref } from '@vue/composition-api';
 import { throttle } from 'lodash';
+import { onBeforeMount, onMounted, onUnmounted, ref, Ref } from 'vue';
 
 type WindowSizeOptions = {
 	throttle: number;
 };
 
-export default function useWindowSize(options: WindowSizeOptions = { throttle: 100 }): Record<string, Ref> {
+export default function useWindowSize(options: WindowSizeOptions = { throttle: 100 }): {
+	width: Ref<number>;
+	height: Ref<number>;
+} {
 	const width = ref(0);
 	const height = ref(0);
 

@@ -11,7 +11,7 @@ The optional `options` parameter allows you to set the throttling speed.
 ## Usage
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useWindowSize } from '@/composables/use-window-size/';
 
 export default defineComponent({

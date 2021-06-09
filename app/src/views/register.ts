@@ -1,7 +1,9 @@
-import Vue from 'vue';
+import { App, defineAsyncComponent } from 'vue';
 import PublicView from './public/';
 
-const PrivateView = () => import(/* webpackChunkName: "private-view" */ './private');
+const PrivateView = defineAsyncComponent(() => import('./private'));
 
-Vue.component('public-view', PublicView);
-Vue.component('private-view', PrivateView);
+export function registerViews(app: App): void {
+	app.component('public-view', PublicView);
+	app.component('private-view', PrivateView);
+}

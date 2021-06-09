@@ -1,21 +1,27 @@
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div class="selected" v-if="_selection.length > 0" @click="_selection = []">
+			<div class="selected" v-if="internalSelection.length > 0" @click="internalSelection = []">
 				<v-icon name="cancel" outline />
-				<span class="label">{{ $tc('n_items_selected', _selection.length) }}</span>
+				<span class="label">{{ t('n_items_selected', internalSelection.length) }}</span>
 			</div>
 			<button class="select-all" v-else @click="$emit('select-all')">
 				<v-icon name="check_circle" outline />
-				<span class="label">{{ $t('select_all') }}</span>
+				<span class="label">{{ t('select_all') }}</span>
 			</button>
 		</div>
 		<div class="end">
-			<v-icon class="size-selector" :name="`grid_${7 - size}`" v-tooltip.top="$t('card_size')" @click="toggleSize" />
+			<v-icon
+				class="size-selector"
+				:name="`grid_${7 - size}`"
+				v-tooltip.top="t('card_size')"
+				clickable
+				@click="toggleSize"
+			/>
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div class="sort-selector" v-tooltip.top="$t('sort_field')" @click="toggle">
+					<div class="sort-selector" v-tooltip.top="t('sort_field')" @click="toggle">
 						{{ sortField && sortField.name }}
 					</div>
 				</template>
@@ -26,7 +32,8 @@
 						:key="field.field"
 						:disabled="field.disabled"
 						:active="field.field === sortKey"
-						@click="_sort = field.field"
+						clickable
+						@click="internalSort = field.field"
 					>
 						<v-list-item-content>{{ field.name }}</v-list-item-content>
 					</v-list-item>
@@ -36,7 +43,8 @@
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
-				v-tooltip.top="$t('sort_direction')"
+				v-tooltip.top="t('sort_direction')"
+				clickable
 				@click="toggleDescending"
 			/>
 		</div>
@@ -44,11 +52,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
+	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
 	props: {
 		fields: {
 			type: Array as PropType<Field[]>,
@@ -68,9 +78,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _size = useSync(props, 'size', emit);
-		const _sort = useSync(props, 'sort', emit);
-		const _selection = useSync(props, 'selection', emit);
+		const { t } = useI18n();
+
+		const internalSize = useSync(props, 'size', emit);
+		const internalSort = useSync(props, 'sort', emit);
+		const internalSelection = useSync(props, 'selection', emit);
 		const descending = computed(() => props.sort.startsWith('-'));
 
 		const sortKey = computed(() => (props.sort.startsWith('-') ? props.sort.substring(1) : props.sort));
@@ -90,30 +102,31 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			toggleSize,
 			descending,
 			toggleDescending,
 			sortField,
-			_size,
-			_sort,
-			_selection,
+			internalSize,
+			internalSort,
+			internalSelection,
 			sortKey,
 			fieldsWithoutFake,
 		};
 
 		function toggleSize() {
 			if (props.size >= 2 && props.size < 5) {
-				_size.value++;
+				internalSize.value++;
 			} else {
-				_size.value = 2;
+				internalSize.value = 2;
 			}
 		}
 
 		function toggleDescending() {
 			if (descending.value === true) {
-				_sort.value = _sort.value.substring(1);
+				internalSort.value = internalSort.value.substring(1);
 			} else {
-				_sort.value = '-' + _sort.value;
+				internalSort.value = '-' + internalSort.value;
 			}
 		}
 	},
@@ -185,6 +198,7 @@ export default defineComponent({
 
 	.sort-direction {
 		transition: color var(--fast) var(--transition);
+
 		&.descending {
 			transform: scaleY(-1);
 		}

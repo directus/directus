@@ -1,13 +1,12 @@
 <template>
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
-			<template v-for="(item, index) in visibleItems">
-				<v-divider :key="index" v-if="item.divider === true" />
+			<template v-for="(item, index) in visibleItems" :key="index">
+				<v-divider v-if="item.divider === true" />
 				<div
 					v-else
-					:key="item.value"
 					class="v-fancy-select-option"
-					:class="{ active: item.value === value, disabled }"
+					:class="{ active: item.value === modelValue, disabled }"
 					:style="{
 						'--index': index,
 					}"
@@ -22,7 +21,7 @@
 						<div class="description">{{ item.description }}</div>
 					</div>
 
-					<v-icon v-if="value === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
+					<v-icon v-if="modelValue === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
 					<v-icon class="icon-right" v-else-if="item.iconRight" :name="item.iconRight" />
 				</div>
 			</template>
@@ -31,16 +30,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { FancySelectItem } from './types';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
 		items: {
 			type: Array as PropType<FancySelectItem[]>,
 			required: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number],
 			default: null,
 		},
@@ -51,10 +51,10 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const visibleItems = computed(() => {
-			if (props.value === null) return props.items;
+			if (props.modelValue === null) return props.items;
 
 			return props.items.filter((item) => {
-				return item.value === props.value;
+				return item.value === props.modelValue;
 			});
 		});
 
@@ -62,8 +62,8 @@ export default defineComponent({
 
 		function toggle(item: FancySelectItem) {
 			if (props.disabled === true) return;
-			if (props.value === item.value) emit('input', null);
-			else emit('input', item.value);
+			if (props.modelValue === item.value) emit('update:modelValue', null);
+			else emit('update:modelValue', item.value);
 		}
 	},
 });
@@ -147,7 +147,7 @@ export default defineComponent({
 	transition: all 500ms var(--transition);
 }
 
-.option-enter,
+.option-enter-from,
 .option-leave-to {
 	opacity: 0;
 }

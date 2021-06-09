@@ -41,8 +41,8 @@
 				icon
 				secondary
 				exact
-				v-tooltip.bottom="$t('back')"
-				@click="$router.back()"
+				v-tooltip.bottom="t('back')"
+				@click="router.back()"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -51,7 +51,7 @@
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: $t('collections'), to: '/collections' }]"
+				:items="[{ name: t('collections'), to: '/collections' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
@@ -63,7 +63,7 @@
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
@@ -73,14 +73,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -107,14 +107,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
-							{{ isArchived ? $t('unarchive') : $t('archive') }}
+							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -125,7 +125,7 @@
 				icon
 				:loading="saving"
 				:disabled="isSavable === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -159,55 +159,53 @@
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_collections_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
 				:collection="collection"
-				:primary-key="_primaryKey"
+				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
 				ref="revisionsDrawerDetail"
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && _primaryKey"
+				v-if="isNew === false && internalPrimaryKey"
 				:collection="collection"
-				:primary-key="_primaryKey"
+				:primary-key="internalPrimaryKey"
 			/>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import Vue from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import i18n from '@/lang';
 import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
-import { NavigationGuard } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
@@ -239,12 +237,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t, te } = useI18n();
+
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			info: collectionInfo,
@@ -303,15 +305,15 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const title = computed(() => {
-			if (i18n.te(`collection_names_singular.${props.collection}`)) {
+			if (te(`collection_names_singular.${props.collection}`)) {
 				return isNew.value
-					? i18n.t('creating_unit', { unit: i18n.t(`collection_names_singular.${props.collection}`) })
-					: i18n.t('editing_unit', { unit: i18n.t(`collection_names_singular.${props.collection}`) });
+					? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
+					: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });
 			}
 
 			return isNew.value
-				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
-				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
+				? t('creating_in', { collection: collectionInfo.value?.name })
+				: t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
 		const tabTitle = computed(() => {
@@ -333,23 +335,23 @@ export default defineComponent({
 		useTitle(tabTitle);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.t('not_allowed');
-			if (isArchived.value === true) return i18n.t('unarchive');
-			return i18n.t('archive');
+			if (archiveAllowed.value === false) return t('not_allowed');
+			if (isArchived.value === true) return t('unarchive');
+			return t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
-		const navigationGuard: NavigationGuard = (to, from, next) => {
+		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
-				return next(false);
+				return false;
 			}
-
-			return next();
 		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			collection,
@@ -357,7 +359,7 @@ export default defineComponent({
 			isNew
 		);
 
-		const _primaryKey = computed(() => {
+		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
 
 			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
@@ -366,6 +368,8 @@ export default defineComponent({
 		});
 
 		return {
+			t,
+			router,
 			item,
 			loading,
 			error,
@@ -395,7 +399,6 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
-			navigationGuard,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
@@ -406,7 +409,7 @@ export default defineComponent({
 			form,
 			fields,
 			isSingleton,
-			_primaryKey,
+			internalPrimaryKey,
 			revisionsAllowed,
 			revert,
 			accountabilityScope,
@@ -416,7 +419,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => [
 				{
 					name: collectionInfo.value?.name,
-					to: `/collections/${props.collection}`,
+					to: `/collections/${props.collection}/-`,
 				},
 			]);
 
@@ -428,7 +431,7 @@ export default defineComponent({
 
 			try {
 				await save();
-				if (props.singleton === false) router.push(`/collections/${props.collection}`);
+				if (props.singleton === false) router.push(`/collections/${props.collection}/-`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -445,7 +448,7 @@ export default defineComponent({
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+					router.replace(`/collections/${props.collection}/-/${encodeURIComponent(newPrimaryKey)}`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -461,7 +464,7 @@ export default defineComponent({
 				if (isNew.value === true) {
 					refresh();
 				} else {
-					router.push(`/collections/${props.collection}/+`);
+					router.push(`/collections/${props.collection}/-/+`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -471,7 +474,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/-/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -480,7 +483,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/collections/${props.collection}`);
+				router.push(`/collections/${props.collection}/-`);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -491,7 +494,7 @@ export default defineComponent({
 				await archive();
 
 				if (isArchived.value === true) {
-					router.push(`/collections/${props.collection}`);
+					router.push(`/collections/${props.collection}/-`);
 				} else {
 					confirmArchive.value = false;
 				}
@@ -514,18 +517,10 @@ export default defineComponent({
 			};
 		}
 	},
-	beforeRouteLeave(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
-	},
-	beforeRouteUpdate(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
-	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .action-delete {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
@@ -550,7 +545,7 @@ export default defineComponent({
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		padding: var(--content-padding);
 		padding-bottom: var(--content-padding-bottom);
 	}

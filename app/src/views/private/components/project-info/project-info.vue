@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import LatencyIndicator from '../latency-indicator';
 import { useServerStore } from '@/stores/';
 
@@ -15,7 +15,7 @@ export default defineComponent({
 	setup() {
 		const serverStore = useServerStore();
 
-		const name = computed(() => serverStore.state.info?.project?.project_name);
+		const name = computed(() => serverStore.info?.project?.project_name);
 
 		return { name };
 	},

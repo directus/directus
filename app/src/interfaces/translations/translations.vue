@@ -7,15 +7,16 @@
 		<v-list-item
 			v-for="(languageItem, i) in languages"
 			:key="languageItem[languagesPrimaryKeyField]"
+			clickable
 			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 			class="language-row"
 			block
 		>
 			<v-icon class="translate" name="translate" left />
-			<render-template :template="_languageTemplate" :collection="languagesCollection" :item="languageItem" />
+			<render-template :template="internalLanguageTemplate" :collection="languagesCollection" :item="languageItem" />
 			<render-template
 				class="preview"
-				:template="_translationsTemplate"
+				:template="internalTranslationsTemplate"
 				:collection="translationsCollection"
 				:item="previewItems[i]"
 			/>
@@ -36,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { useRelationsStore, useFieldsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
@@ -47,6 +48,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { isPlainObject } from 'lodash';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem },
 	props: {
 		collection: {
@@ -89,9 +91,9 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, template: _languageTemplate } = useLanguages();
+		const { languages, loading: languagesLoading, template: internalLanguageTemplate } = useLanguages();
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
-		const { previewItems, template: _translationsTemplate } = usePreview();
+		const { previewItems, template: internalTranslationsTemplate } = usePreview();
 
 		return {
 			relationsForField,
@@ -99,8 +101,8 @@ export default defineComponent({
 			translationsCollection,
 			languagesRelation,
 			languages,
-			_languageTemplate,
-			_translationsTemplate,
+			internalLanguageTemplate,
+			internalTranslationsTemplate,
 			languagesCollection,
 			languagesPrimaryKeyField,
 			languagesLoading,

@@ -1,14 +1,15 @@
 <template>
 	<component
 		:is="component"
-		active-class="active"
+		v-bind="disabled === false && $attrs"
+		:active-class="!exact && to ? 'active' : null"
+		:exact-active-class="exact && to ? 'active' : null"
 		class="v-list-item"
-		:exact="exact"
 		:to="to"
 		:class="{
 			active,
 			dense,
-			link: isClickable,
+			link: isLink,
 			disabled,
 			dashed,
 			block,
@@ -17,15 +18,14 @@
 		:href="href"
 		:download="download"
 		:target="component === 'a' ? '_blank' : null"
-		v-on="disabled === false && $listeners"
 	>
 		<slot />
 	</component>
 </template>
 
 <script lang="ts">
-import { Location } from 'vue-router';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { RouteLocation } from 'vue-router';
+import { defineComponent, PropType, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -39,7 +39,7 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
+			type: [String, Object] as PropType<string | RouteLocation>,
 			default: null,
 		},
 		href: {
@@ -47,6 +47,10 @@ export default defineComponent({
 			default: null,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		clickable: {
 			type: Boolean,
 			default: false,
 		},
@@ -75,7 +79,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners }) {
+	setup(props) {
 		const component = computed<string>(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
@@ -86,9 +90,9 @@ export default defineComponent({
 			value: props.value,
 		});
 
-		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));
+		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
 
-		return { component, isClickable };
+		return { component, isLink };
 	},
 });
 </script>
@@ -177,13 +181,13 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-text-overflow {
+		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-text-overflow {
+			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
 		}

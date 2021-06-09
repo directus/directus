@@ -1,27 +1,26 @@
 <template>
 	<div class="render-template" ref="templateEl">
 		<span class="vertical-aligner" />
-		<template v-for="(part, index) in parts">
-			<value-null :key="index" v-if="part === null || part.value === null" />
+		<template v-for="(part, index) in parts" :key="index">
+			<value-null v-if="part === null || part.value === null" />
 			<component
 				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
-				:key="index"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
 				:collection="part.collection"
 				:field="part.field"
-				v-bind="part.options"
 			/>
-			<span :key="index" v-else>{{ part }}</span>
+			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
 import { Field } from '@/types';

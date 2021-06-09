@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('public')">
-		<template #headline>{{ $t('settings_permissions') }}</template>
+	<private-view :title="t('public')">
+		<template #headline>{{ t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import PermissionsOverview from './item/components/permissions-overview.vue';
@@ -31,6 +32,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+	},
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>

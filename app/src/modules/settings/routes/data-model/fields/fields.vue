@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="collectionInfo && collectionInfo.name">
-		<template #headline>{{ $t('settings_data_model') }}</template>
+		<template #headline>{{ t('settings_data_model') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
 				<v-icon name="arrow_back" />
@@ -16,7 +16,7 @@
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="$t('delete_collection')"
+						v-tooltip.bottom="t('delete_collection')"
 						v-if="item && item.collection.startsWith('directus_') === false"
 					>
 						<v-icon name="delete" outline />
@@ -24,14 +24,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -43,7 +43,7 @@
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
+				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -56,8 +56,8 @@
 		<div class="collections-item">
 			<div class="fields">
 				<h2 class="title type-label">
-					{{ $t('fields_and_layout') }}
-					<span class="instant-save">{{ $t('saves_automatically') }}</span>
+					{{ t('fields_and_layout') }}
+					<span class="instant-save">{{ t('saves_automatically') }}</span>
 				</h2>
 				<fields-management :collection="collection" />
 			</div>
@@ -76,21 +76,22 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_settings_datamodel_fields'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_settings_datamodel_fields'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import { md } from '@/utils/md';
 
@@ -113,6 +114,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { collection } = toRefs(props);
 		const { info: collectionInfo, fields } = useCollection(collection);
 		const collectionsStore = useCollectionsStore();
@@ -128,6 +133,7 @@ export default defineComponent({
 		const confirmDelete = ref(false);
 
 		return {
+			t,
 			collectionInfo,
 			fields,
 			confirmDelete,
