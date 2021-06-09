@@ -370,8 +370,10 @@ export default defineComponent({
 			const translationsCollection = computed(() => {
 				if (localType.value !== 'translations') return null;
 
-				const relation = relationsStore.relations.find((relation: Relation) => {
-					relation.related_collection === props.field.collection && relation.meta?.one_field === props.field.field;
+				const relation = relationsStore.relations.find((relation) => {
+					return (
+						relation.related_collection === props.field.collection && relation.meta?.one_field === props.field.field
+					);
 				});
 
 				if (!relation) return null;
@@ -379,9 +381,9 @@ export default defineComponent({
 				return relation.collection;
 			});
 
-			const translationsFieldsCount = computed(() => {
+			const translationsFieldsCount = computed<number>(() => {
+				if (!translationsCollection.value) return 0;
 				const fields = fieldsStore.getFieldsForCollection(translationsCollection.value);
-
 				return fields.filter((field: Field) => field.meta?.hidden !== true).length;
 			});
 
