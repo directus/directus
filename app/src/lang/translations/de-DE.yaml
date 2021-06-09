@@ -9,7 +9,7 @@ field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
-db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
+db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -399,7 +399,7 @@ errors:
   FORBIDDEN: Verweigert
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_OTP: Falsches Einmalpasswort
-  INVALID_PAYLOAD: Ungültige Payload
+  INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_QUERY: Ungültige anfrage
   ITEM_LIMIT_REACHED: Elementlimit erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
@@ -855,6 +855,7 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 interfaces:
   presentation-links:
@@ -1013,6 +1014,7 @@ interfaces:
     minimum_value: Minimalwert
     maximum_value: Maximalwert
     step_interval: Schrittintervall
+    slug: Slug erstellen
     slug_label: Eingegebenen Wert URL-sicher machen
   input-multiline:
     textarea: Textfeld (mehrzeilig)
