@@ -8,7 +8,7 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { clone } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
 
-export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef } {
+export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const { interfaces } = getInterfaces();
 
 	const formFields = computed(() => {
