@@ -10,9 +10,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import CodeMirror from 'codemirror';
+import CodeMirror, { ModeSpec } from 'codemirror';
 
-import { defineComponent, computed, ref, onMounted, watch } from 'vue';
+import { defineComponent, computed, ref, onMounted, watch, PropType } from 'vue';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';
@@ -37,7 +37,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Object, Array],
+			type: [String, Object, Array] as PropType<string | Record<string, any> | any[]>,
 			default: null,
 		},
 		altOptions: {
@@ -108,14 +108,14 @@ export default defineComponent({
 			}
 		});
 
-		const stringValue = computed(() => {
-			if (props.value == null) return '';
+		const stringValue = computed<string>(() => {
+			if (props.value === null) return '';
 
 			if (props.type === 'json') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
-			return props.value;
+			return props.value as string;
 		});
 
 		watch(
@@ -141,7 +141,7 @@ export default defineComponent({
 
 					const jsonlint = (await import('jsonlint-mod')) as any;
 
-					codemirror.setOption('mode', { name: 'javascript', json: true });
+					codemirror.setOption('mode', { name: 'javascript', json: true } as ModeSpec<{ json: boolean }>);
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
 						const found: Record<string, any>[] = [];
@@ -155,17 +155,18 @@ export default defineComponent({
 								message: str,
 							});
 						};
+
 						if (text.length > 0) {
 							try {
 								jsonlint.parse(text);
-							} finally {
+							} catch {
 								// Do nothing
 							}
 						}
 						return found;
 					});
 				} else if (lang === 'plaintext') {
-					codemirror.setOption('mode', { name: null });
+					codemirror.setOption('mode', { name: 'plaintext' });
 				} else {
 					await importCodemirrorMode(lang);
 					codemirror.setOption('mode', { name: lang });
