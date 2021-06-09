@@ -1,5 +1,5 @@
 <template>
-	<div v-if="languagesLoading">
+	<div v-if="languagesLoading || previewLoading">
 		<v-skeleton-loader v-for="n in 5" :key="n" />
 	</div>
 
@@ -93,7 +93,7 @@ export default defineComponent({
 
 		const { languages, loading: languagesLoading, template: internalLanguageTemplate } = useLanguages();
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
-		const { previewItems, template: internalTranslationsTemplate } = usePreview();
+		const { previewItems, template: internalTranslationsTemplate, loading: previewLoading } = usePreview();
 
 		return {
 			relationsForField,
@@ -113,6 +113,7 @@ export default defineComponent({
 			cancelEdit,
 			edits,
 			previewItems,
+			previewLoading,
 		};
 
 		function useRelations() {
