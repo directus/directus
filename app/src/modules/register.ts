@@ -50,13 +50,14 @@ export async function register(): Promise<void> {
 	const permissionsStore = usePermissionsStore();
 
 	const registeredModules = [];
+
 	for (const mod of queuedModules) {
 		if (!userStore.state.currentUser) continue;
 
-		if (
-			!mod.preRegisterCheck ||
-			(await mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions))
-		) {
+		if (mod.preRegisterCheck) {
+			const allowed = await mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions);
+			if (allowed) registeredModules.push(mod);
+		} else {
 			registeredModules.push(mod);
 		}
 	}
