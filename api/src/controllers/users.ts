@@ -345,17 +345,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const authService = new AuthenticationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp, req.body.secret);
-
-		if (otpValid === false) {
-			throw new InvalidPayloadException(`"otp" is invalid`);
-		}
-
-		await service.enableTFA(req.accountability.user, req.body.secret);
+		await service.enableTFA(req.accountability, req.schema, req.body.otp, req.body.secret);
 
 		return next();
 	}),

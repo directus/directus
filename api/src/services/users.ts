@@ -10,6 +10,7 @@ import {
 	ForbiddenException,
 	InvalidPayloadException,
 	UnprocessableEntityException,
+	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
@@ -367,14 +368,29 @@ export class UsersService extends ItemsService {
 		};
 	}
 
-	async enableTFA(pk: string, secret: string): Promise<void> {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+	async enableTFA(accountability: Accountability, schema: SchemaOverview, otp: string, secret: string): Promise<void> {
+		const authService = new AuthenticationService({
+			accountability,
+			schema,
+		});
+
+		if (!accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		const otpValid = await authService.verifyOTP(accountability.user, otp, secret);
+
+		if (otpValid === false) {
+			throw new InvalidPayloadException(`"otp" is invalid`);
+		}
+
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: accountability.user }).first();
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: accountability.user });
 	}
 
 	async disableTFA(pk: string): Promise<void> {

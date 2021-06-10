@@ -1519,17 +1519,8 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp, args.secret);
 
-					if (otpValid === false) {
-						throw new InvalidPayloadException(`"otp" is invalid`);
-					}
-					await authService.verifyPassword(this.accountability.user, args.password);
-					await service.enableTFA(this.accountability.user, args.secret);
+					await service.enableTFA(this.accountability, this.schema, args.otp, args.secret);
 					return true;
 				},
 			},
