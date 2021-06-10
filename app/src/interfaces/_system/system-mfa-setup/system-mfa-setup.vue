@@ -30,17 +30,17 @@
 				<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 					<form @submit.prevent="enableTFA">
 						<v-card-title>
-							{{ $t('tfa_scan_code') }}
+							{{ t('tfa_scan_code') }}
 						</v-card-title>
 						<v-card-text>
 							<canvas class="qr" :id="canvasID" />
 							<output class="secret selectable">{{ secret }}</output>
-							<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
+							<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
 							<v-error v-if="error" :error="error" />
 						</v-card-text>
 						<v-card-actions>
-							<v-button type="button" @click="cancelAndClose" secondary>{{ $t('cancel') }}</v-button>
-							<v-button type="submit" @click="enableTFA" :disabled="otp.length !== 6">{{ $t('done') }}</v-button>
+							<v-button type="button" @click="cancelAndClose" secondary>{{ t('cancel') }}</v-button>
+							<v-button type="submit" @click="enableTFA" :disabled="otp.length !== 6">{{ t('done') }}</v-button>
 						</v-card-actions>
 					</form>
 				</div>
@@ -54,7 +54,7 @@
 						{{ t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
+						<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
