@@ -9,7 +9,13 @@ import { useAppStore, useServerStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 
+import Debug from '@/routes/debug.vue';
+
 export const defaultRoutes: RouteRecordRaw[] = [
+	{
+		path: '/debug',
+		component: Debug,
+	},
 	{
 		path: '/',
 		redirect: '/login',
