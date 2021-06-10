@@ -24,12 +24,14 @@ function generateIndex(tree) {
 				const baseName = path.basename(child.name, child.extension);
 				const basePath = path.join(path.dirname(child.path), path.basename(child.path, child.extension));
 
-				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}?raw')}`;
+				return `{name:'${baseName}',path:'${basePath.split('\\').join('\\\\')}',import:()=>import('../${
+					child.path
+				}?raw')}`;
 			} else if (child.type === 'directory') {
 				const children = generateIndex(child.children);
 
 				if (children === '[]') return null;
-				return `{name:'${child.name}',path:'${child.path}',children:${children}}`;
+				return `{name:'${child.name}',path:'${child.path.split('\\').join('\\\\')}',children:${children}}`;
 			} else {
 				return null;
 			}
