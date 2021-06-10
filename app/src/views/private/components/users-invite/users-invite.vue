@@ -1,25 +1,29 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', $event)" @esc="$emit('toggle', false)">
+	<v-dialog
+		:model-value="modelValue"
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="$emit('update:modelValue', false)"
+	>
 		<v-card>
-			<v-card-title>{{ $t('invite_users') }}</v-card-title>
+			<v-card-title>{{ t('invite_users') }}</v-card-title>
 
 			<v-card-text>
 				<div class="grid">
 					<div class="field">
-						<div class="type-label">{{ $t('emails') }}</div>
-						<v-textarea v-model="emails" :nullable="false" :placeholder="$t('email_examples')" />
+						<div class="type-label">{{ t('emails') }}</div>
+						<v-textarea v-model="emails" :nullable="false" :placeholder="t('email_examples')" />
 					</div>
 					<div class="field" v-if="role === null">
-						<div class="type-label">{{ $t('role') }}</div>
+						<div class="type-label">{{ t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
 					<v-notice class="field" type="danger" v-if="uniqueValidationErrors.length > 0">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
 							<template v-if="err.extensions.invalid">
-								{{ $t('email_already_invited', { email: err.extensions.invalid }) }}
+								{{ t('email_already_invited', { email: err.extensions.invalid }) }}
 							</template>
 							<template v-else-if="i === 0">
-								{{ $t('validationError.unique') }}
+								{{ t('validationError.unique') }}
 							</template>
 						</div>
 					</v-notice>
@@ -27,9 +31,9 @@
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button secondary @click="$emit('toggle', false)">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
 				<v-button @click="inviteUsers" :disabled="emails === null || emails.length === 0" :loading="loading">
-					{{ $t('invite') }}
+					{{ t('invite') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -37,18 +41,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -58,6 +60,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const emails = ref<string>('');
 		const roles = ref<Record<string, any>[]>([]);
 		const roleSelected = ref<string | null>(props.role);
@@ -66,13 +70,13 @@ export default defineComponent({
 		const uniqueValidationErrors = ref([]);
 
 		watch(
-			() => props.active,
+			() => props.modelValue,
 			() => {
 				loadRoles();
 			}
 		);
 
-		return { emails, inviteUsers, roles, roleSelected, loading, uniqueValidationErrors };
+		return { t, emails, inviteUsers, roles, roleSelected, loading, uniqueValidationErrors };
 
 		async function inviteUsers() {
 			loading.value = true;
@@ -89,7 +93,7 @@ export default defineComponent({
 				});
 
 				emails.value = '';
-				emit('toggle', false);
+				emit('update:modelValue', false);
 			} catch (err) {
 				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
 					return error.extensions?.code === 'RECORD_NOT_UNIQUE';

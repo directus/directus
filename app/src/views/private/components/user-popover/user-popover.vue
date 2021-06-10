@@ -22,7 +22,7 @@
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<div class="status-role" :class="data.status">{{ $t(data.status) }} {{ data.role.name }}</div>
+				<div class="status-role" :class="data.status">{{ t(data.status) }} {{ data.role.name }}</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, onUnmounted, computed } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
@@ -53,6 +54,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const loading = ref(false);
 		const error = ref(null);
 		const data = ref<User | null>(null);
@@ -80,7 +83,7 @@ export default defineComponent({
 			data.value = null;
 		});
 
-		return { loading, error, data, active, avatarSrc, userName };
+		return { t, loading, error, data, active, avatarSrc, userName };
 
 		async function fetchUser() {
 			loading.value = true;
@@ -122,12 +125,15 @@ export default defineComponent({
 		&.invited {
 			color: var(--primary);
 		}
+
 		&.active {
 			color: var(--success);
 		}
+
 		&.suspended {
 			color: var(--warning);
 		}
+
 		&.deleted {
 			color: var(--danger);
 		}

@@ -21,9 +21,9 @@
 
 			<form-field-menu
 				:field="field"
-				:value="_value"
+				:model-value="internalValue"
 				:initial-value="initialValue"
-				@input="emitValue($event)"
+				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 			/>
@@ -32,24 +32,24 @@
 
 		<form-field-interface
 			:autofocus="autofocus"
-			:value="_value"
+			:model-value="internalValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			@input="emitValue($event)"
+			@update:model-value="emitValue($event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
-				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
+				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea class="raw-value" v-model="rawValue" :placeholder="$t('enter_raw_value')" />
+					<v-textarea class="raw-value" v-model="rawValue" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="showRaw = false">{{ $t('done') }}</v-button>
+					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -63,7 +63,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types/';
 import { md } from '@/utils/md';
 import FormFieldLabel from './form-field-label.vue';
@@ -72,9 +73,9 @@ import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
-import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
 	props: {
 		field: {
@@ -93,7 +94,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: undefined,
 		},
@@ -119,6 +120,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
 			if (props.field?.meta?.readonly === true) return true;
@@ -133,14 +136,14 @@ export default defineComponent({
 			return null;
 		});
 
-		const _value = computed(() => {
-			if (props.value !== undefined) return props.value;
+		const internalValue = computed(() => {
+			if (props.modelValue !== undefined) return props.modelValue;
 			if (props.initialValue !== undefined) return props.initialValue;
 			return defaultValue.value;
 		});
 
 		const isEdited = computed<boolean>(() => {
-			return props.value !== undefined && isEqual(props.value, props.initialValue) === false;
+			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
 		const { showRaw, rawValue } = useRaw();
@@ -149,13 +152,13 @@ export default defineComponent({
 			if (!props.validationError) return null;
 
 			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
-				return i18n.t('validationError.unique');
+				return t('validationError.unique');
 			} else {
-				return i18n.t(`validationError.${props.validationError.type}`, props.validationError);
+				return t(`validationError.${props.validationError.type}`, props.validationError);
 			}
 		});
 
-		return { isDisabled, md, _value, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { t, isDisabled, md, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (
@@ -165,7 +168,7 @@ export default defineComponent({
 			) {
 				emit('unset', props.field);
 			} else {
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
@@ -180,30 +183,30 @@ export default defineComponent({
 				get() {
 					switch (type.value) {
 						case 'object':
-							return JSON.stringify(_value.value, null, '\t');
+							return JSON.stringify(internalValue.value, null, '\t');
 						case 'string':
 						case 'number':
 						case 'boolean':
 						default:
-							return _value.value;
+							return internalValue.value;
 					}
 				},
 				set(newRawValue: string) {
 					switch (type.value) {
 						case 'string':
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 						case 'number':
-							emit('input', Number(newRawValue));
+							emit('update:modelValue', Number(newRawValue));
 							break;
 						case 'boolean':
-							emit('input', newRawValue === 'true');
+							emit('update:modelValue', newRawValue === 'true');
 							break;
 						case 'object':
-							emit('input', JSON.parse(newRawValue));
+							emit('update:modelValue', JSON.parse(newRawValue));
 							break;
 						default:
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 					}
 				},

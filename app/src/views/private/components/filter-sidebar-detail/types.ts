@@ -1,8 +1,6 @@
-import { TranslateResult } from 'vue-i18n';
-
 export type FieldTree = {
 	field: string;
-	name: string | TranslateResult;
+	name: string;
 	children?: FieldTree[];
 };
 

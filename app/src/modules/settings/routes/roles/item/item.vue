@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
-		<template #headline>{{ $t('settings_permissions') }}</template>
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+		<template #headline>{{ t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -15,21 +15,21 @@
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
+						v-tooltip.bottom="t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -39,7 +39,7 @@
 				rounded
 				icon
 				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
+				v-tooltip.bottom="t('invite_users')"
 				class="invite-user"
 			>
 				<v-icon name="person_add" />
@@ -51,7 +51,7 @@
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
+				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -65,7 +65,7 @@
 
 		<div class="roles">
 			<v-notice v-if="adminEnabled" type="info">
-				{{ $t('admins_have_all_permissions') }}
+				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
@@ -88,10 +88,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import { useUserStore } from '@/stores/';
@@ -113,6 +114,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const userStore = useUserStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
@@ -145,6 +150,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			item,
 			loading,
 			error,

@@ -12,12 +12,12 @@ Use the detail component to hide not so important information or elements.
 
 #### Props
 
-| Prop         | Description             | Default            | Type      |
-| ------------ | ----------------------- | ------------------ | --------- |
-| `active`     | Used with `v-model`     | `undefined`        | `Boolean` |
-| `label`      | Label of detail         | `i18n.t('toggle')` | `String`  |
-| `start-open` | Have it open by default | `false`            | `Boolean` |
-| `disabled`   | Disable any interaction | `false`            | `Boolean` |
+| Prop         | Description             | Default                   | Type      |
+| ------------ | ----------------------- | ------------------------- | --------- |
+| `active`     | Used with `v-model`     | `undefined`               | `Boolean` |
+| `label`      | Label of detail         | `i18n.global.t('toggle')` | `String`  |
+| `start-open` | Have it open by default | `false`                   | `Boolean` |
+| `disabled`   | Disable any interaction | `false`                   | `Boolean` |
 
 #### Events
 

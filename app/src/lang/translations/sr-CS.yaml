@@ -569,7 +569,7 @@ interfaces:
     primary: Primarni
   input-code:
     code: Kod
-  collection:
+  system-collection:
     collection: Kolekcija
   system-collections:
     collections: Kolekcije

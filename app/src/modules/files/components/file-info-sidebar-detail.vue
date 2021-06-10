@@ -1,48 +1,48 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="$t('file_details')" close>
+	<sidebar-detail icon="info_outline" :title="t('file_details')" close>
 		<dl v-if="file">
 			<div v-if="file.type">
-				<dt>{{ $t('type') }}</dt>
+				<dt>{{ t('type') }}</dt>
 				<dd>{{ readableMimeType(file.type) || file.type }}</dd>
 			</div>
 
 			<div v-if="file.width && file.height">
-				<dt>{{ $t('dimensions') }}</dt>
-				<dd>{{ $n(file.width) }} × {{ $n(file.height) }}</dd>
+				<dt>{{ t('dimensions') }}</dt>
+				<dd>{{ n(file.width) }} × {{ n(file.height) }}</dd>
 			</div>
 
 			<div v-if="file.duration">
-				<dt>{{ $t('duration') }}</dt>
-				<dd>{{ $n(file.duration) }}</dd>
+				<dt>{{ t('duration') }}</dt>
+				<dd>{{ n(file.duration) }}</dd>
 			</div>
 
 			<div v-if="file.filesize">
-				<dt>{{ $t('size') }}</dt>
+				<dt>{{ t('size') }}</dt>
 				<dd>{{ size }}</dd>
 			</div>
 
 			<div v-if="file.charset">
-				<dt>{{ $t('charset') }}</dt>
+				<dt>{{ t('charset') }}</dt>
 				<dd>{{ charset }}</dd>
 			</div>
 
 			<div v-if="file.embed">
-				<dt>{{ $t('embed') }}</dt>
+				<dt>{{ t('embed') }}</dt>
 				<dd>{{ embed }}</dd>
 			</div>
 
 			<div v-if="creationDate">
-				<dt>{{ $t('created') }}</dt>
+				<dt>{{ t('created') }}</dt>
 				<dd>{{ creationDate }}</dd>
 			</div>
 
 			<div v-if="file.checksum" class="checksum">
-				<dt>{{ $t('checksum') }}</dt>
+				<dt>{{ t('checksum') }}</dt>
 				<dd>{{ file.checksum }}</dd>
 			</div>
 
 			<div v-if="userCreated">
-				<dt>{{ $t('owner') }}</dt>
+				<dt>{{ t('owner') }}</dt>
 				<dd>
 					<user-popover :user="userCreated.id">
 						<router-link :to="userCreated.link">{{ userCreated.name }}</router-link>
@@ -51,12 +51,12 @@
 			</div>
 
 			<div v-if="modificationDate">
-				<dt>{{ $t('modified') }}</dt>
+				<dt>{{ t('modified') }}</dt>
 				<dd>{{ modificationDate }}</dd>
 			</div>
 
 			<div v-if="userModified">
-				<dt>{{ $t('edited_by') }}</dt>
+				<dt>{{ t('edited_by') }}</dt>
 				<dd>
 					<user-popover :user="userModified.id">
 						<router-link :to="userModified.link">{{ userModified.name }}</router-link>
@@ -65,17 +65,17 @@
 			</div>
 
 			<div>
-				<dt>{{ $t('file') }}</dt>
+				<dt>{{ t('file') }}</dt>
 				<dd>
-					<a :href="fileLink" target="_blank">{{ $t('open_in_new_window') }}</a>
+					<a :href="fileLink" target="_blank">{{ t('open_in_new_window') }}</a>
 				</dd>
 			</div>
 
 			<div>
-				<dt>{{ $t('folder') }}</dt>
+				<dt>{{ t('folder') }}</dt>
 				<dd>
 					<router-link :to="folderLink">
-						{{ $t('open') }} "{{ folder ? folder.name : $t('file_library') }}" {{ $t('folder') }}
+						{{ t('open') }} "{{ folder ? folder.name : t('file_library') }}" {{ t('folder') }}
 					</router-link>
 				</dd>
 			</div>
@@ -84,27 +84,27 @@
 				<v-divider />
 
 				<div v-if="file.metadata.exif.image.Make && file.metadata.exif.image.Model">
-					<dt>{{ $t('camera') }}</dt>
+					<dt>{{ t('camera') }}</dt>
 					<dd>{{ file.metadata.exif.image.Make }} {{ file.metadata.exif.image.Model }}</dd>
 				</div>
 
 				<div v-if="file.metadata.exif.exif.FNumber">
-					<dt>{{ $t('exposure') }}</dt>
+					<dt>{{ t('exposure') }}</dt>
 					<dd>ƒ/{{ file.metadata.exif.exif.FNumber }}</dd>
 				</div>
 
 				<div v-if="file.metadata.exif.exif.ExposureTime">
-					<dt>{{ $t('shutter') }}</dt>
-					<dd>1/{{ Math.round(1 / +file.metadata.exif.exif.ExposureTime) }} {{ $t('second') }}</dd>
+					<dt>{{ t('shutter') }}</dt>
+					<dd>1/{{ Math.round(1 / +file.metadata.exif.exif.ExposureTime) }} {{ t('second') }}</dd>
 				</div>
 
 				<div v-if="file.metadata.exif.exif.FocalLength">
-					<dt>{{ $t('focal_length') }}</dt>
+					<dt>{{ t('focal_length') }}</dt>
 					<dd>{{ file.metadata.exif.exif.FocalLength }}mm</dd>
 				</div>
 
 				<div v-if="file.metadata.exif.exif.ISO">
-					<dt>{{ $t('iso') }}</dt>
+					<dt>{{ t('iso') }}</dt>
 					<dd>{{ file.metadata.exif.exif.ISO }}</dd>
 				</div>
 			</template>
@@ -112,15 +112,15 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="md($t('page_help_files_item'))" />
+		<div class="page-description" v-html="md(t('page_help_files_item'))" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, watch } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
-import i18n from '@/lang';
 import { md } from '@/utils/md';
 import localizedFormat from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
@@ -128,7 +128,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
-	inheritAttrs: false,
 	props: {
 		file: {
 			type: Object,
@@ -140,12 +139,14 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t, n } = useI18n();
+
 		const size = computed(() => {
 			if (props.isNew) return null;
 			if (!props.file) return null;
 			if (!props.file.filesize) return null;
 
-			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
+			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: locale.value.split('-')[0] }
 		});
 
 		const { creationDate, modificationDate } = useDates();
@@ -157,6 +158,8 @@ export default defineComponent({
 		});
 
 		return {
+			t,
+			n,
 			readableMimeType,
 			size,
 			creationDate,
@@ -181,13 +184,13 @@ export default defineComponent({
 
 					creationDate.value = await localizedFormat(
 						new Date(props.file.uploaded_on),
-						String(i18n.t('date-fns_date_short'))
+						String(t('date-fns_date_short'))
 					);
 
 					if (props.file.modified_on) {
 						modificationDate.value = await localizedFormat(
 							new Date(props.file.modified_on),
-							String(i18n.t('date-fns_date_short'))
+							String(t('date-fns_date_short'))
 						);
 					}
 				},
@@ -267,7 +270,7 @@ export default defineComponent({
 				if (folder.value === null) {
 					return `/files`;
 				}
-				return `/files/?folder=${folder.value.id}`;
+				return `/files/folders/${folder.value.id}`;
 			});
 
 			watch(() => props.file, fetchFolder, { immediate: true });

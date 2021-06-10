@@ -3,9 +3,9 @@ import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useSettingsStore = createStore({
+export const useSettingsStore = defineStore({
 	id: 'settingsStore',
 	state: () => ({
 		settings: null as null | Record<string, any>,
@@ -13,30 +13,30 @@ export const useSettingsStore = createStore({
 	actions: {
 		async hydrate() {
 			const response = await api.get(`/settings`);
-			this.state.settings = response.data.data;
+			this.settings = response.data.data;
 		},
 
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
-			const settingsCopy = { ...this.state.settings };
-			const newSettings = merge({}, this.state.settings, updates);
+			const settingsCopy = { ...this.settings };
+			const newSettings = merge({}, this.settings, updates);
 
-			this.state.settings = newSettings;
+			this.settings = newSettings;
 
 			try {
 				const response = await api.patch(`/settings`, updates);
 
-				this.state.settings = response.data.data;
+				this.settings = response.data.data;
 
 				notify({
-					title: i18n.t('settings_update_success'),
+					title: i18n.global.t('settings_update_success'),
 					type: 'success',
 				});
 			} catch (err) {
-				this.state.settings = settingsCopy;
+				this.settings = settingsCopy;
 				unexpectedError(err);
 			}
 		},

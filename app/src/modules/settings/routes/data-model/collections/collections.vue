@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_data_model')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_data_model')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="$t('create_collection')">
+			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="t('create_collection')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,24 +19,24 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info type="warning" icon="box" :title="$t('no_collections')" v-if="items.length === 0" center>
-				{{ $t('no_collections_copy_admin') }}
+			<v-info type="warning" icon="box" :title="t('no_collections')" v-if="items.length === 0" center>
+				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 				</template>
 			</v-info>
 
 			<v-table
 				v-else
-				:headers.sync="tableHeaders"
+				v-model:headers="tableHeaders"
 				:items="items"
 				@click:row="openCollection"
 				show-resize
 				fixed-header
 				item-key="collection"
 			>
-				<template #item.icon="{ item }">
+				<template #[`item.icon`]="{ item }">
 					<v-icon
 						class="icon"
 						:class="{
@@ -49,7 +49,7 @@
 					/>
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<v-text-overflow
 						class="collection"
 						:class="{
@@ -61,9 +61,9 @@
 					/>
 				</template>
 
-				<template #item.note="{ item }">
+				<template #[`item.note`]="{ item }">
 					<span v-if="item.meta === null" class="note">
-						{{ $t('db_only_click_to_configure') }}
+						{{ t('db_only_click_to_configure') }}
 					</span>
 					<span v-else class="note">
 						{{ item.meta.note }}
@@ -76,7 +76,7 @@
 						class="no-meta"
 						name="report_problem"
 						v-if="!item.meta && item.collection.startsWith('directus_') === false"
-						v-tooltip="$t('db_only_click_to_configure')"
+						v-tooltip="t('db_only_click_to_configure')"
 					/>
 					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
 				</template>
@@ -86,8 +86,8 @@
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_settings_datamodel_collections'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_settings_datamodel_collections'))" />
 			</sidebar-detail>
 			<collections-filter v-model="activeTypes" />
 		</template>
@@ -95,13 +95,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
-import { i18n } from '@/lang/';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
@@ -112,6 +112,10 @@ const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 export default defineComponent({
 	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 
 		const tableHeaders = ref<HeaderRaw[]>([
@@ -122,12 +126,12 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.t('name'),
+				text: t('name'),
 				value: 'name',
 				width: 240,
 			},
 			{
-				text: i18n.t('note'),
+				text: t('note'),
 				value: 'note',
 				width: 360,
 			},
@@ -139,18 +143,12 @@ export default defineComponent({
 
 		const { items } = useItems();
 
-		return {
-			tableHeaders,
-			items,
-			openCollection,
-			activeTypes,
-			md,
-		};
+		return { t, tableHeaders, items, openCollection, activeTypes, md };
 
 		function useItems() {
 			const visible = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections.filter(
+					collectionsStore.collections.filter(
 						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
 					),
 					'collection'
@@ -159,7 +157,7 @@ export default defineComponent({
 
 			const hidden = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter(
 							(collection) =>
 								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
@@ -171,7 +169,7 @@ export default defineComponent({
 
 			const system = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === true)
 						.map((collection) => ({ ...collection, icon: 'settings' })),
 					'collection'
@@ -180,7 +178,7 @@ export default defineComponent({
 
 			const unmanaged = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
 						.filter((collection) => collection.meta === null)
 						.map((collection) => ({ ...collection, icon: 'dns' })),
@@ -216,22 +214,18 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.icon ::v-deep i {
+<style scoped>
+.icon :deep(i) {
 	vertical-align: baseline;
 }
 
-.icon.hidden ::v-deep i {
+.icon.hidden :deep(i) {
 	color: var(--foreground-subdued);
 }
 
-.icon.system ::v-deep i {
+.icon.system :deep(i) {
 	color: var(--primary);
 }
-
-// .icon.unmanaged ::v-deep i {
-// 	color: var(--warning);
-// }
 
 .collection {
 	font-family: var(--family-monospace);
@@ -244,10 +238,6 @@ export default defineComponent({
 .system {
 	color: var(--primary);
 }
-
-// .unmanaged {
-// 	color: var(--warning);
-// }
 
 .note {
 	color: var(--foreground-subdued);

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -61,11 +61,11 @@ body {
 				}
 			}
 
-			&.large #{$this} .v-icon {
+			&.large #{$this} :slotted(.v-icon) {
 				--v-icon-color: none;
 			}
 
-			&.disabled #{$this} .v-icon {
+			&.disabled #{$this} :slotted(.v-icon) {
 				--v-icon-color: var(--foreground-subdued) !important;
 			}
 		}

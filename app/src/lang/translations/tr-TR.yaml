@@ -678,7 +678,7 @@ interfaces:
     primary: Birincil
   input-code:
     code: Kod
-  collection:
+  system-collection:
     collection: Koleksiyon
   system-collections:
     collections: Koleksiyonlar
