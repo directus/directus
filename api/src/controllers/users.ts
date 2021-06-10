@@ -345,7 +345,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		await service.enableTFA(req.accountability, req.schema, req.body.otp, req.body.secret);
+		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
 
 		return next();
 	}),

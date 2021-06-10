@@ -1520,7 +1520,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					await service.enableTFA(this.accountability, this.schema, args.otp, args.secret);
+					await service.enableTFA(this.accountability.user, args.otp, args.secret);
 					return true;
 				},
 			},

@@ -368,29 +368,28 @@ export class UsersService extends ItemsService {
 		};
 	}
 
-	async enableTFA(accountability: Accountability, schema: SchemaOverview, otp: string, secret: string): Promise<void> {
+	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
 		const authService = new AuthenticationService({
-			accountability,
-			schema,
+			schema: this.schema,
 		});
 
-		if (!accountability?.user) {
+		if (!pk) {
 			throw new InvalidCredentialsException();
 		}
 
-		const otpValid = await authService.verifyOTP(accountability.user, otp, secret);
+		const otpValid = await authService.verifyOTP(pk, otp, secret);
 
 		if (otpValid === false) {
 			throw new InvalidPayloadException(`"otp" is invalid`);
 		}
 
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: accountability.user }).first();
+		const userSecret = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
-		if (user?.tfa_secret !== null) {
+		if (userSecret?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: accountability.user });
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 	}
 
 	async disableTFA(pk: string): Promise<void> {
