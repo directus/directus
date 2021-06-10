@@ -195,7 +195,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
-import { Field, Relation } from '@/types';
+import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import { useRouter } from 'vue-router';

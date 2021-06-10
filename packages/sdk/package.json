@@ -54,7 +54,6 @@
 		"argon2": "^0.28.1",
 		"dotenv": "^10.0.0",
 		"jest": "^27.0.3",
-		"jest-environment-jsdom": "^27.0.3",
 		"jest-environment-jsdom-global": "^2.0.4",
 		"mockdate": "^3.0.5",
 		"nock": "^13.0.10",
