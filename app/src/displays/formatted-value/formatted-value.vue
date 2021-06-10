@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="!displayValue" />
+	<value-null v-if="displayValue === null || displayValue === undefined" />
 
 	<span v-else class="display-formatted-text" :class="[{ bold }, font]" :style="{ color }">
 		{{ displayValue }}
