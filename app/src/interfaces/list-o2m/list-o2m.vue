@@ -322,10 +322,18 @@ export default defineComponent({
 						let existingItems: any[] = [];
 
 						if (primaryKeys && primaryKeys.length > 0) {
-							const response = await api.get(endpoint, {
-								params: {
-									fields: fieldsToFetch,
-									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
+							const response = await api.request({
+								url: endpoint,
+								method: 'search',
+								data: {
+									query: {
+										fields: fieldsToFetch,
+										filter: {
+											[pkField]: {
+												_in: primaryKeys,
+											},
+										},
+									},
 								},
 							});
 
