@@ -34,7 +34,7 @@
 		"dist"
 	],
 	"dependencies": {
-		"@azure/storage-blob": "^12.2.1",
+		"@azure/storage-blob": "^12.6.0",
 		"@directus/drive": "9.0.0-rc.74",
 		"normalize-path": "^3.0.0"
 	},
