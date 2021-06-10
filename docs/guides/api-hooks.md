@@ -113,8 +113,8 @@ on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example belo
 ```js
 module.exports = function registerHook() {
 	return {
-		'items.create': function () {
-			axios.post('http://example.com/webhook');
+		'cron(*/15 * * * *)': async function () {
+			await axios.post('http://example.com/webhook', { message: "Another 15 minutes passed..." });
 		},
 	};
 };
