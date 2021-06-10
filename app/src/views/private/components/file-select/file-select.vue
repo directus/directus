@@ -1,9 +1,9 @@
 <template>
 	<div class="file">
-		<v-input readonly :placeholder="$t('no_file_selected')" :disabled="disabled" :value="file && file.name">
+		<v-input readonly :placeholder="t('no_file_selected')" :disabled="disabled" :value="file && file.name">
 			<template #append>
 				<template v-if="file">
-					<v-icon class="deselect" name="close" @click="clearSelection()" v-tooltip="$t('deselect')" />
+					<v-icon class="deselect" name="close" @click="clearSelection()" v-tooltip="t('deselect')" />
 				</template>
 				<v-icon v-else class="select" name="attach_file" @click="$refs.import_file.click()" />
 			</template>
@@ -13,7 +13,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -42,8 +43,9 @@ export default defineComponent({
 		this.$emit('load', { clear: this.clearSelection });
 	},
 	setup(props) {
+		const { t } = useI18n();
 		const file = ref<File | null>(null);
-		return { file };
+		return { t, file };
 	},
 });
 </script>

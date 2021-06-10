@@ -69,15 +69,15 @@ export default defineComponent({
 			return [
 				...[
 					{
-						text: this.$t('csv'),
+						text: this.t('csv'),
 						value: 'csv',
 					},
 					{
-						text: this.$t('json'),
+						text: this.t('json'),
 						value: 'json',
 					},
 					{
-						text: this.$t('xml'),
+						text: this.t('xml'),
 						value: 'xml',
 					},
 				],
@@ -85,11 +85,11 @@ export default defineComponent({
 				...(this.translatable
 					? [
 							{
-								text: this.$t('xliff'),
+								text: this.t('xliff'),
 								value: 'xliff',
 							},
 							{
-								text: this.$t('xliff2'),
+								text: this.t('xliff2'),
 								value: 'xliff2',
 							},
 					  ]

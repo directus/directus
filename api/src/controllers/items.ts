@@ -2,7 +2,7 @@ import express from 'express';
 import Busboy from 'busboy';
 import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
-import { ItemsService, MetaService, XliffService, TranslationsService } from '../services';
+import { ItemsService, MetaService, XliffService } from '../services';
 import { RouteNotFoundException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';

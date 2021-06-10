@@ -5,6 +5,7 @@
 		:search-query="props.searchQuery"
 		:collection="props.collection"
 	/>
+	<import-sidebar-detail :collection="props.collection" v-on:refresh="refresh" />
 </template>
 
 <script lang="ts">

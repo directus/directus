@@ -1,16 +1,9 @@
 <template>
-	<v-select
-		@input="$listeners.input"
-		item-text="text"
-		item-value="value"
-		v-model="language"
-		:items="items"
-		:disabled="disabled"
-	/>
+	<v-select item-text="text" item-value="value" v-model="language" :items="items" :disabled="disabled" />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
@@ -86,7 +79,7 @@ export default defineComponent({
 				);
 			});
 
-			const translationsCollection = computed(() => {
+			const translationsCollection = computed<string>(() => {
 				if (!translationsRelation.value) return null;
 				return translationsRelation.value.meta?.many_collection;
 			});
@@ -96,12 +89,12 @@ export default defineComponent({
 				return relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) || null;
 			});
 
-			const languagesCollection = computed(() => {
+			const languagesCollection = computed<string>(() => {
 				if (!languagesRelation.value) return null;
 				return languagesRelation.value.meta?.one_collection;
 			});
 
-			const languagesPrimaryKeyField = computed(() => {
+			const languagesPrimaryKeyField = computed<string>(() => {
 				if (!languagesRelation.value) return null;
 				return languagesRelation.value.schema?.foreign_key_column;
 			});
