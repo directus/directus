@@ -6,38 +6,22 @@ export function createGeometryColumn(
 	table: Knex.CreateTableBuilder,
 	field: RawField | Field
 ): Knex.ColumnBuilder {
-	const format = field.schema?.geometry_format;
-	switch (format) {
-		case 'native':
-			break;
-		case 'geojson':
-			return table.json(field.field);
-		case 'wkb':
-			return table.binary(field.field);
-		case 'wkt':
-		case 'lnglat':
-			return table.string(field.field);
-		default:
-			throw new Error(`Unknown geometry format: ${format}.`);
-	}
-	const type = field.schema?.geometry_type || 'geometry';
+	const type = field.schema?.geometry_type ?? 'geometry';
 	const client = knex.client.config.client;
 	switch (client) {
 		case 'mysql':
 		case 'mariadb':
+		case 'sqlite3':
 			return table.specificType(field.field, type);
 		case 'pg':
 			return table.specificType(field.field, `geometry(${type})`);
 		case 'oracledb':
+			if (type !== 'geometry') field.meta!.special![1] = type;
 			return table.specificType(field.field, 'sdo_geometry');
 		case 'mssql':
 		case 'redshift':
+			if (type !== 'geometry') field.meta!.special![1] = type;
 			return table.specificType(field.field, 'geometry');
-		case 'sqlite3':
-			// Not sure how to deal with this ?
-			// return knex.raw(`select AddGeometryColumnfield(??, ??, 4326, ?, 'XY')`, (table as any)._tableName, field.field, type);
-			// This works too, but it won't be added to the geometry_columns schema (maybe there are other difference ?)
-			return table.specificType(field.field, type);
 		default:
 			throw new Error(`Native geometric types not supported on ${client}.`);
 	}
@@ -79,6 +63,21 @@ export function queryGeometryFromText(knex: Knex, text: string): Knex.Raw {
 	}
 }
 
+export function filterGeometryWithin(knex: Knex): Knex.Raw {
+	const client = knex.client.config.client;
+	switch (client) {
+		case 'mysql':
+		case 'mariadb':
+		case 'redshift':
+		case 'sqlite3':
+		case 'pg':
+		case 'mssql':
+		case 'oracledb':
+		default:
+			throw new Error(`Not implemented`);
+	}
+}
+
 const dbGeometricTypes = new Set([
 	'point',
 	'polygon',
@@ -96,35 +95,3 @@ export function isNativeGeometry(field: FieldOverview): boolean {
 	const { type, dbType } = field;
 	return type == 'geometry' && dbGeometricTypes.has(dbType!.toLowerCase());
 }
-
-// Might be usefull somehow if we can pass that information to the client ?
-// export async function geometrySupport(knex: Knex) {
-// 	const client = knex.client.config.client;
-// 	switch (client) {
-// 		case 'mysql':
-// 			const version = await knex.select(knex.raw('version()'));
-// 			return { types: true, srid: Number(version[0]) >= 8 };
-// 		case 'mariadb':
-// 			return { types: true, srid: false };
-// 		case 'mssql':
-// 		case 'redshift':
-// 		case 'oracledb':
-// 			return { types: false, srid: false };
-// 		case 'sqlite3':
-// 			try {
-// 				await knex.select(knex.raw('spatialite_version()'))
-// 				return { types: true, srid: true };
-// 			} catch(error) {
-// 				return undefined;
-// 			}
-// 		case 'pg':
-// 			try {
-// 				await knex.select(knex.raw('postgis_version()'))
-// 				return { types: true, srid: true };
-// 			} catch(error) {
-// 				return undefined;
-// 			}
-// 		default:
-// 			return undefined;
-// 	}
-// }

@@ -19,10 +19,13 @@ import {
 	Popup,
 	Map,
 } from 'maplibre-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
 
+import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
-import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '../controls';
+import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '@/utils/geometry/controls';
 
 export default defineComponent({
 	components: {},
@@ -38,10 +41,6 @@ export default defineComponent({
 		layers: {
 			type: Array as PropType<AnyLayer[]>,
 			default: () => [],
-		},
-		animateOptions: {
-			type: Object as PropType<FitBoundsOptions>,
-			default: () => ({}),
 		},
 		camera: {
 			type: Object as PropType<CameraOptions>,
@@ -66,13 +65,6 @@ export default defineComponent({
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 
-		onMounted(() => {
-			setupMap();
-		});
-		onUnmounted(() => {
-			map.remove();
-		});
-
 		const popup = new Popup({
 			closeButton: false,
 			closeOnClick: false,
@@ -92,6 +84,14 @@ export default defineComponent({
 			unselectButtonClass: 'mapboxgl-ctrl-unselect',
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
+		const mapboxKey = getSetting('mapbox_key');
+
+		onMounted(() => {
+			setupMap();
+		});
+		onUnmounted(() => {
+			map.remove();
+		});
 
 		return { container, hoveredFeature };
 
@@ -101,14 +101,18 @@ export default defineComponent({
 				style: { version: 8, layers: [] },
 				attributionControl: false,
 				...props.camera,
+				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
+			map.addControl(basemapSelectControl, 'top-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(boxSelectControl, 'top-left');
-			map.addControl(basemapSelectControl, 'top-right');
 			map.addControl(attributionControl, 'top-right');
+			if (mapboxKey) {
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey }), 'top-right');
+			}
 
 			map.on('load', () => {
 				watch(() => props.bounds, fitDataBounds);
@@ -150,7 +154,10 @@ export default defineComponent({
 		function fitDataBounds() {
 			const bbox = props.data.bbox as LngLatBoundsLike;
 			if (map && bbox) {
-				map.fitBounds(bbox, props.animateOptions);
+				map.fitBounds(bbox, {
+					padding: 100,
+					speed: 1.3,
+				});
 			}
 		}
 
@@ -264,10 +271,10 @@ export default defineComponent({
 			const source = map.getSource('__directus') as GeoJSONSource;
 			source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
 				if (err) return;
-				map.easeTo({
+				map.flyTo({
 					center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike,
 					zoom: zoom,
-					...props.animateOptions,
+					speed: 1.3,
 				});
 			});
 		}
@@ -350,6 +357,49 @@ export default defineComponent({
 	background-color: var(--foreground-normal) !important;
 	background-image: none !important;
 	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
+}
+
+.mapboxgl-ctrl-geocoder {
+	font-size: inherit !important;
+	font-family: inherit !important;
+	line-height: inherit !important;
+	background-color: var(--background-subdued);
+	&,
+	&.suggestions {
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.mapboxgl-ctrl-geocoder--input {
+	color: var(--foreground-normal) !important;
+	border-radius: var(--border-radius);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions {
+	background-color: var(--background-normal-alt);
+	border-radius: var(--border-radius);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions > li > a {
+	color: var(--foreground-normal);
+}
+
+.mapboxgl-ctrl-geocoder .suggestions > .active > a,
+.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
+	color: var(--v-list-item-color-active);
+	background-color: var(--background-normal);
+}
+.mapboxgl-ctrl-geocoder--button {
+	background: var(--background-normal);
+}
+.mapboxgl-ctrl-geocoder--icon {
+	fill: var(--v-icon-color);
+}
+.mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
+	fill: var(--v-icon-color-hover);
+}
+.mapbox-gl-geocoder--error {
+	color: var(--foreground-subdued);
 }
 
 .selection-box {

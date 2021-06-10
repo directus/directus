@@ -10,6 +10,7 @@ import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, Schema
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 import { isNativeGeometry, queryGeometryFromText } from '../utils/geometry';
+import wkx from 'wkx';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -131,8 +132,12 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
-		get geojson() {
-			return this.json;
+		async geometry({ action, value }) {
+			if (!value) return;
+			if (action == 'read') {
+				return wkx.Geometry.parse(value).toGeoJSON();
+			}
+			return wkx.Geometry.parseGeoJSON(value).toWkt();
 		},
 	};
 

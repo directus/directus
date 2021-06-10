@@ -79,8 +79,8 @@ export type FieldMeta = {
 export interface FieldRaw {
 	collection: string;
 	field: string;
-	type: typeof types[number];
-	schema: (Column & { geometry_type: GeometryType; geometry_format: GeometryFormat }) | null;
+	type: DataType;
+	schema: (Column & { geometry_type: GeometryType }) | null;
 	meta: FieldMeta | null;
 }
 

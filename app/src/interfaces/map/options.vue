@@ -2,11 +2,7 @@
 	<div class="form-grid">
 		<div class="field half-left">
 			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
-			<v-select
-				v-model="geometryFormat"
-				:disabled="isGeometry || compatibleFormats.length == 1"
-				:items="compatibleFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
-			/>
+			<v-input :disabled="true" v-model="geometryFormat" :value="$t(`interfaces.map.${compatibleFormat}`)" />
 		</div>
 		<div class="field half-right">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
@@ -32,12 +28,11 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from '@vue/composition-api';
-import { GeometryOptions } from '@/layouts/map/lib';
 import { geometryTypes, GeometryType, GeometryFormat } from '@/types';
-import { compatibleFormatsForType } from '@/layouts/map/lib';
+import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
-import { BasemapSelectControl } from '@/layouts/map/controls';
+import { BasemapSelectControl } from '@/utils/geometry/controls';
 
 export default defineComponent({
 	props: {
@@ -56,11 +51,10 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const isGeometry = props.fieldData.type == 'geometry';
 		const hasGeometryType = isGeometry && !!props.fieldData!.schema!.geometry_type;
-		const compatibleFormats = isGeometry
-			? [props.fieldData!.schema!.geometry_format]
-			: compatibleFormatsForType(props.fieldData.type);
+		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
+		console.log(props.fieldData.type, compatibleFormat);
 
-		const geometryFormat = ref<GeometryFormat>(compatibleFormats[0]!);
+		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
 		const geometryType = ref<GeometryType>(geometryFormat.value == 'lnglat' ? 'Point' : props.value?.geometryType);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 		const fitBounds = ref<boolean>(props.value?.fitBounds ?? true);
@@ -100,7 +94,7 @@ export default defineComponent({
 		return {
 			isGeometry,
 			hasGeometryType,
-			compatibleFormats,
+			compatibleFormat,
 			geometryFormat,
 			geometryTypes,
 			geometryType,

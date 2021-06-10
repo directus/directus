@@ -967,6 +967,18 @@ interfaces:
     box: Bloc / Inline
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
+  map:
+    map: Map
+    description: Selectionner un lieu sur une carte
+    geometry_type: Type de géométrie
+    geometry_format: Format de géométrie
+    storage_type: Storage type
+    default_view: Vue par défault
+    invalid_options: Options invalides
+    invalid_format: Format invalide ( {format} )
+    unexpected_geometry: Attendu: {expected}, reçu {got}.
+    fit_bounds: Ajuster la vue aux donnnées
+    native: Natif
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1160,19 +1172,13 @@ layouts:
     end_date_field: Champ Date de fin
   map:
     map: Carte
-    layers: Couches
-    cluster_options: Clustering
+    layers: Couche,
+    edit_custom_layers: Éditer les couches
+    cluster_options: Options de partitionnement
     cluster: Activer le partitionnement
     cluster_radius: Rayon de partitionnement
     cluster_minpoints: Taille minimum de partitionnement
     cluster_maxzoom: Zoom maximum du partitionnement
-    fit_options: Bounds fitting
-    fit_padding: Bounds padding
-    fit_animate: Animate transitions
-    fit_speed: Animation speed
-    fit_duration: Animation duration
-    preview: Preview
-    field: Géométrie
-    invalid_geometry: Géométrie invalide
-    simplify: Tolerance de simplification des géométries
-    field_not_found: Géométrie non renseignée
+    fit_auto: Ajuster la vue aux données
+    field: Geometrie
+    invalid_geometry: Geometrie invalide

@@ -8,8 +8,7 @@ import { FieldMeta, DataType } from '../types';
 type LocalTypeEntry = {
 	type: DataType | 'unknown';
 	useTimezone?: boolean;
-	geometry_type?: string;
-	geometry_format?: string;
+	geometry_type?: 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
 };
 const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
@@ -47,14 +46,14 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	numeric: { type: 'integer' },
 
 	// Geometries
-	point: { type: 'geometry', geometry_type: 'Point', geometry_format: 'native' },
-	linestring: { type: 'geometry', geometry_type: 'Linestring', geometry_format: 'native' },
-	polygon: { type: 'geometry', geometry_type: 'Polygon', geometry_format: 'native' },
-	multipoint: { type: 'geometry', geometry_type: 'Multipoint', geometry_format: 'native' },
-	multilinestring: { type: 'geometry', geometry_type: 'MultiLinestring', geometry_format: 'native' },
-	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon', geometry_format: 'native' },
-	geometry: { type: 'geometry', geometry_format: 'native' },
-	sdo_geometry: { type: 'geometry', geometry_format: 'native' },
+	point: { type: 'geometry', geometry_type: 'Point' },
+	linestring: { type: 'geometry', geometry_type: 'LineString' },
+	polygon: { type: 'geometry', geometry_type: 'Polygon' },
+	multipoint: { type: 'geometry', geometry_type: 'MultiPoint' },
+	multilinestring: { type: 'geometry', geometry_type: 'MultiLineString' },
+	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon' },
+	geometry: { type: 'geometry' },
+	sdo_geometry: { type: 'geometry' },
 
 	// MySQL
 	string: { type: 'text' },
@@ -119,14 +118,17 @@ export default function getLocalType(
 		return { type: 'text' };
 	}
 
-	if (field?.special?.[0] == 'wkt') return { type: 'geometry', geometry_format: 'wkt' };
-	if (field?.special?.[0] == 'geojson') return { type: 'geometry', geometry_format: 'geojson' };
-	if (field?.special?.[0] == 'lnglat') return { type: 'geometry', geometry_format: 'lnglat' };
-
-	if (field?.special?.includes('json')) return { type: 'json' };
-	if (field?.special?.includes('hash')) return { type: 'hash' };
-	if (field?.special?.includes('csv')) return { type: 'csv' };
-	if (field?.special?.includes('uuid')) return { type: 'uuid' };
+	const special = field?.special;
+	if (special) {
+		console.log(column.data_type, type, special);
+		if (special.includes('json')) return { type: 'json' };
+		if (special.includes('hash')) return { type: 'hash' };
+		if (special.includes('csv')) return { type: 'csv' };
+		if (special.includes('uuid')) return { type: 'uuid' };
+		if (type.type == 'geometry' && !type.geometry_type) {
+			type.geometry_type = special[1] as any;
+		}
+	}
 
 	if (type) {
 		return type;

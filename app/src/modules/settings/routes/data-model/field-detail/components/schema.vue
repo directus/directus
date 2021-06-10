@@ -37,20 +37,11 @@
 			<template v-if="fieldData.type == 'geometry'">
 				<template v-if="fieldData.schema">
 					<div class="field half-right">
-						<div class="label type-label">{{ $t('interfaces.map.storage_type') }}</div>
-						<v-select
-							:disabled="isExisting"
-							:items="geometryFormats.map((value) => ({ value, text: $t(`interfaces.map.${value}`) }))"
-							v-model="fieldData.schema.geometry_format"
-							@input="onUpdateGeometryFormat"
-						/>
-					</div>
-					<div class="field half-right">
 						<div class="label type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 						<v-select
 							:showDeselect="true"
 							:placeholder="$t('any')"
-							:disabled="isExisting || fieldData.schema.geometry_format !== 'native'"
+							:disabled="isExisting"
 							:items="geometryTypes.map((value) => ({ value, text: value }))"
 							v-model="fieldData.schema.geometry_type"
 						/>
@@ -180,7 +171,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import i18n from '@/lang';
 import { state } from '../store';
-import { geometryTypes, geometryFormats, GeometryFormat, DataType } from '@/types';
+import { geometryTypes, DataType } from '@/types';
 import { TranslateResult } from 'vue-i18n';
 
 export const fieldTypes: Array<{ value: DataType; text: TranslateResult | string } | { divider: true }> = [
@@ -308,7 +299,6 @@ export default defineComponent({
 			fieldData: state.fieldData,
 			typesWithLabels,
 			geometryTypes,
-			geometryFormats,
 			typeDisabled,
 			typePlaceholder,
 			defaultValue,
@@ -316,18 +306,8 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
-			onUpdateGeometryFormat,
 			hasCreateUpdateTriggers,
 		};
-
-		function onUpdateGeometryFormat(format: GeometryFormat) {
-			state.fieldData.meta!.special = [format];
-			if (format == 'lnglat') {
-				state.fieldData.schema!.geometry_type = 'Point';
-			} else if (format !== 'native') {
-				state.fieldData.schema!.geometry_type = undefined;
-			}
-		}
 
 		function useOnCreate() {
 			const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];

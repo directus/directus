@@ -983,17 +983,12 @@ interfaces:
   map:
     map: Map
     description: Select a location on a map
-    background: Map Style
     zoom: Zoom
     geometry_type: Geometry type
     geometry_format: Geometry format
-    geometry_srid: Geometry SRID
-    geometry_crs: Coordinate Reference System
-    storage_type: Storage type
     default_view: Default view
     invalid_options: Invalid options
     invalid_format: Invalid format ( {format} )
-    invalid_crs: Invalid CRS ( {crs} )
     unexpected_geometry: Expeted {expected}, got {got}.
     fit_bounds: Fit view to data
     native: Native
@@ -1196,22 +1191,12 @@ layouts:
   map:
     map: Map
     layers: Layers,
-    custom_layers: Custom Layers
-    edit_custom_layers: Edit Custom Layers
-    cluster_options: Clustering
+    edit_custom_layers: Edit Layers
+    cluster_options: Clustering options
     cluster: Activate clustering
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    fit_auto: Auto fitting to data bounds
-    fit_options: Bounds fitting
-    fit_padding: Bounds padding
-    fit_animate: Animate transitions
-    fit_speed: Animation speed
-    fit_duration: Animation duration
-    preview: Preview
+    fit_auto: Fit view to data bounds
     field: Geometry
     invalid_geometry: Invalid geometry
-    field_not_found: Geometry not found
-    simplify: Geometry simplification tolerance
-    out_of_bounds: Out of bounds coordinates ({coord})

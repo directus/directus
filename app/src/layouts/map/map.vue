@@ -24,7 +24,7 @@
 			<div class="field">
 				<v-checkbox v-model="clusterActive" :label="$t('layouts.map.cluster')" />
 			</div>
-			<template v-if="clusterActive">
+			<v-detail class="field" :label="$t('cluster_options')">
 				<div class="field">
 					<div class="type-label">{{ $t('layouts.map.cluster_radius') }}</div>
 					<v-input v-model="clusterRadius" type="number" :min="0" />
@@ -37,50 +37,30 @@
 					<div class="type-label">{{ $t('layouts.map.cluster_maxzoom') }}</div>
 					<v-input v-model="clusterMaxZoom" type="number" :min="0" />
 				</div>
-			</template>
-			<v-detail class="field" :label="$t('advanced_settings')">
-				<div class="nested-options">
-					<div class="field">
-						<v-checkbox v-model="fitBoundsAnimate" :label="$t('layouts.map.fit_animate')" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.fit_speed') }}</div>
-						<v-input v-model="fitBoundsSpeed" type="number" :step="0.1" :min="0" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.fit_padding') }}</div>
-						<v-input v-model="fitBoundsPadding" type="number" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
-						<v-input v-model="simplification" type="number" :step="0.05" :min="0" :max="1" />
-					</div>
-					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.custom_layers') }}</div>
-						<v-drawer
-							v-model="customLayerDrawerOpen"
-							:title="$t('layouts.map.custom_layers')"
-							@cancel="customLayerDrawerOpen = false"
-						>
-							<template #activator="{ on }">
-								<v-button @click="on">{{ $t('layouts.map.edit_custom_layers') }}</v-button>
-							</template>
-
-							<template #actions>
-								<v-button icon rounded class="delete-action" @click="resetLayers" v-tooltip.bottom="$t('reset')">
-									<v-icon name="replay" />
-								</v-button>
-								<v-button icon rounded @click="updateLayers" v-tooltip.bottom="$t('save')">
-									<v-icon name="check" />
-								</v-button>
-							</template>
-							<div class="custom-layers">
-								<interface-input-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
-							</div>
-						</v-drawer>
-					</div>
-				</div>
 			</v-detail>
+			<div class="field">
+				<v-drawer
+					v-model="customLayerDrawerOpen"
+					:title="$t('layouts.map.custom_layers')"
+					@cancel="customLayerDrawerOpen = false"
+				>
+					<template #activator="{ on }">
+						<v-button @click="on">{{ $t('layouts.map.edit_custom_layers') }}</v-button>
+					</template>
+
+					<template #actions>
+						<v-button icon rounded class="delete-action" @click="resetLayers" v-tooltip.bottom="$t('reset')">
+							<v-icon name="replay" />
+						</v-button>
+						<v-button icon rounded @click="updateLayers" v-tooltip.bottom="$t('save')">
+							<v-icon name="check" />
+						</v-button>
+					</template>
+					<div class="custom-layers">
+						<interface-input-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
+					</div>
+				</v-drawer>
+			</div>
 		</portal>
 
 		<portal to="sidebar">
@@ -109,11 +89,6 @@
 			@click="handleClick"
 			@select="updateSelection"
 			@moveend="cameraOptions = $event"
-			:animateOptions="{
-				animate: fitBoundsAnimate,
-				padding: fitBoundsPadding,
-				speed: fitBoundsSpeed,
-			}"
 		/>
 
 		<transition name="fade">
@@ -169,7 +144,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryOptions, toGeoJSON } from './lib';
+import { GeometryOptions, toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
@@ -198,11 +173,7 @@ type LayoutOptions = {
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	simplification?: number;
 	fitDataBounds?: boolean;
-	fitBoundsAnimate?: boolean;
-	fitBoundsPadding?: number;
-	fitBoundsSpeed?: number;
 	clusterActive?: boolean;
 	clusterRadius?: number;
 	clusterMaxZoom?: number;
@@ -267,11 +238,7 @@ export default defineComponent({
 
 		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(_layoutOptions, 'customLayers', layers);
-		const simplification = syncOption(_layoutOptions, 'simplification', 0.375);
 		const fitDataBounds = syncOption(_layoutOptions, 'fitDataBounds', true);
-		const fitBoundsAnimate = syncOption(_layoutOptions, 'fitBoundsAnimate', true);
-		const fitBoundsPadding = syncOption(_layoutOptions, 'fitBoundsPadding', 100);
-		const fitBoundsSpeed = syncOption(_layoutOptions, 'fitBoundsSpeed', 1.4);
 		const clusterActive = syncOption(_layoutOptions, 'clusterActive', false);
 		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
 		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
@@ -310,7 +277,7 @@ export default defineComponent({
 			if (field.type == 'geometry') {
 				return {
 					geometryField: field.field,
-					geometryFormat: field.schema.geometry_format,
+					geometryFormat: 'native',
 				} as GeometryOptions;
 			}
 			if (field.meta && field.meta.interface == 'map' && field.meta.options) {
@@ -406,7 +373,6 @@ export default defineComponent({
 		watch(() => clusterRadius.value, updateSource);
 		watch(() => clusterMinPoints.value, updateSource);
 		watch(() => clusterMaxZoom.value, updateSource);
-		watch(() => simplification.value, updateSource);
 
 		function updateLayers() {
 			customLayerDrawerOpen.value = false;
@@ -424,7 +390,6 @@ export default defineComponent({
 				clusterRadius: clusterRadius.value,
 				clusterMinPoints: clusterMinPoints.value,
 				clusterMaxZoom: clusterMaxZoom.value,
-				tolerance: simplification.value,
 			});
 		}
 
@@ -478,11 +443,7 @@ export default defineComponent({
 			geometryFormat,
 			geometryField,
 			cameraOptions,
-			simplification,
 			fitDataBounds,
-			fitBoundsAnimate,
-			fitBoundsPadding,
-			fitBoundsSpeed,
 			clusterActive,
 			clusterRadius,
 			clusterMaxZoom,

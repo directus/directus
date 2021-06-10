@@ -1060,7 +1060,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					max_length: undefined,
 					is_nullable: true,
 					geometry_type: undefined,
-					geometry_format: undefined,
 				};
 
 				switch (state.fieldData.type) {
@@ -1082,8 +1081,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.schema.is_nullable = false;
 						break;
 					case 'geometry':
-						state.fieldData.schema.geometry_format = 'native';
-						state.fieldData.meta.special = ['native'];
+						state.fieldData.meta.special = ['geometry'];
 						break;
 				}
 			}
@@ -1112,7 +1110,6 @@ function clearLocalStore(): void {
 				numeric_precision: null,
 				numeric_scale: null,
 				geometry_type: undefined,
-				geometry_format: undefined,
 			},
 			meta: {
 				hidden: false,

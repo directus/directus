@@ -54,19 +54,22 @@ import {
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { ButtonControl, BasemapSelectControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
-import { SimpleGeometry, MultiGeometry } from '@/layouts/map/lib';
-import { ButtonControl, BasemapSelectControl } from '@/layouts/map/controls';
 import {
+	flatten,
+	getBBox,
 	getParser,
 	getSerializer,
-	getBBox,
+	getGeometryFormatForType,
 	GeoJSONParser,
 	GeoJSONSerializer,
-	compatibleFormatsForType,
-} from '@/layouts/map/lib';
-import { flatten } from '@/layouts/map/lib';
+	SimpleGeometry,
+	MultiGeometry,
+} from '@/utils/geometry';
+import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
 import { Field, GeometryFormat } from '@/types';
@@ -82,7 +85,7 @@ const MARKER_ICON_URL =
 export default defineComponent({
 	props: {
 		type: {
-			type: String as PropType<'geometry' | 'json' | 'csv' | 'string' | 'text' | 'binary'>,
+			type: String as PropType<'geometry' | 'json' | 'csv' | 'string' | 'text'>,
 			default: null,
 		},
 		fieldData: {
@@ -127,8 +130,7 @@ export default defineComponent({
 
 		const geometryType = props.fieldData?.schema?.geometry_type || props.geometryType;
 
-		const geometryFormat =
-			props.fieldData?.schema?.geometry_format || props.geometryFormat || compatibleFormatsForType(props.type)[0];
+		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
@@ -138,6 +140,8 @@ export default defineComponent({
 		} catch (error) {
 			geometryOptionsError.value = error;
 		}
+
+		const mapboxKey = getSetting('mapbox_key');
 
 		const controls = {
 			draw: new MapboxDraw(getDrawOptions(geometryType)),
@@ -174,13 +178,17 @@ export default defineComponent({
 				style: { version: 8, layers: [] },
 				attributionControl: false,
 				...props.defaultView,
+				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
+			map.addControl(controls.basemapSelect, 'top-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
-			map.addControl(controls.basemapSelect, 'top-right');
 			map.addControl(controls.draw as IControl, 'top-left');
+			if (mapboxKey) {
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey }), 'top-right');
+			}
 
 			map.on('load', async () => {
 				map.resize();

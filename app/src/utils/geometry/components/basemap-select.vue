@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, toRefs, watch } from '@vue/composition-api';
 import type { Map } from 'maplibre-gl';
-import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/basemap';
+import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { useAppStore } from '@/stores';
 
 export default defineComponent({

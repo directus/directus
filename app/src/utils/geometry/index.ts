@@ -49,19 +49,19 @@ export function getBBox(object: AnyGeoJSON): BBox {
 	return bbox;
 }
 
-export function compatibleFormatsForType(type: DataType): GeometryFormat[] {
+export function getGeometryFormatForType(type: DataType): GeometryFormat | undefined {
 	switch (type) {
 		case 'geometry':
-			return ['native'];
+			return 'native';
 		case 'json':
-			return ['geojson'];
+			return 'geojson';
 		case 'text':
 		case 'string':
-			return ['wkt'];
+			return 'wkt';
 		case 'csv':
-			return ['lnglat'];
+			return 'lnglat';
 		default:
-			return [];
+			return undefined;
 	}
 }
 
@@ -69,12 +69,12 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	const { geometryFormat } = options;
 	switch (geometryFormat) {
 		case 'native':
+		case 'geojson':
+			return (entry: AnyGeoJSON) => entry;
 		case 'wkt':
 			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkt();
 		case 'lnglat':
 			return (entry: AnyGeoJSON) => (entry as Point).coordinates;
-		case 'geojson':
-			return (entry: AnyGeoJSON) => entry;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
@@ -84,12 +84,12 @@ export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyG
 	const { geometryFormat } = options;
 	switch (geometryFormat) {
 		case 'native':
+		case 'geojson':
+			return (geom: any) => geom as AnyGeoJSON;
 		case 'wkt':
 			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeoJSON;
 		case 'lnglat':
 			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeoJSON;
-		case 'geojson':
-			return (geom: any) => geom;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}

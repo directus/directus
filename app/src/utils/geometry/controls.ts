@@ -1,5 +1,5 @@
 import { Map, Point } from 'maplibre-gl';
-import BasemapSelectComponent from './components/basemap-select.vue';
+import BasemapSelectComponent from '@/utils/geometry/components/basemap-select.vue';
 import Vue from 'vue';
 
 export class ButtonControl {
