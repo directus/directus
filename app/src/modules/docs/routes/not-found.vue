@@ -1,36 +1,32 @@
 <template>
-	<private-view :title="$t('page_not_found')">
+	<private-view :title="t('page_not_found')">
 		<template #navigation>
-			<docs-navigation :path="path" />
+			<docs-navigation :path="route.path" />
 		</template>
 
 		<div class="not-found">
-			<v-info :title="$t('page_not_found')" icon="not_interested">
-				{{ $t('page_not_found_body') }}
+			<v-info :title="t('page_not_found')" icon="not_interested">
+				{{ t('page_not_found_body') }}
 			</v-info>
 		</div>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
+import { useRoute } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 
 export default defineComponent({
 	name: 'NotFound',
 	components: { DocsNavigation },
-	async beforeRouteEnter(to, from, next) {
-		next((vm: any) => {
-			vm.path = to.path;
-		});
-	},
-	async beforeRouteUpdate(to, from, next) {
-		this.path = to.path;
-		next();
-	},
 	setup() {
-		const path = ref<string | null>(null);
-		return { path };
+		const { t } = useI18n();
+
+		const route = useRoute();
+
+		return { t, route };
 	},
 });
 </script>

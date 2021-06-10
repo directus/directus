@@ -1,32 +1,24 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import registerComponent from '@/utils/register-component/';
-import asyncPool from 'tiny-async-pool';
-import { Component } from 'vue';
+import { asyncPool } from '@/utils/async-pool';
+import { App } from 'vue';
 import { getDisplays } from './index';
 import { DisplayConfig } from './types';
 
 const { displaysRaw } = getDisplays();
 
-export async function registerDisplays(): Promise<void> {
-	const context = require.context('.', true, /^.*index\.ts$/);
+export async function registerDisplays(app: App): Promise<void> {
+	const displayModules = import.meta.globEager('./*/**/index.ts');
 
-	const modules = context
-		.keys()
-		.map((key) => context(key))
-		.map((mod) => mod.default)
-		.filter((m) => m);
-
+	const displays: DisplayConfig[] = Object.values(displayModules).map((module) => module.default);
 	try {
 		const customResponse = await api.get('/extensions/displays/');
-		const displays: string[] = customResponse.data.data || [];
+		const customDisplays: string[] = customResponse.data.data || [];
 
-		await asyncPool(5, displays, async (displayName) => {
+		await asyncPool(5, customDisplays, async (displayName) => {
 			try {
-				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/displays/${displayName}/index.js`
-				);
-				modules.push(result.default);
+				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/${displayName}/index.js`);
+				displays.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom displays "${displayName}":`, err);
 			}
@@ -35,15 +27,15 @@ export async function registerDisplays(): Promise<void> {
 		console.warn(`Couldn't load custom displays`);
 	}
 
-	displaysRaw.value = modules;
+	displaysRaw.value = displays;
 
 	displaysRaw.value.forEach((display: DisplayConfig) => {
 		if (typeof display.handler !== 'function') {
-			registerComponent('display-' + display.id, display.handler as Component);
+			app.component('display-' + display.id, display.handler);
 		}
 
-		if (typeof display.options !== 'function') {
-			registerComponent('display-options-' + display.id, display.options as Component);
+		if (typeof display.options !== 'function' && display.options !== null) {
+			app.component('display-options-' + display.id, display.options);
 		}
 	});
 }

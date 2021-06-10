@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -17,7 +17,7 @@
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
@@ -26,14 +26,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -60,14 +60,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
-							{{ isArchived ? $t('unarchive') : $t('archive') }}
+							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -78,7 +78,7 @@
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -95,7 +95,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="(item && item.role) || (preset && preset.role)" />
+			<users-navigation :current-role="(item && item.role) || role" />
 		</template>
 
 		<div class="user-item">
@@ -144,13 +144,13 @@
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -173,12 +173,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
-import router from '@/router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -200,30 +200,22 @@ import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'users-item',
-	beforeRouteLeave(to, from, next) {
-		const self = this as any;
-		const hasEdits = Object.keys(self.edits).length > 0;
-
-		if (hasEdits) {
-			self.confirmLeave = true;
-			self.leaveTo = to.fullPath;
-			return next(false);
-		}
-
-		return next();
-	},
 	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
 		primaryKey: {
 			type: String,
 			required: true,
 		},
-		preset: {
-			type: Object,
-			default: () => ({}),
+		role: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
+		const { t, locale } = useI18n();
+
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
@@ -234,7 +226,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			isNew,
@@ -253,9 +245,9 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(ref('directus_users'), primaryKey);
 
-		if (props.preset) {
+		if (props.role) {
 			edits.value = {
-				...props.preset,
+				role: props.role,
 				...edits.value,
 			};
 		}
@@ -268,20 +260,30 @@ export default defineComponent({
 		const confirmArchive = ref(false);
 
 		const title = computed(() => {
-			if (loading.value === true) return i18n.t('loading');
+			if (loading.value === true) return t('loading');
 
 			if (isNew.value === false && item.value) {
 				const user = item.value as any;
 				return userName(user);
 			}
 
-			return i18n.t('adding_user');
+			return t('adding_user');
 		});
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } = usePermissions(
 			ref('directus_users'),
@@ -308,15 +310,17 @@ export default defineComponent({
 		const { formFields } = useFormFields(fieldsFiltered);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.t('not_allowed');
-			if (isArchived.value === true) return i18n.t('unarchive');
-			return i18n.t('archive');
+			if (archiveAllowed.value === false) return t('not_allowed');
+			if (isArchived.value === true) return t('unarchive');
+			return t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		return {
+			t,
+			router,
 			title,
 			item,
 			loading,
@@ -360,8 +364,8 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('user_directory'),
-					to: `/users/`,
+					name: t('user_directory'),
+					to: `/users`,
 				},
 			]);
 
@@ -426,11 +430,11 @@ export default defineComponent({
 		}
 
 		async function setLang(user: Record<string, any>) {
-			if (userStore.state.currentUser!.id !== item.value?.id) return;
+			if (userStore.currentUser!.id !== item.value?.id) return;
 
 			const newLang = user?.language;
 
-			if (newLang && newLang !== i18n.locale) {
+			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);
 
 				await fieldsStore.hydrate();
@@ -439,7 +443,7 @@ export default defineComponent({
 		}
 
 		async function refreshCurrentUser() {
-			if (userStore.state.currentUser!.id === item.value?.id) {
+			if (userStore.currentUser!.id === item.value?.id) {
 				await userStore.hydrate();
 			}
 		}
@@ -498,8 +502,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .action-delete {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
@@ -562,7 +564,7 @@ export default defineComponent({
 			object-fit: cover;
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			width: 144px;
 			height: 144px;
 			margin-right: 22px;
@@ -596,6 +598,7 @@ export default defineComponent({
 				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}
+
 		.title,
 		.email,
 		.location {
@@ -611,7 +614,7 @@ export default defineComponent({
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		height: 188px;
 
 		.user-box-content .location {

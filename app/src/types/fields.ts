@@ -1,4 +1,3 @@
-import { TranslateResult } from 'vue-i18n';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 
 type Translations = {
@@ -56,7 +55,7 @@ export type FieldMeta = {
 	special: string[] | null;
 	translations: null | Translations[];
 	width: Width | null;
-	note: string | TranslateResult | null;
+	note: string | null;
 	system?: true;
 };
 
@@ -69,5 +68,5 @@ export interface FieldRaw {
 }
 
 export interface Field extends FieldRaw {
-	name: string | TranslateResult;
+	name: string;
 }

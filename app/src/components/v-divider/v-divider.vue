@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -60,7 +60,7 @@ body {
 		margin-right: 16px;
 		color: var(--v-divider-label-color);
 
-		.v-icon {
+		:slotted(.v-icon) {
 			margin-right: 4px;
 			transform: translateY(-1px);
 		}

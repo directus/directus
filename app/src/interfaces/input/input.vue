@@ -1,7 +1,7 @@
 <template>
 	<v-input
 		:autofocus="autofocus"
-		:value="value"
+		:model-value="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
@@ -13,10 +13,10 @@
 		:min="min"
 		:max="max"
 		:step="step"
-		@input="$listeners.input"
+		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template #append>
+		<template v-if="(percentageRemaining && percentageRemaining <= 20) || iconRight" #append>
 			<span
 				v-if="percentageRemaining && percentageRemaining <= 20"
 				class="remaining"
@@ -37,9 +37,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: [String, Number],

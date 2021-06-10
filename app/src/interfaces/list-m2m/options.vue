@@ -1,10 +1,10 @@
 <template>
 	<v-notice type="warning" v-if="junctionCollection === null">
-		{{ $t('interfaces.list-o2m.no_collection') }}
+		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('display_template') }}</p>
+			<p class="type-label">{{ t('display_template') }}</p>
 			<v-field-template
 				v-model="template"
 				:collection="junctionCollection"
@@ -17,23 +17,25 @@
 		</div>
 
 		<div class="field half-left">
-			<p class="type-label">{{ $t('creating_items') }}</p>
-			<v-checkbox block :label="$t('enable_create_button')" v-model="enableCreate" />
+			<p class="type-label">{{ t('creating_items') }}</p>
+			<v-checkbox block :label="t('enable_create_button')" v-model="enableCreate" />
 		</div>
 
 		<div class="field half-right">
-			<p class="type-label">{{ $t('selecting_items') }}</p>
-			<v-checkbox block :label="$t('enable_select_button')" v-model="enableSelect" />
+			<p class="type-label">{{ t('selecting_items') }}</p>
+			<v-checkbox block :label="t('enable_select_button')" v-model="enableSelect" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,
@@ -61,6 +63,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const template = computed({
@@ -114,13 +118,14 @@ export default defineComponent({
 			return collectionsStore.getCollection(junctionCollection.value);
 		});
 
-		return { template, enableCreate, enableSelect, junctionCollection, junctionCollectionInfo };
+		return { t, template, enableCreate, enableSelect, junctionCollection, junctionCollectionInfo };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
+
 .form-grid {
 	@include form-grid;
 }

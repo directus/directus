@@ -1,17 +1,18 @@
 <template>
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
-		<textarea ref="codemirrorEl" :value="stringValue" />
+		<div ref="codemirrorEl"></div>
 
-		<v-button small icon secondary v-if="template" v-tooltip.left="$t('fill_template')" @click="fillTemplate">
+		<v-button small icon secondary v-if="template" v-tooltip.left="t('fill_template')" @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import CodeMirror from 'codemirror';
+import { useI18n } from 'vue-i18n';
+import CodeMirror, { ModeSpec } from 'codemirror';
 
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, onMounted, watch, PropType } from 'vue';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';
@@ -26,15 +27,17 @@ import 'codemirror/addon/dialog/dialog.js';
 import 'codemirror/keymap/sublime.js';
 
 import formatTitle from '@directus/format-title';
+import importCodemirrorMode from './import-codemirror-mode';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
 		value: {
-			type: [String, Object, Array],
+			type: [String, Object, Array] as PropType<string | Record<string, any> | any[]>,
 			default: null,
 		},
 		altOptions: {
@@ -63,18 +66,27 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
-		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
+		let codemirror: CodeMirror.Editor | null;
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
-				const codemirrorElVal = codemirrorEl.value;
-
 				await getImports(cmOptions.value);
-				codemirror.value = CodeMirror.fromTextArea(codemirrorElVal, cmOptions.value);
-				codemirror.value.setValue(stringValue.value || '');
+
+				await importCodemirrorMode(cmOptions.value.mode);
+
+				codemirror = CodeMirror(codemirrorEl.value, {
+					...cmOptions.value,
+					value: stringValue.value,
+				});
+
+				codemirror.setOption('mode', { name: 'javascript ' });
+
 				await setLanguage();
-				codemirror.value.on('change', (cm, { origin }) => {
+
+				codemirror.on('change', (cm, { origin }) => {
 					if (origin === 'setValue') return;
 
 					const content = cm.getValue();
@@ -96,18 +108,14 @@ export default defineComponent({
 			}
 		});
 
-		onUnmounted(() => {
-			codemirror.value?.toTextArea();
-		});
-
 		const stringValue = computed<string>(() => {
-			if (props.value == null) return '';
+			if (props.value === null) return '';
 
 			if (props.type === 'json') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
-			return props.value;
+			return props.value as string;
 		});
 
 		watch(
@@ -118,13 +126,13 @@ export default defineComponent({
 		);
 
 		watch(stringValue, () => {
-			if (codemirror.value?.getValue() !== stringValue.value) {
-				codemirror.value?.setValue(stringValue.value || '');
+			if (codemirror?.getValue() !== stringValue.value) {
+				codemirror?.setValue(stringValue.value || '');
 			}
 		});
 
 		async function setLanguage() {
-			if (codemirror.value) {
+			if (codemirror) {
 				const lang = props.language.toLowerCase();
 
 				if (lang === 'json') {
@@ -133,10 +141,10 @@ export default defineComponent({
 
 					const jsonlint = (await import('jsonlint-mod')) as any;
 
-					codemirror.value.setOption('mode', { name: 'javascript', json: true });
+					codemirror.setOption('mode', { name: 'javascript', json: true } as ModeSpec<{ json: boolean }>);
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
-						const found: Record<string, any> = [];
+						const found: Record<string, any>[] = [];
 						const parser = jsonlint.parser;
 
 						parser.parseError = (str: string, hash: any) => {
@@ -147,20 +155,21 @@ export default defineComponent({
 								message: str,
 							});
 						};
+
 						if (text.length > 0) {
 							try {
 								jsonlint.parse(text);
-							} finally {
+							} catch {
 								// Do nothing
 							}
 						}
 						return found;
 					});
 				} else if (lang === 'plaintext') {
-					codemirror.value.setOption('mode', { name: null });
+					codemirror.setOption('mode', { name: 'plaintext' });
 				} else {
-					await import(`codemirror/mode/${lang}/${lang}.js`);
-					codemirror.value.setOption('mode', { name: lang });
+					await importCodemirrorMode(lang);
+					codemirror.setOption('mode', { name: lang });
 				}
 			}
 		}
@@ -170,36 +179,36 @@ export default defineComponent({
 
 			if (optionsObj && optionsObj.size > 0) {
 				if (optionsObj.styleActiveLine) {
-					imports.push(import(`codemirror/addon/selection/active-line.js`));
+					imports.push(import('codemirror/addon/selection/active-line.js'));
 				}
 
 				if (optionsObj.markSelection) {
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/selection/mark-selection.js`));
+					imports.push(import('codemirror/addon/selection/mark-selection.js'));
 				}
 				if (optionsObj.highlightSelectionMatches) {
-					imports.push(import(`codemirror/addon/search/match-highlighter.js`));
+					imports.push(import('codemirror/addon/search/match-highlighter.js'));
 				}
 				if (optionsObj.autoRefresh) {
-					imports.push(import(`codemirror/addon/display/autorefresh.js`));
+					imports.push(import('codemirror/addon/display/autorefresh.js'));
 				}
 				if (optionsObj.matchBrackets) {
-					imports.push(import(`codemirror/addon/edit/matchbrackets.js`));
+					imports.push(import('codemirror/addon/edit/matchbrackets.js'));
 				}
 				if (optionsObj.hintOptions || optionsObj.showHint) {
-					imports.push(import(`codemirror/addon/hint/show-hint.js`));
+					imports.push(import('codemirror/addon/hint/show-hint.js'));
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/hint/show-hint.css`));
+					imports.push(import('codemirror/addon/hint/show-hint.css'));
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/hint/javascript-hint.js`));
+					imports.push(import('codemirror/addon/hint/javascript-hint.js'));
 				}
 				await Promise.all(imports);
 			}
 		}
 
 		const lineCount = computed(() => {
-			if (codemirror.value) {
-				return codemirror.value.lineCount();
+			if (codemirror) {
+				return codemirror.lineCount();
 			}
 			return 0;
 		});
@@ -239,7 +248,7 @@ export default defineComponent({
 		watch(
 			() => props.disabled,
 			(disabled) => {
-				codemirror.value?.setOption('readOnly', disabled ? 'nocursor' : false);
+				codemirror?.setOption('readOnly', disabled ? 'nocursor' : false);
 			},
 			{ immediate: true }
 		);
@@ -250,7 +259,7 @@ export default defineComponent({
 				if (!altOptions || altOptions.size === 0) return;
 				await getImports(altOptions);
 				for (const key in altOptions) {
-					codemirror.value?.setOption(key as any, altOptions[key]);
+					codemirror?.setOption(key as any, altOptions[key]);
 				}
 			}
 		);
@@ -258,18 +267,11 @@ export default defineComponent({
 		watch(
 			() => props.lineNumber,
 			(lineNumber) => {
-				codemirror.value?.setOption('lineNumbers', lineNumber);
+				codemirror?.setOption('lineNumbers', lineNumber);
 			}
 		);
 
-		return {
-			cmOptions,
-			lineCount,
-			codemirrorEl,
-			stringValue,
-			fillTemplate,
-			formatTitle,
-		};
+		return { t, cmOptions, lineCount, codemirrorEl, stringValue, fillTemplate, formatTitle };
 
 		function fillTemplate() {
 			if (props.type === 'json') {
@@ -287,7 +289,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~codemirror/addon/lint/lint.css';
+@import 'codemirror/addon/lint/lint.css';
 
 .input-code {
 	position: relative;

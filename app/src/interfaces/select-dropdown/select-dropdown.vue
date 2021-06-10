@@ -1,11 +1,11 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<v-select
 		v-else
-		:value="value"
-		@input="$listeners.input"
+		:model-value="value"
+		@update:model-value="$emit('input', $event)"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
@@ -19,8 +19,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
+import { i18n } from '@/lang';
 
 type Option = {
 	text: string;
@@ -28,6 +29,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -51,12 +53,16 @@ export default defineComponent({
 		},
 		placeholder: {
 			type: String,
-			default: i18n.t('select_an_item'),
+			default: i18n.global.t('select_an_item'),
 		},
 		allowOther: {
 			type: Boolean,
 			default: false,
 		},
+	},
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>

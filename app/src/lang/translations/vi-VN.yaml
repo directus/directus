@@ -578,7 +578,7 @@ interfaces:
     primary: Khóa chính
   input-code:
     code: Mã nguồn
-  collection:
+  system-collection:
     collection: Danh mục
   system-collections:
     collections: Danh mục

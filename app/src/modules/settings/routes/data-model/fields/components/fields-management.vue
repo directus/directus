@@ -6,14 +6,17 @@
 
 		<draggable
 			class="field-grid"
-			:value="usableFields"
+			:model-value="usableFields"
 			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
-			@input="setSort"
+			@update:model-value="setSort"
+			item-key="field"
 		>
-			<field-select v-for="field in usableFields" :key="field.field" :field="field" />
+			<template #item="{ element }">
+				<field-select :field="element" />
+			</template>
 		</draggable>
 
 		<v-menu attached>
@@ -29,14 +32,14 @@
 					full-width
 				>
 					<v-icon name="add" />
-					{{ $t('create_field') }}
+					{{ t('create_field') }}
 				</v-button>
 			</template>
 
 			<v-list>
-				<template v-for="(option, index) in addOptions">
-					<v-divider v-if="option.divider === true" :key="index" />
-					<v-list-item v-else :key="option.type" :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+				<template v-for="(option, index) in addOptions" :key="index">
+					<v-divider v-if="option.divider === true" />
+					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
 						<v-list-item-icon>
 							<v-icon :name="option.icon" />
 						</v-list-item-icon>
@@ -51,14 +54,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs } from 'vue';
 import useCollection from '@/composables/use-collection/';
-import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable/src/vuedraggable.js';
 import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
-import { i18n } from '@/lang';
 import { orderBy } from 'lodash';
 
 export default defineComponent({
@@ -70,6 +73,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { collection } = toRefs(props);
 		const { fields } = useCollection(collection);
 		const fieldsStore = useFieldsStore();
@@ -92,12 +97,12 @@ export default defineComponent({
 			{
 				type: 'standard',
 				icon: 'create',
-				text: i18n.t('standard_field'),
+				text: t('standard_field'),
 			},
 			{
 				type: 'presentation',
 				icon: 'scatter_plot',
-				text: i18n.t('presentation_and_aliases'),
+				text: t('presentation_and_aliases'),
 			},
 			{
 				divider: true,
@@ -105,12 +110,12 @@ export default defineComponent({
 			{
 				type: 'file',
 				icon: 'photo',
-				text: i18n.t('single_file'),
+				text: t('single_file'),
 			},
 			{
 				type: 'files',
 				icon: 'collections',
-				text: i18n.t('multiple_files'),
+				text: t('multiple_files'),
 			},
 			{
 				divider: true,
@@ -118,22 +123,22 @@ export default defineComponent({
 			{
 				type: 'm2o',
 				icon: 'call_merge',
-				text: i18n.t('m2o_relationship'),
+				text: t('m2o_relationship'),
 			},
 			{
 				type: 'o2m',
 				icon: 'call_split',
-				text: i18n.t('o2m_relationship'),
+				text: t('o2m_relationship'),
 			},
 			{
 				type: 'm2m',
 				icon: 'import_export',
-				text: i18n.t('m2m_relationship'),
+				text: t('m2m_relationship'),
 			},
 			{
 				type: 'm2a',
 				icon: 'gesture',
-				text: i18n.t('m2a_relationship'),
+				text: t('m2a_relationship'),
 			},
 			{
 				divider: true,
@@ -141,17 +146,11 @@ export default defineComponent({
 			{
 				type: 'translations',
 				icon: 'translate',
-				text: i18n.t('translations'),
+				text: t('translations'),
 			},
 		]);
 
-		return {
-			usableFields,
-			lockedFields,
-			setSort,
-			hideDragImage,
-			addOptions,
-		};
+		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions };
 
 		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({

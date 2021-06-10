@@ -1,10 +1,8 @@
-import VueI18n from 'vue-i18n';
-
 export interface NotificationRaw {
 	id?: string;
 	persist?: boolean;
-	title: string | VueI18n.TranslateResult;
-	text?: string | VueI18n.TranslateResult;
+	title: string;
+	text?: string;
 	type?: 'info' | 'success' | 'warning' | 'error';
 	icon?: string | null;
 	closeable?: boolean;

@@ -9,19 +9,5 @@ export function defineModule(config: ModuleDefineParam): ModuleConfig {
 		options = config;
 	}
 
-	if (options.routes !== undefined) {
-		options.routes = options.routes.map((route) => {
-			if (route.path) {
-				route.path = `/${options.id}${route.path}`;
-			}
-
-			if (route.redirect) {
-				route.redirect = `/${options.id}${route.redirect}`;
-			}
-
-			return route;
-		});
-	}
-
 	return options;
 }

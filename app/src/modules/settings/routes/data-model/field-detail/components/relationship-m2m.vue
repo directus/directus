@@ -2,16 +2,16 @@
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].related_collection" />
+				<div class="type-label">{{ t('this_collection') }}</div>
+				<v-input disabled :model-value="relations[0].related_collection" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('junction_collection') }}</div>
+				<div class="type-label">{{ t('junction_collection') }}</div>
 				<v-input
 					:class="{ matches: junctionCollectionExists }"
 					v-model="junctionCollection"
 					:nullable="false"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
@@ -20,8 +20,9 @@
 							<template #activator="{ toggle }">
 								<v-icon
 									name="list_alt"
+									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="autoFill || isExisting"
 								/>
 							</template>
@@ -32,6 +33,7 @@
 									:key="collection.collection"
 									:active="relations[0].collection === collection.collection"
 									@click="junctionCollection = collection.collection"
+									clickable
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -41,12 +43,13 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[0].collection === collection.collection"
 										@click="junctionCollection = collection.collection"
+										clickable
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -63,13 +66,13 @@
 				</v-input>
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('related_collection') }}</div>
+				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
 					:autofocus="autoFill"
 					:class="{ matches: relatedCollectionExists }"
 					v-model="relations[1].related_collection"
 					:nullable="false"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 					:disabled="type === 'files' || isExisting"
 					db-safe
 				>
@@ -78,8 +81,9 @@
 							<template #activator="{ toggle }" v-if="!isExisting">
 								<v-icon
 									name="list_alt"
+									clickable
 									@click="toggle"
-									v-tooltip="$t('select_existing')"
+									v-tooltip="t('select_existing')"
 									:disabled="type === 'files' || isExisting"
 								/>
 							</template>
@@ -90,6 +94,7 @@
 									:key="collection.collection"
 									:active="relations[1].related_collection === collection.collection"
 									@click="relations[1].related_collection = collection.collection"
+									clickable
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -99,12 +104,13 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[1].related_collection === collection.collection"
 										@click="relations[1].related_collection = collection.collection"
+										clickable
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -120,12 +126,12 @@
 					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="currentPrimaryKeyField" />
+			<v-input disabled :model-value="currentPrimaryKeyField" />
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].field) }"
 				v-model="relations[0].field"
 				:nullable="false"
-				:placeholder="$t('foreign_key') + '...'"
+				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
@@ -134,8 +140,9 @@
 						<template #activator="{ toggle }">
 							<v-icon
 								name="list_alt"
+								clickable
 								@click="toggle"
-								v-tooltip="$t('select_existing')"
+								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
 							/>
 						</template>
@@ -147,6 +154,7 @@
 								:active="relations[0].field === item.value"
 								:disabled="item.disabled"
 								@click="relations[0].field = item.value"
+								clickable
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -166,7 +174,7 @@
 				:class="{ matches: junctionFieldExists(relations[1].field) }"
 				v-model="relations[1].field"
 				:nullable="false"
-				:placeholder="$t('foreign_key') + '...'"
+				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
@@ -175,8 +183,9 @@
 						<template #activator="{ toggle }">
 							<v-icon
 								name="list_alt"
+								clickable
 								@click="toggle"
-								v-tooltip="$t('select_existing')"
+								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
 							/>
 						</template>
@@ -188,6 +197,7 @@
 								:active="relations[1].field === item.value"
 								:disabled="item.disabled"
 								@click="relations[1].field = item.value"
+								clickable
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -201,26 +211,26 @@
 					<v-text-overflow :text="relations[1].field" />
 				</template>
 			</v-input>
-			<v-input disabled v-model="relatedPrimaryKeyField" :placeholder="$t('primary_key') + '...'" />
+			<v-input disabled v-model="relatedPrimaryKeyField" :placeholder="t('primary_key') + '...'" />
 			<div class="spacer" />
-			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
 
 		<div class="corresponding" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_field') }}</div>
+				<div class="type-label">{{ t('create_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('field_name') }}</div>
+				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
 					:disabled="hasCorresponding === false"
 					v-model="correspondingField"
-					:placeholder="$t('field_name') + '...'"
+					:placeholder="t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
@@ -228,18 +238,18 @@
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].meta.sort_field) }"
 				v-model="relations[0].meta.sort_field"
-				:placeholder="$t('add_sort_field') + '...'"
+				:placeholder="t('add_sort_field') + '...'"
 				db-safe
 			>
 				<template #append v-if="junctionCollectionExists">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
 						</template>
 
 						<v-list class="monospace">
@@ -249,6 +259,7 @@
 								:active="relations[0].meta.sort_field === item.value"
 								:disabled="item.disabled"
 								@click="relations[0].meta.sort_field = item.value"
+								clickable
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -261,29 +272,29 @@
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
 
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label_o2m', {
+						t('referential_action_field_label_o2m', {
 							collection: junctionCollectionName || '',
 						})
 					}}
 				</div>
 				<v-select
 					v-model="relations[0].meta.one_deselect_action"
-					:placeholder="$t('choose_action') + '...'"
+					:placeholder="t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', {
+							text: t('referential_action_set_null', {
 								collection: junctionCollectionName,
 								field: junctionM2OFieldName,
 							}),
 							value: 'nullify',
 						},
 						{
-							text: $t('referential_action_cascade', {
+							text: t('referential_action_cascade', {
 								collection: junctionCollectionName,
 								field: junctionM2OFieldName,
 							}),
@@ -296,7 +307,7 @@
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label_m2o', {
+						t('referential_action_field_label_m2o', {
 							collection: currentCollectionName || 'related',
 						})
 					}}
@@ -304,25 +315,25 @@
 				<v-select
 					v-model="relations[0].schema.on_delete"
 					:disabled="relations[0].collection === relations[0].related_collection"
-					:placeholder="$t('choose_action') + '...'"
+					:placeholder="t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: junctionM2OFieldName }),
+							text: t('referential_action_set_null', { field: junctionM2OFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: junctionM2OFieldName }),
+							text: t('referential_action_set_default', { field: junctionM2OFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: $t('referential_action_cascade', {
+							text: t('referential_action_cascade', {
 								collection: junctionCollectionName,
 								field: junctionM2OFieldName,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: $t('referential_action_no_action'),
+							text: t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -332,7 +343,7 @@
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label_m2o', {
+						t('referential_action_field_label_m2o', {
 							collection: relatedCollectionName || 'related',
 						})
 					}}
@@ -340,25 +351,25 @@
 				<v-select
 					v-model="relations[1].schema.on_delete"
 					:disabled="relations[1].collection === relations[1].related_collection"
-					:placeholder="$t('choose_action') + '...'"
+					:placeholder="t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: junctionRelatedM2OFieldName }),
+							text: t('referential_action_set_null', { field: junctionRelatedM2OFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: junctionRelatedM2OFieldName }),
+							text: t('referential_action_set_default', { field: junctionRelatedM2OFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: $t('referential_action_cascade', {
+							text: t('referential_action_cascade', {
 								collection: junctionCollectionName,
 								field: junctionRelatedM2OFieldName,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: $t('referential_action_no_action'),
+							text: t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -368,12 +379,12 @@
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
-				{{ $t('new_data_alert') }}
+				{{ t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+						({{ t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -382,11 +393,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import i18n from '@/lang';
 
 import { state, generationInfo } from '../store';
 import formatTitle from '@directus/format-title';
@@ -407,6 +418,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -421,7 +434,7 @@ export default defineComponent({
 
 		const availableCollections = computed(() => {
 			return orderBy(
-				collectionsStore.state.collections.filter((collection) => {
+				collectionsStore.collections.filter((collection) => {
 					return collection.collection.startsWith('directus_') === false;
 				}),
 				['collection'],
@@ -445,7 +458,7 @@ export default defineComponent({
 
 		const systemCollections = computed(() => {
 			return orderBy(
-				collectionsStore.state.collections.filter((collection) => {
+				collectionsStore.collections.filter((collection) => {
 					return collection.collection.startsWith('directus_') === true;
 				}),
 				['collection'],
@@ -544,6 +557,7 @@ export default defineComponent({
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		return {
+			t,
 			relations: state.relations,
 			autoFill,
 			availableCollections,
@@ -631,10 +645,10 @@ export default defineComponent({
 
 			const correspondingLabel = computed(() => {
 				if (state.relations[0].related_collection) {
-					return i18n.t('add_m2m_to_collection', { collection: state.relations[1].related_collection });
+					return t('add_m2m_to_collection', { collection: state.relations[1].related_collection });
 				}
 
-				return i18n.t('add_field_related');
+				return t('add_field_related');
 			});
 
 			return { hasCorresponding, correspondingField, correspondingLabel };

@@ -2,11 +2,11 @@
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].collection" />
+				<div class="type-label">{{ t('this_collection') }}</div>
+				<v-input disabled :model-value="relations[0].collection" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('related_collection') }}</div>
+				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
 					:class="{ matches: relatedCollectionExists }"
 					db-safe
@@ -14,12 +14,18 @@
 					v-model="relations[0].related_collection"
 					:nullable="false"
 					:disabled="isExisting"
-					:placeholder="$t('collection') + '...'"
+					:placeholder="t('collection') + '...'"
 				>
 					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
+								<v-icon
+									name="list_alt"
+									clickable
+									@click="toggle"
+									v-tooltip="t('select_existing')"
+									:disabled="isExisting"
+								/>
 							</template>
 
 							<v-list class="monospace">
@@ -28,6 +34,7 @@
 									:key="collection.collection"
 									:active="relations[0].related_collection === collection.collection"
 									@click="relations[0].related_collection = collection.collection"
+									clickable
 								>
 									<v-list-item-content>
 										{{ collection.collection }}
@@ -37,12 +44,13 @@
 								<v-divider />
 
 								<v-list-group>
-									<template #activator>{{ $t('system') }}</template>
+									<template #activator>{{ t('system') }}</template>
 									<v-list-item
 										v-for="collection in systemCollections"
 										:key="collection.collection"
 										:active="relations[0].related_collection === collection.collection"
 										@click="relations[0].related_collection = collection.collection"
+										clickable
 									>
 										<v-list-item-content>
 											{{ collection.collection }}
@@ -63,23 +71,23 @@
 					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
-			<v-input v-model="relatedPrimaryKeyField" disabled :placeholder="$t('primary_key') + '...'" />
+			<v-input v-model="relatedPrimaryKeyField" disabled :placeholder="t('primary_key') + '...'" />
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
+		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
 
 		<div class="grid" v-if="!isExisting">
 			<div class="field">
-				<div class="type-label">{{ $t('create_field') }}</div>
+				<div class="type-label">{{ t('create_field') }}</div>
 				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('field_name') }}</div>
+				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
 					:disabled="hasCorresponding === false"
 					v-model="correspondingField"
-					:placeholder="$t('field_name') + '...'"
+					:placeholder="t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
@@ -87,12 +95,12 @@
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
 
 			<div class="field">
 				<div class="type-label">
 					{{
-						$t('referential_action_field_label_m2o', {
+						t('referential_action_field_label_m2o', {
 							collection: relatedCollectionName || 'related',
 						})
 					}}
@@ -100,25 +108,25 @@
 				<v-select
 					v-model="relations[0].schema.on_delete"
 					:disabled="relations[0].collection === relations[0].related_collection"
-					:placeholder="$t('choose_action') + '...'"
+					:placeholder="t('choose_action') + '...'"
 					:items="[
 						{
-							text: $t('referential_action_set_null', { field: m2oFieldName }),
+							text: t('referential_action_set_null', { field: m2oFieldName }),
 							value: 'SET NULL',
 						},
 						{
-							text: $t('referential_action_set_default', { field: m2oFieldName }),
+							text: t('referential_action_set_default', { field: m2oFieldName }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: $t('referential_action_cascade', {
+							text: t('referential_action_cascade', {
 								collection: currentCollectionName,
 								field: m2oFieldName,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: $t('referential_action_no_action', {
+							text: t('referential_action_no_action', {
 								field: m2oFieldName,
 							}),
 							value: 'NO ACTION',
@@ -130,12 +138,12 @@
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
-				{{ $t('new_data_alert') }}
+				{{ t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+						({{ t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -144,10 +152,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import i18n from '@/lang';
 import formatTitle from '@directus/format-title';
 
 import { state, generationInfo } from '../store';
@@ -168,6 +176,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -215,6 +225,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			relations: state.relations,
 			availableCollections,
 			systemCollections,
@@ -233,7 +244,7 @@ export default defineComponent({
 		function useRelation() {
 			const availableCollections = computed(() => {
 				return orderBy(
-					collectionsStore.state.collections.filter((collection) => {
+					collectionsStore.collections.filter((collection) => {
 						return collection.collection.startsWith('directus_') === false;
 					}),
 					['collection'],
@@ -257,7 +268,7 @@ export default defineComponent({
 
 			const systemCollections = computed(() => {
 				return orderBy(
-					collectionsStore.state.collections.filter((collection) => {
+					collectionsStore.collections.filter((collection) => {
 						return collection.collection.startsWith('directus_') === true;
 					}),
 					['collection'],
@@ -320,10 +331,10 @@ export default defineComponent({
 
 			const correspondingLabel = computed(() => {
 				if (state.relations[0].related_collection) {
-					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].related_collection });
+					return t('add_o2m_to_collection', { collection: state.relations[0].related_collection });
 				}
 
-				return i18n.t('add_field_related');
+				return t('add_field_related');
 			});
 
 			return { hasCorresponding, correspondingField, correspondingLabel };

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted } from 'vue';
 import { logout } from '@/auth';
 
 export default defineComponent({

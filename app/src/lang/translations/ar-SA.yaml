@@ -558,7 +558,7 @@ interfaces:
     primary: الأساسي
   input-code:
     code: نص برمجي
-  collection:
+  system-collection:
     collection: المجموعة
   system-collections:
     collections: مجموعات
