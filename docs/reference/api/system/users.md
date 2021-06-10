@@ -819,7 +819,7 @@ mutation {
 
 ---
 
-## Generatre Two-Factor Authentication secret
+## Generate Two-Factor Authentication Secret
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
