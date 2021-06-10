@@ -249,8 +249,8 @@ export class AuthenticationService {
 
 	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
 		const user = await this.knex.select('email').from('directus_users').where({ id: pk }).first();
-
-		return authenticator.keyuri(user.email, 'Directus', secret);
+		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
+		return authenticator.keyuri(user.email, project?.project_name || 'Directus', secret);
 	}
 
 	async verifyOTP(pk: string, otp: string, secret?: string): Promise<boolean> {
