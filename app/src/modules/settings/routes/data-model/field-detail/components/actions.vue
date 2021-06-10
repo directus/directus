@@ -6,19 +6,20 @@
 			:disabled="nextDisabled"
 			icon
 			rounded
-			v-tooltip.bottom="$t('next')"
+			v-tooltip.bottom="t('next')"
 		>
 			<v-icon name="arrow_forward" />
 		</v-button>
 
-		<v-button v-else @click="$emit('save')" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+		<v-button v-else @click="$emit('save')" :loading="saving" icon rounded v-tooltip.bottom="t('save')">
 			<v-icon name="check" />
 		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType } from 'vue';
 import useSync from '@/composables/use-sync';
 
 type Tab = {
@@ -28,6 +29,7 @@ type Tab = {
 };
 
 export default defineComponent({
+	emits: ['save', 'update:current'],
 	props: {
 		collection: {
 			type: String,
@@ -51,7 +53,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _currentTab = useSync(props, 'current', emit);
+		const { t } = useI18n();
+
+		const internalCurrentTab = useSync(props, 'current', emit);
 
 		const currentTabIndex = computed(() => props.tabs.findIndex((tab) => tab.value === props.current[0]));
 
@@ -69,13 +73,13 @@ export default defineComponent({
 			return true;
 		});
 
-		return { _currentTab, previousDisabled, previousTab, nextDisabled, nextTab, currentTabIndex };
+		return { t, internalCurrentTab, previousDisabled, previousTab, nextDisabled, nextTab, currentTabIndex };
 
 		function previousTab() {
 			const previousTab = props.tabs[currentTabIndex.value - 1];
 
 			if (previousTab) {
-				_currentTab.value = [previousTab.value];
+				internalCurrentTab.value = [previousTab.value];
 			}
 		}
 
@@ -83,7 +87,7 @@ export default defineComponent({
 			const nextTab = props.tabs[currentTabIndex.value + 1];
 
 			if (nextTab) {
-				_currentTab.value = [nextTab.value];
+				internalCurrentTab.value = [nextTab.value];
 			}
 		}
 	},

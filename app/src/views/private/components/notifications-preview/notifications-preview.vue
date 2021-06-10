@@ -1,10 +1,10 @@
 <template>
 	<div class="notifications-preview">
 		<transition-expand tag="div">
-			<div v-if="active" class="inline">
+			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
 					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
-						{{ $t('show_all_activity') }}
+						{{ t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
 						<notification-item v-for="notification in lastFour" :key="notification.id" v-bind="notification" />
@@ -14,41 +14,42 @@
 		</transition-expand>
 
 		<sidebar-button
-			:active="active"
-			@click="$emit('input', !active)"
-			v-tooltip.left="$t('notifications')"
+			:active="modelValue"
+			@click="$emit('update:modelValue', !modelValue)"
+			v-tooltip.left="t('notifications')"
 			class="toggle"
 			icon="notifications"
 		>
-			{{ $t('notifications') }}
+			{{ t('notifications') }}
 		</sidebar-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	components: { SidebarButton, NotificationItem },
-	model: {
-		prop: 'active',
-	},
 	props: {
 		sidebarOpen: {
 			type: Boolean,
 			default: false,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const notificationsStore = useNotificationsStore();
-		return { lastFour: notificationsStore.lastFour };
+		return { t, lastFour: notificationsStore.lastFour };
 	},
 });
 </script>
@@ -110,7 +111,7 @@ export default defineComponent({
 	transition: all 500ms var(--transition);
 }
 
-.notification-enter,
+.notification-enter-from,
 .notification-leave-to {
 	opacity: 0;
 }

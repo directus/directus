@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -72,6 +72,7 @@ export default defineComponent({
 	&.detailed {
 		position: relative;
 		width: min-content;
+
 		.active {
 			position: relative;
 			z-index: 2;
@@ -80,6 +81,7 @@ export default defineComponent({
 			overflow: hidden;
 			color: #ffc107;
 		}
+
 		.inactive {
 			position: absolute;
 			top: 0;

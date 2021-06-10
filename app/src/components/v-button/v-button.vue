@@ -4,8 +4,8 @@
 		<component
 			v-focus="autofocus"
 			:is="component"
-			:active-class="to ? 'activated' : null"
-			:exact="exact"
+			:active-class="!exact && to ? 'activated' : null"
+			:exact-active-class="exact && to ? 'activated' : null"
 			:download="download"
 			class="button"
 			:class="[
@@ -44,13 +44,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
-import { Location } from 'vue-router';
+import { defineComponent, computed, PropType } from 'vue';
+import { RouteLocation } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 import { useGroupable } from '@/composables/groupable';
 import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		autofocus: {
 			type: Boolean,
@@ -85,7 +86,7 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
+			type: [String, Object] as PropType<string | RouteLocation>,
 			default: null,
 		},
 		href: {
@@ -135,7 +136,7 @@ export default defineComponent({
 
 		const { active, toggle } = useGroupable({
 			value: props.value,
-			group: 'button-group',
+			group: 'item-group',
 		});
 
 		return { sizeClass, onClick, component, active, toggle };
@@ -150,8 +151,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-button-width: auto;
 	--v-button-height: 44px;
 	--v-button-color: var(--foreground-inverted);
@@ -167,187 +168,185 @@ body {
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
 }
-</style>
 
-<style lang="scss" scoped>
 .v-button {
 	display: inline-flex;
 	align-items: center;
+}
 
-	&.secondary {
-		--v-button-color: var(--foreground-normal);
-		--v-button-color-hover: var(--foreground-normal);
-		--v-button-color-activated: var(--foreground-normal);
-		--v-button-background-color: var(--border-subdued); // I'm so sorry! 🥺
-		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-background-color-activated: var(--background-normal-alt);
-	}
+.secondary {
+	--v-button-color: var(--foreground-normal);
+	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color-activated: var(--foreground-normal);
+	--v-button-background-color: var(--border-subdued);
+	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-activated: var(--background-normal-alt);
+}
 
-	&.full-width {
-		display: flex;
-		min-width: 100%;
-	}
+.v-button.full-width {
+	display: flex;
+	min-width: 100%;
+}
 
-	.button {
-		position: relative;
-		display: flex;
-		align-items: center;
-		width: var(--v-button-width);
-		min-width: var(--v-button-min-width);
-		height: var(--v-button-height);
-		padding: 0 19px;
-		color: var(--v-button-color);
-		font-weight: var(--v-button-font-weight);
-		font-size: var(--v-button-font-size);
-		line-height: var(--v-button-line-height);
-		text-decoration: none;
-		background-color: var(--v-button-background-color);
-		border: var(--border-width) solid var(--v-button-background-color);
-		border-radius: var(--border-radius);
-		cursor: pointer;
-		transition: var(--fast) var(--transition);
-		transition-property: background-color border;
+.button {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: var(--v-button-width);
+	min-width: var(--v-button-min-width);
+	height: var(--v-button-height);
+	padding: 0 19px;
+	color: var(--v-button-color);
+	font-weight: var(--v-button-font-weight);
+	font-size: var(--v-button-font-size);
+	line-height: var(--v-button-line-height);
+	text-decoration: none;
+	background-color: var(--v-button-background-color);
+	border: var(--border-width) solid var(--v-button-background-color);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+	transition: var(--fast) var(--transition);
+	transition-property: background-color border;
+}
 
-		&:hover {
-			color: var(--v-button-color-hover);
-			background-color: var(--v-button-background-color-hover);
-			border-color: var(--v-button-background-color-hover);
-		}
+.button:hover {
+	color: var(--v-button-color-hover);
+	background-color: var(--v-button-background-color-hover);
+	border-color: var(--v-button-background-color-hover);
+}
 
-		&.align-left {
-			justify-content: flex-start;
-		}
+.align-left {
+	justify-content: flex-start;
+}
 
-		&.align-center {
-			justify-content: center;
-		}
+.align-center {
+	justify-content: center;
+}
 
-		&.align-right {
-			justify-content: flex-end;
-		}
+.align-right {
+	justify-content: flex-end;
+}
 
-		&:focus {
-			outline: 0;
-		}
+.button:focus {
+	outline: 0;
+}
 
-		&:disabled {
-			color: var(--v-button-color-disabled);
-			background-color: var(--v-button-background-color-disabled);
-			border: var(--border-width) solid var(--v-button-background-color-disabled);
-			cursor: not-allowed;
-		}
+.button:disabled {
+	color: var(--v-button-color-disabled);
+	background-color: var(--v-button-background-color-disabled);
+	border: var(--border-width) solid var(--v-button-background-color-disabled);
+	cursor: not-allowed;
+}
 
-		&.rounded {
-			border-radius: calc(var(--v-button-height) / 2);
-		}
+.rounded {
+	border-radius: calc(var(--v-button-height) / 2);
+}
 
-		&.outlined {
-			--v-button-color: var(--v-button-background-color);
+.outlined {
+	--v-button-color: var(--v-button-background-color);
 
-			background-color: transparent;
+	background-color: transparent;
+}
 
-			&:not(.activated):hover {
-				color: var(--v-button-background-color-hover);
-				background-color: transparent;
-				border-color: var(--v-button-background-color-hover);
-			}
+.outlined:not(.activated):hover {
+	color: var(--v-button-background-color-hover);
+	background-color: transparent;
+	border-color: var(--v-button-background-color-hover);
+}
 
-			&.secondary {
-				--v-button-color: var(--foreground-subdued);
-			}
-		}
+.outlined.secondary {
+	--v-button-color: var(--foreground-subdued);
+}
 
-		&.dashed {
-			border-style: dashed;
-		}
+.dashed {
+	border-style: dashed;
+}
 
-		&.x-small {
-			--v-button-height: 28px;
-			--v-button-font-size: 12px;
-			--v-button-font-weight: 600;
-			--v-button-min-width: 60px;
-			--border-radius: 4px;
+.x-small {
+	--v-button-height: 28px;
+	--v-button-font-size: 12px;
+	--v-button-font-weight: 600;
+	--v-button-min-width: 60px;
+	--border-radius: 4px;
 
-			padding: 0 12px;
-		}
+	padding: 0 12px;
+}
 
-		&.small {
-			--v-button-height: 36px;
-			--v-button-font-size: 14px;
-			--v-button-min-width: 120px;
+.small {
+	--v-button-height: 36px;
+	--v-button-font-size: 14px;
+	--v-button-min-width: 120px;
 
-			padding: 0 12px;
-		}
+	padding: 0 12px;
+}
 
-		&.large {
-			--v-button-height: 52px;
-			--v-button-min-width: 154px;
+.large {
+	--v-button-height: 52px;
+	--v-button-min-width: 154px;
 
-			padding: 0 12px;
-		}
+	padding: 0 12px;
+}
 
-		&.x-large {
-			--v-button-height: 64px;
-			--v-button-font-size: 18px;
-			--v-button-min-width: 180px;
+.x-large {
+	--v-button-height: 64px;
+	--v-button-font-size: 18px;
+	--v-button-min-width: 180px;
 
-			padding: 0 12px;
-		}
+	padding: 0 12px;
+}
 
-		&.icon {
-			width: var(--v-button-height);
-			min-width: 0;
-			padding: 0;
-		}
+.icon {
+	width: var(--v-button-height);
+	min-width: 0;
+	padding: 0;
+}
 
-		&.full-width {
-			min-width: 100%;
-		}
+.button.full-width {
+	min-width: 100%;
+}
 
-		.content,
-		.spinner {
-			max-width: 100%;
-			margin: 0 -1px; // Fixes slightly cropped icons
-			padding: 0 1px; // Fixes slightly cropped icons
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
+.content,
+.spinner {
+	max-width: 100%;
+	margin: 0 -1px;
+	padding: 0 1px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
 
-		.content {
-			position: relative;
-			display: flex;
-			align-items: center;
-			line-height: normal;
+.content {
+	position: relative;
+	display: flex;
+	align-items: center;
+	line-height: normal;
+}
 
-			&.invisible {
-				opacity: 0;
-			}
-		}
+.content.invisible {
+	opacity: 0;
+}
 
-		.spinner {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
+.spinner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
 
-			.v-progress-circular {
-				--v-progress-circular-color: var(--v-button-color);
-				--v-progress-circular-background-color: transparent;
-			}
-		}
+.spinner .v-progress-circular {
+	--v-progress-circular-color: var(--v-button-color);
+	--v-progress-circular-background-color: transparent;
+}
 
-		&.activated,
-		&.active {
-			--v-button-color: var(--v-button-color-activated) !important;
-			--v-button-color-hover: var(--v-button-color-activated) !important;
-			--v-button-background-color: var(--v-button-background-color-activated) !important;
-			--v-button-background-color-hover: var(--v-button-background-color-activated) !important;
-		}
+.activated,
+.active {
+	--v-button-color: var(--v-button-color-activated) !important;
+	--v-button-color-hover: var(--v-button-color-activated) !important;
+	--v-button-background-color: var(--v-button-background-color-activated) !important;
+	--v-button-background-color-hover: var(--v-button-background-color-activated) !important;
+}
 
-		&.tile {
-			border-radius: 0;
-		}
-	}
+.tile {
+	border-radius: 0;
 }
 </style>

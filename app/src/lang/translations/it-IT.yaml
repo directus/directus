@@ -767,7 +767,7 @@ interfaces:
     description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
     placeholder: Inserisci il codice qui...
-  collection:
+  system-collection:
     collection: Raccolta
     description: Seleziona tra raccolte esistenti
     include_system_collections: Includi Raccolte di Sistema

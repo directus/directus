@@ -2,12 +2,12 @@
 
 ```ts
 function useScrollDistance<T extends Element>(
-	t: T | Ref<T | null | Vue>
+	t: T | Ref<T | null | ComponentPublicInstance>
 ): { top: Ref<number>; left: Ref<number>; target: Element };
 ```
 
 Returns a ref for the top and left scroll positions of the given element. Parameter supports Element, Ref<Element>,
-Ref<Vue>, and Ref<null>.
+Ref<ComponentPublicInstance>, and Ref<null>.
 
 ## Usage
 
@@ -26,11 +26,11 @@ Ref<Vue>, and Ref<null>.
 </template>
 
 <script lang="ts">
-	import { defineComponent } from '@vue/composition-api';
+	import { defineComponent, ComponentPublicInstance } from 'vue';
 
 	export default defineComponent({
 		setup() {
-			const el = ref<Vue>(null);
+			const el = ref<ComponentPublicInstance>(null);
 
 			const { top, left } = useScrollDistance(el);
 

@@ -249,7 +249,7 @@ value: Значення
 interfaces:
   input-code:
     code: Код
-  collection:
+  system-collection:
     collection: Колекція
   system-collections:
     collections: Колекції

@@ -889,7 +889,7 @@ interfaces:
     description: Write or share code snippets
     line_number: Line Number
     placeholder: Enter code here...
-  collection:
+  system-collection:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections

@@ -1,7 +1,7 @@
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
-import { computed, Ref } from '@vue/composition-api';
+import { Collection, Field, Relation } from '@/types';
+import { computed, ComputedRef, Ref } from 'vue';
 
 export type RelationInfo = {
 	junctionPkField: string;
@@ -12,7 +12,17 @@ export type RelationInfo = {
 	relationCollection: string;
 };
 
-export default function useRelation(collection: Ref<string>, field: Ref<string>): Record<string, any> {
+type UsableRelation = {
+	junction: ComputedRef<Relation>;
+	junctionCollection: ComputedRef<Collection>;
+	relation: ComputedRef<Relation>;
+	relationCollection: ComputedRef<Collection>;
+	relationInfo: ComputedRef<RelationInfo>;
+	junctionPrimaryKeyField: ComputedRef<Field | null>;
+	relationPrimaryKeyField: ComputedRef<Field | null>;
+};
+
+export default function useRelation(collection: Ref<string>, field: Ref<string>): UsableRelation {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 

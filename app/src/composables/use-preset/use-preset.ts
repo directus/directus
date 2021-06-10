@@ -1,14 +1,33 @@
 import { useCollection } from '@/composables/use-collection';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
-import { computed, ref, Ref, watch } from '@vue/composition-api';
 import { debounce, isEqual } from 'lodash';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+
+type UsablePreset = {
+	bookmarkExists: ComputedRef<boolean>;
+	layout: Ref<string | null>;
+	layoutOptions: Ref<Record<string, any>>;
+	layoutQuery: Ref<Record<string, any>>;
+	filters: Ref<readonly Filter[]>;
+	searchQuery: Ref<string | null>;
+	refreshInterval: Ref<number | null>;
+	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
+	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
+	bookmarkTitle: Ref<string | null>;
+	resetPreset: () => Promise<void>;
+	bookmarkSaved: Ref<boolean>;
+	bookmarkIsMine: ComputedRef<boolean>;
+	busy: Ref<boolean>;
+	clearLocalSave: () => void;
+	localPreset: Ref<Partial<Preset>>;
+};
 
 export function usePreset(
 	collection: Ref<string>,
 	bookmark: Ref<number | null> = ref(null),
 	temporary = false
-): Record<string, any> {
+): UsablePreset {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
@@ -25,7 +44,7 @@ export function usePreset(
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
 
 	/**
 	 * Saves the preset to the database
@@ -272,7 +291,7 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		data.user = userStore.state.currentUser!.id;
+		data.user = userStore.currentUser!.id;
 
 		return await savePreset(data);
 	}

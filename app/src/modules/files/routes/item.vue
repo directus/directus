@@ -1,8 +1,8 @@
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
+	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -20,21 +20,21 @@
 						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -48,14 +48,14 @@
 						:disabled="item === null"
 						@click="on"
 						class="folder"
-						v-tooltip.bottom="$t('move_to_folder')"
+						v-tooltip.bottom="t('move_to_folder')"
 					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 
 					<v-card-text>
 						<folder-picker v-model="selectedFolder" />
@@ -63,16 +63,16 @@
 
 					<v-card-actions>
 						<v-button @click="moveToDialogActive = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="moveToFolder" :loading="moving">
-							{{ $t('move') }}
+							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="$t('download')">
+			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="t('download')">
 				<v-icon name="save_alt" />
 			</v-button>
 
@@ -82,7 +82,7 @@
 				icon
 				@click="editActive = true"
 				class="edit"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="tune" />
 			</v-button>
@@ -93,7 +93,7 @@
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 			>
 				<v-icon name="check" />
 
@@ -144,13 +144,13 @@
 
 		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -175,10 +175,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
-import router from '@/router';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -200,18 +200,6 @@ import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'files-item',
-	beforeRouteLeave(to, from, next) {
-		const self = this as any;
-		const hasEdits = Object.keys(self.edits).length > 0;
-
-		if (hasEdits) {
-			self.confirmLeave = true;
-			self.leaveTo = to.fullPath;
-			return next(false);
-		}
-
-		return next();
-	},
 	components: {
 		FilesNavigation,
 		RevisionsDrawerDetail,
@@ -231,12 +219,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const replaceFileDialogActive = ref(false);
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			isNew,
@@ -288,7 +280,7 @@ export default defineComponent({
 		];
 
 		const to = computed(() => {
-			if (item.value && item.value?.folder) return `/files?folder=${item.value.folder}`;
+			if (item.value && item.value?.folder) return `/files/folders/${item.value.folder}`;
 			else return '/files';
 		});
 
@@ -298,6 +290,16 @@ export default defineComponent({
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		useShortcut('meta+s', saveAndStay, form);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
 		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			ref('directus_files'),
@@ -310,6 +312,8 @@ export default defineComponent({
 		});
 
 		return {
+			t,
+			router,
 			item,
 			loading,
 			error,
@@ -354,7 +358,7 @@ export default defineComponent({
 				if (!item?.value?.folder) {
 					return [
 						{
-							name: i18n.t('file_library'),
+							name: t('file_library'),
 							to: '/files',
 						},
 					];
@@ -362,13 +366,8 @@ export default defineComponent({
 
 				return [
 					{
-						name: i18n.t('file_library'),
-						to: {
-							path: `/files/`,
-							query: {
-								folder: item?.value?.folder,
-							},
-						},
+						name: t('file_library'),
+						to: { path: `/files/folders/${item.value.folder}` },
 					},
 				];
 			});
@@ -447,10 +446,10 @@ export default defineComponent({
 					);
 
 					await refresh();
-					const folder = response.data.data.folder?.name || i18n.t('file_library');
+					const folder = response.data.data.folder?.name || t('file_library');
 
 					notify({
-						title: i18n.t('file_moved', { folder }),
+						title: t('file_moved', { folder }),
 						type: 'success',
 						icon: 'folder_move',
 					});

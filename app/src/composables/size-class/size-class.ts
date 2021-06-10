@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from '@vue/composition-api';
+import { computed, ComputedRef } from 'vue';
 
 export const sizeProps = {
 	xSmall: {

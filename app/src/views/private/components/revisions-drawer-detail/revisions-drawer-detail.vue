@@ -1,27 +1,22 @@
 <template>
 	<sidebar-detail
-		:title="$t('revisions')"
+		:title="t('revisions')"
 		icon="change_history"
 		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
 	>
 		<v-progress-linear indeterminate v-if="loading" />
 
 		<template v-else>
-			<template v-for="group in revisionsByDate">
-				<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+			<template v-for="group in revisionsByDate" :key="group.date.toString()">
+				<v-divider>{{ group.dateFormatted }}</v-divider>
 
-				<template v-for="(item, index) in group.revisions">
-					<revision-item
-						:key="item.id"
-						:revision="item"
-						:last="index === group.revisions.length - 1"
-						@click="openModal(item.id)"
-					/>
+				<template v-for="(item, index) in group.revisions" :key="item.id">
+					<revision-item :revision="item" :last="index === group.revisions.length - 1" @click="openModal(item.id)" />
 				</template>
 			</template>
 
 			<v-divider class="other" v-if="revisionsCount > 100">
-				{{ $tc('count_other_revisions', revisionsCount - 101) }}
+				{{ t('count_other_revisions', revisionsCount - 101) }}
 			</v-divider>
 
 			<template v-if="created">
@@ -32,7 +27,7 @@
 				<v-divider v-if="revisionsByDate.length > 0" />
 
 				<div class="external">
-					{{ $t('revision_delta_created_externally') }}
+					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
 		</template>
@@ -40,22 +35,21 @@
 		<revisions-drawer
 			v-if="revisions"
 			:revisions="revisions"
-			:current.sync="modalCurrentRevision"
-			:active.sync="modalActive"
+			v-model:current="modalCurrentRevision"
+			v-model:active="modalActive"
 			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from 'vue';
 import { Revision, RevisionsByDate } from './types';
 
 import api from '@/api';
 import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { TranslateResult } from 'vue-i18n';
-import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
@@ -63,6 +57,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
+	emits: ['revert'],
 	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {
@@ -75,6 +70,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
 			props.collection,
 			props.primaryKey
@@ -84,6 +81,7 @@ export default defineComponent({
 		const modalCurrentRevision = ref<number | null>(null);
 
 		return {
+			t,
 			revisions,
 			revisionsByDate,
 			loading,
@@ -202,13 +200,12 @@ export default defineComponent({
 						const yesterday = isYesterday(date);
 						const thisYear = isThisYear(date);
 
-						let dateFormatted: TranslateResult;
+						let dateFormatted: string;
 
-						if (today) dateFormatted = i18n.t('today');
-						else if (yesterday) dateFormatted = i18n.t('yesterday');
-						else if (thisYear)
-							dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short_no_year')));
-						else dateFormatted = await formatLocalized(date, String(i18n.t('date-fns_date_short')));
+						if (today) dateFormatted = t('today');
+						else if (yesterday) dateFormatted = t('yesterday');
+						else if (thisYear) dateFormatted = await formatLocalized(date, String(t('date-fns_date_short_no_year')));
+						else dateFormatted = await formatLocalized(date, String(t('date-fns_date_short')));
 
 						revisionsGrouped.push({
 							date: date,

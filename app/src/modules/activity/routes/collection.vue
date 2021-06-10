@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('activity_feed')">
+	<private-view :title="t('activity_feed')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="access_time" />
@@ -7,7 +7,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<portal-target name="actions:prepend" />
+			<component :is="`layout-actions-${layout}`" />
 		</template>
 
 		<template #actions>
@@ -15,36 +15,29 @@
 		</template>
 
 		<template #navigation>
-			<activity-navigation :filters.sync="filters" />
+			<activity-navigation v-model:filters="filters" />
 		</template>
 
-		<component
-			class="layout"
-			:is="`layout-${layout}`"
-			collection="directus_activity"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters.sync="filters"
-			:search-query="searchQuery"
-		/>
+		<component class="layout" :is="`layout-${layout}`" />
 
 		<router-view name="detail" :primary-key="primaryKey" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_activity_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_activity_collection'))" />
 			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
-			<portal-target name="sidebar" />
+			<layout-sidebar-detail v-model="layout" />
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
 import usePreset from '@/composables/use-preset';
+import { useLayout } from '@/composables/use-layout';
 import { md } from '@/utils/md';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
@@ -60,24 +53,32 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
-		return {
-			breadcrumb,
-			md,
+		useLayout(
 			layout,
-			layoutOptions,
-			layoutQuery,
-			searchQuery,
-			filters,
-		};
+			reactive({
+				collection: 'directus_activity',
+				selection: [],
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				selectMode: false,
+				readonly: false,
+			})
+		);
+
+		return { t, breadcrumb, md, layout, layoutOptions, layoutQuery, searchQuery, filters };
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
 				return [
 					{
-						name: i18n.tc('collection', 2),
+						name: t('collection', 2),
 						to: `/collections`,
 					},
 				];

@@ -1,5 +1,5 @@
 <template>
-	<v-list-item exact :to="bookmark.to" class="bookmark" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
+	<v-list-item :to="bookmark.to" class="bookmark" @contextmenu.prevent.stop="activateContextMenu">
 		<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow :text="bookmark.bookmark" />
@@ -10,20 +10,20 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item @click="renameActive = true" :disabled="isMine === false">
+				<v-list-item clickable @click="renameActive = true" :disabled="isMine === false">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('rename_bookmark')" />
+						<v-text-overflow :text="t('rename_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item @click="deleteActive = true" class="danger" :disabled="isMine === false">
+				<v-list-item clickable @click="deleteActive = true" class="danger" :disabled="isMine === false">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('delete_bookmark')" />
+						<v-text-overflow :text="t('delete_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -31,14 +31,14 @@
 
 		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
 			<v-card>
-				<v-card-title>{{ $t('rename_bookmark') }}</v-card-title>
+				<v-card-title>{{ t('rename_bookmark') }}</v-card-title>
 				<v-card-text>
 					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
-						{{ $t('save') }}
+						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -46,11 +46,11 @@
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
 			<v-card>
-				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
+				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
 					<v-button @click="deleteSave" :loading="deleteSaving" class="action-delete">
-						{{ $t('delete') }}
+						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -59,11 +59,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
-import router from '@/router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
 	props: {
@@ -73,16 +74,22 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+		const route = useRoute();
+
 		const contextMenu = ref();
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
 
-		const isMine = computed(() => props.bookmark.user === userStore.state.currentUser!.id);
+		const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id);
 
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameBookmark();
 		const { deleteActive, deleteValue, deleteSave, deleteSaving } = useDeleteBookmark();
 
 		return {
+			t,
 			contextMenu,
 			isMine,
 			renameActive,
@@ -93,6 +100,7 @@ export default defineComponent({
 			deleteValue,
 			deleteSave,
 			deleteSaving,
+			activateContextMenu,
 		};
 
 		function useRenameBookmark() {
@@ -133,8 +141,8 @@ export default defineComponent({
 				try {
 					let navigateTo: string | null = null;
 
-					if (+router.currentRoute.query?.bookmark === props.bookmark.id) {
-						navigateTo = `/collections/${props.bookmark.collection}`;
+					if (+route.query?.bookmark === props.bookmark.id) {
+						navigateTo = `/collections/${props.bookmark.collection}/-`;
 					}
 
 					await presetsStore.delete(props.bookmark.id);
@@ -149,6 +157,10 @@ export default defineComponent({
 					deleteSaving.value = false;
 				}
 			}
+		}
+
+		function activateContextMenu(event: PointerEvent) {
+			contextMenu.value.activate(event);
 		}
 	},
 });

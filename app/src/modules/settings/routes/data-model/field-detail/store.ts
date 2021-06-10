@@ -11,13 +11,8 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Collection, Field, localTypes, Relation, Item } from '@/types';
-import { computed, ComputedRef, reactive, watch, WatchStopHandle } from '@vue/composition-api';
 import { clone, throttle } from 'lodash';
-import Vue from 'vue';
-
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
-const collectionsStore = useCollectionsStore();
+import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
 type GenerationInfo = {
 	name: string;
@@ -41,6 +36,10 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
 function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+	const collectionsStore = useCollectionsStore();
+
 	const { interfaces } = getInterfaces();
 	const { displays } = getDisplays();
 
@@ -62,13 +61,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter: InterfaceConfig) => {
+			.filter((inter: DisplayConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
+			.sort((a: DisplayConfig, b: DisplayConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	generationInfo = computed(() => {
@@ -698,7 +697,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 
 		if (type === 'files') {
-			Vue.nextTick(() => {
+			nextTick(() => {
 				state.relations[1].related_collection = 'directus_files';
 			});
 		}

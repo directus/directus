@@ -15,19 +15,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	model: {
-		prop: 'inputValue',
-		event: 'change',
-	},
+	emits: ['update:modelValue'],
 	props: {
 		value: {
 			type: String,
 			default: null,
 		},
-		inputValue: {
+		modelValue: {
 			type: [Boolean, Array],
 			default: false,
 		},
@@ -42,18 +39,18 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
-			if (props.inputValue instanceof Array) {
-				return props.inputValue.includes(props.value);
+			if (props.modelValue instanceof Array) {
+				return props.modelValue.includes(props.value);
 			}
 
-			return props.inputValue === true;
+			return props.modelValue === true;
 		});
 
 		return { isChecked, toggleInput };
 
 		function toggleInput(): void {
-			if (props.inputValue instanceof Array) {
-				const newValue = [...props.inputValue];
+			if (props.modelValue instanceof Array) {
+				const newValue = [...props.modelValue];
 
 				if (isChecked.value === false) {
 					newValue.push(props.value);
@@ -61,9 +58,9 @@ export default defineComponent({
 					newValue.splice(newValue.indexOf(props.value), 1);
 				}
 
-				emit('change', newValue);
+				emit('update:modelValue', newValue);
 			} else {
-				emit('change', !isChecked.value);
+				emit('update:modelValue', !isChecked.value);
 			}
 		}
 	},
