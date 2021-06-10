@@ -21,7 +21,7 @@ post:
               description: Primary key of item where to move the current item to
               type: number
   responses:
-    "200":
+    '200':
       description: Successful request
   tags:
     - Utilities

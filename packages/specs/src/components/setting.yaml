@@ -54,7 +54,7 @@ properties:
       - all
       - none
       - presets
-    example: "all"
+    example: 'all'
     nullable: true
   storage_asset_presets:
     description: Array of allowed

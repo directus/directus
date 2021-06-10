@@ -12,14 +12,14 @@ post:
             token:
               type: string
               example: eyJh...KmUk
-              description:  Accept invite token.
+              description: Accept invite token.
             password:
               type: string
               description: Password of the user.
               format: password
               example: d1r3ctu5
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -27,10 +27,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Users"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Users
