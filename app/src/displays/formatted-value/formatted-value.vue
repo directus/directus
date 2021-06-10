@@ -11,6 +11,7 @@ import { defineComponent, computed } from 'vue';
 import formatTitle from '@directus/format-title';
 import { decode } from 'html-entities';
 import { useI18n } from 'vue-i18n';
+import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -40,7 +41,7 @@ export default defineComponent({
 		const { n } = useI18n();
 
 		const displayValue = computed(() => {
-			if (!props.value) return null;
+			if (isNil(props.value) || props.value === '') return null;
 
 			if (typeof props.value === 'number') {
 				return n(props.value);
