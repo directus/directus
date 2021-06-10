@@ -2,7 +2,7 @@
 	<component
 		:is="customValue ? 'div' : 'button'"
 		class="v-checkbox"
-		@click="toggleInput"
+		@click.stop="toggleInput"
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
@@ -10,10 +10,10 @@
 		:class="{ checked: isChecked, indeterminate, block }"
 	>
 		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" :disabled="disabled" />
+		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
-			<input @click.stop class="custom-input" v-else v-model="internalValue" />
+			<input class="custom-input" v-else v-model="internalValue" />
 		</span>
 		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</component>
