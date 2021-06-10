@@ -1,7 +1,7 @@
 get:
   summary: Retrieve Current User
   description: Retrieve the currently authenticated user.
-  operationId: me
+  operationId: getMe
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/Fields"
     - $ref: "../../openapi.yaml#/components/parameters/Meta"
@@ -25,7 +25,7 @@ get:
 patch:
   summary: Update Current User
   description: Update the currently authenticated user.
-  operationId: me
+  operationId: updateMe
   responses:
     "200":
       description: Successful request
