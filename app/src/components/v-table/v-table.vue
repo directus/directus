@@ -92,7 +92,7 @@ import TableRow from './table-row/';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 // @TODO Use module import once vuedraggable exports an esm build or vite fixes umd imports
-import Draggable from 'vuedraggable/src/vuedraggable.js';
+import Draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {

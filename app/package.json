@@ -82,10 +82,10 @@
 		"sass": "^1.34.1",
 		"tinymce": "^5.7.1",
 		"typescript": "^4.2.4",
-		"vite": "^2.1.5",
+		"vite": "^2.3.7",
 		"vue": "^3.0.5",
 		"vue-i18n": "^9.1.6",
 		"vue-router": "^4.0.6",
-		"vuedraggable": "^4.0.1"
+		"vuedraggable": "^4.0.3"
 	}
 }
