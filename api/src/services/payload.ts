@@ -9,7 +9,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
-import { isNativeGeometry, queryGeometryFromText } from '../utils/geometry';
+import { isNativeGeometry } from '../utils/geometry';
+import { getGeometryHelper } from '../database/helpers/geometry';
 import wkx from 'wkx';
 
 type Action = 'create' | 'read' | 'update';
@@ -231,12 +232,13 @@ export class PayloadService {
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		if (action == 'read') return payloads;
 
+		const helper = getGeometryHelper();
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
 				if (name in payload) {
-					payload[name] = queryGeometryFromText(this.knex, payload[name]);
+					payload[name] = helper.fromText(payload[name]);
 				}
 			}
 		}

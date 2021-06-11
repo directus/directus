@@ -108,6 +108,17 @@ export default function getLocalType(
 ): LocalTypeEntry {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
+	const special = field?.special;
+	if (special) {
+		if (special.includes('json')) return { type: 'json' };
+		if (special.includes('hash')) return { type: 'hash' };
+		if (special.includes('csv')) return { type: 'csv' };
+		if (special.includes('uuid')) return { type: 'uuid' };
+		if (type?.type == 'geometry' && !type.geometry_type) {
+			type.geometry_type = special[1] as any;
+		}
+	}
+
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return { type: 'decimal' };
@@ -116,18 +127,6 @@ export default function getLocalType(
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
 	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return { type: 'text' };
-	}
-
-	const special = field?.special;
-	if (special) {
-		console.log(column.data_type, type, special);
-		if (special.includes('json')) return { type: 'json' };
-		if (special.includes('hash')) return { type: 'hash' };
-		if (special.includes('csv')) return { type: 'csv' };
-		if (special.includes('uuid')) return { type: 'uuid' };
-		if (type.type == 'geometry' && !type.geometry_type) {
-			type.geometry_type = special[1] as any;
-		}
 	}
 
 	if (type) {

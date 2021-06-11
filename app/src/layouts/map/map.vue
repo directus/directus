@@ -19,25 +19,22 @@
 			</template>
 
 			<div class="field">
-				<v-checkbox v-model="fitDataBounds" :label="$t('layouts.map.fit_auto')" />
+				<v-checkbox v-model="fitViewToData" :label="$t('layouts.map.fit_view')" />
 			</div>
 			<div class="field">
-				<v-checkbox v-model="clusterActive" :label="$t('layouts.map.cluster')" />
+				<v-checkbox
+					:label="$t('layouts.map.fit_data')"
+					v-model="fitDataToView"
+					:disabled="geometryOptions.geometryFormat !== 'native'"
+				/>
 			</div>
-			<v-detail class="field" :label="$t('cluster_options')">
-				<div class="field">
-					<div class="type-label">{{ $t('layouts.map.cluster_radius') }}</div>
-					<v-input v-model="clusterRadius" type="number" :min="0" />
-				</div>
-				<div class="field">
-					<div class="type-label">{{ $t('layouts.map.cluster_minpoints') }}</div>
-					<v-input v-model="clusterMinPoints" type="number" :min="0" />
-				</div>
-				<div class="field">
-					<div class="type-label">{{ $t('layouts.map.cluster_maxzoom') }}</div>
-					<v-input v-model="clusterMaxZoom" type="number" :min="0" />
-				</div>
-			</v-detail>
+			<div class="field">
+				<v-checkbox
+					:label="$t('layouts.map.cluster')"
+					v-model="clusterData"
+					:disabled="geometryOptions.geometryType !== 'Point'"
+				/>
+			</div>
 			<div class="field">
 				<v-drawer
 					v-model="customLayerDrawerOpen"
@@ -78,7 +75,7 @@
 		<map-component
 			ref="map"
 			class="mapboxgl-map"
-			:class="{ loading, error: error || geojsonError || !geometryOptions || itemCount === 0 }"
+			:class="{ loading, error: error || geojsonError || !geometryOptions }"
 			:data="geojson"
 			:featureId="featureId"
 			:selection="_selection"
@@ -112,7 +109,6 @@
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<slot v-else-if="itemCount === 0 && (_searchQuery || activeFilterCount > 0)" name="no-results" />
-			<slot v-else-if="itemCount === 0" name="no-items" />
 		</transition>
 
 		<template v-if="loading || itemCount > 0">
@@ -169,15 +165,13 @@ type LayoutQuery = {
 };
 
 type LayoutOptions = {
-	cameraOptions?: CameraOptions;
+	cameraOptions?: CameraOptions & { bbox: any };
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	fitDataBounds?: boolean;
-	clusterActive?: boolean;
-	clusterRadius?: number;
-	clusterMaxZoom?: number;
-	clusterMinPoints?: number;
+	fitViewToData?: boolean;
+	fitDataToView?: boolean;
+	clusterData?: boolean;
 	animateOptions?: any;
 };
 
@@ -238,11 +232,9 @@ export default defineComponent({
 
 		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(_layoutOptions, 'customLayers', layers);
-		const fitDataBounds = syncOption(_layoutOptions, 'fitDataBounds', true);
-		const clusterActive = syncOption(_layoutOptions, 'clusterActive', false);
-		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
-		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
-		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
+		const fitViewToData = syncOption(_layoutOptions, 'fitViewToData', true);
+		const fitDataToView = syncOption(_layoutOptions, 'fitDataToView', true);
+		const clusterData = syncOption(_layoutOptions, 'clusterData', false);
 		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
 			get: () => _layoutOptions.value?.geometryFormat,
@@ -278,16 +270,27 @@ export default defineComponent({
 				return {
 					geometryField: field.field,
 					geometryFormat: 'native',
+					geometryType: field.geometry_type,
 				} as GeometryOptions;
 			}
 			if (field.meta && field.meta.interface == 'map' && field.meta.options) {
 				return {
 					geometryField: field.field,
 					geometryFormat: field.meta.options.geometryFormat,
+					geometryType: field.meta.options.geometryType,
 				} as GeometryOptions;
 			}
 			return undefined;
 		});
+
+		watch(
+			() => geometryOptions.value,
+			(options, previous) => {
+				if (options?.geometryFormat !== 'native') {
+					fitDataToView.value = false;
+				}
+			}
+		);
 
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
@@ -304,12 +307,45 @@ export default defineComponent({
 				.filter((e) => !!e) as string[];
 		});
 
+		const viewBoundsfilter = computed<Filter | undefined>(() => {
+			/* eslint-disable vue/no-side-effects-in-computed-properties */
+			if (geometryOptions.value?.geometryFormat !== 'native') {
+				return;
+			}
+			if (!geometryField.value || !cameraOptions.value || !fitDataToView.value) {
+				shouldUpdateCamera.value = true;
+				return;
+			}
+			shouldUpdateCamera.value = false;
+			const bbox = cameraOptions.value.bbox;
+			const bboxPolygon = [
+				[bbox[0], bbox[1]],
+				[bbox[2], bbox[1]],
+				[bbox[2], bbox[3]],
+				[bbox[0], bbox[3]],
+				[bbox[0], bbox[1]],
+			];
+			return {
+				field: geometryField.value,
+				operator: 'intersects' as any,
+				value: {
+					type: 'Polygon',
+					coordinates: [bboxPolygon],
+				} as any,
+			} as Filter;
+		});
+
+		const shouldUpdateCamera = ref(false);
+		const __filters = computed(() => {
+			return _filters.value.concat(viewBoundsfilter.value ?? []);
+		});
+
 		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
 			fields: queryFields,
-			filters: _filters,
+			filters: __filters,
 			searchQuery: _searchQuery,
 		});
 
@@ -317,7 +353,6 @@ export default defineComponent({
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref(false);
-		const geojsonDataChanged = ref(false);
 
 		watch(() => searchQuery.value, onQueryChange);
 		watch(() => collection.value, onQueryChange);
@@ -327,13 +362,13 @@ export default defineComponent({
 
 		watch(
 			() => geometryField.value,
-			() => (geojsonDataChanged.value = true)
+			() => (shouldUpdateCamera.value = true)
 		);
 
 		function onQueryChange() {
+			shouldUpdateCamera.value = true;
 			geojsonLoading.value = false;
 			page.value = 1;
-			geojsonDataChanged.value = true;
 		}
 
 		function updateGeojson() {
@@ -344,10 +379,10 @@ export default defineComponent({
 					geojsonError.value = null;
 					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
 					geojsonLoading.value = false;
-					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
+					if (!cameraOptions.value || (shouldUpdateCamera.value && fitViewToData.value)) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
-					geojsonDataChanged.value = true;
+					shouldUpdateCamera.value = true;
 				} catch (error) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
@@ -367,12 +402,8 @@ export default defineComponent({
 			},
 		});
 
-		updateSource();
+		watch(() => clusterData.value, updateSource, { immediate: true });
 		updateLayers();
-		watch(() => clusterActive.value, updateSource);
-		watch(() => clusterRadius.value, updateSource);
-		watch(() => clusterMinPoints.value, updateSource);
-		watch(() => clusterMaxZoom.value, updateSource);
 
 		function updateLayers() {
 			customLayerDrawerOpen.value = false;
@@ -386,10 +417,7 @@ export default defineComponent({
 
 		function updateSource() {
 			directusSource.value = merge({}, directusSource.value, {
-				cluster: clusterActive.value,
-				clusterRadius: clusterRadius.value,
-				clusterMinPoints: clusterMinPoints.value,
-				clusterMaxZoom: clusterMaxZoom.value,
+				cluster: clusterData.value,
 			});
 		}
 
@@ -443,11 +471,9 @@ export default defineComponent({
 			geometryFormat,
 			geometryField,
 			cameraOptions,
-			fitDataBounds,
-			clusterActive,
-			clusterRadius,
-			clusterMaxZoom,
-			clusterMinPoints,
+			fitViewToData,
+			fitDataToView,
+			clusterData,
 			updateSelection,
 			items,
 			loading,
@@ -532,11 +558,10 @@ export default defineComponent({
 	transition: opacity 0.2s;
 }
 .layout-map::v-deep .mapboxgl-map.loading .mapboxgl-canvas-container {
-	opacity: 0.8;
+	opacity: 0.9;
 }
 .layout-map::v-deep .mapboxgl-map.error .mapboxgl-canvas-container {
-	opacity: 0.15;
-	pointer-events: none;
+	opacity: 0.4;
 }
 .center {
 	position: absolute;

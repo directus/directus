@@ -4,7 +4,7 @@ import { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
 import { types, Field } from '../../types';
-import { createGeometryColumn } from '../../utils/geometry';
+import { getGeometryHelper } from '../helpers/geometry';
 
 type TableSeed = {
 	table: string;
@@ -55,7 +55,8 @@ export default async function runSeed(database: Knex): Promise<void> {
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
 				} else if (columnInfo.type === 'geometry') {
-					column = createGeometryColumn(database, tableBuilder, { field: columnName } as Field);
+					const helper = getGeometryHelper();
+					column = helper.createColumn(tableBuilder, { field: columnName } as Field);
 				} else {
 					column = tableBuilder[columnInfo.type!](columnName);
 				}

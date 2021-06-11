@@ -16,9 +16,9 @@ import { Field, RawField } from '../types/field';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
-import { createGeometryColumn } from '../utils/geometry';
 import { isEqual } from 'lodash';
 import { RelationsService } from './relations';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 export class FieldsService {
 	knex: Knex;
@@ -424,7 +424,8 @@ export class FieldsService {
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
 		} else if (field.type === 'geometry') {
-			column = createGeometryColumn(this.knex, table, field);
+			const helper = getGeometryHelper();
+			column = helper.createColumn(table, field);
 		} else {
 			column = table[field.type](field.field);
 		}

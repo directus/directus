@@ -5,6 +5,7 @@ import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Filter, Query, Relation, SchemaOverview } from '../types';
 import { getRelationType } from './get-relation-type';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -86,6 +87,7 @@ export default function applyQuery(
  *   )
  * ```
  */
+
 export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
@@ -386,6 +388,11 @@ export function applyFilter(
 				if (typeof value === 'string') value = value.split(',');
 
 				dbQuery[logical].whereNotBetween(key, value);
+			}
+
+			if (operator == '_intersects') {
+				const helper = getGeometryHelper();
+				dbQuery[logical].whereRaw(helper.intersects(key, compareValue));
 			}
 		}
 

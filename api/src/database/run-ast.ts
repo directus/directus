@@ -6,7 +6,8 @@ import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
 import { toArray } from '../utils/to-array';
 import getDatabase from './index';
-import { isNativeGeometry, queryGeometryAsText } from '../utils/geometry';
+import { isNativeGeometry } from '../utils/geometry';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 type RunASTOptions = {
 	/**
@@ -145,10 +146,11 @@ async function parseCurrentLevel(
 }
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
+	const helper = getGeometryHelper();
 	return function (column: string): Knex.Raw<string> {
 		const field = schema.collections[table].fields[column];
 		if (isNativeGeometry(field)) {
-			return queryGeometryAsText(knex, table, column);
+			return helper.asText(table, column);
 		}
 		return knex.raw('??.??', [table, column]);
 	};

@@ -11,7 +11,6 @@ import {
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
-	FitBoundsOptions,
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
@@ -43,8 +42,8 @@ export default defineComponent({
 			default: () => [],
 		},
 		camera: {
-			type: Object as PropType<CameraOptions>,
-			default: () => ({}),
+			type: Object as PropType<CameraOptions & { bbox: any }>,
+			default: () => ({} as any),
 		},
 		bounds: {
 			type: Array as unknown as PropType<GeoJSON.BBox>,
@@ -76,8 +75,10 @@ export default defineComponent({
 		const attributionControl = new AttributionControl({ compact: true });
 		const navigationControl = new NavigationControl();
 		const geolocateControl = new GeolocateControl();
-		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
 		const basemapSelectControl = new BasemapSelectControl();
+		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
+			emit('moveend', null);
+		});
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
@@ -111,7 +112,7 @@ export default defineComponent({
 			map.addControl(boxSelectControl, 'top-left');
 			map.addControl(attributionControl, 'top-right');
 			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey }), 'top-right');
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
 			}
 
 			map.on('load', () => {
@@ -131,12 +132,16 @@ export default defineComponent({
 					const ids = event.features?.map((f) => f.id);
 					emit('select', ids);
 				});
-				map.on('moveend', () => {
+				map.on('moveend', (event) => {
+					if (!event.originalEvent) {
+						return;
+					}
 					emit('moveend', {
 						center: map.getCenter(),
 						zoom: map.getZoom(),
 						bearing: map.getBearing(),
 						pitch: map.getPitch(),
+						bbox: map.getBounds().toArray().flat(),
 					});
 				});
 				startWatchers();
@@ -376,7 +381,7 @@ export default defineComponent({
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-normal-alt);
+	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 }
 
@@ -387,7 +392,7 @@ export default defineComponent({
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
 	color: var(--v-list-item-color-active);
-	background-color: var(--background-normal);
+	background-color: var(--background-normal-alt);
 }
 .mapboxgl-ctrl-geocoder--button {
 	background: var(--background-normal);

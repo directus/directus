@@ -976,7 +976,7 @@ interfaces:
     default_view: Vue par défault
     invalid_options: Options invalides
     invalid_format: Format invalide ( {format} )
-    unexpected_geometry: Attendu: {expected}, reçu {got}.
+    unexpected_geometry: Attendu {expected}, reçu {got}.
     fit_bounds: Ajuster la vue aux donnnées
     native: Natif
   presentation-notice:
@@ -1179,6 +1179,7 @@ layouts:
     cluster_radius: Rayon de partitionnement
     cluster_minpoints: Taille minimum de partitionnement
     cluster_maxzoom: Zoom maximum du partitionnement
-    fit_auto: Ajuster la vue aux données
+    fit_view: Ajuster la vue aux données
+    fit_data: Filter les données selon la position
     field: Geometrie
     invalid_geometry: Geometrie invalide
