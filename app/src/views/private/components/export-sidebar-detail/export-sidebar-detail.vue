@@ -8,11 +8,11 @@
 			</div>
 			<div class="field full" v-show="isXliff() && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ t('translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
+				<translation-field-select v-on:select="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full" v-if="isXliff() && translationsField">
 				<p class="type-label">{{ t('language') }}</p>
-				<language-select @input="onSelectLanguage" :collection="collection" :field="translationsField" />
+				<language-select v-on:select="onSelectLanguage" :collection="collection" :field="translationsField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">

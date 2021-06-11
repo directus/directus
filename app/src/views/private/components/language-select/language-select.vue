@@ -1,5 +1,12 @@
 <template>
-	<v-select item-text="text" item-value="value" v-model="language" :items="items" :disabled="disabled" />
+	<v-select
+		@update:model-value="$emit('select', $event)"
+		item-text="text"
+		item-value="value"
+		v-model="language"
+		:items="items"
+		:disabled="disabled"
+	/>
 </template>
 
 <script lang="ts">
@@ -38,7 +45,7 @@ export default defineComponent({
 			const [item] = this.items;
 			this.language = item?.value || null;
 			if (this.language !== language) {
-				this.$emit('input', this.language);
+				this.$emit('select', this.language);
 			}
 		},
 	},

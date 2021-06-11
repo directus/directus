@@ -1,5 +1,12 @@
 <template>
-	<v-select item-text="text" item-value="value" v-model="field" :items="items" :disabled="disabled">
+	<v-select
+		@update:model-value="$emit('select', $event)"
+		item-text="text"
+		item-value="value"
+		v-model="field"
+		:items="items"
+		:disabled="disabled"
+	>
 		<template #selected-option="{ text }">{{ text }}</template>
 	</v-select>
 </template>
@@ -29,7 +36,7 @@ export default defineComponent({
 			const [item] = this.items;
 			this.field = item?.value || null;
 			if (this.field !== field) {
-				this.$emit('input', this.field);
+				this.$emit('select', this.field);
 			}
 		},
 	},

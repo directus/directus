@@ -1,6 +1,6 @@
 <template>
 	<div class="file">
-		<v-input readonly :placeholder="t('no_file_selected')" :disabled="disabled" :value="file && file.name">
+		<v-input readonly :placeholder="t('no_file_selected')" :disabled="disabled" v-model="fileName">
 			<template #append>
 				<template v-if="file">
 					<v-icon class="deselect" name="close" @click="clearSelection()" v-tooltip="t('deselect')" />
@@ -31,21 +31,26 @@ export default defineComponent({
 		fileSelected(event: Event) {
 			const files = (event.target as HTMLInputElement).files;
 			this.file = files && files?.length > 0 ? files?.item(0) : null;
-			this.$emit('change', this.file);
+			if (this.file) {
+				this.fileName = this.file.name;
+			}
+			this.$emit('select', this.file);
 		},
 		clearSelection() {
 			this.file = null;
+			this.fileName = null;
 			(this.$refs.import_file as HTMLInputElement).value = '';
-			this.$emit('change', this.file);
+			this.$emit('select', this.file);
 		},
 	},
 	mounted() {
 		this.$emit('load', { clear: this.clearSelection });
 	},
-	setup(props) {
+	setup() {
 		const { t } = useI18n();
 		const file = ref<File | null>(null);
-		return { t, file };
+		const fileName = ref<string | null>(null);
+		return { t, file, fileName };
 	},
 });
 </script>

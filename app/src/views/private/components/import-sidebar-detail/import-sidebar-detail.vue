@@ -7,16 +7,16 @@
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ t('upload_file') }}</p>
-				<file-select @change="onSelectFile" @load="onFileLoad" accept=".xlf, application/xliff+xml" />
+				<file-select v-on:select="onSelectFile" v-on:load="onFileLoad" accept=".xlf, application/xliff+xml" />
 			</div>
 			<div class="field full" v-show="hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ t('target_translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
+				<translation-field-select v-on:select="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ t('target_language') }}</p>
 				<language-select
-					@input="onSelectLanguage"
+					v-on:select="onSelectLanguage"
 					v-if="!useFileLanguage && translationsField"
 					:collection="collection"
 					:field="translationsField"
@@ -158,12 +158,12 @@ export default defineComponent({
 				const result = await api.post(`/items/${languageRelation.meta?.many_collection}/import`, formData);
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
-				const importedAmount = data ? data.length : 0;
-				const plural = importedAmount > 0 ? (importedAmount > 1 ? 2 : 1) : 0;
+				const amount = data ? data.length : 0;
+				const plural = amount > 0 ? (amount > 1 ? 2 : 1) : 0;
 				clearFile();
 				emit('refresh');
 				notify({
-					title: t('import_successfull', plural, importedAmount),
+					title: t('import_successfull', { amount }, plural),
 					type: 'success',
 				});
 			} catch (error) {

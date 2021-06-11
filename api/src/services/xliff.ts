@@ -1,7 +1,7 @@
 import xliff from 'xliff';
 import { omit, groupBy } from 'lodash';
 import { InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, SchemaOverview, Relation } from '../types';
+import { AbstractServiceOptions, Accountability, SchemaOverview, Relation, PrimaryKey } from '../types';
 import { ItemsService } from './items';
 
 export enum XliffSupportedFormats {
@@ -33,7 +33,7 @@ export class XliffService {
 		parentKeyFieldName: string,
 		languageKeyFieldName: string | null,
 		content: string
-	) {
+	): Promise<PrimaryKey[]> {
 		// check if passed file is not empty
 		if (!content || content.length === 0) {
 			throw new InvalidPayloadException(`There is no content to import.`);
@@ -163,7 +163,7 @@ export class XliffService {
 				[parentKeyFieldName]: { _in: parentKeys },
 				[languageKeyFieldName]: { _eq: language },
 			},
-			limit: 1,
+			limit: -1,
 		});
 		const itemsToUpdate = [];
 		const itemsToAdd = [];
