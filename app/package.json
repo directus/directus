@@ -86,6 +86,6 @@
 		"vue": "^3.0.5",
 		"vue-i18n": "^9.1.6",
 		"vue-router": "^4.0.6",
-		"vuedraggable": "^4.0.1"
+		"vuedraggable": "^4.0.3"
 	}
 }
