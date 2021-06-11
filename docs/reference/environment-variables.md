@@ -310,14 +310,15 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### SMTP (`smtp`)
 
-| Variable              | Description      | Default Value |
-| --------------------- | ---------------- | ------------- |
-| `EMAIL_SMTP_HOST`     | SMTP Host        | --            |
-| `EMAIL_SMTP_PORT`     | SMTP Port        | --            |
-| `EMAIL_SMTP_USER`     | SMTP User        | --            |
-| `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
-| `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
-| `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
+| Variable                | Description      | Default Value |
+| ----------------------- | ---------------- | ------------- |
+| `EMAIL_SMTP_HOST`       | SMTP Host        | --            |
+| `EMAIL_SMTP_PORT`       | SMTP Port        | --            |
+| `EMAIL_SMTP_USER`       | SMTP User        | --            |
+| `EMAIL_SMTP_PASSWORD`   | SMTP Password    | --            |
+| `EMAIL_SMTP_POOL`       | Use SMTP pooling | --            |
+| `EMAIL_SMTP_SECURE`     | Enable TLS       | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS       | --            |
 
 ### Mailgun (`mailgun`)
 

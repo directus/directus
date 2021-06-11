@@ -18,7 +18,7 @@ export default defineConfig({
 			'@': path.resolve(__dirname, '/src'),
 		},
 	},
-	base: '/admin/',
+	base: process.env.NODE_ENV === 'development' ? '/admin/' : '',
 	server: {
 		port: 8080,
 		proxy: {
