@@ -181,14 +181,18 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			const response = await api.get(endpoint.value, {
-				params: {
-					limit: limit.value,
-					fields: fieldsToFetch,
-					sort: sort.value,
-					page: page.value,
-					search: searchQuery.value,
-					...filtersToQuery(filters.value),
+			const response = await api.request({
+				url: endpoint.value,
+				method: 'search',
+				data: {
+					query: {
+						limit: limit.value,
+						fields: fieldsToFetch,
+						sort: sort.value,
+						page: page.value,
+						search: searchQuery.value,
+						...filtersToQuery(filters.value),
+					},
 				},
 			});
 
@@ -231,13 +235,17 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 	async function getItemCount() {
 		if (!primaryKeyField.value || !endpoint.value) return;
 
-		const response = await api.get(endpoint.value, {
-			params: {
-				limit: 0,
-				fields: primaryKeyField.value.field,
-				meta: ['filter_count', 'total_count'],
-				search: searchQuery.value,
-				...filtersToQuery(filters.value),
+		const response = await api.request({
+			url: endpoint.value,
+			method: 'search',
+			data: {
+				query: {
+					limit: 0,
+					fields: primaryKeyField.value.field,
+					meta: ['filter_count', 'total_count'],
+					search: searchQuery.value,
+					...filtersToQuery(filters.value),
+				},
 			},
 		});
 
