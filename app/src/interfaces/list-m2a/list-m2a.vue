@@ -431,19 +431,23 @@ export default defineComponent({
 					// If there's junction row IDs, we'll have to fetch the related collection / key from them in order to fetch
 					// the correct data from those related collections
 					if (junctionRowsToInspect.length > 0) {
-						const junctionInfoResponse = await api.get(`/items/${o2mRelation.value.collection}`, {
-							params: {
-								filter: {
-									[o2mRelationPrimaryKeyField.value]: {
-										_in: junctionRowsToInspect,
+						const junctionInfoResponse = await api.request({
+							url: `/items/${o2mRelation.value.collection}`,
+							method: 'search',
+							data: {
+								query: {
+									fields: [
+										o2mRelationPrimaryKeyField.value,
+										anyRelation.value.field,
+										anyRelation.value.meta!.one_collection_field!,
+										o2mRelation.value.meta?.sort_field,
+									],
+									filter: {
+										[o2mRelationPrimaryKeyField.value]: {
+											_in: junctionRowsToInspect,
+										},
 									},
 								},
-								fields: [
-									o2mRelationPrimaryKeyField.value,
-									anyRelation.value.field,
-									anyRelation.value.meta!.one_collection_field!,
-									o2mRelation.value.meta?.sort_field,
-								],
 							},
 						});
 
@@ -464,7 +468,7 @@ export default defineComponent({
 					// Fetch all related items from their individual endpoints using the fields from their templates
 					const responses = await Promise.all(
 						Object.entries(itemsToFetchPerCollection).map(([collection, relatedKeys]) => {
-							// Don't attempt fetching anything if there's no keys to fetch
+							// Don't attempt fetching anything if there are no keys to fetch
 							if (relatedKeys.length === 0) return Promise.resolve({ data: { data: [] } } as any);
 
 							const fields = getFieldsFromTemplate(templates.value[collection]);
@@ -472,14 +476,18 @@ export default defineComponent({
 							// Make sure to always fetch the primary key, so we can match that with the value
 							if (fields.includes(primaryKeys.value[collection]) === false) fields.push(primaryKeys.value[collection]);
 
-							return api.get(getEndpoint(collection), {
-								params: {
-									filter: {
-										[primaryKeys.value[collection]]: {
-											_in: relatedKeys,
+							return api.request({
+								url: getEndpoint(collection),
+								method: 'search',
+								data: {
+									query: {
+										fields,
+										filter: {
+											[primaryKeys.value[collection]]: {
+												_in: relatedKeys,
+											},
 										},
 									},
-									fields,
 								},
 							});
 						})
