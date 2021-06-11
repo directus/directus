@@ -80,6 +80,8 @@ export default defineComponent({
 							return emitAll(newValue, { added, removed });
 						case 'branch':
 							return emitBranch(newValue, { added, removed });
+						case 'leaf':
+							return emitLeaf(newValue, { added, removed });
 						default:
 							return emitValue(newValue);
 					}
@@ -92,6 +94,13 @@ export default defineComponent({
 		const groupCheckedStateOverride = computed(() => {
 			if (props.checked !== null) return props.checked;
 			if (props.valueCombining === 'all') return null;
+
+			if (props.valueCombining === 'leaf') {
+				const leafChildrenRecursive = getRecursiveChildrenValues('leaf');
+				return leafChildrenRecursive.every((childVal) => props.modelValue.includes(childVal));
+			}
+
+			return null;
 		});
 
 		const groupIndeterminateState = computed(() => {
@@ -103,6 +112,16 @@ export default defineComponent({
 					props.modelValue.includes(props.value) === false
 				);
 			}
+
+			if (props.valueCombining === 'leaf') {
+				const leafChildrenRecursive = getRecursiveChildrenValues('leaf');
+				return (
+					leafChildrenRecursive.some((childVal) => props.modelValue.includes(childVal)) &&
+					leafChildrenRecursive.every((childVal) => props.modelValue.includes(childVal)) === false
+				);
+			}
+
+			return null;
 		});
 
 		const childrenCheckedStateOverride = computed(() => {
@@ -112,6 +131,8 @@ export default defineComponent({
 			if (props.valueCombining === 'branch') {
 				if (props.modelValue.includes(props.value)) return true;
 			}
+
+			return null;
 		});
 
 		return { groupCheckedStateOverride, childrenCheckedStateOverride, treeValue, groupIndeterminateState };
@@ -214,6 +235,30 @@ export default defineComponent({
 				];
 
 				return emitValue(newValue);
+			}
+
+			return emitValue(rawValue);
+		}
+
+		function emitLeaf(rawValue: (string | number)[], { added, removed }: Delta) {
+			const allChildrenRecursive = getRecursiveChildrenValues('all');
+			const leafChildrenRecursive = getRecursiveChildrenValues('leaf');
+
+			// When enabling the group level
+			if (added?.includes(props.value)) {
+				if (leafChildrenRecursive.every((childVal) => rawValue.includes(childVal))) {
+					const newValue = rawValue.filter(
+						(val) => val !== props.value && allChildrenRecursive.includes(val) === false
+					);
+					return emitValue(newValue);
+				} else {
+					const newValue = [
+						...rawValue.filter((val) => val !== props.value && allChildrenRecursive.includes(val) === false),
+						...leafChildrenRecursive,
+					];
+
+					return emitValue(newValue);
+				}
 			}
 
 			return emitValue(rawValue);
