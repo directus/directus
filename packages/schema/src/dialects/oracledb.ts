@@ -2,7 +2,6 @@ import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
-import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
@@ -32,18 +31,6 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 
 	async overview(): Promise<SchemaOverview> {
 		type RawColumn = {
-			TABLE_NAME: string;
-			COLUMN_NAME: string;
-			DEFAULT_VALUE: string;
-			IS_NULLABLE: string;
-			DATA_TYPE: string;
-			NUMERIC_PRECISION: number | null;
-			NUMERIC_SCALE: number | null;
-			COLUMN_KEY: string;
-			MAX_LENGTH: number | null;
-		};
-
-		type RawColumnLowercase = {
 			table_name: string;
 			column_name: string;
 			default_value: string;
@@ -66,31 +53,27 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
 			)
 			SELECT
-				"c"."TABLE_NAME",
-				"c"."COLUMN_NAME",
-				"c"."DATA_DEFAULT" AS DEFAULT_VALUE,
-				"c"."NULLABLE" AS IS_NULLABLE,
-				"c"."DATA_TYPE",
-				"c"."DATA_PRECISION" AS NUMERIC_PRECISION,
-				"c"."DATA_SCALE" AS NUMERIC_SCALE,
-				"ct"."CONSTRAINT_TYPE" AS COLUMN_KEY,
-				"c"."CHAR_LENGTH" as MAX_LENGTH
+				"c"."TABLE_NAME" "table_name",
+				"c"."COLUMN_NAME" "column_name",
+				"c"."DATA_DEFAULT" "default_value",
+				"c"."NULLABLE" "is_nullable",
+				"c"."DATA_TYPE" "data_type",
+				"c"."DATA_PRECISION" "numeric_precision",
+				"c"."DATA_SCALE" "numeric_scale",
+				"ct"."CONSTRAINT_TYPE" "column_key",
+				"c"."CHAR_LENGTH" "max_length"
 			FROM "USER_TAB_COLUMNS" "c"
 			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
 				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 		`);
 
-		const columnsLowercase: RawColumnLowercase[] = columns.map(
-			(column) => mapKeys(column, (value, key) => key.toLowerCase()) as RawColumnLowercase
-		);
-
 		const overview: SchemaOverview = {};
 
-		for (const column of columnsLowercase) {
+		for (const column of columns) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
 					primary:
-						columnsLowercase.find((nested: { column_key: string; table_name: string }) => {
+						columns.find((nested: { column_key: string; table_name: string }) => {
 							return nested.table_name === column.table_name && nested.column_key === 'P';
 						})?.column_name || 'id',
 					columns: {},
