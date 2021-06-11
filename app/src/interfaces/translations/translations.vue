@@ -285,12 +285,16 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${collection}`, {
-						params: {
-							fields,
-							filter: {
-								[translationsPrimaryKeyField.value]: {
-									_in: existingPrimaryKeys.value,
+					const response = await api.request({
+						url: `/items/${collection}`,
+						method: 'search',
+						data: {
+							query: {
+								fields,
+								filter: {
+									[translationsPrimaryKeyField.value]: {
+										_in: existingPrimaryKeys.value,
+									},
 								},
 							},
 						},
@@ -389,12 +393,16 @@ export default defineComponent({
 						fields.push(languagesRelation.value.field);
 					}
 
-					const existing = await api.get(`/items/${translationsCollection.value}`, {
-						params: {
-							fields,
-							filter: {
-								[translationsRelation.value.field]: {
-									_eq: props.primaryKey,
+					const existing = await api.request({
+						url: `/items/${translationsCollection.value}`,
+						method: 'search',
+						data: {
+							query: {
+								fields,
+								filter: {
+									[translationsRelation.value.field]: {
+										_eq: props.primaryKey,
+									},
 								},
 							},
 						},
