@@ -66,11 +66,17 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		checked: {
+			type: Boolean,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const internalValue = useSync(props, 'value', emit);
 
 		const isChecked = computed<boolean>(() => {
+			if (props.checked !== null) return props.checked;
+
 			if (props.modelValue instanceof Array) {
 				return props.modelValue.includes(props.value);
 			}
@@ -93,7 +99,7 @@ export default defineComponent({
 			if (props.modelValue instanceof Array) {
 				const newValue = [...props.modelValue];
 
-				if (isChecked.value === false) {
+				if (props.modelValue.includes(props.value) === false) {
 					newValue.push(props.value);
 				} else {
 					newValue.splice(newValue.indexOf(props.value), 1);
@@ -101,7 +107,7 @@ export default defineComponent({
 
 				emit('update:modelValue', newValue);
 			} else {
-				emit('update:modelValue', !isChecked.value);
+				emit('update:modelValue', !props.modelValue);
 			}
 		}
 	},
