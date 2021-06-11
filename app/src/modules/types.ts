@@ -1,16 +1,16 @@
 import { Permission, User } from '@/types';
-import { Ref } from '@vue/composition-api';
-import { RouteConfig } from 'vue-router';
+import { Ref } from 'vue';
+import { RouteRecordRaw } from 'vue-router';
 
 export interface ModuleConfig {
 	id: string;
 	name: string;
 	hidden?: boolean | Ref<boolean>;
 	icon: string;
-	routes?: RouteConfig[];
+	routes?: RouteRecordRaw[];
 	link?: string;
 	color?: string;
-	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;
+	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;
 	order?: number;
 	persistent?: boolean;
 }

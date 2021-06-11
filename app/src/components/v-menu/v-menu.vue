@@ -18,53 +18,54 @@
 			/>
 		</div>
 
-		<portal to="menu-outlet">
-			<div
-				v-if="isActive"
-				class="v-menu-popper"
-				:key="id"
-				:id="id"
-				:class="{ active: isActive, attached }"
-				:data-placement="popperPlacement"
-				:style="styles"
-				v-click-outside="{
-					handler: deactivate,
-					middleware: onClickOutsideMiddleware,
-					disabled: isActive === false || closeOnClick === false,
-					events: ['click'],
-				}"
-			>
-				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-				<div class="v-menu-content" @click.stop="onContentClick">
-					<slot
-						:active="isActive"
-						v-bind="{
-							toggle: toggle,
-							active: isActive,
-							activate: activate,
-							deactivate: deactivate,
-						}"
-					/>
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					class="v-menu-popper"
+					:key="id"
+					:id="id"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: isActive === false || closeOnClick === false,
+						events: ['click'],
+					}"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div class="v-menu-content" @click.stop="onContentClick">
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
 				</div>
-			</div>
-		</portal>
+			</transition-bounce>
+		</teleport>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, PropType, computed, watch, nextTick } from 'vue';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
-import Vue from 'vue';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
 		placement: {
 			type: String as PropType<Placement>,
 			default: 'bottom',
 		},
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -118,7 +119,13 @@ export default defineComponent({
 		const id = computed(() => nanoid());
 		const popper = ref<HTMLElement | null>(null);
 
-		const { start, stop, styles, arrowStyles, placement: popperPlacement } = usePopper(
+		const {
+			start,
+			stop,
+			styles,
+			arrowStyles,
+			placement: popperPlacement,
+		} = usePopper(
 			reference,
 			popper,
 			computed(() => ({
@@ -132,9 +139,9 @@ export default defineComponent({
 
 		watch(isActive, (newActive) => {
 			if (newActive === true) {
-				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+				reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
 
-				Vue.nextTick(() => {
+				nextTick(() => {
 					popper.value = document.getElementById(id.value);
 				});
 			}
@@ -169,15 +176,15 @@ export default defineComponent({
 
 			const isActive = computed<boolean>({
 				get() {
-					if (props.value !== undefined) {
-						return props.value;
+					if (props.modelValue !== undefined) {
+						return props.modelValue;
 					}
 
 					return localIsActive.value;
 				},
 				async set(newActive) {
 					localIsActive.value = newActive;
-					emit('input', newActive);
+					emit('update:modelValue', newActive);
 				},
 			});
 

@@ -1,0 +1,28 @@
+<template>
+	<filter-sidebar-detail v-model="props.filters" :collection="props.collection" :loading="loading" />
+	<export-sidebar-detail
+		:filters="filtersWithCalendarView"
+		:search-query="props.searchQuery"
+		:collection="props.collection"
+	/>
+	<import-sidebar-detail :collection="props.collection" v-on:refresh="refresh" />
+</template>
+
+<script lang="ts">
+import { defineComponent, toRefs } from 'vue';
+
+import { useLayoutState } from '@/composables/use-layout';
+
+export default defineComponent({
+	setup() {
+		const layoutState = useLayoutState();
+		const { props, loading, filtersWithCalendarView } = toRefs(layoutState.value);
+
+		return { refresh, props, loading, filtersWithCalendarView };
+
+		function refresh() {
+			layoutState.value.refresh();
+		}
+	},
+});
+</script>

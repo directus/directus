@@ -1,5 +1,5 @@
 <template>
-	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
+	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
 		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
@@ -13,7 +13,7 @@
 		</template>
 
 		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -34,40 +34,43 @@
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
 					:primary-key="relatedPrimaryKey"
-					:edits="_edits[junctionField]"
+					:model-value="internalEdits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
 					autofocus
-					@input="setJunctionEdits"
+					@update:model-value="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
 			</template>
 
-			<v-form :loading="loading" :initial-values="item" :primary-key="primaryKey" :fields="fields" v-model="_edits" />
+			<v-form
+				:loading="loading"
+				:initial-values="item"
+				:primary-key="primaryKey"
+				:fields="fields"
+				v-model="internalEdits"
+			/>
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, watch, toRefs } from 'vue';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
 
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
+	emits: ['update:active', 'input'],
 	components: { FilePreview },
-
-	model: {
-		prop: 'edits',
-	},
 	props: {
 		active: {
 			type: Boolean,
@@ -105,17 +108,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t, te } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const { _active } = useActiveState();
-		const {
-			junctionFieldInfo,
-			junctionRelatedCollection,
-			junctionRelatedCollectionInfo,
-			setJunctionEdits,
-		} = useJunction();
-		const { _edits, loading, item } = useItem();
+		const { internalActive } = useActiveState();
+		const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } =
+			useJunction();
+		const { internalEdits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
 		const { collection } = toRefs(props);
@@ -126,15 +127,19 @@ export default defineComponent({
 			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
 			const isNew = props.primaryKey === '+';
 
-			if (i18n.te(`collection_names_singular.${collection.collection}`)) {
+			if (te(`collection_names_singular.${collection.collection}`)) {
 				return isNew
-					? i18n.t('creating_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) })
-					: i18n.t('editing_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) });
+					? t('creating_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
+					  })
+					: t('editing_unit', {
+							unit: t(`collection_names_singular.${collection.collection}`),
+					  });
 			}
 
 			return isNew
-				? i18n.t('creating_in', { collection: collection.name })
-				: i18n.t('editing_in', { collection: collection.name });
+				? t('creating_in', { collection: collection.name })
+				: t('editing_in', { collection: collection.name });
 		});
 
 		const showDivider = computed(() => {
@@ -183,8 +188,9 @@ export default defineComponent({
 		const { file, isDirectusFiles } = useFile();
 
 		return {
-			_active,
-			_edits,
+			t,
+			internalActive,
+			internalEdits,
 			loading,
 			item,
 			save,
@@ -226,7 +232,7 @@ export default defineComponent({
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -236,13 +242,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useItem() {
 			const localEdits = ref<Record<string, any>>({});
 
-			const _edits = computed<Record<string, any>>({
+			const internalEdits = computed<Record<string, any>>({
 				get() {
 					if (props.edits !== undefined) {
 						return {
@@ -276,7 +282,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { _edits, loading, item, fetchItem };
+			return { internalEdits, loading, item, fetchItem };
 
 			async function fetchItem() {
 				loading.value = true;
@@ -363,8 +369,8 @@ export default defineComponent({
 			function setJunctionEdits(edits: any) {
 				if (!props.junctionField) return;
 
-				_edits.value = {
-					..._edits.value,
+				internalEdits.value = {
+					...internalEdits.value,
 					[props.junctionField]: edits,
 				};
 			}
@@ -374,14 +380,14 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _edits.value);
-				_active.value = false;
-				_edits.value = {};
+				emit('input', internalEdits.value);
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 
 			function cancel() {
-				_active.value = false;
-				_edits.value = {};
+				internalActive.value = false;
+				internalEdits.value = {};
 			}
 		}
 	},

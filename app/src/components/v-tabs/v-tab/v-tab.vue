@@ -1,5 +1,5 @@
 <template>
-	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" @click="onClick">
+	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
 		<slot v-bind="{ active, toggle }" />
 	</v-list-item>
 	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from '@vue/composition-api';
+import { defineComponent, inject, ref } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({

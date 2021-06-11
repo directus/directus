@@ -64,11 +64,11 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 
 ## Indeterminate
 
-The indeterminate state can be set with the `indeterminate` prop. We recommend using the `.sync` modifier with the
+The indeterminate state can be set with the `indeterminate` prop. We recommend using the `v-model` directive with the
 indeterminate prop, so the checkbox can set change it too:
 
 ```html
-<v-checkbox :indeterminate.sync="indeterminate">
+<v-checkbox v-model:indeterminate="indeterminate">
 	<script>
 		export default {
 			data() {

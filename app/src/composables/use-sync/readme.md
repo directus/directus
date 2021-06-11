@@ -14,7 +14,7 @@ Small utility composition that allows you to easily setup the two-way binding wi
 ```ts
 // Before
 
-const _options = computed({
+const internalOptions = computed({
 	get() {
 		return props.options;
 	},
@@ -27,5 +27,5 @@ const _options = computed({
 ```ts
 // after
 
-const _options = useSync(props, 'options', emit);
+const internalOptions = useSync(props, 'options', emit);
 ```

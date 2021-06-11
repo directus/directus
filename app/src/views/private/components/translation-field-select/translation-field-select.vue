@@ -1,6 +1,6 @@
 <template>
 	<v-select
-		@input="$listeners.input"
+		@update:model-value="$emit('select', $event)"
 		item-text="text"
 		item-value="value"
 		v-model="field"
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { useFieldsStore } from '@/stores/';
 
 export default defineComponent({
@@ -36,27 +36,27 @@ export default defineComponent({
 			const [item] = this.items;
 			this.field = item?.value || null;
 			if (this.field !== field) {
-				this.$emit('input', this.field);
+				this.$emit('select', this.field);
 			}
 		},
 	},
 	setup(props) {
-		const _collection = ref<string | null>(props.collection);
+		const currentCollection = ref<string | null>(props.collection);
 		const field = ref<any>(null);
 		const items = ref<any[]>([]);
 		const { fields } = useFields();
-		return { field, fields, items, _collection };
+		return { field, fields, items, currentCollection };
 
 		function useFields() {
 			const fields = ref<any[]>([]);
-			watch(_collection, fetchFields, { immediate: true });
+			watch(currentCollection, fetchFields, { immediate: true });
 			return { fields };
 
 			async function fetchFields() {
-				if (!_collection.value) return;
+				if (!currentCollection.value) return;
 				const fieldsStore = useFieldsStore();
 				fields.value = await fieldsStore
-					.getFieldsForCollectionAlphabetical(_collection.value)
+					.getFieldsForCollectionAlphabetical(currentCollection.value)
 					.filter((field: any) => field.type === 'translations');
 			}
 		}

@@ -2,29 +2,31 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('permissions_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('permissions_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public'),
 				})
 			}}
 		</v-notice>
 
-		<interface-input-code v-model="permissions" language="json" type="json" />
+		<interface-input-code :value="permissions" @input="permissions = $event" language="json" type="json" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
-			<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
 			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
+	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -40,21 +42,23 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const { t } = useI18n();
+
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const permissions = computed({
 			get() {
-				return _permission.value.permissions;
+				return internalPermission.value.permissions;
 			},
 			set(newPermissions: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
+				internalPermission.value = {
+					...internalPermission.value,
 					permissions: newPermissions,
 				};
 			},
 		});
 
-		return { permissions };
+		return { t, permissions };
 	},
 });
 </script>

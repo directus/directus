@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useNotificationsStore } from '@/stores/';
 import NotificationItem from '../notification-item';
 
@@ -27,7 +27,7 @@ export default defineComponent({
 	},
 	setup() {
 		const notificationsStore = useNotificationsStore();
-		const queue = toRefs(notificationsStore.state).queue;
+		const queue = toRefs(notificationsStore).queue;
 
 		return { queue };
 	},
@@ -35,8 +35,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .notifications-group {
 	position: fixed;
 	top: 0;
@@ -47,11 +45,11 @@ export default defineComponent({
 	direction: rtl;
 
 	> *,
-	::v-deep > * {
+	> :deep(*) {
 		direction: ltr;
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		top: auto;
 		right: 12px;
 		bottom: 76px;
@@ -72,7 +70,7 @@ export default defineComponent({
 	position: absolute;
 }
 
-.slide-fade-enter {
+.slide-fade-enter-from {
 	transform: translateX(50px) scaleY(0) scaleX(0);
 	transform-origin: right bottom;
 	opacity: 0;

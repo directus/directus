@@ -2,7 +2,11 @@ import camelcase from 'camelcase';
 import { set } from 'lodash';
 import env from '../env';
 
-export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[]): any {
+export function getConfigFromEnv(
+	prefix: string,
+	omitPrefix?: string | string[],
+	type: 'camelcase' | 'underscore' = 'camelcase'
+): Record<string, any> {
 	const config: any = {};
 
 	for (const [key, value] of Object.entries(env)) {
@@ -23,12 +27,22 @@ export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[])
 		if (key.includes('__')) {
 			const path = key
 				.split('__')
-				.map((key, index) => (index === 0 ? camelcase(camelcase(key.slice(prefix.length))) : camelcase(key)));
+				.map((key, index) => (index === 0 ? transform(transform(key.slice(prefix.length))) : transform(key)));
 			set(config, path.join('.'), value);
 		} else {
-			config[camelcase(key.slice(prefix.length))] = value;
+			config[transform(key.slice(prefix.length))] = value;
 		}
 	}
 
 	return config;
+
+	function transform(key: string): string {
+		if (type === 'camelcase') {
+			return camelcase(key);
+		} else if (type === 'underscore') {
+			return key.toLowerCase();
+		}
+
+		return key;
+	}
 }

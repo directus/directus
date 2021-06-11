@@ -1,51 +1,42 @@
 <template>
-	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
+	<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
 		<template #subtitle>
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend><portal-target name="actions:prepend" /></template>
+		<template #actions:prepend><component :is="`layout-actions-${localLayout}`" /></template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
-		<component
-			:is="`layout-${localLayout}`"
-			:collection="collection"
-			:selection="_selection"
-			:filters="filters"
-			:layout-query.sync="localQuery"
-			:layout-options.sync="localOptions"
-			:search-query="searchQuery"
-			@update:selection="onSelect"
-			@update:filters="$emit('update:filters', $event)"
-			select-mode
-			class="layout"
-		>
+		<component class="layout" :is="`layout-${localLayout}`">
 			<template #no-results>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 		</component>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref, reactive, computed, toRefs, watch } from 'vue';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
+import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
+	emits: ['update:filters', 'update:active', 'input'],
 	components: { SearchInput },
 	props: {
 		active: {
@@ -70,9 +61,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { save, cancel } = useActions();
-		const { _active } = useActiveState();
-		const { _selection, localSelection, onSelect } = useSelection();
+		const { internalActive } = useActiveState();
+		const { internalSelection, localSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
@@ -85,16 +78,48 @@ export default defineComponent({
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
 
+		const layoutSelection = computed<any>({
+			get() {
+				return internalSelection.value;
+			},
+			set(newFilters) {
+				onSelect(newFilters);
+			},
+		});
+
+		const layoutFilters = computed<Filter[]>({
+			get() {
+				return props.filters;
+			},
+			set(newFilters) {
+				emit('update:filters', newFilters);
+			},
+		});
+
+		useLayout(
+			localLayout,
+			reactive({
+				collection,
+				selection: layoutSelection,
+				layoutOptions: localOptions,
+				layoutQuery: localQuery,
+				filters: layoutFilters,
+				searchQuery,
+				selectMode: true,
+				readonly: false,
+			})
+		);
+
 		return {
+			t,
 			save,
 			cancel,
-			_active,
-			_selection,
+			internalActive,
+			internalSelection,
 			localSelection,
 			onSelect,
 			localLayout,
 			localOptions,
-			localQuery,
 			collectionInfo,
 			searchQuery,
 		};
@@ -102,7 +127,7 @@ export default defineComponent({
 		function useActiveState() {
 			const localActive = ref(false);
 
-			const _active = computed({
+			const internalActive = computed({
 				get() {
 					return props.active === undefined ? localActive.value : props.active;
 				},
@@ -112,13 +137,13 @@ export default defineComponent({
 				},
 			});
 
-			return { _active };
+			return { internalActive };
 		}
 
 		function useSelection() {
 			const localSelection = ref<(string | number)[] | null>(null);
 
-			const _selection = computed({
+			const internalSelection = computed({
 				get() {
 					if (localSelection.value === null) {
 						return props.selection;
@@ -138,7 +163,7 @@ export default defineComponent({
 				}
 			);
 
-			return { _selection, localSelection, onSelect };
+			return { internalSelection, localSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {
@@ -158,12 +183,12 @@ export default defineComponent({
 			return { save, cancel };
 
 			function save() {
-				emit('input', _selection.value);
-				_active.value = false;
+				emit('input', internalSelection.value);
+				internalActive.value = false;
 			}
 
 			function cancel() {
-				_active.value = false;
+				internalActive.value = false;
 			}
 		}
 	},

@@ -1,22 +1,22 @@
 <template>
-	<sidebar-detail icon="save_alt" :title="$t('export_data')">
+	<sidebar-detail icon="save_alt" :title="t('export_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('format') }}</p>
+				<p class="type-label">{{ t('format') }}</p>
 				<v-select :items="formats" v-model="format" />
-				<v-checkbox v-show="!isXliff()" v-model="useFilters" :label="$t('use_current_filters_settings')" />
+				<v-checkbox v-show="!isXliff()" v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
 			<div class="field full" v-show="isXliff() && hasMoreThanOneTranslationFields">
-				<p class="type-label">{{ $t('translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
+				<p class="type-label">{{ t('translation_field') }}</p>
+				<translation-field-select v-on:select="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full" v-if="isXliff() && translationsField">
-				<p class="type-label">{{ $t('language') }}</p>
-				<language-select @input="onSelectLanguage" :collection="collection" :field="translationsField" />
+				<p class="type-label">{{ t('language') }}</p>
+				<language-select v-on:select="onSelectLanguage" :collection="collection" :field="translationsField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">
-					{{ $t('export_collection', { collection: collectionInfo.name }) }}
+					{{ t('export_collection', { collection: collectionInfo.name }) }}
 				</v-button>
 			</div>
 		</div>
@@ -24,7 +24,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from 'vue';
 import { Filter } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { Field, Collection } from '@/types';
@@ -68,15 +69,15 @@ export default defineComponent({
 			return [
 				...[
 					{
-						text: this.$t('csv'),
+						text: this.t('csv'),
 						value: 'csv',
 					},
 					{
-						text: this.$t('json'),
+						text: this.t('json'),
 						value: 'json',
 					},
 					{
-						text: this.$t('xml'),
+						text: this.t('xml'),
 						value: 'xml',
 					},
 				],
@@ -84,11 +85,11 @@ export default defineComponent({
 				...(this.translatable
 					? [
 							{
-								text: this.$t('xliff'),
+								text: this.t('xliff'),
 								value: 'xliff',
 							},
 							{
-								text: this.$t('xliff2'),
+								text: this.t('xliff2'),
 								value: 'xliff2',
 							},
 					  ]
@@ -122,6 +123,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
 		const collectionsStore = useCollectionsStore();
 		const collectionInfo = ref<Collection | null>(collectionsStore.getCollection(props.collection));
 		const format = ref('csv');
@@ -130,6 +132,7 @@ export default defineComponent({
 		const translationsField = ref<any>(null);
 
 		return {
+			t,
 			collectionInfo,
 			format,
 			language,

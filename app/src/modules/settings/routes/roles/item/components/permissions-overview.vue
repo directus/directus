@@ -1,8 +1,8 @@
 <template>
 	<div class="permissions-overview">
 		<h2 class="title type-label">
-			{{ $t('permissions') }}
-			<span class="instant-save">{{ $t('saves_automatically') }}</span>
+			{{ t('permissions') }}
+			<span class="instant-save">{{ t('saves_automatically') }}</span>
 		</h2>
 
 		<div class="table">
@@ -18,7 +18,7 @@
 			/>
 
 			<button class="system-toggle" @click="systemVisible = !systemVisible">
-				{{ $t('system_collections') }}
+				{{ t('system_collections') }}
 				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
 			</button>
 
@@ -37,24 +37,24 @@
 			</transition-expand>
 
 			<span class="reset-toggle" v-if="systemVisible && appAccess">
-				{{ $t('reset_system_permissions_to') }}
-				<button @click="resetActive = 'minimum'">{{ $t('app_access_minimum') }}</button>
+				{{ t('reset_system_permissions_to') }}
+				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
 				/
-				<button @click="resetActive = 'recommended'">{{ $t('recommended_defaults') }}</button>
+				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
 			</span>
 		</div>
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
-		<v-dialog @toggle="resetActive = false" :active="!!resetActive" @esc="resetActive = false">
+		<v-dialog @update:model-value="resetActive = false" :model-value="!!resetActive" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
-					{{ $t('reset_system_permissions_copy') }}
+					{{ t('reset_system_permissions_copy') }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button @click="resetActive = false" secondary>{{ $t('cancel') }}</v-button>
+					<v-button @click="resetActive = false" secondary>{{ t('cancel') }}</v-button>
 					<v-button @click="resetSystemPermissions(resetActive === 'recommended')" :loading="resetting">
-						{{ $t('reset') }}
+						{{ t('reset') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -63,7 +63,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, provide, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, provide, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
@@ -90,14 +91,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
 		);
 
 		const systemVisible = ref(false);
@@ -113,6 +116,7 @@ export default defineComponent({
 		provide('refresh-permissions', fetchPermissions);
 
 		return {
+			t,
 			systemVisible,
 			regularCollections,
 			systemCollections,

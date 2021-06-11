@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import useElementSize from '@/composables/use-element-size';
 import { getRootPath } from '@/utils/get-root-path';

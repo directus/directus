@@ -1,27 +1,27 @@
 <template>
-	<sidebar-detail v-show="visible" icon="upload" :title="$t('import_data')">
+	<sidebar-detail v-show="visible" icon="upload" :title="t('import_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('format') }}</p>
+				<p class="type-label">{{ t('format') }}</p>
 				<v-select :items="formats" v-model="format" />
 			</div>
 			<div class="field full">
-				<p class="type-label">{{ $t('upload_file') }}</p>
-				<file-select @change="onSelectFile" @load="onFileLoad" accept=".xlf, application/xliff+xml" />
+				<p class="type-label">{{ t('upload_file') }}</p>
+				<file-select v-on:select="onSelectFile" v-on:load="onFileLoad" accept=".xlf, application/xliff+xml" />
 			</div>
 			<div class="field full" v-show="hasMoreThanOneTranslationFields">
-				<p class="type-label">{{ $t('target_translation_field') }}</p>
-				<translation-field-select @input="onSelectTranslationField" :collection="collection" />
+				<p class="type-label">{{ t('target_translation_field') }}</p>
+				<translation-field-select v-on:select="onSelectTranslationField" :collection="collection" />
 			</div>
 			<div class="field full">
-				<p class="type-label">{{ $t('target_language') }}</p>
+				<p class="type-label">{{ t('target_language') }}</p>
 				<language-select
-					@input="onSelectLanguage"
+					v-on:select="onSelectLanguage"
 					v-if="!useFileLanguage && translationsField"
 					:collection="collection"
 					:field="translationsField"
 				/>
-				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
+				<v-checkbox v-model="useFileLanguage" :label="t('use_language_from_file')" />
 			</div>
 			<div class="field full">
 				<v-button
@@ -30,7 +30,7 @@
 					@click="importData"
 					:disabled="file === null || (!language && !useFileLanguage)"
 				>
-					{{ $t('import_collection', { collection: collectionInfo.name }) }}
+					{{ t('import_collection', { collection: collectionInfo.name }) }}
 				</v-button>
 			</div>
 		</div>
@@ -39,8 +39,8 @@
 
 <script lang="ts">
 import api from '@/api';
-import i18n from '@/lang';
-import { defineComponent, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from 'vue';
 import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
@@ -70,11 +70,11 @@ export default defineComponent({
 				...(this.translatable
 					? [
 							{
-								text: this.$t('xliff'),
+								text: this.t('xliff'),
 								value: 'xliff',
 							},
 							{
-								text: this.$t('xliff2'),
+								text: this.t('xliff2'),
 								value: 'xliff2',
 							},
 					  ]
@@ -105,6 +105,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const collectionsStore = useCollectionsStore();
 		const collectionInfo = collectionsStore.getCollection(props.collection);
 		const format = ref('xliff');
@@ -116,6 +117,7 @@ export default defineComponent({
 		const importing = ref<boolean>(false);
 
 		return {
+			t,
 			collectionInfo,
 			format,
 			file,
@@ -144,8 +146,8 @@ export default defineComponent({
 
 			const formData = new FormData();
 			formData.append('format', format.value);
-			formData.append('languageField', languageRelation.meta?.junction_field);
-			formData.append('parentKeyField', parentRelation.meta?.junction_field);
+			formData.append('languageField', languageRelation.meta?.junction_field as string);
+			formData.append('parentKeyField', parentRelation.meta?.junction_field as string);
 			formData.append('parentCollection', props.collection);
 			if (!useFileLanguage.value) {
 				formData.append('language', language.value);
@@ -156,18 +158,17 @@ export default defineComponent({
 				const result = await api.post(`/items/${languageRelation.meta?.many_collection}/import`, formData);
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
-				const importedAmount = data ? data.length : 0;
+				const amount = data ? data.length : 0;
+				const plural = amount > 0 ? (amount > 1 ? 2 : 1) : 0;
 				clearFile();
 				emit('refresh');
 				notify({
-					title: i18n.tc('import_successfull', importedAmount > 0 ? (importedAmount > 1 ? 2 : 1) : 0, {
-						amount: importedAmount,
-					}),
+					title: t('import_successfull', { amount }, plural),
 					type: 'success',
 				});
 			} catch (error) {
 				notify({
-					title: i18n.tc('import_failed'),
+					title: t('import_failed'),
 					text: error.message,
 					type: 'error',
 					dialog: true,
