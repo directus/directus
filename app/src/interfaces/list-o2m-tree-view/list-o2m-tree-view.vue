@@ -302,12 +302,16 @@ export default defineComponent({
 					}
 				}
 
-				const response = await api.get(`/items/${props.collection}`, {
-					params: {
-						fields: [...fields, ...result],
-						filter: {
-							[primaryKeyField.value.field]: {
-								_in: selection,
+				const response = await api.request({
+					url: `/items/${props.collection}`,
+					method: 'search',
+					data: {
+						query: {
+							fields: [...fields, ...result],
+							filter: {
+								[primaryKeyField.value.field]: {
+									_in: selection,
+								},
 							},
 						},
 					},
