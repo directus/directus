@@ -519,8 +519,8 @@ textarea {
 		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--border-normal);
 		--v-button-color-hover: var(--foreground-normal);
-		--v-button-background-color-activated: var(--border-normal);
-		--v-button-color-activated: var(--foreground-normal);
+		--v-button-background-color-active: var(--border-normal);
+		--v-button-color-active: var(--foreground-normal);
 	}
 }
 

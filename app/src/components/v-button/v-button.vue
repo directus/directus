@@ -4,19 +4,17 @@
 		<component
 			v-focus="autofocus"
 			:is="component"
-			:active-class="!exact && to ? 'activated' : null"
-			:exact-active-class="exact && to ? 'activated' : null"
 			:download="download"
 			class="button"
 			:class="[
 				sizeClass,
 				`align-${align}`,
 				{
+					active: isActiveRoute,
 					rounded,
 					icon,
 					outlined,
 					loading,
-					active,
 					dashed,
 					tile,
 					'full-width': fullWidth,
@@ -45,10 +43,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { RouteLocation } from 'vue-router';
+import { RouteLocation, useRoute, useLink } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 import { useGroupable } from '@/composables/groupable';
 import { notEmpty } from '@/utils/is-empty';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	emits: ['click'],
@@ -93,7 +92,15 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		active: {
+			type: Boolean,
+			default: undefined,
+		},
 		exact: {
+			type: Boolean,
+			default: false,
+		},
+		query: {
 			type: Boolean,
 			default: false,
 		},
@@ -125,6 +132,9 @@ export default defineComponent({
 		...sizeProps,
 	},
 	setup(props, { emit }) {
+		const route = useRoute();
+
+		const { route: linkRoute, isActive, isExactActive } = useLink(props);
 		const sizeClass = useSizeClass(props);
 
 		const component = computed<'a' | 'router-link' | 'button'>(() => {
@@ -139,7 +149,23 @@ export default defineComponent({
 			group: 'item-group',
 		});
 
-		return { sizeClass, onClick, component, active, toggle };
+		const isActiveRoute = computed(() => {
+			if (props.active !== undefined) return props.active;
+
+			if (props.to) {
+				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+				if (!props.exact) {
+					return (isActive.value && isQueryActive) || active.value;
+				} else {
+					return (isExactActive.value && isQueryActive) || active.value;
+				}
+			}
+
+			return false;
+		});
+
+		return { sizeClass, onClick, component, isActiveRoute, toggle };
 
 		function onClick(event: MouseEvent) {
 			if (props.loading === true) return;
@@ -157,11 +183,11 @@ export default defineComponent({
 	--v-button-height: 44px;
 	--v-button-color: var(--foreground-inverted);
 	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-color-activated: var(--foreground-inverted);
+	--v-button-color-active: var(--foreground-inverted);
 	--v-button-color-disabled: var(--foreground-subdued);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-activated: var(--primary);
+	--v-button-background-color-active: var(--primary);
 	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
@@ -177,10 +203,10 @@ export default defineComponent({
 .secondary {
 	--v-button-color: var(--foreground-normal);
 	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-activated: var(--foreground-normal);
+	--v-button-color-active: var(--foreground-normal);
 	--v-button-background-color: var(--border-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-background-color-activated: var(--background-normal-alt);
+	--v-button-background-color-active: var(--background-normal-alt);
 }
 
 .v-button.full-width {
@@ -248,7 +274,7 @@ export default defineComponent({
 	background-color: transparent;
 }
 
-.outlined:not(.activated):hover {
+.outlined:not(.active):hover {
 	color: var(--v-button-background-color-hover);
 	background-color: transparent;
 	border-color: var(--v-button-background-color-hover);
@@ -338,12 +364,11 @@ export default defineComponent({
 	--v-progress-circular-background-color: transparent;
 }
 
-.activated,
 .active {
-	--v-button-color: var(--v-button-color-activated) !important;
-	--v-button-color-hover: var(--v-button-color-activated) !important;
-	--v-button-background-color: var(--v-button-background-color-activated) !important;
-	--v-button-background-color-hover: var(--v-button-background-color-activated) !important;
+	--v-button-color: var(--v-button-color-active) !important;
+	--v-button-color-hover: var(--v-button-color-active) !important;
+	--v-button-background-color: var(--v-button-background-color-active) !important;
+	--v-button-background-color-hover: var(--v-button-background-color-active) !important;
 }
 
 .tile {

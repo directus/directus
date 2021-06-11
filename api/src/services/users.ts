@@ -10,10 +10,12 @@ import {
 	ForbiddenException,
 	InvalidPayloadException,
 	UnprocessableEntityException,
+	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
@@ -226,9 +228,7 @@ export class UsersService extends ItemsService {
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
 		const emails = toArray(email);
 
-		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
@@ -305,9 +305,7 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 
-		const urlWhitelist = toArray(env.PASSWORD_RESET_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
 		}
 
@@ -350,7 +348,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async enableTFA(pk: string): Promise<Record<string, string>> {
+	async generateTFA(pk: string): Promise<Record<string, string>> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
@@ -364,12 +362,34 @@ export class UsersService extends ItemsService {
 		});
 		const secret = authService.generateTFASecret();
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
-
 		return {
 			secret,
 			url: await authService.generateOTPAuthURL(pk, secret),
 		};
+	}
+
+	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
+		const authService = new AuthenticationService({
+			schema: this.schema,
+		});
+
+		if (!pk) {
+			throw new InvalidCredentialsException();
+		}
+
+		const otpValid = await authService.verifyOTP(pk, otp, secret);
+
+		if (otpValid === false) {
+			throw new InvalidPayloadException(`"otp" is invalid`);
+		}
+
+		const userSecret = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (userSecret?.tfa_secret !== null) {
+			throw new InvalidPayloadException('TFA Secret is already set for this user');
+		}
+
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 	}
 
 	async disableTFA(pk: string): Promise<void> {

@@ -89,7 +89,7 @@
 					placeholder="NULL"
 				/>
 				<v-textarea
-					v-else-if="['text', 'json'].includes(fieldData.type)"
+					v-else-if="['text'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
 					placeholder="NULL"
@@ -125,6 +125,14 @@
 							value: null,
 						},
 					]"
+				/>
+				<interface-input-code
+					v-else-if="fieldData.type === 'json'"
+					@input="defaultValue = $event"
+					:value="defaultValue || ''"
+					language="JSON"
+					placeholder="NULL"
+					type="json"
 				/>
 				<v-input v-else class="monospace" v-model="defaultValue" disabled placeholder="NULL" />
 			</div>
