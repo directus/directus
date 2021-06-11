@@ -56,28 +56,28 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 		};
 
 		const columns = await this.knex.raw<RawColumn[]>(`
-      WITH "uc" AS (
-        SELECT /*+ materialize */
-          "uc"."TABLE_NAME",
-          "ucc"."COLUMN_NAME",
-          "uc"."CONSTRAINT_TYPE"
-        FROM "USER_CONSTRAINTS" "uc"
-        INNER JOIN  "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
-        WHERE "uc"."CONSTRAINT_TYPE" = 'P'
-      )
-      SELECT
-        "c"."TABLE_NAME",
-        "c"."COLUMN_NAME",
-        "c"."DATA_DEFAULT" AS DEFAULT_VALUE,
-        "c"."NULLABLE" AS IS_NULLABLE,
-        "c"."DATA_TYPE",
-        "c"."DATA_PRECISION" AS NUMERIC_PRECISION,
-        "c"."DATA_SCALE" AS NUMERIC_SCALE,
-        "ct"."CONSTRAINT_TYPE" AS COLUMN_KEY,
-        "c"."CHAR_LENGTH" as MAX_LENGTH
-      FROM "USER_TAB_COLUMNS" "c"
-      LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
-        AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
+			WITH "uc" AS (
+				SELECT /*+ materialize */
+					"uc"."TABLE_NAME",
+					"ucc"."COLUMN_NAME",
+					"uc"."CONSTRAINT_TYPE"
+				FROM "USER_CONSTRAINTS" "uc"
+				INNER JOIN "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
+			)
+			SELECT
+				"c"."TABLE_NAME",
+				"c"."COLUMN_NAME",
+				"c"."DATA_DEFAULT" AS DEFAULT_VALUE,
+				"c"."NULLABLE" AS IS_NULLABLE,
+				"c"."DATA_TYPE",
+				"c"."DATA_PRECISION" AS NUMERIC_PRECISION,
+				"c"."DATA_SCALE" AS NUMERIC_SCALE,
+				"ct"."CONSTRAINT_TYPE" AS COLUMN_KEY,
+				"c"."CHAR_LENGTH" as MAX_LENGTH
+			FROM "USER_TAB_COLUMNS" "c"
+			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
+				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 		`);
 
 		const columnsLowercase: RawColumnLowercase[] = columns.map(
