@@ -318,7 +318,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_PASSWORD`   | SMTP Password    | --            |
 | `EMAIL_SMTP_POOL`       | Use SMTP pooling | --            |
 | `EMAIL_SMTP_SECURE`     | Enable TLS       | --            |
-| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS       | false         |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS       | --            |
 
 ### Mailgun (`mailgun`)
 
