@@ -82,6 +82,8 @@ export default defineComponent({
 							return emitBranch(newValue, { added, removed });
 						case 'leaf':
 							return emitLeaf(newValue, { added, removed });
+						case 'indeterminate':
+							return emitIndeterminate(newValue, { added, removed });
 						default:
 							return emitValue(newValue);
 					}
@@ -110,6 +112,13 @@ export default defineComponent({
 				return (
 					allChildrenValues.some((childVal) => props.modelValue.includes(childVal)) &&
 					props.modelValue.includes(props.value) === false
+				);
+			}
+
+			if (props.valueCombining === 'indeterminate') {
+				return (
+					allChildrenValues.some((childVal) => props.modelValue.includes(childVal)) &&
+					allChildrenValues.every((childVal) => props.modelValue.includes(childVal)) === false
 				);
 			}
 
@@ -259,6 +268,43 @@ export default defineComponent({
 
 					return emitValue(newValue);
 				}
+			}
+
+			return emitValue(rawValue);
+		}
+
+		function emitIndeterminate(rawValue: (string | number)[], { added, removed }: Delta) {
+			const childrenValuesRecursive = getRecursiveChildrenValues('all');
+
+			// When enabling the group level
+			if (added?.[0] === props.value) {
+				const newValue = [
+					...rawValue.filter((val) => val !== props.value && childrenValues.value.includes(val) === false),
+					...childrenValuesRecursive,
+					props.value,
+				];
+
+				return emitValue(newValue);
+			}
+
+			// When disabling the group level
+			if (removed?.[0] === props.value) {
+				const newValue = rawValue.filter(
+					(val) => val !== props.value && childrenValuesRecursive.includes(val) === false
+				);
+				return emitValue(newValue);
+			}
+
+			// When all children are clicked
+			if (childrenValues.value.some((childVal) => rawValue.includes(childVal))) {
+				const newValue = [...rawValue.filter((val) => val !== props.value), props.value];
+
+				return emitValue(newValue);
+			}
+
+			// When no children are clicked
+			if (childrenValues.value.every((childVal) => rawValue.includes(childVal) === false)) {
+				return emitValue(rawValue.filter((val) => val !== props.value));
 			}
 
 			return emitValue(rawValue);
