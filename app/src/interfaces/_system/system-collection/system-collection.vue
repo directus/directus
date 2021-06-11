@@ -1,12 +1,19 @@
 <template>
-	<v-select :value="value" :disabled="disabled" :items="items" @input="$emit('input', $event)" :placeholder="$t('select_a_collection')" />
+	<v-select
+		:model-value="value"
+		:disabled="disabled"
+		:items="items"
+		@update:model-value="$emit('input', $event)"
+		:placeholder="$t('select_a_collection')"
+	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -25,9 +32,9 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.state.collections;
+			if (props.includeSystem) return collectionsStore.collections;
 
-			return collectionsStore.state.collections.filter(
+			return collectionsStore.collections.filter(
 				(collection) => collection.collection.startsWith('directus_') === false
 			);
 		});

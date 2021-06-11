@@ -3,7 +3,7 @@
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice class="disabled-placeholder" v-else-if="disabled && !image" center icon="block">
-			{{ $t('disabled') }}
+			{{ t('disabled') }}
 		</v-notice>
 
 		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
@@ -12,16 +12,16 @@
 			<div class="shadow" />
 
 			<div class="actions" v-if="!disabled">
-				<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
+				<v-button icon rounded @click="lightboxActive = true" v-tooltip="t('zoom')">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="$t('download')">
+				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="t('download')">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="$t('edit')">
+				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="t('edit')">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
+				<v-button icon rounded @click="deselect" v-tooltip="t('deselect')">
 					<v-icon name="close" />
 				</v-button>
 			</div>
@@ -33,7 +33,7 @@
 
 			<drawer-item
 				v-if="!disabled && image"
-				:active.sync="editDrawerActive"
+				v-model:active="editDrawerActive"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -47,10 +47,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, computed } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
-import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
@@ -68,6 +68,7 @@ type Image = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
@@ -80,6 +81,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
+
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
@@ -112,7 +115,7 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${i18n.n(width)}x${i18n.n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(
@@ -134,6 +137,7 @@ export default defineComponent({
 		const { edits, stageEdits } = useEdits();
 
 		return {
+			t,
 			loading,
 			image,
 			src,

@@ -1,31 +1,31 @@
 <template>
-	<sidebar-detail icon="save_alt" :title="$t('export_data')">
+	<sidebar-detail icon="save_alt" :title="t('export_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('format') }}</p>
+				<p class="type-label">{{ t('format') }}</p>
 				<v-select
 					:items="[
 						{
-							text: $t('csv'),
+							text: t('csv'),
 							value: 'csv',
 						},
 						{
-							text: $t('json'),
+							text: t('json'),
 							value: 'json',
 						},
 						{
-							text: $t('xml'),
+							text: t('xml'),
 							value: 'xml',
 						},
 					]"
 					v-model="format"
 				/>
-				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
+				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ $t('export_collection', { collection: collection.name }) }}
+					{{ t('export_collection', { collection }) }}
 				</v-button>
 			</div>
 		</div>
@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from 'vue';
 import { Filter } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -64,10 +65,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const format = ref('csv');
 		const useFilters = ref(true);
 
-		return { format, useFilters, exportData };
+		return { t, format, useFilters, exportData };
 
 		function exportData() {
 			const url = getRootPath() + `items/${props.collection}`;

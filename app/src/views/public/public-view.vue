@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { version } from '../../../package.json';
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
 import { md } from '@/utils/md';
 import { getRootPath } from '@/utils/get-root-path';
@@ -50,18 +50,18 @@ export default defineComponent({
 		const serverStore = useServerStore();
 
 		const isBranded = computed(() => {
-			return serverStore.state.info?.project?.project_color ? true : false;
+			return serverStore.info?.project?.project_color ? true : false;
 		});
 
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (serverStore.state.info?.project?.public_background) {
-				const url = getRootPath() + `assets/${serverStore.state.info.project?.public_background}`;
+			if (serverStore.info?.project?.public_background) {
+				const url = getRootPath() + `assets/${serverStore.info.project?.public_background}`;
 				return `url(${url})`;
 			}
 
-			return serverStore.state.info?.project?.project_color || defaultColor;
+			return serverStore.info?.project?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({
@@ -71,20 +71,20 @@ export default defineComponent({
 		}));
 
 		const foregroundURL = computed(() => {
-			if (!serverStore.state.info?.project?.public_foreground) return null;
-			return getRootPath() + `assets/${serverStore.state.info.project?.public_foreground}`;
+			if (!serverStore.info?.project?.public_foreground) return null;
+			return getRootPath() + `assets/${serverStore.info.project?.public_foreground}`;
 		});
 
 		const logoURL = computed<string | null>(() => {
-			if (!serverStore.state.info?.project?.project_logo) return null;
-			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
+			if (!serverStore.info?.project?.project_logo) return null;
+			return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
 		});
 
 		return {
 			version,
 			artStyles,
+			branding: serverStore.info?.project,
 			md,
-			branding: serverStore.state.info?.project,
 			foregroundURL,
 			logoURL,
 			isBranded,
@@ -94,26 +94,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .public-view {
 	display: flex;
 	width: 100%;
 	height: 100%;
 	color: #263238;
 
-	&.branded {
-		::v-deep {
-			.v-button {
-				--v-button-background-color: var(--foreground-normal-alt);
-				--v-button-background-color-hover: var(--foreground-normal-alt);
-				--v-button-background-color-activated: var(--foreground-normal-alt);
-			}
+	:slotted(.v-icon) {
+		--v-icon-color: var(--foreground-subdued);
 
-			.v-input {
-				--v-input-border-color-focus: var(--foreground-normal);
-			}
-		}
+		margin-left: 4px;
 	}
 
 	.container {
@@ -138,7 +128,7 @@ export default defineComponent({
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 		transition: max-width var(--medium) var(--transition);
 
-		.type-title {
+		:slotted(.type-title) {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
@@ -157,7 +147,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			padding: 40px 80px;
 		}
 	}
@@ -186,6 +176,7 @@ export default defineComponent({
 			align-items: flex-end;
 			justify-content: center;
 			height: 10px;
+
 			.note {
 				max-width: 340px;
 				margin: 0 auto;
@@ -199,7 +190,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			display: flex;
 		}
 	}
@@ -219,6 +210,7 @@ export default defineComponent({
 		.title {
 			margin-top: 2px;
 			margin-left: 16px;
+
 			h1 {
 				color: var(--foreground-subdued);
 				color: var(--brand);
@@ -226,6 +218,7 @@ export default defineComponent({
 				font-size: 24px;
 				line-height: 24px;
 			}
+
 			.subtitle {
 				width: 100%;
 				color: var(--foreground-subdued);
@@ -252,10 +245,14 @@ export default defineComponent({
 		}
 	}
 
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
+	&.branded :deep(.v-button) {
+		--v-button-background-color: var(--foreground-normal-alt);
+		--v-button-background-color-hover: var(--foreground-normal-alt);
+		--v-button-background-color-active: var(--foreground-normal-alt);
+	}
 
-		margin-left: 4px;
+	&.branded :deep(.v-input) {
+		--v-input-border-color-focus: var(--foreground-normal);
 	}
 }
 
@@ -264,7 +261,7 @@ export default defineComponent({
 	transition: all 600ms var(--transition);
 }
 
-.scale-enter,
+.scale-enter-from,
 .scale-leave-to {
 	position: absolute;
 	transform: scale(0.95);

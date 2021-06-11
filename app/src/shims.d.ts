@@ -2,13 +2,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 declare module '*.vue' {
-	import Vue from 'vue';
-	export default Vue;
-}
-
-declare module '*.svg' {
-	import Vue from 'vue';
-	export default Vue;
+	import { ComponentOptions } from 'vue';
+	const Component: ComponentOptions;
+	export default Component;
 }
 
 declare module '*.md' {

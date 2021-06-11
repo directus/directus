@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({

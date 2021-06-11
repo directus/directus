@@ -341,7 +341,7 @@ value: Hodnota
 interfaces:
   presentation-links:
     primary: Primární
-  collection:
+  system-collection:
     collection: Kategorie
   system-collections:
     collections: Kategorie

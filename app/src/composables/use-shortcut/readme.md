@@ -12,7 +12,7 @@ Can be used to attach a global keyboard shortcut to a function. Removes the shor
 ## Usage
 
 ```js
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
 
 export default defineComponent({

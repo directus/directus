@@ -84,6 +84,7 @@
 
 		&-active {
 			--fc-button-text-color: var(--primary);
+
 			&:hover {
 				--fc-button-text-color: var(--primary) !important;
 			}

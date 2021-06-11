@@ -1,20 +1,23 @@
 <template>
 	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.list-o2m.no_collection') }}
+		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('interfaces.select-dropdown-m2o.display_template') }}</p>
+			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.display_template') }}</p>
 			<v-field-template :collection="relatedCollection" v-model="template" :depth="2"></v-field-template>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { Relation } from '@/types/relations';
+
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,
@@ -34,6 +37,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -55,7 +60,7 @@ export default defineComponent({
 			return relation?.related_collection || null;
 		});
 
-		return { template, relatedCollection };
+		return { t, template, relatedCollection };
 	},
 });
 </script>

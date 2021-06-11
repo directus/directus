@@ -1,68 +1,76 @@
 <template>
 	<div>
-		<v-checkbox block :input-value="tfaEnabled" @click.native="toggle" :disabled="!isCurrentUser">
-			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
+		<v-checkbox block :model-value="tfaEnabled" @click="toggle" :disabled="!isCurrentUser">
+			{{ tfaEnabled ? t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
 			</template>
 		</v-checkbox>
 
-		<v-dialog persistent v-model="enableActive" @esc="enableActive = false">
+		<v-dialog persistent v-model="enableActive" @esc="cancelAndClose">
 			<v-card>
-				<template v-if="tfaEnabled === false && loading === false">
+				<form @submit.prevent="generateTFA" v-if="tfaEnabled === false && tfaGenerated === false && loading === false">
 					<v-card-title>
-						{{ $t('enter_password_to_enable_tfa') }}
+						{{ t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
+						<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" />
 
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="enableActive = false" secondary>{{ $t('cancel') }}</v-button>
-						<v-button @click="enableTFA" :loading="loading">{{ $t('next') }}</v-button>
+						<v-button type="button" @click="cancelAndClose" secondary>{{ t('cancel') }}</v-button>
+						<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
 					</v-card-actions>
-				</template>
+				</form>
 
 				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />
 
-				<div v-show="tfaEnabled && loading === false">
-					<v-card-title>
-						{{ $t('tfa_scan_code') }}
-					</v-card-title>
-					<v-card-text>
-						<canvas class="qr" :id="canvasID" />
-						<output class="secret">{{ secret }}</output>
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="enableActive = false">{{ $t('done') }}</v-button>
-					</v-card-actions>
+				<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
+					<form @submit.prevent="enableTFA">
+						<v-card-title>
+							{{ t('tfa_scan_code') }}
+						</v-card-title>
+						<v-card-text>
+							<canvas class="qr" :id="canvasID" />
+							<output class="secret selectable">{{ secret }}</output>
+							<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
+							<v-error v-if="error" :error="error" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button type="button" @click="cancelAndClose" secondary>{{ t('cancel') }}</v-button>
+							<v-button type="submit" @click="enableTFA" :disabled="otp.length !== 6">{{ t('done') }}</v-button>
+						</v-card-actions>
+					</form>
 				</div>
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="disableActive">
+		<v-dialog v-model="disableActive" @esc="disableActive = false">
 			<v-card>
-				<v-card-title>
-					{{ $t('enter_otp_to_disable_tfa') }}
-				</v-card-title>
-				<v-card-text>
-					<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
-					<v-error v-if="error" :error="error" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button class="disable" :loading="loading" @click="disableTFA" :disabled="otp.length !== 6">
-						{{ $t('disable_tfa') }}
-					</v-button>
-				</v-card-actions>
+				<form @submit.prevent="disableTFA">
+					<v-card-title>
+						{{ t('enter_otp_to_disable_tfa') }}
+					</v-card-title>
+					<v-card-text>
+						<v-input type="text" :placeholder="t('otp')" v-model="otp" :nullable="false" />
+						<v-error v-if="error" :error="error" />
+					</v-card-text>
+					<v-card-actions>
+						<v-button type="submit" class="disable" :loading="loading" :disabled="otp.length !== 6">
+							{{ t('disable_tfa') }}
+						</v-button>
+					</v-card-actions>
+				</form>
 			</v-card>
 		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch, onMounted, computed } from 'vue';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
@@ -80,8 +88,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const userStore = useUserStore();
 		const tfaEnabled = ref(!!props.value);
+		const tfaGenerated = ref(false);
 		const enableActive = ref(false);
 		const disableActive = ref(false);
 		const loading = ref(false);
@@ -102,10 +113,14 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
-		const isCurrentUser = computed(() => userStore.state.currentUser?.id === props.primaryKey);
+		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
 
 		return {
+			t,
 			tfaEnabled,
+			tfaGenerated,
+			generateTFA,
+			cancelAndClose,
 			enableTFA,
 			toggle,
 			password,
@@ -128,17 +143,46 @@ export default defineComponent({
 			}
 		}
 
+		async function generateTFA() {
+			if (loading.value === true) return;
+
+			loading.value = true;
+
+			try {
+				const response = await api.post('/users/me/tfa/generate', { password: password.value });
+				const url = response.data.data.otpauth_url;
+				secret.value = response.data.data.secret;
+				await qrcode.toCanvas(document.getElementById(canvasID), url);
+				tfaGenerated.value = true;
+				error.value = null;
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+		}
+
+		function cancelAndClose() {
+			tfaGenerated.value = false;
+			enableActive.value = false;
+			password.value = '';
+			otp.value = '';
+			secret.value = '';
+		}
+
 		async function enableTFA() {
 			if (loading.value === true) return;
 
 			loading.value = true;
 
 			try {
-				const response = await api.post('/users/me/tfa/enable', { password: password.value });
-				const url = response.data.data.otpauth_url;
-				secret.value = response.data.data.secret;
-				await qrcode.toCanvas(document.getElementById(canvasID), url);
+				await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
 				tfaEnabled.value = true;
+				tfaGenerated.value = false;
+				enableActive.value = false;
+				password.value = '';
+				otp.value = '';
+				secret.value = '';
 				error.value = null;
 			} catch (err) {
 				error.value = err;
@@ -155,6 +199,7 @@ export default defineComponent({
 
 				tfaEnabled.value = false;
 				disableActive.value = false;
+				otp.value = '';
 			} catch (err) {
 				error.value = err;
 			} finally {
@@ -185,7 +230,7 @@ export default defineComponent({
 
 .secret {
 	display: block;
-	margin: 0 auto;
+	margin: 0 auto 16px auto;
 	color: var(--foreground-subdued);
 	font-family: var(--family-monospace);
 	letter-spacing: 2.6px;

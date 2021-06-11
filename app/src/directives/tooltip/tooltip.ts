@@ -1,12 +1,11 @@
 import { nanoid } from 'nanoid';
-import { DirectiveOptions } from 'vue';
-import { DirectiveBinding } from 'vue/types/options';
+import { Directive, DirectiveBinding } from 'vue';
 
 const tooltipDelay = 300;
 
 const handlers: Record<string, () => void> = {};
 
-function bind(element: HTMLElement, binding: DirectiveBinding): void {
+function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	if (binding.value) {
 		element.dataset.tooltip = nanoid();
 		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
@@ -15,7 +14,7 @@ function bind(element: HTMLElement, binding: DirectiveBinding): void {
 	}
 }
 
-function unbind(element: HTMLElement): void {
+function unmounted(element: HTMLElement): void {
 	element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
 	element.removeEventListener('mouseleave', onLeaveTooltip);
 	clearTimeout(tooltipTimer);
@@ -24,17 +23,17 @@ function unbind(element: HTMLElement): void {
 	delete handlers[element.dataset.tooltip as string];
 }
 
-const Tooltip: DirectiveOptions = {
-	bind,
-	unbind,
-	update(element, binding) {
+const Tooltip: Directive = {
+	beforeMount,
+	unmounted,
+	updated(element, binding) {
 		if (binding.value && !binding.oldValue) {
-			bind(element, binding);
+			beforeMount(element, binding);
 		} else if (!binding.value && binding.oldValue) {
-			unbind(element);
+			unmounted(element);
 		} else {
-			unbind(element);
-			bind(element, binding);
+			unmounted(element);
+			beforeMount(element, binding);
 		}
 	},
 };

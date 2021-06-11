@@ -457,7 +457,7 @@ value: Verdi
 interfaces:
   presentation-links:
     primary: Primær
-  collection:
+  system-collection:
     collection: Kolleksjon
   system-collections:
     collections: Kolleksjoner

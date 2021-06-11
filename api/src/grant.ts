@@ -4,6 +4,7 @@
 
 import env from './env';
 import { toArray } from './utils/to-array';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 const enabledProviders = toArray(env.OAUTH_PROVIDERS).map((provider) => provider.toLowerCase());
 
@@ -16,23 +17,8 @@ const config: any = {
 	},
 };
 
-for (const [key, value] of Object.entries(env)) {
-	if (key.startsWith('OAUTH') === false) continue;
-
-	const parts = key.split('_');
-	const provider = parts[1].toLowerCase();
-
-	if (enabledProviders.includes(provider) === false) continue;
-
-	// OAUTH <PROVIDER> SETTING = VALUE
-	parts.splice(0, 2);
-
-	const configKey = parts.join('_').toLowerCase();
-
-	config[provider] = {
-		...(config[provider] || {}),
-		[configKey]: value,
-	};
+for (const provider of enabledProviders) {
+	config[provider] = getConfigFromEnv(`OAUTH_${provider.toUpperCase()}_`, undefined, 'underscore');
 }
 
 export default config;

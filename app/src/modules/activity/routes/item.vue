@@ -1,5 +1,5 @@
 <template>
-	<v-drawer active title="Activity Item" @toggle="close" @cancel="close">
+	<v-drawer :model-value="isOpen" title="Activity Item" @update:model-value="close" @cancel="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<div class="content" v-else-if="error">
@@ -35,11 +35,11 @@
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="$t('open')">
+			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="t('open')">
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity" icon rounded v-tooltip.bottom="$t('done')">
+			<v-button to="/activity" icon rounded v-tooltip.bottom="t('done')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -47,10 +47,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import router from '@/router';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 type ActivityRecord = {
 	user: {
@@ -75,26 +77,24 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
+		const isOpen = useDialogRoute();
+
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item || !item.value) return;
-
+			if (!item.value) return;
 			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });
 
-		return {
-			item,
-			loading,
-			error,
-			close,
-			openItemLink,
-			userName,
-		};
+		return { t, isOpen, item, loading, error, close, openItemLink, userName };
 
 		async function loadActivity() {
 			loading.value = true;

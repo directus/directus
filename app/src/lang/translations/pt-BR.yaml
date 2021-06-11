@@ -784,6 +784,9 @@ save_current_datetime: Salvar data/hora atual
 block: Bloco
 inline: Em linha
 comment: Comentário
+referential_action_no_action: Evitar a exclusão
+referential_action_cascade: Excluir o item {collection} (cascade)
+choose_action: Escolha uma ação
 continue: Continuar
 continue_as: >-
   <b>{name}</b> está atualmente autenticado. Se você reconhecer esta conta, clique em continuar.
@@ -867,7 +870,7 @@ interfaces:
     description: Escrever ou compartilhar trechos de código
     line_number: Número da linha
     placeholder: Inserir código aqui...
-  collection:
+  system-collection:
     collection: Coleção
     description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
@@ -993,6 +996,8 @@ interfaces:
     add_tags: Adicionar tags...
   input:
     input: Entrada
+    trim: Recortar
+    trim_label: Remover espaços do início e fim
     mask: Mascarado
     mask_label: Ocultar o valor real
     clear: Limpar valor

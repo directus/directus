@@ -3,14 +3,15 @@
 		ref="listComponent"
 		large
 		class="collections-navigation"
-		@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+		@contextmenu.prevent.stop="activateContextMenu"
+		:mandatory="false"
 	>
 		<template v-if="customNavItems && customNavItems.length > 0">
-			<template v-for="(group, index) in customNavItems">
+			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
 					v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0"
 				>
-					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+					<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
 						<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 						<v-list-item-content>
 							<v-text-overflow :text="navItem.name" />
@@ -19,14 +20,13 @@
 				</template>
 				<template v-else>
 					<v-detail
-						:active="group.accordion === 'always_open' || isActive(group.name)"
+						:model-value="group.accordion === 'always_open' || isActive(group.name)"
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
-						:key="group.name"
-						@toggle="toggleActive(group.name)"
+						@update:model-value="toggleActive(group.name)"
 					>
-						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+						<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
 							<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 							<v-list-item-content>
 								<v-text-overflow :text="navItem.name" />
@@ -37,7 +37,7 @@
 			</template>
 		</template>
 
-		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
+		<v-list-item v-else v-for="navItem in navItems" :key="navItem.to" :to="navItem.to" query>
 			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
@@ -52,26 +52,20 @@
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
 			<template v-if="searchQuery !== null">
-				<em>{{ $t('no_collections_found') }}</em>
+				<em>{{ t('no_collections_found') }}</em>
 			</template>
 			<template v-else-if="isAdmin">
-				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
-				{{ $t('no_collections_copy') }}
+				{{ t('no_collections_copy') }}
 			</template>
 		</div>
 
 		<template v-if="hiddenShown">
 			<v-divider />
 
-			<v-list-item
-				class="hidden-collection"
-				:exact="exact"
-				v-for="navItem in hiddenNavItems"
-				:key="navItem.to"
-				:to="navItem.to"
-			>
+			<v-list-item class="hidden-collection" v-for="navItem in hiddenNavItems" :key="navItem.to" :to="navItem.to" query>
 				<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="navItem.name" />
@@ -81,12 +75,12 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item @click="hiddenShown = !hiddenShown">
+				<v-list-item clickable @click="hiddenShown = !hiddenShown">
 					<v-list-item-icon>
 						<v-icon :name="hiddenShown ? 'visibility_off' : 'visibility'" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="hiddenShown ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+						<v-text-overflow :text="hiddenShown ? t('hide_hidden_collections') : t('show_hidden_collections')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -95,8 +89,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect, onMounted } from '@vue/composition-api';
-import Vue from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, watchEffect, onMounted, ComponentPublicInstance } from 'vue';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
@@ -105,26 +99,22 @@ import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
-	props: {
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-	},
 	setup() {
+		const { t } = useI18n();
+
 		const { searchQuery, visible } = useSearch();
-		const listComponent = ref<Vue>();
+		const listComponent = ref<ComponentPublicInstance>();
 
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
-		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
-				presetsStore.state.collectionPresets
+				presetsStore.collectionPresets
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
@@ -154,11 +144,12 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.router-link-exact-active.active.link');
+			const activeEl = listComponent.value?.$el.querySelector('.v-list-item.active.link');
 			activeEl?.scrollIntoView({ block: 'center' });
 		});
 
 		return {
+			t,
 			navItems,
 			bookmarks,
 			customNavItems,
@@ -171,6 +162,7 @@ export default defineComponent({
 			hiddenNavItems,
 			searchQuery,
 			listComponent,
+			activateContextMenu,
 		};
 
 		function isActive(name: string) {
@@ -184,6 +176,10 @@ export default defineComponent({
 				activeGroups.value.push(name);
 			}
 		}
+
+		function activateContextMenu(event: PointerEvent) {
+			contextMenu.value.activate(event);
+		}
 	},
 });
 </script>
@@ -195,9 +191,8 @@ export default defineComponent({
 }
 
 .empty {
-	color: var(--foreground-subdued);
-
 	.v-button {
+		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}

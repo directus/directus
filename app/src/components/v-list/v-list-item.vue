@@ -1,14 +1,13 @@
 <template>
 	<component
 		:is="component"
-		active-class="active"
+		v-bind="disabled === false && $attrs"
 		class="v-list-item"
-		:exact="exact"
 		:to="to"
 		:class="{
-			active,
+			active: isActiveRoute,
 			dense,
-			link: isClickable,
+			link: isLink,
 			disabled,
 			dashed,
 			block,
@@ -17,16 +16,16 @@
 		:href="href"
 		:download="download"
 		:target="component === 'a' ? '_blank' : null"
-		v-on="disabled === false && $listeners"
 	>
 		<slot />
 	</component>
 </template>
 
 <script lang="ts">
-import { Location } from 'vue-router';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { RouteLocation, useLink, useRoute } from 'vue-router';
+import { defineComponent, PropType, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -39,7 +38,7 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
+			type: [String, Object] as PropType<string | RouteLocation>,
 			default: null,
 		},
 		href: {
@@ -50,15 +49,23 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		active: {
+		clickable: {
 			type: Boolean,
 			default: false,
+		},
+		active: {
+			type: Boolean,
+			default: undefined,
 		},
 		dashed: {
 			type: Boolean,
 			default: false,
 		},
 		exact: {
+			type: Boolean,
+			default: false,
+		},
+		query: {
 			type: Boolean,
 			default: false,
 		},
@@ -75,7 +82,11 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners }) {
+	setup(props) {
+		const route = useRoute();
+
+		const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
 		const component = computed<string>(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
@@ -86,9 +97,25 @@ export default defineComponent({
 			value: props.value,
 		});
 
-		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));
+		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
 
-		return { component, isClickable };
+		const isActiveRoute = computed(() => {
+			if (props.active !== undefined) return props.active;
+
+			if (props.to) {
+				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+				if (!props.exact) {
+					return isActive.value && isQueryActive;
+				} else {
+					return isExactActive.value && isQueryActive;
+				}
+			}
+
+			return false;
+		});
+
+		return { component, isLink, isActiveRoute };
 	},
 });
 </script>
@@ -177,13 +204,13 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-text-overflow {
+		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-text-overflow {
+			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
 		}
@@ -200,7 +227,7 @@ body {
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
-		.v-icon {
+		:slotted(.v-icon) {
 			color: var(--foreground-subdued);
 
 			&:hover {
@@ -208,15 +235,15 @@ body {
 			}
 		}
 
-		.drag-handle {
+		:slotted(.drag-handle) {
 			cursor: grab;
 		}
 
-		.drag-handle:active {
+		:slotted(.drag-handle:active) {
 			cursor: grabbing;
 		}
 
-		.spacer {
+		:slotted(.spacer) {
 			flex-grow: 1;
 		}
 

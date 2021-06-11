@@ -74,6 +74,7 @@ module.exports = function registerHook({ exceptions }) {
 
 | Scope                           | Actions                                                     | Before           |
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
+| `cron()`                        | [See below for configuration](#interval-cron)               | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
 | `init`                          |                                                             | Optional         |
 | `routes.init`                   | `before` and `after`                                        | No               |
@@ -102,6 +103,22 @@ module.exports = function registerHook({ exceptions }) {
 <sup>1</sup> Feature Coming Soon\
 <sup>2</sup> oAuth provider name can replaced with wildcard for any oauth providers `oauth.*.login`\
 <sup>3</sup> Doesn't support `.before` modifier
+
+#### Interval (cron)
+
+Hooks support running on an interval through [`node-cron`](https://www.npmjs.com/package/node-cron). To set this up,
+provide a cron statement in the event scope as follows: `cron(<statement>)`, for example `cron(15 14 1 * *)` (at 14:15
+on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example below:
+
+```js
+module.exports = function registerHook() {
+	return {
+		'cron(*/15 * * * *)': async function () {
+			await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
+		},
+	};
+};
+```
 
 ## 3. Register your Hook
 

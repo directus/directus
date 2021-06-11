@@ -1,10 +1,10 @@
 <template>
 	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.translations.no_collection') }}
+		{{ t('interfaces.translations.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field half">
-			<p class="type-label">{{ $t('language_display_template') }}</p>
+			<p class="type-label">{{ t('language_display_template') }}</p>
 			<v-field-template
 				:collection="languageCollection"
 				v-model="languageTemplate"
@@ -32,12 +32,14 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { Relation } from '@/types/relations';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,
@@ -57,6 +59,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const translationsTemplate = computed({
@@ -119,6 +123,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			languageTemplate,
 			translationsTemplate,
 			translationsCollection,

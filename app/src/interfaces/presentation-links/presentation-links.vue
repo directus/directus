@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, inject, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref, inject, computed } from 'vue';
 import { render } from 'micromustache';
 
 type Link = {

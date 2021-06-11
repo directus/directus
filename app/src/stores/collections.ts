@@ -1,26 +1,26 @@
 import api from '@/api';
-import i18n from '@/lang/';
+import { i18n } from '@/lang';
 import { Collection, CollectionRaw } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { createStore } from 'pinia';
-import VueI18n from 'vue-i18n';
+import { defineStore } from 'pinia';
+import { TranslateResult } from 'vue-i18n';
 
-export const useCollectionsStore = createStore({
+export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
 	state: () => ({
 		collections: [] as Collection[],
 	}),
 	getters: {
-		visibleCollections: (state) => {
-			return state.collections
+		visibleCollections(): Collection[] {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
-		hiddenCollections: (state) => {
-			return state.collections
+		hiddenCollections(): Collection[] {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== false);
 		},
@@ -31,7 +31,7 @@ export const useCollectionsStore = createStore({
 
 			const collections: CollectionRaw[] = response.data.data;
 
-			this.state.collections = collections.map((collection: CollectionRaw) => {
+			this.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
 				const color = collection.meta?.color;
 				const name = formatTitle(collection.collection);
@@ -40,7 +40,7 @@ export const useCollectionsStore = createStore({
 					for (let i = 0; i < collection.meta.translations.length; i++) {
 						const { language, translation, singular, plural } = collection.meta.translations[i];
 
-						i18n.mergeLocaleMessage(language, {
+						i18n.global.mergeLocaleMessage(language, {
 							collection_names: {
 								[collection.collection]: translation,
 							},
@@ -65,11 +65,11 @@ export const useCollectionsStore = createStore({
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.state.collections = this.state.collections.map((collection: Collection) => {
-				let name: string | VueI18n.TranslateResult;
+			this.collections = this.collections.map((collection: Collection) => {
+				let name: string | TranslateResult;
 
-				if (i18n.te(`collection_names.${collection.collection}`)) {
-					name = i18n.t(`collection_names.${collection.collection}`);
+				if (i18n.global.te(`collection_names.${collection.collection}`)) {
+					name = i18n.global.t(`collection_names.${collection.collection}`);
 				} else {
 					name = formatTitle(collection.collection);
 				}
@@ -81,7 +81,7 @@ export const useCollectionsStore = createStore({
 			});
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
 			try {
@@ -89,7 +89,7 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('update_collection_success'),
+					title: i18n.global.t('update_collection_success'),
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -101,14 +101,14 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('delete_collection_success'),
+					title: i18n.global.t('delete_collection_success'),
 				});
 			} catch (err) {
 				unexpectedError(err);
 			}
 		},
 		getCollection(collectionKey: string): Collection | null {
-			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
+			return this.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},
 });

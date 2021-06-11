@@ -55,7 +55,7 @@ description: תיאור
 email: דוא"ל
 password: סיסמה
 interfaces:
-  collection:
+  system-collection:
     collection: מאגר
   files:
     files: קבצים

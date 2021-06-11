@@ -12,7 +12,7 @@ it's name and options.
 export default defineInterface({
 	id: 'input',
 	register: ({ i18n }) => ({
-		name: i18n.t('input'),
+		name: i18n.global.t('input'),
 		icon: 'box',
 		component: InterfaceTextInput,
 	}),

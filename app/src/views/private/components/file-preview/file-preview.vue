@@ -17,9 +17,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		mime: {
 			type: String,

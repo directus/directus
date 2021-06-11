@@ -1,3 +1,4 @@
+import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -6,8 +7,7 @@ import flip from '@popperjs/core/lib/modifiers/flip';
 import offset from '@popperjs/core/lib/modifiers/offset';
 import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
 import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
-import { createPopper } from '@popperjs/core/lib/popper-base';
-import { onUnmounted, ref, Ref, watch } from '@vue/composition-api';
+import { onUnmounted, ref, Ref, watch } from 'vue';
 
 export function usePopper(
 	reference: Ref<HTMLElement | null>,
@@ -53,7 +53,7 @@ export function usePopper(
 			popperInstance.value.forceUpdate();
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			observer.observe(popper.value!, {
-				attributes: true,
+				attributes: false,
 				childList: true,
 				characterData: true,
 				subtree: true,

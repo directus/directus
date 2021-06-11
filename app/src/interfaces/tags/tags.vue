@@ -1,12 +1,12 @@
 <template>
 	<div class="interface-tags">
 		<v-input
-			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			@keydown="onInput"
 			:disabled="disabled"
 			v-if="allowCustom"
 		>
-			<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
+			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
 		</v-input>
 		<div class="tags" v-if="presetVals.length > 0 || customVals.length > 0">
@@ -42,10 +42,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -89,6 +91,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const presetVals = computed<string[]>(() => {
 			if (props.presets !== null) return processArray(props.presets);
 			return [];
@@ -145,15 +149,7 @@ export default defineComponent({
 			return array;
 		}
 
-		return {
-			onInput,
-			addTag,
-			removeTag,
-			toggleTag,
-			presetVals,
-			customVals,
-			selectedVals,
-		};
+		return { t, onInput, addTag, removeTag, toggleTag, presetVals, customVals, selectedVals };
 
 		function onInput(event: KeyboardEvent) {
 			if (event.target && (event.key === 'Enter' || event.key === ',')) {
@@ -212,6 +208,7 @@ export default defineComponent({
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-color-hover: var(--foreground-inverted);
+
 			&.inactive {
 				--v-chip-background-color: var(--background-subdued);
 				--v-chip-color: var(--foreground-subdued);
@@ -233,7 +230,8 @@ export default defineComponent({
 
 			&:hover {
 				--v-chip-close-color: var(--white);
-				::v-deep .chip-content .close-outline .close:hover {
+
+				:deep(.chip-content .close-outline .close:hover) {
 					--v-icon-color: var(--danger);
 				}
 			}

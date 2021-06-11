@@ -1,5 +1,3 @@
-@import '@/styles/mixins/breakpoint';
-
 @mixin type-title {
 	color: var(--foreground-normal-alt);
 	font-weight: 700;
@@ -8,7 +6,7 @@
 	font-style: normal;
 	line-height: 34px;
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		font-size: 24px;
 	}
 }

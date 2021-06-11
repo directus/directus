@@ -8,11 +8,15 @@
 				@click="toggleManualSort"
 				scope="col"
 			>
-				<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small />
+				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
-				<v-checkbox :inputValue="allItemsSelected" :indeterminate="someItemsSelected" @change="toggleSelectAll" />
+				<v-checkbox
+					:model-value="allItemsSelected"
+					:indeterminate="someItemsSelected"
+					@update:model-value="toggleSelectAll"
+				/>
 			</th>
 
 			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
@@ -27,7 +31,7 @@
 						name="sort"
 						class="sort-icon"
 						small
-						v-tooltip.top="$t(getTooltipForSortIcon(header))"
+						v-tooltip.top="t(getTooltipForSortIcon(header))"
 					/>
 				</div>
 				<span
@@ -45,12 +49,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from 'vue';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
+	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
@@ -98,6 +104,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const dragging = ref<boolean>(false);
 		const dragStartX = ref<number>(0);
 		const dragStartWidth = ref<number>(0);
@@ -107,6 +115,7 @@ export default defineComponent({
 		useEventListener(window, 'pointerup', onMouseUp);
 
 		return {
+			t,
 			changeSort,
 			dragging,
 			dragHeader,
@@ -266,6 +275,7 @@ export default defineComponent({
 
 	.sortable {
 		cursor: pointer;
+
 		.sort-icon {
 			margin-left: 4px;
 			color: var(--foreground-subdued);

@@ -857,7 +857,7 @@ interfaces:
   input-code:
     code: Код
     line_number: Номериране на редове
-  collection:
+  system-collection:
     collection: Колекция
     description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции

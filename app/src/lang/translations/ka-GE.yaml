@@ -60,7 +60,7 @@ description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
 interfaces:
-  collection:
+  system-collection:
     collection: კოლექცია
   files:
     files: ფაილები

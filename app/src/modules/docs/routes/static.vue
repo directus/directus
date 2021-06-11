@@ -11,7 +11,7 @@
 		</template>
 
 		<template #navigation>
-			<docs-navigation :path="path" />
+			<docs-navigation :path="route.path" />
 		</template>
 
 		<div class="docs-content selectable">
@@ -19,58 +19,37 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_docs_global'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_docs_global'))" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { AsyncComponent } from 'vue';
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
+import { useRoute, RouteLocation } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
 import { md } from '@/utils/md';
 
-const Markdown = () => import(/* webpackChunkName: 'markdown', webpackPrefetch: true */ '../components/markdown.vue');
+const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
-async function getMarkdownForPath(path: string) {
-	const pathParts = path.split('/');
+async function getMarkdownForRoute(route: RouteLocation): Promise<string> {
+	const importDocs = route.meta.import as () => Promise<{ default: string }>;
 
-	while (pathParts.includes('docs')) {
-		pathParts.shift();
-	}
-
-	let docsPath = pathParts.join('/');
-
-	if (docsPath.endsWith('/')) {
-		docsPath = docsPath.slice(0, -1);
-	}
-
-	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
-
+	const mdModule = await importDocs();
 	return mdModule.default;
 }
 
 export default defineComponent({
 	name: 'StaticDocs',
-	components: { DocsNavigation, Markdown: Markdown as AsyncComponent },
-	async beforeRouteEnter(to, from, next) {
-		const md = await getMarkdownForPath(to.path);
-
-		next((vm: any) => {
-			vm.markdown = md;
-			vm.path = to.path;
-		});
-	},
-	async beforeRouteUpdate(to, from, next) {
-		this.markdown = await getMarkdownForPath(to.path);
-		this.path = to.path;
-
-		next();
-	},
+	components: { DocsNavigation, Markdown },
 	setup() {
-		const path = ref<string | null>(null);
+		const { t } = useI18n();
+
+		const route = useRoute();
+
 		const markdown = ref('');
 		const title = computed(() => {
 			const lines = markdown.value.split('\n');
@@ -97,7 +76,15 @@ export default defineComponent({
 			return lines.join('\n');
 		});
 
-		return { markdown, title, markdownWithoutTitle, md, path };
+		watch(
+			() => route.path,
+			async () => {
+				markdown.value = await getMarkdownForRoute(route);
+			},
+			{ immediate: true, flush: 'post' }
+		);
+
+		return { t, route, markdown, title, markdownWithoutTitle, md };
 	},
 });
 </script>

@@ -399,6 +399,19 @@ export class CollectionsService {
 				}
 			}
 
+			const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+				return relation.meta?.one_allowed_collections?.includes(collectionKey);
+			});
+
+			for (const relation of m2aRelationsThatIncludeThisCollection) {
+				const newAllowedCollections = relation
+					.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
+					.join(',');
+				await trx('directus_relations')
+					.update({ one_allowed_collections: newAllowedCollections })
+					.where({ id: relation.meta!.id });
+			}
+
 			await collectionItemsService.deleteOne(collectionKey);
 			await trx.schema.dropTable(collectionKey);
 		});
