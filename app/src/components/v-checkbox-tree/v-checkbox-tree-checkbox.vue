@@ -1,5 +1,5 @@
 <template>
-	<v-list-group v-if="children">
+	<v-list-group v-if="children && visibleChildrenValues.length > 0">
 		<template #activator>
 			<v-checkbox
 				:indeterminate="groupIndeterminateState"
@@ -15,12 +15,14 @@
 			:key="choice.value"
 			:value-combining="valueCombining"
 			:checked="childrenCheckedStateOverride"
+			:hidden="visibleChildrenValues.includes(choice.value) === false"
+			:search="search"
 			v-bind="choice"
 			v-model="treeValue"
 		/>
 	</v-list-group>
 
-	<v-list-item v-else>
+	<v-list-item v-else-if="!children && !hidden">
 		<v-checkbox :checked="checked" :label="text" :value="value" v-model="treeValue" />
 	</v-list-item>
 </template>
@@ -62,8 +64,23 @@ export default defineComponent({
 			type: Boolean,
 			default: null,
 		},
+		search: {
+			type: String,
+			default: null,
+		},
+		hidden: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
+		const visibleChildrenValues = computed(() => {
+			if (!props.search) return props.children?.map((child) => child.value);
+			return props.children
+				?.filter((child) => child.text.toLowerCase().includes(props.search.toLowerCase()))
+				?.map((child) => child.value);
+		});
+
 		const childrenValues = computed(() => props.children?.map((child) => child.value) || []);
 
 		const treeValue = computed({
@@ -144,7 +161,13 @@ export default defineComponent({
 			return null;
 		});
 
-		return { groupCheckedStateOverride, childrenCheckedStateOverride, treeValue, groupIndeterminateState };
+		return {
+			groupCheckedStateOverride,
+			childrenCheckedStateOverride,
+			treeValue,
+			groupIndeterminateState,
+			visibleChildrenValues,
+		};
 
 		function emitAll(rawValue: (string | number)[], { added, removed }: Delta) {
 			const childrenValuesRecursive = getRecursiveChildrenValues('all');

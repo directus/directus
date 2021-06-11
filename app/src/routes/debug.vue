@@ -1,10 +1,13 @@
 <template>
 	<div class="split">
 		<div class="left">
-			<v-checkbox-tree :choices="choices" v-model="value" :value-combining="valueCombining" />
+			<v-checkbox-tree :search="search" :choices="choices" v-model="value" :value-combining="valueCombining" />
 		</div>
 
 		<div class="right">
+			<p>Search</p>
+			<input v-model="search" placeholder="Search..." />
+
 			<p>Value Combining</p>
 
 			<label>
@@ -35,6 +38,8 @@ import { ref } from 'vue';
 const value = ref<string[]>([]);
 
 const valueCombining = ref('all');
+
+const search = ref('');
 
 const choices = [
 	{

@@ -4,6 +4,7 @@
 			v-for="choice in choices"
 			:key="choice.value"
 			:value-combining="valueCombining"
+			:search="search"
 			v-bind="choice"
 			v-model="value"
 		/>
@@ -30,6 +31,10 @@ export default defineComponent({
 		valueCombining: {
 			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate'>,
 			default: 'all',
+		},
+		search: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
