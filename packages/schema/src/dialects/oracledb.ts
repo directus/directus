@@ -6,7 +6,7 @@ import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
-		// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+		// Knex doesn't support AUTO_INCREMENT. Assume all numeric primary
 		// keys without a default are AUTO_INCREMENT
 		const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.is_primary_key;
 
@@ -56,21 +56,28 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 		};
 
 		const columns = await this.knex.raw<RawColumn[]>(`
+			WITH "uc" AS (
+				SELECT /*+ materialize */
+					"uc"."TABLE_NAME",
+					"ucc"."COLUMN_NAME",
+					"uc"."CONSTRAINT_TYPE"
+				FROM "USER_CONSTRAINTS" "uc"
+				INNER JOIN "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
+			)
 			SELECT
-				"USER_TAB_COLUMNS"."TABLE_NAME" AS TABLE_NAME,
-				"USER_TAB_COLUMNS"."COLUMN_NAME" AS COLUMN_NAME,
-				"USER_TAB_COLUMNS"."DATA_DEFAULT" AS DEFAULT_VALUE,
-				"USER_TAB_COLUMNS"."NULLABLE" AS IS_NULLABLE,
-				"USER_TAB_COLUMNS"."DATA_TYPE" AS DATA_TYPE,
-				"USER_TAB_COLUMNS"."DATA_PRECISION" AS NUMERIC_PRECISION,
-				"USER_TAB_COLUMNS"."DATA_SCALE" AS NUMERIC_SCALE,
-				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS COLUMN_KEY,
-				"USER_TAB_COLUMNS"."CHAR_LENGTH" as MAX_LENGTH
-			FROM
-				"USER_TAB_COLUMNS"
-				LEFT JOIN "USER_CONS_COLUMNS" ON "USER_TAB_COLUMNS"."TABLE_NAME" = "USER_CONS_COLUMNS"."TABLE_NAME"
-					AND "USER_TAB_COLUMNS"."COLUMN_NAME" = "USER_CONS_COLUMNS"."COLUMN_NAME"
-				LEFT JOIN "USER_CONSTRAINTS" ON "USER_CONS_COLUMNS"."CONSTRAINT_NAME" = "USER_CONSTRAINTS"."CONSTRAINT_NAME"
+				"c"."TABLE_NAME",
+				"c"."COLUMN_NAME",
+				"c"."DATA_DEFAULT" AS DEFAULT_VALUE,
+				"c"."NULLABLE" AS IS_NULLABLE,
+				"c"."DATA_TYPE",
+				"c"."DATA_PRECISION" AS NUMERIC_PRECISION,
+				"c"."DATA_SCALE" AS NUMERIC_SCALE,
+				"ct"."CONSTRAINT_TYPE" AS COLUMN_KEY,
+				"c"."CHAR_LENGTH" as MAX_LENGTH
+			FROM "USER_TAB_COLUMNS" "c"
+			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
+				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 		`);
 
 		const columnsLowercase: RawColumnLowercase[] = columns.map(
@@ -90,7 +97,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				};
 			}
 
-			// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+			// Knex doesn't support AUTO_INCREMENT. Assume all numeric primary
 			// keys without a default are AUTO_INCREMENT
 			const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.column_key === 'P';
 
