@@ -386,3 +386,11 @@ to use for the given value by prefixing the value with `{type}:`. The following 
 | `number`      | `number:3306`                                    | `3306`                                           |
 | `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
 | `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
+
+## File Based Environment Variables (Docker Secrets)
+
+Any of the environment variable values can be imported from a file, by appending `_FILE` to the environment variable
+name. For example: `DB_PASSWORD_FILE="/run/secrets/db_password"`.
+
+This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data out of your
+compose files.

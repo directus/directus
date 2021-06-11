@@ -93,7 +93,7 @@ import { defineComponent, computed, PropType, toRefs, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
-import Draggable from 'vuedraggable/src/vuedraggable.js';
+import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
