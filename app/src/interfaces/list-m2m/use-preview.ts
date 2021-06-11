@@ -195,12 +195,21 @@ export default function usePreview(
 
 		const fieldsToFetch = addRelatedPrimaryKeyToFields(collection, fields);
 
-		const response = await api.get(endpoint, {
-			params: {
-				fields: fieldsToFetch,
-				[`filter[${filteredField}][_in]`]: primaryKeys.join(','),
+		const response = await api.request({
+			url: endpoint,
+			method: 'search',
+			data: {
+				query: {
+					fields: fieldsToFetch,
+					filter: {
+						[filteredField]: {
+							_in: primaryKeys,
+						},
+					},
+				},
 			},
 		});
+
 		return response?.data.data as Record<string, any>[];
 	}
 
