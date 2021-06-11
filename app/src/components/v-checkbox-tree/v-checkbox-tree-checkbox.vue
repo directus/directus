@@ -1,5 +1,5 @@
 <template>
-	<v-list-group v-if="children && visibleChildrenValues.length > 0">
+	<v-list-group v-if="children" v-show="visibleChildrenValues.length > 0" :value="value">
 		<template #activator>
 			<v-checkbox
 				:indeterminate="groupIndeterminateState"

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType } from 'vue';
+import { computed, ref, defineComponent, PropType, watch } from 'vue';
 import { Choice } from './types';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
@@ -47,7 +47,18 @@ export default defineComponent({
 			},
 		});
 
-		const openSelection = ref<string[]>([]);
+		const openSelection = ref<(string | number)[]>([]);
+
+		watch(
+			() => props.choices,
+			() => {
+				const firstValWithChildren = props.choices.find((choice) => !!choice.children)?.value;
+				if (firstValWithChildren) {
+					openSelection.value = [firstValWithChildren];
+				}
+			},
+			{ immediate: true }
+		);
 
 		return { value, openSelection };
 	},
