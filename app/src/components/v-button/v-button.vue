@@ -1,5 +1,5 @@
 <template>
-	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
 			v-focus="autofocus"
@@ -108,6 +108,14 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		warning: {
+			type: Boolean,
+			default: false,
+		},
+		danger: {
+			type: Boolean,
+			default: false,
+		},
 		value: {
 			type: [Number, String],
 			default: null,
@@ -207,6 +215,37 @@ export default defineComponent({
 	--v-button-background-color: var(--border-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
 	--v-button-background-color-active: var(--background-normal-alt);
+}
+
+.secondary.rounded {
+	--v-button-background-color: var(--background-normal);
+	--v-button-background-color-active: var(--background-normal);
+	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.warning {
+	--v-button-background-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-125);
+}
+
+.warning.rounded {
+	--v-button-background-color: var(--warning-10);
+	--v-button-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-25);
+	--v-button-color-hover: var(--warning);
+}
+
+.danger {
+	--v-button-background-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-125);
+}
+
+.danger.rounded {
+	--v-button-background-color: var(--danger-10);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
 }
 
 .v-button.full-width {
