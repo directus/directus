@@ -52,9 +52,7 @@
 			<insights-navigation />
 		</template>
 
-		<div class="insights">
-			<insights-workspace :edit-mode="editMode" :panels="panels" :zoom-to-fit="zoomToFit" />
-		</div>
+		<insights-workspace :edit-mode="editMode" :panels="panels" :zoom-to-fit="zoomToFit" />
 
 		<router-view
 			name="detail"

@@ -90,7 +90,7 @@ export default defineComponent({
 		const zoomScale = computed(() => {
 			if (props.zoomToFit === false) return 1;
 
-			const { width } = mainElementSize;
+			const { width, height } = mainElementSize;
 
 			const contentPadding = getComputedStyle(document.querySelector('#main-content') as HTMLElement).getPropertyValue(
 				'--content-padding'
@@ -99,10 +99,14 @@ export default defineComponent({
 			const contentPaddingPx = Number(contentPadding.substring(0, contentPadding.length - 2));
 
 			const scaleWidth: number =
-				width.value /
-				(Number(workspaceSize.value.width.substring(0, workspaceSize.value.width.length - 2)) + 2 * contentPaddingPx);
+				(width.value - 2 * contentPaddingPx) /
+				Number(workspaceSize.value.width.substring(0, workspaceSize.value.width.length - 2));
 
-			return scaleWidth;
+			const scaleHeight: number =
+				(height.value - 114 - contentPaddingPx) /
+				Number(workspaceSize.value.height.substring(0, workspaceSize.value.height.length - 2));
+
+			return Math.min(scaleWidth, scaleHeight);
 		});
 
 		return { workspaceSize, mainElement, zoomScale };
