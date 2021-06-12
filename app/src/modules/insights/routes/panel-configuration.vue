@@ -1,6 +1,6 @@
 <template>
 	<v-drawer
-		:model-value="true"
+		:model-value="isOpen"
 		:title="(panel && panel.name) || t('panel')"
 		@cancel="$emit('cancel')"
 		icon="insert_chart"
@@ -92,6 +92,7 @@ import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@/types';
 import { useI18n } from 'vue-i18n';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
@@ -105,6 +106,8 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const { panels } = getPanels();
+
+		const isOpen = useDialogRoute();
 
 		const edits = reactive<Partial<Panel>>({
 			show_header: props.panel?.show_header ?? true,
@@ -154,6 +157,7 @@ export default defineComponent({
 			emitSave,
 			edits,
 			t,
+			isOpen,
 		};
 
 		function emitSave() {
