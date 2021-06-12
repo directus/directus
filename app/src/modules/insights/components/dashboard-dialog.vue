@@ -11,7 +11,7 @@
 			<v-card-text>
 				<div class="fields">
 					<v-input autofocus v-model="values.name" :placeholder="t('dashboard_name')" />
-					<interface-select-icon v-model="values.icon" />
+					<interface-select-icon @input="values.icon = $event" :value="values.icon" />
 					<v-input class="full" v-model="values.note" :placeholder="t('note')" />
 				</div>
 			</v-card-text>
