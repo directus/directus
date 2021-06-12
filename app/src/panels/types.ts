@@ -1,5 +1,5 @@
 import { Field } from '@/types';
-import { AsyncComponent, Component } from 'vue';
+import { Component } from 'vue';
 import VueI18n from 'vue-i18n';
 
 export interface PanelConfig {
@@ -7,8 +7,8 @@ export interface PanelConfig {
 	name: string;
 	icon: string;
 	description?: string | VueI18n.TranslateResult;
-	component: Component | AsyncComponent;
-	options: DeepPartial<Field>[] | Component | AsyncComponent;
+	component: Component;
+	options: DeepPartial<Field>[] | Component;
 	minWidth: number;
 	minHeight: number;
 }

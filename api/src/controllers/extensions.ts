@@ -9,7 +9,7 @@ const router = Router();
 
 const extensionsPath = env.EXTENSIONS_PATH as string;
 
-const appExtensions = ['interfaces', 'layouts', 'displays', 'modules'];
+const appExtensions = ['interfaces', 'layouts', 'displays', 'modules', 'panels'];
 
 router.get(
 	['/:type', '/:type/*'],

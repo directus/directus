@@ -1,17 +1,9 @@
-import { ref, Ref } from 'vue';
+import { shallowRef, Ref } from 'vue';
 import { PanelConfig } from './types';
 
-let panelsRaw: Ref<PanelConfig[]>;
-let panels: Ref<PanelConfig[]>;
+const panelsRaw: Ref<PanelConfig[]> = shallowRef([]);
+const panels: Ref<PanelConfig[]> = shallowRef([]);
 
-export function getPanels(): Record<string, Ref<PanelConfig[]>> {
-	if (!panelsRaw) {
-		panelsRaw = ref([]);
-	}
-
-	if (!panels) {
-		panels = ref([]);
-	}
-
+export function getPanels(): { panels: Ref<PanelConfig[]>; panelsRaw: Ref<PanelConfig[]> } {
 	return { panels, panelsRaw };
 }

@@ -1,5 +1,10 @@
 <template>
-	<v-drawer active :title="(panel && panel.name) || t('panel')" @cancel="$emit('cancel')" icon="insert_chart">
+	<v-drawer
+		:model-value="true"
+		:title="(panel && panel.name) || t('panel')"
+		@cancel="$emit('cancel')"
+		icon="insert_chart"
+	>
 		<template #actions>
 			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="t('done')">
 				<v-icon name="check" />
@@ -50,12 +55,21 @@
 
 				<div class="field half-left">
 					<p class="type-label">{{ t('icon') }}</p>
-					<interface-select-icon v-model="edits.icon" :disabled="edits.show_header !== true" />
+					<interface-select-icon
+						:value="edits.icon"
+						@input="edits.icon = $event"
+						:disabled="edits.show_header !== true"
+					/>
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('color') }}</p>
-					<interface-select-color v-model="edits.color" :disabled="edits.show_header !== true" width="half" />
+					<interface-select-color
+						:value="edits.color"
+						@input="edits.color = $event"
+						:disabled="edits.show_header !== true"
+						width="half"
+					/>
 				</div>
 
 				<div class="field full">

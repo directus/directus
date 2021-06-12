@@ -45,7 +45,7 @@
 					</template>
 
 					<v-list>
-						<v-list-item @click="editDashboard = item" class="warning">
+						<v-list-item @click="editDashboard = item" class="warning" clickable>
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
@@ -54,7 +54,7 @@
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item @click="confirmDelete = item.id" class="danger">
+						<v-list-item @click="confirmDelete = item.id" class="danger" clickable>
 							<v-list-item-icon>
 								<v-icon name="delete" outline />
 							</v-list-item-icon>
@@ -71,7 +71,7 @@
 			{{ t('no_dashboards_copy') }}
 		</v-info>
 
-		<v-dialog :active="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
 			<v-card>
 				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
 
@@ -79,7 +79,7 @@
 					<v-button @click="confirmDelete = null" secondary>
 						{{ t('cancel') }}
 					</v-button>
-					<v-button class="action-delete" @click="deleteDashboard" :loading="deletingDashboard">
+					<v-button danger @click="deleteDashboard" :loading="deletingDashboard">
 						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
@@ -181,13 +181,6 @@ export default defineComponent({
 .v-table {
 	padding: var(--content-padding);
 	padding-top: 0;
-}
-
-.action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
 }
 
 .ctx-toggle {
