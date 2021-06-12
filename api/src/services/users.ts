@@ -250,9 +250,10 @@ export class UsersService extends ItemsService {
 
 				const payload = { email, scope: 'invite' };
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
-				const queryToken = !!~inviteURL.indexOf('?') ? '&' : '?';
-				const acceptURL = inviteURL + queryToken + 'token=' + token;
+
+				const acceptURL = new URL(url ?? env.PUBLIC_URL + '/admin/accept-invite');
+				acceptURL.append('token', token);
+
 				const subjectLine = subject ? subject : "You've been invited";
 
 				await mailService.send({
