@@ -52,7 +52,14 @@
 			<insights-navigation />
 		</template>
 
-		<insights-workspace :edit-mode="editMode" :panels="panels" :zoom-to-fit="zoomToFit" />
+		<insights-workspace
+			:edit-mode="editMode"
+			:panels="panels"
+			:zoom-to-fit="zoomToFit"
+			@update="stagePanelEdits"
+			@delete="confirmDeletePanel = $event"
+			@duplicate="duplicatePanel"
+		/>
 
 		<router-view
 			name="detail"
@@ -210,33 +217,35 @@ export default defineComponent({
 			toggleZoomToFit,
 		};
 
-		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
+		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
+			const key = event.id ?? props.panelKey;
+
 			if (key === '+') {
 				stagedPanels.value = [
 					...stagedPanels.value,
 					{
 						id: `_${nanoid()}`,
 						dashboard: props.primaryKey,
-						...edits,
+						...event.edits,
 					},
 				];
 			} else {
 				if (stagedPanels.value.some((panel) => panel.id === key)) {
 					stagedPanels.value = stagedPanels.value.map((panel) => {
 						if (panel.id === key) {
-							return merge({ id: key, dashboard: props.primaryKey }, panel, edits);
+							return merge({ id: key, dashboard: props.primaryKey }, panel, event.edits);
 						}
 
 						return panel;
 					});
 				} else {
-					stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...edits }];
+					stagedPanels.value = [...stagedPanels.value, { id: key, dashboard: props.primaryKey, ...event.edits }];
 				}
 			}
 		}
 
 		function stageConfiguration(edits: Partial<Panel>) {
-			stagePanelEdits(edits);
+			stagePanelEdits({ edits });
 			router.push(`/insights/${props.primaryKey}`);
 		}
 
@@ -303,7 +312,7 @@ export default defineComponent({
 			const newPanel = omit(merge({}, panel), 'id');
 			newPanel.position_x = newPanel.position_x + 2;
 			newPanel.position_y = newPanel.position_y + 2;
-			stagePanelEdits(newPanel, '+');
+			stagePanelEdits({ edits: newPanel, id: '+' });
 		}
 
 		function toggleFullScreen() {

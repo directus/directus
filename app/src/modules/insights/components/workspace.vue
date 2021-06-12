@@ -5,9 +5,9 @@
 			:key="panel.id"
 			:panel="panel"
 			:edit-mode="editMode"
-			@update="stagePanelEdits($event, panel.id)"
-			@delete="confirmDeletePanel = panel.id"
-			@duplicate="duplicatePanel(panel)"
+			@update="$emit('update', { edits: $event, id: panel.id })"
+			@delete="$emit('delete', panel.id)"
+			@duplicate="$emit('duplicate', panel)"
 		/>
 	</div>
 </template>

@@ -244,10 +244,9 @@ export default defineComponent({
 			}
 
 			function onPointerUp() {
+				dragging.value = false;
 				if (props.editMode === false) return;
 				emit('update', editedPosition);
-
-				dragging.value = false;
 				window.removeEventListener('pointerup', onPointerUp);
 				window.removeEventListener('pointermove', onPointerMove);
 
