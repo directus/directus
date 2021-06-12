@@ -1,4 +1,4 @@
-import { ref, Ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 import { PanelConfig } from './types';
 
 let panelsRaw: Ref<PanelConfig[]>;

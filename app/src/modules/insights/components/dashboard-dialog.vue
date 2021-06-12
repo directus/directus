@@ -1,27 +1,27 @@
 <template>
-	<v-dialog :active="active" @toggle="$listeners.toggle" persistent @esc="cancel">
+	<v-dialog :active="active" @toggle="$emit('toggle', $event)" persistent @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
 		<v-card>
-			<v-card-title v-if="!dashboard">{{ $t('create_dashboard') }}</v-card-title>
-			<v-card-title v-else>{{ $t('edit_dashboard') }}</v-card-title>
+			<v-card-title v-if="!dashboard">{{ t('create_dashboard') }}</v-card-title>
+			<v-card-title v-else>{{ t('edit_dashboard') }}</v-card-title>
 
 			<v-card-text>
 				<div class="fields">
-					<v-input autofocus v-model="values.name" :placeholder="$t('dashboard_name')" />
+					<v-input autofocus v-model="values.name" :placeholder="t('dashboard_name')" />
 					<interface-select-icon v-model="values.icon" />
-					<v-input class="full" v-model="values.note" :placeholder="$t('note')" />
+					<v-input class="full" v-model="values.note" :placeholder="t('note')" />
 				</div>
 			</v-card-text>
 
 			<v-card-actions>
 				<v-button @click="cancel" secondary>
-					{{ $t('cancel') }}
+					{{ t('cancel') }}
 				</v-button>
 				<v-button :disabled="!values.name" @click="save" :loading="saving">
-					{{ $t('save') }}
+					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -31,10 +31,11 @@
 <script lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType } from '@vue/composition-api';
+import { defineComponent, ref, reactive, PropType } from 'vue';
 import { useInsightsStore } from '@/stores';
-import router from '@/router';
+import { router } from '@/router';
 import { Dashboard } from '@/types';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'DashboardDialog',
@@ -53,6 +54,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const insightsStore = useInsightsStore();
 
 		const values = reactive({
@@ -63,7 +66,7 @@ export default defineComponent({
 
 		const saving = ref(false);
 
-		return { values, cancel, saving, save };
+		return { values, cancel, saving, save, t };
 
 		function cancel() {
 			emit('toggle', false);

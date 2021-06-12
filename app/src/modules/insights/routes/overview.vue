@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="$t('insights')">
+	<private-view :title="t('insights')">
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon secondary>
 				<v-icon name="dashboard" />
@@ -17,7 +17,7 @@
 						@click="on"
 						rounded
 						icon
-						v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+						v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 						:disabled="createAllowed === false"
 					>
 						<v-icon name="add" />
@@ -28,13 +28,13 @@
 
 		<v-table
 			v-if="dashboards.length > 0"
-			:headers.sync="tableHeaders"
+			v-model:headers="tableHeaders"
 			:items="dashboards"
 			show-resize
 			fixed-header
 			@click:row="navigateToDashboard"
 		>
-			<template #item.icon="{ item }">
+			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon" />
 			</template>
 
@@ -50,7 +50,7 @@
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('edit_dashboard') }}
+								{{ t('edit_dashboard') }}
 							</v-list-item-content>
 						</v-list-item>
 
@@ -59,7 +59,7 @@
 								<v-icon name="delete" outline />
 							</v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('delete_dashboard') }}
+								{{ t('delete_dashboard') }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -67,20 +67,20 @@
 			</template>
 		</v-table>
 
-		<v-info icon="dashboard" :title="$t('no_dashboards')" v-else center>
-			{{ $t('no_dashboards_copy') }}
+		<v-info icon="dashboard" :title="t('no_dashboards')" v-else center>
+			{{ t('no_dashboards_copy') }}
 		</v-info>
 
 		<v-dialog :active="!!confirmDelete" @esc="confirmDelete = null">
 			<v-card>
-				<v-card-title>{{ $t('dashboard_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
 
 				<v-card-actions>
 					<v-button @click="confirmDelete = null" secondary>
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button class="action-delete" @click="deleteDashboard" :loading="deletingDashboard">
-						{{ $t('delete') }}
+						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -91,11 +91,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { useInsightsStore, usePermissionsStore } from '@/stores';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
 import { Dashboard } from '@/types';
-import router from '@/router';
+import { router } from '@/router';
 import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
@@ -105,6 +105,8 @@ export default defineComponent({
 	name: 'InsightsOverview',
 	components: { InsightsNavigation, DashboardDialog },
 	setup() {
+		const { t } = useI18n();
+
 		const insightsStore = useInsightsStore();
 		const permissionsStore = usePermissionsStore();
 
@@ -126,18 +128,18 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.t('name'),
+				text: t('name'),
 				value: 'name',
 				width: 240,
 			},
 			{
-				text: i18n.t('note'),
+				text: t('note'),
 				value: 'note',
 				width: 360,
 			},
 		];
 
-		const dashboards = computed(() => insightsStore.state.dashboards);
+		const dashboards = computed(() => insightsStore.dashboards);
 
 		return {
 			dashboards,
@@ -149,6 +151,7 @@ export default defineComponent({
 			deletingDashboard,
 			deleteDashboard,
 			editDashboard,
+			t,
 		};
 
 		function navigateToDashboard(dashboard: Dashboard) {

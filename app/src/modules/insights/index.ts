@@ -10,12 +10,12 @@ export default defineModule({
 	routes: [
 		{
 			name: 'insights-overview',
-			path: '/',
+			path: '',
 			component: InsightsOverview,
 		},
 		{
 			name: 'insights-dashboard',
-			path: '/:primaryKey',
+			path: ':primaryKey',
 			component: InsightsDashboard,
 			props: true,
 			children: [

@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
 import { isEqual } from 'lodash';
 
@@ -62,7 +62,9 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = Number(res.data.data[0].result).toLocaleString(undefined, {minimumFractionDigits: props.options.decimals ?? 2});
+				metric.value = Number(res.data.data[0].result).toLocaleString(undefined, {
+					minimumFractionDigits: props.options.decimals ?? 2,
+				});
 			} catch (err) {
 				// oh no
 			} finally {

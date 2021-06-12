@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { useInsightsStore } from '@/stores';
 import { Dashboard } from '@/types';
 
@@ -22,7 +22,7 @@ export default defineComponent({
 		const createDialogActive = ref(false);
 
 		const navItems = computed(() =>
-			insightsStore.state.dashboards.map((dashboard: Dashboard) => ({
+			insightsStore.dashboards.map((dashboard: Dashboard) => ({
 				icon: dashboard.icon,
 				name: dashboard.name,
 				to: `/insights/${dashboard.id}`,

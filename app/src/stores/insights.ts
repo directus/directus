@@ -1,8 +1,8 @@
 import { Dashboard } from '../types';
 import api from '@/api';
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useInsightsStore = createStore({
+export const useInsightsStore = defineStore({
 	id: 'insightsStore',
 	state: () => ({
 		dashboards: [] as Dashboard[],
@@ -13,7 +13,7 @@ export const useInsightsStore = createStore({
 				params: { limit: -1, fields: ['*', 'panels.*'], sort: ['name'] },
 			});
 
-			this.state.dashboards = response.data.data;
+			this.dashboards = response.data.data;
 		},
 		dehydrate() {
 			this.reset();

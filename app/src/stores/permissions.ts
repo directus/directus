@@ -49,7 +49,7 @@ export const usePermissionsStore = defineStore({
 		},
 		hasPermission(collection: string, action: Permission['action']) {
 			const userStore = useUserStore();
-			if (userStore.state.currentUser?.role?.admin_access === true) return true;
+			if (userStore.currentUser?.role?.admin_access === true) return true;
 			return !!this.getPermissionsForUser(collection, action);
 		},
 	},

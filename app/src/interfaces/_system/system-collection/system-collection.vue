@@ -4,13 +4,14 @@
 		:disabled="disabled"
 		:items="items"
 		@update:model-value="$emit('input', $event)"
-		:placeholder="$t('select_a_collection')"
+		:placeholder="t('select_a_collection')"
 	/>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	emits: ['input'],
@@ -29,6 +30,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
@@ -46,7 +49,7 @@ export default defineComponent({
 			}));
 		});
 
-		return { items };
+		return { items, t };
 	},
 });
 </script>

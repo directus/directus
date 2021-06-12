@@ -1,19 +1,19 @@
 <template>
-	<v-drawer active :title="(panel && panel.name) || $t('panel')" @cancel="$emit('cancel')" icon="insert_chart">
+	<v-drawer active :title="(panel && panel.name) || t('panel')" @cancel="$emit('cancel')" icon="insert_chart">
 		<template #actions>
-			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="$t('done')">
+			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="t('done')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="content">
-			<p class="type-label panel-type-label">{{ $t('type') }}</p>
+			<p class="type-label panel-type-label">{{ t('type') }}</p>
 
 			<v-fancy-select class="select" :items="selectItems" v-model="edits.type" />
 
 			<template v-if="edits.type && selectedPanel">
 				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
-					{{ $t('no_options_available') }}
+					{{ t('no_options_available') }}
 				</v-notice>
 
 				<v-form
@@ -29,33 +29,42 @@
 
 			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
-				<template #default>{{ $t('panel_header') }}</template>
+				<template #default>{{ t('panel_header') }}</template>
 			</v-divider>
 
 			<div class="form-grid">
 				<div class="field half-left">
-					<p class="type-label">{{ $t('visible') }}</p>
-					<v-checkbox block v-model="edits.show_header" :label="$t('show_header')" />
+					<p class="type-label">{{ t('visible') }}</p>
+					<v-checkbox block v-model="edits.show_header" :label="t('show_header')" />
 				</div>
 
 				<div class="field half-right">
-					<p class="type-label">{{ $t('name') }}</p>
-					<v-input :nullable="false" v-model="edits.name" :disabled="edits.show_header !== true" :placeholder="$t('panel_name_placeholder')" />
+					<p class="type-label">{{ t('name') }}</p>
+					<v-input
+						:nullable="false"
+						v-model="edits.name"
+						:disabled="edits.show_header !== true"
+						:placeholder="t('panel_name_placeholder')"
+					/>
 				</div>
 
 				<div class="field half-left">
-					<p class="type-label">{{ $t('icon') }}</p>
+					<p class="type-label">{{ t('icon') }}</p>
 					<interface-select-icon v-model="edits.icon" :disabled="edits.show_header !== true" />
 				</div>
 
 				<div class="field half-right">
-					<p class="type-label">{{ $t('color') }}</p>
+					<p class="type-label">{{ t('color') }}</p>
 					<interface-select-color v-model="edits.color" :disabled="edits.show_header !== true" width="half" />
 				</div>
 
 				<div class="field full">
-					<p class="type-label">{{ $t('note') }}</p>
-					<v-input v-model="edits.note" :disabled="edits.show_header !== true" :placeholder="$t('panel_note_placeholder')" />
+					<p class="type-label">{{ t('note') }}</p>
+					<v-input
+						v-model="edits.note"
+						:disabled="edits.show_header !== true"
+						:placeholder="t('panel_note_placeholder')"
+					/>
 				</div>
 			</div>
 		</div>
@@ -63,10 +72,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, watch, PropType } from '@vue/composition-api';
+import { computed, defineComponent, reactive, watch, PropType } from 'vue';
 import { getPanels } from '@/panels';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { Panel } from '@/types';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'PanelConfiguration',
@@ -77,6 +87,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { panels } = getPanels();
 
 		const edits = reactive<Partial<Panel>>({
@@ -126,6 +138,7 @@ export default defineComponent({
 			close,
 			emitSave,
 			edits,
+			t,
 		};
 
 		function emitSave() {

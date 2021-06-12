@@ -8,14 +8,14 @@
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
+			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
 		</template>
 
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
 					class="clear-changes"
-					v-tooltip.bottom="$t('clear_changes')"
+					v-tooltip.bottom="t('clear_changes')"
 					rounded
 					icon
 					outlined
@@ -24,11 +24,11 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button rounded icon outlined v-tooltip.bottom="$t('add_new')" :to="`/insights/${currentDashboard.id}/+`">
+				<v-button rounded icon outlined v-tooltip.bottom="t('add_new')" :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
 				</v-button>
 
-				<v-button rounded icon v-tooltip.bottom="$t('save')" @click="saveChanges" :loading="saving">
+				<v-button rounded icon v-tooltip.bottom="t('save')" @click="saveChanges" :loading="saving">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -69,14 +69,14 @@
 
 		<v-dialog :active="!!confirmDeletePanel" @esc="confirmDeletePanel = null">
 			<v-card>
-				<v-card-title>{{ $t('panel_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ t('panel_delete_confirm') }}</v-card-title>
 
 				<v-card-actions>
 					<v-button @click="confirmDeletePanel = null" secondary>
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
 					<v-button class="action-delete" @click="deletePanel" :loading="deletingPanel">
-						{{ $t('delete') }}
+						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -86,16 +86,17 @@
 
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { useInsightsStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@/types';
 import { nanoid } from 'nanoid';
-import { cloneDeep, merge, omit } from 'lodash';
-import router from '@/router';
+import { merge, omit } from 'lodash';
+import { router } from '@/router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 import InsightsPanel from '../components/panel.vue';
+import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 
 export default defineComponent({
@@ -112,6 +113,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const editMode = ref(false);
 		const confirmDeletePanel = ref<string | null>(null);
 		const deletingPanel = ref(false);
@@ -119,7 +122,7 @@ export default defineComponent({
 		const insightsStore = useInsightsStore();
 
 		const currentDashboard = computed(() =>
-			insightsStore.state.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
+			insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
 		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
@@ -238,6 +241,7 @@ export default defineComponent({
 			confirmDeletePanel,
 			cancelChanges,
 			duplicatePanel,
+			t,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {

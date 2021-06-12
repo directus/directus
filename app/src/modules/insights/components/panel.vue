@@ -21,18 +21,23 @@
 		</div>
 
 		<div class="edit-actions" v-if="editMode">
-			<v-icon class="duplicate-icon" name="control_point_duplicate" v-tooltip="$t('duplicate')" @click.stop="$emit('duplicate')" />
+			<v-icon
+				class="duplicate-icon"
+				name="control_point_duplicate"
+				v-tooltip="t('duplicate')"
+				@click.stop="$emit('duplicate')"
+			/>
 			<v-icon
 				class="edit-icon"
 				name="edit"
-				v-tooltip="$t('edit')"
+				v-tooltip="t('edit')"
 				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
-			<v-icon class="delete-icon" name="clear" v-tooltip="$t('delete')" @click.stop="$emit('delete')" />
+			<v-icon class="delete-icon" name="clear" v-tooltip="t('delete')" @click.stop="$emit('delete')" />
 		</div>
 
 		<div class="resize-details">
-			({{positioning.x - 1}}:{{positioning.y - 1}}) {{positioning.width}}×{{positioning.height}}
+			({{ positioning.x - 1 }}:{{ positioning.y - 1 }}) {{ positioning.width }}×{{ positioning.height }}
 		</div>
 
 		<div class="resize-handlers" v-if="editMode">
@@ -55,8 +60,9 @@
 <script lang="ts">
 import { getPanels } from '@/panels';
 import { Panel } from '@/types';
-import { defineComponent, PropType, computed, ref, reactive } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, reactive } from 'vue';
 import { throttle } from 'lodash';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'panel',
@@ -71,6 +77,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const { panels } = getPanels();
 
 		const panelTypeInfo = computed(() => {
@@ -122,6 +129,7 @@ export default defineComponent({
 			onPointerMove,
 			dragging,
 			editedPosition,
+			t,
 		};
 
 		function useDragDrop() {
@@ -260,15 +268,34 @@ export default defineComponent({
 }
 
 .panel.editing.dragging {
+	z-index: 3 !important;
 	border-color: var(--primary);
 	box-shadow: 0 0 0 1px var(--primary);
-	z-index: 3 !important;
+}
+
+.resize-details {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 2;
+	padding: 17px 14px;
+	color: var(--foreground-subdued);
+	font-weight: 500;
+	font-size: 15px;
+	font-family: var(--family-monospace);
+	font-style: normal;
+	line-height: 1;
+	text-align: right;
+	background-color: var(--background-page);
+	border-top-right-radius: var(--border-radius-outline);
+	opacity: 0;
+	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+	pointer-events: none;
 }
 
 .panel.editing.dragging .resize-details {
 	opacity: 1;
 }
-
 
 .panel-content {
 	position: relative;
@@ -331,27 +358,6 @@ export default defineComponent({
 	padding: 12px;
 	background-color: var(--background-page);
 	border-top-right-radius: var(--border-radius-outline);
-}
-
-.resize-details {
-	transition: opacity var(--fast) var(--transition),
-							color var(--fast) var(--transition);
-	position: absolute;
-	z-index: 2;
-	top: 0;
-	right: 0;
-	padding: 17px 14px;
-	color: var(--foreground-subdued);
-	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace);
-	font-style: normal;
-	line-height: 1;
-	text-align: right;
-	background-color: var(--background-page);
-	border-top-right-radius: var(--border-radius-outline);
-	pointer-events: none;
-	opacity: 0;
 }
 
 .resize-handlers div {
