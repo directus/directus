@@ -1,4 +1,6 @@
 import { Knex } from 'knex';
+// @ts-ignore
+import Client_Oracledb from 'knex/lib/dialects/oracledb';
 import env from '../../env';
 
 async function oracleAlterUrl(knex: Knex, type: string): Promise<void> {
@@ -10,7 +12,7 @@ async function oracleAlterUrl(knex: Knex, type: string): Promise<void> {
 }
 
 export async function up(knex: Knex): Promise<void> {
-	if (env.DB_CLIENT === 'oracledb') {
+	if (knex.client instanceof Client_Oracledb) {
 		await oracleAlterUrl(knex, 'CLOB');
 		return;
 	}
