@@ -28,7 +28,7 @@ export default function getDatabase(): Knex {
 	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
 		requiredEnvVars.push('DB_FILENAME');
 	} else if (env.DB_CLIENT && env.DB_CLIENT === 'oracledb') {
-		if (!env.DB_CONNECTION_STRING) {
+		if (!env.DB_CONNECT_STRING) {
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 		} else {
 			requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
