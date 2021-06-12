@@ -14,7 +14,7 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 			else return toArray(val);
 		}
 
-		if (val.startsWith('$NOW')) {
+		if (val && val.startsWith('$NOW')) {
 			if (val.includes('(') && val.includes(')')) {
 				const adjustment = val.match(/\(([^)]+)\)/)?.[1];
 				return adjustDate(new Date(), adjustment);
