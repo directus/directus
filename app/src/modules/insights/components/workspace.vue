@@ -121,7 +121,10 @@ export default defineComponent({
 	overflow: visible;
 	transform: scale(1);
 	transform-origin: top left;
-	transition: transform var(--slow) var(--transition);
+
+	/* This causes the header bar to "unhinge" on the left edge :C */
+
+	/* transition: transform var(--slow) var(--transition); */
 }
 
 .workspace > * {

@@ -294,13 +294,17 @@ export default defineComponent({
 		#navigation {
 			position: fixed;
 			transform: translateX(-100%);
-			transition: transform var(--slow) var(--transition);
+			transition: none;
+		}
+
+		#main-content {
+			margin: 0;
 		}
 
 		#sidebar {
 			position: fixed;
 			transform: translateX(100%);
-			transition: transform var(--slow) var(--transition);
+			transition: none;
 		}
 	}
 }
