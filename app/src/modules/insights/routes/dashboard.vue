@@ -67,7 +67,7 @@
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>
 
-		<v-dialog :active="!!confirmDeletePanel" @esc="confirmDeletePanel = null">
+		<v-dialog :model-value="!!confirmDeletePanel" @esc="confirmDeletePanel = null">
 			<v-card>
 				<v-card-title>{{ t('panel_delete_confirm') }}</v-card-title>
 
@@ -75,7 +75,7 @@
 					<v-button @click="confirmDeletePanel = null" secondary>
 						{{ t('cancel') }}
 					</v-button>
-					<v-button class="action-delete" @click="deletePanel" :loading="deletingPanel">
+					<v-button danger @click="deletePanel" :loading="deletingPanel">
 						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
@@ -378,13 +378,6 @@ export default defineComponent({
 
 .workspace.editing::before {
 	opacity: 1;
-}
-
-.action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
 }
 
 .fullscreen,

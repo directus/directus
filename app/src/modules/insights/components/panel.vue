@@ -26,14 +26,16 @@
 				name="control_point_duplicate"
 				v-tooltip="t('duplicate')"
 				@click.stop="$emit('duplicate')"
+				clickable
 			/>
 			<v-icon
 				class="edit-icon"
 				name="edit"
 				v-tooltip="t('edit')"
 				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
+				clickable
 			/>
-			<v-icon class="delete-icon" name="clear" v-tooltip="t('delete')" @click.stop="$emit('delete')" />
+			<v-icon clickable class="delete-icon" name="clear" v-tooltip="t('delete')" @click.stop="$emit('delete')" />
 		</div>
 
 		<div class="resize-details">

@@ -4,6 +4,7 @@
 		:title="(panel && panel.name) || t('panel')"
 		@cancel="$emit('cancel')"
 		icon="insert_chart"
+		persistent
 	>
 		<template #actions>
 			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="t('done')">
