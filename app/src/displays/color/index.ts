@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.color.default_color',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {

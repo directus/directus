@@ -35,7 +35,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
 	protected $root: string;
-	protected $acl: string;
+	protected $acl?: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
@@ -49,7 +49,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		this.$bucket = config.bucket;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
-		this.$acl = config.acl ? config.acl : '';
+		this.$acl = config.acl;
 	}
 
 	/**
@@ -129,8 +129,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns the file contents.
 	 */
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
-		location = this._fullPath(location);
-
 		const bufferResult = await this.getBuffer(location);
 
 		return {
@@ -210,7 +208,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params: S3.GetObjectRequest = {
 			Key: location,
 			Bucket: this.$bucket,
-			Range: range ? `${range.start}-${range.end || ''}` : undefined,
+			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
 		};
 
 		return this.$driver.getObject(params).createReadStream();

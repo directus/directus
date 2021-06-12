@@ -83,7 +83,7 @@ export default async function getASTFromQuery(
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
 				!!schema.relations.find(
-					(relation) => relation.one_collection === parentCollection && relation.one_field === field
+					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === field
 				);
 
 			if (isRelational) {
@@ -143,7 +143,7 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
-				const allowedCollections = relation.one_allowed_collections!.filter((collection) => {
+				const allowedCollections = relation.meta!.one_allowed_collections!.filter((collection) => {
 					if (!permissions) return true;
 					return permissions.some((permission) => permission.collection === collection);
 				});
@@ -187,7 +187,9 @@ export default async function getASTFromQuery(
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
-					child!.query.sort = [{ column: relation.sort_field || relation.many_primary, order: 'asc' }];
+					child!.query.sort = [
+						{ column: relation.meta?.sort_field || schema.collections[relation.collection].primary, order: 'asc' },
+					];
 				}
 			}
 
@@ -239,11 +241,11 @@ export default async function getASTFromQuery(
 					? schema.relations
 							.filter(
 								(relation) =>
-									relation.many_collection === parentCollection || relation.one_collection === parentCollection
+									relation.collection === parentCollection || relation.related_collection === parentCollection
 							)
 							.map((relation) => {
-								const isMany = relation.many_collection === parentCollection;
-								return isMany ? relation.many_field : relation.one_field;
+								const isMany = relation.collection === parentCollection;
+								return isMany ? relation.field : relation.meta?.one_field;
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
@@ -268,8 +270,8 @@ export default async function getASTFromQuery(
 	function getRelation(collection: string, field: string) {
 		const relation = schema.relations.find((relation) => {
 			return (
-				(relation.many_collection === collection && relation.many_field === field) ||
-				(relation.one_collection === collection && relation.one_field === field)
+				(relation.collection === collection && relation.field === field) ||
+				(relation.related_collection === collection && relation.meta?.one_field === field)
 			);
 		});
 
@@ -281,12 +283,12 @@ export default async function getASTFromQuery(
 
 		if (!relation) return null;
 
-		if (relation.many_collection === collection && relation.many_field === field) {
-			return relation.one_collection || null;
+		if (relation.collection === collection && relation.field === field) {
+			return relation.related_collection || null;
 		}
 
-		if (relation.one_collection === collection && relation.one_field === field) {
-			return relation.many_collection || null;
+		if (relation.related_collection === collection && relation.meta?.one_field === field) {
+			return relation.collection || null;
 		}
 
 		return null;

@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_project')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_project')">
+		<template #headline>{{ t('settings') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="public" />
@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button icon rounded :disabled="noEdits" :loading="saving" @click="save" v-tooltip.bottom="$t('save')">
+			<v-button icon rounded :disabled="noEdits" :loading="saving" @click="save" v-tooltip.bottom="t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -28,7 +28,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import useCollection from '@/composables/use-collection';
 import { useSettingsStore, useServerStore } from '@/stores';
@@ -38,12 +39,14 @@ import { clone } from 'lodash';
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
 	setup() {
+		const { t } = useI18n();
+
 		const settingsStore = useSettingsStore();
 		const serverStore = useServerStore();
 
 		const { fields } = useCollection(ref('directus_settings'));
 
-		const initialValues = ref(clone(settingsStore.state.settings));
+		const initialValues = ref(clone(settingsStore.settings));
 
 		const edits = ref<{ [key: string]: any } | null>(null);
 
@@ -51,7 +54,7 @@ export default defineComponent({
 
 		const saving = ref(false);
 
-		return { fields, initialValues, edits, noEdits, saving, save };
+		return { t, fields, initialValues, edits, noEdits, saving, save };
 
 		async function save() {
 			if (edits.value === null) return;
@@ -60,7 +63,7 @@ export default defineComponent({
 			await serverStore.hydrate();
 			edits.value = null;
 			saving.value = false;
-			initialValues.value = clone(settingsStore.state.settings);
+			initialValues.value = clone(settingsStore.settings);
 		}
 	},
 });

@@ -159,6 +159,10 @@ SEARCH /collections
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	collections: [directus_collections]
@@ -211,6 +215,10 @@ GET /collections/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -281,6 +289,10 @@ POST /collections
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_collections_item(data: directus_collections): directus_collections
@@ -350,6 +362,10 @@ PATCH /collections/:collection
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
@@ -400,6 +416,10 @@ DELETE /collections/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

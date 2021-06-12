@@ -21,7 +21,14 @@ os_type: Тип ОС
 os_version: Версія ОС
 os_uptime: Час роботи ОС
 validationError:
+  eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
+  in: Значення повинно бути одним з {valid}
+  nin: Значення не може бути одним з {invalid}
+  contains: Значення повинно містити {substring}
+  ncontains: Значення не може містити {substring}
+  gt: Значення має бути більше {valid}
+  gte: Значення має бути більше або дорівнювати {valid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
@@ -240,44 +247,30 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  checkboxes:
-    checkboxes: Прапорці
-  code:
+  input-code:
     code: Код
-    line_number: Номери рядків
-  collection:
+  system-collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
-  many-to-one:
-    many-to-one: Багато до одного
-  numeric:
-    numeric: Цифровий
-  one-to-many:
-    one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
-    text-input: Текстове поле
-    trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
-    custom_formats: Власне форматування
 displays:
   collection:
     collection: Колекція

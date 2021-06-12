@@ -7,14 +7,14 @@ import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
 import cache from '../cache';
-import database from '../database';
+import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
-import mailer from './mailer';
+import getMailer from '../mailer';
 import { SettingsService } from './settings';
 
 export class ServerService {
@@ -24,7 +24,7 @@ export class ServerService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
@@ -129,6 +129,7 @@ export class ServerService {
 		}
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+			const database = getDatabase();
 			const client = env.DB_CLIENT;
 
 			const checks: Record<string, HealthCheck[]> = {};
@@ -147,22 +148,21 @@ export class ServerService {
 
 			const startTime = performance.now();
 
-			try {
-				await database.raw('SELECT 1');
+			if (await hasDatabaseConnection()) {
 				checks[`${client}:responseTime`][0].status = 'ok';
-			} catch (err) {
+			} else {
 				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = err;
-			} finally {
-				const endTime = performance.now();
-				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+			}
 
-				if (
-					checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
-					checks[`${client}:responseTime`][0].status !== 'error'
-				) {
-					checks[`${client}:responseTime`][0].status = 'warn';
-				}
+			const endTime = performance.now();
+			checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+
+			if (
+				checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
+				checks[`${client}:responseTime`][0].status !== 'error'
+			) {
+				checks[`${client}:responseTime`][0].status = 'warn';
 			}
 
 			checks[`${client}:connectionsAvailable`] = [
@@ -316,8 +316,10 @@ export class ServerService {
 				],
 			};
 
+			const mailer = getMailer();
+
 			try {
-				await mailer?.verify();
+				await mailer.verify();
 			} catch (err) {
 				checks['email:connection'][0].status = 'error';
 				checks['email:connection'][0].output = err;

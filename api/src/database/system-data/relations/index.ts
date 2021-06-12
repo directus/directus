@@ -1,9 +1,12 @@
 import { merge } from 'lodash';
-import { Relation } from '../../../types';
+import { RelationMeta } from '../../../types';
 import { requireYAML } from '../../../utils/require-yaml';
 
-const systemData = requireYAML(require.resolve('./relations.yaml'));
+const systemData = requireYAML(require.resolve('./relations.yaml')) as {
+	data: RelationMeta[];
+	defaults: Partial<RelationMeta>;
+};
 
-export const systemRelationRows: Relation[] = systemData.data.map((row: Record<string, any>) => {
+export const systemRelationRows: RelationMeta[] = systemData.data.map((row) => {
 	return merge({ system: true }, systemData.defaults, row);
 });

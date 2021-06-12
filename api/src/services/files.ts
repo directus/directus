@@ -60,6 +60,7 @@ export class FilesService extends ItemsService {
 		} catch (err) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
 		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
@@ -101,8 +102,9 @@ export class FilesService extends ItemsService {
 			if (meta.iptc) {
 				try {
 					payload.metadata.iptc = parseIPTC(meta.iptc);
-					payload.title = payload.title || payload.metadata.iptc.headline;
+					payload.title = payload.metadata.iptc.headline || payload.title;
 					payload.description = payload.description || payload.metadata.iptc.caption;
+					payload.tags = payload.metadata.iptc.keywords;
 				} catch (err) {
 					logger.warn(`Couldn't extract IPTC information from file`);
 					logger.warn(err);

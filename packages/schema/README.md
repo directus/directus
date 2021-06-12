@@ -11,14 +11,14 @@ import knex from 'knex';
 import schema from '@directus/schema';
 
 const database = knex({
-  client: 'mysql',
-  connection: {
-    host: '127.0.0.1',
-    user: 'your_database_user',
-    password: 'your_database_password',
-    database: 'myapp_test',
-    charset: 'utf8',
-  },
+	client: 'mysql',
+	connection: {
+		host: '127.0.0.1',
+		user: 'your_database_user',
+		password: 'your_database_password',
+		database: 'myapp_test',
+		charset: 'utf8',
+	},
 });
 
 const inspector = schema(database);
@@ -32,8 +32,8 @@ export default inspector;
 import inspector from './inspector';
 
 async function logTables() {
-  const tables = await inspector.tables();
-  console.log(tables);
+	const tables = await inspector.tables();
+	console.log(tables);
 }
 ```
 
@@ -41,7 +41,8 @@ async function logTables() {
 
 Note: MySQL doesn't support the `schema` parameter, as schema and database are ambiguous in MySQL.
 
-Note 2: Some database types might return slightly more information than others. See the type files for a specific overview what to expect from driver to driver.
+Note 2: Some database types might return slightly more information than others. See the type files for a specific
+overview what to expect from driver to driver.
 
 Note 3: MSSQL doesn't support comment for either tables or columns
 

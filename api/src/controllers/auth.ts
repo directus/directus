@@ -146,7 +146,10 @@ router.post(
 
 		if (req.cookies.directus_refresh_token) {
 			res.clearCookie('directus_refresh_token', {
+				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 

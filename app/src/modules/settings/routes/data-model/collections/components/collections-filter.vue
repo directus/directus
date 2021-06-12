@@ -1,34 +1,38 @@
 <template>
-	<sidebar-detail class="collections-filter" icon="filter_list" :title="$tc('collection', 2)">
-		<div class="type-label label">{{ $t('collections_shown') }}</div>
-		<v-checkbox value="visible" v-model="_value" :label="$t('visible_collections')" />
-		<v-checkbox value="unmanaged" v-model="_value" :label="$t('unmanaged_collections')" />
-		<v-checkbox value="hidden" v-model="_value" :label="$t('hidden_collections')" />
-		<v-checkbox value="system" v-model="_value" :label="$t('system_collections')" />
+	<sidebar-detail class="collections-filter" icon="filter_list" :title="t('collection', 2)">
+		<div class="type-label label">{{ t('collections_shown') }}</div>
+		<v-checkbox value="visible" v-model="internalValue" :label="t('visible_collections')" />
+		<v-checkbox value="unmanaged" v-model="internalValue" :label="t('unmanaged_collections')" />
+		<v-checkbox value="hidden" v-model="internalValue" :label="t('hidden_collections')" />
+		<v-checkbox value="system" v-model="internalValue" :label="t('system_collections')" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<string[]>,
 			required: true,
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed({
+		const { t } = useI18n();
+
+		const internalValue = computed({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newVal) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
-		return { _value };
+		return { t, internalValue };
 	},
 });
 </script>

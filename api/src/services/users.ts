@@ -3,17 +3,19 @@ import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone } from 'lodash';
 import cache from '../cache';
-import database from '../database';
+import getDatabase from '../database';
 import env from '../env';
 import {
 	FailedValidationException,
 	ForbiddenException,
 	InvalidPayloadException,
 	UnprocessableEntityException,
+	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
@@ -29,7 +31,7 @@ export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
 		this.schema = options.schema;
@@ -39,12 +41,18 @@ export class UsersService extends ItemsService {
 	 * User email has to be unique case-insensitive. This is an additional check to make sure that
 	 * the email is unique regardless of casing
 	 */
-	private async checkUniqueEmails(emails: string[]) {
+	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey) {
 		if (emails.length > 0) {
-			const results = await this.knex
+			const query = this.knex
 				.select('email')
 				.from('directus_users')
 				.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
+
+			if (excludeKey) {
+				query.whereNot('id', excludeKey);
+			}
+
+			const results = await query;
 
 			if (results.length > 0) {
 				throw new RecordNotUniqueException('email', {
@@ -98,7 +106,7 @@ export class UsersService extends ItemsService {
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const email = data.email.toLowerCase();
 		await this.checkUniqueEmails([email]);
-		return await super.createOne(data, opts);
+		return await this.service.createOne(data, opts);
 	}
 
 	/**
@@ -118,14 +126,14 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
-		return await super.createMany(data, opts);
+		return await this.service.createMany(data, opts);
 	}
 
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const email = data.email?.toLowerCase();
 
 		if (email) {
-			await this.checkUniqueEmails([email]);
+			await this.checkUniqueEmails([email], key);
 		}
 
 		if (data.password) {
@@ -136,7 +144,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateOne(key, data, opts);
+		return await this.service.updateOne(key, data, opts);
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -154,7 +162,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateMany(keys, data, opts);
+		return await this.service.updateMany(keys, data, opts);
 	}
 
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -172,7 +180,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		return await super.updateByQuery(query, data, opts);
+		return await this.service.updateByQuery(query, data, opts);
 	}
 
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -191,7 +199,7 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
-		await super.deleteOne(key, opts);
+		await this.service.deleteOne(key, opts);
 
 		return key;
 	}
@@ -212,17 +220,15 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
-		await super.deleteMany(keys, opts);
+		await this.service.deleteMany(keys, opts);
 
 		return keys;
 	}
 
-	async inviteUser(email: string | string[], role: string, url: string | null): Promise<void> {
+	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
 		const emails = toArray(email);
 
-		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
@@ -246,17 +252,17 @@ export class UsersService extends ItemsService {
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
+				const subjectLine = subject ? subject : "You've been invited";
 
 				await mailService.send({
 					to: email,
-					subject: "You've been invited",
+					subject: subjectLine,
 					template: {
 						name: 'user-invitation',
 						data: {
 							url: acceptURL,
 							email,
 						},
-						system: true,
 					},
 				});
 			}
@@ -286,7 +292,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async requestPasswordReset(email: string, url: string | null): Promise<void> {
+	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
@@ -299,24 +305,22 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 
-		const urlWhitelist = toArray(env.PASSWORD_RESET_URL_ALLOW_LIST);
-
-		if (url && urlWhitelist.includes(url) === false) {
+		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
 		}
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
+		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
 			to: email,
-			subject: 'Password Reset Request',
+			subject: subjectLine,
 			template: {
 				name: 'password-reset',
 				data: {
 					url: acceptURL,
 					email,
 				},
-				system: true,
 			},
 		});
 	}
@@ -344,7 +348,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async enableTFA(pk: string): Promise<Record<string, string>> {
+	async generateTFA(pk: string): Promise<Record<string, string>> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
@@ -358,12 +362,34 @@ export class UsersService extends ItemsService {
 		});
 		const secret = authService.generateTFASecret();
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
-
 		return {
 			secret,
 			url: await authService.generateOTPAuthURL(pk, secret),
 		};
+	}
+
+	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
+		const authService = new AuthenticationService({
+			schema: this.schema,
+		});
+
+		if (!pk) {
+			throw new InvalidCredentialsException();
+		}
+
+		const otpValid = await authService.verifyOTP(pk, otp, secret);
+
+		if (otpValid === false) {
+			throw new InvalidPayloadException(`"otp" is invalid`);
+		}
+
+		const userSecret = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+
+		if (userSecret?.tfa_secret !== null) {
+			throw new InvalidPayloadException('TFA Secret is already set for this user');
+		}
+
+		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
 	}
 
 	async disableTFA(pk: string): Promise<void> {

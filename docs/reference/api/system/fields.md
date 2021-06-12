@@ -206,6 +206,10 @@ GET /fields
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	fields: [directus_fields]
@@ -260,6 +264,10 @@ GET /fields/articles
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	fields_in_collection(collection: String!): directus_fields
@@ -313,6 +321,10 @@ GET /fields/articles/title
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -397,6 +409,10 @@ POST /fields/:collection
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -489,6 +505,10 @@ PATCH /fields/:collection/:field
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_fields_item(collection: String!, field: String!, data: update_directus_fields_input!): directus_fields
@@ -544,6 +564,10 @@ DELETE /fields/articles/title
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

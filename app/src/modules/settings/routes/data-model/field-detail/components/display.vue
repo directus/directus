@@ -3,14 +3,14 @@
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.display && !selectedDisplay">
-			{{ $t('display_not_found', { display: fieldData.meta.display }) }}
+			{{ t('display_not_found', { display: fieldData.meta.display }) }}
 			<div class="spacer" />
-			<button @click="fieldData.meta.display = null">{{ $t('reset_display') }}</button>
+			<button @click="fieldData.meta.display = null">{{ t('reset_display') }}</button>
 		</v-notice>
 
 		<template v-if="fieldData.meta.display && selectedDisplay">
 			<v-notice v-if="!selectedDisplay.options || selectedDisplay.options.length === 0">
-				{{ $t('no_options_available') }}
+				{{ t('no_options_available') }}
 			</v-notice>
 
 			<v-form
@@ -21,7 +21,8 @@
 			/>
 
 			<component
-				v-model="fieldData.meta.display_options"
+				:value="fieldData.meta.display_options"
+				@input="fieldData.meta.display_options = $event"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
@@ -35,7 +36,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs } from 'vue';
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
@@ -57,11 +59,13 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { displays } = getDisplays();
 		const { interfaces } = getInterfaces();
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta?.interface);
 		});
 
 		const selectItems = computed(() => {
@@ -105,12 +109,12 @@ export default defineComponent({
 		});
 
 		const selectedDisplay = computed(() => {
-			return displays.value.find((display: DisplayConfig) => display.id === state.fieldData.meta.display);
+			return displays.value.find((display: DisplayConfig) => display.id === state.fieldData.meta?.display);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);
 
-		return { fieldData, selectItems, selectedDisplay, relations, newCollections, newFields };
+		return { t, fieldData, selectItems, selectedDisplay, relations, newCollections, newFields };
 	},
 });
 </script>

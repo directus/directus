@@ -13,4 +13,3 @@ npx create-directus-project my-project
 ```
 yarn create directus-project my-project
 ```
-

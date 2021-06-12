@@ -233,40 +233,31 @@ describe('items', function () {
 					},
 					{
 						id: 2,
-						title: 'Updated post 2',
-						body: 'Updated post content 2',
+						title: 'Updated post',
+						body: 'Updated post content',
 						published: true,
 					},
 				],
 			});
 
 		const sdk = new Directus<Blog>(url);
-		const item = await sdk.items('posts').updateMany([
-			{
-				id: 1,
-				title: 'Updated post',
-				body: 'Updated post content',
-				published: true,
-			},
-			{
-				id: 2,
-				title: 'Updated post 2',
-				body: 'Updated post content 2',
-				published: true,
-			},
-		]);
+		const items = await sdk.items('posts').updateMany([1, 2], {
+			title: 'Updated post',
+			body: 'Updated post content',
+			published: true,
+		});
 
-		expect(item.data?.[0]).toMatchObject({
+		expect(items.data?.[0]).toMatchObject({
 			id: 1,
 			title: 'Updated post',
 			body: 'Updated post content',
 			published: true,
 		});
 
-		expect(item.data?.[1]).toMatchObject({
+		expect(items.data?.[1]).toMatchObject({
 			id: 2,
-			title: 'Updated post 2',
-			body: 'Updated post content 2',
+			title: 'Updated post',
+			body: 'Updated post content',
 			published: true,
 		});
 	});

@@ -1,8 +1,8 @@
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<sidebar-detail icon="layers" :title="t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
-				<div class="type-label">{{ $t('layout') }}</div>
+				<div class="type-label">{{ t('layout') }}</div>
 				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
 					<template v-if="currentLayout.icon" #prepend>
 						<v-icon :name="currentLayout.icon" />
@@ -10,27 +10,31 @@
 				</v-select>
 			</div>
 
-			<portal-target name="layout-options" class="portal-contents" />
+			<component :is="`layout-options-${layout}`" />
 		</div>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: String,
 			default: 'tabular',
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { layouts } = getLayouts();
 
 		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.value);
+			const layout = layouts.value.find((layout) => layout.id === props.modelValue);
 
 			if (layout === undefined) {
 				return layouts.value.find((layout) => layout.id === 'tabular');
@@ -41,14 +45,14 @@ export default defineComponent({
 
 		const layout = computed({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newType: string) {
-				emit('input', newType);
+				emit('update:modelValue', newType);
 			},
 		});
 
-		return { currentLayout, layouts, layout };
+		return { t, currentLayout, layouts, layout };
 	},
 });
 </script>
@@ -56,17 +60,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.portal-contents {
-	display: contents;
+:deep(.layout-options) {
+	--form-vertical-gap: 24px;
+	@include form-grid;
 }
 
-.layout-options ::v-deep {
-	--form-vertical-gap: 24px;
-
-	.type-label {
-		font-size: 1rem;
-	}
-
-	@include form-grid;
+:deep(.layout-options .type-label) {
+	font-size: 1rem;
 }
 </style>

@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_on',
 			type: 'string',
 			meta: {
-				interface: 'text-input',
+				interface: 'input',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_on_placeholder',
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.label_off',
 			type: 'string',
 			meta: {
-				interface: 'text-input',
+				interface: 'input',
 				width: 'half',
 				options: {
 					placeholder: '$t:displays.boolean.label_off_placeholder',
@@ -38,7 +38,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_on',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
@@ -50,7 +50,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_off',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
@@ -62,7 +62,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_on',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -74,7 +74,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.color_off',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {

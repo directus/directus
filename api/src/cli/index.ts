@@ -35,6 +35,7 @@ dbCommand
 	.action(() => dbMigrate('down'));
 
 const usersCommand = program.command('users');
+
 usersCommand
 	.command('create')
 	.description('Create a new user')
@@ -42,6 +43,7 @@ usersCommand
 	.option('--password <value>', `user's password`)
 	.option('--role <value>', `user's role`)
 	.action(usersCreate);
+
 usersCommand
 	.command('passwd')
 	.description('Set user password')
@@ -52,10 +54,8 @@ usersCommand
 const rolesCommand = program.command('roles');
 rolesCommand
 	.command('create')
-	.storeOptionsAsProperties(false)
-	.passCommandToAction(false)
 	.description('Create a new role')
-	.option('--name <value>', `name for the role`)
+	.option('--role <value>', `name for the role`)
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
 

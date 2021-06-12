@@ -1,40 +1,50 @@
 # Contributing
 
-> Our team truly appreciates every single contributor, community member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely free and open-source is our way of saying: **Thank you!**
+> Our team truly appreciates every single contributor, community member, GitHub star, pull-request, bug report, and
+> feature request. Keeping Directus completely free and open-source is our way of saying: **Thank you!**
 
 ::: tip We're here to help!
 
-If you have _any_ questions along your contributor journey, please feel free to come chat with us on our [Discord Community](https://directus.chat).
+If you have _any_ questions along your contributor journey, please feel free to come chat with us on our
+[Discord Community](https://directus.chat).
 
 :::
 
 ## Code of Conduct
 
-**The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.**
+**The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways
+we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this
+code.**
 
-**Our contributors and maintainers work extremely hard to build Directus as premium open-source software. Please be respectful of those efforts throughout our ecosystem. Trolling, harassing, insulting, or other unacceptable behavior by participants will not be tolerated.**
+**Our contributors and maintainers work extremely hard to build Directus as premium open-source software. Please be
+respectful of those efforts throughout our ecosystem. Trolling, harassing, insulting, or other unacceptable behavior by
+participants will not be tolerated.**
 
-In the interest of fostering an open and welcoming environment, we as pledge to make participation in our project and community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as pledge to make participation in our project and
+community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex
+characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality,
+personal appearance, race, religion, or sexual identity and orientation.
 
-Examples of behavior that contributes to creating a positive environment
-include:
+Examples of behavior that contributes to creating a positive environment include:
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints and experiences
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
 
-**Before continuing, please take a moment to read our full [Code of Conduct](https://github.com/directus/directus/blob/main/contributing.md).**
+**Before continuing, please take a moment to read our full
+[Code of Conduct](https://github.com/directus/directus/blob/main/contributing.md).**
 
 ## Wait — Before you Begin
 
-When contributing to this repository, it is important to first discuss the change you wish to make with the owners of this repository. This can be done via [GitHub Issue](https://github.com/directus/directus/issues), [GitHub Discussions](https://github.com/directus/directus/discussions), [Discord](https://directus.chat), [email](mailto:info@directus.io), or any other method.
+When contributing to this repository, it is important to first discuss the change you wish to make with the owners of
+this repository. This can be done via [GitHub Issue](https://github.com/directus/directus/issues),
+[GitHub Discussions](https://github.com/directus/directus/discussions), [Discord](https://directus.chat),
+[email](mailto:info@directus.io), or any other method.
 
-Following this rule will help avoid wasted time caused by multiple people working on the same issue or writing code that will not be merged.
+Following this rule will help avoid wasted time caused by multiple people working on the same issue or writing code that
+will not be merged.
 
 ## Feature Requests
 
@@ -68,11 +78,7 @@ Issues. Please ensure the following for all submissions:
 - You have checked that no similar issue already exists
 - You have entered a clear and concise title
 - You have followed the issue template, with stack details and steps to reproduce
-- You have already tried the following troubleshooting steps:
-  - You are on the latest version of Directus
-  - You have stopped (`CTRL+C`) and restarted the server
-  - You have confirmed the issue is not related to your own custom code
-  - Dev Only: You have cleared and reinstalled all dependencies
+- You have already completed all [troubleshooting steps](/getting-started/support#troubleshooting-steps)
 
 ## Reporting Security Vulnerabilities
 

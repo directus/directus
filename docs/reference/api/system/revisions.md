@@ -109,6 +109,10 @@ SEARCH /revisions
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	revisions: [directus_revisions]
@@ -163,6 +167,10 @@ GET /revisions/322
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {

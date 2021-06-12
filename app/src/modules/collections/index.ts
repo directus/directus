@@ -1,43 +1,44 @@
 import { defineModule } from '@/modules/define';
 import { addQueryToPath } from '@/utils/add-query-to-path';
+import RouterPass from '@/utils/router-passthrough';
 import { NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import Overview from './routes/overview.vue';
 
-const checkForSystem: NavigationGuard = (to, from, next) => {
-	if (!to.params?.collection) return next();
+const checkForSystem: NavigationGuard = (to, from) => {
+	if (!to.params?.collection) return;
 
 	if (to.params.collection === 'directus_users') {
 		if (to.params.primaryKey) {
-			return next(`/users/${to.params.primaryKey}`);
+			return `/users/${to.params.primaryKey}`;
 		} else {
-			return next('/users');
+			return '/users';
 		}
 	}
 
 	if (to.params.collection === 'directus_files') {
 		if (to.params.primaryKey) {
-			return next(`/files/${to.params.primaryKey}`);
+			return `/files/${to.params.primaryKey}`;
 		} else {
-			return next('/files');
+			return '/files';
 		}
 	}
 
 	if (to.params.collection === 'directus_activity') {
 		if (to.params.primaryKey) {
-			return next(`/activity/${to.params.primaryKey}`);
+			return `/activity/${to.params.primaryKey}`;
 		} else {
-			return next('/activity');
+			return '/activity';
 		}
 	}
 
 	if (to.params.collection === 'directus_webhooks') {
 		if (to.params.primaryKey) {
-			return next(`/settings/webhooks/${to.params.primaryKey}`);
+			return `/settings/webhooks/${to.params.primaryKey}`;
 		} else {
-			return next('/settings/webhooks');
+			return '/settings/webhooks';
 		}
 	}
 
@@ -47,10 +48,8 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		'bookmark' in to.query === false &&
 		to.params.collection === from.params.collection
 	) {
-		return next(addQueryToPath(to.fullPath, { bookmark: from.query.bookmark }));
+		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}
-
-	return next();
 };
 
 export default defineModule({
@@ -60,29 +59,35 @@ export default defineModule({
 	routes: [
 		{
 			name: 'collections-overview',
-			path: '/',
+			path: '',
 			component: Overview,
 		},
 		{
-			name: 'collections-collection',
-			path: '/:collection',
-			component: CollectionOrItem,
-			props: (route) => ({
-				collection: route.params.collection,
-				bookmark: route.query.bookmark,
-			}),
-			beforeEnter: checkForSystem,
-		},
-		{
-			name: 'collections-item',
-			path: '/:collection/:primaryKey',
-			component: Item,
-			props: true,
-			beforeEnter: checkForSystem,
+			path: ':collection',
+			component: RouterPass,
+			children: [
+				{
+					name: 'collections-collection',
+					path: '',
+					component: CollectionOrItem,
+					props: (route) => ({
+						collection: route.params.collection,
+						bookmark: route.query.bookmark,
+					}),
+					beforeEnter: checkForSystem,
+				},
+				{
+					name: 'collections-item',
+					path: ':primaryKey',
+					component: Item,
+					props: true,
+					beforeEnter: checkForSystem,
+				},
+			],
 		},
 		{
 			name: 'collections-item-not-found',
-			path: '/:collection/*',
+			path: ':_(.+)+',
 			component: ItemNotFound,
 			beforeEnter: checkForSystem,
 		},

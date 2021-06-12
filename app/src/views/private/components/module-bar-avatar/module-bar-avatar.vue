@@ -9,19 +9,19 @@
 					x-large
 					:class="{ show: hover }"
 					class="sign-out"
-					v-tooltip.right="$t('sign_out')"
+					v-tooltip.right="t('sign_out')"
 				>
 					<v-icon name="logout" />
 				</v-button>
 			</template>
 
 			<v-card>
-				<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
+				<v-card-title>{{ t('sign_out_confirm') }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="signOutActive = !signOutActive">
-						{{ $t('cancel') }}
+						{{ t('cancel') }}
 					</v-button>
-					<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
+					<v-button :to="signOutLink">{{ t('sign_out') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -36,26 +36,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import { useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const userStore = useUserStore();
 
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.state.currentUser === null) return null;
-			if (userStore.state.currentUser.avatar === null) return null;
+			if (userStore.currentUser === null) return null;
+			if (userStore.currentUser.avatar === null) return null;
 
-			return addTokenToURL(getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`);
+			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
 		const userProfileLink = computed<string>(() => {
-			const id = userStore.state.currentUser?.id;
+			const id = userStore.currentUser?.id;
 			return `/users/${id}`;
 		});
 
@@ -65,14 +68,12 @@ export default defineComponent({
 
 		const userFullName = userStore.fullName;
 
-		return { userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
+		return { t, userFullName, avatarURL, userProfileLink, signOutActive, signOutLink };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .module-bar-avatar {
 	position: relative;
 
@@ -127,7 +128,7 @@ export default defineComponent({
 		transform: translateY(-100%);
 		transition: transform var(--fast) var(--transition);
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			transform: translateY(0);
 		}
 

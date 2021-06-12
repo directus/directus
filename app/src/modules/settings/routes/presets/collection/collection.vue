@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('settings_presets')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('settings_presets')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -11,26 +11,26 @@
 		<template #actions>
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="t('delete')">
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="deleteSelection" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_preset')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_preset')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -40,12 +40,12 @@
 		</template>
 
 		<div class="presets-collection">
-			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="$t('no_presets')" icon="bookmark">
-				{{ $t('no_presets_copy') }}
+			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="t('no_presets')" icon="bookmark">
+				{{ t('no_presets_copy') }}
 
 				<template #append>
 					<v-button :to="addNewLink">
-						{{ $t('no_presets_cta') }}
+						{{ t('no_presets_cta') }}
 					</v-button>
 				</template>
 			</v-info>
@@ -59,20 +59,20 @@
 				show-select
 				v-else
 			>
-				<template #item.scope="{ item }">
+				<template #[`item.scope`]="{ item }">
 					<span :class="{ all: item.scope === 'all' }">
-						{{ item.scope === 'all' ? $t('all') : item.scope }}
+						{{ item.scope === 'all' ? t('all') : item.scope }}
 					</span>
 				</template>
 
-				<template #item.layout="{ item }">
+				<template #[`item.layout`]="{ item }">
 					<value-null v-if="!item.layout" />
 					<span v-else>{{ item.layout }}</span>
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<span :class="{ default: item.name === null }">
-						{{ item.name === null ? $t('default') : item.name }}
+						{{ item.name === null ? t('default') : item.name }}
 					</span>
 				</template>
 			</v-table>
@@ -85,19 +85,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
-import { TranslateResult } from 'vue-i18n';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
-import i18n from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type PresetRaw = {
@@ -111,15 +110,19 @@ type PresetRaw = {
 
 type Preset = {
 	id: number;
-	name: null | string | TranslateResult;
+	name: null | string;
 	scope: string;
-	collection: string | TranslateResult;
-	layout: string | TranslateResult;
+	collection: string;
+	layout: string;
 };
 
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { layouts } = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
@@ -133,6 +136,7 @@ export default defineComponent({
 		getPresets();
 
 		return {
+			t,
 			addNewLink,
 			usePresets,
 			loading,
@@ -216,28 +220,28 @@ export default defineComponent({
 		function useTable() {
 			const headers: Header[] = [
 				{
-					text: i18n.t('collection'),
+					text: t('collection'),
 					value: 'collection',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.t('scope'),
+					text: t('scope'),
 					value: 'scope',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.t('layout'),
+					text: t('layout'),
 					value: 'layout',
 					align: 'left',
 					sortable: true,
 					width: 200,
 				},
 				{
-					text: i18n.t('name'),
+					text: t('name'),
 					value: 'name',
 					align: 'left',
 					sortable: true,

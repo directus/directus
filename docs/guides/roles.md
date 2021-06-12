@@ -1,6 +1,7 @@
 # Roles
 
-> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the platform. [Learn more about Roles](/concepts/roles/).
+> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
+> platform. [Learn more about Roles](/concepts/roles/).
 
 ## Creating a Role
 
@@ -26,8 +27,8 @@
 
 ### Customizing the Module Navigation
 
-The options in the [Module Bar](/concepts/application/#_1-module-bar) can be overridden with custom options per role. When this
-setting is empty, the default modules are used.
+The options in the [Module Bar](/concepts/application/#_1-module-bar) can be overridden with custom options per role.
+When this setting is empty, the default modules are used.
 
 1. Navigate to **Settings > Roles & Permissions > [Role Name]**
 2. Scroll to the **Module Navigation** field
@@ -81,9 +82,9 @@ override the Collections module.
 
 ### Customizing the Collection Navigation
 
-The collections in the [Navigation Bar](/concepts/application/#_2-navigation-bar) can be overridden with custom options per role. When
-this setting is empty, all collections that the user has permission to see are shown alphabetically in a single,
-unlabeled group.
+The collections in the [Navigation Bar](/concepts/application/#_2-navigation-bar) can be overridden with custom options
+per role. When this setting is empty, all collections that the user has permission to see are shown alphabetically in a
+single, unlabeled group.
 
 1. Navigate to **Settings > Roles & Permissions > [Role Name]**
 2. Scroll to the **Collection Navigation** field

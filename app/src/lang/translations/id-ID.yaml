@@ -22,6 +22,7 @@ create_webhook: Buat Webhook
 invite_users: Undang Pengguna Lain
 email_examples: 'admin@website.com, user@website.com...'
 invite: Undang
+email_already_invited: Email "{email}" sudah diundang
 emails: Surel
 connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
@@ -80,9 +81,14 @@ validationError:
   null: Nilai harus kosong
   nnull: Nilai tidak boleh kosong
   required: Nilai diperlukan
+  unique: Nilai harus unik
+  regex: Format nilai tidak tepat
 all_access: Semua Akses
 no_access: Tidak Ada Akses
 use_custom: Gunakan Kustom
+nullable: Dapat dikosongkan
+allow_null_value: Izinkan nilai KOSONG
+enter_value_to_replace_nulls: Harap masukkan nilai baru untuk menggantikan nilai kosong pada kolom ini.
 field_standard: Standar
 field_presentation: Presentasi & Alias
 field_file: Satu Berkas
@@ -137,11 +143,13 @@ decimal: Desimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Teks
 time: Time
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
@@ -225,6 +233,7 @@ item_delete_success: Item telah Dihapus | Item telah Dihapus
 this_collection: Pengumpulan ini
 related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
+translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
 export_data: Ekspor Data
 format: Format
@@ -311,6 +320,10 @@ save_and_create_new: Simpan dan Buat Baru
 save_and_stay: Simpan dan Tinggal
 save_as_copy: Simpan sebagai Salinan
 add_existing: Tambahkan Yang Ada
+creating_items: Membuat Item
+enable_create_button: Aktifkan Tombol Buat Baru
+selecting_items: Memilih item
+enable_select_button: Aktifkan Tombol Pemilihan
 comments: Komentar
 no_comments: Belum Ada Komentar
 click_to_expand: Tekan Untuk Memperluas
@@ -325,7 +338,6 @@ interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
-m2a_builder: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 no_items_copy: Belum ada item pada koleksi ini.
 file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
@@ -335,7 +347,10 @@ no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
 no_webhooks_copy: Belum ada webhook.
 all_items: Semua Item
+csv: CSV
+no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
+no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
@@ -384,6 +399,7 @@ errors:
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
   UNKNOWN: Kesalahan Tidak Terduga
+  INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
@@ -414,6 +430,7 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
 role: Peran
@@ -542,47 +559,37 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primer
-  checkboxes:
-    checkboxes: Kotak Centang
-    allow_other: Izinkan lainnya
-  code:
+  input-code:
     code: Kode
-    line_number: Nomor Baris
-  collection:
+  system-collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Pengumpulan
-  color:
+  select-color:
     color: Warna
   datetime:
     datetime: Datetime
-  display-template:
+  system-display-template:
     display-template: Tampilan Template
-  divider:
+  presentation-divider:
     divider: Pembagi/Pemecah
-  dropdown:
-    allow_other: Izinkan lainnya
+  select-dropdown:
     choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
   files:
     files: Berkas
-  icon:
+  input-hash:
+    hash: Hash
+  select-icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Antarmuka
-  interface-options:
-    interface-options: Opsi Antarmuka
-  many-to-many:
-    many-to-many: Banyak ke banyak
-  many-to-one:
-    many-to-one: Banyak ke Satu
+  select-dropdown-m2o:
     display_template: Tampilan Template
-  numeric:
-    numeric: Numerik
-  toggle:
+  boolean:
     label_default: Diaktifkan
   translations:
     display_template: Tampilan Template

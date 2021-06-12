@@ -5,13 +5,13 @@ fields:
     hidden: true
 
   - field: name
-    interface: text-input
+    interface: input
     options:
       iconRight: title
     width: full
 
   - field: method
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'
@@ -25,13 +25,13 @@ fields:
     width: half
 
   - field: url
-    interface: text-input
+    interface: input
     options:
       iconRight: link
     width: half
 
   - field: status
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'
@@ -55,7 +55,7 @@ fields:
     width: half
 
   - field: data
-    interface: toggle
+    interface: boolean
     options:
       label: Send Event Data
     special: boolean
@@ -63,7 +63,7 @@ fields:
     display: boolean
 
   - field: triggers_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: api
       title: Triggers
@@ -73,7 +73,7 @@ fields:
     width: full
 
   - field: actions
-    interface: checkboxes
+    interface: select-multiple-checkbox
     options:
       choices:
         - text: Create
@@ -107,7 +107,7 @@ fields:
           background: 'var(--purple-25)'
 
   - field: collections
-    interface: collections
+    interface: system-collections
     special: csv
     width: full
     display: labels

@@ -1,12 +1,13 @@
 <template>
-	<v-select @input="$listeners.input" :value="value" :items="languages" :disabled="disabled" />
+	<v-select @update:model-value="$emit('input', $event)" :model-value="value" :items="languages" :disabled="disabled" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

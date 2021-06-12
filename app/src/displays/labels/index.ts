@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:displays.labels.default_foreground',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -26,7 +26,7 @@ export default defineDisplay({
 			name: '$t:displays.labels.default_background',
 			type: 'string',
 			meta: {
-				interface: 'color',
+				interface: 'select-color',
 				width: 'half',
 			},
 			schema: {
@@ -39,7 +39,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.labels.format_label',
 				},
@@ -54,7 +54,7 @@ export default defineDisplay({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
 			},
 			schema: {
 				default_value: false,
@@ -65,7 +65,7 @@ export default defineDisplay({
 			name: '$t:choices',
 			type: 'json',
 			meta: {
-				interface: 'repeater',
+				interface: 'list',
 				options: {
 					template: '{{text}}',
 					fields: [
@@ -74,7 +74,7 @@ export default defineDisplay({
 							name: '$t:text',
 							type: 'string',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: '$t:displays.labels.choices_text_placeholder',
@@ -86,7 +86,7 @@ export default defineDisplay({
 							name: '$t:value',
 							type: 'string',
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								options: {
 									font: 'monospace',
 									placeholder: '$t:displays.labels.choices_value_placeholder',
@@ -99,7 +99,7 @@ export default defineDisplay({
 							name: '$t:foreground_color',
 							type: 'string',
 							meta: {
-								interface: 'color',
+								interface: 'select-color',
 								width: 'half',
 							},
 						},
@@ -108,7 +108,7 @@ export default defineDisplay({
 							name: '$t:background_color',
 							type: 'string',
 							meta: {
-								interface: 'color',
+								interface: 'select-color',
 								width: 'half',
 							},
 						},

@@ -1,15 +1,75 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, RelationsService } from '../services';
-import { PrimaryKey } from '../types';
+import { RelationsService } from '../services';
 import asyncHandler from '../utils/async-handler';
+import validateCollection from '../middleware/collection-exists';
+import Joi from 'joi';
 
 const router = express.Router();
 
 router.use(useCollection('directus_relations'));
+
+router.get(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const relations = await service.readAll();
+		res.locals.payload = { data: relations || null };
+		return next();
+	}),
+	respond
+);
+
+router.get(
+	'/:collection',
+	validateCollection,
+	asyncHandler(async (req, res, next) => {
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const relations = await service.readAll(req.params.collection);
+
+		res.locals.payload = { data: relations || null };
+		return next();
+	}),
+	respond
+);
+
+router.get(
+	'/:collection/:field',
+	validateCollection,
+	asyncHandler(async (req, res, next) => {
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const relation = await service.readOne(req.params.collection, req.params.field);
+
+		res.locals.payload = { data: relation || null };
+		return next();
+	}),
+	respond
+);
+
+const newRelationSchema = Joi.object({
+	collection: Joi.string().required(),
+	field: Joi.string().required(),
+	related_collection: Joi.string().allow(null).optional(),
+	schema: Joi.object({
+		on_delete: Joi.string().valid('NO ACTION', 'SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT'),
+	})
+		.unknown()
+		.allow(null),
+	meta: Joi.any(),
+});
 
 router.post(
 	'/',
@@ -19,24 +79,17 @@ router.post(
 			schema: req.schema,
 		});
 
-		const savedKeys: PrimaryKey[] = [];
+		const { error } = newRelationSchema.validate(req.body);
 
-		if (Array.isArray(req.body)) {
-			const keys = await service.createMany(req.body);
-			savedKeys.push(...keys);
-		} else {
-			const key = await service.createOne(req.body);
-			savedKeys.push(key);
+		if (error) {
+			throw new InvalidPayloadException(error.message);
 		}
 
+		await service.createOne(req.body);
+
 		try {
-			if (Array.isArray(req.body)) {
-				const items = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: items };
-			} else {
-				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: item };
-			}
+			const createdRelation = await service.readOne(req.body.collection, req.body.field);
+			res.locals.payload = { data: createdRelation || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -50,89 +103,38 @@ router.post(
 	respond
 );
 
-const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new RelationsService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
-	const records = await service.readByQuery(req.sanitizedQuery);
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
-
-	res.locals.payload = { data: records || null, meta };
-	return next();
+const updateRelationSchema = Joi.object({
+	collection: Joi.string().optional(),
+	field: Joi.string().optional(),
+	related_collection: Joi.string().allow(null).optional(),
+	schema: Joi.object({
+		on_delete: Joi.string().valid('NO ACTION', 'SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT'),
+	})
+		.unknown()
+		.allow(null),
+	meta: Joi.any(),
 });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
-
-router.get(
-	'/:pk',
-	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
-
-		res.locals.payload = { data: record || null };
-		return next();
-	}),
-	respond
-);
-
 router.patch(
-	'/',
-	validateBatch('update'),
+	'/:collection/:field',
+	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		let keys: PrimaryKey[] = [];
+		const { error } = updateRelationSchema.validate(req.body);
 
-		if (req.body.keys) {
-			keys = await service.updateMany(req.body.keys, req.body.data);
-		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+		if (error) {
+			throw new InvalidPayloadException(error.message);
 		}
 
-		try {
-			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result };
-		} catch (error) {
-			if (error instanceof ForbiddenException) {
-				return next();
-			}
-
-			throw error;
-		}
-
-		return next();
-	}),
-	respond
-);
-
-router.patch(
-	'/:pk',
-	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		await service.updateOne(req.params.collection, req.params.field, req.body);
 
 		try {
-			const item = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
+			const updatedField = await service.readOne(req.params.collection, req.params.field);
+			res.locals.payload = { data: updatedField || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -147,37 +149,14 @@ router.patch(
 );
 
 router.delete(
-	'/',
-	validateBatch('delete'),
+	'/:collection/:field',
+	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-
-		if (Array.isArray(req.body)) {
-			await service.deleteMany(req.body);
-		} else if (req.body.keys) {
-			await service.deleteMany(req.body.keys);
-		} else {
-			await service.deleteByQuery(req.body.query);
-		}
-
-		return next();
-	}),
-	respond
-);
-
-router.delete(
-	'/:pk',
-	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		await service.deleteOne(req.params.pk);
-
+		await service.deleteOne(req.params.collection, req.params.field);
 		return next();
 	}),
 	respond

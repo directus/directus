@@ -9,7 +9,7 @@ field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
-db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
+db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
 required: Erforderlich
@@ -20,8 +20,9 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
-email_examples: 'admin@example.com, user@example.com...'
+email_examples: 'admin@beispiel.org, benutzer@beispiel.org...'
 invite: Einladen
+email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
 connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
@@ -61,7 +62,7 @@ the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindest
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
-unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
+unarchive_confirm: Sind Sie sicher, dass dieses Element aus dem Archiv zurückgeholt werden soll?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
 unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
@@ -85,6 +86,9 @@ validationError:
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
+nullable: Nullbar
+allow_null_value: NULL-Wert erlauben
+enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
 field_presentation: Darstellung & Aliasse
 field_file: Eine Datei
@@ -139,6 +143,7 @@ decimal: Dezimal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: Zeichenkette
 text: Text
 time: Zeit
@@ -228,6 +233,7 @@ item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
+translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
 export_data: Daten exportieren
 format: Format
@@ -314,6 +320,10 @@ save_and_create_new: Speichern und Neues anlegen
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
+creating_items: Elemente erstellen
+enable_create_button: Knopf zum Erstellen aktivieren
+selecting_items: Elemente auswählen
+enable_select_button: Knopf zum Auswählen aktivieren
 comments: Kommentare
 no_comments: Noch keine Kommentare
 click_to_expand: Zum Erweitern klicken
@@ -328,7 +338,7 @@ interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
 reset_interface: Schnittstelle zurücksetzen
 display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
-m2a_builder: Builder (Many-to-Any)
+list-m2a: Builder (n:x, Many to Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
@@ -389,13 +399,16 @@ errors:
   FORBIDDEN: Verweigert
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_OTP: Falsches Einmalpasswort
-  INVALID_PAYLOAD: Ungültige Payload
+  INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_QUERY: Ungültige anfrage
   ITEM_LIMIT_REACHED: Elementlimit erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
+  USER_SUSPENDED: Benutzer gesperrt
+  CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   UNKNOWN: Unerwarteter Fehler
+  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
@@ -471,6 +484,8 @@ operators:
   has: Enthält einige dieser Schlüssel
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
+item: Element
+items: Elemente
 upload_file: Datei hochladen
 upload_file_indeterminate: Datei wird hochgeladen...
 upload_file_success: Datei wurde hochgeladen
@@ -488,6 +503,8 @@ value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
+language_display_template: Anzeigevorlage Sprache
+translations_display_template: Anzeigevorlage Übersetzungen
 n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
@@ -529,6 +546,7 @@ display_text: Text anzeigen
 display_text_placeholder: Anzeigetext eingeben...
 tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
+unlimited: Unlimitiert
 open_link_in: Link öffnen in
 new_tab: Neuer Tab
 current_tab: Aktueller Tab
@@ -589,6 +607,8 @@ adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
 creating_in: 'Erstelle Element in {collection}'
 editing_in: 'Bearbeite Element in {collection}'
+creating_unit: 'Erstelle {unit}'
+editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
@@ -596,6 +616,7 @@ settings_permissions: Rollen & Berechtigungen
 settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
+one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Scope
 select: Auswählen...
 layout: Layout
@@ -650,7 +671,7 @@ batch_delete_confirm: >-
 cancel: Abbrechen
 collection: Sammlung
 collections: Sammlungen
-singleton: Singleton
+singleton: Einzelnes Element
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 fields:
@@ -670,13 +691,15 @@ fields:
     note: Notiz
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
-    singleton: Singleton
+    singleton: Einzelnes Element
+    translations: Namens-Übersetzungen der Sammlung
     archive_app_filter: Archivierungs-App-Filter
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
   directus_files:
+    $thumbnail: Miniaturansicht
     title: Titel
     description: Beschreibung
     tags: Stichwörter
@@ -735,7 +758,7 @@ fields:
     icon: Sammlungsicon
     note: Notiz
     hidden: Ausgeblendet
-    singleton: Singleton
+    singleton: Einzelnes Element
     translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
@@ -763,6 +786,14 @@ save_current_datetime: Aktuelles Datum/Zeit speichern
 block: Blockieren
 inline: Inline
 comment: Kommentar
+relational_triggers: Relationale Trigger
+referential_action_field_label_m2o: Beim Löschen von {collection}...
+referential_action_field_label_o2m: Beim Abwählen von {collection}...
+referential_action_no_action: Löschen verhindern
+referential_action_cascade: Lösche das {collection} Element (Cascade)
+referential_action_set_null: '{field} auf Null setzen'
+referential_action_set_default: '{field} au Standardwert setzen'
+choose_action: Aktion auswählen
 continue: Weiter
 continue_as: >-
   <b>{name}</b> ist bereits authentifiziert. Wenn Sie dieses Konto kennen, drücken Sie bitte auf Fortfahren.
@@ -824,10 +855,11 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 interfaces:
-  button-links:
-    button-links: Button-Links
+  presentation-links:
+    presentation-links: Button-Links
     links: Links
     description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
     style: Style
@@ -835,26 +867,26 @@ interfaces:
     link: Links
     button: Buttons
     error: Aktion kann nicht ausgeführt werden
-  checkboxes:
-    checkboxes: Kontrollkästchen
-    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
+  select-multiple-checkbox:
+    checkboxes: Checkboxen
+    description: Zwischen mehreren Optionen auswählen über Checkboxen
     allow_other: Andere erlauben
     show_more: 'Zeige {count} mehr'
     items_shown: Angezeigte Elemente
-  code:
+  input-code:
     code: Code
     description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
     placeholder: Code hier eingeben...
-  collection:
+  system-collection:
     collection: Sammlung
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  collections:
+  system-collections:
     collections: Sammlungen
     description: Aus bestehenden Sammlungen auswählen
     include_system_collections: Systemsammlungen einbeziehen
-  color:
+  select-color:
     color: Farbe
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
@@ -867,13 +899,13 @@ interfaces:
     include_seconds: Sekunden einbeziehen
     set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
-  display-template:
+  system-display-template:
     display-template: Anzeigevorlage
-    description: Statische Text- und dynamische Feldwerte mischen
+    description: Statischen Text und dynamische Feldwerte mischen
     collection_field: Sammlungsfeld
     collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
-  divider:
+  presentation-divider:
     divider: Divider
     description: Felder beschriften und in Abschnitte teilen
     title_placeholder: Titel eingeben...
@@ -881,7 +913,7 @@ interfaces:
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
     margin_top_label: Oberen Rand erhöhen
-  dropdown:
+  select-dropdown:
     description: Wert aus einer Dropdown-Liste auswählen
     choices_placeholder: Neue Auswahl hinzufügen
     allow_other: Andere erlauben
@@ -890,8 +922,8 @@ interfaces:
     allow_none_label: Keine Auswahl zulassen
     choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Mehrfachauswahl)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Mehrfachauswahl)
     description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei
@@ -899,33 +931,33 @@ interfaces:
   files:
     files: Dateien
     description: Mehrere Dateien auswählen oder hochladen
-  hash:
+  input-hash:
     hash: Hash
     description: Den zu hashenden Wert eingeben
     masked: Maskiert
     masked_label: Wahre Werte ausblenden
-  icon:
+  select-icon:
     icon: Symbol
     description: Icon aus einer Dropdown-Liste auswählen
     search_for_icon: Nach Icon suchen...
-  image:
+  file-image:
     image: Bild
     description: Bild auswählen oder hochladen
-  interface:
+  system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
     placeholder: Schnittstelle auswählen...
-  interface-options:
+  system-interface-options:
     interface-options: Schnittstellenoptionen
-    description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
-  many-to-many:
-    many-to-many: n:n-Beziehung
+    description: Ein Popup zum Auswählen der Schnittstellenoptionen
+  list-m2m:
+    many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
-  many-to-one:
-    many-to-one: n:1-Beziehung
+  select-dropdown-m2o:
+    many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
     customSyntax: Benutzerdefinierte Blöcke
@@ -933,37 +965,29 @@ interfaces:
     customSyntax_add: Eigene Syntax hinzufügen
     box: Block / Inline
     imageToken: Bild-Token
-    imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
-  notice:
+    imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
+  presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
-  numeric:
-    numeric: Numerisch
-    description: Nummer eingeben
-    minimum_value: Minimalwert
-    maximum_value: Maximalwert
-    step_interval: Schrittintervall
-  one-to-many:
-    one-to-many: 1 zu n
+  list-o2m:
+    one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
-  radio-buttons:
+  select-radio:
     radio-buttons: Radio Buttons
     description: Eine von mehreren Optionen auswählen
-  repeater:
+  list:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
+    add_label: 'Label für "Neu erstellen"'
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
-  slug:
-    slug: Slug
-    description: Wort eingeben, das mit Bindestrichen verbunden ist
   tags:
     tags: Stichwörter
     description: Tags auswählen oder hinzufügen
@@ -978,17 +1002,24 @@ interfaces:
     alphabetize: Alphabetisch
     alphabetize_label: Alphabetische Reihenfolge erzwingen
     add_tags: Tags hinzufügen...
-  text-input:
-    text-input: Texteingabe
-    description: Einen einzeiligen Text eingeben
-    trim: Beschneiden
-    trim_label: Anfang und Ende kürzen
+  input:
+    input: Eingabe
+    description: Wert manuell eingeben
+    trim: Leerzeichen entfernen
+    trim_label: Leerzeichen am Anfang und Ende entfernen
     mask: Maskiert
     mask_label: Tatsächlichen Wert ausblenden
-  textarea:
-    textarea: Textfeld
+    clear: Gelöschter Wert
+    clear_label: Als leeren String abspeichern
+    minimum_value: Minimalwert
+    maximum_value: Maximalwert
+    step_interval: Schrittintervall
+    slug: URL-sicher machen
+    slug_label: Eingegebenen Wert URL-sicher machen
+  input-multiline:
+    textarea: Textfeld (mehrzeilig)
     description: Mehrzeiligen Klartext eingeben
-  toggle:
+  boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
     label_placeholder: Label eingeben...
@@ -996,9 +1027,9 @@ interfaces:
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
-  tree-view:
+  list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
-    recursive_only: Die Baumansicht funktioniert nur für rekursive Abhängigkeiten.
+    recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
   user:
     user: Benutzer
     description: Bestehenden Benutzer auswählen
@@ -1007,12 +1038,19 @@ interfaces:
       auto: Auto
       dropdown: Dropdown
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Rich-Text-Editor, der HTML-Inhalte erzeugt
-    toolbar: Symbolleiste
-    custom_formats: Benutzerdefiniertes Format
+    description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
+    toolbar: Toolbar
+    custom_formats: Benutzerdefinierte Formate
     options_override: Optionen überschreiben
+  input-autocomplete-api:
+    input-autocomplete-api: Auto-Complete Eingabe (API)
+    description: Auto-Complete bei der Suche von externen API-Werten.
+    results_path: Pfad Ergebnis
+    value_path: Wertpfad
+    trigger: Trigger
+    rate: Rate
 displays:
   boolean:
     boolean: Boolean
@@ -1115,3 +1153,7 @@ layouts:
     comfortable: Groß
     compact: Klein
     cozy: Mittel
+  calendar:
+    calendar: Kalender
+    start_date_field: Datumsfeld Start
+    end_date_field: Datumsfeld Ende

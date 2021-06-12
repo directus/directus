@@ -1,6 +1,7 @@
 # Users
 
-> Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines its Permissions. [Learn more about Users](/concepts/users/).
+> Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines
+> its Permissions. [Learn more about Users](/concepts/users/).
 
 ## Creating a User
 
@@ -34,7 +35,8 @@ This section of the User Detail is only visible/editable by the current user, an
 
 #### Status
 
-The User's Status determines if an account is able to access the platform or not. Only the `active` state is able to authenticate, all others are simply descriptive inactive states.
+The User's Status determines if an account is able to access the platform or not. Only the `active` state is able to
+authenticate, all others are simply descriptive inactive states.
 
 - **Draft** — An incomplete user; no App/API access
 - **Invited** — Has a pending invite to the project; no App/API access until accepted

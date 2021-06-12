@@ -55,6 +55,27 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		fields: ['*'],
 	},
 	{
+		collection: 'directus_users',
+		action: 'update',
+		permissions: {
+			id: {
+				_eq: '$CURRENT_USER',
+			},
+		},
+		fields: [
+			'first_name',
+			'last_name',
+			'email',
+			'password',
+			'location',
+			'title',
+			'description',
+			'avatar',
+			'language',
+			'theme',
+		],
+	},
+	{
 		collection: 'directus_roles',
 		action: 'read',
 		permissions: {},

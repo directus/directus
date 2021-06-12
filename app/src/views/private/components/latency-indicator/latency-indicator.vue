@@ -6,24 +6,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { useLatencyStore } from '@/stores';
 import { sortBy } from 'lodash';
-import { i18n } from '@/lang';
 import ms from 'ms';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const latencyStore = useLatencyStore();
 
 		const lastLatency = computed(() => {
-			const sorted = sortBy(latencyStore.state.latency, ['timestamp']);
+			const sorted = sortBy(latencyStore.latency, ['timestamp']);
 			return sorted[sorted.length - 1];
 		});
 
 		const avgLatency = computed(() => {
-			if (!latencyStore.state.latency || latencyStore.state.latency.length === 0) return 0;
-			const sorted = sortBy(latencyStore.state.latency, ['timestamp']);
+			if (!latencyStore.latency || latencyStore.latency.length === 0) return 0;
+			const sorted = sortBy(latencyStore.latency, ['timestamp']);
 			const lastFive = sorted.slice(Math.max(sorted.length - 5, 0));
 			let total = 0;
 
@@ -44,13 +46,13 @@ export default defineComponent({
 		const latencyTooltip = computed(() => {
 			switch (connectionStrength.value) {
 				case 4:
-					return `${i18n.t('connection_excellent')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${t('connection_excellent')}\n(${ms(avgLatency.value)} ${t('latency')})`;
 				case 3:
-					return `${i18n.t('connection_good')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${t('connection_good')}\n(${ms(avgLatency.value)} ${t('latency')})`;
 				case 2:
-					return `${i18n.t('connection_fair')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${t('connection_fair')}\n(${ms(avgLatency.value)} ${t('latency')})`;
 				case 1:
-					return `${i18n.t('connection_poor')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${t('connection_poor')}\n(${ms(avgLatency.value)} ${t('latency')})`;
 				default:
 					return null;
 			}

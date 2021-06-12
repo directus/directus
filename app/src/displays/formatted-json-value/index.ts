@@ -15,7 +15,7 @@ export default defineDisplay({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '{{ field }}',
 				},

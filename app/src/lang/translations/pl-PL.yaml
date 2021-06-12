@@ -88,6 +88,7 @@ no_access: Brak dostępu
 use_custom: Użyj niestandardowych
 nullable: Bez wartości
 allow_null_value: Zezwalaj na wartość NULL
+enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
 field_standard: Standard
 field_presentation: Prezentacja i aliasy
 field_file: Pojedynczy plik
@@ -142,6 +143,7 @@ decimal: Liczba dziesiętna
 float: Liczba zmiennoprzecinkowa
 integer: Liczba całkowita
 json: JSON
+xml: XML
 string: Ciąg znaków
 text: Tekst
 time: Czas
@@ -336,7 +338,7 @@ interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 reset_interface: Resetuj interfejs
 display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
-m2a_builder: Konstruktor (M2A)
+list-m2a: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'
@@ -404,7 +406,9 @@ errors:
   ROUTE_NOT_FOUND: Nie znaleziono
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
+  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
   UNKNOWN: Nieoczekiwany błąd
+  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
@@ -499,6 +503,8 @@ value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
 create_item: Utwórz element
 display_template: Wyświetl szablon
+language_display_template: Szablon wyświetlanego języka
+translations_display_template: Szablon wyświetlania tłumaczeń
 n_items_selected: 'Nie wybrano elementów | 1 wybrany element | {n} wybranych elementów'
 per_page: Na stronę
 all_files: Wszystkie pliki
@@ -610,6 +616,7 @@ settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
+one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 select: Wybierz...
 layout: Układ
@@ -779,6 +786,14 @@ save_current_datetime: Zapisz bieżącą datę/czas
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+relational_triggers: Wyzwalacze relacji
+referential_action_field_label_m2o: Po usunięciu {collection}...
+referential_action_field_label_o2m: Po odznaczeniu {collection}...
+referential_action_no_action: Zapobiegaj usunięciu
+referential_action_cascade: Usuń {collection} element (kaskada)
+referential_action_set_null: Pola oznaczone jako bez wartości {field}
+referential_action_set_default: Ustaw {field} na wartość domyślną
+choose_action: Wybierz akcję
 continue: Kontynuuj
 continue_as: >-
   <b>{name}</b> jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
@@ -840,10 +855,11 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
-  button-links:
-    button-links: Linki przycisków
+  presentation-links:
+    presentation-links: Linki przycisków
     links: Linki
     description: Konfigurowalne przyciski linków do uruchamiania dynamicznych adresów URL
     style: Style
@@ -851,26 +867,26 @@ interfaces:
     link: Linki
     button: Przyciski
     error: Nie można wykonać akcji
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Pola wyboru
     description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
     allow_other: Zezwól na inne
     show_more: 'Pokaż {count} więcej'
     items_shown: Wyświetlane elementy
-  code:
+  input-code:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
     line_number: Numer linii
     placeholder: Wprowadź kod tutaj...
-  collection:
+  system-collection:
     collection: Kolekcja
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  collections:
+  system-collections:
     collections: Kolekcje
     description: Wybierz pomiędzy istniejącymi kolekcjami
     include_system_collections: Dołącz kolekcje systemowe
-  color:
+  select-color:
     color: Kolor
     description: Wprowadź lub wybierz kolor
     placeholder: Wybierz kolor...
@@ -883,31 +899,31 @@ interfaces:
     include_seconds: Uwzględnij sekundy
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
-  display-template:
+  system-display-template:
     display-template: Wyświetl szablon
     description: Wymieszaj wartości pola statycznego i pola dynamicznego
     collection_field: Pole kolekcji
     collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
     select_a_collection: Wybierz kolekcje
-  divider:
+  presentation-divider:
     divider: Separator
     description: Etykietowanie i dzielenie pól na sekcje
     title_placeholder: Wprowadź tytuł...
     inline_title: Tytuł w linii
     inline_title_label: Pokaż tytuł w linii
     margin_top: Margines górny
-    margin_top_label: Zwiększ górny margines
-  dropdown:
-    description: Wybierz ikonę z rozwijanej listy
+    margin_top_label: Zwiększ margines górny
+  select-dropdown:
+    description: Wybierz wartość z listy rozwijanej
     choices_placeholder: Dodaj nowy wybór
     allow_other: Zezwól na inne
     allow_other_label: Zezwalaj na inne wartości
-    allow_none: Zezwalaj na None
+    allow_none: Zezwalaj na brak
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
-  dropdown-multiselect:
-    dropdown-multiselect: Rozwijanie menu listy (Wielokrotnego wyboru)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
     description: Wybierz wiele wartości z listy rozwijanej
   file:
     file: Plik
@@ -915,33 +931,33 @@ interfaces:
   files:
     files: Pliki
     description: Wybierz lub prześlij wiele plików
-  hash:
+  input-hash:
     hash: Hash
     description: Wprowadź wartość do hashowania
     masked: Zamaskowany
     masked_label: Ukryj rzeczywiste wartości
-  icon:
+  select-icon:
     icon: Ikona
     description: Wybierz ikonę z listy rozwijanej
     search_for_icon: Szukaj ikony...
-  image:
+  file-image:
     image: Obraz
     description: Wybierz lub prześlij plik
-  interface:
+  system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
     placeholder: Wybierz interfejs...
-  interface-options:
+  system-interface-options:
     interface-options: Opcje interfejsu
     description: Okno do wyboru opcji interfejsu
-  many-to-many:
+  list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
     display_template: Wyświetl szablon
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
     customSyntax: Niestandardowe bloki
@@ -949,38 +965,29 @@ interfaces:
     customSyntax_add: Dodaj własną składnię
     box: Blok / Inline
     imageToken: Token obrazu
-    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazu
-  notice:
+    imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+  presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
     text: Wprowadź zawartość informacji...
-  numeric:
-    numeric: Numeryczne
-    description: Wprowadź liczbę
-    minimum_value: Wartość minimalna
-    maximum_value: Wartość maksymalna
-    step_interval: Czas kroku
-  one-to-many:
+  list-o2m:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
-  radio-buttons:
-    radio-buttons: Przyciski jednokrotnego wyboru
+  select-radio:
+    radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów
-  repeater:
+  list:
     repeater: Powtarzaj
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
-    add_label: 'Utwórz nową etykietę'
+    add_label: 'Etykieta "Utwórz nowy"'
     field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
     always_show_value: Zawsze pokazuj wartość
-  slug:
-    slug: Slug
-    description: Wpisz słowo połączone z myślnikami
   tags:
     tags: Etykiety
     description: Wybierz lub dodaj tagi
@@ -995,19 +1002,24 @@ interfaces:
     alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
-  text-input:
-    text-input: Pole tekstowe
-    description: Wprowadź pojedynczą linię tekstu
+  input:
+    input: Wprowadź
+    description: Ręcznie wprowadź wartość
     trim: Przytnij
     trim_label: Przytnij początek i koniec
     mask: Zamaskowany
     mask_label: Ukryj rzeczywistą wartość
     clear: Wyczyść wartość
     clear_label: Zapisz jako pusty ciąg
-  textarea:
+    minimum_value: Wartość minimalna
+    maximum_value: Maksymalna Wartość
+    step_interval: Czas kroku
+    slug: Slugify
+    slug_label: Bezpieczny URL wprowadzonej wartości
+  input-multiline:
     textarea: Obszar tekstowy
-    description: Wprowadź wieloliniowy tekst
-  toggle:
+    description: Wprowadź wieloliniowy zwykły tekst
+  boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
     label_placeholder: Wprowadź etykietę...
@@ -1015,7 +1027,7 @@ interfaces:
   translations:
     display_template: Wyświetl szablon
     no_collection: Brak kolekcji
-  tree-view:
+  list-o2m-tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
     recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:
@@ -1026,12 +1038,19 @@ interfaces:
       auto: Automatycznie
       dropdown: Lista rozwijana
       modal: Okno
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
     options_override: Zastąp opcje
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: Typ wyszukiwania dla zewnętrznych wartości API.
+    results_path: Ścieżka wyników
+    value_path: Ścieżka bazowa
+    trigger: Wyzwalacz
+    rate: Oceń
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1134,3 +1153,7 @@ layouts:
     comfortable: Wygodny
     compact: Kompaktowy
     cozy: Przytulny
+  calendar:
+    calendar: Kalendarz
+    start_date_field: Pole daty rozpoczęcia
+    end_date_field: Pole daty zakończenia

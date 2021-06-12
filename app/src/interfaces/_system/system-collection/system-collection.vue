@@ -1,0 +1,46 @@
+<template>
+	<v-select :model-value="value" :disabled="disabled" :items="items" @update:model-value="$emit('input', $event)" />
+</template>
+
+<script lang="ts">
+import { defineComponent, computed } from 'vue';
+import { useCollectionsStore } from '@/stores/';
+
+export default defineComponent({
+	emits: ['input'],
+	props: {
+		value: {
+			type: String,
+			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		includeSystem: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	setup(props) {
+		const collectionsStore = useCollectionsStore();
+
+		const collections = computed(() => {
+			if (props.includeSystem) return collectionsStore.collections;
+
+			return collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false
+			);
+		});
+
+		const items = computed(() => {
+			return collections.value.map((collection) => ({
+				text: collection.name,
+				value: collection.collection,
+			}));
+		});
+
+		return { items };
+	},
+});
+</script>

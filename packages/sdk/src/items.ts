@@ -31,7 +31,7 @@ export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
 	deep?: Record<string, QueryMany<T>>;
-	export?: 'json' | 'csv';
+	export?: 'json' | 'csv' | 'xml';
 	filter?: Filter<T>;
 };
 
@@ -40,7 +40,6 @@ export type QueryMany<T> = QueryOne<T> & {
 	limit?: number;
 	offset?: number;
 	page?: number;
-	single?: boolean;
 	meta?: keyof ItemMetadata | '*';
 };
 
@@ -81,7 +80,7 @@ export interface IItems<T extends Item> {
 	readMany(query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
-	updateMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
+	updateMany(ids: ID[], item: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	deleteOne(id: ID): Promise<void>;
 	deleteMany(ids: ID[]): Promise<void>;

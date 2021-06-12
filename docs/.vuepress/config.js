@@ -235,6 +235,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/guides/email-templates',
+						title: 'Email Templates',
+					},
+					{
+						type: 'page',
 						path: '/guides/fields',
 						title: 'Fields',
 					},
@@ -365,11 +370,6 @@ module.exports = {
 							{
 								path: 'reference/app/components/v-breadcrumb',
 								title: 'Breadcrumb',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-button-group',
-								title: 'Button Group',
 								type: 'page',
 							},
 							{

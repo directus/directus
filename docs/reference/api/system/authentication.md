@@ -89,6 +89,10 @@ POST /auth/login
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 mutation {
 	auth_login(email: "admin@example.com", password: "d1r3ctu5") {
@@ -153,6 +157,10 @@ POST /auth/refresh
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 mutation {
 	auth_refresh(refresh_token: "abc...def") {
@@ -200,6 +208,10 @@ POST /auth/logout
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 mutation {
@@ -251,6 +263,10 @@ POST /auth/password/request
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 mutation {
 	auth_password_request(email: "admin@example.com")
@@ -299,6 +315,10 @@ POST /auth/password/reset
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 mutation {

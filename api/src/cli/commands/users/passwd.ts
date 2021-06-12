@@ -1,9 +1,10 @@
 import argon2 from 'argon2';
 import { getSchema } from '../../../utils/get-schema';
+import { UsersService } from '../../../services';
+import getDatabase from '../../../database';
 
 export default async function usersPasswd({ email, password }: { email?: string; password?: string }): Promise<void> {
-	const { default: database } = require('../../../database/index');
-	const { UsersService } = require('../../../services/users');
+	const database = getDatabase();
 
 	if (!email || !password) {
 		console.error('Email and password are required');

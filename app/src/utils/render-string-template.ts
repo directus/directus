@@ -1,5 +1,5 @@
-import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import { render } from 'micromustache';
+import { computed, ComputedRef, Ref } from 'vue';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
 type StringTemplate = {
@@ -26,4 +26,16 @@ export function renderStringTemplate(
 	});
 
 	return { fieldsInTemplate, displayValue };
+}
+
+export function renderPlainStringTemplate(template: string, item?: Record<string, any> | null): string | null {
+	const fieldsInTemplate = getFieldsFromTemplate(template);
+
+	if (!item || !template || !fieldsInTemplate) return null;
+
+	try {
+		return render(template, item, { propsExist: true });
+	} catch {
+		return null;
+	}
 }

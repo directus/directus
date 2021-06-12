@@ -110,6 +110,10 @@ SEARCH /activity
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	activity: [directus_activity]
@@ -156,6 +160,10 @@ GET /activity/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -227,6 +235,10 @@ POST /activity/comment
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
@@ -291,6 +303,10 @@ PATCH /activity/comment/:id
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_comment(id: ID!, comment: String!): directus_activity
@@ -334,6 +350,10 @@ DELETE /activity/comment/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

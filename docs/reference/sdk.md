@@ -230,53 +230,28 @@ await articles.readOne(15);
 Supports optional query:
 
 ```js
-// One
 await articles.readOne(15, { fields: ['title'] });
-```
-
-Supports optional query:
-
-```js
-await articles.updateOne(15, { title: 'An Updated title' }, { fields: ['title'] });
-
-await articles.updateMany(
-	[
-		/*...*/
-	],
-	{ fields: ['title'] }
-);
 ```
 
 ### Update Multiple Items
 
 ```js
-await articles.updateMany([
-	{
-		id: 15,
-		title: 'Article 15',
-	},
-	{
-		id: 42,
-		title: 'Article 42',
-	},
-]);
+await articles.updateMany([15, 42], {
+	title: 'Both articles now have the same title',
+});
 ```
 
 Supports optional query:
 
 ```js
 await articles.updateMany(
-	[
-		{
-			id: 15,
-			title: 'Article 15',
-		},
-		{
-			id: 42,
-			title: 'Article 42',
-		},
-	],
-	{ fields: ['title'] }
+	[15, 42],
+	{
+		title: 'Both articles now have the same title',
+	},
+	{
+		fields: ['title'],
+	}
 );
 ```
 

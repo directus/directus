@@ -133,6 +133,10 @@ SEARCH /presets
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	presets: [directus_presets]
@@ -186,6 +190,10 @@ GET /presets/42
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -250,6 +258,10 @@ POST /presets
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -323,6 +335,10 @@ POST /presets
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
@@ -394,6 +410,10 @@ PATCH /presets/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -468,6 +488,10 @@ PATCH /presets
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
@@ -517,6 +541,10 @@ DELETE /presets/34
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -571,6 +599,10 @@ DELETE /presets
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
