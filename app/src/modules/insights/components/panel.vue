@@ -98,29 +98,47 @@ export default defineComponent({
 			height: undefined,
 		});
 
+		const { onPointerDown, onPointerUp, onPointerMove, dragging } = useDragDrop();
+
 		const positioning = computed(() => {
+			if (dragging.value) {
+				return {
+					x: editedPosition.position_x ?? props.panel.position_x,
+					y: editedPosition.position_y ?? props.panel.position_y,
+					width: editedPosition.width ?? props.panel.width,
+					height: editedPosition.height ?? props.panel.height,
+				};
+			}
+
 			return {
-				x: editedPosition.position_x ?? props.panel.position_x,
-				y: editedPosition.position_y ?? props.panel.position_y,
-				width: editedPosition.width ?? props.panel.width,
-				height: editedPosition.height ?? props.panel.height,
+				x: props.panel.position_x,
+				y: props.panel.position_y,
+				width: props.panel.width,
+				height: props.panel.height,
 			};
 		});
 
 		const positionStyling = computed(() => {
+			if (dragging.value) {
+				return {
+					'--pos-x': editedPosition.position_x ?? props.panel.position_x,
+					'--pos-y': editedPosition.position_y ?? props.panel.position_y,
+					'--width': editedPosition.width ?? props.panel.width,
+					'--height': editedPosition.height ?? props.panel.height,
+				};
+			}
+
 			return {
-				'--pos-x': editedPosition.position_x ?? props.panel.position_x,
-				'--pos-y': editedPosition.position_y ?? props.panel.position_y,
-				'--width': editedPosition.width ?? props.panel.width,
-				'--height': editedPosition.height ?? props.panel.height,
+				'--pos-x': props.panel.position_x,
+				'--pos-y': props.panel.position_y,
+				'--width': props.panel.width,
+				'--height': props.panel.height,
 			};
 		});
 
 		const iconColor = computed(() => ({
 			'--v-icon-color': props.panel.color,
 		}));
-
-		const { onPointerDown, onPointerUp, onPointerMove, dragging } = useDragDrop();
 
 		return {
 			positioning,
@@ -227,11 +245,16 @@ export default defineComponent({
 
 			function onPointerUp() {
 				if (props.editMode === false) return;
+				emit('update', editedPosition);
+
 				dragging.value = false;
 				window.removeEventListener('pointerup', onPointerUp);
 				window.removeEventListener('pointermove', onPointerMove);
 
-				emit('update', editedPosition);
+				editedPosition.position_x = undefined;
+				editedPosition.position_y = undefined;
+				editedPosition.width = undefined;
+				editedPosition.height = undefined;
 			}
 		}
 	},
