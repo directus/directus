@@ -34,9 +34,14 @@
 			</template>
 
 			<template v-else>
-				<v-button class="fullscreen" rounded icon outlined>
+				<v-button :active="zoomToFit" class="zoom-to-fit" rounded icon outlined @click="toggleZoomToFit">
+					<v-icon name="aspect_ratio" />
+				</v-button>
+
+				<v-button :active="fullScreen" class="fullscreen" rounded icon outlined @click="toggleFullScreen">
 					<v-icon name="fullscreen" />
 				</v-button>
+
 				<v-button rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
@@ -47,17 +52,7 @@
 			<insights-navigation />
 		</template>
 
-		<div class="workspace" :class="{ editing: editMode }" :style="workspaceSize">
-			<insights-panel
-				v-for="panel in panels"
-				:key="panel.id"
-				:panel="panel"
-				:edit-mode="editMode"
-				@update="stagePanelEdits($event, panel.id)"
-				@delete="confirmDeletePanel = panel.id"
-				@duplicate="duplicatePanel(panel)"
-			/>
-		</div>
+		<insights-workspace :edit-mode="editMode" :panels="panels" :zoom-to-fit="zoomToFit" />
 
 		<router-view
 			name="detail"
@@ -86,8 +81,8 @@
 
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref } from 'vue';
-import { useInsightsStore } from '@/stores';
+import { defineComponent, computed, ref, toRefs, inject } from 'vue';
+import { useInsightsStore, useAppStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@/types';
 import { nanoid } from 'nanoid';
@@ -95,13 +90,13 @@ import { merge, omit } from 'lodash';
 import { router } from '@/router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
-import InsightsPanel from '../components/panel.vue';
 import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
+import InsightsWorkspace from '../components/workspace.vue';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
-	components: { InsightsNotFound, InsightsNavigation, InsightsPanel },
+	components: { InsightsNotFound, InsightsNavigation, InsightsWorkspace },
 	props: {
 		primaryKey: {
 			type: String,
@@ -115,11 +110,17 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const insightsStore = useInsightsStore();
+		const appStore = useAppStore();
+
+		const { fullScreen } = toRefs(appStore);
+
 		const editMode = ref(false);
 		const confirmDeletePanel = ref<string | null>(null);
 		const deletingPanel = ref(false);
 		const saving = ref(false);
-		const insightsStore = useInsightsStore();
+
+		const zoomToFit = ref(false);
 
 		const currentDashboard = computed(() =>
 			insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
@@ -188,44 +189,6 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
-		const workspaceSize = computed(() => {
-			const furthestPanelX = panels.value.reduce(
-				(aggr, panel) => {
-					if (panel.position_x! > aggr.position_x!) {
-						aggr.position_x = panel.position_x!;
-						aggr.width = panel.width!;
-					}
-
-					return aggr;
-				},
-				{ position_x: 0, width: 0 }
-			);
-
-			const furthestPanelY = panels.value.reduce(
-				(aggr, panel) => {
-					if (panel.position_y! > aggr.position_y!) {
-						aggr.position_y = panel.position_y!;
-						aggr.height = panel.height!;
-					}
-
-					return aggr;
-				},
-				{ position_y: 0, height: 0 }
-			);
-
-			if (editMode.value === true) {
-				return {
-					width: (furthestPanelX.position_x! + furthestPanelX.width! + 25) * 20 + 'px',
-					height: (furthestPanelY.position_y! + furthestPanelY.height! + 25) * 20 + 'px',
-				};
-			}
-
-			return {
-				width: (furthestPanelX.position_x! + furthestPanelX.width! - 1) * 20 + 'px',
-				height: (furthestPanelY.position_y! + furthestPanelY.height! - 1) * 20 + 'px',
-			};
-		});
-
 		return {
 			currentDashboard,
 			editMode,
@@ -235,13 +198,16 @@ export default defineComponent({
 			saving,
 			saveChanges,
 			stageConfiguration,
-			workspaceSize,
 			deletingPanel,
 			deletePanel,
 			confirmDeletePanel,
 			cancelChanges,
 			duplicatePanel,
 			t,
+			toggleFullScreen,
+			zoomToFit,
+			fullScreen,
+			toggleZoomToFit,
 		};
 
 		function stagePanelEdits(edits: Partial<Panel>, key: string = props.panelKey) {
@@ -339,48 +305,21 @@ export default defineComponent({
 			newPanel.position_y = newPanel.position_y + 2;
 			stagePanelEdits(newPanel, '+');
 		}
+
+		function toggleFullScreen() {
+			fullScreen.value = !fullScreen.value;
+		}
+
+		function toggleZoomToFit() {
+			zoomToFit.value = !zoomToFit.value;
+		}
 	},
 });
 </script>
 
 <style scoped>
-.workspace {
-	position: relative;
-	display: grid;
-	grid-template-rows: repeat(auto-fill, 20px);
-	grid-template-columns: repeat(auto-fill, 20px);
-	min-width: calc(100% - var(--content-padding) - var(--content-padding));
-	min-height: calc(100% - 120px);
-	margin-right: var(--content-padding);
-	margin-left: var(--content-padding);
-	overflow: visible;
-}
-
-.workspace > * {
-	z-index: 2;
-}
-
-.workspace::before {
-	position: absolute;
-	top: -4px;
-	left: -4px;
-	display: block;
-	width: calc(100% + 8px);
-	height: calc(100% + 8px);
-	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
-	background-position: -6px -6px;
-	background-size: 20px 20px;
-	opacity: 0;
-	transition: opacity var(--slow) var(--transition);
-	content: '';
-	pointer-events: none;
-}
-
-.workspace.editing::before {
-	opacity: 1;
-}
-
 .fullscreen,
+.zoom-to-fit,
 .clear-changes {
 	--v-button-color: var(--foreground-normal);
 	--v-button-color-hover: var(--foreground-normal);
