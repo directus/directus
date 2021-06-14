@@ -242,7 +242,7 @@ languages_collection: Languages Collection
 export_data: Export Data
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
-use_only_selected_items: Use only selected items
+use_only_selected_items: Use Only Selected Items
 export_collection: 'Export {collection}'
 last_page: Last Page
 last_access: Last Access
