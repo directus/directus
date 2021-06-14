@@ -189,6 +189,7 @@ field_name: Naziv Polja
 translations: Prevodi
 note: Napomena
 enter_a_value: Unesi vrijednost...
+enter_a_placeholder: Unesi rezervni tekst...
 length: Dužina
 precision_scale: Preciznost & Skaliranje
 readonly: Samo za čitanje
@@ -570,6 +571,7 @@ wysiwyg_options:
   media: Dodaj/Uredi Multimediju
   image: Dodaj/Uredi Sliku
   copy: Kopiraj
+  cut: Isjeci
   paste: Nalijepi
   heading: Naslov
   h1: Zaglavlje 1
@@ -590,8 +592,10 @@ wysiwyg_options:
   visualaid: Pregledaj Nevidljive elemente
   source_code: Uredi Izvorni Kod
   fullscreen: Pun ekran
+  directionality: Usmjerenost
 dropdown: Padajuća lista
 choices: Izbori
+choices_option_configured_incorrectly: Izbori su nepravilno konfigurisani
 deselect: Odznači
 deselect_all: Odznači sve
 other: Ostalo...
@@ -601,16 +605,39 @@ creating_in: 'Kreiranje Stavke u {collection}'
 editing_in: 'Uređivanje Stavke u {collection}'
 creating_unit: 'Kreiranje {unit}'
 editing_unit: 'Uređivanje {unit}'
+editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_permissions: Uloge & Dozvole
 settings_project: Podešavanje Projekta
 settings_webhooks: Webhooks
+settings_presets: Izgledi & Oznake
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
+scope: Opseg
+select: Odaberite...
 layout: Izgled
+tree_view: Izgled Stabla
 changes_are_permanent: Izmjene su trajne
+preset_name_placeholder: Služi kao podrazumijevana vrijednost kada je prazno...
+preset_search_placeholder: Upit za pretragu...
+editing_preset: Izmjena Izgleda
+layout_preview: Pregled Izgleda
+layout_setup: Podešavanje Izgleda
+unsaved_changes: Nesačuvane izmjene
+unsaved_changes_copy: Da li ste sigurni da želite da napustite ovu stranicu?
 discard_changes: Poništi Promjene
 keep_editing: Nastavi uređivanje
+page_help_collections_overview: '**Pregled Kolekcija** - Lista svih kolekcija kojima imate pristup.'
+page_help_collections_collection: >-
+  **Pretraga Stavki** — Lista svih {collection} stavki kojima imate pristup. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
+page_help_collections_item: >-
+  **Detalji Stavke** - Forma za pregled i uređivanje ove stavke. Ova bočna traka takođe sadrži kompletnu istoriju svih revizija, i ubačenih komentara.
+page_help_activity_collection: >-
+  **Pregled Aktivnosti** - Sveobuhvatan popis svih korisničkih sistemskih aktivnosti i sadržaja.
+page_help_docs_global: >-
+  **Pregled Dokumentacije** — Dokumenta prilagođena isključivo ovoj verziji projekta i šemi.
+page_help_files_collection: >-
+  **Biblioteka Fajlova** — Lista svih stavki koje su skladištene unutar ovog projekta. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak sačuvajte i oznake ovih različitih konfiguracija za brzi pristup.
 add_new: Dodaj Novi
 create_new: Kreiraj Novi
 all: Svi
