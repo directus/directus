@@ -18,12 +18,12 @@ export default defineComponent({
 	setup() {
 		const layoutState = useLayoutState();
 		const { props, table, loading } = toRefs(layoutState.value);
-		const { allItemsSelected } = useAllItemsSelected();
+		const allItemsSelected = useAllItemsSelected();
 		return { props, loading, allItemsSelected };
 
 		function useAllItemsSelected() {
 			const allItemsSelected = computed(() => table.value?.allItemsSelected);
-			return { allItemsSelected };
+			return allItemsSelected;
 		}
 	},
 });

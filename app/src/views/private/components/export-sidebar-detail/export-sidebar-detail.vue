@@ -81,15 +81,15 @@ export default defineComponent({
 
 		const format = ref('csv');
 		const fieldsStore = useFieldsStore();
-		const { primaryKeyField } = usePrimaryKey();
+		const primaryKeyField = usePrimaryKeyField();
 		const useFilters = ref(true);
 		const useSelected = ref(true);
 
 		return { t, format, useFilters, useSelected, exportData };
 
-		function usePrimaryKey() {
+		function usePrimaryKeyField() {
 			const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
-			return { primaryKeyField };
+			return primaryKeyField;
 		}
 
 		function exportData() {
