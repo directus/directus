@@ -40,7 +40,6 @@ export function useStores(
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
-/* istanbul ignore next: useStores has a test already */
 export async function hydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
@@ -73,7 +72,6 @@ export async function hydrate(stores = useStores()): Promise<void> {
 	appStore.hydrated = true;
 }
 
-/* istanbul ignore next: useStores has a test already */
 export async function dehydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 

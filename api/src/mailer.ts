@@ -28,6 +28,7 @@ export default function getMailer(): Transporter {
 			host: env.EMAIL_SMTP_HOST,
 			port: env.EMAIL_SMTP_PORT,
 			secure: env.EMAIL_SMTP_SECURE,
+			ignoreTLS: env.EMAIL_SMTP_IGNORE_TLS,
 			auth: auth,
 		} as Record<string, unknown>);
 	} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {

@@ -1481,9 +1481,9 @@ export class GraphQLService {
 					return true;
 				},
 			},
-			users_me_tfa_enable: {
+			users_me_tfa_generate: {
 				type: new GraphQLObjectType({
-					name: 'users_me_tfa_enable_data',
+					name: 'users_me_tfa_generate_data',
 					fields: {
 						secret: { type: GraphQLString },
 						otpauth_url: { type: GraphQLString },
@@ -1503,8 +1503,25 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 					await authService.verifyPassword(this.accountability.user, args.password);
-					const { url, secret } = await service.enableTFA(this.accountability.user);
+					const { url, secret } = await service.generateTFA(this.accountability.user);
 					return { secret, otpauth_url: url };
+				},
+			},
+			users_me_tfa_enable: {
+				type: GraphQLBoolean,
+				args: {
+					otp: GraphQLNonNull(GraphQLString),
+					secret: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					if (!this.accountability?.user) return null;
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.enableTFA(this.accountability.user, args.otp, args.secret);
+					return true;
 				},
 			},
 			users_me_tfa_disable: {

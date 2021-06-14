@@ -248,7 +248,7 @@ export default defineComponent({
 	&.branded :deep(.v-button) {
 		--v-button-background-color: var(--foreground-normal-alt);
 		--v-button-background-color-hover: var(--foreground-normal-alt);
-		--v-button-background-color-activated: var(--foreground-normal-alt);
+		--v-button-background-color-active: var(--foreground-normal-alt);
 	}
 
 	&.branded :deep(.v-input) {

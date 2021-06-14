@@ -93,6 +93,14 @@ export default function getLocalType(
 ): typeof types[number] | 'unknown' {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
+	const special = field?.special;
+	if (special) {
+		if (special.includes('json')) return 'json';
+		if (special.includes('hash')) return 'hash';
+		if (special.includes('csv')) return 'csv';
+		if (special.includes('uuid')) return 'uuid';
+	}
+
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
@@ -102,11 +110,6 @@ export default function getLocalType(
 	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return 'text';
 	}
-
-	if (field?.special?.includes('json')) return 'json';
-	if (field?.special?.includes('hash')) return 'hash';
-	if (field?.special?.includes('csv')) return 'csv';
-	if (field?.special?.includes('uuid')) return 'uuid';
 
 	if (type) {
 		return type.type;

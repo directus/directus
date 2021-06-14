@@ -92,7 +92,7 @@ import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import Draggable from 'vuedraggable/src/vuedraggable.js';
+import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({

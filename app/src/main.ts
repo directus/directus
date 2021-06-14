@@ -48,7 +48,7 @@ async function init() {
 
 	console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
 	console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
-	console.info(`%cEnvironment: ${import.meta.env.DEV ? 'development' : 'production'}`, 'color:DodgerBlue');
+	console.info(`%cEnvironment: ${import.meta.env.MODE}`, 'color:DodgerBlue');
 	console.groupEnd();
 
 	// Prevent the browser from opening files that are dragged on the window

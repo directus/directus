@@ -108,7 +108,17 @@ module.exports = function registerHook({ exceptions }) {
 
 Hooks support running on an interval through [`node-cron`](https://www.npmjs.com/package/node-cron). To set this up,
 provide a cron statement in the event scope as follows: `cron(<statement>)`, for example `cron(15 14 1 * *)` (at 14:15
-on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday).
+on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example below:
+
+```js
+module.exports = function registerHook() {
+	return {
+		'cron(*/15 * * * *)': async function () {
+			await axios.post('http://example.com/webhook', { message: "Another 15 minutes passed..." });
+		},
+	};
+};
+```
 
 ## 3. Register your Hook
 
