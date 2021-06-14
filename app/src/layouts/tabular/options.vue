@@ -53,7 +53,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
-import Draggable from 'vuedraggable/src/vuedraggable.js';
+import Draggable from 'vuedraggable';
 import { useLayoutState } from '@/composables/use-layout';
 
 export default defineComponent({

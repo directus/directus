@@ -14,7 +14,7 @@
 				:style="
 					module.color
 						? {
-								'--v-button-color-activated': module.color,
+								'--v-button-color-active': module.color,
 						  }
 						: null
 				"
@@ -116,10 +116,10 @@ body {
 	.v-button {
 		--v-button-color: var(--module-icon);
 		--v-button-color-hover: var(--white);
-		--v-button-color-activated: var(--module-icon-alt);
+		--v-button-color-active: var(--module-icon-alt);
 		--v-button-background-color: var(--module-background);
 		--v-button-background-color-hover: var(--module-background);
-		--v-button-background-color-activated: var(--module-background-alt);
+		--v-button-background-color-active: var(--module-background-alt);
 	}
 }
 </style>

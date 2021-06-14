@@ -220,14 +220,21 @@ function processValues(env: Record<string, any>) {
 		// - boolean values to boolean
 		// - 'null' to null
 		// - number values (> 0 <= Number.MAX_SAFE_INTEGER) to number
-		if (value === 'true' || value === 'false') {
-			env[key] = !!value;
+		if (value === 'true') {
+			env[key] = true;
 			continue;
 		}
+
+		if (value === 'false') {
+			env[key] = false;
+			continue;
+		}
+
 		if (value === 'null') {
 			env[key] = null;
 			continue;
 		}
+
 		if (
 			String(value).startsWith('0') === false &&
 			isNaN(value) === false &&

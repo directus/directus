@@ -2,11 +2,10 @@ import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
-import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
-		// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+		// Knex doesn't support AUTO_INCREMENT. Assume all numeric primary
 		// keys without a default are AUTO_INCREMENT
 		const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.is_primary_key;
 
@@ -32,18 +31,6 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 
 	async overview(): Promise<SchemaOverview> {
 		type RawColumn = {
-			TABLE_NAME: string;
-			COLUMN_NAME: string;
-			DEFAULT_VALUE: string;
-			IS_NULLABLE: string;
-			DATA_TYPE: string;
-			NUMERIC_PRECISION: number | null;
-			NUMERIC_SCALE: number | null;
-			COLUMN_KEY: string;
-			MAX_LENGTH: number | null;
-		};
-
-		type RawColumnLowercase = {
 			table_name: string;
 			column_name: string;
 			default_value: string;
@@ -56,41 +43,44 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 		};
 
 		const columns = await this.knex.raw<RawColumn[]>(`
+			WITH "uc" AS (
+				SELECT /*+ materialize */
+					"uc"."TABLE_NAME",
+					"ucc"."COLUMN_NAME",
+					"uc"."CONSTRAINT_TYPE"
+				FROM "USER_CONSTRAINTS" "uc"
+				INNER JOIN "USER_CONS_COLUMNS" "ucc" ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
+				WHERE "uc"."CONSTRAINT_TYPE" = 'P'
+			)
 			SELECT
-				"USER_TAB_COLUMNS"."TABLE_NAME" AS TABLE_NAME,
-				"USER_TAB_COLUMNS"."COLUMN_NAME" AS COLUMN_NAME,
-				"USER_TAB_COLUMNS"."DATA_DEFAULT" AS DEFAULT_VALUE,
-				"USER_TAB_COLUMNS"."NULLABLE" AS IS_NULLABLE,
-				"USER_TAB_COLUMNS"."DATA_TYPE" AS DATA_TYPE,
-				"USER_TAB_COLUMNS"."DATA_PRECISION" AS NUMERIC_PRECISION,
-				"USER_TAB_COLUMNS"."DATA_SCALE" AS NUMERIC_SCALE,
-				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS COLUMN_KEY,
-				"USER_TAB_COLUMNS"."CHAR_LENGTH" as MAX_LENGTH
-			FROM
-				"USER_TAB_COLUMNS"
-				LEFT JOIN "USER_CONS_COLUMNS" ON "USER_TAB_COLUMNS"."TABLE_NAME" = "USER_CONS_COLUMNS"."TABLE_NAME"
-					AND "USER_TAB_COLUMNS"."COLUMN_NAME" = "USER_CONS_COLUMNS"."COLUMN_NAME"
-				LEFT JOIN "USER_CONSTRAINTS" ON "USER_CONS_COLUMNS"."CONSTRAINT_NAME" = "USER_CONSTRAINTS"."CONSTRAINT_NAME"
+				"c"."TABLE_NAME" "table_name",
+				"c"."COLUMN_NAME" "column_name",
+				"c"."DATA_DEFAULT" "default_value",
+				"c"."NULLABLE" "is_nullable",
+				"c"."DATA_TYPE" "data_type",
+				"c"."DATA_PRECISION" "numeric_precision",
+				"c"."DATA_SCALE" "numeric_scale",
+				"ct"."CONSTRAINT_TYPE" "column_key",
+				"c"."CHAR_LENGTH" "max_length"
+			FROM "USER_TAB_COLUMNS" "c"
+			LEFT JOIN "uc" "ct" ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
+				AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 		`);
-
-		const columnsLowercase: RawColumnLowercase[] = columns.map(
-			(column) => mapKeys(column, (value, key) => key.toLowerCase()) as RawColumnLowercase
-		);
 
 		const overview: SchemaOverview = {};
 
-		for (const column of columnsLowercase) {
+		for (const column of columns) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
 					primary:
-						columnsLowercase.find((nested: { column_key: string; table_name: string }) => {
+						columns.find((nested: { column_key: string; table_name: string }) => {
 							return nested.table_name === column.table_name && nested.column_key === 'P';
 						})?.column_name || 'id',
 					columns: {},
 				};
 			}
 
-			// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
+			// Knex doesn't support AUTO_INCREMENT. Assume all numeric primary
 			// keys without a default are AUTO_INCREMENT
 			const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.column_key === 'P';
 

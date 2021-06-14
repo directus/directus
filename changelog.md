@@ -2,6 +2,66 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.75 (June 10, 2021)
+
+### 🚨 App Extensions
+
+This release includes the big switch from Vue 2 to Vue 3. If you have (complicated) app extensions, make sure to update the build chain of your extension and make sure you're aware of [the breaking changes you might have to account for](https://v3.vuejs.org/guide/migration/introduction.html#breaking-changes). We'll be upgrading the documentation and providing new boilerplates for Vue 3 based extensions in the coming days.
+
+### :sparkles: New Features
+
+- **API**
+  - [#6155](https://github.com/directus/directus/pull/6155) Allow any of grant's (nested) configuration parameters (oAuth) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6140](https://github.com/directus/directus/pull/6140) Add item duplicate fields configuration option to directus_collections ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6101](https://github.com/directus/directus/pull/6101) Add support for _FILE environment variables ([@paescuj](https://github.com/paescuj))
+- **App**
+  - :warning: [#5339](https://github.com/directus/directus/pull/5339) Port the app to Vue 3 ([@nickrum](https://github.com/nickrum))
+
+### :rocket: Improvements
+
+- **API**
+  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6119](https://github.com/directus/directus/pull/6119) Don't treat numbers larger than the JS max number size as number values in environment variables ([@skizer](https://github.com/skizer))
+- **App**
+  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6186](https://github.com/directus/directus/pull/6186) Add number formatting to formatted-values display ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6168](https://github.com/directus/directus/pull/6168) Show better message for improperly formatted emails on login ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6118](https://github.com/directus/directus/pull/6118) Support async preRegisterCheck for custom modules ([@t7tran](https://github.com/t7tran))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6174](https://github.com/directus/directus/pull/6174) Fix issue that would cause sort order of fields to be corrupted on field changes ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6173](https://github.com/directus/directus/pull/6173) Prevent translation rows from being edited before existing values are loaded ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6172](https://github.com/directus/directus/pull/6172) Fix translations hint not linking to collection ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#6167](https://github.com/directus/directus/pull/6167) Cleanup one_allowed_collections field on collection delete ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6163](https://github.com/directus/directus/pull/6163) Fix field update for data types with length or boolean as default value ([@paescuj](https://github.com/paescuj))
+  - [#6153](https://github.com/directus/directus/pull/6153) Fixed issue that would cause foreign key constraints to be missed in pascal cased table names in postgres ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#6188](https://github.com/directus/directus/pull/6188) Adding an example to cron hook ([@juancarlosjr97](https://github.com/juancarlosjr97))
+- [#6150](https://github.com/directus/directus/pull/6150) Describe breaking change in filter syntax in v8 migration information  ([@nachogarcia](https://github.com/nachogarcia))
+- [#6135](https://github.com/directus/directus/pull/6135) List cron in Event Format Options ([@benhaynes](https://github.com/benhaynes))
+
+### :package: Dependency Updates
+
+- [#6177](https://github.com/directus/directus/pull/6177) Bump aws-sdk from 2.924.0 to 2.925.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6176](https://github.com/directus/directus/pull/6176) Bump @azure/storage-blob from 12.5.0 to 12.6.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6175](https://github.com/directus/directus/pull/6175) Bump jest-environment-jsdom from 26.6.2 to 27.0.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6147](https://github.com/directus/directus/pull/6147) Bump dotenv from 9.0.2 to 10.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6146](https://github.com/directus/directus/pull/6146) Bump jest-environment-jsdom from 26.6.2 to 27.0.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6145](https://github.com/directus/directus/pull/6145) Bump @types/codemirror from 0.0.109 to 5.60.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6144](https://github.com/directus/directus/pull/6144) Bump lint-staged from 10.5.4 to 11.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6126](https://github.com/directus/directus/pull/6126) Bump execa from 5.0.1 to 5.1.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6125](https://github.com/directus/directus/pull/6125) Bump slugify from 1.5.0 to 1.5.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6124](https://github.com/directus/directus/pull/6124) Bump prettier from 2.3.0 to 2.3.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6123](https://github.com/directus/directus/pull/6123) Bump connect-redis from 5.2.0 to 6.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6122](https://github.com/directus/directus/pull/6122) Bump @types/sharp from 0.28.1 to 0.28.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## v9.0.0-rc.74 (June 7, 2021)
 
 ### :sparkles: New Features

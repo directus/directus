@@ -92,7 +92,7 @@ export default defineComponent({
 					filenameParts.shift();
 				}
 
-				const newFilename = `/admin${rootPath}img/docs/${filenameParts.join('/')}`;
+				const newFilename = `${rootPath}admin/img/docs/${filenameParts.join('/')}`;
 				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
 				markdown = markdown.replace(rawImage[0], newImage);
 			}
