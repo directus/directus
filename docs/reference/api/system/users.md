@@ -819,7 +819,7 @@ mutation {
 
 ---
 
-## Enable Two-Factor Authentication
+## Generate Two-Factor Authentication Secret
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
@@ -853,13 +853,13 @@ OTP secret to be saved in the authenticator app.
 ### REST API
 
 ```
-POST /users/me/tfa/enable
+POST /users/me/tfa/generate
 ```
 
 ##### Example
 
 ```json
-// POST /users/me/tfa/enable
+// POST /users/me/tfa/generate
 {
 	"password": "d1r3ctu5"
 }
@@ -873,7 +873,7 @@ POST /graphql/system
 
 ```graphql
 type Mutation {
-	users_me_tfa_enable(password: String!): users_me_tfa_enable_data
+	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
 }
 ```
 
@@ -881,10 +881,81 @@ type Mutation {
 
 ```graphql
 mutation {
-	users_me_tfa_enable(password: "d1r3ctu5") {
+	users_me_tfa_generate(password: "d1r3ctu5") {
 		secret
 		otpauth_url
 	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Enable Two-Factor Authentication
+
+Adds a TFA secret to the user account.
+
+<div class="two-up">
+<div class="left">
+
+### Request Body
+
+<div class="definitions">
+
+`secret` **Required**\
+The TFA secret from tfa/generate.
+
+`otp` **Required**\
+OTP generated with the secret, to recheck if the user has a correct TFA setup
+
+</div>
+
+### Returns
+
+<div class="definitions">
+
+Empty response.
+
+</div>
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /users/me/tfa/enable
+```
+
+##### Example
+
+```json
+// POST /users/me/tfa/enable
+{
+	"otp": "123456",
+	"secret": "3CtiutsNBmY3szHE"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	users_me_tfa_enable(otp: String!, secret: String!): Boolean
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_me_tfa_enable(otp: "123456", secret: "3CtiutsNBmY3szHE")
 }
 ```
 
