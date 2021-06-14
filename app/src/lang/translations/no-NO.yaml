@@ -20,7 +20,6 @@ create_role: Opprett rolle
 create_user: Opprett bruker
 create_webhook: Lag Webhook
 invite_users: Invitere brukere
-email_examples: 'admin@example.com, user@example.com...'
 invite: Inviter
 emails: E-post
 connection_excellent: Utmerket tilkobling
