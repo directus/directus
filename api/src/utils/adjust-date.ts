@@ -24,7 +24,7 @@ import { clone } from 'lodash';
  *
  * The conversion is lifted straight from `ms`.
  */
-export function adjustDate(date: Date, adjustment: string): Date {
+export function adjustDate(date: Date, adjustment: string): Date | undefined {
 	date = clone(date);
 
 	const subtract = adjustment.startsWith('-');
