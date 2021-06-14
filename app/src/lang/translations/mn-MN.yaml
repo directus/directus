@@ -43,6 +43,22 @@ logoutReason:
   SIGN_OUT: Сайтаас гарсан
   SESSION_EXPIRED: Холболтын хугацаа дууссан
 public: Нийтийн
+public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
+not_allowed: Зөвшөөрөгдөөгүй
+directus_version: Directus хувилбар
+node_version: Node хувилбар
+node_uptime: Node ажиллаж буй хугацаа
+os_type: Үйлдлийн системийн төрөл
+os_version: Үйлдлийн системийн хувилбар
+os_uptime: Үйлдлийн системийн ажиллаж буй хугацаа
+os_totalmem: Үйлдлийн системийн санах ой
+archive: Архивлах
+archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
+archive_confirm_count: >-
+  Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} 
+  зүйлсийг архивлахдаа итгэлтэй байна уу?
+reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
+reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
 fields:
   directus_fields:
     translation: Талбарын нэрний орчуулга
