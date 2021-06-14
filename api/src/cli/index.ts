@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 import program from 'commander';
 import start from '../start';
 import bootstrap from './commands/bootstrap';

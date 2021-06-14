@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Listr from 'listr';
 import Dockerode from 'dockerode';
 import { getDBsToTest } from '../get-dbs-to-test';

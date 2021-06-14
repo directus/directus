@@ -23,10 +23,12 @@ export async function registerInterfaces(app: App): Promise<void> {
 				);
 				interfaces.push(result.default);
 			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn(`Couldn't load custom interface "${interfaceName}":`, err);
 			}
 		});
 	} catch {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);
 	}
 

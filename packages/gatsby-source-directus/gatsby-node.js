@@ -83,6 +83,7 @@ exports.sourceNodes = async (gatsby, options) => {
 		}
 
 		if (hasToken && hasCredentials) {
+			// eslint-disable-next-line no-console
 			console.log(
 				chalk.yellowBright(
 					'\nWARNING! `gatsby-source-directus` has both token and credentials set. Only token will be used.\n'
@@ -90,6 +91,7 @@ exports.sourceNodes = async (gatsby, options) => {
 			);
 		}
 	} else {
+		// eslint-disable-next-line no-console
 		console.log(
 			chalk.yellowBright(
 				'\nWARNING! `gatsby-source-directus` no auth set. source will fetch only public accessible items.\n'

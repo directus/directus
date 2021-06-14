@@ -29,6 +29,7 @@ async function create(directory) {
 		const stat = await fse.stat(rootPath);
 
 		if (stat.isDirectory() === false) {
+			// eslint-disable-next-line no-console
 			console.log(`Destination ${chalk.red(directory)} already exists and is not a directory.`);
 			process.exit(1);
 		}
@@ -36,6 +37,7 @@ async function create(directory) {
 		const files = await fse.readdir(rootPath);
 
 		if (files.length > 0) {
+			// eslint-disable-next-line no-console
 			console.log(`Destination ${chalk.red(directory)} already exists and is not an empty directory.`);
 			process.exit(1);
 		}
