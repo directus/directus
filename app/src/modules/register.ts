@@ -26,10 +26,12 @@ export async function loadModules(): Promise<void> {
 
 				modules.push(result.default);
 			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn(`Couldn't load custom module "${moduleName}":`, err);
 			}
 		});
 	} catch {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom modules`);
 	}
 
