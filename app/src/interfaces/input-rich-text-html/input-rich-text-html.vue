@@ -6,7 +6,6 @@
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			v-model="internalValue"
-			@change="onChange"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
@@ -344,9 +343,6 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
-			onChange(a: any) {
-				console.log(a);
-			},
 		};
 
 		function setup(editor: any) {
@@ -406,4 +402,9 @@ export default defineComponent({
 	margin-bottom: 24px;
 	font-size: 24px;
 }
+</style>
+
+<style lang="scss">
+@import 'tinymce/skins/ui/oxide/skin.css';
+@import './tinymce-overrides.css';
 </style>
