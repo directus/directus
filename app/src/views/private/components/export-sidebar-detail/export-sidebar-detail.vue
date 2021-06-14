@@ -21,6 +21,7 @@
 					v-model="format"
 				/>
 				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
+				<v-checkbox v-model="useSelected" :label="t('use_only_selected_items')" />
 			</div>
 
 			<div class="field full">
@@ -34,11 +35,13 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import filtersToQuery from '@/utils/filters-to-query';
+import { useFieldsStore } from '@/stores';
+import { nanoid } from 'nanoid';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -63,14 +66,31 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		selection: {
+			type: Array as PropType<Record<string | number, any>>,
+			default: () => [],
+		},
+		allItemsSelected: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
 
 		const format = ref('csv');
+		const fieldsStore = useFieldsStore();
+		const { primaryKeyField } = usePrimaryKey();
 		const useFilters = ref(true);
+		const useSelected = ref(true);
 
-		return { t, format, useFilters, exportData };
+		return { t, format, useFilters, useSelected, exportData };
+
+		function usePrimaryKey() {
+			const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
+			return { primaryKeyField };
+		}
 
 		function exportData() {
 			const url = getRootPath() + `items/${props.collection}`;
@@ -95,6 +115,23 @@ export default defineComponent({
 				if (props.searchQuery) {
 					params.search = props.searchQuery;
 				}
+			}
+
+			if (!props.allItemsSelected && useSelected.value === true && props.selection && props.selection.length > 0) {
+				const filters = [
+					...(useFilters.value === true ? props.filters : []),
+					{
+						key: nanoid(),
+						locked: true,
+						field: primaryKeyField.value.name,
+						operator: 'in',
+						value: props.selection,
+					},
+				];
+				params = {
+					...params,
+					...filtersToQuery(filters as Filter[]),
+				};
 			}
 
 			const exportUrl = api.getUri({

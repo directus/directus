@@ -5,6 +5,7 @@
 		:filters="props.filters"
 		:search-query="props.searchQuery"
 		:collection="props.collection"
+		:selection="props.selection"
 	/>
 </template>
 
@@ -17,7 +18,6 @@ export default defineComponent({
 	setup() {
 		const layoutState = useLayoutState();
 		const { props, loading } = toRefs(layoutState.value);
-
 		return { props, loading };
 	},
 });

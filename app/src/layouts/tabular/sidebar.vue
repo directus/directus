@@ -5,20 +5,26 @@
 		:filters="props.filters"
 		:search-query="props.searchQuery"
 		:collection="props.collection"
+		:selection="props.selection"
+		:allItemsSelected="allItemsSelected"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
-
+import { defineComponent, toRefs, computed } from 'vue';
 import { useLayoutState } from '@/composables/use-layout';
 
 export default defineComponent({
 	setup() {
 		const layoutState = useLayoutState();
-		const { props, loading } = toRefs(layoutState.value);
+		const { props, table, loading } = toRefs(layoutState.value);
+		const { allItemsSelected } = useAllItemsSelected();
+		return { props, loading, allItemsSelected };
 
-		return { props, loading };
+		function useAllItemsSelected() {
+			const allItemsSelected = computed(() => table.value.allItemsSelected);
+			return { allItemsSelected };
+		}
 	},
 });
 </script>

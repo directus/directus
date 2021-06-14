@@ -4,6 +4,7 @@
 		:filters="filtersWithCalendarView"
 		:search-query="props.searchQuery"
 		:collection="props.collection"
+		:selection="props.selection"
 	/>
 </template>
 
