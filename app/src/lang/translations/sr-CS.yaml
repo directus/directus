@@ -806,7 +806,20 @@ embed: Ugradi
 field: Polje | Polja
 file: Fajl
 hidden: Sakriveno
+normal: Normalno
+warning: Upozorenje
+danger: Opasnost
+junction_collection: Kolekcija spajanja
+latency: Latencija
+login: Prijavi se
+my_activity: Moja Aktivnost
+not_authenticated: Nije Autorizovan
+authenticated: Autorizovan
+options: Opcije
 password: Lozinka
+permissions: Dozvole
+relationship: Relacija
+reset: Resetuj
 template: Šablon
 interfaces:
   presentation-links:
