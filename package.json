@@ -34,7 +34,7 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^3.4.0",
 		"eslint-plugin-prettier-vue": "^3.1.0",
-		"eslint-plugin-vue": "^7.11.0",
+		"eslint-plugin-vue": "^7.11.1",
 		"globby": "^11.0.3",
 		"jest": "^27.0.4",
 		"knex": "^0.95.6",
