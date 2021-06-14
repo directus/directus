@@ -682,8 +682,10 @@ fields:
     comment: Komentar
     user_agent: Korisnički Agent
     ip: IP adresa
+    revisions: Revizije
   directus_collections:
     collection: Kolekcija
+    icon: Ikonica
     note: Napomena
     display_template: Šablon za Prikaz
     hidden: Sakriveno
@@ -805,8 +807,13 @@ email: Email adresa
 embed: Ugradi
 field: Polje | Polja
 file: Fajl
+file_library: Biblioteka Fajlova
+forgot_password: Zaboravljena lozinka
 hidden: Sakriveno
+icon: Ikonica
+info: Informacija
 normal: Normalno
+success: Uspješno
 warning: Upozorenje
 danger: Opasnost
 junction_collection: Kolekcija spajanja
@@ -816,40 +823,128 @@ my_activity: Moja Aktivnost
 not_authenticated: Nije Autorizovan
 authenticated: Autorizovan
 options: Opcije
+otp: Kratkoročna Lozinka
 password: Lozinka
 permissions: Dozvole
 relationship: Relacija
 reset: Resetuj
+reset_password: Reset Lozinke
+revisions: Revizije
+revert: Vrati
+save: Sačuvaj
+schema: Šema
+search: Pretraga
+select_existing: Izaberite postojeće
+select_field_type: Odaberi tip polja
+select_interface: Odaberi Interfejs
+settings: Podešavanja
+sign_in: Prijavite se
+sign_out: Odjavite se
+sign_out_confirm: Da li ste sigurni da želite da se odjavite?
+something_went_wrong: Došlo je do greške.
+sort_direction: Smjer sortiranja
+sort_asc: Opadajuće sortiranje
+sort_desc: Rastuće sortiranje
 template: Šablon
+translation: Prevodi
+value: Vrijednost
+view_project: Pregledaj Projekat
+report_error: Prijavi Grešku
 interfaces:
   presentation-links:
+    presentation-links: Linkovi dugmeta
+    links: Linkovi
+    style: Stil
     primary: Primarni
+    link: Linkovi
+    error: Radnja se ne može izvršiti
+  select-multiple-checkbox:
+    checkboxes: Potvrdni okviri
+    allow_other: Omogući Druge
+    show_more: 'Prikaži {count} više'
+    items_shown: Stavki Prikazano
   input-code:
     code: Kod
+    description: Napiši ili podijeli isječke koda
+    line_number: Broj Linije
+    placeholder: Unesite kod ovde...
   system-collection:
     collection: Kolekcija
+    description: Odaberi između postojećih kolekcija
+    include_system_collections: Uključi Sistemske Kolekcije
   system-collections:
     collections: Kolekcije
+    description: Odaberi između postojećih kolekcija
+    include_system_collections: Uključi Sistemske Kolekcije
   select-color:
     color: Boja
+    description: Unesi ili odaberi vrijednost boje
+    placeholder: Izaberi boju...
+    preset_colors: Boje Izgleda
+    preset_colors_add_label: Dodaj novu boju...
+    name_placeholder: Unesite ime boje...
+  datetime:
+    datetime: Datum i vrijeme
+    description: Unesi datume i vremena
+    include_seconds: Uključujući Sekunde
+    set_to_now: Postavi na Sadašnji
+    use_24: Koristi 24-časovni Format
   system-display-template:
     display-template: Šablon za Prikaz
+    description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja
+    collection_field: Polje Kolekcije
     collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
     select_a_collection: Izaberi Kolekciju
   presentation-divider:
     divider: Djelilac
+    description: Označi i podijeli polja u sekcije
+    title_placeholder: Unesi naslov...
+    inline_title: Linijski Naslov
+    inline_title_label: Prikaži naslov u liniji
+    margin_top: Gornja Margina
+    margin_top_label: Povećaj Gornju Marginu
   select-dropdown:
+    description: Odaberi vrijednost iz padajuće liste
+    choices_placeholder: Dodaj novi odabir
+    allow_other: Omogući Druge
+    allow_other_label: Dozvoli Ostale Vrijednosti
+    allow_none: Ne dozvoli
+    allow_none_label: Dozvoli Bez Odabira
+    choices_name_placeholder: Unesi ime...
     choices_value_placeholder: Unesi vrijednost...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Padajuća lista (Više opcija)
+    description: Odaberi više od jedne vrijednosti iz padajuće liste
   file:
     file: Fajl
+    description: Odaberi ili otpremi fajl
+  files:
+    files: Fajlovi
+    description: Odaberi ili otpremi više fajlova
   input-hash:
     hash: Hash
+    description: Unesi vrijednost koja će biti sigurno skladištena
+    masked: Maskirano
+  select-icon:
+    icon: Ikonica
+    search_for_icon: Traži ikonicu...
+  file-image:
+    description: Odaberi ili otpremi sliku
   system-interface:
     interface: Interfejs
+    description: Odaberi postojeći interfejs
+    placeholder: Odaberi Interfejs...
+  system-interface-options:
+    interface-options: Opcije Interfejsa
+    description: Modalni prozor za odabir opcija interfejsa
   select-dropdown-m2o:
     display_template: Šablon za Prikaz
+  select-radio:
+    radio-buttons: Radio dugmići
   tags:
     tags: Tagovi
+  input:
+    mask: Maskirano
   boolean:
     toggle: Isključi / Uključi
     label_default: Omogućen
@@ -869,9 +964,12 @@ displays:
   color:
     color: Boja
   datetime:
+    datetime: Datum i vrijeme
     format: Format
   file:
     file: Fajl
+  icon:
+    icon: Ikonica
   image:
     circle: Krug
   labels:
