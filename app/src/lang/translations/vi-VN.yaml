@@ -19,7 +19,6 @@ create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
-email_examples: 'admin@example.com, user@example.com...'
 invite: Mời
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
