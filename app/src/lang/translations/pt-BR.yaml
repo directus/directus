@@ -20,7 +20,6 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webhook
 invite_users: Convidar Usuários
-email_examples: 'admin@example.com, usuário@example.com...'
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
