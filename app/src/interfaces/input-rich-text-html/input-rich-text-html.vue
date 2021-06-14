@@ -4,7 +4,7 @@
 			ref="editorElement"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
+			model-events="change keydown blur focus paste ExecCommand"
 			v-model="internalValue"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
@@ -241,6 +241,7 @@ export default defineComponent({
 			editorRef,
 			imageToken
 		);
+
 		const {
 			mediaDrawerOpen,
 			mediaSelection,
