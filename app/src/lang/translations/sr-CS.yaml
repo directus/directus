@@ -664,6 +664,10 @@ fields:
     name: Naziv uloge
     description: Opis
 generate_and_save_uuid: Generiši i Sačuvaj UUID
+save_current_user_id: Sačuvaj ID vrijednost Trenutnog korisnika
+save_current_user_role: Sačuvaj Trenutnu Korisničku Ulogu
+block: Blok
+inline: Linijski
 description: Opis
 interfaces:
   presentation-links:
