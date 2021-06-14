@@ -370,9 +370,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
+</style>
+
+<style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .body {
@@ -402,9 +405,4 @@ export default defineComponent({
 	margin-bottom: 24px;
 	font-size: 24px;
 }
-</style>
-
-<style lang="scss">
-@import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
 </style>
