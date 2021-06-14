@@ -62,7 +62,7 @@
 		"base-64": "^1.0.0",
 		"codemirror": "^5.61.1",
 		"copyfiles": "^2.4.1",
-		"cropperjs": "^1.5.11",
+		"cropperjs": "^1.5.12",
 		"date-fns": "^2.21.1",
 		"dompurify": "^2.2.9",
 		"escape-string-regexp": "^5.0.0",
