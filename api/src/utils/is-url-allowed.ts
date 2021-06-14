@@ -5,8 +5,6 @@ import logger from '../logger';
  * Check if url matches allow list either exactly or by domain+path
  */
 export default function isUrlAllowed(url: string, allowList: string | string[]): boolean {
-	console.log(url, allowList);
-
 	const urlAllowList = toArray(allowList);
 
 	if (urlAllowList.includes(url)) return true;
