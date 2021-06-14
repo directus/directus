@@ -455,7 +455,7 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutState.refresh();
+					await layoutState.value?.refresh?.();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -482,7 +482,7 @@ export default defineComponent({
 					confirmArchive.value = false;
 					selection.value = [];
 
-					await layoutState.refresh();
+					await layoutState.value?.refresh?.();
 				} catch (err) {
 					error.value = err;
 				} finally {
