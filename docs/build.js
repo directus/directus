@@ -13,7 +13,7 @@ const tree = dirTree('.', {
 const index = `export default ${generateIndex(tree.children)};`;
 
 fse.ensureDirSync('dist');
-fse.writeFileSync('dist/index.js', index);
+fse.writeFileSync('dist/index.js', index.replace(/\\/g, '\\\\'));
 
 console.log('Built docs');
 
