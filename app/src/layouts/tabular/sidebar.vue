@@ -22,7 +22,7 @@ export default defineComponent({
 		return { props, loading, allItemsSelected };
 
 		function useAllItemsSelected() {
-			const allItemsSelected = computed(() => table.value.allItemsSelected);
+			const allItemsSelected = computed(() => table.value?.allItemsSelected);
 			return { allItemsSelected };
 		}
 	},
