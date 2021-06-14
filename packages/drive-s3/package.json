@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@directus/drive": "9.0.0-rc.75",
-		"aws-sdk": "^2.926.0",
+		"aws-sdk": "^2.927.0",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
