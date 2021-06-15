@@ -125,13 +125,14 @@ needs, you can extend the above environment variables to configure any of
 
 ## Cache
 
-| Variable           | Description                                                             | Default Value    |
-| ------------------ | ----------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`    | Whether or not caching is enabled.                                      | `false`          |
-| `CACHE_TTL`        | How long the cache is persisted.                                        | `30m`            |
-| `CACHE_AUTO_PURGE` | Automatically purge the cache on `create`/`update`/`delete` actions.    | `false`          |
-| `CACHE_NAMESPACE`  | How to scope the cache data.                                            | `directus-cache` |
-| `CACHE_STORE`      | Where to store the cache data. Either `memory`, `redis`, or `memcache`. | `memory`         |
+| Variable                 | Description                                                                            | Default Value    |
+| ------------------------ | -------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`          | Whether or not caching is enabled.                                                     | `false`          |
+| `CACHE_TTL`              | How long the cache is persisted.                                                       | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE` | Whether to not to add the s-maxage expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`       | Automatically purge the cache on `create`/`update`/`delete` actions.                   | `false`          |
+| `CACHE_NAMESPACE`        | How to scope the cache data.                                                           | `directus-cache` |
+| `CACHE_STORE`            | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                | `memory`         |
 
 Based on the `CACHE_STORE` used, you must also provide the following configurations:
 
