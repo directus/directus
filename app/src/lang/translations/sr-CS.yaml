@@ -854,12 +854,15 @@ interfaces:
   presentation-links:
     presentation-links: Linkovi dugmeta
     links: Linkovi
+    description: Podesivi linkovi za otvaranje dinamičkih URL-ova
     style: Stil
     primary: Primarni
     link: Linkovi
+    button: Dugmad
     error: Radnja se ne može izvršiti
   select-multiple-checkbox:
     checkboxes: Potvrdni okviri
+    description: Odaberi između više opcija uz okvire za potvrdu
     allow_other: Omogući Druge
     show_more: 'Prikaži {count} više'
     items_shown: Stavki Prikazano
@@ -925,8 +928,10 @@ interfaces:
     hash: Hash
     description: Unesi vrijednost koja će biti sigurno skladištena
     masked: Maskirano
+    masked_label: Sakrij "true" vrijednosti
   select-icon:
     icon: Ikonica
+    description: Odaberi ikonicu iz padajuće liste
     search_for_icon: Traži ikonicu...
   file-image:
     description: Odaberi ili otpremi sliku
@@ -937,6 +942,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije Interfejsa
     description: Modalni prozor za odabir opcija interfejsa
+  list-m2m:
+    many-to-many: Many to Many
   select-dropdown-m2o:
     display_template: Šablon za Prikaz
   select-radio:
