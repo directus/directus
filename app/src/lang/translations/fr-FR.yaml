@@ -20,6 +20,7 @@ create_role: Créer un rôle
 create_user: Créer un utilisateur
 create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
 emails: E-mails
@@ -854,6 +855,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
