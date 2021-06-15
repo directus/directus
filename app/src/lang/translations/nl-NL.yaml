@@ -932,8 +932,13 @@ interfaces:
     add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
+    mask_label: Verberg de werkelijke waarde
+    clear_label: Opslaan als lege tekst
+    minimum_value: Minimale waarde
+    maximum_value: Maximale waarde
   boolean:
     toggle: Schakel
+    label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
     display_template: Weergavesjabloon
@@ -949,6 +954,7 @@ interfaces:
   input-rich-text-html:
     wysiwyg: WYSIWYG
     toolbar: Werkbalk
+    custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
 displays:
   boolean:
