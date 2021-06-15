@@ -944,23 +944,93 @@ interfaces:
     description: Modalni prozor za odabir opcija interfejsa
   list-m2m:
     many-to-many: Many to Many
+    description: Odaberi više povezanih stavki
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Odaberi samo jednu povezanu stavku
     display_template: Šablon za Prikaz
+  input-rich-text-md:
+    markdown: Smanjenje
+    description: Unesi i pregledaj opcije smanjenja
+    customSyntax: Prilagođeni Blokovi
+    customSyntax_label: Dodaj prilagođene tipove sintakse
+    customSyntax_add: Dodaj prilagođenu sintaksu
+    box: Blok / Linijski
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
+  presentation-notice:
+    notice: Napomеna
+    description: Prikaži kratku napomenu
+    text: Unesi sadržaj napomene ovde...
+  list-o2m:
+    one-to-many: One to Many
+    description: Odaberi više povezanih stavki
+    no_collection: Kolekciju nije moguće pronaći
   select-radio:
     radio-buttons: Radio dugmići
+    description: Odaberi jednu od više ponuđenih opcija
+  list:
+    repeater: Ponavljanje
+    description: Napravi više upisa od postojeće strukture
+    edit_fields: Izmijeni Polja
+    add_label: '"Napravi Novi" Labela'
+    field_name_placeholder: Unesi ime polja...
+    field_note_placeholder: Unesi napomenu polja...
+  slider:
+    slider: Slajder
+    description: Odaberi broj uz pomoć slajdera
+    always_show_value: Uvijek prikaži vrijednost
   tags:
     tags: Tagovi
+    description: Odaberi ili dodaj tagove
+    whitespace: Razmak
+    hyphen: Zamijeni sa crticom
+    underscore: Zamijeni sa podrctanom linijom
+    remove: Ukloni razmak
+    capitalization: Uvećanje
+    uppercase: Konvertuj velika slova
+    lowercase: Konvertuj mala slova
+    auto_formatter: Koristi automatski format naslova
+    alphabetize: Po abecedi
+    alphabetize_label: Abecedni red
+    add_tags: Dodaj tagove...
   input:
+    input: Unos
+    description: Ručno unesite vrijednost
+    trim: Odsjecanje
+    trim_label: Odsjecanje sa početka i kraja
     mask: Maskirano
+    mask_label: Sakrij pravu vrijednost
+    clear: Poništena Vrijednost
+    clear_label: Sačuvaj kao praznu sekvencu karaktera
+    minimum_value: Minimalna Vrijednost
+    maximum_value: Maksimalna Vrijednost
+    step_interval: Interval
+    slug: Slugify
+  input-multiline:
+    textarea: Polje Teksta
+    description: Unesi višelinijski čisti-tekst
   boolean:
     toggle: Isključi / Uključi
+    description: Prebaci između uključeno i isključeno
+    label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:
     display_template: Šablon za Prikaz
+    no_collection: Nema Kolekcije
+  list-o2m-tree-view:
+    description: Prikaz Stabla za ugnježđene rekurzivne one-to-many stavke
+    recursive_only: Interfejs u prikazu stabla radi samo u slučajevima rekurzivnih relacija.
   user:
     user: Korisnik
+    description: Odaberi postojećeg directus korisnika
+    select_mode: Način Odabira
     modes:
+      auto: Automatski
       dropdown: Padajuća lista
+      modal: Modalni
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
 displays:
   boolean:
     boolean: Boolean
