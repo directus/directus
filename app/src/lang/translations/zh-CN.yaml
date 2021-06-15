@@ -18,7 +18,6 @@ create_role: 创建角色
 create_user: 创建用户
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
-email_examples: 'admin@example.com, user@example.com...'
 invite: 邀请
 emails: 邮箱
 connection_excellent: 优秀的连接状态

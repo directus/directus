@@ -15,7 +15,6 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
 emails: Emailek
 connection_excellent: Kiváló kapcsolat

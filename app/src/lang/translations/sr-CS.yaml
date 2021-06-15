@@ -20,7 +20,7 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
-email_examples: 'admin@primjer.com, user@primjer.com...'
+email_examples: "admin{'@'}primjer.com, user{'@'}primjer.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese
@@ -586,6 +586,7 @@ wysiwyg_options:
   fontselect: Odaberi Pismo
   fontsizeselect: Odaberi Veličinu Pisma
   indent: Uvlačenje
+  outdent: Uvlačenje
   undo: Poništi
   redo: Vrati poništeno
   remove: Ukloni
@@ -683,8 +684,10 @@ fields:
     comment: Komentar
     user_agent: Korisnički Agent
     ip: IP adresa
+    revisions: Revizije
   directus_collections:
     collection: Kolekcija
+    icon: Ikonica
     note: Napomena
     display_template: Šablon za Prikaz
     hidden: Sakriveno
@@ -742,10 +745,13 @@ fields:
     project_url: URL projekta
     project_color: Boja Projekta
     project_logo: Logotip Projekta
+    public_foreground: Javna Pozadina
+    public_background: Javna Pozadina
     public_note: Opis Projekta
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     storage_asset_presets: Izgled prostora za skladištenje
+    storage_asset_transform: Transformacija sredstava za skladištenje
     custom_css: Prilagođeni CSS
   directus_fields:
     collection: Ime Kolekcije
@@ -804,72 +810,350 @@ done: Urađeno
 duplicate: Dupliraj
 email: Email adresa
 embed: Ugradi
+fallback_icon: IkonicaPrethodnog stanja
 field: Polje | Polja
 file: Fajl
+file_library: Biblioteka Fajlova
+forgot_password: Zaboravljena lozinka
 hidden: Sakriveno
+icon: Ikonica
+info: Informacija
+normal: Normalno
+success: Uspješno
+warning: Upozorenje
+danger: Opasnost
+junction_collection: Kolekcija spajanja
+latency: Latencija
+login: Prijavi se
+my_activity: Moja Aktivnost
+not_authenticated: Nije Autorizovan
+authenticated: Autorizovan
+options: Opcije
+otp: Kratkoročna Lozinka
 password: Lozinka
+permissions: Dozvole
+relationship: Relacija
+reset: Resetuj
+reset_password: Reset Lozinke
+revisions: Revizije
+revert: Vrati
+save: Sačuvaj
+schema: Šema
+search: Pretraga
+select_existing: Izaberite postojeće
+select_field_type: Odaberi tip polja
+select_interface: Odaberi Interfejs
+settings: Podešavanja
+sign_in: Prijavite se
+sign_out: Odjavite se
+sign_out_confirm: Da li ste sigurni da želite da se odjavite?
+something_went_wrong: Došlo je do greške.
+sort_direction: Smjer sortiranja
+sort_asc: Opadajuće sortiranje
+sort_desc: Rastuće sortiranje
 template: Šablon
+translation: Prevodi
+value: Vrijednost
+view_project: Pregledaj Projekat
+weeks: { }
+report_error: Prijavi Grešku
 interfaces:
   presentation-links:
+    presentation-links: Linkovi dugmeta
+    links: Linkovi
+    description: Podesivi linkovi za otvaranje dinamičkih URL-ova
+    style: Stil
     primary: Primarni
+    link: Linkovi
+    button: Dugmad
+    error: Radnja se ne može izvršiti
+  select-multiple-checkbox:
+    checkboxes: Potvrdni okviri
+    description: Odaberi između više opcija uz okvire za potvrdu
+    allow_other: Omogući Druge
+    show_more: 'Prikaži {count} više'
+    items_shown: Stavki Prikazano
   input-code:
     code: Kod
+    description: Napiši ili podijeli isječke koda
+    line_number: Broj Linije
+    placeholder: Unesite kod ovde...
   system-collection:
     collection: Kolekcija
+    description: Odaberi između postojećih kolekcija
+    include_system_collections: Uključi Sistemske Kolekcije
   system-collections:
     collections: Kolekcije
+    description: Odaberi između postojećih kolekcija
+    include_system_collections: Uključi Sistemske Kolekcije
   select-color:
     color: Boja
+    description: Unesi ili odaberi vrijednost boje
+    placeholder: Izaberi boju...
+    preset_colors: Boje Izgleda
+    preset_colors_add_label: Dodaj novu boju...
+    name_placeholder: Unesite ime boje...
+  datetime:
+    datetime: Datum i vrijeme
+    description: Unesi datume i vremena
+    include_seconds: Uključujući Sekunde
+    set_to_now: Postavi na Sadašnji
+    use_24: Koristi 24-časovni Format
   system-display-template:
     display-template: Šablon za Prikaz
+    description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja
+    collection_field: Polje Kolekcije
     collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
     select_a_collection: Izaberi Kolekciju
   presentation-divider:
     divider: Djelilac
+    description: Označi i podijeli polja u sekcije
+    title_placeholder: Unesi naslov...
+    inline_title: Linijski Naslov
+    inline_title_label: Prikaži naslov u liniji
+    margin_top: Gornja Margina
+    margin_top_label: Povećaj Gornju Marginu
   select-dropdown:
+    description: Odaberi vrijednost iz padajuće liste
+    choices_placeholder: Dodaj novi odabir
+    allow_other: Omogući Druge
+    allow_other_label: Dozvoli Ostale Vrijednosti
+    allow_none: Ne dozvoli
+    allow_none_label: Dozvoli Bez Odabira
+    choices_name_placeholder: Unesi ime...
     choices_value_placeholder: Unesi vrijednost...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Padajuća lista (Više opcija)
+    description: Odaberi više od jedne vrijednosti iz padajuće liste
   file:
     file: Fajl
+    description: Odaberi ili otpremi fajl
+  files:
+    files: Fajlovi
+    description: Odaberi ili otpremi više fajlova
   input-hash:
     hash: Hash
+    description: Unesi vrijednost koja će biti sigurno skladištena
+    masked: Maskirano
+    masked_label: Sakrij "true" vrijednosti
+  select-icon:
+    icon: Ikonica
+    description: Odaberi ikonicu iz padajuće liste
+    search_for_icon: Traži ikonicu...
+  file-image:
+    image: Slika
+    description: Odaberi ili otpremi sliku
   system-interface:
     interface: Interfejs
+    description: Odaberi postojeći interfejs
+    placeholder: Odaberi Interfejs...
+  system-interface-options:
+    interface-options: Opcije Interfejsa
+    description: Modalni prozor za odabir opcija interfejsa
+  list-m2m:
+    many-to-many: Many to Many
+    description: Odaberi više povezanih stavki
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Odaberi samo jednu povezanu stavku
     display_template: Šablon za Prikaz
+  input-rich-text-md:
+    markdown: Smanjenje
+    description: Unesi i pregledaj opcije smanjenja
+    customSyntax: Prilagođeni Blokovi
+    customSyntax_label: Dodaj prilagođene tipove sintakse
+    customSyntax_add: Dodaj prilagođenu sintaksu
+    box: Blok / Linijski
+    imageToken: Token Fotografije
+    imageToken_label: Koji (statični) token prikačiti na izvore slika
+  presentation-notice:
+    notice: Napomеna
+    description: Prikaži kratku napomenu
+    text: Unesi sadržaj napomene ovde...
+  list-o2m:
+    one-to-many: One to Many
+    description: Odaberi više povezanih stavki
+    no_collection: Kolekciju nije moguće pronaći
+  select-radio:
+    radio-buttons: Radio dugmići
+    description: Odaberi jednu od više ponuđenih opcija
+  list:
+    repeater: Ponavljanje
+    description: Napravi više upisa od postojeće strukture
+    edit_fields: Izmijeni Polja
+    add_label: '"Napravi Novi" Labela'
+    field_name_placeholder: Unesi ime polja...
+    field_note_placeholder: Unesi napomenu polja...
+  slider:
+    slider: Slajder
+    description: Odaberi broj uz pomoć slajdera
+    always_show_value: Uvijek prikaži vrijednost
   tags:
     tags: Tagovi
+    description: Odaberi ili dodaj tagove
+    whitespace: Razmak
+    hyphen: Zamijeni sa crticom
+    underscore: Zamijeni sa podrctanom linijom
+    remove: Ukloni razmak
+    capitalization: Uvećanje
+    uppercase: Konvertuj velika slova
+    lowercase: Konvertuj mala slova
+    auto_formatter: Koristi automatski format naslova
+    alphabetize: Po abecedi
+    alphabetize_label: Abecedni red
+    add_tags: Dodaj tagove...
+  input:
+    input: Unos
+    description: Ručno unesite vrijednost
+    trim: Odsjecanje
+    trim_label: Odsjecanje sa početka i kraja
+    mask: Maskirano
+    mask_label: Sakrij pravu vrijednost
+    clear: Poništena Vrijednost
+    clear_label: Sačuvaj kao praznu sekvencu karaktera
+    minimum_value: Minimalna Vrijednost
+    maximum_value: Maksimalna Vrijednost
+    step_interval: Interval
+    slug: Slugify
+    slug_label: Omogući unijetu vrijednost sigurnu u sklopu URL
+  input-multiline:
+    textarea: Polje Teksta
+    description: Unesi višelinijski čisti-tekst
   boolean:
     toggle: Isključi / Uključi
+    description: Prebaci između uključeno i isključeno
+    label_placeholder: Unesi ime...
     label_default: Omogućen
   translations:
     display_template: Šablon za Prikaz
+    no_collection: Nema Kolekcije
+  list-o2m-tree-view:
+    description: Prikaz Stabla za ugnježđene rekurzivne one-to-many stavke
+    recursive_only: Interfejs u prikazu stabla radi samo u slučajevima rekurzivnih relacija.
   user:
     user: Korisnik
+    description: Odaberi postojećeg directus korisnika
+    select_mode: Način Odabira
     modes:
+      auto: Automatski
       dropdown: Padajuća lista
+      modal: Modalni
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Uređivač teksta koji piše HTML sadržaj
+    toolbar: Traka sa alatkama
+    custom_formats: Prilagođeni Formati
+    options_override: Opcije Prepisivanja
+  input-autocomplete-api:
+    input-autocomplete-api: Autokompletirani Ulaz (API)
+    description: Tip pretrage za spoljašne API vrijednosti.
+    results_path: Putanja Rezultata
+    value_path: Putanja Vrijednosti
+    trigger: Okidač
+    rate: Ocjena
 displays:
   boolean:
     boolean: Boolean
+    description: Prikaži uključena i isključena stanja
+    label_on: Oznaka Uključeno
+    label_on_placeholder: Unesi oznaku za uključeno...
+    label_off: Oznaka Isključeno
+    label_off_placeholder: Unesi oznaku za isključeno...
     icon_on: Ikonica Na
     icon_off: Bez Ikonice
+    color_on: Boja Uključena
+    color_off: Boja Isključena
   collection:
     collection: Kolekcija
+    description: Prikaži kolekciju
+    icon_label: Prikaži ikonicu kolekcije
   color:
     color: Boja
+    description: Prikaži obojenu tačku
+    default_color: Podrazumijevana Boja
   datetime:
+    datetime: Datum i vrijeme
+    description: Prikaži vrijednosti povezane sa vremenom
     format: Format
+    format_note: >-
+      Prilagođeni format prihvata __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dugo
+    short: Kratko
+    relative: Relativno
+    relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
   file:
     file: Fajl
+    description: Prikaži fajlove
+  filesize:
+    filesize: Veličina Fajla
+    description: Prikaži veličinu fajla
+  formatted-value:
+    formatted-value: Formatirana Vrijednost
+    description: Prikaži formatiranu verziju teksta
+    format_title: Formatiraj Naslov
+    format_title_label: Automatsko formatiranje naslova
+    bold_label: Koristi podebljan stil
+  formatted-json-value:
+    formatted-json-value: Formatirana JSON vrijednost
+    description: Prikaži formatiranu verziju objekta
+  icon:
+    icon: Ikonica
+    description: Prikaži ikonicu
+    filled: Popunjeno
+    filled_label: Koristi popunjenu varijantu
   image:
+    image: Slika
+    description: Prikaži umanjeni pregled slike
     circle: Krug
+    circle_label: Prikaži kao krug
   labels:
+    labels: Oznake
+    description: Prikaži jednu ili listu oznaka
+    default_foreground: Podrazumijevana Početna pozadina
+    default_background: Podrazumijevana Pozadina
+    format_label: Formatiraj svaku oznaku
+    show_as_dot: Prikaži kao Tačku
     choices_value_placeholder: Unesi vrijednost...
+    choices_text_placeholder: Unesi tekst...
+  mime-type:
+    mime-type: MIME Tip
+    description: Prikaži MIME-Tip fajla
+    extension_only: Samo Nastavak
+    extension_only_label: Samo prikaži nastavak fajla
+  rating:
+    rating: Ocjena
+    description: Prikaži brojeve vizuelno u stilu zvjezdica relativno maksimalnoj vrijednosti
+    simple: Jednostavan
+    simple_label: Prikaži zvjezdice u jednostavnom formatu
+  raw:
+    raw: Vrijednost
+  related-values:
+    related-values: Povezane Vrijednosti
+    description: Prikaži povezane vrijednosti
   user:
     user: Korisnik
+    description: Prikaži directus korisnika
     avatar: Avatar
     name: Ime
+    both: Oba
+    circle_label: Prikaži korisnika u obliku kruga
 layouts:
   cards:
+    cards: Kartice
+    image_source: Izvor Slike
+    image_fit: Uklapanje Slike
+    crop: Isjecanje
+    contain: Sadržano
     title: Naslov
+    subtitle: Pod naslov
   tabular:
     tabular: Tabela
+    fields: Polja
+    spacing: Razmak
+    comfortable: Udobno
+    compact: Kompaktno
+    cozy: Prijatno
+  calendar:
+    calendar: Kalendar
+    start_date_field: Polje Početnog Datuma
+    end_date_field: Polje Završnog Datuma

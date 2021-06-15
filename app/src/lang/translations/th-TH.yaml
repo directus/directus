@@ -19,7 +19,6 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
-email_examples: 'admin@example.com, user@example.com...'
 invite: เชิญชวน
 emails: อีเมล
 connection_excellent: สัญญาณดีมาก
