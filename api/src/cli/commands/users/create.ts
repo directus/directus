@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { getSchema } from '../../../utils/get-schema';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';

@@ -420,7 +420,6 @@ export default defineComponent({
 						};
 					});
 				} catch (err) {
-					console.log(err);
 					error.value = err;
 					previewItems.value = [];
 				} finally {

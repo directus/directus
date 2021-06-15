@@ -1,8 +1,8 @@
 patch:
   summary: Update Last Page
   description:
-    Updates the last used page field of the currently authenticated user. This is used internally
-    to be able to open the Directus admin app from the last page you used.
+    Updates the last used page field of the currently authenticated user. This is used internally to be able to open the
+    Directus admin app from the last page you used.
   operationId: updateLastUsedPageMe
   requestBody:
     content:
@@ -14,11 +14,11 @@ patch:
               type: string
           type: object
   responses:
-    "200":
+    '200':
       description: Successful request
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Users

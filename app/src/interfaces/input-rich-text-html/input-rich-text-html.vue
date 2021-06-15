@@ -4,9 +4,8 @@
 			ref="editorElement"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
+			model-events="change keydown blur focus paste ExecCommand"
 			v-model="internalValue"
-			@change="onChange"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
@@ -242,6 +241,7 @@ export default defineComponent({
 			editorRef,
 			imageToken
 		);
+
 		const {
 			mediaDrawerOpen,
 			mediaSelection,
@@ -344,9 +344,6 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
-			onChange(a: any) {
-				console.log(a);
-			},
 		};
 
 		function setup(editor: any) {
@@ -374,9 +371,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
+</style>
+
+<style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .body {

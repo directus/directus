@@ -5,7 +5,7 @@
 	<interface-select-multiple-checkbox
 		v-else
 		:choices="items"
-		@input="emit('input', $event)"
+		@input="$emit('input', $event)"
 		:value="value"
 		:disabled="disabled"
 	/>
