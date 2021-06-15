@@ -16,13 +16,14 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 	const key = getCacheKey(req);
 	const cachedData = await cache.get(key);
-	const cacheExpiryDate = (await cache.get(`${key}__expires_at`)) as number | null;
-	const cacheTTL = cacheExpiryDate ? cacheExpiryDate - Date.now() : null;
-
-	res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL));
-	res.setHeader('Vary', 'Origin, Cache-Control');
 
 	if (cachedData) {
+		const cacheExpiryDate = (await cache.get(`${key}__expires_at`)) as number | null;
+		const cacheTTL = cacheExpiryDate ? cacheExpiryDate - Date.now() : null;
+
+		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL));
+		res.setHeader('Vary', 'Origin, Cache-Control');
+
 		return res.json(cachedData);
 	} else {
 		return next();
