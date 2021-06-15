@@ -20,6 +20,7 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
+email_examples: "admin{'@'}primjer.com, user{'@'}primjer.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese
@@ -585,6 +586,7 @@ wysiwyg_options:
   fontselect: Odaberi Pismo
   fontsizeselect: Odaberi Veličinu Pisma
   indent: Uvlačenje
+  outdent: Uvlačenje
   undo: Poništi
   redo: Vrati poništeno
   remove: Ukloni
@@ -743,10 +745,13 @@ fields:
     project_url: URL projekta
     project_color: Boja Projekta
     project_logo: Logotip Projekta
+    public_foreground: Javna Pozadina
+    public_background: Javna Pozadina
     public_note: Opis Projekta
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     storage_asset_presets: Izgled prostora za skladištenje
+    storage_asset_transform: Transformacija sredstava za skladištenje
     custom_css: Prilagođeni CSS
   directus_fields:
     collection: Ime Kolekcije
@@ -805,6 +810,7 @@ done: Urađeno
 duplicate: Dupliraj
 email: Email adresa
 embed: Ugradi
+fallback_icon: IkonicaPrethodnog stanja
 field: Polje | Polja
 file: Fajl
 file_library: Biblioteka Fajlova
@@ -849,6 +855,7 @@ template: Šablon
 translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
+weeks: { }
 report_error: Prijavi Grešku
 interfaces:
   presentation-links:
@@ -934,6 +941,7 @@ interfaces:
     description: Odaberi ikonicu iz padajuće liste
     search_for_icon: Traži ikonicu...
   file-image:
+    image: Slika
     description: Odaberi ili otpremi sliku
   system-interface:
     interface: Interfejs
@@ -1007,6 +1015,7 @@ interfaces:
     maximum_value: Maksimalna Vrijednost
     step_interval: Interval
     slug: Slugify
+    slug_label: Omogući unijetu vrijednost sigurnu u sklopu URL
   input-multiline:
     textarea: Polje Teksta
     description: Unesi višelinijski čisti-tekst
@@ -1031,32 +1040,120 @@ interfaces:
       modal: Modalni
   input-rich-text-html:
     wysiwyg: WYSIWYG
+    description: Uređivač teksta koji piše HTML sadržaj
+    toolbar: Traka sa alatkama
+    custom_formats: Prilagođeni Formati
+    options_override: Opcije Prepisivanja
+  input-autocomplete-api:
+    input-autocomplete-api: Autokompletirani Ulaz (API)
+    description: Tip pretrage za spoljašne API vrijednosti.
+    results_path: Putanja Rezultata
+    value_path: Putanja Vrijednosti
+    trigger: Okidač
+    rate: Ocjena
 displays:
   boolean:
     boolean: Boolean
+    description: Prikaži uključena i isključena stanja
+    label_on: Oznaka Uključeno
+    label_on_placeholder: Unesi oznaku za uključeno...
+    label_off: Oznaka Isključeno
+    label_off_placeholder: Unesi oznaku za isključeno...
     icon_on: Ikonica Na
     icon_off: Bez Ikonice
+    color_on: Boja Uključena
+    color_off: Boja Isključena
   collection:
     collection: Kolekcija
+    description: Prikaži kolekciju
+    icon_label: Prikaži ikonicu kolekcije
   color:
     color: Boja
+    description: Prikaži obojenu tačku
+    default_color: Podrazumijevana Boja
   datetime:
     datetime: Datum i vrijeme
+    description: Prikaži vrijednosti povezane sa vremenom
     format: Format
+    format_note: >-
+      Prilagođeni format prihvata __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dugo
+    short: Kratko
+    relative: Relativno
+    relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
   file:
     file: Fajl
+    description: Prikaži fajlove
+  filesize:
+    filesize: Veličina Fajla
+    description: Prikaži veličinu fajla
+  formatted-value:
+    formatted-value: Formatirana Vrijednost
+    description: Prikaži formatiranu verziju teksta
+    format_title: Formatiraj Naslov
+    format_title_label: Automatsko formatiranje naslova
+    bold_label: Koristi podebljan stil
+  formatted-json-value:
+    formatted-json-value: Formatirana JSON vrijednost
+    description: Prikaži formatiranu verziju objekta
   icon:
     icon: Ikonica
+    description: Prikaži ikonicu
+    filled: Popunjeno
+    filled_label: Koristi popunjenu varijantu
   image:
+    image: Slika
+    description: Prikaži umanjeni pregled slike
     circle: Krug
+    circle_label: Prikaži kao krug
   labels:
+    labels: Oznake
+    description: Prikaži jednu ili listu oznaka
+    default_foreground: Podrazumijevana Početna pozadina
+    default_background: Podrazumijevana Pozadina
+    format_label: Formatiraj svaku oznaku
+    show_as_dot: Prikaži kao Tačku
     choices_value_placeholder: Unesi vrijednost...
+    choices_text_placeholder: Unesi tekst...
+  mime-type:
+    mime-type: MIME Tip
+    description: Prikaži MIME-Tip fajla
+    extension_only: Samo Nastavak
+    extension_only_label: Samo prikaži nastavak fajla
+  rating:
+    rating: Ocjena
+    description: Prikaži brojeve vizuelno u stilu zvjezdica relativno maksimalnoj vrijednosti
+    simple: Jednostavan
+    simple_label: Prikaži zvjezdice u jednostavnom formatu
+  raw:
+    raw: Vrijednost
+  related-values:
+    related-values: Povezane Vrijednosti
+    description: Prikaži povezane vrijednosti
   user:
     user: Korisnik
+    description: Prikaži directus korisnika
     avatar: Avatar
     name: Ime
+    both: Oba
+    circle_label: Prikaži korisnika u obliku kruga
 layouts:
   cards:
+    cards: Kartice
+    image_source: Izvor Slike
+    image_fit: Uklapanje Slike
+    crop: Isjecanje
+    contain: Sadržano
     title: Naslov
+    subtitle: Pod naslov
   tabular:
     tabular: Tabela
+    fields: Polja
+    spacing: Razmak
+    comfortable: Udobno
+    compact: Kompaktno
+    cozy: Prijatno
+  calendar:
+    calendar: Kalendar
+    start_date_field: Polje Početnog Datuma
+    end_date_field: Polje Završnog Datuma
