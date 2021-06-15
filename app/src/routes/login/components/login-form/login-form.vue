@@ -4,7 +4,7 @@
 		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="t('password')" />
 
 		<transition-expand>
-			<v-input type="text" :placeholder="t('otp')" v-if="requiresTFA" v-model="otp" />
+			<v-input type="text" :placeholder="t('otp')" v-if="requiresTFA" v-model="otp" autofocus />
 		</transition-expand>
 
 		<v-notice type="warning" v-if="error">

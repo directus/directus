@@ -10,7 +10,7 @@
 		"lint": "npm-run-all --parallel --continue-on-error lint:*",
 		"lint:eslint": "eslint .",
 		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\"",
-		"format": "prettier --write \"**/*.{js,ts,vue,md}\"",
+		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
 		"release": "lerna publish --force-publish --exact",
@@ -26,15 +26,15 @@
 		"@types/listr": "^0.14.3",
 		"@types/node": "^15.12.0",
 		"@types/supertest": "^2.0.11",
-		"@typescript-eslint/eslint-plugin": "^4.25.0",
-		"@typescript-eslint/parser": "^4.26.0",
+		"@typescript-eslint/eslint-plugin": "^4.27.0",
+		"@typescript-eslint/parser": "^4.27.0",
 		"axios": "^0.21.1",
 		"dockerode": "^3.3.0",
 		"eslint": "^7.27.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^3.4.0",
 		"eslint-plugin-prettier-vue": "^3.1.0",
-		"eslint-plugin-vue": "^7.10.0",
+		"eslint-plugin-vue": "^7.11.1",
 		"globby": "^11.0.3",
 		"jest": "^27.0.4",
 		"knex": "^0.95.6",
@@ -65,7 +65,7 @@
 	},
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
-		"*.md": "prettier --write",
+		"*.{md,yaml}": "prettier --write",
 		"*.{css,scss,vue}": "stylelint --fix"
 	}
 }

@@ -16,7 +16,7 @@ post:
               example: eyJ0eXAiOiJKV...
               description: JWT access token you want to refresh. This token can't be expired.
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -35,5 +35,5 @@ post:
                   refresh_token:
                     type: string
                     example: Gy-caJMpmGTA...
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

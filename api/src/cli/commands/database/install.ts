@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import runMigrations from '../../../database/migrations/run';
 import installSeeds from '../../../database/seeds/run';
 import getDatabase from '../../../database';

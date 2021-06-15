@@ -362,7 +362,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				} else {
 					const primaryKey = item[primaryKeyField.value.field];
 
-					router.push(`/collections/${collection.value}/-/${encodeURIComponent(primaryKey)}`);
+					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
 				}
 			}
 

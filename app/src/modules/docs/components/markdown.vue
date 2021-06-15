@@ -26,8 +26,11 @@ const md = new MarkdownIt({
 		if (lang && hljs.getLanguage(lang)) {
 			try {
 				return hljs.highlight(str, { language: lang }).value;
-			} catch {
+			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn('There was an error highlighting in Markdown');
+				// eslint-disable-next-line no-console
+				console.error(err);
 			}
 		}
 
@@ -92,14 +95,15 @@ export default defineComponent({
 					filenameParts.shift();
 				}
 
-				const newFilename = `/admin${rootPath}img/docs/${filenameParts.join('/')}`;
+				const newFilename = `${rootPath}admin/img/docs/${filenameParts.join('/')}`;
 				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
 				markdown = markdown.replace(rawImage[0], newImage);
 			}
 
 			pageClass.value = attributes?.pageClass;
 
-			const htmlString = md.render(markdown);
+			// Un-escape zero-width characters to allow breaking up character sequences automatically replaced by vite
+			const htmlString = md.render(markdown).replaceAll('\\u200b', '\u200b');
 
 			html.value = htmlString;
 

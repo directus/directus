@@ -11,7 +11,7 @@
 				<template
 					v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0"
 				>
-					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+					<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
 						<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 						<v-list-item-content>
 							<v-text-overflow :text="navItem.name" />
@@ -26,7 +26,7 @@
 						:label="group.name || null"
 						@update:model-value="toggleActive(group.name)"
 					>
-						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
+						<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
 							<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 							<v-list-item-content>
 								<v-text-overflow :text="navItem.name" />
@@ -37,7 +37,7 @@
 			</template>
 		</template>
 
-		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
+		<v-list-item v-else v-for="navItem in navItems" :key="navItem.to" :to="navItem.to" query>
 			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
@@ -65,13 +65,7 @@
 		<template v-if="hiddenShown">
 			<v-divider />
 
-			<v-list-item
-				class="hidden-collection"
-				:exact="exact"
-				v-for="navItem in hiddenNavItems"
-				:key="navItem.to"
-				:to="navItem.to"
-			>
+			<v-list-item class="hidden-collection" v-for="navItem in hiddenNavItems" :key="navItem.to" :to="navItem.to" query>
 				<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="navItem.name" />
@@ -105,12 +99,6 @@ import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
-	props: {
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-	},
 	setup() {
 		const { t } = useI18n();
 
@@ -142,7 +130,7 @@ export default defineComponent({
 
 						return {
 							...preset,
-							to: `/collections/${preset.collection}/${preset.id}`,
+							to: `/collections/${preset.collection}?bookmark=${preset.id}`,
 							scope,
 						};
 					}),

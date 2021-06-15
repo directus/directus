@@ -20,10 +20,12 @@ export async function registerDisplays(app: App): Promise<void> {
 				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/${displayName}/index.js`);
 				displays.push(result.default);
 			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn(`Couldn't load custom displays "${displayName}":`, err);
 			}
 		});
 	} catch {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom displays`);
 	}
 

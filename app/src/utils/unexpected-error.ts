@@ -15,6 +15,7 @@ export function unexpectedError(error: Error | RequestError | APIError): void {
 
 	const message = (error as RequestError).response?.data?.errors?.[0]?.message || error.message || undefined;
 
+	// eslint-disable-next-line no-console
 	console.warn(error);
 
 	store.add({

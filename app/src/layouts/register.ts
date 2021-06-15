@@ -21,10 +21,12 @@ export async function registerLayouts(app: App): Promise<void> {
 				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/${layoutName}/index.js`);
 				layouts.push(result.default);
 			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
 			}
 		});
 	} catch {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom layouts`);
 	}
 

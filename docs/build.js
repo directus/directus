@@ -2,6 +2,7 @@ const path = require('path');
 const fse = require('fs-extra');
 const dirTree = require('directory-tree');
 
+// eslint-disable-next-line no-console
 console.log('Building docs...');
 
 const tree = dirTree('.', {
@@ -15,6 +16,7 @@ const index = `export default ${generateIndex(tree.children)};`;
 fse.ensureDirSync('dist');
 fse.writeFileSync('dist/index.js', index);
 
+// eslint-disable-next-line no-console
 console.log('Built docs');
 
 function generateIndex(tree) {
