@@ -112,6 +112,7 @@ export default {
 		nodeResolve(),
 		commonjs(),
 		replace({
+			'process\u200b.env.NODE_ENV': JSON.stringify('production'),
 			preventAssignment: true,
 		}),
 		terser(),
