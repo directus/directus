@@ -102,7 +102,8 @@ export default defineComponent({
 
 			pageClass.value = attributes?.pageClass;
 
-			const htmlString = md.render(markdown);
+			// Un-escape zero-width characters to allow breaking up character sequences automatically replaced by vite
+			const htmlString = md.render(markdown).replaceAll('\\u200b', '\u200b');
 
 			html.value = htmlString;
 
