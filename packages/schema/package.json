@@ -39,8 +39,8 @@
 	},
 	"homepage": "https://github.com/directus/directus#readme",
 	"devDependencies": {
-		"npm-watch": "^0.10.0",
-		"typescript": "^4.3.2"
+		"npm-watch": "0.10.0",
+		"typescript": "4.3.2"
 	},
 	"dependencies": {
 		"knex-schema-inspector": "^1.3.0",
