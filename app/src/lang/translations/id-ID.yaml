@@ -20,7 +20,6 @@ create_role: Buat Peran
 create_user: Buat User
 create_webhook: Buat Webhook
 invite_users: Undang Pengguna Lain
-email_examples: 'admin@website.com, user@website.com...'
 invite: Undang
 email_already_invited: Email "{email}" sudah diundang
 emails: Surel

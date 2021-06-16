@@ -50,6 +50,7 @@ const defaults: Record<string, any> = {
 	CACHE_TTL: '10m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
+	CACHE_CONTROL_S_MAXAGE: '0',
 
 	OAUTH_PROVIDERS: '',
 

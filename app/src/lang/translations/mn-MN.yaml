@@ -20,7 +20,7 @@ create_role: Үүрэг үүсгэх
 create_user: Хэрэглэгч үүсгэх
 create_webhook: Webhook үүсгэх
 invite_users: Хэрэглэгч урих
-email_examples: 'admin@example.com, user@example.com...'
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
 emails: Имэйл
