@@ -171,7 +171,7 @@ function getDBQuery(
 		delete queryCopy.limit;
 	}
 
-	applyQuery(table, dbQuery, queryCopy, schema);
+	applyQuery(knex, table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
