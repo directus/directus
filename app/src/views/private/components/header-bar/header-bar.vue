@@ -1,14 +1,14 @@
 <template>
 	<header class="header-bar" ref="headerEl" :class="{ collapsed, small }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')" v-if="$listeners.primary">
+		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
-		<div class="title-outer-prepend" v-if="$scopedSlots['title-outer:prepend']">
+		<div class="title-outer-prepend" v-if="$slots['title-outer:prepend']">
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container" :class="{ full: !$scopedSlots['title-outer:append'] }">
+		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
@@ -37,10 +37,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
+	emits: ['primary', 'toggle:sidebar'],
 	components: { HeaderBarActions },
 	props: {
 		title: {
@@ -86,8 +87,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .header-bar {
 	position: sticky;
 	top: -1px;
@@ -105,7 +104,7 @@ export default defineComponent({
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
 	.nav-toggle {
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -113,7 +112,7 @@ export default defineComponent({
 	.title-outer-prepend {
 		display: none;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: block;
 		}
 	}
@@ -128,7 +127,7 @@ export default defineComponent({
 		margin-left: 16px;
 		overflow: hidden;
 
-		@include breakpoint(small) {
+		@media (min-width: 600px) {
 			max-width: 70%;
 		}
 
@@ -136,7 +135,7 @@ export default defineComponent({
 			margin-right: 12px;
 			padding-right: 0;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;
 			}
@@ -151,7 +150,7 @@ export default defineComponent({
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				top: -2px;
 			}
 		}
@@ -196,13 +195,14 @@ export default defineComponent({
 		flex-shrink: 0;
 		margin-left: 8px;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		padding: 0 32px;
+
 		&:not(.small) {
 			margin: 24px 0;
 		}

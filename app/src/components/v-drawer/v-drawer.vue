@@ -1,18 +1,18 @@
 <template>
-	<v-dialog v-model="_active" @esc="$emit('cancel')" :persistent="persistent" placement="right">
+	<v-dialog v-model="internalActive" @esc="$emit('cancel')" :persistent="persistent" placement="right">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
 
 		<article class="v-drawer">
 			<v-button
-				v-if="showCancel"
+				v-if="cancelable"
 				class="cancel"
 				@click="$emit('cancel')"
 				icon
 				rounded
 				secondary
-				v-tooltip.bottom="$t('cancel')"
+				v-tooltip.bottom="t('cancel')"
 			>
 				<v-icon name="close" />
 			</v-button>
@@ -57,17 +57,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, provide } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, provide } from 'vue';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['cancel', 'update:modelValue'],
 	components: {
 		HeaderBar,
-	},
-	model: {
-		prop: 'active',
-		event: 'toggle',
 	},
 	props: {
 		title: {
@@ -78,7 +76,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -92,31 +90,33 @@ export default defineComponent({
 		},
 		sidebarLabel: {
 			type: String,
-			default: i18n.t('sidebar'),
+			default: i18n.global.t('sidebar'),
+		},
+		cancelable: {
+			type: Boolean,
+			default: true,
 		},
 	},
-	setup(props, { emit, listeners }) {
+	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const localActive = ref(false);
 
 		const mainEl = ref<Element>();
 
 		provide('main-element', mainEl);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
-		const showCancel = computed(() => {
-			return 'cancel' in listeners;
-		});
-
-		return { _active, mainEl, showCancel };
+		return { t, internalActive, mainEl };
 	},
 });
 </script>
@@ -128,8 +128,6 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-drawer {
 	position: relative;
 	display: flex;
@@ -151,7 +149,7 @@ body {
 
 	.header-icon {
 		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-activated: var(--background-normal);
+		--v-button-background-color-active: var(--background-normal);
 		--v-button-background-color-hover: var(--background-normal-alt);
 		--v-button-color-disabled: var(--foreground-normal);
 	}
@@ -177,7 +175,7 @@ body {
 
 			display: none;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				position: relative;
 				z-index: 2;
 				display: block;
@@ -193,7 +191,7 @@ body {
 		.v-overlay {
 			--v-overlay-z-index: 1;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				--v-overlay-z-index: none;
 
 				display: none;
@@ -207,14 +205,14 @@ body {
 			flex-grow: 1;
 			overflow: auto;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
 		}
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		width: calc(100% - 64px);
 	}
 }
@@ -227,7 +225,7 @@ body {
 		border-radius: var(--border-radius);
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		display: none;
 	}
 }

@@ -26,40 +26,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import { i18n } from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { version } from '../../../../package.json';
 import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { parsedInfo } = useProjectInfo();
 
 		const navItems = [
 			{
 				icon: 'public',
-				name: i18n.t('settings_project'),
+				name: t('settings_project'),
 				to: `/settings/project`,
 			},
 			{
 				icon: 'list_alt',
-				name: i18n.t('settings_data_model'),
+				name: t('settings_data_model'),
 				to: `/settings/data-model`,
 			},
 			{
 				icon: 'admin_panel_settings',
-				name: i18n.t('settings_permissions'),
+				name: t('settings_permissions'),
 				to: `/settings/roles`,
 				outline: true,
 			},
 			{
 				icon: 'bookmark_border',
-				name: i18n.t('settings_presets'),
+				name: t('settings_presets'),
 				to: `/settings/presets`,
 			},
 			{
 				icon: 'anchor',
-				name: i18n.t('settings_webhooks'),
+				name: t('settings_webhooks'),
 				to: `/settings/webhooks`,
 			},
 		];
@@ -71,7 +73,7 @@ export default defineComponent({
 
 ### Project details
 Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${process.env.NODE_ENV}
+Environment: ${import.meta.env.MODE}
 OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
 Node: ${parsedInfo.value?.node.version}
 			`;
@@ -79,13 +81,13 @@ Node: ${parsedInfo.value?.node.version}
 			return [
 				{
 					icon: 'bug_report',
-					name: i18n.t('report_bug'),
+					name: t('report_bug'),
 					href: `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`,
 					outline: true,
 				},
 				{
 					icon: 'new_releases',
-					name: i18n.t('request_feature'),
+					name: t('request_feature'),
 					href: 'https://github.com/directus/directus/discussions/new',
 					outline: true,
 				},
@@ -97,23 +99,22 @@ Node: ${parsedInfo.value?.node.version}
 });
 </script>
 
-<style lang="scss" scoped>
-.version {
-	.v-icon {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	::v-deep .v-text-overflow {
-		color: var(--foreground-subdued);
-		transition: color var(--fast) var(--transition);
-	}
-	&:hover {
-		.v-icon {
-			color: var(--foreground-normal-alt);
-		}
-		::v-deep .v-text-overflow {
-			color: var(--foreground-normal-alt);
-		}
-	}
+<style scoped>
+.version .v-icon {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.version :deep(.v-text-overflow) {
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.version:hover .v-icon {
+	color: var(--foreground-normal-alt);
+}
+
+.version:hover :deep(.v-text-overflow) {
+	color: var(--foreground-normal-alt);
 }
 </style>

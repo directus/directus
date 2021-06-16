@@ -19,26 +19,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
-import i18n from '@/lang';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
 
 		const customLogoPath = computed<string | null>(() => {
-			if (settingsStore.state.settings === null) return null;
-			if (!settingsStore.state.settings?.project_logo) return null;
-			return addTokenToURL(getRootPath() + `assets/${settingsStore.state.settings.project_logo}`);
+			if (settingsStore.settings === null) return null;
+			if (!settingsStore.settings?.project_logo) return null;
+			return addTokenToURL(getRootPath() + `assets/${settingsStore.settings.project_logo}`);
 		});
 
 		const showLoader = ref(false);
 
-		const queueHasItems = requestsStore.queueHasItems;
+		const { queueHasItems } = toRefs(requestsStore);
 
 		watch(
 			() => queueHasItems.value,
@@ -47,10 +49,10 @@ export default defineComponent({
 			}
 		);
 
-		const url = computed(() => settingsStore.state.settings?.project_url);
+		const url = computed(() => settingsStore.settings?.project_url);
 
 		const urlTooltip = computed(() => {
-			return settingsStore.state.settings?.project_url ? i18n.t('view_project') : false;
+			return settingsStore.settings?.project_url ? t('view_project') : false;
 		});
 
 		return {
@@ -123,7 +125,7 @@ export default defineComponent({
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
 }

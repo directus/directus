@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="!displayValue" />
+	<value-null v-if="displayValue === null || displayValue === undefined" />
 
 	<span v-else class="display-formatted-text" :class="[{ bold }, font]" :style="{ color }">
 		{{ displayValue }}
@@ -7,9 +7,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import formatTitle from '@directus/format-title';
 import { decode } from 'html-entities';
+import { useI18n } from 'vue-i18n';
+import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -36,8 +38,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { n } = useI18n();
+
 		const displayValue = computed(() => {
-			if (!props.value) return null;
+			if (isNil(props.value) || props.value === '') return null;
+
+			if (typeof props.value === 'number') {
+				return n(props.value);
+			}
+
 			let value = String(props.value);
 
 			// Strip out all HTML tags

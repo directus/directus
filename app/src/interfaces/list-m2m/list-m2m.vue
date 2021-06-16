@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="!junction || !relation">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
 		<template v-if="loading">
@@ -12,36 +12,43 @@
 		</template>
 
 		<v-notice v-else-if="sortedItems.length === 0">
-			{{ $t('no_items') }}
+			{{ t('no_items') }}
 		</v-notice>
 
 		<v-list v-else>
 			<draggable
 				:force-fallback="true"
-				:value="sortedItems"
-				@input="sortItems($event)"
+				:model-value="sortedItems"
+				@update:model-value="sortItems($event)"
+				item-key="id"
 				handle=".drag-handle"
 				:disabled="!junction.meta.sort_field"
 			>
-				<v-list-item
-					:dense="sortedItems.length > 4"
-					v-for="item in sortedItems"
-					:key="item.id"
-					block
-					@click="editItem(item)"
-				>
-					<v-icon v-if="junction.meta.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
-					<div class="spacer" />
-					<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(item)" />
-				</v-list-item>
+				<template #item="{ element }">
+					<v-list-item :dense="sortedItems.length > 4" block @click="editItem(element)">
+						<v-icon
+							v-if="junction.meta.sort_field"
+							name="drag_handle"
+							class="drag-handle"
+							left
+							@click.stop="() => {}"
+						/>
+						<render-template
+							:collection="junctionCollection.collection"
+							:item="element"
+							:template="templateWithDefaults"
+						/>
+						<div class="spacer" />
+						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+					</v-list-item>
+				</template>
 			</draggable>
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -60,7 +67,7 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
 			:selection="[]"
 			:filters="selectionFilters"
@@ -70,10 +77,10 @@
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
-				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-title>{{ t('upload_file') }}</v-card-title>
 				<v-card-text><v-upload @input="onUpload" multiple from-url /></v-card-text>
 				<v-card-actions>
-					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -81,7 +88,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType, toRefs, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
@@ -99,6 +107,7 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
@@ -135,6 +144,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const permissionsStore = usePermissionsStore();
 		const userStore = useUserStore();
 
@@ -196,6 +207,7 @@ export default defineComponent({
 		const { showUpload, onUpload } = useUpload();
 
 		return {
+			t,
 			junction,
 			relation,
 			tableHeaders,
@@ -233,15 +245,15 @@ export default defineComponent({
 
 		function usePermissions() {
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+				const hasJunctionPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === junctionCollection.value.collection
 				);
 
-				const hasRelatedPermissions = !!permissionsStore.state.permissions.find(
+				const hasRelatedPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === relationCollection.value.collection
 				);
@@ -250,10 +262,10 @@ export default defineComponent({
 			});
 
 			const selectAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+				const hasJunctionPermissions = !!permissionsStore.permissions.find(
 					(permission) =>
 						permission.action === 'create' && permission.collection === junctionCollection.value.collection
 				);
@@ -300,10 +312,10 @@ export default defineComponent({
 }
 
 .actions {
-	margin-top: 12px;
+	margin-top: 8px;
 
 	.v-button + .v-button {
-		margin-left: 12px;
+		margin-left: 8px;
 	}
 }
 

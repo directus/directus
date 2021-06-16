@@ -2,6 +2,7 @@
 	<v-list-item
 		v-if="field.children === undefined || depth === 0"
 		:disabled="field.disabled"
+		clickable
 		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
 	>
 		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
@@ -20,11 +21,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 import { FieldTree } from './types';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
+	emits: ['add'],
 	name: 'field-list-item',
 	props: {
 		field: {

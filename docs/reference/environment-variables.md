@@ -125,13 +125,14 @@ needs, you can extend the above environment variables to configure any of
 
 ## Cache
 
-| Variable           | Description                                                             | Default Value    |
-| ------------------ | ----------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`    | Whether or not caching is enabled.                                      | `false`          |
-| `CACHE_TTL`        | How long the cache is persisted.                                        | `30m`            |
-| `CACHE_AUTO_PURGE` | Automatically purge the cache on `create`/`update`/`delete` actions.    | `false`          |
-| `CACHE_NAMESPACE`  | How to scope the cache data.                                            | `directus-cache` |
-| `CACHE_STORE`      | Where to store the cache data. Either `memory`, `redis`, or `memcache`. | `memory`         |
+| Variable                 | Description                                                                            | Default Value    |
+| ------------------------ | -------------------------------------------------------------------------------------- | ---------------- |
+| `CACHE_ENABLED`          | Whether or not caching is enabled.                                                     | `false`          |
+| `CACHE_TTL`              | How long the cache is persisted.                                                       | `30m`            |
+| `CACHE_CONTROL_S_MAXAGE` | Whether to not to add the s-maxage expiration flag. Set to a number for a custom value | `0`              |
+| `CACHE_AUTO_PURGE`       | Automatically purge the cache on `create`/`update`/`delete` actions.                   | `false`          |
+| `CACHE_NAMESPACE`        | How to scope the cache data.                                                           | `directus-cache` |
+| `CACHE_STORE`            | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                | `memory`         |
 
 Based on the `CACHE_STORE` used, you must also provide the following configurations:
 
@@ -310,14 +311,15 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### SMTP (`smtp`)
 
-| Variable              | Description      | Default Value |
-| --------------------- | ---------------- | ------------- |
-| `EMAIL_SMTP_HOST`     | SMTP Host        | --            |
-| `EMAIL_SMTP_PORT`     | SMTP Port        | --            |
-| `EMAIL_SMTP_USER`     | SMTP User        | --            |
-| `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
-| `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
-| `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
+| Variable                | Description      | Default Value |
+| ----------------------- | ---------------- | ------------- |
+| `EMAIL_SMTP_HOST`       | SMTP Host        | --            |
+| `EMAIL_SMTP_PORT`       | SMTP Port        | --            |
+| `EMAIL_SMTP_USER`       | SMTP User        | --            |
+| `EMAIL_SMTP_PASSWORD`   | SMTP Password    | --            |
+| `EMAIL_SMTP_POOL`       | Use SMTP pooling | --            |
+| `EMAIL_SMTP_SECURE`     | Enable TLS       | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS       | --            |
 
 ### Mailgun (`mailgun`)
 
@@ -386,3 +388,11 @@ to use for the given value by prefixing the value with `{type}:`. The following 
 | `number`      | `number:3306`                                    | `3306`                                           |
 | `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
 | `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
+
+## File Based Environment Variables (Docker Secrets)
+
+Any of the environment variable values can be imported from a file, by appending `_FILE` to the environment variable
+name. For example: `DB_PASSWORD_FILE="/run/secrets/db_password"`.
+
+This is especially useful when used in conjunction with Docker Secrets, so you can keep sensitive data out of your
+compose files.

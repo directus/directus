@@ -16,7 +16,7 @@ import {
 } from '@/stores';
 
 type GenericStore = {
-	id: string;
+	$id: string;
 	hydrate?: () => Promise<void>;
 	dehydrate?: () => Promise<void>;
 
@@ -40,15 +40,14 @@ export function useStores(
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
-/* istanbul ignore next: useStores has a test already */
 export async function hydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
 
-	if (appStore.state.hydrated) return;
-	if (appStore.state.hydrating) return;
+	if (appStore.hydrated) return;
+	if (appStore.hydrating) return;
 
-	appStore.state.hydrating = true;
+	appStore.hydrating = true;
 
 	try {
 		/**
@@ -59,25 +58,24 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		 */
 		await userStore.hydrate();
 
-		if (userStore.state.currentUser?.role) {
-			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
+		if (userStore.currentUser?.role) {
+			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
-			await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
+			await setLanguage((userStore.currentUser?.language as Language) || 'en-US');
 		}
 	} catch (error) {
-		appStore.state.error = error;
+		appStore.error = error;
 	} finally {
-		appStore.state.hydrating = false;
+		appStore.hydrating = false;
 	}
 
-	appStore.state.hydrated = true;
+	appStore.hydrated = true;
 }
 
-/* istanbul ignore next: useStores has a test already */
 export async function dehydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 
-	if (appStore.state.hydrated === false) return;
+	if (appStore.hydrated === false) return;
 
 	for (const store of stores) {
 		await store.dehydrate?.();
@@ -85,5 +83,5 @@ export async function dehydrate(stores = useStores()): Promise<void> {
 
 	unregisterModules();
 
-	appStore.state.hydrated = false;
+	appStore.hydrated = false;
 }

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import { Knex } from 'knex';

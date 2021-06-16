@@ -1,12 +1,15 @@
 <template>
-	<v-form :fields="fields" v-model="options" />
+	<div>
+		<v-form :fields="fields" v-model="options" />
+	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api';
+import { computed, defineComponent, PropType } from 'vue';
 import { Field } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		fieldData: {
 			type: Object as PropType<Field>,

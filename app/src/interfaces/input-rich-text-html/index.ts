@@ -1,15 +1,14 @@
 import { defineInterface } from '@/interfaces/define';
-import { AsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
-const InterfaceWYSIWYG = () =>
-	import(/* webpackChunkName: 'interface-input-rich-text-html', webpackPrefetch: true */ './input-rich-text-html.vue');
+const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 
 export default defineInterface({
 	id: 'input-rich-text-html',
 	name: '$t:interfaces.input-rich-text-html.wysiwyg',
 	description: '$t:interfaces.input-rich-text-html.description',
 	icon: 'format_quote',
-	component: InterfaceWYSIWYG as AsyncComponent,
+	component: InterfaceWYSIWYG,
 	types: ['text'],
 	options: [
 		{

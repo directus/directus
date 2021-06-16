@@ -1,15 +1,15 @@
 <template>
 	<v-notice v-if="!collectionField && !collection" type="warning">
-		{{ $t('collection_field_not_setup') }}
+		{{ t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
-		{{ $t('select_a_collection') }}
+		{{ t('select_a_collection') }}
 	</v-notice>
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@input="$listeners.input"
-		:value="value"
+		@update:model-value="$emit('input', $event)"
+		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
 		:placeholder="placeholder"
@@ -17,11 +17,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, inject, ref, PropType } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collectionField: {
 			type: String,
@@ -53,6 +55,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -77,7 +81,7 @@ export default defineComponent({
 			})
 		);
 
-		return { selectItems, values, fields };
+		return { t, selectItems, values, fields };
 	},
 });
 </script>

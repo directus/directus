@@ -1,14 +1,14 @@
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table
-			:summary="_headers.map((header) => header.text).join(', ')"
+			:summary="internalHeaders.map((header) => header.text).join(', ')"
 			:style="{
 				'--grid-columns': columnStyle,
 			}"
 		>
 			<table-header
-				:headers.sync="_headers"
-				:sort.sync="_sort"
+				v-model:headers="internalHeaders"
+				v-model:sort="internalSort"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
@@ -20,7 +20,7 @@
 				:manual-sort-key="manualSortKey"
 				@toggle-select-all="onToggleSelectAll"
 			>
-				<template v-for="header in _headers" #[`header.${header.value}`]>
+				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
 					<slot :header="header" :name="`header.${header.value}`" />
 				</template>
 			</table-header>
@@ -42,41 +42,42 @@
 			<draggable
 				:force-fallback="true"
 				v-else
-				v-model="_items"
+				v-model="internalItems"
+				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
-				:disabled="disabled || _sort.by !== manualSortKey"
+				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
 				@end="onSortChange"
 			>
-				<table-row
-					v-for="item in _items"
-					:key="item[itemKey]"
-					:headers="_headers"
-					:item="item"
-					:show-select="!disabled && showSelect"
-					:show-manual-sort="!disabled && showManualSort"
-					:is-selected="getSelectedState(item)"
-					:subdued="loading"
-					:sorted-manually="_sort.by === manualSortKey"
-					:has-click-listener="!disabled && hasRowClick"
-					:height="rowHeight"
-					@click="hasRowClick ? $emit('click:row', item) : null"
-					@item-selected="
-						onItemSelected({
-							item: item,
-							value: !getSelectedState(item),
-						})
-					"
-				>
-					<template v-for="header in _headers" #[`item.${header.value}`]>
-						<slot :item="item" :name="`item.${header.value}`" />
-					</template>
+				<template #item="{ element }">
+					<table-row
+						:headers="internalHeaders"
+						:item="element"
+						:show-select="!disabled && showSelect"
+						:show-manual-sort="!disabled && showManualSort"
+						:is-selected="getSelectedState(element)"
+						:subdued="loading"
+						:sorted-manually="internalSort.by === manualSortKey"
+						:has-click-listener="!disabled && clickable"
+						:height="rowHeight"
+						@click="clickable ? $emit('click:row', element) : null"
+						@item-selected="
+							onItemSelected({
+								item: element,
+								value: !getSelectedState(element),
+							})
+						"
+					>
+						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
+							<slot :item="element" :name="`item.${header.value}`" />
+						</template>
 
-					<template v-if="hasItemAppendSlot" #item-append>
-						<slot name="item-append" :item="item" />
-					</template>
-				</table-row>
+						<template v-if="hasItemAppendSlot" #item-append>
+							<slot name="item-append" :item="element" />
+						</template>
+					</table-row>
+				</template>
 			</draggable>
 		</table>
 		<slot name="footer" />
@@ -84,13 +85,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from 'vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
-import draggable from 'vuedraggable';
+import Draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
@@ -102,14 +103,19 @@ const HeaderDefaults: Header = {
 };
 
 export default defineComponent({
+	emits: [
+		'click:row',
+		'update:sort',
+		'update:items',
+		'item-selected',
+		'update:modelValue',
+		'manual-sort',
+		'update:headers',
+	],
 	components: {
 		TableHeader,
 		TableRow,
-		draggable,
-	},
-	model: {
-		prop: 'selection',
-		event: 'select',
+		Draggable,
 	},
 	props: {
 		headers: {
@@ -148,7 +154,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		selection: {
+		modelValue: {
 			type: Array as PropType<any>,
 			default: () => [],
 		},
@@ -162,11 +168,11 @@ export default defineComponent({
 		},
 		loadingText: {
 			type: String,
-			default: i18n.t('loading'),
+			default: i18n.global.t('loading'),
 		},
 		noItemsText: {
 			type: String,
-			default: i18n.t('no_items'),
+			default: i18n.global.t('no_items'),
 		},
 		serverSort: {
 			type: Boolean,
@@ -188,9 +194,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: true,
+		},
 	},
-	setup(props, { emit, listeners, slots }) {
-		const _headers = computed({
+	setup(props, { emit, slots }) {
+		const internalHeaders = computed({
 			get: () => {
 				return props.headers
 					.map((header: HeaderRaw) => ({
@@ -229,23 +239,23 @@ export default defineComponent({
 
 		// In case the sort prop isn't used, we'll use this local sort state as a fallback.
 		// This allows the table to allow inline sorting on column ootb without the need for
-		const _localSort = ref<Sort>({
+		const internalLocalSort = ref<Sort>({
 			by: null,
 			desc: false,
 		});
 
-		const _sort = computed({
-			get: () => props.sort || _localSort.value,
+		const internalSort = computed({
+			get: () => props.sort || internalLocalSort.value,
 			set: (newSort: Sort) => {
 				emit('update:sort', newSort);
-				_localSort.value = newSort;
+				internalLocalSort.value = newSort;
 			},
 		});
 
 		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
 
 		const fullColSpan = computed<string>(() => {
-			let length = _headers.value.length + 1; // +1 account for spacer
+			let length = internalHeaders.value.length + 1; // +1 account for spacer
 			if (props.showSelect) length++;
 			if (props.showManualSort) length++;
 			if (hasItemAppendSlot.value) length++;
@@ -253,35 +263,33 @@ export default defineComponent({
 			return `1 / span ${length}`;
 		});
 
-		const _items = computed({
+		const internalItems = computed({
 			get: () => {
-				if (props.serverSort === true || _sort.value.by === props.manualSortKey) {
+				if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
 					return props.items;
 				}
 
-				if (_sort.value.by === null) return props.items;
+				if (internalSort.value.by === null) return props.items;
 
-				const itemsSorted = sortBy(props.items, [_sort.value.by]);
-				if (_sort.value.desc === true) return itemsSorted.reverse();
+				const itemsSorted = sortBy(props.items, [internalSort.value.by]);
+				if (internalSort.value.desc === true) return itemsSorted.reverse();
 				return itemsSorted;
 			},
-			set: (value: Record<string, any>) => {
+			set: (value: Item[]) => {
 				emit('update:items', value);
 			},
 		});
 
 		const allItemsSelected = computed<boolean>(() => {
-			return props.loading === false && props.selection.length === props.items.length;
+			return props.loading === false && props.modelValue.length === props.items.length;
 		});
 
 		const someItemsSelected = computed<boolean>(() => {
-			return props.selection.length > 0 && allItemsSelected.value === false;
+			return props.modelValue.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => 'click:row' in listeners);
-
 		const columnStyle = computed<string>(() => {
-			let gridTemplateColumns = _headers.value
+			let gridTemplateColumns = internalHeaders.value
 				.map((header) => {
 					return header.width ? `${header.width}px` : '160px';
 				})
@@ -298,16 +306,15 @@ export default defineComponent({
 		});
 
 		return {
-			_headers,
-			_items,
-			_sort,
+			internalHeaders,
+			internalItems,
+			internalSort,
 			allItemsSelected,
 			getSelectedState,
 			onItemSelected,
 			onToggleSelectAll,
 			someItemsSelected,
 			onSortChange,
-			hasRowClick,
 			fullColSpan,
 			columnStyle,
 			hasItemAppendSlot,
@@ -319,7 +326,7 @@ export default defineComponent({
 
 			emit('item-selected', event);
 
-			let selection = clone(props.selection) as any[];
+			let selection = clone(props.modelValue) as any[];
 
 			if (event.value === true) {
 				if (props.selectionUseKeys) {
@@ -337,13 +344,13 @@ export default defineComponent({
 				});
 			}
 
-			emit('select', selection);
+			emit('update:modelValue', selection);
 		}
 
 		function getSelectedState(item: Item) {
 			const selectedKeys = props.selectionUseKeys
-				? props.selection
-				: props.selection.map((item: any) => item[props.itemKey]);
+				? props.modelValue
+				: props.modelValue.map((item: any) => item[props.itemKey]);
 			return selectedKeys.includes(item[props.itemKey]);
 		}
 
@@ -353,14 +360,14 @@ export default defineComponent({
 			if (value === true) {
 				if (props.selectionUseKeys) {
 					emit(
-						'select',
+						'update:modelValue',
 						clone(props.items).map((item) => item[props.itemKey])
 					);
 				} else {
-					emit('select', clone(props.items));
+					emit('update:modelValue', clone(props.items));
 				}
 			} else {
-				emit('select', []);
+				emit('update:modelValue', []);
 			}
 		}
 
@@ -372,8 +379,8 @@ export default defineComponent({
 		function onSortChange(event: EndEvent) {
 			if (props.disabled) return;
 
-			const item = _items.value[event.oldIndex][props.itemKey];
-			const to = _items.value[event.newIndex][props.itemKey];
+			const item = internalItems.value[event.oldIndex][props.itemKey];
+			const to = internalItems.value[event.newIndex][props.itemKey];
 
 			emit('manual-sort', { item, to });
 		}
@@ -381,126 +388,122 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
 	--v-table-background-color: var(--background-input);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-table {
 	position: relative;
 	height: var(--v-table-height);
 	overflow-y: auto;
+}
 
-	table {
-		min-width: 100%;
-		border-collapse: collapse;
-		border-spacing: 0;
+table {
+	min-width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
 
-		tbody {
-			display: contents;
-		}
+table tbody {
+	display: contents;
+}
 
-		::v-deep {
-			thead {
-				display: contents;
-			}
+table :deep(thead) {
+	display: contents;
+}
 
-			tr,
-			.loading-indicator {
-				display: grid;
-				grid-template-columns: var(--grid-columns);
-			}
+table :deep(td),
+table :deep(th) {
+	color: var(--v-table-color);
+}
 
-			td,
-			th {
-				color: var(--v-table-color);
+table :deep(tr),
+table :deep(.loading-indicator) {
+	display: grid;
+	grid-template-columns: var(--grid-columns);
+}
 
-				&.align-left {
-					text-align: left;
-				}
+table :deep(td.align-left),
+table :deep(th.align-left) {
+	text-align: left;
+}
 
-				&.align-center {
-					text-align: center;
-				}
+table :deep(td.align-center),
+table :deep(th.align-center) {
+	text-align: center;
+}
 
-				&.align-right {
-					text-align: right;
-				}
-			}
+table :deep(td.align-right),
+table :deep(th.align-right) {
+	text-align: right;
+}
 
-			.loading-indicator {
-				position: relative;
-				z-index: 3;
+table :deep(.loading-indicator) {
+	position: relative;
+	z-index: 3;
+}
 
-				> th {
-					margin-right: var(--content-padding);
-				}
-			}
+table :deep(.loading-indicator > th) {
+	margin-right: var(--content-padding);
+}
 
-			.sortable-ghost {
-				.cell {
-					background-color: var(--background-subdued);
-				}
-			}
-		}
-	}
+table :deep(.sortable-ghost .cell) {
+	background-color: var(--background-subdued);
+}
 
-	&.loading {
-		table {
-			pointer-events: none;
-		}
+.loading table {
+	pointer-events: none;
+}
 
-		.loading-indicator {
-			height: auto;
-			padding: 0;
-			border: none;
+.loading .loading-indicator {
+	height: auto;
+	padding: 0;
+	border: none;
+}
 
-			.v-progress-linear {
-				--v-progress-linear-height: 2px;
-				--v-progress-linear-color: var(--border-normal-alt);
+.loading .loading-indicator .v-progress-linear {
+	--v-progress-linear-height: 2px;
+	--v-progress-linear-color: var(--border-normal-alt);
 
-				position: absolute;
-				top: -2px;
-				left: 0;
-				width: 100%;
-			}
+	position: absolute;
+	top: -2px;
+	left: 0;
+	width: 100%;
+}
 
-			th {
-				padding: 0;
-			}
+.loading .loading-indicator th {
+	padding: 0;
+}
 
-			&.sticky th {
-				position: sticky;
-				top: 48px;
-				z-index: 2;
-			}
-		}
-	}
+.loading .loading-indicator.sticky th {
+	position: sticky;
+	top: 48px;
+	z-index: 2;
+}
 
-	.loading-text,
-	.no-items-text {
-		text-align: center;
-		background-color: var(--background-input);
+.loading-text,
+.no-items-text {
+	text-align: center;
+	background-color: var(--background-input);
+}
 
-		td {
-			padding: 16px;
-			color: var(--foreground-subdued);
-		}
-	}
+.loading-text td,
+.no-items-text td {
+	padding: 16px;
+	color: var(--foreground-subdued);
+}
 
-	&.inline {
-		border: 2px solid var(--border-normal);
-		border-radius: var(--border-radius);
+.inline {
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+}
 
-		table ::v-deep .table-row:last-of-type .cell {
-			border-bottom: none;
-		}
-	}
+.inline table :deep(.table-row:last-of-type .cell) {
+	border-bottom: none;
 }
 
 .disabled {

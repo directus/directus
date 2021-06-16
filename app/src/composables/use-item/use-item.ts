@@ -1,19 +1,39 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { VALIDATION_TYPES } from '@/constants';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, Ref, ref, watch } from '@vue/composition-api';
 import { AxiosResponse } from 'axios';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Record<string, any> {
+type UsableItem = {
+	edits: Ref<Record<string, any>>;
+	item: Ref<Record<string, any> | null>;
+	error: Ref<any>;
+	loading: Ref<boolean>;
+	saving: Ref<boolean>;
+	refresh: () => void;
+	save: () => Promise<any>;
+	isNew: ComputedRef<boolean>;
+	remove: () => Promise<void>;
+	deleting: Ref<boolean>;
+	archive: () => Promise<void>;
+	isArchived: ComputedRef<boolean | null>;
+	archiving: Ref<boolean>;
+	saveAsCopy: () => Promise<any>;
+	isBatch: ComputedRef<boolean>;
+	getItem: () => Promise<void>;
+	validationErrors: Ref<any[]>;
+};
+
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);
-	const error = ref(null);
-	const validationErrors = ref([]);
+	const error = ref<any>(null);
+	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
@@ -94,14 +114,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				response = await api.post(endpoint.value, edits.value);
 
 				notify({
-					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
-					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			}
@@ -152,7 +172,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.post(endpoint.value, newItem);
 
 			notify({
-				title: i18n.tc('item_create_success', 1),
+				title: i18n.global.t('item_create_success', 1),
 				type: 'success',
 			});
 
@@ -207,7 +227,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			});
 
 			notify({
-				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err) {
@@ -227,7 +247,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			item.value = null;
 
 			notify({
-				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err) {

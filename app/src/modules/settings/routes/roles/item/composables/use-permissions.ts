@@ -1,8 +1,17 @@
 import api from '@/api';
 import { Permission } from '@/types';
-import { ref, Ref, watch } from '@vue/composition-api';
+import { ref, Ref, watch } from 'vue';
 
-export default function usePermissions(role: Ref<number>): Record<string, any> {
+type UsablePermissions = {
+	loading: Ref<boolean>;
+	error: Ref<null>;
+	permissions: Ref<Permission[] | null>;
+	fetchPermissions: () => Promise<void>;
+	savePermission: (updates: Partial<Permission>) => Promise<void>;
+	saveAll: (create: Partial<Permission>[], update: Partial<Permission>[]) => Promise<void>;
+};
+
+export default function usePermissions(role: Ref<number>): UsablePermissions {
 	const loading = ref(false);
 	const error = ref(null);
 	const permissions = ref<Permission[] | null>(null);

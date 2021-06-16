@@ -3,14 +3,14 @@
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
-			{{ $t('interface_not_found', { interface: fieldData.meta.interface }) }}
+			{{ t('interface_not_found', { interface: fieldData.meta.interface }) }}
 			<div class="spacer" />
-			<button @click="fieldData.meta.interface = null">{{ $t('reset_interface') }}</button>
+			<button @click="fieldData.meta.interface = null">{{ t('reset_interface') }}</button>
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
 			<v-notice v-if="!selectedInterface.options || selectedInterface.options.length === 0">
-				{{ $t('no_options_available') }}
+				{{ t('no_options_available') }}
 			</v-notice>
 
 			<v-form
@@ -21,7 +21,8 @@
 			/>
 
 			<component
-				v-model="fieldData.meta.options"
+				:value="fieldData.meta.options"
+				@input="fieldData.meta.options = $event"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
@@ -35,7 +36,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
@@ -54,6 +56,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
@@ -118,7 +122,7 @@ export default defineComponent({
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);
 
-		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
+		return { t, fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

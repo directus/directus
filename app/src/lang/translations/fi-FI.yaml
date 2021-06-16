@@ -20,7 +20,6 @@ create_role: Luo rooli
 create_user: Luo käyttäjä
 create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
-email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
 emails: Sähköpostit
@@ -870,7 +869,7 @@ interfaces:
     description: Kirjoita tai jaa koodipätkiä
     line_number: Rivinumero
     placeholder: Syötä koodi tähän...
-  collection:
+  system-collection:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat

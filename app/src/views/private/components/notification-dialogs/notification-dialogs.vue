@@ -1,6 +1,6 @@
 <template>
 	<div class="notification-dialogs">
-		<v-dialog :active="true" v-for="notification in notifications" :key="notification.id" persist>
+		<v-dialog :model-value="true" v-for="notification in notifications" :key="notification.id" persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text">
@@ -11,10 +11,10 @@
 				<v-card-actions>
 					<v-button secondary v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'">
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
-							{{ $t('report_error') }}
+							{{ t('report_error') }}
 						</a>
 					</v-button>
-					<v-button @click="done(notification.id)">{{ $t('dismiss') }}</v-button>
+					<v-button @click="done(notification.id)">{{ t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -22,20 +22,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { useNotificationsStore, useUserStore } from '@/stores/';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();
 
-		const notifications = computed(() => notificationsStore.state.dialogs);
+		const notifications = computed(() => notificationsStore.dialogs);
 
-		return { notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
+		return { t, notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
 
 		function getGitHubIssueLink(id: string, notification: Notification) {
 			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
@@ -44,7 +47,7 @@ export default defineComponent({
 
 ### Project details
 Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${process.env.NODE_ENV}
+Environment: ${import.meta.env.MODE}
 OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
 Node: ${parsedInfo.value?.node.version}
 

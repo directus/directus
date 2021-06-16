@@ -10,7 +10,7 @@
 		v-else
 		:is="`display-${display}`"
 		v-bind="options"
-		:interface="$props.interface"
+		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
 		:type="type"
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 import { DisplayConfig } from '@/displays/types';

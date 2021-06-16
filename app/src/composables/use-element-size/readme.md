@@ -14,7 +14,7 @@ Allows you to reactively watch an elements width and height.
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({

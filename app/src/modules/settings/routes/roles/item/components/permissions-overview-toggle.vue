@@ -2,7 +2,7 @@
 	<div
 		class="permissions-overview-toggle"
 		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
-		v-tooltip="appMinimal && $t('required_for_app_access')"
+		v-tooltip="appMinimal && t('required_for_app_access')"
 	>
 		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
 
@@ -10,47 +10,49 @@
 			<template #activator="{ toggle }">
 				<div>
 					<v-progress-circular indeterminate v-if="loading || saving" small />
-					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" />
+					<v-icon v-else-if="permissionLevel === 'all'" clickable @click="toggle" name="check" />
 					<v-icon
 						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
+						clickable
 						@click="toggle"
 						name="rule"
 					/>
-					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" />
+					<v-icon v-else-if="permissionLevel === 'none'" clickable @click="toggle" name="block" />
 				</div>
 			</template>
 
 			<v-list>
-				<v-list-item :disabled="permissionLevel === 'all'" @click="setFullAccess(action)">
+				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="setFullAccess(action)">
 					<v-list-item-icon>
 						<v-icon name="check" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('all_access') }}
+						{{ t('all_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-list-item
 					v-if="!!appMinimalLevel === false"
 					:disabled="permissionLevel === 'none'"
+					clickable
 					@click="setNoAccess(action)"
 				>
 					<v-list-item-icon>
 						<v-icon name="block" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('no_access') }}
+						{{ t('no_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-divider />
 
-				<v-list-item @click="openPermissions">
+				<v-list-item clickable @click="openPermissions">
 					<v-list-item-icon>
 						<v-icon name="rule" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('use_custom') }}
+						{{ t('use_custom') }}
 					</v-list-item-content>
 					<v-list-item-icon>
 						<v-icon name="launch" />
@@ -62,10 +64,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, inject, ref, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';
 
 export default defineComponent({
@@ -96,6 +99,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { collection, role, permissions } = toRefs(props);
 		const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
 
@@ -127,7 +134,7 @@ export default defineComponent({
 			return 'partial';
 		});
 
-		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
+		return { t, permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
 
 		async function openPermissions() {
 			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -175,6 +182,7 @@ export default defineComponent({
 		transition: opacity var(--slow) var(--transition);
 		content: '';
 	}
+
 	&:hover::before,
 	&.has-app-minimal::before {
 		opacity: 1;

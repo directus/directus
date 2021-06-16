@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -19,14 +19,14 @@
 			:disabled="disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
-			:input-value="value || []"
-			@change="$emit('input', $event)"
+			:model-value="value || []"
+			@update:model-value="$emit('input', $event)"
 		/>
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
-			@toggle="showAll = true"
+			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			@update:model-value="showAll = true"
 		></v-detail>
 
 		<template v-if="allowOther">
@@ -39,9 +39,9 @@
 				:disabled="disabled"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
-				:input-value="value || []"
+				:model-value="value || []"
 				@update:value="setOtherValue(otherValue.key, $event)"
-				@change="$emit('input', $event)"
+				@update:model-value="$emit('input', $event)"
 			/>
 
 			<button
@@ -55,14 +55,15 @@
 				@click="addOtherValue()"
 			>
 				<v-icon name="add" />
-				{{ $t('other') }}
+				{{ t('other') }}
 			</button>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, PropType, ref } from 'vue';
 import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 type Option = {
@@ -71,6 +72,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -110,6 +112,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { choices, value } = toRefs(props);
 		const showAll = ref(false);
 
@@ -143,9 +147,12 @@ export default defineComponent({
 			return 'grid-1';
 		});
 
-		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
+		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
+			emit('input', value)
+		);
 
 		return {
+			t,
 			gridClass,
 			otherValues,
 			addOtherValue,
@@ -160,8 +167,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .checkboxes {
 	--columns: 1;
 
@@ -171,19 +176,19 @@ export default defineComponent({
 }
 
 .grid-2 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--columns: 4;
 	}
 }

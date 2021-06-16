@@ -1,22 +1,23 @@
 <template>
-	<v-item-group class="v-tabs-items" :value="value" @input="update">
+	<v-item-group class="v-tabs-items" :model-value="modelValue" @update:model-value="update">
 		<slot />
 	</v-item-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
 		function update(newSelection: readonly (string | number)[]) {
-			emit('input', newSelection);
+			emit('update:modelValue', newSelection);
 		}
 
 		return { update };

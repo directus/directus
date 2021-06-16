@@ -1,8 +1,8 @@
 import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
-import router from '@/router';
+import { router } from '@/router';
 import { useAppStore } from '@/stores';
-import { RawLocation } from 'vue-router';
+import { RouteLocationRaw } from 'vue-router';
 
 export type LoginCredentials = {
 	email: string;
@@ -31,7 +31,7 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 		setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
-	appStore.state.authenticated = true;
+	appStore.authenticated = true;
 
 	await hydrate();
 }
@@ -58,7 +58,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
-		appStore.state.authenticated = true;
+		appStore.authenticated = true;
 
 		return accessToken;
 	} catch (error) {
@@ -96,12 +96,12 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		await api.post(`/auth/logout`);
 	}
 
-	appStore.state.authenticated = false;
+	appStore.authenticated = false;
 
 	await dehydrate();
 
 	if (options.navigate === true) {
-		const location: RawLocation = {
+		const location: RouteLocationRaw = {
 			path: `/login`,
 			query: { reason: options.reason },
 		};

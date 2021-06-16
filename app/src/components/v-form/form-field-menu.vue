@@ -1,43 +1,56 @@
 <template>
 	<v-list>
-		<v-list-item v-if="defaultValue === null || !isRequired" :disabled="value === null" @click="$emit('input', null)">
+		<v-list-item
+			v-if="defaultValue === null || !isRequired"
+			:disabled="modelValue === null"
+			clickable
+			@click="$emit('update:modelValue', null)"
+		>
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
+			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item v-if="defaultValue !== null" :disabled="value === defaultValue" @click="$emit('input', defaultValue)">
+		<v-list-item
+			v-if="defaultValue !== null"
+			:disabled="modelValue === defaultValue"
+			clickable
+			@click="$emit('update:modelValue', defaultValue)"
+		>
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
 			</v-list-item-icon>
-			<v-list-item-content>{{ $t('reset_to_default') }}</v-list-item-content>
+			<v-list-item-content>{{ t('reset_to_default') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
 			v-if="initialValue"
-			:disabled="initialValue === undefined || value === initialValue"
+			:disabled="initialValue === undefined || modelValue === initialValue"
+			clickable
 			@click="$emit('unset', field)"
 		>
 			<v-list-item-icon>
 				<v-icon name="undo" />
 			</v-list-item-icon>
-			<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
+			<v-list-item-content>{{ t('undo_changes') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item @click="$emit('edit-raw')">
+		<v-list-item clickable @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ t('raw_value') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@/types';
 
 export default defineComponent({
+	emits: ['update:modelValue', 'unset', 'edit-raw'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: null,
 		},
@@ -47,6 +60,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const defaultValue = computed(() => {
 			const savedValue = props.field?.schema?.default_value;
 			return savedValue !== undefined ? savedValue : null;
@@ -56,7 +71,7 @@ export default defineComponent({
 			return props.field?.schema?.is_nullable === false;
 		});
 
-		return { defaultValue, isRequired };
+		return { t, defaultValue, isRequired };
 	},
 });
 </script>

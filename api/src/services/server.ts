@@ -14,7 +14,7 @@ import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
-import mailer from '../mailer';
+import getMailer from '../mailer';
 import { SettingsService } from './settings';
 
 export class ServerService {
@@ -316,8 +316,10 @@ export class ServerService {
 				],
 			};
 
+			const mailer = getMailer();
+
 			try {
-				await mailer?.verify();
+				await mailer.verify();
 			} catch (err) {
 				checks['email:connection'][0].status = 'error';
 				checks['email:connection'][0].output = err;

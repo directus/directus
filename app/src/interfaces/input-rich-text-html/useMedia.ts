@@ -1,7 +1,7 @@
 import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
-import { computed, Ref, ref, watch } from '@vue/composition-api';
+import { computed, Ref, ref, watch } from 'vue';
 
 type MediaSelection = {
 	source: string;
@@ -9,7 +9,29 @@ type MediaSelection = {
 	height?: number;
 };
 
-export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
+type MediaButton = {
+	icon: string;
+	tooltip: string;
+	onAction: (buttonApi: any) => void;
+	onSetup: (buttonApi: any) => () => void;
+};
+
+type UsableMedia = {
+	mediaDrawerOpen: Ref<boolean>;
+	mediaSelection: Ref<MediaSelection | null>;
+	closeMediaDrawer: () => void;
+	openMediaTab: Ref<string[]>;
+	onMediaSelect: (media: Record<string, any>) => void;
+	embed: Ref<string>;
+	saveMedia: () => void;
+	startEmbed: Ref<string>;
+	mediaHeight: Ref<number | undefined>;
+	mediaWidth: Ref<number | undefined>;
+	mediaSource: Ref<any>;
+	mediaButton: MediaButton;
+};
+
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video']);
@@ -18,7 +40,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Rec
 
 	const mediaButton = {
 		icon: 'embed',
-		tooltip: i18n.t('wysiwyg_options.media'),
+		tooltip: i18n.global.t('wysiwyg_options.media'),
 		onAction: (buttonApi: any) => {
 			mediaDrawerOpen.value = true;
 
@@ -129,7 +151,8 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Rec
 	}
 
 	function onMediaSelect(media: Record<string, any>) {
-		const source = addTokenToURL(getPublicURL() + 'assets/' + media.id, imageToken.value);
+		const url = getPublicURL() + 'assets/' + media.id;
+		const source = imageToken.value ? addTokenToURL(url, imageToken.value) : url;
 
 		mediaSelection.value = {
 			source,

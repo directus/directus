@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('webhooks')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('webhooks')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -23,14 +23,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+							{{ t('cancel') }}
 						</v-button>
 						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -42,66 +42,56 @@
 				class="action-batch"
 				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_webhook')">
+			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_webhook')">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_webhooks"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters="filters"
-			:search-query="searchQuery"
-			@update:filters="filters = $event"
-		>
+		<component class="layout" :is="`layout-${layout}`">
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="info">
-					{{ $t('no_webhooks_copy') }}
+				<v-info :title="t('webhooks_count', 0)" icon="anchor" center type="info">
+					{{ t('no_webhooks_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/settings/webhooks/+' }">{{ $t('create_webhook') }}</v-button>
+						<v-button :to="{ path: '/settings/webhooks/+' }">{{ t('create_webhook') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 		</component>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_settings_webhooks_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_settings_webhooks_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
-			<portal-target name="sidebar" />
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import { md } from '@/utils/md';
-import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
+import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -113,7 +103,7 @@ export default defineComponent({
 	name: 'webhooks-collection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
 	setup() {
-		const layoutRef = ref<LayoutComponent | null>(null);
+		const { t } = useI18n();
 
 		const selection = ref<Item[]>([]);
 
@@ -121,14 +111,28 @@ export default defineComponent({
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_webhooks',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				selectMode: false,
+				readonly: false,
+			})
+		);
+
 		return {
+			t,
 			addNewLink,
 			batchDelete,
 			batchLink,
 			confirmDelete,
 			deleting,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
@@ -153,7 +157,7 @@ export default defineComponent({
 
 				await api.delete(`/webhooks/${batchPrimaryKeys}`);
 
-				await layoutRef.value?.refresh();
+				await layoutState.value.refresh();
 
 				selection.value = [];
 				deleting.value = false;

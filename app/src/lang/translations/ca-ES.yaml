@@ -16,7 +16,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
 invite_users: Convidar usuaris
-email_examples: 'admin@exemple.com, usuari@exemple.com...'
 invite: Convida
 emails: Correus electrònics
 connection_excellent: Connexió excel·lent
@@ -174,7 +173,7 @@ template: Plantilla
 interfaces:
   input-code:
     code: Codi
-  collection:
+  system-collection:
     collection: Coŀlecció
   system-collections:
     collections: Col·leccions

@@ -17,7 +17,6 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: 'admin@example.com, user@example.com...'
 invite: Pakviesti
 emails: El. pašto adresai
 connection_excellent: Puiki ryšio kokybė
@@ -748,7 +747,7 @@ report_error: Pranešti apie klaidą
 interfaces:
   input-code:
     code: Kodas
-  collection:
+  system-collection:
     collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
     include_system_collections: Įtraukti sistemines kolekcijas

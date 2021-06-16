@@ -7,8 +7,9 @@ import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
-import mailer from '../../mailer';
-import { SendMailOptions } from 'nodemailer';
+import getMailer from '../../mailer';
+import { Transporter, SendMailOptions } from 'nodemailer';
+import prettier from 'prettier';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -26,16 +27,23 @@ export class MailService {
 	schema: SchemaOverview;
 	accountability: Accountability | null;
 	knex: Knex;
+	mailer: Transporter;
 
 	constructor(opts: AbstractServiceOptions) {
 		this.schema = opts.schema;
 		this.accountability = opts.accountability || null;
 		this.knex = opts?.knex || getDatabase();
+		this.mailer = getMailer();
+
+		this.mailer.verify((error) => {
+			if (error) {
+				logger.warn(`Email connection failed:`);
+				logger.warn(error);
+			}
+		});
 	}
 
 	async send(options: EmailOptions): Promise<void> {
-		if (!mailer) return;
-
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
@@ -54,8 +62,13 @@ export class MailService {
 			html = await this.renderTemplate(template.name, templateData);
 		}
 
+		if (typeof html === 'string') {
+			// Some email clients start acting funky when line length exceeds 75 characters. See #6074
+			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
+		}
+
 		try {
-			await mailer.sendMail({ ...emailOptions, from, html });
+			await this.mailer.sendMail({ ...emailOptions, from, html });
 		} catch (error) {
 			logger.warn('[Email] Unexpected error while sending an email:');
 			logger.warn(error);

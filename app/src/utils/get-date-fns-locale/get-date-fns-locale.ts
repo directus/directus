@@ -1,7 +1,10 @@
 import { i18n } from '@/lang';
+import { Locale } from 'date-fns';
+
+import importDateLocale from './import-date-locale';
 
 export async function getDateFNSLocale(): Promise<Locale> {
-	const lang = i18n.locale;
+	const lang = i18n.global.locale.value;
 
 	const localesToTry = [lang, lang.split('-')[0], 'en-US'];
 
@@ -9,10 +12,7 @@ export async function getDateFNSLocale(): Promise<Locale> {
 
 	for (const l of localesToTry) {
 		try {
-			const mod = await import(
-				/* webpackMode: 'lazy', webpackChunkName: 'df-[index]' */
-				`date-fns/locale/${l}/index.js`
-			);
+			const mod = await importDateLocale(l);
 
 			locale = mod.default;
 			break;

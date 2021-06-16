@@ -20,7 +20,6 @@ create_role: Skapa roll
 create_user: Skapa användare
 create_webhook: Skapa webhook
 invite_users: Bjud in användare
-email_examples: 'admin@example.com, user@example.com...'
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
 emails: E-postadresser
@@ -826,7 +825,7 @@ interfaces:
     primary: Primär
   input-code:
     code: Kod
-  collection:
+  system-collection:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner

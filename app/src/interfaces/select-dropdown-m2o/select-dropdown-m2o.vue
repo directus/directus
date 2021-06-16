@@ -1,9 +1,9 @@
 <template>
 	<v-notice type="warning" v-if="!relation">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice type="warning" v-else-if="!displayTemplate">
-		{{ $t('display_template_not_setup') }}
+		{{ t('display_template_not_setup') }}
 	</v-notice>
 	<div class="many-to-one" v-else>
 		<v-menu v-model="menuActive" attached :disabled="disabled">
@@ -11,9 +11,10 @@
 				<v-skeleton-loader type="input" v-if="loadingCurrent" />
 				<v-input
 					:active="active"
+					clickable
 					@click="onPreviewClick"
 					v-else
-					:placeholder="$t('select_an_item')"
+					:placeholder="t('select_an_item')"
 					:disabled="disabled"
 				>
 					<template #input v-if="currentItem">
@@ -28,11 +29,11 @@
 
 					<template #append v-if="!disabled">
 						<template v-if="currentItem">
-							<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editModalActive = true" />
-							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+							<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editModalActive = true" />
+							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="t('deselect')" />
 						</template>
 						<template v-else>
-							<v-icon class="add" name="add" v-tooltip="$t('create_item')" @click.stop="editModalActive = true" />
+							<v-icon class="add" name="add" v-tooltip="t('create_item')" @click.stop="editModalActive = true" />
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 					</template>
@@ -53,6 +54,7 @@
 						v-for="item in items"
 						:key="item[relatedPrimaryKeyField.field]"
 						:active="value === item[relatedPrimaryKeyField.field]"
+						clickable
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
@@ -65,17 +67,17 @@
 
 		<drawer-item
 			v-if="!disabled"
-			:active.sync="editModalActive"
+			v-model:active="editModalActive"
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
-			:circular-field="relation.meta.one_field"
+			:circular-field="relation.meta?.one_field"
 			@input="stageEdits"
 		/>
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
 			@input="stageSelection"
@@ -84,7 +86,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -103,6 +106,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
  */
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {
@@ -131,6 +135,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { collection } = toRefs(props);
 
 		const relationsStore = useRelationsStore();
@@ -150,6 +156,7 @@ export default defineComponent({
 		const editModalActive = ref(false);
 
 		return {
+			t,
 			collectionInfo,
 			currentItem,
 			displayTemplate,
@@ -318,7 +325,7 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.related_collection)!;
+				return collectionsStore.getCollection(relation.value.related_collection!)!;
 			});
 
 			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
@@ -440,7 +447,7 @@ export default defineComponent({
 .many-to-one {
 	position: relative;
 
-	::v-deep .v-input .append {
+	:deep(.v-input .append) {
 		display: flex;
 	}
 }

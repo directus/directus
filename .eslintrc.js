@@ -1,9 +1,9 @@
 const defaultRules = {
 	// No console statements in production
-	'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+	'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// No debugger statements in production
-	'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-	// Enforce prettier formating
+	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
+	// Enforce prettier formatting
 	'prettier/prettier': 'error',
 };
 
@@ -25,7 +25,7 @@ module.exports = {
 	overrides: [
 		// Parse rollup configration as module
 		{
-			files: ['rollup.config.js'],
+			files: ['rollup.config.js', 'vite.config.js'],
 			parserOptions: {
 				sourceType: 'module',
 			},
@@ -38,7 +38,7 @@ module.exports = {
 				parser: '@typescript-eslint/parser',
 			},
 			extends: [
-				'plugin:vue/essential',
+				'plugin:vue/vue3-essential',
 				'eslint:recommended',
 				'plugin:@typescript-eslint/recommended',
 				'plugin:prettier-vue/recommended',
@@ -58,8 +58,6 @@ module.exports = {
 				'@typescript-eslint/no-non-null-assertion': 0,
 				// Allow unused variables when they begin with an underscore
 				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-				// Disable validity checks on v-slot directive (consider to enable this rule later on)
-				'vue/valid-v-slot': 0,
 			},
 		},
 	],

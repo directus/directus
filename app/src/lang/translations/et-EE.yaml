@@ -20,7 +20,6 @@ create_role: Loo roll
 create_user: Loo kasutaja
 create_webhook: Loo veebikonks
 invite_users: Kutsu kasutajaid
-email_examples: 'admin@example.com, user@example.com...'
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
 emails: E-mail
@@ -855,7 +854,6 @@ template: Mall
 translation: Tõlge
 value: Väärtus
 view_project: Näita projekti
-weeks: { }
 report_error: Raporteeri viga
 interfaces:
   presentation-links:
@@ -878,7 +876,7 @@ interfaces:
     description: Kirjuta või jaga koodilõike
     line_number: Rea number
     placeholder: Sisesta kood siia...
-  collection:
+  system-collection:
     collection: Kogud
     description: Vali olemasolevate andmekogude seast
     include_system_collections: Lisa süsteemsed andmekogud

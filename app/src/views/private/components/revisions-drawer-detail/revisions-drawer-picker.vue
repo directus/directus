@@ -11,8 +11,9 @@
 			<v-list-item
 				v-for="option in options"
 				:key="option.value"
-				@click="_current = option.value"
-				:active="_current === option.value"
+				clickable
+				@click="internalCurrent = option.value"
+				:active="internalCurrent === option.value"
 			>
 				<v-icon name="commit_node" />
 				<v-list-item-content>{{ option.text }}</v-list-item-content>
@@ -22,11 +23,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, watch, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { Revision } from './types';
 import useSync from '@/composables/use-sync';
 import localizedFormat from '@/utils/localized-format';
-import i18n from '@/lang';
 import { userName } from '@/utils/user-name';
 
 type Option = {
@@ -35,6 +36,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['update:current'],
 	props: {
 		revisions: {
 			type: Array as PropType<Revision[]>,
@@ -46,7 +48,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _current = useSync(props, 'current', emit);
+		const { t } = useI18n();
+
+		const internalCurrent = useSync(props, 'current', emit);
 
 		const options = ref<Option[] | null>(null);
 
@@ -57,14 +61,14 @@ export default defineComponent({
 
 				for (const revision of props.revisions) {
 					const date = await getFormattedDate(revision);
-					let user = i18n.t('private_user');
+					let user = t('private_user');
 
 					if (typeof revision.activity.user === 'object') {
 						const userInfo = revision.activity.user;
 						user = userName(userInfo);
 					}
 
-					const text = String(i18n.t('revision_delta_by', { date, user }));
+					const text = String(t('revision_delta_by', { date, user }));
 					const value = revision.id;
 					newOptions.push({ text, value });
 				}
@@ -75,14 +79,14 @@ export default defineComponent({
 		);
 
 		const selectedOption = computed(() => {
-			return options.value?.find((option) => option.value === _current.value);
+			return options.value?.find((option) => option.value === internalCurrent.value);
 		});
 
-		return { _current, options, selectedOption };
+		return { internalCurrent, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_date')));
-			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_time')));
+			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date')));
+			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_time')));
 
 			return `${date} (${time})`;
 		}
