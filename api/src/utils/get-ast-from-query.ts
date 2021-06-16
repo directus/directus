@@ -58,7 +58,7 @@ export default async function getASTFromQuery(
 
 	/**
 	 * When using aggregate functions, you can't have any other regular fields
-	 * selected. This makes sure you never end up in a nonaggregate fields selection error
+	 * selected. This makes sure you never end up in a non-aggregate fields selection error
 	 */
 	if (Object.keys(query.aggregate || {}).length > 0) {
 		fields = [];

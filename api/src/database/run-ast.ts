@@ -4,6 +4,8 @@ import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
+import { getColumn } from '../utils/get-column';
+import { stripFunction } from '../utils/strip-function';
 import { toArray } from '../utils/to-array';
 import getDatabase from './index';
 
@@ -111,8 +113,9 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field') {
-			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelectInternal.push(child.name);
+			const fieldKey = stripFunction(child.name);
+			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
+				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
 			}
 
 			continue;
@@ -154,7 +157,7 @@ function getDBQuery(
 	query: Query,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
+	const dbQuery = knex.select(columns.map((column) => getColumn(knex, table, column))).from(table);
 
 	const queryCopy = clone(query);
 

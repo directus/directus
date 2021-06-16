@@ -1,16 +1,14 @@
 import { Knex } from 'knex';
 
-import { DateTimeHelperPostgres } from './datetime';
+import { HelperPostgres } from './dialects/postgres';
 
-export function knexTransforms(knex: Knex) {
+export function FunctionsHelper(knex: Knex) {
 	switch (knex.client.constructor.name) {
 		// case 'Client_MySQL':
 		// 	constructor = require('./dialects/mysql').default;
 		// 	break;
 		case 'Client_PG':
-			return {
-				datetime: new DateTimeHelperPostgres(knex),
-			};
+			return new HelperPostgres(knex);
 		// case 'Client_SQLite3':
 		// 	constructor = require('./dialects/sqlite').default;
 		// 	break;
