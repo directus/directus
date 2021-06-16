@@ -236,6 +236,8 @@ translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
 export_data: تصدير البيانات
 format: التنسيق
+use_current_filters_settings: استخدام التصفية و الإعدادات الحالية
+export_collection: 'تصدير {collection}'
 submit: إرسال
 move_to_folder: أنقل إلى مجلد
 move: نقل
@@ -260,6 +262,8 @@ months:
   october: أكتوير
   november: نوفمبر
   december: ديسمبر
+drag_mode: وضع السحب
+url: الرابط
 import: إستيراد
 file_details: تفاصيل الملف
 dimensions: الأبعاد
@@ -320,7 +324,7 @@ list-m2a: الباني (M2A)
 item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_items_copy: لا توجد عناصر في هذه المجموعة بعد.
 file_count: 'لايوجد دور أو صلاحية | دور أو صلاحية وحيدة | {count} أدوار أو صلاحيات'
-no_files_copy: لا توجد مسلسلات هنا.
+no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
@@ -383,14 +387,21 @@ errors:
   USER_SUSPENDED: المستخدم موقوف
   UNKNOWN: خطأ غير متوقع
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
+bookmark_name: اسم الإشارة المرجعية...
+create_bookmark: إنشاء إشارة مرجعية
+edit_bookmark: تحرير الإشارة المرجعية
 bookmarks: محفوظات
 presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
+password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
+password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
 editing_image: تحرير صورة
 square: مربع
+free: حر
+aspect_ratio: نسبة العرض إلى الارتفاع
 rotate: تدوير
 all_users: كل المستخدمين
 delete_collection: احذف المجموعة
@@ -399,9 +410,12 @@ delete_collection_success: تم حذف المجموعة
 start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
+one_filtered_item: '1 عنصر مصفى'
 delete_collection_are_you_sure: >-
   هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
+visible_collections: مجموعات مرئية
+hidden_collections: مجموعات مخفية
 show_hidden_collections: أظهر المجموعات المخفية
 hide_hidden_collections: اخفي المجموعات المخفية
 system_collections: مجموعات النظام
@@ -409,6 +423,7 @@ placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
 count_other_revisions: '{count} مراجعات أخرى'
+font: الخط
 serif: خط سيريف Serif
 monospace: Monospace
 divider: الفاصل
@@ -470,6 +485,7 @@ no_results: لا توجد نتائج
 saves_automatically: يحفظ تلقائياً
 role: الدور
 user: مستخدم
+no_presets_copy: لم يتم حفظ أي إعدادات مسبقة أو إشارات مرجعية حتى الآن.
 create: انشاء
 on_create: عند الإنشاء
 on_update: عند التحديث
@@ -496,6 +512,7 @@ wysiwyg_options:
   table: الجدول
 dropdown: قائمة منسدلة
 choices: الخيارات
+choices_option_configured_incorrectly: تم تكوين الخيارات بشكل غير صحيح
 deselect: إلغاء تحديد
 deselect_all: إلغاء تحديد الكل
 other: أخرى...
@@ -512,10 +529,13 @@ settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
 settings_presets: الإعدادات المسبقة والعلامات
+one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
 select: حدد...
 layout: نموذج العرض
 changes_are_permanent: التغييرات دائمة
+preset_name_placeholder: يعمل كإعداد افتراضي عندما يكون فارغًا...
+editing_preset: تحرير الإعداد المسبق
 layout_preview: معاينة نموذج العرض
 layout_setup: إعداد نموذج العرض
 unsaved_changes: لم يتم حفظ التعديلات
@@ -543,6 +563,7 @@ page_help_users_item: >-
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
+no_layout_collection_selected_yet: لم يتم تحديد نموذج عرض/مجموعة بعد
 batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
 cancel: إلغاء
@@ -566,6 +587,8 @@ fields:
     note: ملحوظة
     display_template: عرض القالب
     hidden: مخفي
+    archive_value: أرشفة القيمة
+    unarchive_value: إلغاء أرشفة القيمة
     sort_field: فرز الحقل
     accountability: تتبع النشاط والتنقيح
   directus_files:
@@ -662,6 +685,7 @@ forgot_password: نسيت كلمة المرور
 hidden: مخفي
 icon: أيقونة
 info: معلومات
+warning: تحذير
 danger: خطر
 junction_collection: مجموعة تلاقي
 latency: وقت الإستجابة
@@ -695,6 +719,7 @@ template: قالب
 translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
+report_error: الإبلاغ عن خطأ
 interfaces:
   presentation-links:
     links: روابط
@@ -709,6 +734,7 @@ interfaces:
     items_shown: العناصر المعروضة
   input-code:
     code: نص برمجي
+    description: كتابة أو مشاركة الكود البرمجي
     line_number: رقم السطر
     placeholder: أدخل الكود هنا...
   system-collection:
@@ -785,6 +811,7 @@ interfaces:
     tags: الوسوم
     description: حدد أو أضف وسوم
     auto_formatter: استخدام التنسيق التلقائي للعنوان
+    alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
     add_tags: إضافة وسوم...
   input:
