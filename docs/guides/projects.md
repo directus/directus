@@ -67,7 +67,7 @@ See [Creating a Thumbnail Preset](/guides/files/#creating-a-thumbnail-preset)
 
 See [Styles > Custom CSS](/guides/styles/#custom-css)
 
-## Upgrading a Project
+## Upgrading / Updating a Project
 
 1. Backup your project
 2. Run `npm update`

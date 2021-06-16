@@ -21,7 +21,14 @@ os_type: Тип ОС
 os_version: Версія ОС
 os_uptime: Час роботи ОС
 validationError:
+  eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
+  in: Значення повинно бути одним з {valid}
+  nin: Значення не може бути одним з {invalid}
+  contains: Значення повинно містити {substring}
+  ncontains: Значення не може містити {substring}
+  gt: Значення має бути більше {valid}
+  gte: Значення має бути більше або дорівнювати {valid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі

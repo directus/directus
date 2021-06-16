@@ -15,7 +15,7 @@ export function getDefaultIndexName(
 	type: 'unique' | 'foreign' | 'index',
 	collection: string,
 	fields: string | string[]
-) {
+): string {
 	if (!Array.isArray(fields)) fields = fields ? [fields] : [];
 	const table = collection.replace(/\.|-/g, '_');
 	const indexName = (table + '_' + fields.join('_') + '_' + type).toLowerCase();

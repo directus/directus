@@ -16,10 +16,10 @@ Node.js. If you are looking for the previous **[Directus 8](https://github.com/d
 **Directus is an Open Data Platform for managing the content of any SQL database. It provides a powerful API layer for
 developers and an intuitive App for non-technical users.** Written entirely in JavaScript (primarily
 [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org)), Directus is completely open-source, modular, and
-extensible, allowing it to be fully tailored to your exact project needs.
+extensible, allowing it to be fully tailored to the requirements of any project.
 
-Our platform can be used as a headless CMS for managing digital experiences, a database client for democratizing data,
-or as a standalone back-office web app for CRM, inventory, business intelligence, project management, etc.
+The platform can be used for an individual purpose, such as headless content management, or more broadly to democratize
+an entire organization's data (customers, inventory, business intelligence, projects, etc).
 
 ::: tip What's in a name?
 

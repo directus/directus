@@ -86,6 +86,9 @@ validationError:
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
+nullable: Boş (null) olabilir
+allow_null_value: NULL değere izin ver
+enter_value_to_replace_nulls: Bu alandaki tüm NULLları değiştirecek yeni bir değer girin.
 field_standard: Standart
 field_presentation: Sunum ve Takma Adlar
 field_file: Tek Dosya
@@ -140,6 +143,7 @@ decimal: Ondalık
 float: Ondalıklı sayı
 integer: Tamsayı
 json: JSON
+xml: XML
 string: Yazı
 text: Metin
 time: Zaman
@@ -245,10 +249,17 @@ submit: Gönder
 move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
+add_field_related: Alakalı Koleksiyona Alan Ekle
 interface: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
+date-fns_date: PPP
+date-fns_time: 's:dd:ss a'
+date-fns_time_no_seconds: 's:dd a'
+date-fns_date_short: 'AAA d, u'
+date-fns_time_short: 's:aa a'
+date-fns_date_short_no_year: AAA d
 month: Ay
 year: Yıl
 select_all: Tümünü Seç
@@ -288,10 +299,14 @@ background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
 choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
+replace_from_device: Cihazdaki Dosya ile Değiştir
+replace_from_library: Kütüphanedeki Dosya ile Değiştir
+replace_from_url: URL'deki Dosya ile Değiştir
 no_file_selected: Dosya seçilmedi
 download_file: Dosyayı İndir
 collection_key: Koleksiyonlar
 name: İsim
+primary_key_field: Birincil Anahtar Alanı
 type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
@@ -313,6 +328,10 @@ report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
 reset_interface: Arayüzü Sıfırla
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
+no_files_copy: Burada dosya yok.
+user_count: 'Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
+no_users_copy: Bu Grupta Kullanıcı Yok.
+webhooks_count: 'Webhook Yok | Bir Webhook | {count} Webhook'
 no_webhooks_copy: Henüz hiç bir webhook yok.
 all_items: Tüm öğeler
 csv: CSV
@@ -356,10 +375,15 @@ errors:
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
   INVALID_OTP: Tek kullanımlık şifre hatalı
   INVALID_QUERY: Geçersiz sorgu
+  ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
+  RECORD_NOT_UNIQUE: Kopya değer tespit edildi
+  USER_SUSPENDED: Kullanıcı Askıya Alındı
+  CONTAINS_NULL_VALUES: Alan null değer içeriyor
   UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
+value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
 edit_bookmark: Yer imini düzenle

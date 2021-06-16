@@ -900,10 +900,12 @@ interfaces:
   system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
+    collection_field: Campo de colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   presentation-divider:
     divider: Separador
+    description: Etiqueta y divide los campos en secciones
   select-dropdown:
     allow_other: Permitir otro
     choices_value_placeholder: Ingrese un valor...
