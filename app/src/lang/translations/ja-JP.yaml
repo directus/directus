@@ -229,6 +229,8 @@ operators:
 loading: 読み込み中...
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
+drag_file_here: ここにファイルをドラッグ & ドロップ
+click_to_browse: クリックしてローカルフォルダを参照
 layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
