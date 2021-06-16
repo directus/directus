@@ -20,7 +20,7 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webhook
 invite_users: Convidar Usuários
-email_examples: 'admin@example.com, usuário@example.com...'
+email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -503,6 +503,8 @@ value_unique: O valor deve ser único
 all_activity: Todas as atividades
 create_item: Criar item
 display_template: Modelo de exibição
+language_display_template: Modelo de Exibição do Idioma
+translations_display_template: Modelos de Exibição da Aplicação
 n_items_selected: 'Não há itens selecionados | 1 item selecionado | {n} itens selecionados'
 per_page: Por página
 all_files: Todos os arquivos
@@ -784,8 +786,12 @@ save_current_datetime: Salvar data/hora atual
 block: Bloco
 inline: Em linha
 comment: Comentário
+relational_triggers: Gatilhos Relacionais
+referential_action_field_label_m2o: Ao Excluir de {collection}...
+referential_action_field_label_o2m: Em Desmarcar {collection}...
 referential_action_no_action: Evitar a exclusão
 referential_action_cascade: Excluir o item {collection} (cascade)
+referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolha uma ação
 continue: Continuar
 continue_as: >-
@@ -996,6 +1002,7 @@ interfaces:
     add_tags: Adicionar tags...
   input:
     input: Entrada
+    description: Digite manualmente um valor
     trim: Recortar
     trim_label: Remover espaços do início e fim
     mask: Mascarado

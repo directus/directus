@@ -28,6 +28,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 			i18n.global.mergeLocaleMessage(lang, translations);
 			loadedLanguages.push(lang);
 		} catch (err) {
+			// eslint-disable-next-line no-console
 			console.warn(err);
 		}
 	}

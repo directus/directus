@@ -20,7 +20,6 @@ create_role: Δημιουργία ρόλου
 create_user: Δημιουργία Χρήστη
 create_webhook: Δημιουργία Webhook
 invite_users: Πρόσκληση Χρηστών
-email_examples: 'admin@example.com, user@example.com...'
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
 emails: Emails

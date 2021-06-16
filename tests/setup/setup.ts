@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
