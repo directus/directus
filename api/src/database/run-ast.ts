@@ -388,14 +388,14 @@ function removeTemporaryFields(
 			}
 		}
 
-		// Make sure any new aliased aggregate fields are included
+		// Make sure any requested aggregate fields are included
 		if (ast.query?.aggregate) {
-			for (const [_operation, aliasMap] of Object.entries(ast.query.aggregate)) {
-				if (!aliasMap) continue;
+			for (const [operation, aggregateFields] of Object.entries(ast.query.aggregate)) {
+				if (!fields) continue;
 
-				for (const [_column, alias] of Object.entries(aliasMap)) {
-					fields.push(alias);
-				}
+				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
+
+				fields.push(...aggregateFields.map((field) => `${field}_${operation}`));
 			}
 		}
 
