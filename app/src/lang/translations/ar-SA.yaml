@@ -476,6 +476,7 @@ on_update: عند التحديث
 read: قراءة
 update: تحديث
 select_fields: حدد حقول
+format_text: تنسيق النص
 width: العرض
 height: الارتفاع
 source: مصدر
@@ -490,6 +491,7 @@ wysiwyg_options:
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
   remove: احذف
+  removeformat: إزالة التنسيق
   selectall: تحديد الكل
   table: الجدول
 dropdown: قائمة منسدلة
@@ -520,11 +522,24 @@ unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
+page_help_collections_overview: '**نظرة عامة للمجموعات** - قوائم جميع المجموعات التي لديك حق الوصول إليها.'
+page_help_collections_collection: >-
+  **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
+page_help_collections_item: >-
+  **تفاصيل العنصر** - نموذج لمشاهدة وإدارة هذا العنصر. يحتوي هذا الشريط الجانبي أيضا على سجل كامل من التنقيحات، والتعليقات.
 page_help_docs_global: >-
   **عرض عام للوثائق** - وثائق مصممة خصيصا لنسخة هذا المشروع ومخططه.
+page_help_settings_project: "**إعدادات المشروع** — عرض إعدادات المشروع."
+page_help_settings_datamodel_collections: >-
+  **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
+page_help_settings_datamodel_fields: >-
+  **نموذج البيانات: المجموعة** - نموذج لإدارة هذه المجموعة وحقولها.
+page_help_settings_roles_item: "**تفاصيل الدور** - إدارة أذونات الدور والإعدادات الأخرى."
 page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
+page_help_users_item: >-
+  **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
@@ -688,10 +703,13 @@ interfaces:
     button: أزرار
     error: لا يمكن تنفيذ الإجراء
   select-multiple-checkbox:
+    checkboxes: مربعات الاختيار
+    description: اختر بين خيارات متعددة عبر مربعات الاختيار
     show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
   input-code:
     code: نص برمجي
+    line_number: رقم السطر
     placeholder: أدخل الكود هنا...
   system-collection:
     collection: المجموعة
@@ -766,11 +784,13 @@ interfaces:
   tags:
     tags: الوسوم
     description: حدد أو أضف وسوم
+    auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize_label: فرض الترتيب الأبجدي
     add_tags: إضافة وسوم...
   input:
     description: أدخل قيمة يدوياً
     mask: مقنع
+    mask_label: إخفاء القيمة الحقيقية
     minimum_value: أدنى قيمة
     maximum_value: أقصى قيمة
     slug_label: اجعل رابط القيمة المدخلة آمن
@@ -792,6 +812,7 @@ interfaces:
   input-rich-text-html:
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
+    custom_formats: تنسيقات مخصصة
     options_override: تجاوز الخيارات
   input-autocomplete-api:
     rate: معدل
@@ -824,10 +845,13 @@ displays:
     filesize: حجم الملف
     description: عرض حجم الملف
   formatted-value:
+    formatted-value: قيمة منسقة
+    description: عرض نسخة منسقة من النص
     format_title: تنسيق العنوان
   icon:
     icon: أيقونة
     description: عرض أيقونة
+    filled: مملوء
   image:
     image: صورة
     description: عرض معاينة صغيرة للصورة
