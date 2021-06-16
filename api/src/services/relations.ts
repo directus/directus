@@ -167,7 +167,7 @@ export class RelationsService {
 						.references(
 							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
 						);
-					
+
 					if (relation.schema?.on_delete) {
 						table.onDelete(relation.schema.on_delete);
 					}
