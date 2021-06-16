@@ -224,6 +224,14 @@ fields:
       - no-data
     width: full
 
+  - field: mapbox_key
+    interface: input
+    options:
+      icon: key
+      title: Mapbox Access Token
+      placeholder: pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t4YnHHqvQZ8Y0MTCNy0NNw
+    width: full
+
   - field: basemaps
     interface: list
     special: json

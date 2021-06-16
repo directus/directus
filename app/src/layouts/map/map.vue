@@ -25,14 +25,14 @@
 				<v-checkbox
 					:label="$t('layouts.map.fit_data')"
 					v-model="fitDataToView"
-					:disabled="geometryOptions.geometryFormat !== 'native'"
+					:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
 				/>
 			</div>
 			<div class="field">
 				<v-checkbox
 					:label="$t('layouts.map.cluster')"
 					v-model="clusterData"
-					:disabled="geometryOptions.geometryType !== 'Point'"
+					:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"
 				/>
 			</div>
 			<div class="field">
