@@ -20,7 +20,6 @@ create_role: Создать Роль
 create_user: Создать Пользователя
 create_webhook: Создать Веб-хук
 invite_users: Пригласить Пользователей
-email_examples: 'admin@example.com, user@example.com...'
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса

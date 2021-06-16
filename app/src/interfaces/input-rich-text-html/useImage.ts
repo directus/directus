@@ -26,7 +26,7 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string>): UsableImage {
+export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 

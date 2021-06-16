@@ -31,7 +31,7 @@ type UsableMedia = {
 	mediaButton: MediaButton;
 };
 
-export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): UsableMedia {
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video']);
@@ -151,7 +151,8 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Usa
 	}
 
 	function onMediaSelect(media: Record<string, any>) {
-		const source = addTokenToURL(getPublicURL() + 'assets/' + media.id, imageToken.value);
+		const url = getPublicURL() + 'assets/' + media.id;
+		const source = imageToken.value ? addTokenToURL(url, imageToken.value) : url;
 
 		mediaSelection.value = {
 			source,

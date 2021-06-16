@@ -1,9 +1,9 @@
 const defaultRules = {
 	// No console statements in production
-	'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+	'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// No debugger statements in production
-	'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-	// Enforce prettier formating
+	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
+	// Enforce prettier formatting
 	'prettier/prettier': 'error',
 };
 

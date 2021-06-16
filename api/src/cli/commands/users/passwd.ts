@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import argon2 from 'argon2';
 import { getSchema } from '../../../utils/get-schema';
 import { UsersService } from '../../../services';

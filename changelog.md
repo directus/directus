@@ -2,6 +2,52 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.76 (June 14, 2021)
+
+### :sparkles: New Features
+
+- **API**
+  - [#6221](https://github.com/directus/directus/pull/6221) Add support for date distance adjustment in `$NOW` filter variable ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6216](https://github.com/directus/directus/pull/6216) Added support for nodemailer ignoreTLS option ([@nichols-green](https://github.com/nichols-green))
+
+### :rocket: Improvements
+
+- **API**
+  - [#6211](https://github.com/directus/directus/pull/6211) Optimized oracle schema overview query ([@aidenfoxx](https://github.com/aidenfoxx))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#6267](https://github.com/directus/directus/pull/6267) Fix issue that would cause emails to be displayed incorrectly in certain email clients ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6225](https://github.com/directus/directus/pull/6225) Fix Oracle env error ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6208](https://github.com/directus/directus/pull/6208) Moved special check above localTypeMap check. ([@Oreilles](https://github.com/Oreilles))
+  - [#6190](https://github.com/directus/directus/pull/6190) Fix type casting of boolean env var ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#6264](https://github.com/directus/directus/pull/6264) Fixed issue that could cause the HTML interface to emit a change on first load ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6263](https://github.com/directus/directus/pull/6263) Fixed issue that would prevent the m2o from working on foreign keys with no meta row ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6262](https://github.com/directus/directus/pull/6262) Fixes issue that would prevent the layout from refreshing on batch operations ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6258](https://github.com/directus/directus/pull/6258) Fix collection selection in system-collections interface ([@nickrum](https://github.com/nickrum))
+  - [#6236](https://github.com/directus/directus/pull/6236) Fix missing styling for WYSIWYG ([@masterwendu](https://github.com/masterwendu))
+  - [#6212](https://github.com/directus/directus/pull/6212) Fix proxying to the app from a subpath ([@nickrum](https://github.com/nickrum))
+- **specs**
+  - [#6179](https://github.com/directus/directus/pull/6179) Fix OpenAPI specs ([@paescuj](https://github.com/paescuj))
+
+### :memo: Documentation
+
+- [#6232](https://github.com/directus/directus/pull/6232) Update the app extension docs to work with Vue 3 ([@nickrum](https://github.com/nickrum))
+- [#6209](https://github.com/directus/directus/pull/6209) Add note on file env vars ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#6240](https://github.com/directus/directus/pull/6240) Bump cropperjs from 1.5.11 to 1.5.12 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6239](https://github.com/directus/directus/pull/6239) Bump npm-watch from 0.9.0 to 0.10.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6238](https://github.com/directus/directus/pull/6238) Bump eslint-plugin-vue from 7.11.0 to 7.11.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6237](https://github.com/directus/directus/pull/6237) Bump aws-sdk from 2.926.0 to 2.927.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6201](https://github.com/directus/directus/pull/6201) Bump rollup from 2.51.1 to 2.51.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6200](https://github.com/directus/directus/pull/6200) Bump eslint-plugin-vue from 7.10.0 to 7.11.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6199](https://github.com/directus/directus/pull/6199) Bump aws-sdk from 2.925.0 to 2.926.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6198](https://github.com/directus/directus/pull/6198) Bump gatsby-source-filesystem from 3.7.0 to 3.7.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## v9.0.0-rc.75 (June 10, 2021)
 
 ### 🚨 App Extensions

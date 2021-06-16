@@ -20,7 +20,6 @@ create_role: Rol Oluştur
 create_user: Kullanıcı Oluştur
 create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
-email_examples: 'admin@example.com, user@example.com...'
 invite: Davet et
 email_already_invited: '"{email}" bu e-posta zaten davet edildi'
 emails: E-postalar

@@ -203,9 +203,9 @@ paths:
   /users/{id}:
     $ref: './paths/users/user.yaml'
   /users/invite:
-    $ref: './paths/users/user-invite.yaml'
+    $ref: './paths/users/invite.yaml'
   /users/invite/accept:
-    $ref: './paths/users/user-invite-accept.yaml'
+    $ref: './paths/users/invite-accept.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
   /users/me/track/page:

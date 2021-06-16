@@ -20,7 +20,6 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 create_webhook: Създаване на уеб-кука
 invite_users: Покана към потребители
-email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
