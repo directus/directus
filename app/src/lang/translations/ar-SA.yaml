@@ -237,6 +237,7 @@ submit: إرسال
 move_to_folder: أنقل إلى مجلد
 move: نقل
 system: نظام
+add_field_related: إضافة حقل إلى مجموعة ذات صلة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
@@ -389,11 +390,20 @@ editing_image: تحرير صورة
 square: مربع
 rotate: تدوير
 all_users: كل المستخدمين
+delete_collection: احذف المجموعة
+update_collection_success: تم تحديث المجموعة
+delete_collection_success: تم حذف المجموعة
+one_item: '1 عنصر'
+delete_collection_are_you_sure: >-
+  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
 collections_shown: المجموعات المعروضة
 show_hidden_collections: أظهر المجموعات المخفية
+hide_hidden_collections: اخفي المجموعات المخفية
+system_collections: مجموعات النظام
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
+count_other_revisions: '{count} مراجعات أخرى'
 serif: خط سيريف Serif
 monospace: Monospace
 divider: الفاصل
@@ -404,10 +414,14 @@ log_in_with: 'تسجيل الدخول باستخدام {provider}'
 advanced_filter: تصفية متقدمة
 delete_advanced_filter: حذف التصفية
 operators:
+  eq: يساوي
+  neq: لا يساوي
   lt: أقل من
   gt: أكبر من
   lte: اقل او يساوي
   gte: أكبر من أو يساوي
+  in: واحد من
+  nin: ليس من
   nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
@@ -433,8 +447,14 @@ layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
 collection_setup: لا توجد مجموعات الإعداد
+optional_system_fields: حقول النظام الاختيارية
 value_unique: القيمة يجب أن تكون
+all_activity: كل النشاط
+create_item: أنشئ عنصر
 display_template: عرض القالب
+language_display_template: قالب عرض اللغة
+translations_display_template: قالب عرض الترجمات
+n_items_selected: 'لم يتم تحديد عناصر | 1 عنصر محدد | {n} عناصر محددة'
 all_files: '‮كل الملفات'
 my_files: ملفاتي
 create_folder: أنشئ مجلد
@@ -446,6 +466,7 @@ saves_automatically: يحفظ تلقائياً
 role: الدور
 user: مستخدم
 create: انشاء
+on_create: عند الإنشاء
 on_update: عند التحديث
 read: قراءة
 update: تحديث
@@ -499,6 +520,7 @@ batch_delete_confirm: >-
 cancel: إلغاء
 collection: المجموعة
 collections: مجموعات
+singleton_label: معاملته ككائن واحد
 fields:
   directus_activity:
     item: المفتاح الأساسي للعنصر
@@ -707,6 +729,7 @@ interfaces:
     description: حدد أيقونة من القائمة المنسدلة
     search_for_icon: البحث عن أيقونة...
   file-image:
+    image: صورة
     description: حدد أو ارفع صورة
   select-dropdown-m2o:
     description: حدد عنصر واحد ذو صلة
@@ -715,6 +738,11 @@ interfaces:
     description: أدخل و معاينة markdown
   list-o2m:
     description: حدد عدة عناصر ذات صلة
+  select-radio:
+    description: حدد اختيار واحد من خيارات متعددة
+  list:
+    edit_fields: تعديل الحقول
+    field_name_placeholder: أدخل اسم الحقل...
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
@@ -724,10 +752,17 @@ interfaces:
     add_tags: إضافة وسوم...
   input:
     mask: مقنع
+    minimum_value: أدنى قيمة
+    maximum_value: أقصى قيمة
+    slug_label: اجعل رابط القيمة المدخلة آمن
+  input-multiline:
+    description: أدخل النص المتعدد الأسطر
   boolean:
+    description: التبديل بين تشغيل وإيقاف التشغيل
     label_default: تمكين
   translations:
     display_template: عرض القالب
+    no_collection: لا توجد مجموعة
   user:
     user: مستخدم
     description: حدد مستخدم directus موجود
@@ -735,27 +770,44 @@ interfaces:
     modes:
       auto: تلقائي
       dropdown: قائمة منسدلة
+  input-rich-text-html:
+    description: محرر نص يكتب محتوى HTML
+    toolbar: شريط الأدوات
+    options_override: تجاوز الخيارات
+  input-autocomplete-api:
+    rate: معدل
 displays:
   boolean:
     boolean: نعم/لا
+    description: عرض حالة التشغيل وإيقاف التشغيل
   collection:
     collection: المجموعة
+    description: عرض مجموعة
     icon_label: أظهر أيقونة المجموعة
   color:
     color: لون
+    description: عرض نقطة ملونة
     default_color: اللون الافتراضي
   datetime:
     datetime: التاريخ والوقت
+    description: عرض القيم المتصلة بالوقت
     format: التنسيق
+    long: طويل
+    short: قصير
+    relative: نسبي
     relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
   file:
     file: ملف
+    description: اعرض الملفات
   filesize:
     filesize: حجم الملف
+    description: عرض حجم الملف
   icon:
     icon: أيقونة
     description: عرض أيقونة
   image:
+    image: صورة
+    description: عرض معاينة صغيرة للصورة
     circle: دائرة
     circle_label: عرض كدائرة
   labels:
@@ -767,7 +819,11 @@ displays:
     extension_only_label: أظهر ملحق الملف فقط
   rating:
     rating: التقييم
+    simple: بسيط
     simple_label: أظهر النجوم بصيغة بسيطة
+  related-values:
+    related-values: القيم ذات الصلة
+    description: اعرض القيم ذات الصلة
   user:
     user: مستخدم
     description: عرض مستخدم directus
@@ -788,3 +844,7 @@ layouts:
     comfortable: مريحة
     compact: مضغوط
     cozy: مريح
+  calendar:
+    calendar: تقويم
+    start_date_field: حقل تاريخ البداية
+    end_date_field: حقل تاريخ الإنتهاء
