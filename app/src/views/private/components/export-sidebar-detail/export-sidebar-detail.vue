@@ -83,7 +83,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const primaryKeyField = usePrimaryKeyField();
 		const useFilters = ref(true);
-		const useSelected = ref(true);
+		const useSelected = ref(false);
 
 		return { t, format, useFilters, useSelected, exportData };
 
