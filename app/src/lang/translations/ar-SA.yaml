@@ -220,7 +220,7 @@ revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {
 revision_delta_deleted: حذف
 revision_delta_reverted: تمت الإستعادة
 revision_delta_other: تنقيح
-revision_delta_by: '{user} {date}'
+revision_delta_by: '{date} بواسطة {user}'
 private_user: خصخصة المستخدم
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
@@ -229,6 +229,8 @@ post_comment_success: تم ارسال التعليق
 this_collection: هذه المجموعة
 related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
+translations_collection: مجموعة الترجمة
+languages_collection: مجموعة اللغات
 export_data: تصدير البيانات
 format: التنسيق
 submit: إرسال
@@ -237,6 +239,9 @@ move: نقل
 system: نظام
 today: اليوم
 yesterday: أمس
+delete_comment: احذف التعليق
+month: شهر
+year: سنة
 select_all: تحديد الكل
 months:
   january: يناير
@@ -256,9 +261,12 @@ file_details: تفاصيل الملف
 dimensions: الأبعاد
 size: حجم
 created: تم الإنشاء
+modified: معدّل
 checksum: بصمة الملف
 owner: المالك
+edited_by: تم التحرير بواسطة
 folder: مجلد
+zoom: تكبير/تصغير
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
@@ -366,6 +374,7 @@ errors:
   INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
+  ITEM_NOT_FOUND: لم يتم العثور على العنصر
   ROUTE_NOT_FOUND: غير موجود
   USER_SUSPENDED: المستخدم موقوف
   UNKNOWN: خطأ غير متوقع
@@ -376,6 +385,7 @@ unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 back: رجوع
+editing_image: تحرير صورة
 square: مربع
 rotate: تدوير
 all_users: كل المستخدمين
@@ -432,6 +442,7 @@ replace_file: استبدال ملف
 no_results: لا توجد نتائج
 saves_automatically: يحفظ تلقائياً
 role: الدور
+user: مستخدم
 create: انشاء
 on_update: عند التحديث
 read: قراءة
@@ -439,11 +450,16 @@ update: تحديث
 select_fields: حدد حقول
 width: العرض
 height: الارتفاع
+source: مصدر
 unlimited: غير محدود
 open_link_in: افتح الرابط في
 wysiwyg_options:
   codeblock: نص برمجي
   unlink: إزالة الرابط
+  copy: نسخ
+  cut: قص
+  paste: لصق
+  fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
   remove: احذف
   selectall: تحديد الكل
@@ -453,7 +469,9 @@ choices: الخيارات
 deselect: إلغاء تحديد
 deselect_all: إلغاء تحديد الكل
 other: أخرى...
+adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
+creating_in: 'إنشاء عنصر في {collection}'
 editing_in: 'تعديل عنصر في {collection}'
 creating_unit: 'إنشاء {unit}'
 editing_unit: 'تعديل {unit}'
@@ -504,7 +522,7 @@ fields:
     location: الموقع
     metadata: البيانات التعريفية
     filesize: حجم الملف
-    modified_by: تم تعديله بواسطة
+    modified_by: تم التعديل بواسطة
     modified_on: التعديل في
     created_on: تم الإنشاء بتاريخ
     created_by: تم الإنشاء بواسطة
@@ -546,13 +564,17 @@ fields:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
+    users: المستخدمون في الدور
 do_nothing: لا تفعل شيئا
+save_current_user_role: احفظ دور المستخدم الحالي
 comment: تعليق
 referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
+choose_action: اختر الإجراء
 continue: واصل
+editing_role: 'دور {role}'
 default: الإفتراضي
 delete: حذف
 delete_are_you_sure: >-
@@ -571,6 +593,7 @@ forgot_password: نسيت كلمة المرور
 hidden: مخفي
 icon: أيقونة
 info: معلومات
+danger: خطر
 junction_collection: مجموعة تلاقي
 latency: وقت الإستجابة
 login: تسجيل الدخول
@@ -605,7 +628,11 @@ value: قيمة
 view_project: عرض المشروع
 interfaces:
   presentation-links:
+    links: روابط
     primary: الأساسي
+    link: روابط
+    button: أزرار
+    error: لا يمكن تنفيذ الإجراء
   input-code:
     code: نص برمجي
   system-collection:
@@ -627,15 +654,19 @@ interfaces:
   presentation-divider:
     divider: الفاصل
   select-dropdown:
+    description: حدد قيمة من القائمة المنسدلة
     choices_placeholder: أضف خيار جديد
+    allow_other_label: السماح بقيم أخرى
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...
   select-multiple-dropdown:
     select-multiple-dropdown: منسدلة (متعدد)
   file:
     file: ملف
+    description: حدد أو ارفع ملف
   files:
     files: الملفات
+    description: حدد أو ارفع ملفات متعددة
   input-hash:
     hash: الهاش
   select-icon:
@@ -655,6 +686,8 @@ interfaces:
   translations:
     display_template: عرض القالب
   user:
+    user: مستخدم
+    description: حدد مستخدم directus موجود
     select_mode: تحديد الوضع
     modes:
       auto: تلقائي
@@ -686,6 +719,8 @@ displays:
   rating:
     rating: التقييم
   user:
+    user: مستخدم
+    description: عرض مستخدم directus
     avatar: الصورةالرمزية
     name: الاسم
     both: كل منهما
