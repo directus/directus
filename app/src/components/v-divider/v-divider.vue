@@ -5,6 +5,7 @@
 			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
 		</span>
 		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
+		<v-icon v-if="showExpandIcon" class="expand-icon" :name="expand ? 'expand_less' : 'expand_more'" outline />
 	</div>
 </template>
 
@@ -24,6 +25,14 @@ export default defineComponent({
 		large: {
 			type: Boolean,
 			default: false,
+		},
+		showExpandIcon: {
+			type: Boolean,
+			default: false,
+		},
+		expand: {
+			type: Boolean,
+			default: true,
 		},
 	},
 });
@@ -55,6 +64,11 @@ body {
 		border-width: 2px 0 0 0;
 	}
 
+	.v-icon {
+		order: 2;
+		color: var(--v-divider-color);
+	}
+
 	span.wrapper {
 		display: flex;
 		color: var(--v-divider-label-color);
@@ -70,6 +84,12 @@ body {
 		color: var(--v-divider-label-color);
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
+	}
+
+	&:hover {
+		.v-icon {
+			color: var(--v-divider-label-color);
+		}
 	}
 
 	&.large .type-text {
