@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { ForbiddenException, InvalidQueryException } from '../exceptions';
+import { InvalidQueryException } from '../exceptions';
 import { Aggregate, Filter, Query, Relation, SchemaOverview } from '../types';
 import { getRelationType } from './get-relation-type';
 
