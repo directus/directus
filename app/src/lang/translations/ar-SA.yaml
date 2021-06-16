@@ -226,6 +226,9 @@ revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
 post_comment_success: تم ارسال التعليق
+item_create_success: عنصر تم إنشاؤه | عناصر تم إنشاؤها
+item_update_success: عنصر تم تحديثه | عناصر تم تحديثها
+item_delete_success: عنصر تم حذفه | عناصر تم حذفها
 this_collection: هذه المجموعة
 related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
@@ -351,7 +354,7 @@ collection_created: تم تحديث المجموعة
 modified_on: التعديل في
 card_size: حجم البطاقة
 sort_field: فرز الحقل
-add_sort_field: فرز الحقل
+add_sort_field: إضافة حقل الترتيب
 sort: رتب
 status: حالة
 toggle_manual_sorting: تفعيل الترتيب اليدوي
@@ -393,6 +396,8 @@ all_users: كل المستخدمين
 delete_collection: احذف المجموعة
 update_collection_success: تم تحديث المجموعة
 delete_collection_success: تم حذف المجموعة
+start_end_of_count_items: '{start}-{end} من {count} عناصر'
+start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 delete_collection_are_you_sure: >-
   هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
@@ -507,11 +512,19 @@ settings_webhooks: روابط الويب (Webhooks)
 settings_presets: الإعدادات المسبقة والعلامات
 scope: مجال
 select: حدد...
+layout: نموذج العرض
 changes_are_permanent: التغييرات دائمة
+layout_preview: معاينة نموذج العرض
+layout_setup: إعداد نموذج العرض
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
+page_help_docs_global: >-
+  **عرض عام للوثائق** - وثائق مصممة خصيصا لنسخة هذا المشروع ومخططه.
+page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
+page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
+page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
@@ -539,6 +552,7 @@ fields:
     display_template: عرض القالب
     hidden: مخفي
     sort_field: فرز الحقل
+    accountability: تتبع النشاط والتنقيح
   directus_files:
     $thumbnail: صورة مصغرة
     title: العنوان
@@ -614,6 +628,7 @@ continue: واصل
 continue_as: >-
   تمت مصادقة <b> {name} </b> حاليًا. إذا تعرفت على هذا الحساب ، فاضغط على متابعة.
 editing_role: 'دور {role}'
+creating_webhook: إنشاء Webhook
 default: الإفتراضي
 delete: حذف
 delete_are_you_sure: >-
@@ -704,6 +719,8 @@ interfaces:
     divider: الفاصل
     title_placeholder: أدخل عنوانًا...
     inline_title_label: أظهر العنوان داخل السطر
+    margin_top: الهامش العلوي
+    margin_top_label: زيادة الهامش العلوي
   select-dropdown:
     description: حدد قيمة من القائمة المنسدلة
     choices_placeholder: أضف خيار جديد
@@ -749,8 +766,10 @@ interfaces:
   tags:
     tags: الوسوم
     description: حدد أو أضف وسوم
+    alphabetize_label: فرض الترتيب الأبجدي
     add_tags: إضافة وسوم...
   input:
+    description: أدخل قيمة يدوياً
     mask: مقنع
     minimum_value: أدنى قيمة
     maximum_value: أقصى قيمة
@@ -780,6 +799,8 @@ displays:
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
+    color_on: تشغيل اللون
+    color_off: إيقاف اللون
   collection:
     collection: المجموعة
     description: عرض مجموعة
@@ -802,6 +823,8 @@ displays:
   filesize:
     filesize: حجم الملف
     description: عرض حجم الملف
+  formatted-value:
+    format_title: تنسيق العنوان
   icon:
     icon: أيقونة
     description: عرض أيقونة
