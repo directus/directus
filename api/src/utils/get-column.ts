@@ -13,7 +13,12 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name';
  * @param alias Whether or not to add a SQL AS statement
  * @returns Knex raw instance
  */
-export function getColumn(knex: Knex, table: string, column: string, alias = true): Knex.Raw {
+export function getColumn(
+	knex: Knex,
+	table: string,
+	column: string,
+	alias = applyFunctionToColumnName(column)
+): Knex.Raw {
 	const fn = FunctionsHelper(knex);
 
 	if (column.includes('(') && column.includes(')')) {
@@ -21,11 +26,13 @@ export function getColumn(knex: Knex, table: string, column: string, alias = tru
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
-			return fn[functionName as keyof typeof fn](
-				table,
-				columnName,
-				alias ? applyFunctionToColumnName(column) : undefined
-			);
+			const result = fn[functionName as keyof typeof fn](table, columnName);
+
+			if (alias) {
+				return knex.raw(result + ' AS ??', [alias]);
+			}
+
+			return result;
 		} else {
 			throw new Error(`Invalid function specified "${functionName}"`);
 		}
