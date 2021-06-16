@@ -231,6 +231,7 @@ related_collection: المجموعات ذات الصلة
 format: التنسيق
 submit: إرسال
 today: اليوم
+yesterday: أمس
 months:
   january: يناير
   february: فبراير
@@ -251,6 +252,7 @@ size: حجم
 created: تم الإنشاء
 checksum: بصمة الملف
 owner: المالك
+folder: مجلد
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
@@ -407,6 +409,7 @@ collection_setup: لا توجد مجموعات الإعداد
 value_unique: القيمة يجب أن تكون
 display_template: عرض القالب
 all_files: '‮كل الملفات'
+my_files: ملفاتي
 no_results: لا توجد نتائج
 role: الدور
 create: انشاء
@@ -426,6 +429,7 @@ deselect: إلغاء تحديد
 other: أخرى...
 unknown_user: مستخدم غير معروف
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
+settings_data_model: نموذج البيانات
 settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
@@ -470,6 +474,7 @@ fields:
     created_by: تم الإنشاء بواسطة
     embed: تضمين
     uploaded_by: تم التحميل بواسطة
+    folder: مجلد
     width: العرض
     uploaded_on: تم التحميل بتاريخ
     height: الارتفاع
