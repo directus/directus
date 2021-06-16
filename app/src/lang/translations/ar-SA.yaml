@@ -227,11 +227,17 @@ updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
 post_comment_success: تم ارسال التعليق
 this_collection: هذه المجموعة
-related_collection: المجموعات ذات الصلة
+related_collection: مجموعة ذات صلة
+related_collections: مجموعات ذات صلة
+export_data: تصدير البيانات
 format: التنسيق
 submit: إرسال
+move_to_folder: أنقل إلى مجلد
+move: نقل
+system: نظام
 today: اليوم
 yesterday: أمس
+select_all: إختر الكل
 months:
   january: يناير
   february: فبراير
@@ -361,11 +367,17 @@ errors:
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
   ROUTE_NOT_FOUND: غير موجود
+  USER_SUSPENDED: المستخدم موقوف
+  UNKNOWN: خطأ غير متوقع
+  INTERNAL_SERVER_ERROR: خطأ غير متوقع
 bookmarks: محفوظات
+presets: الإعدادات المسبقة
+unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 back: رجوع
 square: مربع
+rotate: تدوير
 all_users: كل المستخدمين
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
@@ -375,7 +387,10 @@ monospace: Monospace
 divider: الفاصل
 color: لون
 circle: دائرة
+empty_item: عنصر فارغ
 log_in_with: 'تسجيل الدخول باستخدام {provider}'
+advanced_filter: تصفية متقدمة
+delete_advanced_filter: حذف التصفية
 operators:
   lt: أقل من
   gt: أكبر من
@@ -410,7 +425,12 @@ value_unique: القيمة يجب أن تكون
 display_template: عرض القالب
 all_files: '‮كل الملفات'
 my_files: ملفاتي
+create_folder: أنشئ مجلد
+folder_name: اسم المجلد...
+add_file: أضف ملف
+replace_file: استبدال ملف
 no_results: لا توجد نتائج
+saves_automatically: يحفظ تلقائياً
 role: الدور
 create: انشاء
 on_update: عند التحديث
@@ -422,10 +442,12 @@ height: الارتفاع
 wysiwyg_options:
   codeblock: نص برمجي
   remove: احذف
+  selectall: إختر الكل
   table: الجدول
 dropdown: قائمة منسدلة
 choices: الخيارات
 deselect: إلغاء تحديد
+deselect_all: إلغاء اختيار الكل
 other: أخرى...
 unknown_user: مستخدم غير معروف
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
@@ -433,11 +455,13 @@ settings_data_model: نموذج البيانات
 settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
+settings_presets: الإعدادات المسبقة والعلامات
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
 add_new: إضافة جديدة
+create_new: أنشئ جديد
 all: الجميع
 batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
@@ -497,6 +521,7 @@ fields:
     role: الدور
   directus_settings:
     project_name: اسم المشروع
+    project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
   directus_fields:
@@ -596,6 +621,8 @@ interfaces:
     always_show_value: إظهار القيمة دائمًا
   tags:
     tags: الوسوم
+    description: أختر أو أضف وسوم
+    add_tags: إضافة وسوم...
   boolean:
     label_default: تمكين
   translations:
