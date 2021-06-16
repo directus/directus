@@ -492,7 +492,7 @@ export async function applySearch(
 	});
 }
 
-export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate) {
+export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;
 
