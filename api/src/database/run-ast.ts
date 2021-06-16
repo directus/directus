@@ -3,6 +3,7 @@ import { clone, cloneDeep, pick, uniq } from 'lodash';
 import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
+import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
@@ -419,7 +420,9 @@ function removeTemporaryFields(
 				);
 			}
 
-			item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
+			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
+
+			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}
