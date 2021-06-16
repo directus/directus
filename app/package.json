@@ -33,7 +33,7 @@
 		"@fullcalendar/core": "^5.7.2",
 		"@fullcalendar/daygrid": "^5.7.2",
 		"@fullcalendar/interaction": "^5.7.2",
-		"@fullcalendar/list": "^5.7.2",
+		"@fullcalendar/list": "^5.8.0",
 		"@fullcalendar/timegrid": "^5.7.2",
 		"@popperjs/core": "^2.9.2",
 		"@rollup/plugin-yaml": "^3.0.0",
