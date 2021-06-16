@@ -110,7 +110,7 @@ revision_post_update: إليك ما بدا عليه هذا العنصر بعد �
 changes_made: هذه هي التغييرات المحددة التي تم إجراؤها...
 no_relational_data: ولا يغيب عن البال أن هذا لا يشمل بيانات علاقية.
 hide_field_on_detail: مخفي في التفاصيل
-show_field_on_detail: مخفي في التفاصيل
+show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
 fields_and_layout: الحقول٪s ق وتخطيط
 field_create_success: 'حقل تم إنشاؤه: "{field}"'
@@ -206,7 +206,7 @@ clear_value: إزالة القيمة
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
-show_all_activity: كل النشاطات
+show_all_activity: أظهر كل النشاط
 page_not_found: الصفحة غير موجودة
 page_not_found_body: الصفحة التي تبحث عنها غير موجودة.
 confirm_revert: تأكيد الرجوع
@@ -389,6 +389,8 @@ editing_image: تحرير صورة
 square: مربع
 rotate: تدوير
 all_users: كل المستخدمين
+collections_shown: المجموعات المعروضة
+show_hidden_collections: أظهر المجموعات المخفية
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
@@ -516,10 +518,14 @@ fields:
     hidden: مخفي
     sort_field: فرز الحقل
   directus_files:
+    $thumbnail: صورة مصغرة
     title: العنوان
     description: التفاصيل
     tags: الوسوم
     location: الموقع
+    storage: تخزين
+    filename_disk: اسم الملف (القرص)
+    filename_download: اسم الملف (تحميل)
     metadata: البيانات التعريفية
     filesize: حجم الملف
     modified_by: تم التعديل بواسطة
@@ -555,6 +561,7 @@ fields:
     project_color: لون المشروع
     project_logo: شعار المشروع
   directus_fields:
+    collection: اسم المجموعة
     icon: أيقونة المجموعة
     note: ملحوظة
     hidden: مخفي
@@ -565,15 +572,25 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+field_options:
+  directus_collections:
+    track_activity_revisions: تتبع النشاط والتنقيحات
+    only_track_activity: تتبع النشاط فقط
+    do_not_track_anything: عدم تتبع أي شيء
+no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
+save_current_datetime: أحفظ التاريخ/الوقت الحالي
 comment: تعليق
 referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
+referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
 continue: واصل
+continue_as: >-
+  تمت مصادقة <b> {name} </b> حاليًا. إذا تعرفت على هذا الحساب ، فاضغط على متابعة.
 editing_role: 'دور {role}'
 default: الإفتراضي
 delete: حذف
@@ -633,34 +650,48 @@ interfaces:
     link: روابط
     button: أزرار
     error: لا يمكن تنفيذ الإجراء
+  select-multiple-checkbox:
+    show_more: 'أظهر {count} أكثر'
+    items_shown: العناصر المعروضة
   input-code:
     code: نص برمجي
+    placeholder: أدخل الكود هنا...
   system-collection:
     collection: المجموعة
   system-collections:
     collections: مجموعات
   select-color:
     color: لون
+    description: أدخل أو حدد قيمة اللون
     placeholder: اختر لون...
     preset_colors: ألوان محددة مسبقًا
     preset_colors_add_label: إضافة لون جديد...
     name_placeholder: أدخل اسم اللون...
   datetime:
     datetime: التاريخ والوقت
+    description: أدخل التواريخ والأوقات
+    set_to_now: تعيين الى الآن
+    use_24: استخدم تنسيق 24 ساعة
   system-display-template:
     display-template: عرض القالب
+    description: خلط النص الثابت وقيم الحقل الديناميكي
+    collection_field: حقل المجموعة
     collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
+    title_placeholder: أدخل عنوانًا...
+    inline_title_label: أظهر العنوان داخل السطر
   select-dropdown:
     description: حدد قيمة من القائمة المنسدلة
     choices_placeholder: أضف خيار جديد
     allow_other_label: السماح بقيم أخرى
+    allow_none_label: لا يسمح بتحديد
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...
   select-multiple-dropdown:
     select-multiple-dropdown: منسدلة (متعدد)
+    description: حدد قيم متعددة من القائمة المنسدلة
   file:
     file: ملف
     description: حدد أو ارفع ملف
@@ -669,11 +700,21 @@ interfaces:
     description: حدد أو ارفع ملفات متعددة
   input-hash:
     hash: الهاش
+    masked: مقنع
+    masked_label: إخفاء القيم الحقيقية
   select-icon:
     icon: أيقونة
+    description: حدد أيقونة من القائمة المنسدلة
     search_for_icon: البحث عن أيقونة...
+  file-image:
+    description: حدد أو ارفع صورة
   select-dropdown-m2o:
+    description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب
+  input-rich-text-md:
+    description: أدخل و معاينة markdown
+  list-o2m:
+    description: حدد عدة عناصر ذات صلة
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
@@ -681,6 +722,8 @@ interfaces:
     tags: الوسوم
     description: حدد أو أضف وسوم
     add_tags: إضافة وسوم...
+  input:
+    mask: مقنع
   boolean:
     label_default: تمكين
   translations:
@@ -697,12 +740,14 @@ displays:
     boolean: نعم/لا
   collection:
     collection: المجموعة
+    icon_label: أظهر أيقونة المجموعة
   color:
     color: لون
     default_color: اللون الافتراضي
   datetime:
     datetime: التاريخ والوقت
     format: التنسيق
+    relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
   file:
     file: ملف
   filesize:
@@ -714,16 +759,22 @@ displays:
     circle: دائرة
     circle_label: عرض كدائرة
   labels:
+    show_as_dot: أظهر كنقطة
     choices_value_placeholder: أدخل قيمة...
     choices_text_placeholder: أدخل نص...
+  mime-type:
+    description: أظهر MIME-Type الملف
+    extension_only_label: أظهر ملحق الملف فقط
   rating:
     rating: التقييم
+    simple_label: أظهر النجوم بصيغة بسيطة
   user:
     user: مستخدم
     description: عرض مستخدم directus
     avatar: الصورةالرمزية
     name: الاسم
     both: كل منهما
+    circle_label: أظهر المستخدم في دائرة
 layouts:
   cards:
     cards: البطاقات
