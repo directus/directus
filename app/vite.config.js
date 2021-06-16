@@ -28,4 +28,16 @@ export default defineConfig({
 			},
 		},
 	},
+	build: {
+		rollupOptions: {
+			input: {
+				index: path.resolve(__dirname, 'index.html'),
+				vue: 'vue',
+			},
+			output: {
+				entryFileNames: '[name].[hash].js',
+			},
+			preserveEntrySignatures: 'exports-only',
+		},
+	},
 });

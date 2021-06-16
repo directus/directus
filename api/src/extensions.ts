@@ -14,11 +14,14 @@ import { EXTENSION_NAME } from './constants';
 import * as services from './services';
 import listFolders from './utils/list-folders';
 import { schedule, validate } from 'node-cron';
+import { resolvePackage } from './utils/resolve-package';
 
 let extensions: Extension[] = [];
+const internalDeps: Record<string, string> = {};
 
 export async function initializeExtensions(): Promise<void> {
 	await ensureFoldersExist();
+	await resolveInternalDeps();
 	await discoverExtensions();
 
 	logger.info(`Loaded extensions: ${listExtensions().join(', ')}`);
@@ -40,9 +43,11 @@ export function findExtension(type: ExtensionType, name: string): Extension | un
 	return extensions.find((extension) => extension.type === type && extension.name === name);
 }
 
-export async function readExtensionSource(extension: Extension): Promise<Buffer> {
+export async function readExtensionSource(extension: Extension): Promise<string> {
 	const extensionPath = path.resolve(extension.path, extension.entrypoint || '');
-	return fse.readFile(extensionPath);
+	const extensionSource = await fse.readFile(extensionPath, { encoding: 'utf8' });
+
+	return transformInternalImports(extensionSource);
 }
 
 export function registerExtensionEndpoints(router: Router): void {
@@ -73,9 +78,7 @@ async function listPackageExtensions() {
 		const extensions: Extension[] = [];
 
 		for (const extensionName of extensionNames) {
-			const extensionPath = path.dirname(
-				require.resolve(`${extensionName}/package.json`, root !== undefined ? { paths: [root] } : undefined)
-			);
+			const extensionPath = resolvePackage(extensionName, root);
 			const extensionPkg = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 			if (extensionPkg['directus:extension'].type === 'pack') {
@@ -160,6 +163,33 @@ async function ensureFoldersExist() {
 			logger.warn(err);
 		}
 	}
+}
+
+async function resolveInternalDeps() {
+	const deps = ['vue'];
+
+	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
+
+	for (const dep of deps) {
+		const depName = appDir.find((file) => dep === file.substring(0, file.indexOf('.')));
+
+		if (depName) {
+			internalDeps[dep] = `${env.PUBLIC_URL}/admin/${depName}`;
+		} else {
+			logger.warn(`Couldn't find extension internal dependency "${dep}"`);
+		}
+	}
+}
+
+function transformInternalImports(src: string) {
+	const importRegex = new RegExp(
+		`((?:^|;\\s*|(?:\\r?\\n)+)import(?:[a-z0-9_$,*{}\\s]*from)?\\s*['"\`])(${Object.keys(internalDeps).join(
+			'|'
+		)})(['"\`])`,
+		'gi'
+	);
+
+	return src.replace(importRegex, (_, pre: string, dep: string, post: string) => `${pre}${internalDeps[dep]}${post}`);
 }
 
 function registerHooks(hooks: Extension[]) {
