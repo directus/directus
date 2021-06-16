@@ -19,7 +19,7 @@ export async function registerInterfaces(app: App): Promise<void> {
 		await asyncPool(5, customInterfaces, async (interfaceName) => {
 			try {
 				const result = await import(
-					/* @vite-ignore */ `${getRootPath()}extensions/interfaces/${interfaceName}/index.js`
+					/* @vite-ignore */ `${getRootPath()}extensions/interfaces/${encodeURIComponent(interfaceName)}/index.js`
 				);
 				interfaces.push(result.default);
 			} catch (err) {

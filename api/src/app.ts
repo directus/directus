@@ -57,7 +57,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await initializeExtensions();
 
-	await registerExtensionHooks();
+	registerExtensionHooks();
 
 	const app = express();
 
@@ -171,7 +171,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
-	await registerExtensionEndpoints(customRouter);
+	registerExtensionEndpoints(customRouter);
 	await emitAsyncSafe('routes.custom.init.after', { app });
 
 	app.use(notFoundHandler);
