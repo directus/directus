@@ -18,8 +18,11 @@
 				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="t('download')">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="t('edit')">
+				<v-button icon rounded @click="editImageDetails = true" v-tooltip="t('edit')">
 					<v-icon name="open_in_new" />
+				</v-button>
+				<v-button icon rounded @click="editImageEditor = true" v-tooltip="t('edit')">
+					<v-icon name="tune" />
 				</v-button>
 				<v-button icon rounded @click="deselect" v-tooltip="t('deselect')">
 					<v-icon name="close" />
@@ -33,11 +36,17 @@
 
 			<drawer-item
 				v-if="!disabled && image"
-				v-model:active="editDrawerActive"
+				v-model:active="editImageDetails"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
 				@input="stageEdits"
+			/>
+
+			<image-editor
+				v-if="!disabled && image"
+				:id="image.id"
+				v-model:active="editImageEditor"
 			/>
 
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
@@ -52,6 +61,7 @@ import { defineComponent, ref, watch, computed } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import FileLightbox from '@/views/private/components/file-lightbox';
+import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -69,7 +79,7 @@ type Image = {
 
 export default defineComponent({
 	emits: ['input'],
-	components: { FileLightbox, DrawerItem },
+	components: { FileLightbox, DrawerItem, ImageEditor },
 	props: {
 		value: {
 			type: [String, Object],
@@ -86,7 +96,8 @@ export default defineComponent({
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
-		const editDrawerActive = ref(false);
+		const editImageDetails = ref(false);
+		const editImageEditor = ref(false);
 
 		const cacheBuster = ref(nanoid());
 
@@ -143,7 +154,8 @@ export default defineComponent({
 			src,
 			meta,
 			lightboxActive,
-			editDrawerActive,
+			editImageDetails,
+			editImageEditor,
 			changeCacheBuster,
 			setImage,
 			deselect,
@@ -194,7 +206,8 @@ export default defineComponent({
 			loading.value = false;
 			image.value = null;
 			lightboxActive.value = false;
-			editDrawerActive.value = false;
+			editImageDetails.value = false;
+			editImageEditor.value = false;
 		}
 
 		function useEdits() {
