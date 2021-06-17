@@ -53,18 +53,19 @@ export default defineComponent({
 				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
 						aggregate: {
-							[props.options.function]: {
-								[props.options.field]: 'result',
-							},
+							[props.options.function]: [props.options.field],
 						},
 						filter: props.options.filter,
 						sort: sort,
 					},
 				});
 
-				metric.value = Number(res.data.data[0].result).toLocaleString(undefined, {
-					minimumFractionDigits: props.options.decimals ?? 2,
-				});
+				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]).toLocaleString(
+					undefined,
+					{
+						minimumFractionDigits: props.options.decimals ?? 2,
+					}
+				);
 			} catch (err) {
 				// oh no
 			} finally {
