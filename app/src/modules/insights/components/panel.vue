@@ -376,6 +376,7 @@ export default defineComponent({
 	position: absolute;
 	top: 0;
 	right: 0;
+	z-index: 2;
 	display: flex;
 	gap: 4px;
 	align-items: center;
