@@ -309,7 +309,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			collection: this.collection,
 			item: key,
 			action: 'read',
-			payload: query,
+			payload: results,
 			schema: this.schema,
 			database: getDatabase(),
 		});
@@ -347,7 +347,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			collection: this.collection,
 			item: keys,
 			action: 'read',
-			payload: query,
+			payload: results,
 			schema: this.schema,
 			database: getDatabase(),
 		});
