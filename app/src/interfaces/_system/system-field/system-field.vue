@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref, PropType } from 'vue';
+import { defineComponent, computed, inject, ref, PropType, watch } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { Field } from '@/types';
 
@@ -58,16 +58,25 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const fieldsStore = useFieldsStore();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
+		const collection = computed(() => values.value[props.collectionField] || props.collection);
+
 		const fields = computed(() => {
 			if (!props.collectionField && !props.collection) return [];
-			return fieldsStore.getFieldsForCollection(values.value[props.collectionField] || props.collection);
+			return fieldsStore.getFieldsForCollection(collection.value);
+		});
+
+		// Reset value whenever the chosen collection changes
+		watch(collection, (newCol, oldCol) => {
+			if (oldCol !== null && newCol !== oldCol) {
+				emit('input', null);
+			}
 		});
 
 		const selectItems = computed(() =>
