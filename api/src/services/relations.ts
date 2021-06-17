@@ -161,13 +161,15 @@ export class RelationsService {
 					this.alterType(table, relation);
 
 					const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
-
-					table
+					const builder = table
 						.foreign(relation.field!, constraintName)
 						.references(
 							`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
-						)
-						.onDelete(relation.schema?.on_delete || 'NO ACTION');
+						);
+
+					if (relation.schema?.on_delete) {
+						builder.onDelete(relation.schema.on_delete);
+					}
 				});
 			}
 
@@ -222,14 +224,17 @@ export class RelationsService {
 
 					this.alterType(table, relation);
 
-					table
+					const builder = table
 						.foreign(field, constraintName || undefined)
 						.references(
 							`${existingRelation.related_collection!}.${
 								this.schema.collections[existingRelation.related_collection!].primary
 							}`
-						)
-						.onDelete(relation.schema?.on_delete || 'NO ACTION');
+						);
+
+					if (relation.schema?.on_delete) {
+						builder.onDelete(relation.schema.on_delete);
+					}
 				});
 			}
 
