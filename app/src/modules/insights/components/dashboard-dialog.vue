@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="active" @update:modelValue="$emit('toggle', $event)" persistent @esc="cancel">
+	<v-dialog :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" persistent @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
@@ -39,12 +39,9 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'DashboardDialog',
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -69,7 +66,7 @@ export default defineComponent({
 		return { values, cancel, saving, save, t };
 
 		function cancel() {
-			emit('toggle', false);
+			emit('update:modelValue', false);
 		}
 
 		async function save() {
@@ -84,7 +81,7 @@ export default defineComponent({
 					await insightsStore.hydrate();
 					router.push(`/insights/${response.data.data.id}`);
 				}
-				emit('toggle', false);
+				emit('update:modelValue', false);
 			} catch (err) {
 				unexpectedError(err);
 			} finally {

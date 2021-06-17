@@ -86,7 +86,12 @@
 			</v-card>
 		</v-dialog>
 
-		<dashboard-dialog v-if="editDashboard" active @toggle="editDashboard = null" :dashboard="editDashboard" />
+		<dashboard-dialog
+			v-if="editDashboard"
+			:model-value="true"
+			@toggle="editDashboard = null"
+			:dashboard="editDashboard"
+		/>
 	</private-view>
 </template>
 
