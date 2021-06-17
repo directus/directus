@@ -27,12 +27,28 @@ export default definePanel({
 				options: {
 					choices: [
 						{
+							text: 'Count',
+							value: 'count',
+						},
+						{
+							text: 'Count (Distinct)',
+							value: 'count_distinct',
+						},
+						{
 							text: 'Average',
 							value: 'avg',
 						},
 						{
+							text: 'Average (Distinct)',
+							value: 'avg_distinct',
+						},
+						{
 							text: 'Sum',
 							value: 'sum',
+						},
+						{
+							text: 'Sum (Distinct)',
+							value: 'sum_distinct',
 						},
 						{
 							text: 'Minimum',
@@ -41,10 +57,6 @@ export default definePanel({
 						{
 							text: 'Maximum',
 							value: 'max',
-						},
-						{
-							text: 'Count',
-							value: 'count',
 						},
 					],
 				},
