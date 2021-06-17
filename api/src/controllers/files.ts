@@ -37,9 +37,9 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	let fileCount = 0;
 
 	busboy.on('field', (fieldname: keyof File, val) => {
-		if (val === 'null') val = null;
-		if (val === 'false') val = false;
-		if (val === 'true') val = true;
+		if (typeof val === 'string' && val.trim() === 'null') val = null;
+		if (typeof val === 'string' && val.trim() === 'false') val = false;
+		if (typeof val === 'string' && val.trim() === 'true') val = true;
 
 		if (fieldname === 'storage') {
 			disk = val;
