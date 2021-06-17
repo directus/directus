@@ -342,5 +342,7 @@ export default defineComponent({
 	--v-button-color-hover: var(--foreground-normal);
 	--v-button-background-color: var(--foreground-subdued);
 	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-color-active: var(--foreground-inverted);
+	--v-button-background-color-active: var(--primary);
 }
 </style>

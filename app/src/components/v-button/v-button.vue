@@ -323,6 +323,10 @@ export default defineComponent({
 	--v-button-color: var(--foreground-subdued);
 }
 
+.outlined.active {
+	background-color: var(--v-button-background-color);
+}
+
 .dashed {
 	border-style: dashed;
 }
