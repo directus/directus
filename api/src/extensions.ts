@@ -12,6 +12,7 @@ import { EndpointRegisterFunction, HookRegisterFunction } from './types';
 import { getSchema } from './utils/get-schema';
 import listFolders from './utils/list-folders';
 import { schedule, validate } from 'node-cron';
+import { REGEX_BETWEEN_PARENS } from './constants';
 
 export async function ensureFoldersExist(): Promise<void> {
 	const folders = ['endpoints', 'hooks', 'interfaces', 'modules', 'layouts', 'displays'];
@@ -98,7 +99,7 @@ function registerHooks(hooks: string[]) {
 
 		for (const [event, handler] of Object.entries(events)) {
 			if (event.startsWith('cron(')) {
-				const cron = event.match(/\(([^)]+)\)/)?.[1];
+				const cron = event.match(REGEX_BETWEEN_PARENS)?.[1];
 
 				if (!cron || validate(cron) === false) {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);

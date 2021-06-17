@@ -1,6 +1,5 @@
 import cookieParser from 'cookie-parser';
 import express, { RequestHandler } from 'express';
-import expressLogger from 'express-pino-logger';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
@@ -11,14 +10,14 @@ import { InvalidPayloadException } from './exceptions';
 import { isInstalled, validateDBConnection } from './database';
 import { register as registerWebhooks } from './webhooks';
 import env from './env';
-import logger from './logger';
+import logger, { expressLogger } from './logger';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
 import collectionsRouter from './controllers/collections';
-import extensionsRouter from './controllers/extensions';
 import dashboardsRouter from './controllers/dashboards';
+import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
 import foldersRouter from './controllers/folders';
@@ -77,7 +76,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitAsyncSafe('middlewares.init.before', { app });
 
-	app.use(expressLogger({ logger }) as RequestHandler);
+	app.use(expressLogger);
 
 	app.use((req, res, next) => {
 		(

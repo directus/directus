@@ -15,10 +15,10 @@ export function getCacheControlHeader(req: Request, ttl: number | null): string 
 	if (env.CACHE_AUTO_PURGE === true) return 'no-cache';
 
 	const noCacheRequested =
-		req.headers['cache-control']?.includes('no-cache') || req.headers['Cache-Control']?.includes('no-cache');
+		req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store');
 
 	// When the user explicitly asked to skip the cache
-	if (noCacheRequested) return 'no-cache';
+	if (noCacheRequested) return 'no-store';
 
 	// Cache control header uses seconds for everything
 	const ttlSeconds = Math.round(ttl / 1000);

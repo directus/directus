@@ -92,8 +92,8 @@ function sanitizeSort(rawSort: any) {
 	});
 }
 
-function sanitizeAggregate(rawAggregate: any) {
-	let aggregate: Aggregate = rawAggregate;
+function sanitizeAggregate(rawAggregate: any): Aggregate {
+	let aggregate: Aggregate = {};
 
 	if (typeof rawAggregate === 'string') {
 		try {
@@ -103,7 +103,12 @@ function sanitizeAggregate(rawAggregate: any) {
 		}
 	}
 
-	return aggregate;
+	for (const [operation, fields] of Object.entries(rawAggregate)) {
+		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = fields.split(',');
+		else if (Array.isArray(fields)) aggregate[operation as keyof Aggregate] = fields as string[];
+	}
+
+	return aggregate as Aggregate;
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {

@@ -83,9 +83,6 @@ export async function up(knex: Knex): Promise<void> {
 			}
 		}
 
-		// Can't reliably have circular cascade
-		const action = constraint.many_collection === constraint.one_collection ? 'NO ACTION' : 'SET NULL';
-
 		// MySQL doesn't accept FKs from `int` to `int unsigned`. `knex` defaults `.increments()`
 		// to `unsigned`, but defaults `.integer()` to `int`. This means that created m2o fields
 		// have the wrong type. This step will force the m2o `int` field into `unsigned`, but only
@@ -104,12 +101,15 @@ export async function up(knex: Knex): Promise<void> {
 				}
 
 				const indexName = getDefaultIndexName('foreign', constraint.many_collection, constraint.many_field);
-
-				table
+				const builder = table
 					.foreign(constraint.many_field, indexName)
 					.references(relatedPrimaryKeyField)
-					.inTable(constraint.one_collection!)
-					.onDelete(action);
+					.inTable(constraint.one_collection!);
+
+				// Can't reliably have circular cascade
+				if (constraint.many_collection !== constraint.one_collection) {
+					builder.onDelete('SET NULL');
+				}
 			});
 		} catch (err) {
 			logger.warn(

@@ -28,21 +28,14 @@ export type Filter = {
  * Aggregate operation. Contains column name, and the field alias it should be returned as
  */
 export type Aggregate = {
-	avg?: {
-		[column: string]: string;
-	};
-	min?: {
-		[column: string]: string;
-	};
-	max?: {
-		[column: string]: string;
-	};
-	count?: {
-		[column: string]: string;
-	};
-	sum?: {
-		[column: string]: string;
-	};
+	avg?: string[];
+	avgDistinct?: string[];
+	count?: string[];
+	countDistinct?: string[];
+	sum?: string[];
+	sumDistinct?: string[];
+	min?: string[];
+	max?: string[];
 };
 
 export type FilterOperator =

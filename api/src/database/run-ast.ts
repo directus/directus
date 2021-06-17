@@ -3,7 +3,10 @@ import { clone, cloneDeep, pick, uniq } from 'lodash';
 import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
+import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
+import { getColumn } from '../utils/get-column';
+import { stripFunction } from '../utils/strip-function';
 import { toArray } from '../utils/to-array';
 import getDatabase from './index';
 
@@ -113,8 +116,9 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field') {
-			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelectInternal.push(child.name);
+			const fieldKey = stripFunction(child.name);
+			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
+				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
 			}
 
 			continue;
@@ -157,7 +161,7 @@ function getDBQuery(
 	query: Query,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
+	const dbQuery = knex.select(columns.map((column) => getColumn(knex, table, column))).from(table);
 
 	const queryCopy = clone(query);
 
@@ -170,7 +174,7 @@ function getDBQuery(
 		delete queryCopy.limit;
 	}
 
-	applyQuery(table, dbQuery, queryCopy, schema);
+	applyQuery(knex, table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
@@ -391,14 +395,14 @@ function removeTemporaryFields(
 			}
 		}
 
-		// Make sure any new aliased aggregate fields are included
+		// Make sure any requested aggregate fields are included
 		if (ast.query?.aggregate) {
-			for (const [_operation, aliasMap] of Object.entries(ast.query.aggregate)) {
-				if (!aliasMap) continue;
+			for (const [operation, aggregateFields] of Object.entries(ast.query.aggregate)) {
+				if (!fields) continue;
 
-				for (const [_column, alias] of Object.entries(aliasMap)) {
-					fields.push(alias);
-				}
+				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
+
+				fields.push(...aggregateFields.map((field) => `${field}_${operation}`));
 			}
 		}
 
@@ -419,7 +423,9 @@ function removeTemporaryFields(
 				);
 			}
 
-			item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
+			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
+
+			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}
