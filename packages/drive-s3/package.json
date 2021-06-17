@@ -39,17 +39,17 @@
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@lukeed/uuid": "^2.0.0",
-		"@types/fs-extra": "^9.0.11",
-		"@types/jest": "^26.0.22",
-		"@types/node": "^15.12.0",
-		"@types/normalize-path": "^3.0.0",
-		"dotenv": "^10.0.0",
-		"fs-extra": "^10.0.0",
-		"jest": "^27.0.4",
-		"npm-run-all": "^4.1.5",
-		"ts-jest": "^27.0.2",
-		"typescript": "^4.3.2"
+		"@lukeed/uuid": "2.0.0",
+		"@types/fs-extra": "9.0.11",
+		"@types/jest": "26.0.23",
+		"@types/node": "15.12.2",
+		"@types/normalize-path": "3.0.0",
+		"dotenv": "8.6.0",
+		"fs-extra": "7.0.1",
+		"jest": "27.0.4",
+		"npm-run-all": "4.1.5",
+		"ts-jest": "27.0.3",
+		"typescript": "4.3.2"
 	},
 	"publishConfig": {
 		"access": "public"
