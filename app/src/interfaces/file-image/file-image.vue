@@ -43,11 +43,7 @@
 				@input="stageEdits"
 			/>
 
-			<image-editor
-				v-if="!disabled && image"
-				:id="image.id"
-				v-model:active="editImageEditor"
-			/>
+			<image-editor v-if="!disabled && image" :id="image.id" v-model:active="editImageEditor" />
 
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
