@@ -2,7 +2,7 @@
 	<insights-not-found v-if="!currentDashboard" />
 	<private-view v-else :title="currentDashboard.name">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon :name="currentDashboard.icon" />
 			</v-button>
 		</template>
@@ -344,5 +344,9 @@ export default defineComponent({
 	--v-button-background-color-hover: var(--foreground-normal);
 	--v-button-color-active: var(--foreground-inverted);
 	--v-button-background-color-active: var(--primary);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--foreground-normal);
 }
 </style>

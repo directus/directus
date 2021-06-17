@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="t('insights')">
 		<template #title-outer:prepend>
-			<v-button rounded disabled icon secondary>
+			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="dashboard" />
 			</v-button>
 		</template>
@@ -211,5 +211,9 @@ export default defineComponent({
 	--v-list-item-color: var(--warning);
 	--v-list-item-color-hover: var(--warning);
 	--v-list-item-icon-color: var(--warning);
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--foreground-normal);
 }
 </style>
