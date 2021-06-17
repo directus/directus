@@ -114,6 +114,7 @@ on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example belo
 module.exports = function registerHook() {
 	return {
 		'cron(*/15 * * * *)': async function () {
+			const axios = require('axios');
 			await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
 		},
 	};
@@ -128,6 +129,7 @@ Each custom hook is registered to its event scope using a function with the foll
 module.exports = function registerHook() {
 	return {
 		'items.create': function () {
+			const axios = require('axios');
 			axios.post('http://example.com/webhook');
 		},
 	};
@@ -206,6 +208,7 @@ module.exports = function registerHook({ services, exceptions }) {
 		'items.create.before': async function (input, { collection, schema }) {
 			if (collection !== 'recipes') return input;
 
+			const axios = require('axios');
 			const mailService = new MailService({ schema });
 
 			try {
