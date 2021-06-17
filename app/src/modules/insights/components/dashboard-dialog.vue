@@ -57,7 +57,7 @@ export default defineComponent({
 
 		const values = reactive({
 			name: props.dashboard?.name ?? null,
-			icon: props.dashboard?.icon ?? null,
+			icon: props.dashboard?.icon ?? 'dashboard',
 			note: props.dashboard?.note ?? null,
 		});
 
