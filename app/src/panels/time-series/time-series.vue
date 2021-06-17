@@ -12,8 +12,9 @@ type TimeSeriesOptions = {
 	dateField: string;
 	valueField: string;
 	function: 'avg' | 'sum' | 'min' | 'max' | 'count';
-	limit: number;
+	range: string; // 1 week, etc
 	color: string;
+	decimals: number;
 };
 
 export default defineComponent({
@@ -37,8 +38,6 @@ export default defineComponent({
 		watch(() => props.options, fetchData, { deep: true });
 
 		fetchData();
-
-		console.log(props.options.color + 'test');
 
 		onMounted(() => {
 			chart.value = new ApexCharts(chartEl.value, {
@@ -120,12 +119,28 @@ export default defineComponent({
 			try {
 				const results = await api.get(`/items/${props.options.collection}`, {
 					params: {
-						limit: props.options.limit || 100,
-						group: props.options.dateField,
+						group: [
+							`year(${props.options.dateField})`,
+							`month(${props.options.dateField})`,
+							`day(${props.options.dateField})`,
+							`hour(${props.options.dateField})`,
+						],
 						aggregate: {
-							[props.options.function]: {
-								[props.options.valueField]: props.options.valueField,
-							},
+							[props.options.function]: [props.options.valueField],
+						},
+						filter: {
+							_and: [
+								{
+									[props.options.dateField]: {
+										_gte: `$NOW(-${props.options.range || '1 week'})`,
+									},
+								},
+								{
+									[props.options.dateField]: {
+										_lte: `$NOW`,
+									},
+								},
+							],
 						},
 					},
 				});
@@ -134,14 +149,27 @@ export default defineComponent({
 
 				chart.value?.updateOptions({
 					xaxis: {
-						categories: metrics.value.map((metric) => metric[props.options.dateField]),
+						categories: metrics.value.map((metric) => {
+							const year = metric[`${props.options.dateField}_year`];
+							const month = metric[`${props.options.dateField}_month`];
+							const day = metric[`${props.options.dateField}_day`];
+							const hour = metric[`${props.options.dateField}_hour`];
+
+							return `${year}-${month}-${day}T${hour}:00:00`;
+						}),
 					},
 				});
 
 				chart.value?.updateSeries([
 					{
 						name: props.options.collection,
-						data: metrics.value.map((metric) => metric[props.options.valueField]),
+						data: metrics.value.map((metric) =>
+							Number(
+								Number(metric[`${props.options.valueField}_${props.options.function}`]).toFixed(
+									props.options.decimals ?? 0
+								)
+							)
+						),
 					},
 				]);
 			} catch (err) {

@@ -4,7 +4,7 @@
 		:title="panel?.name || t('panel')"
 		:subtitle="t('panel_options')"
 		@cancel="$emit('cancel')"
-		:icon="panel?.icon || insert_chart"
+		:icon="panel?.icon || 'insert_chart'"
 		persistent
 	>
 		<template #actions>

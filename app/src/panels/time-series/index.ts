@@ -27,12 +27,28 @@ export default definePanel({
 				options: {
 					choices: [
 						{
+							text: 'Count',
+							value: 'count',
+						},
+						{
+							text: 'Count (Distinct)',
+							value: 'count_distinct',
+						},
+						{
 							text: 'Average',
 							value: 'avg',
 						},
 						{
+							text: 'Average (Distinct)',
+							value: 'avg_distinct',
+						},
+						{
 							text: 'Sum',
 							value: 'sum',
+						},
+						{
+							text: 'Sum (Distinct)',
+							value: 'sum_distinct',
 						},
 						{
 							text: 'Minimum',
@@ -41,10 +57,6 @@ export default definePanel({
 						{
 							text: 'Maximum',
 							value: 'max',
-						},
-						{
-							text: 'Count',
-							value: 'count',
 						},
 					],
 				},
@@ -58,7 +70,7 @@ export default definePanel({
 				interface: 'system-field',
 				options: {
 					collectionField: 'collection',
-					typeAllowList: ['date'],
+					typeAllowList: ['date', 'datetime', 'timestamp'],
 				},
 				width: 'half',
 			},
@@ -77,15 +89,75 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'limit',
-			type: 'integer',
-			name: '$t:limit',
+			field: 'range',
+			type: 'dropdown',
+			name: '$t:date_range',
 			schema: {
-				default_value: 100,
+				default_value: '1 week',
 			},
+			meta: {
+				interface: 'select-dropdown',
+				width: 'half',
+				options: {
+					choices: [
+						{
+							text: 'Past 5 Minutes',
+							value: '5 minutes',
+						},
+						{
+							text: 'Past 15 Minutes',
+							value: '15 minutes',
+						},
+						{
+							text: 'Past 30 Minutes',
+							value: '30 minutes',
+						},
+						{
+							text: 'Past 1 Hour',
+							value: '1 hour',
+						},
+						{
+							text: 'Past 4 Hours',
+							value: '4 hours',
+						},
+						{
+							text: 'Past 1 Day',
+							value: '1 day',
+						},
+						{
+							text: 'Past 2 Days',
+							value: '2 days',
+						},
+						{
+							text: 'Past 1 Week',
+							value: '1 week',
+						},
+						{
+							text: 'Past 1 Month',
+							value: '1 month',
+						},
+						{
+							text: 'Past 3 Months',
+							value: '3 months',
+						},
+					],
+					allowOther: true,
+				},
+			},
+		},
+		{
+			field: 'decimals',
+			type: 'integer',
+			name: '$t:decimals',
 			meta: {
 				interface: 'input',
 				width: 'half',
+				options: {
+					placeholder: '$t:decimals_placeholder',
+				},
+			},
+			schema: {
+				default_value: 2,
 			},
 		},
 		{

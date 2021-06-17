@@ -142,6 +142,7 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: Date Range
 datetime: DateTime
 decimal: Decimal
 float: Float
