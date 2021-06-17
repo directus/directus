@@ -270,7 +270,7 @@ export default defineComponent({
 				return {
 					geometryField: field.field,
 					geometryFormat: 'native',
-					geometryType: field.geometry_type,
+					geometryType: field.schema.geometry_type,
 				} as GeometryOptions;
 			}
 			if (field.meta && field.meta.interface == 'map' && field.meta.options) {
