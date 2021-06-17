@@ -65,6 +65,10 @@ export default defineComponent({
 .action {
 	margin: 4px;
 
+	& .v-icon.left {
+		margin-left: unset;
+	}
+
 	&.info {
 		--v-button-icon-color: var(--white);
 		--v-button-background-color: var(--primary);
