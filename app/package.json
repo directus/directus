@@ -81,7 +81,7 @@
 		"rimraf": "3.0.2",
 		"sass": "1.35.1",
 		"tinymce": "5.8.1",
-		"typescript": "4.3.3",
+		"typescript": "4.3.4",
 		"vite": "2.3.7",
 		"vue": "3.1.1",
 		"vue-i18n": "9.1.6",
