@@ -85,7 +85,7 @@ module.exports = function registerHook({ exceptions }) {
 | `error`                         |                                                             | No               |
 | `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
 | `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
-| `items`                         | `create`, `update` and `delete`                             | Optional         |
+| `items`                         | `read`<sup>[3]</sup>, `create`, `update` and `delete`       | Optional         |
 | `activity`                      | `create`, `update` and `delete`                             | Optional         |
 | `collections`                   | `create`, `update` and `delete`                             | Optional         |
 | `fields`                        | `create`, `update` and `delete`                             | Optional         |
@@ -114,7 +114,7 @@ on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example belo
 module.exports = function registerHook() {
 	return {
 		'cron(*/15 * * * *)': async function () {
-			await axios.post('http://example.com/webhook', { message: "Another 15 minutes passed..." });
+			await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
 		},
 	};
 };
@@ -135,6 +135,9 @@ module.exports = function registerHook() {
 ```
 
 ## 4. Develop your Custom Hook
+
+> Hooks can impact performance when not carefully implemented. This is especially true for `before` hooks (as these are
+> blocking) and hooks on `read` actions, as a single request can result in a large ammount of database reads.
 
 ### Register Function
 
