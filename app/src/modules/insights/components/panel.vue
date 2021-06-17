@@ -20,7 +20,7 @@
 			<v-icon class="note" v-if="panel.note" name="info" v-tooltip="panel.note" />
 		</div>
 
-		<div class="edit-actions" v-if="editMode">
+		<div class="edit-actions" v-if="editMode" @pointerdown.stop>
 			<v-icon
 				class="duplicate-icon"
 				name="control_point_duplicate"
