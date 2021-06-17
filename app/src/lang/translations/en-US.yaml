@@ -549,6 +549,7 @@ label: Label
 insights: Insights
 dashboard: Dashboard
 panel: Panel
+panel_options: Panel Options
 panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...

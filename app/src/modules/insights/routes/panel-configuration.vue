@@ -2,6 +2,7 @@
 	<v-drawer
 		:model-value="isOpen"
 		:title="(panel && panel.name) || t('panel')"
+		:subtitle="t('panel_options')"
 		@cancel="$emit('cancel')"
 		icon="insert_chart"
 		persistent
