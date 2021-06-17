@@ -1,24 +1,23 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
-import { listExtensions, findExtension, readExtensionSource, extensionDirToType } from '../extensions';
+import { listExtensions, extensionDirToType, getAppExtensionSource } from '../extensions';
 import { respond } from '../middleware/respond';
 import { AppExtensionType, ExtensionDir } from '../types';
+import { APP_EXTENSION_TYPES } from '../constants';
 
 const router = Router();
-
-const appExtensions: ExtensionDir<AppExtensionType>[] = ['interfaces', 'displays', 'layouts', 'modules'];
 
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = req.params.type as ExtensionDir<AppExtensionType>;
+		const type = extensionDirToType(req.params.type as ExtensionDir<AppExtensionType>);
 
-		if (appExtensions.includes(type) === false) {
+		if (APP_EXTENSION_TYPES.includes(type) === false) {
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const extensions = listExtensions(extensionDirToType(type));
+		const extensions = listExtensions(type);
 
 		res.locals.payload = {
 			data: extensions,
@@ -30,20 +29,18 @@ router.get(
 );
 
 router.get(
-	'/:type/:name/index.js',
+	'/:type/index.js',
 	asyncHandler(async (req, res) => {
-		const type = req.params.type as ExtensionDir<AppExtensionType>;
+		const type = extensionDirToType(req.params.type as ExtensionDir<AppExtensionType>);
 
-		if (appExtensions.includes(type) === false) {
+		if (APP_EXTENSION_TYPES.includes(type) === false) {
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const extension = findExtension(extensionDirToType(type), req.params.name);
-		if (extension === undefined) {
+		const extensionSource = getAppExtensionSource(type);
+		if (extensionSource === undefined) {
 			throw new RouteNotFoundException(req.path);
 		}
-
-		const extensionSource = await readExtensionSource(extension);
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
 		res.end(extensionSource);

@@ -6,29 +6,37 @@ import env from './env';
 import * as exceptions from './exceptions';
 import { ServiceUnavailableException } from './exceptions';
 import logger from './logger';
-import { Extension, ExtensionType, ExtensionDir, HookRegisterFunction, EndpointRegisterFunction } from './types';
+import {
+	Extension,
+	ExtensionType,
+	ExtensionDir,
+	HookRegisterFunction,
+	EndpointRegisterFunction,
+	AppExtensionType,
+} from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
-import { EXTENSION_NAME } from './constants';
+import { APP_EXTENSION_TYPES, EXTENSION_NAME_REGEX, EXTENSION_TYPES, SHARED_DEPS } from './constants';
 
 import * as services from './services';
 import listFolders from './utils/list-folders';
 import { schedule, validate } from 'node-cron';
 import { resolvePackage } from './utils/resolve-package';
+import { rollup } from 'rollup';
+// @TODO Remove this once a new version of @rollup/plugin-virtual has been released
+// @ts-expect-error
+import virtual from '@rollup/plugin-virtual';
+import alias from '@rollup/plugin-alias';
 
 let extensions: Extension[] = [];
-const internalDeps: Record<string, string> = {};
+let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
 
 export async function initializeExtensions(): Promise<void> {
-	await ensureFoldersExist();
-	await resolveInternalDeps();
-	await discoverExtensions();
+	await ensureDirsExist();
+	extensions = await getExtensions();
+	extensionBundles = await generateExtensionBundles();
 
 	logger.info(`Loaded extensions: ${listExtensions().join(', ')}`);
-}
-
-export async function discoverExtensions(): Promise<void> {
-	extensions = [...(await listPackageExtensions()), ...(await listLocalExtensions())];
 }
 
 export function listExtensions(type?: ExtensionType): string[] {
@@ -39,15 +47,8 @@ export function listExtensions(type?: ExtensionType): string[] {
 	}
 }
 
-export function findExtension(type: ExtensionType, name: string): Extension | undefined {
-	return extensions.find((extension) => extension.type === type && extension.name === name);
-}
-
-export async function readExtensionSource(extension: Extension): Promise<string> {
-	const extensionPath = path.resolve(extension.path, extension.entrypoint || '');
-	const extensionSource = await fse.readFile(extensionPath, { encoding: 'utf8' });
-
-	return transformInternalImports(extensionSource);
+export function getAppExtensionSource(type: AppExtensionType): string | undefined {
+	return extensionBundles[type];
 }
 
 export function registerExtensionEndpoints(router: Router): void {
@@ -60,17 +61,48 @@ export function registerExtensionHooks(): void {
 	registerHooks(hooks);
 }
 
-export function extensionDirToType(dir: ExtensionDir<ExtensionType>): ExtensionType {
-	return dir.slice(0, -1) as ExtensionType;
+export function extensionDirToType<T extends ExtensionType>(dir: ExtensionDir<T>): T {
+	return dir.slice(0, -1) as T;
 }
 
-export function extensionTypeToDir(type: ExtensionType): ExtensionDir<ExtensionType> {
-	return `${type}s` as ExtensionDir<ExtensionType>;
+export function extensionTypeToDir<T extends ExtensionType>(type: T): ExtensionDir<T> {
+	return `${type}s`;
 }
 
-async function listPackageExtensions() {
+async function getExtensions(): Promise<Extension[]> {
+	return [...(await getPackageExtensions()), ...(await getLocalExtensions())];
+}
+
+async function generateExtensionBundles() {
+	const sharedDepsMapping = await getSharedDepsMapping(SHARED_DEPS);
+	const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
+		find: name,
+		replacement: path,
+	}));
+
+	const bundles: Partial<Record<AppExtensionType, string>> = {};
+
+	for (const extensionType of APP_EXTENSION_TYPES) {
+		const entry = generateExtensionsEntry(extensionType);
+
+		const bundle = await rollup({
+			input: 'entry',
+			external: Object.values(sharedDepsMapping),
+			plugins: [virtual({ entry }), alias({ entries: internalImports })],
+		});
+		const { output } = await bundle.generate({ format: 'es' });
+
+		bundles[extensionType] = output[0].code.replace(/\n/g, '');
+
+		await bundle.close();
+	}
+
+	return bundles;
+}
+
+async function getPackageExtensions() {
 	const pkg = await fse.readJSON(path.resolve('./package.json'));
-	const extensionNames = Object.keys(pkg.dependencies).filter((dep) => EXTENSION_NAME.test(dep));
+	const extensionNames = Object.keys(pkg.dependencies).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
 	return listExtensionsChildren(extensionNames);
 
@@ -82,7 +114,9 @@ async function listPackageExtensions() {
 			const extensionPkg = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 			if (extensionPkg['directus:extension'].type === 'pack') {
-				const extensionChildren = Object.keys(extensionPkg.dependencies).filter((dep) => EXTENSION_NAME.test(dep));
+				const extensionChildren = Object.keys(extensionPkg.dependencies).filter((dep) =>
+					EXTENSION_NAME_REGEX.test(dep)
+				);
 
 				const extension: Extension = {
 					path: extensionPath,
@@ -115,12 +149,10 @@ async function listPackageExtensions() {
 	}
 }
 
-async function listLocalExtensions() {
+async function getLocalExtensions() {
 	const extensions: Extension[] = [];
 
-	const extensionTypes: ExtensionType[] = ['endpoint', 'hook', 'interface', 'display', 'layout', 'module'];
-
-	for (const extensionType of extensionTypes) {
+	for (const extensionType of EXTENSION_TYPES) {
 		const typeDir = extensionTypeToDir(extensionType);
 		const typePath = path.join(env.EXTENSIONS_PATH, typeDir);
 
@@ -152,44 +184,40 @@ async function listLocalExtensions() {
 	return extensions;
 }
 
-async function ensureFoldersExist() {
-	const folders = ['endpoints', 'hooks', 'interfaces', 'displays', 'layouts', 'modules'];
-
-	for (const folder of folders) {
-		const folderPath = path.resolve(env.EXTENSIONS_PATH, folder);
+async function ensureDirsExist() {
+	for (const extensionType of EXTENSION_TYPES) {
+		const dirPath = path.resolve(env.EXTENSIONS_PATH, extensionTypeToDir(extensionType));
 		try {
-			await fse.ensureDir(folderPath);
+			await fse.ensureDir(dirPath);
 		} catch (err) {
 			logger.warn(err);
 		}
 	}
 }
 
-async function resolveInternalDeps() {
-	const deps = ['vue'];
-
+async function getSharedDepsMapping(deps: string[]) {
 	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
 
+	const depsMapping: Record<string, string> = {};
 	for (const dep of deps) {
 		const depName = appDir.find((file) => dep === file.substring(0, file.indexOf('.')));
 
 		if (depName) {
-			internalDeps[dep] = `${env.PUBLIC_URL}/admin/${depName}`;
+			depsMapping[dep] = `${env.PUBLIC_URL}/admin/${depName}`;
 		} else {
 			logger.warn(`Couldn't find extension internal dependency "${dep}"`);
 		}
 	}
+
+	return depsMapping;
 }
 
-function transformInternalImports(src: string) {
-	const importRegex = new RegExp(
-		`((?:^|;\\s*|(?:\\r?\\n)+)import(?:[a-z0-9_$,*{}\\s]*from)?\\s*['"\`])(${Object.keys(internalDeps).join(
-			'|'
-		)})(['"\`])`,
-		'gi'
-	);
+function generateExtensionsEntry(type: AppExtensionType) {
+	const filteredExtensions = extensions.filter((extension) => extension.type === type);
 
-	return src.replace(importRegex, (_, pre: string, dep: string, post: string) => `${pre}${internalDeps[dep]}${post}`);
+	return `${filteredExtensions
+		.map((extension, i) => `import e${i} from '${path.resolve(extension.path, extension.entrypoint || '')}';\n`)
+		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }
 
 function registerHooks(hooks: Extension[]) {

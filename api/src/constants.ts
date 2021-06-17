@@ -1,4 +1,4 @@
-import { Transformation } from './types/assets';
+import { ApiExtensionType, AppExtensionType, ExtensionType, Transformation } from './types';
 
 export const SYSTEM_ASSET_ALLOW_LIST: Transformation[] = [
 	{
@@ -42,4 +42,10 @@ export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
 
-export const EXTENSION_NAME = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-).+$/;
+export const APP_EXTENSION_TYPES: AppExtensionType[] = ['interface', 'display', 'layout', 'module'];
+export const API_EXTENSION_TYPES: ApiExtensionType[] = ['endpoint', 'hook'];
+export const EXTENSION_TYPES: ExtensionType[] = [...APP_EXTENSION_TYPES, ...API_EXTENSION_TYPES];
+
+export const SHARED_DEPS = ['vue'];
+
+export const EXTENSION_NAME_REGEX = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-).+$/;

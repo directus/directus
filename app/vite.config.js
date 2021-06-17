@@ -6,6 +6,7 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		directusExtension(),
 		vue(),
 		yaml({
 			transform(data) {
@@ -41,3 +42,26 @@ export default defineConfig({
 		},
 	},
 });
+
+function directusExtension() {
+	const virtualIds = [
+		'@directus-extension-interfaces',
+		'@directus-extension-displays',
+		'@directus-extension-layouts',
+		'@directus-extension-modules',
+	];
+
+	return {
+		name: 'directus-extension',
+		resolveId(id) {
+			if (virtualIds.includes(id)) {
+				return id;
+			}
+		},
+		load(id) {
+			if (virtualIds.includes(id)) {
+				return 'export default []';
+			}
+		},
+	};
+}
