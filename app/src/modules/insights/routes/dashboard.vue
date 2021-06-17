@@ -48,6 +48,12 @@
 			</template>
 		</template>
 
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_insights_dashboard'))" />
+			</sidebar-detail>
+		</template>
+
 		<template #navigation>
 			<insights-navigation />
 		</template>
@@ -100,6 +106,7 @@ import api from '@/api';
 import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -215,6 +222,7 @@ export default defineComponent({
 			zoomToFit,
 			fullScreen,
 			toggleZoomToFit,
+			md,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {

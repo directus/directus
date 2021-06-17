@@ -660,7 +660,7 @@ unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — Lists of all collections you have access to.'
+page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
 page_help_collections_collection: >-
   **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
   your view, and even save bookmarks of these different configurations for quick access.
@@ -694,6 +694,8 @@ page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating an
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
+page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
+page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New

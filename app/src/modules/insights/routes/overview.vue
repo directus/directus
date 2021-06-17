@@ -26,6 +26,12 @@
 			</dashboard-dialog>
 		</template>
 
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div class="page-description" v-html="md(t('page_help_insights_overview'))" />
+			</sidebar-detail>
+		</template>
+
 		<v-table
 			v-if="dashboards.length > 0"
 			v-model:headers="tableHeaders"
@@ -105,6 +111,7 @@ import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { md } from '@/utils/md';
 
 export default defineComponent({
 	name: 'InsightsOverview',
@@ -157,6 +164,7 @@ export default defineComponent({
 			deleteDashboard,
 			editDashboard,
 			t,
+			md,
 		};
 
 		function navigateToDashboard(dashboard: Dashboard) {
