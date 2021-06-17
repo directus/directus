@@ -59,12 +59,11 @@ export default defineComponent({
 .presentation-links {
 	display: flex;
 	flex-wrap: wrap;
+	margin: -4px;
 }
 
 .action {
-	& + & {
-		margin-left: 8px;
-	}
+	margin: 4px;
 
 	&.info {
 		--v-button-icon-color: var(--white);
