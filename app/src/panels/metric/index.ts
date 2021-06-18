@@ -145,7 +145,7 @@ export default definePanel({
 				interface: 'list',
 				width: 'full',
 				options: {
-					template: '{{operator}} {{value}}',
+					template: '{{color}} {{operator}} {{value}}',
 					fields: [
 						{
 							field: 'operator',
@@ -159,27 +159,27 @@ export default definePanel({
 								options: {
 									choices: [
 										{
-											text: '=',
+											text: '$t:operators.eq',
 											value: '=',
 										},
 										{
-											text: '!=',
+											text: '$t:operators.neq',
 											value: '!=',
 										},
 										{
-											text: '>',
+											text: '$t:operators.gt',
 											value: '>',
 										},
 										{
-											text: '>=',
+											text: '$t:operators.gte',
 											value: '>=',
 										},
 										{
-											text: '<',
+											text: '$t:operators.lt',
 											value: '<',
 										},
 										{
-											text: '<=',
+											text: '$t:operators.lte',
 											value: '<=',
 										},
 									],
@@ -203,8 +203,12 @@ export default definePanel({
 							field: 'color',
 							name: '$t:color',
 							type: 'string',
+							schema: {
+								default_value: '#00C897',
+							},
 							meta: {
 								interface: 'select-color',
+								display: 'color',
 							},
 						},
 					],

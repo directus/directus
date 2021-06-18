@@ -33,6 +33,12 @@
 			persistent
 			@cancel="closeDrawer()"
 		>
+			<template #title>
+				<h1 class="type-title">
+					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+				</h1>
+			</template>
+
 			<template #actions>
 				<v-button @click="closeDrawer()" icon rounded v-tooltip.bottom="t('save')">
 					<v-icon name="check" />

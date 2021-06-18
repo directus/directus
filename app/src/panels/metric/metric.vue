@@ -85,7 +85,7 @@ export default defineComponent({
 				}
 			}
 
-			return matchingFormat?.color || null;
+			return matchingFormat ? matchingFormat.color || '#00C897' : null;
 
 			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
 				const value = Number(metric.value);
