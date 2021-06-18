@@ -8,6 +8,7 @@ import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash';
 
 type TimeSeriesOptions = {
 	collection: string;
@@ -18,6 +19,7 @@ type TimeSeriesOptions = {
 	color: string;
 	decimals: number;
 	precision: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+	showZero: boolean;
 };
 
 export default defineComponent({
@@ -42,10 +44,12 @@ export default defineComponent({
 
 		watch(
 			() => props.options,
-			() => {
-				fetchData();
-				chart.value?.destroy();
-				setupChart();
+			(newOptions, oldOptions) => {
+				if (isEqual(newOptions, oldOptions) === false) {
+					fetchData();
+					chart.value?.destroy();
+					setupChart();
+				}
 			},
 			{ deep: true }
 		);
@@ -231,6 +235,10 @@ export default defineComponent({
 					},
 					range: new Date().getTime() - adjustDate(new Date(), `-${props.options.range}`)!.getTime(),
 					max: new Date().getTime(),
+				},
+				yaxis: {
+					forceNiceScale: true,
+					min: props.options.showZero ? 0 : undefined,
 				},
 			});
 

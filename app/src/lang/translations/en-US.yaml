@@ -125,6 +125,7 @@ aggregate_function: Aggregate Function
 global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
+show_zero: Show Zero
 exposure: Exposure
 shutter: Shutter
 iso: ISO

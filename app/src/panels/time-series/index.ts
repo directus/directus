@@ -201,6 +201,15 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'showZero',
+			name: '$t:showZero',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+		},
+		{
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
