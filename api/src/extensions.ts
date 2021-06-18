@@ -1,27 +1,25 @@
 import express, { Router } from 'express';
 import path from 'path';
+import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
+import {
+	generateExtensionsEntry,
+	getLocalExtensions,
+	getPackageExtensions,
+	pluralize,
+	resolvePackage,
+} from '@directus/shared/utils';
+import { APP_EXTENSION_TYPES, EXTENSION_TYPES, SHARED_DEPS } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
-import { ServiceUnavailableException } from './exceptions';
 import logger from './logger';
-import {
-	Extension,
-	ExtensionType,
-	ExtensionDir,
-	HookRegisterFunction,
-	EndpointRegisterFunction,
-	AppExtensionType,
-} from './types';
+import { HookRegisterFunction, EndpointRegisterFunction } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
-import { APP_EXTENSION_TYPES, EXTENSION_NAME_REGEX, EXTENSION_TYPES, SHARED_DEPS } from './constants';
 
 import * as services from './services';
-import listFolders from './utils/list-folders';
 import { schedule, validate } from 'node-cron';
-import { resolvePackage } from './utils/resolve-package';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
@@ -61,16 +59,11 @@ export function registerExtensionHooks(): void {
 	registerHooks(hooks);
 }
 
-export function extensionDirToType<T extends ExtensionType>(dir: ExtensionDir<T>): T {
-	return dir.slice(0, -1) as T;
-}
-
-export function extensionTypeToDir<T extends ExtensionType>(type: T): ExtensionDir<T> {
-	return `${type}s`;
-}
-
 async function getExtensions(): Promise<Extension[]> {
-	return [...(await getPackageExtensions()), ...(await getLocalExtensions())];
+	const packageExtensions = await getPackageExtensions('.');
+	const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
+
+	return [...packageExtensions, ...localExtensions];
 }
 
 async function generateExtensionBundles() {
@@ -83,7 +76,7 @@ async function generateExtensionBundles() {
 	const bundles: Partial<Record<AppExtensionType, string>> = {};
 
 	for (const extensionType of APP_EXTENSION_TYPES) {
-		const entry = generateExtensionsEntry(extensionType);
+		const entry = generateExtensionsEntry(extensionType, extensions);
 
 		const bundle = await rollup({
 			input: 'entry',
@@ -100,93 +93,9 @@ async function generateExtensionBundles() {
 	return bundles;
 }
 
-async function getPackageExtensions() {
-	const pkg = await fse.readJSON(path.resolve('./package.json'));
-	const extensionNames = Object.keys(pkg.dependencies).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
-
-	return listExtensionsChildren(extensionNames);
-
-	async function listExtensionsChildren(extensionNames: string[], root?: string) {
-		const extensions: Extension[] = [];
-
-		for (const extensionName of extensionNames) {
-			const extensionPath = resolvePackage(extensionName, root);
-			const extensionPkg = await fse.readJSON(path.join(extensionPath, 'package.json'));
-
-			if (extensionPkg['directus:extension'].type === 'pack') {
-				const extensionChildren = Object.keys(extensionPkg.dependencies).filter((dep) =>
-					EXTENSION_NAME_REGEX.test(dep)
-				);
-
-				const extension: Extension = {
-					path: extensionPath,
-					name: extensionName,
-					version: extensionPkg.version,
-					type: extensionPkg['directus:extension'].type,
-					host: extensionPkg['directus:extension'].host,
-					children: extensionChildren,
-					local: false,
-					root: root === undefined,
-				};
-
-				extensions.push(extension);
-				extensions.push(...(await listExtensionsChildren(extension.children || [], extension.path)));
-			} else {
-				extensions.push({
-					path: extensionPath,
-					name: extensionName,
-					version: extensionPkg.version,
-					type: extensionPkg['directus:extension'].type,
-					entrypoint: extensionPkg['directus:extension'].path,
-					host: extensionPkg['directus:extension'].host,
-					local: false,
-					root: root === undefined,
-				});
-			}
-		}
-
-		return extensions;
-	}
-}
-
-async function getLocalExtensions() {
-	const extensions: Extension[] = [];
-
-	for (const extensionType of EXTENSION_TYPES) {
-		const typeDir = extensionTypeToDir(extensionType);
-		const typePath = path.join(env.EXTENSIONS_PATH, typeDir);
-
-		try {
-			const extensionNames = await listFolders(typePath);
-
-			for (const extensionName of extensionNames) {
-				const extensionPath = path.resolve(path.join(typePath, extensionName));
-
-				extensions.push({
-					path: extensionPath,
-					name: extensionName,
-					type: extensionType,
-					entrypoint: 'index.js',
-					local: true,
-					root: true,
-				});
-			}
-		} catch (err) {
-			if (err.code === 'ENOENT') {
-				throw new ServiceUnavailableException(`Extension folder "${typePath}" couldn't be opened`, {
-					service: 'extensions',
-				});
-			}
-			throw err;
-		}
-	}
-
-	return extensions;
-}
-
 async function ensureDirsExist() {
 	for (const extensionType of EXTENSION_TYPES) {
-		const dirPath = path.resolve(env.EXTENSIONS_PATH, extensionTypeToDir(extensionType));
+		const dirPath = path.resolve(env.EXTENSIONS_PATH, pluralize(extensionType));
 		try {
 			await fse.ensureDir(dirPath);
 		} catch (err) {
@@ -210,14 +119,6 @@ async function getSharedDepsMapping(deps: string[]) {
 	}
 
 	return depsMapping;
-}
-
-function generateExtensionsEntry(type: AppExtensionType) {
-	const filteredExtensions = extensions.filter((extension) => extension.type === type);
-
-	return `${filteredExtensions
-		.map((extension, i) => `import e${i} from '${path.resolve(extension.path, extension.entrypoint || '')}';\n`)
-		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }
 
 function registerHooks(hooks: Extension[]) {

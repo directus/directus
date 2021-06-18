@@ -73,6 +73,7 @@
 		"@directus/drive-s3": "9.0.0-rc.76",
 		"@directus/format-title": "9.0.0-rc.76",
 		"@directus/schema": "9.0.0-rc.76",
+		"@directus/shared": "9.0.0-rc.76",
 		"@directus/specs": "9.0.0-rc.76",
 		"@godaddy/terminus": "^4.9.0",
 		"@rollup/plugin-alias": "^3.1.2",

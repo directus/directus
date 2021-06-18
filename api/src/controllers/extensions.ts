@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
-import { listExtensions, extensionDirToType, getAppExtensionSource } from '../extensions';
+import { listExtensions, getAppExtensionSource } from '../extensions';
 import { respond } from '../middleware/respond';
-import { AppExtensionType, ExtensionDir } from '../types';
-import { APP_EXTENSION_TYPES } from '../constants';
+import { depluralize } from '@directus/shared/utils';
+import { AppExtensionType, Plural } from '@directus/shared/types';
+import { APP_EXTENSION_TYPES } from '@directus/shared/constants';
 
 const router = Router();
 
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = extensionDirToType(req.params.type as ExtensionDir<AppExtensionType>);
+		const type = depluralize(req.params.type as Plural<AppExtensionType>);
 
 		if (APP_EXTENSION_TYPES.includes(type) === false) {
 			throw new RouteNotFoundException(req.path);
@@ -31,7 +32,7 @@ router.get(
 router.get(
 	'/:type/index.js',
 	asyncHandler(async (req, res) => {
-		const type = extensionDirToType(req.params.type as ExtensionDir<AppExtensionType>);
+		const type = depluralize(req.params.type as Plural<AppExtensionType>);
 
 		if (APP_EXTENSION_TYPES.includes(type) === false) {
 			throw new RouteNotFoundException(req.path);
