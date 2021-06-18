@@ -35,7 +35,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { d, t } = useI18n();
+		const { d, t, n } = useI18n();
 
 		const fieldsStore = useFieldsStore();
 
@@ -232,7 +232,10 @@ export default defineComponent({
 					},
 					y: {
 						title: {
-							formatter: () => valueLabel.value,
+							formatter: () => valueLabel.value + ': ',
+						},
+						formatter(value: number) {
+							return n(value);
 						},
 					},
 				},
