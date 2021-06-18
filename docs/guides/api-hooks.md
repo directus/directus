@@ -111,10 +111,11 @@ provide a cron statement in the event scope as follows: `cron(<statement>)`, for
 on day-of-month 1) or `cron(5 4 * * sun)` (at 04:05 on Sunday). See example below:
 
 ```js
+const axios = require('axios');
+
 module.exports = function registerHook() {
 	return {
 		'cron(*/15 * * * *)': async function () {
-			const axios = require('axios');
 			await axios.post('http://example.com/webhook', { message: 'Another 15 minutes passed...' });
 		},
 	};
@@ -126,10 +127,11 @@ module.exports = function registerHook() {
 Each custom hook is registered to its event scope using a function with the following format:
 
 ```js
+const axios = require('axios');
+
 module.exports = function registerHook() {
 	return {
 		'items.create': function () {
-			const axios = require('axios');
 			axios.post('http://example.com/webhook');
 		},
 	};
@@ -190,10 +192,12 @@ To deploy your hook, simply restart the API by running:
 npx directus start
 ```
 
-## Full Example:
+## Full Example
+
+`extensions/hooks/sync-with-external/index.js`:
 
 ```js
-// extensions/hooks/sync-with-external/index.js
+const axios = require('axios');
 
 module.exports = function registerHook({ services, exceptions }) {
 	const { MailService } = services;
@@ -208,7 +212,6 @@ module.exports = function registerHook({ services, exceptions }) {
 		'items.create.before': async function (input, { collection, schema }) {
 			if (collection !== 'recipes') return input;
 
-			const axios = require('axios');
 			const mailService = new MailService({ schema });
 
 			try {
