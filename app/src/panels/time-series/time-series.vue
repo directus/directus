@@ -10,6 +10,7 @@ import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { useFieldsStore } from '@/stores';
+import { Filter } from '@/types';
 
 type TimeSeriesOptions = {
 	collection: string;
@@ -21,6 +22,7 @@ type TimeSeriesOptions = {
 	decimals: number;
 	precision: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
 	showZero: boolean;
+	filter: Filter | null;
 };
 
 export default defineComponent({
@@ -95,6 +97,7 @@ export default defineComponent({
 										_lte: `$NOW`,
 									},
 								},
+								props.options.filter || {},
 							],
 						},
 						limit: -1,

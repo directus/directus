@@ -218,6 +218,19 @@ export default definePanel({
 				width: 'half',
 			},
 		},
+		{
+			field: 'filter',
+			type: 'json',
+			name: '$t:filter',
+			meta: {
+				interface: 'code',
+				note: '[Learn More: Filter Rules](/admin/docs/reference/filter-rules)',
+				options: {
+					language: 'json',
+					placeholder: '{\n\t<field>: {\n\t\t<operator>: <value>\n\t}\n}',
+				},
+			},
+		},
 	],
 	minWidth: 16,
 	minHeight: 8,
