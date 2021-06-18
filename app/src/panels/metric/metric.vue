@@ -3,7 +3,7 @@
 		<v-progress-circular indeterminate v-if="loading" />
 		<template v-else>
 			<span class="prefix">{{ options.prefix }}</span>
-			<span class="value">{{ displayValue }}</span>
+			<span class="value" :style="{ color }">{{ displayValue }}</span>
 			<span class="suffix">{{ options.suffix }}</span>
 		</template>
 	</div>
@@ -26,6 +26,11 @@ type MetricOptions = {
 	function: 'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max';
 	filter: Filter;
 	decimals: number;
+	conditionalFormatting: {
+		operator: '=' | '!=' | '>' | '>=' | '<' | '<=';
+		color: string;
+		value: number;
+	}[];
 };
 
 export default defineComponent({
@@ -66,7 +71,32 @@ export default defineComponent({
 			return n(Number(metric.value));
 		});
 
-		return { metric, loading, displayValue };
+		const color = computed(() => {
+			if (!metric.value) return null;
+
+			const matchingFormat = (props.options.conditionalFormatting || []).find(matchesOperator);
+
+			return matchingFormat?.color || null;
+
+			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
+				switch (format.operator) {
+					case '=':
+						return metric.value === format.value;
+					case '!=':
+						return metric.value !== format.value;
+					case '>':
+						return metric.value > format.value;
+					case '>=':
+						return metric.value >= format.value;
+					case '<':
+						return metric.value < format.value;
+					case '<=':
+						return metric.value < format.value;
+				}
+			}
+		});
+
+		return { metric, loading, displayValue, color };
 
 		async function fetchData() {
 			if (!props.options) return;

@@ -171,6 +171,74 @@ export default definePanel({
 				width: 'half',
 			},
 		},
+		{
+			field: 'conditionalFormatting',
+			type: 'json',
+			name: '[TBD] Conditional Format (styling?)',
+			meta: {
+				interface: 'list',
+				width: 'full',
+				options: {
+					template: '{{operator}} {{value}}',
+					fields: [
+						{
+							field: 'operator',
+							name: '$t:operator',
+							type: 'string',
+							meta: {
+								interface: 'select-dropdown',
+								options: {
+									choices: [
+										{
+											text: '=',
+											value: '=',
+										},
+										{
+											text: '!=',
+											value: '!=',
+										},
+										{
+											text: '>',
+											value: '>',
+										},
+										{
+											text: '>=',
+											value: '>=',
+										},
+										{
+											text: '<',
+											value: '<',
+										},
+										{
+											text: '<=',
+											value: '<=',
+										},
+									],
+								},
+								width: 'half',
+							},
+						},
+						{
+							field: 'value',
+							name: '$t:value',
+							type: 'integer',
+							meta: {
+								interface: 'input',
+								width: 'half',
+							},
+						},
+						{
+							field: 'color',
+							name: '$t:color',
+							type: 'string',
+							meta: {
+								interface: 'select-color',
+							},
+						},
+					],
+				},
+			},
+		},
 	],
 	minWidth: 16,
 	minHeight: 6,
