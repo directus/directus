@@ -3,18 +3,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, onMounted, onUnmounted } from 'vue';
+import { defineComponent, PropType, ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
+import { useFieldsStore } from '@/stores';
 
 type TimeSeriesOptions = {
 	collection: string;
 	dateField: string;
 	valueField: string;
-	function: 'avg' | 'sum' | 'min' | 'max' | 'count';
+	function: 'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max';
 	range: string; // 1 week, etc
 	color: string;
 	decimals: number;
@@ -34,13 +35,21 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { d } = useI18n();
+		const { d, t } = useI18n();
+
+		const fieldsStore = useFieldsStore();
 
 		const metrics = ref<Record<string, any>[]>([]);
 		const loading = ref(false);
 		const error = ref();
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
+
+		const valueLabel = computed(() => {
+			const field = fieldsStore.getField(props.options.collection, props.options.valueField);
+			const operation = t(props.options.function);
+			return `${field.name} (${operation})`;
+		});
 
 		watch(
 			() => props.options,
@@ -219,6 +228,11 @@ export default defineComponent({
 						show: true,
 						formatter(date: number) {
 							return d(new Date(date), 'long');
+						},
+					},
+					y: {
+						title: {
+							formatter: () => valueLabel.value,
 						},
 					},
 				},

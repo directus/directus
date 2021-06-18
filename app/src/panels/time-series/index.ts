@@ -202,7 +202,7 @@ export default definePanel({
 		},
 		{
 			field: 'showZero',
-			name: '$t:showZero',
+			name: '$t:show_zero',
 			type: 'boolean',
 			meta: {
 				interface: 'boolean',

@@ -126,6 +126,14 @@ global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
 show_zero: Show Zero
+sum: Sum
+sum_distinct: Sum Distinct
+avg: Average
+avg_distinct: Average Distinct
+count: Count
+count_distinct: Count Distinct
+min: Min
+max: Max
 exposure: Exposure
 shutter: Shutter
 iso: ISO
