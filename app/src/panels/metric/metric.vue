@@ -68,7 +68,10 @@ export default defineComponent({
 				return abbreviateNumber(metric.value);
 			}
 
-			return n(Number(metric.value));
+			return n(Number(metric.value), 'decimal', {
+				minimumFractionDigits: props.options.decimals,
+				maximumFractionDigits: props.options.decimals,
+			} as any);
 		});
 
 		const color = computed(() => {
@@ -126,9 +129,7 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]).toFixed(
-					props.options.decimals
-				);
+				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
 			} catch (err) {
 				// oh no
 			} finally {
