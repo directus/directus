@@ -85,7 +85,7 @@ async function generateExtensionBundles() {
 		});
 		const { output } = await bundle.generate({ format: 'es' });
 
-		bundles[extensionType] = output[0].code.replace(/\n/g, '');
+		bundles[extensionType] = output[0].code;
 
 		await bundle.close();
 	}
