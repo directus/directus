@@ -16,7 +16,7 @@ export async function loadModules(): Promise<void> {
 
 	try {
 		const customModules: { default: ModuleConfig[] } = import.meta.env.DEV
-			? await import('@directus-extension-modules')
+			? await import('@directus-extensions-module')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`);
 
 		modules.push(...customModules.default);

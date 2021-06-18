@@ -11,7 +11,7 @@ export async function registerDisplays(app: App): Promise<void> {
 	const displays: DisplayConfig[] = Object.values(displayModules).map((module) => module.default);
 	try {
 		const customDisplays: { default: DisplayConfig[] } = import.meta.env.DEV
-			? await import('@directus-extension-displays')
+			? await import('@directus-extensions-display')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`);
 
 		displays.push(...customDisplays.default);

@@ -12,7 +12,7 @@ export async function registerLayouts(app: App): Promise<void> {
 
 	try {
 		const customLayouts: { default: LayoutConfig[] } = import.meta.env.DEV
-			? await import('@directus-extension-layouts')
+			? await import('@directus-extensions-layout')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
 
 		layouts.push(...customLayouts.default);

@@ -2,13 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
-import {
-	getPackageExtensions,
-	getLocalExtensions,
-	generateExtensionsEntry,
-	pluralize,
-	depluralize,
-} from '@directus/shared/utils';
+import { getPackageExtensions, getLocalExtensions, generateExtensionsEntry } from '@directus/shared/utils';
 import { APP_EXTENSION_TYPES } from '@directus/shared/constants';
 
 // https://vitejs.dev/config/
@@ -52,8 +46,8 @@ export default defineConfig({
 });
 
 function directusExtension() {
-	const prefix = '@directus-extension-';
-	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${pluralize(type)}`);
+	const prefix = '@directus-extensions-';
+	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrys = {};
 	loadExtensions();
@@ -67,7 +61,7 @@ function directusExtension() {
 		},
 		load(id) {
 			if (virtualIds.includes(id)) {
-				const extensionType = depluralize(id.substring(prefix.length));
+				const extensionType = id.substring(prefix.length);
 
 				return extensionEntrys[extensionType];
 			}
