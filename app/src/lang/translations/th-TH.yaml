@@ -405,6 +405,8 @@ errors:
   ITEM_NOT_FOUND: ไม่พบไอเท็ม
   ROUTE_NOT_FOUND: ไม่พบข้อมูลที่ต้องการ
   RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
+  USER_SUSPENDED: ผู้ใช้ถูกระงับ
+  CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
   UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
 value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
@@ -482,6 +484,8 @@ operators:
   has: ประกอบด้วยบางคีย์เหล่านี้
 loading: กำลังโหลด...
 drop_to_upload: วางเพื่ออัพโหลด
+item: รายการ
+items: รายการ
 upload_file: อัพโหลดไฟล์
 upload_file_indeterminate: กำลังอัพโหลดไฟล์...
 upload_file_success: อัพโหลดไฟล์แล้ว
@@ -499,6 +503,8 @@ value_unique: ค่าต้องไม่ซ้ำ
 all_activity: กิจกรรมทั้งหมด
 create_item: สร้างไอเท็ม
 display_template: แม่แบบการแสดงผล
+language_display_template: แม่แบบการแสดงภาษา
+translations_display_template: แม่แบบการแปลภาษา
 n_items_selected: 'ไม่มีรายการที่เลือก | เลือกแล้ว 1 รายการ | เลือกแล้ว {n} รายการ'
 per_page: ต่อหน้า
 all_files: ทุกไฟล์
@@ -529,14 +535,19 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+image_url: URL ของรูปภาพ
+alt_text: ข้อความแสดงแทน
 media: สื่อ
 width: กว้าง
 height: สูง
 source: แหล่งที่มา
+url_placeholder: ป้อน URL
 display_text: ข้อความแสดง
+display_text_placeholder: ป้อนข้อความแสดง...
 tooltip: คำแนะนำ
 tooltip_placeholder: ใส่คำแนะนำ
 unlimited: ไม่จำกัด
+open_link_in: เปิดลิงก์
 new_tab: แท็บใหม่
 current_tab: แท็บปัจจุบัน
 wysiwyg_options:
@@ -596,6 +607,8 @@ adding_user: เพิ่มผู้ใช้
 unknown_user: ผู้ใช้ที่ไม่รู้จัก
 creating_in: 'กำลังสร้างไอเท็มใน {collection}'
 editing_in: 'กำลังแก้ไขไอเท็มใน {collection}'
+creating_unit: 'สร้าง {unit}'
+editing_unit: 'แก้ไข {unit}'
 editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
@@ -603,10 +616,13 @@ settings_permissions: บทบาทและสิทธิ
 settings_project: การตั้งค่าโครงการ
 settings_webhooks: Webhooks
 settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
+one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
 scope: ขอบเขต
+select: เลือก...
 layout: เค้าโครง
 tree_view: มุมมองแผนภูมิ
 changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
+preset_name_placeholder: ให้ค่าเริ่มต้นเมื่อค่าว่าง
 preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
@@ -676,11 +692,14 @@ fields:
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
+    translations: ชุดการตั้งชื่อการแปล
     archive_app_filter: เก็บตัวกรองแอป
     archive_value: เก็บค่า
     unarchive_value: ยกเลิกการเก็บค่า
     sort_field: เรียงฟิลด์
+    accountability: การติดตามกิจกรรมและการแก้ไข
   directus_files:
+    $thumbnail: รูปขนาดย่อ
     title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
@@ -753,6 +772,11 @@ fields:
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
     collection_list: รายการคอลเลกชัน
+field_options:
+  directus_collections:
+    track_activity_revisions: ติดตามกิจกรรมและการแก้ไข
+    only_track_activity: ติดตามกิจกรรมเท่านั้น
+    do_not_track_anything: อย่าติดตามอะไรเลย
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 do_nothing: ไม่ต้องทำอะไร
 generate_and_save_uuid: สร้างและบันทึก UUID โดยอัตโนมัติ
@@ -762,6 +786,10 @@ save_current_datetime: บันทึกวันเวลาปัจจุบ
 block: ปิดกั้น
 inline: แบบอินไลน์
 comment: ความคิดเห็น
+relational_triggers: ทริกเกอร์เชิงสัมพันธ์
+referential_action_field_label_m2o: เมื่อลบ {collection}...
+referential_action_field_label_o2m: เมื่อยกเลิกการเลือก {collection}...
+referential_action_no_action: ป้องกันการลบ
 continue: ทำต่อ
 continue_as: >-
   บัญชี <b>{name}</b> ยังไม่ถูกยืนยัน ถ้าคุณคุ้นเคยกับบัญชีนี้ คลิ๊กทำต่อ
@@ -851,8 +879,18 @@ interfaces:
     select_a_collection: เลือกคอลเลกชัน
   presentation-divider:
     divider: ตัวแบ่ง
+    margin_top: ระยะห่างด้านบน
+    margin_top_label: เพิ่มระยะห่างด้านบน
   select-dropdown:
+    description: เลือกค่าจากตัวเลือก
+    choices_placeholder: เพิ่มตัวเลือกใหม่
+    allow_other_label: อนุญาตให้เพิ่มค่าอื่นได้
+    allow_none: ไม่อนุญาตเลย
+    allow_none_label: อนุญาตให้ไม่เลือกอะไรเลย
+    choices_name_placeholder: กรอกชื่อ...
     choices_value_placeholder: กรุณาใส่ค่า
+  select-multiple-dropdown:
+    select-multiple-dropdown: ตัวเลือก (เลือกได้มากกว่า 1 ค่า)
   file:
     file: ไฟล์
     description: เลือกหรืออัพโหลดไฟล์
@@ -861,14 +899,43 @@ interfaces:
     description: เลือกหรืออัพโหลดทีละหลายไฟล์
   input-hash:
     hash: ค่าแฮช
+    masked: กำหนดหน้ากาก
   select-icon:
     icon: ไอคอน
   file-image:
     image: รูปภาพ
   system-interface:
     interface: อินเทอร์เฟซ
+  system-interface-options:
+    interface-options: ตัวเลือกอินเทอร์เฟส
+  list-m2m:
+    many-to-many: Many to Many
   select-dropdown-m2o:
+    many-to-one: Many to One
     display_template: แม่แบบการแสดงผล
+  input-rich-text-md:
+    customSyntax: บล็อกที่ออกแบบเอง
+    customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง
+    box: กล่อง/บรรทัดเดียวกัน
+    imageToken: Image Token
+  presentation-notice:
+    notice: แจ้งให้ทราบ
+    description: แสดงการแจ้งให้ทราบแบบย่อ
+    text: กรอกเนื้อหาการแจ้งให้ทราบที่นี่...
+  list-o2m:
+    one-to-many: One to Many
+    description: เลือกหลายไอเท็มที่เกี่ยวข้อง
+    no_collection: ไม่พบตาราง
+  select-radio:
+    radio-buttons: ปุ่มตัวเลือก
+    description: เลือกได้ 1 จากหลายตัวเลือก
+  list:
+    repeater: การทำซ้ำ
+    description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
+    edit_fields: แก้ไขฟิลด์
+    add_label: 'ป้ายกำกับ "สร้างใหม่"'
+    field_name_placeholder: กรอกชื่อฟิลด์
+    field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
@@ -887,12 +954,28 @@ interfaces:
     alphabetize: เรียงตามตัวอักษร
     alphabetize_label: บังคับเรียงตามตัวอักษร
     add_tags: เพิ่มแท็ก...
+  input:
+    input: Input
+    description: ป้อนค่าด้วยตนเอง
+    trim: ตัดขอบ
+    trim_label: ตัดช่องว่างหน้าหลัง
+    mask: กำหนดหน้ากาก
+    mask_label: ซ่อนค่าจริง
+    clear: ล้างค่า
+  input-multiline:
+    textarea: กล่องข้อความ
+    description: กรอกข้อความได้แบบหลายบรรทัด
   boolean:
     toggle: สลับ
+    description: สลับระหว่าง เปิด และ ปิด
+    label_placeholder: กรอกชื่อ...
     label_default: เปิดใช้งาน
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+  list-o2m-tree-view:
+    description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
+    recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
   user:
     user: ผู้ใช้
     description: เลือกผู้ใช้ของ directus ที่มีอยู่แล้ว
@@ -901,6 +984,19 @@ interfaces:
       auto: อัตโนมัติ
       dropdown: ตัวเลือกแบบดรอปดาวน์
       modal: กล่อง
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
+    toolbar: แถบเครื่องมือ
+    custom_formats: รูปแบบที่กำหนดเอง
+    options_override: ตัวเลือกแทนที่
+  input-autocomplete-api:
+    input-autocomplete-api: ป้อนข้อมูลอัตโนมัติ (API)
+    description: การพิมพ์ล่วงหน้าสำหรับค่า API ภายนอก
+    results_path: ส่วนผลลัพธ์
+    value_path: ส่วนค่า
+    trigger: Trigger
+    rate: ' ให้คะแนน'
 displays:
   boolean:
     boolean: ค่าบูลีน
@@ -1003,3 +1099,5 @@ layouts:
     comfortable: สบายตา
     compact: กระชับ
     cozy: สบาย
+  calendar:
+    calendar: ปฏิทิน
