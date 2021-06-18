@@ -12,6 +12,7 @@ defaults:
 data:
   - collection: directus_activity
     note: Accountability logs for all events
+    accountability: null
   - collection: directus_collections
     icon: list_alt
     note: Additional collection configuration and metadata
@@ -39,6 +40,7 @@ data:
     note: Relationship configuration and metadata
   - collection: directus_revisions
     note: Data snapshots for all activity
+    accountability: null
   - collection: directus_roles
     icon: supervised_user_circle
     note: Permission groups for system users
