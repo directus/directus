@@ -74,24 +74,33 @@ export default defineComponent({
 		const color = computed(() => {
 			if (!metric.value) return null;
 
-			const matchingFormat = (props.options.conditionalFormatting || []).find(matchesOperator);
+			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
+
+			for (const format of props.options.conditionalFormatting || []) {
+				if (matchesOperator(format)) {
+					matchingFormat = format;
+				}
+			}
 
 			return matchingFormat?.color || null;
 
 			function matchesOperator(format: MetricOptions['conditionalFormatting'][number]) {
-				switch (format.operator) {
+				const value = Number(metric.value);
+				const compareValue = Number(format.value ?? 0);
+
+				switch (format.operator || '>=') {
 					case '=':
-						return metric.value === format.value;
+						return value === compareValue;
 					case '!=':
-						return metric.value !== format.value;
+						return value !== compareValue;
 					case '>':
-						return metric.value > format.value;
+						return value > compareValue;
 					case '>=':
-						return metric.value >= format.value;
+						return value >= compareValue;
 					case '<':
-						return metric.value < format.value;
+						return value < compareValue;
 					case '<=':
-						return metric.value < format.value;
+						return value < compareValue;
 				}
 			}
 		});

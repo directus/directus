@@ -217,7 +217,7 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.nullable === true && !value) {
+			if (props.nullable === true && value === '') {
 				emit('update:modelValue', null);
 				return;
 			}

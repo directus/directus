@@ -15,7 +15,7 @@
 				<template #item="{ element, index }">
 					<v-list-item :dense="value.length > 4" block @click="active = index">
 						<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
+						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
 					</v-list-item>
@@ -119,6 +119,18 @@ export default defineComponent({
 
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
+		const defaults = computed(() => {
+			const values: Record<string, any> = {};
+
+			for (const field of props.fields) {
+				if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
+					values[field.field!] = field.schema.default_value;
+				}
+			}
+
+			return values;
+		});
+
 		return {
 			t,
 			updateValues,
@@ -133,6 +145,7 @@ export default defineComponent({
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
+			defaults,
 		};
 
 		function updateValues(index: number, updatedValues: any) {

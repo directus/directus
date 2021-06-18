@@ -185,6 +185,9 @@ export default definePanel({
 							field: 'operator',
 							name: '$t:operator',
 							type: 'string',
+							schema: {
+								default_value: '>=',
+							},
 							meta: {
 								interface: 'select-dropdown',
 								options: {
@@ -222,6 +225,9 @@ export default definePanel({
 							field: 'value',
 							name: '$t:value',
 							type: 'integer',
+							schema: {
+								default_value: 0,
+							},
 							meta: {
 								interface: 'input',
 								width: 'half',
