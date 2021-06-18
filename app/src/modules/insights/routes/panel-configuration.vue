@@ -184,6 +184,6 @@ export default defineComponent({
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 68px 0 48px;
 }
 </style>

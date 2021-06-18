@@ -18,11 +18,25 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'field',
+			type: 'string',
+			name: '$t:panels.metric.field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
+					allowPrimaryKey: true,
+				},
+				width: 'half',
+			},
+		},
+		{
 			field: 'function',
 			type: 'string',
 			name: '$t:aggregate_function',
 			meta: {
-				width: 'half',
+				width: 'half-space',
 				interface: 'select-dropdown',
 				options: {
 					choices: [
@@ -63,16 +77,36 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'field',
-			type: 'string',
-			name: '$t:panels.metric.field',
+			field: 'filter',
+			type: 'json',
+			name: '$t:filter',
 			meta: {
-				interface: 'system-field',
+				interface: 'code',
+				note: '[Learn More: Filter Rules](/admin/docs/reference/filter-rules)',
 				options: {
-					collectionField: 'collection',
-					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
-					allowPrimaryKey: true,
+					language: 'json',
+					placeholder: '{\n\t<field>: {\n\t\t<operator>: <value>\n\t}\n}',
 				},
+			},
+		},
+		{
+			field: 'styleDivider',
+			type: 'alias',
+			meta: {
+				interface: 'presentation-divider',
+				options: {
+					icon: 'style',
+					title: 'Style & Format',
+				},
+				special: ['alias', 'no-data'],
+			},
+		},
+		{
+			field: 'abbreviate',
+			type: 'boolean',
+			name: '$t:abbreviate_value',
+			meta: {
+				interface: 'boolean',
 				width: 'half',
 			},
 		},
@@ -89,19 +123,6 @@ export default definePanel({
 			},
 			schema: {
 				default_value: 2,
-			},
-		},
-		{
-			field: 'filter',
-			type: 'json',
-			name: '$t:filter',
-			meta: {
-				interface: 'code',
-				note: '[Learn More: Filter Rules](/admin/docs/reference/filter-rules)',
-				options: {
-					language: 'json',
-					placeholder: '{\n\t<field>: {\n\t\t<operator>: <value>\n\t}\n}',
-				},
 			},
 		},
 		{
@@ -129,18 +150,9 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'abbreviate',
-			type: 'boolean',
-			name: '$t:abbreviate_value',
-			meta: {
-				interface: 'boolean',
-				width: 'half',
-			},
-		},
-		{
 			field: 'conditionalFormatting',
 			type: 'json',
-			name: '[TBD] Conditional Format (styling?)',
+			name: '$t:conditional_styles',
 			meta: {
 				interface: 'list',
 				width: 'full',
@@ -216,6 +228,6 @@ export default definePanel({
 			},
 		},
 	],
-	minWidth: 16,
+	minWidth: 10,
 	minHeight: 6,
 });
