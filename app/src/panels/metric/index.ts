@@ -92,40 +92,6 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'sortField',
-			type: 'string',
-			name: '$t:sort_field',
-			meta: {
-				interface: 'system-field',
-				options: {
-					collectionField: 'collection',
-					allowPrimaryKey: true,
-				},
-				width: 'half',
-			},
-		},
-		{
-			field: 'sortDirection',
-			type: 'string',
-			name: '$t:sort_direction',
-			meta: {
-				interface: 'select-dropdown',
-				options: {
-					choices: [
-						{
-							text: '$t:sort_asc',
-							value: 'asc',
-						},
-						{
-							text: '$t:sort_desc',
-							value: 'desc',
-						},
-					],
-				},
-				width: 'half',
-			},
-		},
-		{
 			field: 'filter',
 			type: 'json',
 			name: '$t:filter',
