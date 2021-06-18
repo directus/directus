@@ -12,12 +12,17 @@
 
 		<v-checkbox-tree-checkbox
 			v-for="choice in children"
-			:key="choice.value"
+			:key="choice[itemValue]"
 			:value-combining="valueCombining"
 			:checked="childrenCheckedStateOverride"
-			:hidden="visibleChildrenValues.includes(choice.value) === false"
+			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:search="search"
-			v-bind="choice"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:item-children="itemChildren"
+			:text="choice[itemText]"
+			:value="choice[itemValue]"
+			:children="choice[itemChildren]"
 			v-model="treeValue"
 		/>
 	</v-list-group>
@@ -29,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { Choice } from './types';
 import { difference } from 'lodash';
 
 type Delta = {
@@ -49,7 +53,7 @@ export default defineComponent({
 			required: true,
 		},
 		children: {
-			type: Array as PropType<Choice[]>,
+			type: Array as PropType<Record<string, any>[]>,
 			default: null,
 		},
 		modelValue: {
@@ -57,7 +61,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		valueCombining: {
-			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate'>,
+			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive'>,
 			required: true,
 		},
 		checked: {
@@ -72,16 +76,28 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		itemText: {
+			type: String,
+			default: 'text',
+		},
+		itemValue: {
+			type: String,
+			default: 'value',
+		},
+		itemChildren: {
+			type: String,
+			default: 'children',
+		},
 	},
 	setup(props, { emit }) {
 		const visibleChildrenValues = computed(() => {
-			if (!props.search) return props.children?.map((child) => child.value);
+			if (!props.search) return props.children?.map((child) => child[props.itemValue]);
 			return props.children
-				?.filter((child) => child.text.toLowerCase().includes(props.search.toLowerCase()))
-				?.map((child) => child.value);
+				?.filter((child) => child[props.itemText].toLowerCase().includes(props.search.toLowerCase()))
+				?.map((child) => child[props.itemValue]);
 		});
 
-		const childrenValues = computed(() => props.children?.map((child) => child.value) || []);
+		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
 
 		const treeValue = computed({
 			get() {
@@ -101,6 +117,8 @@ export default defineComponent({
 							return emitLeaf(newValue, { added, removed });
 						case 'indeterminate':
 							return emitIndeterminate(newValue, { added, removed });
+						case 'exclusive':
+							return emitExclusive(newValue, { added, removed });
 						default:
 							return emitValue(newValue);
 					}
@@ -145,6 +163,10 @@ export default defineComponent({
 					leafChildrenRecursive.some((childVal) => props.modelValue.includes(childVal)) &&
 					leafChildrenRecursive.every((childVal) => props.modelValue.includes(childVal)) === false
 				);
+			}
+
+			if (props.valueCombining === 'exclusive') {
+				return allChildrenValues.some((childVal) => props.modelValue.includes(childVal));
 			}
 
 			return null;
@@ -232,12 +254,12 @@ export default defineComponent({
 					...rawValue.filter((val) => val !== props.value),
 					...(props.children || [])
 						.filter((child) => {
-							if (!child.children) return true;
+							if (!child[props.itemChildren]) return true;
 
-							const childNestedValues = getRecursiveChildrenValues('all', child.children);
+							const childNestedValues = getRecursiveChildrenValues('all', child[props.itemChildren]);
 							return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === false;
 						})
-						.map((child) => child.value),
+						.map((child) => child[props.itemValue]),
 				];
 
 				return emitValue(newValue);
@@ -318,7 +340,7 @@ export default defineComponent({
 				return emitValue(newValue);
 			}
 
-			// When all children are clicked
+			// When a child value is clicked
 			if (childrenValues.value.some((childVal) => rawValue.includes(childVal))) {
 				const newValue = [...rawValue.filter((val) => val !== props.value), props.value];
 
@@ -333,13 +355,35 @@ export default defineComponent({
 			return emitValue(rawValue);
 		}
 
+		function emitExclusive(rawValue: (string | number)[], { added, removed }: Delta) {
+			const childrenValuesRecursive = getRecursiveChildrenValues('all');
+
+			// When enabling the group level
+			if (added?.[0] === props.value) {
+				const newValue = [
+					...rawValue.filter((val) => val !== props.value && childrenValuesRecursive.includes(val) === false),
+					props.value,
+				];
+
+				return emitValue(newValue);
+			}
+
+			// When a child value is clicked
+			if (childrenValuesRecursive.some((childVal) => rawValue.includes(childVal))) {
+				const newValue = [...rawValue.filter((val) => val !== props.value)];
+				return emitValue(newValue);
+			}
+
+			return emitValue(rawValue);
+		}
+
 		function emitValue(newValue: (string | number)[]) {
 			emit('update:modelValue', newValue);
 		}
 
 		function getRecursiveChildrenValues(
 			mode: 'all' | 'branch' | 'leaf',
-			children: Choice['children'] = props.children
+			children: Record<string, any>[] = props.children
 		) {
 			const values: (string | number)[] = [];
 
@@ -347,24 +391,24 @@ export default defineComponent({
 
 			return values;
 
-			function getChildrenValuesRecursive(children: Choice['children']) {
+			function getChildrenValuesRecursive(children: Record<string, any>[]) {
 				if (!children) return;
 
 				for (const child of children) {
 					if (mode === 'all') {
-						values.push(child.value);
+						values.push(child[props.itemValue]);
 					}
 
-					if (mode === 'branch' && child.children) {
-						values.push(child.value);
+					if (mode === 'branch' && child[props.itemChildren]) {
+						values.push(child[props.itemValue]);
 					}
 
-					if (mode === 'leaf' && !child.children) {
-						values.push(child.value);
+					if (mode === 'leaf' && !child[props.itemChildren]) {
+						values.push(child[props.itemValue]);
 					}
 
-					if (child.children) {
-						getChildrenValuesRecursive(child.children);
+					if (child[props.itemChildren]) {
+						getChildrenValuesRecursive(child[props.itemChildren]);
 					}
 				}
 			}

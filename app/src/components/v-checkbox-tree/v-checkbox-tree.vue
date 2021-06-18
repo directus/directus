@@ -2,18 +2,22 @@
 	<v-list :mandatory="false" v-model="openSelection">
 		<v-checkbox-tree-checkbox
 			v-for="choice in choices"
-			:key="choice.value"
+			:key="choice[itemValue]"
 			:value-combining="valueCombining"
 			:search="search"
-			v-bind="choice"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:item-children="itemChildren"
+			:text="choice[itemText]"
+			:value="choice[itemValue]"
+			:children="choice[itemChildren]"
 			v-model="value"
 		/>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType, watch } from 'vue';
-import { Choice } from './types';
+import { computed, ref, defineComponent, PropType } from 'vue';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
@@ -21,7 +25,7 @@ export default defineComponent({
 	components: { VCheckboxTreeCheckbox },
 	props: {
 		choices: {
-			type: Array as PropType<Choice[]>,
+			type: Array as PropType<Record<string, any>[]>,
 			default: () => [],
 		},
 		modelValue: {
@@ -29,12 +33,24 @@ export default defineComponent({
 			default: null,
 		},
 		valueCombining: {
-			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate'>,
+			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive'>,
 			default: 'all',
 		},
 		search: {
 			type: String,
 			default: null,
+		},
+		itemText: {
+			type: String,
+			default: 'text',
+		},
+		itemValue: {
+			type: String,
+			default: 'value',
+		},
+		itemChildren: {
+			type: String,
+			default: 'children',
 		},
 	},
 	setup(props, { emit }) {
@@ -48,17 +64,6 @@ export default defineComponent({
 		});
 
 		const openSelection = ref<(string | number)[]>([]);
-
-		watch(
-			() => props.choices,
-			() => {
-				const firstValWithChildren = props.choices.find((choice) => !!choice.children)?.value;
-				if (firstValWithChildren) {
-					openSelection.value = [firstValWithChildren];
-				}
-			},
-			{ immediate: true }
-		);
 
 		return { value, openSelection };
 	},
