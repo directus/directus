@@ -1,4 +1,4 @@
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 import { getRelationType } from '@/utils/get-relation-type';
 import { cloneDeep, orderBy } from 'lodash';
@@ -15,6 +15,7 @@ export default function useFieldTree(
 	depth = 3
 ): { tree: ComputedRef<FieldOption[]> } {
 	const fieldsStore = useFieldsStore();
+	const collectionsStore = useCollectionsStore();
 	const relationsStore = useRelationsStore();
 
 	const tree = computed(() => {
@@ -78,6 +79,10 @@ export default function useFieldTree(
 				field.children = [];
 
 				for (const relatedCollection of relation.meta!.one_allowed_collections!) {
+					const relatedCollectionName =
+						collectionsStore.collections.find((collection) => collection.collection === relatedCollection)?.name ||
+						relatedCollection;
+
 					field.children.push(
 						...parseLevel(
 							relatedCollection,
@@ -85,7 +90,7 @@ export default function useFieldTree(
 							level + 1
 						).map((child) => ({
 							...child,
-							name: `${child.name} (${relatedCollection})`,
+							name: `${child.name} (${relatedCollectionName})`,
 						}))
 					);
 				}
