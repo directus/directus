@@ -52,7 +52,7 @@
 version: '3.1'
 services:
   postgres:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -69,7 +69,7 @@ services:
       - 5101:3306
 
   maria:
-    image: mariadb:10.5
+    image: mariadb:10.6
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus

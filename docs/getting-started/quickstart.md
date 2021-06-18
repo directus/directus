@@ -103,7 +103,7 @@ roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissi
 
 Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
 a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/api/rest/items) to retrieve the item we just created.
+[the `/items/` REST API endpoint](/reference/api/items) to retrieve the item we just created.
 
 Using your browser, or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud), open
 [http://localhost:8055/items/articles](http://localhost:8055/items/articles).
