@@ -1,0 +1,24 @@
+{
+	"name": "@directus/shared",
+	"version": "9.0.0-rc.76",
+	"description": "Code shared between all directus packages.",
+	"exports": {
+		"./composables": "./dist/composables/index.js",
+		"./utils": "./dist/utils/index.js",
+		"./types": "./dist/types/index.js"
+	},
+	"scripts": {
+		"build": "tsc --project ./tsconfig.json",
+		"cleanup": "rimraf ./dist",
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+	},
+	"author": "Nicola Krumschmidt",
+	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
+	"dependencies": {
+		"vue": "^3.0.5"
+	},
+	"devDependencies": {
+		"rimraf": "^3.0.2",
+		"typescript": "^4.3.2"
+	}
+}
