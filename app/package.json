@@ -30,6 +30,7 @@
 	"devDependencies": {
 		"@directus/docs": "9.0.0-rc.76",
 		"@directus/format-title": "9.0.0-rc.76",
+		"@directus/shared": "9.0.0-rc.76",
 		"@fullcalendar/core": "^5.7.2",
 		"@fullcalendar/daygrid": "^5.7.2",
 		"@fullcalendar/interaction": "^5.7.2",
