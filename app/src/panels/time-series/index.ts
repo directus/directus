@@ -157,7 +157,7 @@ export default definePanel({
 				},
 			},
 			schema: {
-				default_value: 2,
+				default_value: 0,
 			},
 		},
 		{
@@ -213,6 +213,9 @@ export default definePanel({
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
+			schema: {
+				default_value: '#00C897',
+			},
 			meta: {
 				interface: 'select-color',
 				width: 'half',

@@ -35,6 +35,10 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
+		show_header: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { d, t, n } = useI18n();
@@ -54,7 +58,7 @@ export default defineComponent({
 		});
 
 		watch(
-			() => props.options,
+			[() => props.options, () => props.show_header],
 			(newOptions, oldOptions) => {
 				if (isEqual(newOptions, oldOptions) === false) {
 					fetchData();
@@ -173,7 +177,7 @@ export default defineComponent({
 
 		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.options.color ? props.options.color : 'var(--primary)'],
+				colors: [props.options.color ? props.options.color : '#00C897'],
 				chart: {
 					type: 'area',
 					height: '100%',
@@ -202,12 +206,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: props.options.color ? props.options.color : 'var(--primary)',
+									color: props.options.color ? props.options.color : '#00C897',
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: props.options.color ? props.options.color : 'var(--primary)',
+									color: props.options.color ? props.options.color : '#00C897',
 									opacity: 0,
 								},
 							],
@@ -216,7 +220,7 @@ export default defineComponent({
 				},
 				grid: {
 					padding: {
-						top: -20,
+						top: props.show_header ? -20 : 0,
 						bottom: 8,
 					},
 				},
