@@ -93,10 +93,9 @@
 		</v-dialog>
 
 		<dashboard-dialog
-			v-if="editDashboard"
-			:model-value="true"
-			@toggle="editDashboard = null"
+			:model-value="!!editDashboard"
 			:dashboard="editDashboard"
+			@update:model-value="editDashboard = null"
 		/>
 	</private-view>
 </template>
