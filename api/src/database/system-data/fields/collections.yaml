@@ -192,6 +192,6 @@ fields:
   - field: item_duplication_fields
     special:
       - json
-    interface: code
+    interface: system-field-tree
     options:
-      language: JSON
+      collectionField: collection
