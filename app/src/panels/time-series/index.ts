@@ -161,6 +161,46 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'precision',
+			type: 'string',
+			name: '$t:precision',
+			meta: {
+				interface: 'select-dropdown',
+				width: 'half',
+				options: {
+					choices: [
+						{
+							text: 'Second',
+							value: 'second',
+						},
+						{
+							text: 'Minute',
+							value: 'minute',
+						},
+						{
+							text: 'Hour',
+							value: 'hour',
+						},
+						{
+							text: 'Day',
+							value: 'day',
+						},
+						{
+							text: 'Month',
+							value: 'month',
+						},
+						{
+							text: 'Year',
+							value: 'year',
+						},
+					],
+				},
+			},
+			schema: {
+				default_value: 'hour',
+			},
+		},
+		{
 			field: 'color',
 			name: '$t:color',
 			type: 'string',

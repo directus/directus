@@ -6,6 +6,8 @@
 import { defineComponent, PropType, ref, watch, onMounted, onUnmounted } from 'vue';
 import api from '@/api';
 import ApexCharts from 'apexcharts';
+import { adjustDate } from '@/utils/adjust-date';
+import { useI18n } from 'vue-i18n';
 
 type TimeSeriesOptions = {
 	collection: string;
@@ -15,6 +17,7 @@ type TimeSeriesOptions = {
 	range: string; // 1 week, etc
 	color: string;
 	decimals: number;
+	precision: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
 };
 
 export default defineComponent({
@@ -29,17 +32,130 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { d } = useI18n();
+
 		const metrics = ref<Record<string, any>[]>([]);
 		const loading = ref(false);
 		const error = ref();
 		const chartEl = ref();
 		const chart = ref<ApexCharts>();
 
-		watch(() => props.options, fetchData, { deep: true });
+		watch(
+			() => props.options,
+			() => {
+				fetchData();
+				chart.value?.destroy();
+				setupChart();
+			},
+			{ deep: true }
+		);
 
 		fetchData();
 
-		onMounted(() => {
+		onMounted(setupChart);
+
+		onUnmounted(() => {
+			chart.value?.destroy();
+		});
+
+		return { chartEl, metrics, loading, error };
+
+		async function fetchData() {
+			loading.value = true;
+
+			try {
+				const results = await api.get(`/items/${props.options.collection}`, {
+					params: {
+						group: getGroups(),
+						aggregate: {
+							[props.options.function]: [props.options.valueField],
+						},
+						filter: {
+							_and: [
+								{
+									[props.options.dateField]: {
+										_gte: `$NOW(-${props.options.range || '1 week'})`,
+									},
+								},
+								{
+									[props.options.dateField]: {
+										_lte: `$NOW`,
+									},
+								},
+							],
+						},
+						limit: -1,
+					},
+				});
+
+				metrics.value = results.data.data;
+
+				chart.value?.updateSeries([
+					{
+						name: props.options.collection,
+						data: metrics.value.map((metric) => ({
+							x: toISO(metric),
+							y: Number(
+								Number(metric[`${props.options.valueField}_${props.options.function}`]).toFixed(
+									props.options.decimals ?? 0
+								)
+							),
+						})),
+					},
+				]);
+			} catch (err) {
+				error.value = err;
+			} finally {
+				loading.value = false;
+			}
+
+			function toISO(metric: Record<string, any>) {
+				const year = metric[`${props.options.dateField}_year`];
+				const month = padZero(metric[`${props.options.dateField}_month`] ?? 1);
+				const day = padZero(metric[`${props.options.dateField}_day`] ?? 1);
+				const hour = padZero(metric[`${props.options.dateField}_hour`] ?? 0);
+				const minute = padZero(metric[`${props.options.dateField}_minute`] ?? 0);
+				const second = padZero(metric[`${props.options.dateField}_second`] ?? 0);
+
+				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+
+				function padZero(value: number) {
+					return String(value).padStart(2, '0');
+				}
+			}
+
+			function getGroups() {
+				let groups: string[] = [];
+
+				switch (props.options.precision || 'hour') {
+					case 'year':
+						groups = ['year'];
+						break;
+					case 'month':
+						groups = ['year', 'month'];
+						break;
+					case 'day':
+						groups = ['year', 'month', 'day'];
+						break;
+					case 'hour':
+						groups = ['year', 'month', 'day', 'hour'];
+						break;
+					case 'minute':
+						groups = ['year', 'month', 'day', 'hour', 'minute'];
+						break;
+					case 'second':
+						groups = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+						break;
+					default:
+						groups = ['year', 'month', 'day', 'hour'];
+						break;
+				}
+
+				return groups.map((datePart) => `${datePart}(${props.options.dateField})`);
+			}
+		}
+
+		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
 				colors: [props.options.color ? props.options.color : 'var(--primary)'],
 				chart: {
@@ -82,12 +198,24 @@ export default defineComponent({
 						],
 					},
 				},
+				grid: {
+					padding: {
+						top: -20,
+						bottom: 8,
+					},
+				},
 				dataLabels: {
 					enabled: false,
 				},
 				tooltip: {
 					marker: {
 						show: false,
+					},
+					x: {
+						show: true,
+						formatter(date: number) {
+							return d(new Date(date), 'long');
+						},
 					},
 				},
 				xaxis: {
@@ -101,82 +229,12 @@ export default defineComponent({
 					axisBorder: {
 						show: false,
 					},
+					range: new Date().getTime() - adjustDate(new Date(), `-${props.options.range}`)!.getTime(),
+					max: new Date().getTime(),
 				},
 			});
 
 			chart.value.render();
-		});
-
-		onUnmounted(() => {
-			chart.value?.destroy();
-		});
-
-		return { chartEl, metrics, loading, error };
-
-		async function fetchData() {
-			loading.value = true;
-
-			try {
-				const results = await api.get(`/items/${props.options.collection}`, {
-					params: {
-						group: [
-							`year(${props.options.dateField})`,
-							`month(${props.options.dateField})`,
-							`day(${props.options.dateField})`,
-							`hour(${props.options.dateField})`,
-						],
-						aggregate: {
-							[props.options.function]: [props.options.valueField],
-						},
-						filter: {
-							_and: [
-								{
-									[props.options.dateField]: {
-										_gte: `$NOW(-${props.options.range || '1 week'})`,
-									},
-								},
-								{
-									[props.options.dateField]: {
-										_lte: `$NOW`,
-									},
-								},
-							],
-						},
-					},
-				});
-
-				metrics.value = results.data.data;
-
-				chart.value?.updateOptions({
-					xaxis: {
-						categories: metrics.value.map((metric) => {
-							const year = metric[`${props.options.dateField}_year`];
-							const month = metric[`${props.options.dateField}_month`];
-							const day = metric[`${props.options.dateField}_day`];
-							const hour = metric[`${props.options.dateField}_hour`];
-
-							return `${year}-${month}-${day}T${hour}:00:00`;
-						}),
-					},
-				});
-
-				chart.value?.updateSeries([
-					{
-						name: props.options.collection,
-						data: metrics.value.map((metric) =>
-							Number(
-								Number(metric[`${props.options.valueField}_${props.options.function}`]).toFixed(
-									props.options.decimals ?? 0
-								)
-							)
-						),
-					},
-				]);
-			} catch (err) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
 		}
 	},
 });

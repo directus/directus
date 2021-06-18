@@ -144,6 +144,7 @@ boolean: Boolean
 date: Date
 date_range: Date Range
 datetime: DateTime
+precision: Precision
 decimal: Decimal
 float: Float
 integer: Integer
