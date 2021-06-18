@@ -1,6 +1,5 @@
 import cookieParser from 'cookie-parser';
 import express, { RequestHandler } from 'express';
-import expressLogger from 'express-pino-logger';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
@@ -30,7 +29,7 @@ import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
-import logger from './logger';
+import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import cache from './middleware/cache';
 import { checkIP } from './middleware/check-ip';
@@ -71,7 +70,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitAsyncSafe('middlewares.init.before', { app });
 
-	app.use(expressLogger({ logger }) as RequestHandler);
+	app.use(expressLogger);
 
 	app.use((req, res, next) => {
 		(

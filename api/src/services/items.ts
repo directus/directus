@@ -303,6 +303,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
+		emitAsyncSafe(`${this.eventScope}.read`, {
+			event: `${this.eventScope}.read`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: key,
+			action: 'read',
+			payload: results,
+			schema: this.schema,
+			database: getDatabase(),
+		});
+
 		return results[0];
 	}
 
@@ -329,6 +340,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		};
 
 		const results = await this.readByQuery(queryWithKeys, opts);
+
+		emitAsyncSafe(`${this.eventScope}.read`, {
+			event: `${this.eventScope}.read`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'read',
+			payload: results,
+			schema: this.schema,
+			database: getDatabase(),
+		});
+
 		return results;
 	}
 
