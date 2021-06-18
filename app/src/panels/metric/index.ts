@@ -162,6 +162,15 @@ export default definePanel({
 				},
 			},
 		},
+		{
+			field: 'abbreviate',
+			type: 'boolean',
+			name: '$t:abbreviate_value',
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+		},
 	],
 	minWidth: 16,
 	minHeight: 6,

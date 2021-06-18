@@ -3,21 +3,35 @@
 		<v-progress-circular indeterminate v-if="loading" />
 		<template v-else>
 			<span class="prefix">{{ options.prefix }}</span>
-			<span class="value">{{ metric }}</span>
+			<span class="value">{{ displayValue }}</span>
 			<span class="suffix">{{ options.suffix }}</span>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import api from '@/api';
 import { isEqual } from 'lodash';
+import { Filter } from '@/types';
+import { useI18n } from 'vue-i18n';
+import { abbreviateNumber } from '@/utils/abbreviate-number';
+
+type MetricOptions = {
+	abbreviate: boolean;
+	sortField: string;
+	sortDirection: string;
+	collection: string;
+	field: string;
+	function: 'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max';
+	filter: Filter;
+	decimals: number;
+};
 
 export default defineComponent({
 	props: {
 		options: {
-			type: Object,
+			type: Object as PropType<MetricOptions>,
 			default: null,
 		},
 		show_header: {
@@ -26,6 +40,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { n } = useI18n();
+
 		const metric = ref();
 		const loading = ref(false);
 
@@ -40,7 +56,17 @@ export default defineComponent({
 			{ deep: true }
 		);
 
-		return { metric, loading };
+		const displayValue = computed(() => {
+			if (!metric.value) return null;
+
+			if (props.options.abbreviate) {
+				return abbreviateNumber(metric.value);
+			}
+
+			return n(Number(metric.value));
+		});
+
+		return { metric, loading, displayValue };
 
 		async function fetchData() {
 			if (!props.options) return;
@@ -50,6 +76,7 @@ export default defineComponent({
 			try {
 				const sort =
 					props.options.sortField && `${props.options.sortDirection === 'desc' ? '-' : ''}${props.options.sortField}`;
+
 				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
 						aggregate: {
@@ -60,12 +87,7 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]).toLocaleString(
-					undefined,
-					{
-						minimumFractionDigits: props.options.decimals ?? 2,
-					}
-				);
+				metric.value = res.data.data[0][`${props.options.field}_${props.options.function}`];
 			} catch (err) {
 				// oh no
 			} finally {

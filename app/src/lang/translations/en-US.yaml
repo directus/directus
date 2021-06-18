@@ -552,6 +552,8 @@ read: Read
 update: Update
 select_fields: Select Fields
 format_text: Format Text
+format_value: Format Value
+abbreviate_value: Abbreviate Value
 bold: Bold
 toggle: Toggle
 icon_on: Icon On
