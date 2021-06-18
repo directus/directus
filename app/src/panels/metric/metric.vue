@@ -87,7 +87,9 @@ export default defineComponent({
 					},
 				});
 
-				metric.value = res.data.data[0][`${props.options.field}_${props.options.function}`];
+				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]).toFixed(
+					props.options.decimals
+				);
 			} catch (err) {
 				// oh no
 			} finally {
