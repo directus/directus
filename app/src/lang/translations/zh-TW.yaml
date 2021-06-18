@@ -108,6 +108,8 @@ time: 時間
 uuid: UUID
 hash: 哈希
 create_translations: 創建翻譯
+refresh_interval: 重新整理間隔
+no_refresh: 不要重新整理
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
