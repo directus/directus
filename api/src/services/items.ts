@@ -21,8 +21,10 @@ import {
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '../utils/to-array';
+import { ActivityService } from './activity';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
+import { RevisionsService } from './revisions';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -150,43 +152,45 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecord = {
+				const activityService = new ActivityService({
+					knex: trx,
+					schema: this.schema,
+				});
+
+				const activity = await activityService.createOne({
 					action: Action.CREATE,
 					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
 					item: primaryKey,
-				};
-
-				await trx.insert(activityRecord).into('directus_activity');
-
-				const { id: activityID } = await trx.max('id', { as: 'id ' }).from('directus_activity').first();
+				});
 
 				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
-					const revisionRecord = {
-						activity: activityID,
+					const revisionsService = new RevisionsService({
+						knex: trx,
+						schema: this.schema,
+					});
+
+					const revision = await revisionsService.createOne({
+						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
 						data: JSON.stringify(payload),
 						delta: JSON.stringify(payload),
-					};
-
-					await trx.insert(revisionRecord).into('directus_revisions');
-
-					const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+					});
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
-					if (childrenRevisions.length > 0) {
-						await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
-					}
+					// if (childrenRevisions.length > 0) {
+					// 	await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+					// }
 
-					if (opts?.onRevisionCreate) {
-						opts.onRevisionCreate(revisionID);
-					}
+					// if (opts?.onRevisionCreate) {
+					// 	opts.onRevisionCreate(revisionID);
+					// }
 				}
 			}
 
