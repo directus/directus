@@ -79,14 +79,14 @@ export default function useFieldTree(
 
 				for (const relatedCollection of relation.meta!.one_allowed_collections!) {
 					field.children.push(
-						...parseLevel(relatedCollection, parentPath ? `${parentPath}.${field.field}` : field.field, level + 1).map(
-							(child) => ({
-								...child,
-								name: `${child.name} (${relatedCollection})`,
-								key: parentPath ? `${parentPath}.${relatedCollection}:${child.field}` : child.field,
-								group: relatedCollection,
-							})
-						)
+						...parseLevel(
+							relatedCollection,
+							parentPath ? `${parentPath}.${field.field}:${relatedCollection}` : `${field.field}:${relatedCollection}`,
+							level + 1
+						).map((child) => ({
+							...child,
+							name: `${child.name} (${relatedCollection})`,
+						}))
 					);
 				}
 			} else if (strict === false) {
