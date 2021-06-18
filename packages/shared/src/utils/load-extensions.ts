@@ -91,5 +91,5 @@ export function generateExtensionsEntry(type: AppExtensionType, extensions: Exte
 
 	return `${filteredExtensions
 		.map((extension, i) => `import e${i} from '${path.resolve(extension.path, extension.entrypoint || '')}';\n`)
-		.join('')}\nexport default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
+		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }
