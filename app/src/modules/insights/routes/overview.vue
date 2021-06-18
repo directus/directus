@@ -2,7 +2,7 @@
 	<private-view :title="t('insights')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="dashboard" />
+				<v-icon name="insights" />
 			</v-button>
 		</template>
 

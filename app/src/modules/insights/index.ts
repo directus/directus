@@ -6,7 +6,7 @@ import InsightsPanelConfiguration from './routes/panel-configuration.vue';
 export default defineModule({
 	id: 'insights',
 	name: '$t:insights',
-	icon: 'dashboard',
+	icon: 'insights',
 	routes: [
 		{
 			name: 'insights-overview',
