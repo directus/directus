@@ -122,14 +122,18 @@ export default defineComponent({
 				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
 						aggregate: {
-							[props.options.function]: [props.options.field],
+							[props.options.function]: [props.options.field || '*'],
 						},
 						filter: props.options.filter,
 						sort: sort,
 					},
 				});
 
-				metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
+				if (props.options.field) {
+					metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
+				} else {
+					metric.value = Number(res.data.data[0][props.options.function]);
+				}
 			} catch (err) {
 				// oh no
 			} finally {

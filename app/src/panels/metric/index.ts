@@ -27,6 +27,7 @@ export default definePanel({
 					collectionField: 'collection',
 					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 					allowPrimaryKey: true,
+					allowNone: true,
 				},
 				width: 'half',
 			},
