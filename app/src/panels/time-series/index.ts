@@ -18,9 +18,21 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'color',
+			name: '$t:color',
+			type: 'string',
+			schema: {
+				default_value: '#00C897',
+			},
+			meta: {
+				interface: 'select-color',
+				width: 'half',
+			},
+		},
+		{
 			field: 'function',
 			type: 'string',
-			name: '$t:aggregate_function',
+			name: '$t:group_aggregation',
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
@@ -63,6 +75,46 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'precision',
+			type: 'string',
+			name: '$t:group_precision',
+			meta: {
+				interface: 'select-dropdown',
+				width: 'half',
+				options: {
+					choices: [
+						{
+							text: 'Second',
+							value: 'second',
+						},
+						{
+							text: 'Minute',
+							value: 'minute',
+						},
+						{
+							text: 'Hour',
+							value: 'hour',
+						},
+						{
+							text: 'Day',
+							value: 'day',
+						},
+						{
+							text: 'Month',
+							value: 'month',
+						},
+						{
+							text: 'Year',
+							value: 'year',
+						},
+					],
+				},
+			},
+			schema: {
+				default_value: 'hour',
+			},
+		},
+		{
 			field: 'dateField',
 			type: 'string',
 			name: '$t:panels.time_series.date_field',
@@ -71,19 +123,6 @@ export default definePanel({
 				options: {
 					collectionField: 'collection',
 					typeAllowList: ['date', 'datetime', 'timestamp'],
-				},
-				width: 'half',
-			},
-		},
-		{
-			field: 'valueField',
-			type: 'string',
-			name: '$t:panels.time_series.value_field',
-			meta: {
-				interface: 'system-field',
-				options: {
-					collectionField: 'collection',
-					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 				},
 				width: 'half',
 			},
@@ -146,9 +185,22 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'valueField',
+			type: 'string',
+			name: '$t:panels.time_series.value_field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
+				},
+				width: 'half',
+			},
+		},
+		{
 			field: 'decimals',
 			type: 'integer',
-			name: '$t:decimals',
+			name: '$t:value_decimals',
 			meta: {
 				interface: 'input',
 				width: 'half',
@@ -161,64 +213,27 @@ export default definePanel({
 			},
 		},
 		{
-			field: 'precision',
-			type: 'string',
-			name: '$t:precision',
+			field: 'min',
+			type: 'integer',
+			name: '$t:min_value',
 			meta: {
-				interface: 'select-dropdown',
+				interface: 'input',
 				width: 'half',
 				options: {
-					choices: [
-						{
-							text: 'Second',
-							value: 'second',
-						},
-						{
-							text: 'Minute',
-							value: 'minute',
-						},
-						{
-							text: 'Hour',
-							value: 'hour',
-						},
-						{
-							text: 'Day',
-							value: 'day',
-						},
-						{
-							text: 'Month',
-							value: 'month',
-						},
-						{
-							text: 'Year',
-							value: 'year',
-						},
-					],
+					placeholder: '$t:automatic',
 				},
 			},
-			schema: {
-				default_value: 'hour',
-			},
 		},
 		{
-			field: 'showZero',
-			name: '$t:show_zero',
-			type: 'boolean',
+			field: 'max',
+			type: 'integer',
+			name: '$t:max_value',
 			meta: {
-				interface: 'boolean',
+				interface: 'input',
 				width: 'half',
-			},
-		},
-		{
-			field: 'color',
-			name: '$t:color',
-			type: 'string',
-			schema: {
-				default_value: '#00C897',
-			},
-			meta: {
-				interface: 'select-color',
-				width: 'half',
+				options: {
+					placeholder: '$t:automatic',
+				},
 			},
 		},
 		{

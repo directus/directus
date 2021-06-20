@@ -63,7 +63,8 @@
 			:panels="panels"
 			:zoom-to-fit="zoomToFit"
 			@update="stagePanelEdits"
-			@delete="confirmDeletePanel = $event"
+			@move="movePanelID = $event"
+			@delete="deletePanel"
 			@duplicate="duplicatePanel"
 		/>
 
@@ -75,16 +76,20 @@
 			@cancel="$router.push(`/insights/${primaryKey}`)"
 		/>
 
-		<v-dialog :model-value="!!confirmDeletePanel" @esc="confirmDeletePanel = null">
+		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = null" @esc="movePanelID = null">
 			<v-card>
-				<v-card-title>{{ t('panel_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ t('move_to') }}</v-card-title>
+
+				<v-card-text>
+					<v-select :items="movePanelChoices" v-model="movePanelTo" item-text="name" item-value="id" />
+				</v-card-text>
 
 				<v-card-actions>
-					<v-button @click="confirmDeletePanel = null" secondary>
+					<v-button @click="movePanelID = null" secondary>
 						{{ t('cancel') }}
 					</v-button>
-					<v-button danger @click="deletePanel" :loading="deletingPanel">
-						{{ t('delete') }}
+					<v-button @click="movePanel" :loading="movePanelLoading">
+						{{ t('move') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -130,9 +135,12 @@ export default defineComponent({
 		const { fullScreen } = toRefs(appStore);
 
 		const editMode = ref(false);
-		const confirmDeletePanel = ref<string | null>(null);
-		const deletingPanel = ref(false);
 		const saving = ref(false);
+		const movePanelLoading = ref(false);
+
+		const movePanelTo = ref(props.primaryKey);
+
+		const movePanelID = ref<string | null>();
 
 		const zoomToFit = ref(false);
 
@@ -140,10 +148,17 @@ export default defineComponent({
 			insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
 		);
 
+		const movePanelChoices = computed(() => {
+			return insightsStore.dashboards;
+		});
+
 		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
+		const panelsToBeDeleted = ref<string[]>([]);
 
 		const panels = computed(() => {
-			const savedPanels = currentDashboard.value?.panels || [];
+			const savedPanels = (currentDashboard.value?.panels || []).filter(
+				(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+			);
 
 			const raw = [
 				...savedPanels.map((panel) => {
@@ -212,17 +227,20 @@ export default defineComponent({
 			saving,
 			saveChanges,
 			stageConfiguration,
-			deletingPanel,
+			movePanelID,
+			movePanel,
 			deletePanel,
-			confirmDeletePanel,
 			cancelChanges,
 			duplicatePanel,
+			movePanelLoading,
 			t,
 			toggleFullScreen,
 			zoomToFit,
 			fullScreen,
 			toggleZoomToFit,
 			md,
+			movePanelChoices,
+			movePanelTo,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
@@ -281,6 +299,8 @@ export default defineComponent({
 					panels: updatedPanels,
 				});
 
+				await api.delete(`/panels`, { data: panelsToBeDeleted.value });
+
 				await insightsStore.hydrate();
 
 				stagedPanels.value = [];
@@ -292,27 +312,16 @@ export default defineComponent({
 			}
 		}
 
-		async function deletePanel() {
-			if (!currentDashboard.value || !confirmDeletePanel.value) return;
+		async function deletePanel(id: string) {
+			if (!currentDashboard.value) return;
 
-			deletingPanel.value = true;
-
-			try {
-				if (confirmDeletePanel.value.startsWith('_') === false) {
-					await api.delete(`/panels/${confirmDeletePanel.value}`);
-					await insightsStore.hydrate();
-				}
-				stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== confirmDeletePanel.value);
-				confirmDeletePanel.value = null;
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				deletingPanel.value = false;
-			}
+			stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== id);
+			if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
 		}
 
 		function cancelChanges() {
 			stagedPanels.value = [];
+			panelsToBeDeleted.value = [];
 			editMode.value = false;
 		}
 
@@ -329,6 +338,26 @@ export default defineComponent({
 
 		function toggleZoomToFit() {
 			zoomToFit.value = !zoomToFit.value;
+		}
+
+		async function movePanel() {
+			movePanelLoading.value = true;
+
+			try {
+				await api.patch(`/panels/${movePanelID.value}`, {
+					dashboard: movePanelTo.value,
+				});
+
+				stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== movePanelID.value);
+
+				await insightsStore.hydrate();
+
+				movePanelID.value = null;
+			} catch (err) {
+				unexpectedError(err);
+			} finally {
+				movePanelLoading.value = false;
+			}
 		}
 	},
 });

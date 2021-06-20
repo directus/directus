@@ -6,6 +6,7 @@
 			:panel="panel"
 			:edit-mode="editMode"
 			@update="$emit('update', { edits: $event, id: panel.id })"
+			@move="$emit('move', panel.id)"
 			@delete="$emit('delete', panel.id)"
 			@duplicate="$emit('duplicate', panel)"
 		/>
@@ -20,6 +21,7 @@ import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
 	name: 'insights-workspace',
+	emits: ['update', 'move', 'delete', 'duplicate'],
 	components: { InsightsPanel },
 	props: {
 		panels: {

@@ -22,20 +22,43 @@
 
 		<div class="edit-actions" v-if="editMode" @pointerdown.stop>
 			<v-icon
-				class="duplicate-icon"
-				name="control_point_duplicate"
-				v-tooltip="t('duplicate')"
-				@click.stop="$emit('duplicate')"
-				clickable
-			/>
-			<v-icon
 				class="edit-icon"
 				name="edit"
 				v-tooltip="t('edit')"
 				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 				clickable
 			/>
-			<v-icon clickable class="delete-icon" name="clear" v-tooltip="t('delete')" @click.stop="$emit('delete')" />
+
+			<v-menu placement="bottom-end" show-arrow>
+				<template #activator="{ toggle }">
+					<v-icon class="more-icon" name="more_vert" @click="toggle" clickable />
+				</template>
+
+				<v-list>
+					<v-list-item @click="$emit('move')" clickable :disabled="panel.id.startsWith('_')">
+						<v-list-item-icon>
+							<v-icon class="move-icon" name="input" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('move_to') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item @click="$emit('duplicate')" clickable>
+						<v-list-item-icon>
+							<v-icon name="control_point_duplicate" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item class="delete-action" @click="$emit('delete')" clickable>
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
 		</div>
 
 		<div class="resize-details">
@@ -68,6 +91,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'panel',
+	emits: ['update', 'move', 'duplicate', 'delete'],
 	props: {
 		panel: {
 			type: Object as PropType<Panel>,
@@ -360,16 +384,17 @@ export default defineComponent({
 	flex-grow: 1;
 }
 
-.duplicate-icon,
+.more-icon,
 .edit-icon,
-.delete-icon,
 .note {
 	--v-icon-color: var(--foreground-subdued);
 	--v-icon-color-hover: var(--foreground-normal);
 }
 
-.delete-icon {
-	--v-icon-color-hover: var(--danger);
+.delete-action {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
 }
 
 .edit-actions {

@@ -75,7 +75,7 @@ export default defineComponent({
 			if (!metric.value) return null;
 
 			if (props.options.abbreviate) {
-				return abbreviateNumber(metric.value);
+				return abbreviateNumber(metric.value, props.options.decimals);
 			}
 
 			return n(Number(metric.value), 'decimal', {

@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@/types';
+import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 type TimeSeriesOptions = {
 	collection: string;
@@ -21,7 +22,8 @@ type TimeSeriesOptions = {
 	color: string;
 	decimals: number;
 	precision: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
-	showZero: boolean;
+	min?: number;
+	max?: number;
 	filter: Filter | null;
 };
 
@@ -58,9 +60,9 @@ export default defineComponent({
 		});
 
 		watch(
-			[() => props.options, () => props.show_header],
-			(newOptions, oldOptions) => {
-				if (isEqual(newOptions, oldOptions) === false) {
+			[() => props.options, () => props.show_header, () => props.height],
+			(newVal, oldVal) => {
+				if (isEqual(newVal, oldVal) === false) {
 					fetchData();
 					chart.value?.destroy();
 					setupChart();
@@ -262,7 +264,14 @@ export default defineComponent({
 				},
 				yaxis: {
 					forceNiceScale: true,
-					min: props.options.showZero ? 0 : undefined,
+					min: props.options.min ? Number(props.options.min) : undefined,
+					max: props.options.max ? Number(props.options.max) : undefined,
+					tickAmount: props.height - 2,
+					labels: {
+						formatter: (value: number) => {
+							return value > 10000 ? abbreviateNumber(value, 1) : n(value);
+						},
+					},
 				},
 			});
 

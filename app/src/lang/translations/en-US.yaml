@@ -122,6 +122,9 @@ field_update_success: 'Updated Field: "{field}"'
 duplicate_where_to: Where would you like to duplicate this field to?
 language: Language
 aggregate_function: Aggregate Function
+aggregate_precision: Aggregate Precision
+group_aggregation: Group Aggregation
+group_precision: Group Precision
 global: Global
 admins_have_all_permissions: Admins have all permissions
 camera: Camera
@@ -376,10 +379,15 @@ collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
 select_a_field: Select a Field
 active: Active
+move_to: Move To...
 users: Users
 activity: Activity
 webhooks: Webhooks
 decimals: Decimals
+value_decimals: Value Decimals
+min_value: Min Value
+max_value: Max Value
+automatic: Automatic
 field_width: Field Width
 add_filter: Add Filter
 upper_limit: Upper limit...
