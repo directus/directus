@@ -23,7 +23,17 @@ type MetricOptions = {
 	sortDirection: string;
 	collection: string;
 	field: string;
-	function: 'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max';
+	function:
+		| 'avg'
+		| 'avg_distinct'
+		| 'sum'
+		| 'sum_distinct'
+		| 'count'
+		| 'count_distinct'
+		| 'min'
+		| 'max'
+		| 'first'
+		| 'last';
 	filter: Filter;
 	decimals: number;
 	conditionalFormatting: {
@@ -113,24 +123,36 @@ export default defineComponent({
 		async function fetchData() {
 			if (!props.options) return;
 
+			const isRawValue = ['first', 'last'].includes(props.options.function);
+
 			loading.value = true;
 
 			try {
 				const sort =
-					props.options.sortField && `${props.options.sortDirection === 'desc' ? '-' : ''}${props.options.sortField}`;
+					props.options.sortField && `${props.options.function === 'last' ? '-' : ''}${props.options.sortField}`;
+
+				const aggregate = isRawValue
+					? undefined
+					: {
+							[props.options.function]: [props.options.field || '*'],
+					  };
 
 				const res = await api.get(`/items/${props.options.collection}`, {
 					params: {
-						aggregate: {
-							[props.options.function]: [props.options.field || '*'],
-						},
+						aggregate,
 						filter: props.options.filter,
 						sort: sort,
+						limit: 1,
+						fields: [props.options.field],
 					},
 				});
 
 				if (props.options.field) {
-					metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
+					if (props.options.function === 'first' || props.options.function === 'last') {
+						metric.value = Number(res.data.data[0][props.options.field]);
+					} else {
+						metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
+					}
 				} else {
 					metric.value = Number(res.data.data[0][props.options.function]);
 				}

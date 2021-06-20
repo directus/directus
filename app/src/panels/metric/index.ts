@@ -37,7 +37,7 @@ export default definePanel({
 			type: 'string',
 			name: '$t:aggregate_function',
 			meta: {
-				width: 'half-space',
+				width: 'half',
 				interface: 'select-dropdown',
 				options: {
 					choices: [
@@ -73,8 +73,29 @@ export default definePanel({
 							text: 'Maximum',
 							value: 'max',
 						},
+						{
+							text: 'First',
+							value: 'first',
+						},
+						{
+							text: 'Last',
+							value: 'last',
+						},
 					],
 				},
+			},
+		},
+		{
+			field: 'sortField',
+			type: 'string',
+			name: '$t:sort_field',
+			meta: {
+				interface: 'system-field',
+				options: {
+					collectionField: 'collection',
+					allowPrimaryKey: true,
+				},
+				width: 'half',
 			},
 		},
 		{
