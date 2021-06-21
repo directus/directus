@@ -378,6 +378,7 @@ sort_field: Campo Ordenamiento
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
 status: Estado
+remove: Eliminar
 toggle_manual_sorting: Alternar Ordenamiento Manual
 bookmark_doesnt_exist: El Marcador no existe
 bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
