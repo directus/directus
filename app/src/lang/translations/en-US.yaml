@@ -380,6 +380,9 @@ select_a_collection: Select a Collection
 select_a_field: Select a Field
 active: Active
 move_to: Move To...
+copy: Copy
+copy_to: Copy To...
+no_other_dashboards_copy: You don't have any other Dashboards yet.
 users: Users
 activity: Activity
 webhooks: Webhooks

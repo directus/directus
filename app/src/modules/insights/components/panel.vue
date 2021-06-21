@@ -40,7 +40,7 @@
 							<v-icon class="move-icon" name="input" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('move_to') }}
+							{{ t('copy_to') }}
 						</v-list-item-content>
 					</v-list-item>
 

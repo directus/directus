@@ -78,10 +78,13 @@
 
 		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = null" @esc="movePanelID = null">
 			<v-card>
-				<v-card-title>{{ t('move_to') }}</v-card-title>
+				<v-card-title>{{ t('copy_to') }}</v-card-title>
 
 				<v-card-text>
-					<v-select :items="movePanelChoices" v-model="movePanelTo" item-text="name" item-value="id" />
+					<v-notice v-if="movePanelChoices.length === 0">
+						{{ t('no_other_dashboards_copy') }}
+					</v-notice>
+					<v-select v-else :items="movePanelChoices" v-model="movePanelTo" item-text="name" item-value="id" />
 				</v-card-text>
 
 				<v-card-actions>
@@ -89,7 +92,7 @@
 						{{ t('cancel') }}
 					</v-button>
 					<v-button @click="movePanel" :loading="movePanelLoading">
-						{{ t('move') }}
+						{{ t('copy') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -138,7 +141,7 @@ export default defineComponent({
 		const saving = ref(false);
 		const movePanelLoading = ref(false);
 
-		const movePanelTo = ref(props.primaryKey);
+		const movePanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
 
 		const movePanelID = ref<string | null>();
 
@@ -149,7 +152,7 @@ export default defineComponent({
 		);
 
 		const movePanelChoices = computed(() => {
-			return insightsStore.dashboards;
+			return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
 		});
 
 		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
@@ -278,7 +281,7 @@ export default defineComponent({
 		async function saveChanges() {
 			if (!currentDashboard.value) return;
 
-			if (stagedPanels.value.length === 0) {
+			if (stagedPanels.value.length === 0 && panelsToBeDeleted.value.length === 0) {
 				editMode.value = false;
 				return;
 			}
@@ -295,11 +298,15 @@ export default defineComponent({
 			];
 
 			try {
-				await api.patch(`/dashboards/${props.primaryKey}`, {
-					panels: updatedPanels,
-				});
+				if (stagedPanels.value.length > 0) {
+					await api.patch(`/dashboards/${props.primaryKey}`, {
+						panels: updatedPanels,
+					});
+				}
 
-				await api.delete(`/panels`, { data: panelsToBeDeleted.value });
+				if (panelsToBeDeleted.value.length > 0) {
+					await api.delete(`/panels`, { data: panelsToBeDeleted.value });
+				}
 
 				await insightsStore.hydrate();
 
@@ -343,12 +350,13 @@ export default defineComponent({
 		async function movePanel() {
 			movePanelLoading.value = true;
 
+			const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+
 			try {
-				await api.patch(`/panels/${movePanelID.value}`, {
+				await api.post(`/panels`, {
+					...omit(currentPanel, ['id']),
 					dashboard: movePanelTo.value,
 				});
-
-				stagedPanels.value = stagedPanels.value.filter((panel) => panel.id !== movePanelID.value);
 
 				await insightsStore.hydrate();
 
