@@ -59,6 +59,9 @@
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
 	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
 	"files": [
 		"dist",
 		"LICENSE",
