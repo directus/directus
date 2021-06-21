@@ -361,6 +361,7 @@ sort_field: فرز الحقل
 add_sort_field: إضافة حقل الترتيب
 sort: رتب
 status: حالة
+remove: احذف
 toggle_manual_sorting: تفعيل الترتيب اليدوي
 bookmark_doesnt_exist: الإشارة المرجعية غير موجودة
 bookmark_doesnt_exist_copy: لم يتم العثور على العلامة المرجعية التي تحاول فتحها.
