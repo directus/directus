@@ -11,9 +11,11 @@
 				@update:model-value="$emit('input', $event)"
 				item-key="id"
 				handle=".drag-handle"
+				@start="startDragging"
+				@end="stopDragging"
 			>
 				<template #item="{ element, index }">
-					<v-list-item :dense="value.length > 4" block @click="active = index">
+					<v-list-item :dense="value.length > 4" block @click="setItemActive(index)">
 						<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
@@ -54,7 +56,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
+import { defineComponent, PropType, computed, ref, toRefs, onBeforeUnmount } from 'vue';
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import { i18n } from '@/lang';
@@ -119,6 +121,13 @@ export default defineComponent({
 
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
 		return {
 			t,
 			updateValues,
@@ -133,6 +142,10 @@ export default defineComponent({
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
+			setItemActive,
+			startDragging,
+			stopDragging,
+			draggingRow,
 		};
 
 		function updateValues(index: number, updatedValues: any) {
@@ -190,6 +203,24 @@ export default defineComponent({
 
 		function closeDrawer() {
 			active.value = null;
+		}
+
+		function setItemActive(index: number) {
+			if (!draggingRow.value) {
+				active.value = index;
+			}
+		}
+
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
+		}
+
+		function stopDragging() {
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
 		}
 	},
 });

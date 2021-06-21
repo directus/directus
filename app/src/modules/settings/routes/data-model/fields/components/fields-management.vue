@@ -13,9 +13,11 @@
 			:set-data="hideDragImage"
 			@update:model-value="setSort"
 			item-key="field"
+			@start="startDragging"
+			@end="stopDragging"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" />
+				<field-select :field="element" :draggingRow="draggingRow" />
 			</template>
 		</draggable>
 
@@ -55,7 +57,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs } from 'vue';
+import { defineComponent, computed, toRefs, onBeforeUnmount, ref } from 'vue';
 import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
 import { Field } from '@/types';
@@ -150,7 +152,24 @@ export default defineComponent({
 			},
 		]);
 
-		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions };
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
+		return {
+			t,
+			usableFields,
+			lockedFields,
+			setSort,
+			hideDragImage,
+			addOptions,
+			startDragging,
+			stopDragging,
+			draggingRow,
+		};
 
 		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({
@@ -161,6 +180,18 @@ export default defineComponent({
 			}));
 
 			await fieldsStore.updateFields(collection.value, updates);
+		}
+
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
+		}
+
+		function stopDragging() {
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
 		}
 	},
 });

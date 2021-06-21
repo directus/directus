@@ -70,6 +70,10 @@ export default defineComponent({
 			type: Boolean,
 			default: null,
 		},
+		draggingRow: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const internalValue = useSync(props, 'value', emit);
@@ -92,22 +96,24 @@ export default defineComponent({
 		return { isChecked, toggleInput, icon, internalValue };
 
 		function toggleInput(): void {
-			if (props.indeterminate === true) {
-				emit('update:indeterminate', false);
-			}
-
-			if (props.modelValue instanceof Array) {
-				const newValue = [...props.modelValue];
-
-				if (props.modelValue.includes(props.value) === false) {
-					newValue.push(props.value);
-				} else {
-					newValue.splice(newValue.indexOf(props.value), 1);
+			if (props.draggingRow === false) {
+				if (props.indeterminate === true) {
+					emit('update:indeterminate', false);
 				}
 
-				emit('update:modelValue', newValue);
-			} else {
-				emit('update:modelValue', !props.modelValue);
+				if (props.modelValue instanceof Array) {
+					const newValue = [...props.modelValue];
+
+					if (props.modelValue.includes(props.value) === false) {
+						newValue.push(props.value);
+					} else {
+						newValue.splice(newValue.indexOf(props.value), 1);
+					}
+
+					emit('update:modelValue', newValue);
+				} else {
+					emit('update:modelValue', !props.modelValue);
+				}
 			}
 		}
 	},

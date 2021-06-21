@@ -16,13 +16,15 @@
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.meta || !o2mRelation.meta.sort_field"
+				@start="startDragging"
+				@end="stopDragging"
 			>
 				<template #item="{ element }">
 					<v-list-item
 						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
-						@click="editExisting((value || [])[element.$index])"
+						@click="!draggingRow ? editExisting((value || [])[element.$index]) : null"
 					>
 						<v-icon
 							class="drag-handle"
@@ -138,7 +140,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref, watch } from 'vue';
+import { defineComponent, computed, PropType, ref, watch, onBeforeUnmount } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
 import { Relation, Collection } from '@/types/';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
@@ -201,6 +203,13 @@ export default defineComponent({
 
 		watch(props, fetchValues, { immediate: true, deep: true });
 
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
 		return {
 			t,
 			previewValues,
@@ -223,6 +232,9 @@ export default defineComponent({
 			hideDragImage,
 			onSort,
 			allowedCollections,
+			startDragging,
+			stopDragging,
+			draggingRow,
 		};
 
 		function useRelations() {
@@ -665,6 +677,18 @@ export default defineComponent({
 					})
 				);
 			}
+		}
+
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
+		}
+
+		function stopDragging() {
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
 		}
 	},
 });

@@ -48,6 +48,7 @@
 				handle=".drag-handle"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				@start="startDragging"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
@@ -68,6 +69,7 @@
 								value: !getSelectedState(element),
 							})
 						"
+						:draggingRow="draggingRow"
 					>
 						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
 							<slot :item="element" :name="`item.${header.value}`" />
@@ -85,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from 'vue';
+import { defineComponent, computed, ref, PropType, onBeforeUnmount } from 'vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -305,6 +307,13 @@ export default defineComponent({
 			return gridTemplateColumns;
 		});
 
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
 		return {
 			internalHeaders,
 			internalItems,
@@ -318,7 +327,10 @@ export default defineComponent({
 			fullColSpan,
 			columnStyle,
 			hasItemAppendSlot,
+			draggingRow,
 			hideDragImage,
+			startDragging,
+			stopDragTimeout,
 		};
 
 		function onItemSelected(event: ItemSelectEvent) {
@@ -354,6 +366,10 @@ export default defineComponent({
 			return selectedKeys.includes(item[props.itemKey]);
 		}
 
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
 		function onToggleSelectAll(value: boolean) {
 			if (props.disabled) return;
 
@@ -377,12 +393,23 @@ export default defineComponent({
 		}
 
 		function onSortChange(event: EndEvent) {
-			if (props.disabled) return;
+			if (props.disabled) {
+				draggingRow.value = false;
+				return;
+			}
 
 			const item = internalItems.value[event.oldIndex][props.itemKey];
 			const to = internalItems.value[event.newIndex][props.itemKey];
 
 			emit('manual-sort', { item, to });
+
+			// dragend triggers a click event on the .drag-handle item which is hovered
+			// setTimeout helps that draggingRow is set to false after the click event, so click event can be ignored
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
 		}
 	},
 });

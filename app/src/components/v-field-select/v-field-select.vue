@@ -11,6 +11,8 @@
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		class="v-field-select"
+		@start="startDragging"
+		@end="stopDragging"
 	>
 		<template #item="{ element }">
 			<v-chip class="field draggable" v-tooltip="element.field" @click="removeField(element.field)">
@@ -43,7 +45,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
+import { defineComponent, toRefs, ref, PropType, computed, onBeforeUnmount } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
 import { Field, Collection, Relation } from '@/types';
 import Draggable from 'vuedraggable';
@@ -111,6 +113,13 @@ export default defineComponent({
 			return parseTree(tree.value);
 		});
 
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
 		return {
 			t,
 			menuActive,
@@ -121,6 +130,9 @@ export default defineComponent({
 			hideDragImage,
 			tree,
 			collectionInfo: info,
+			startDragging,
+			stopDragging,
+			draggingRow,
 		};
 
 		function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
@@ -150,13 +162,27 @@ export default defineComponent({
 		}
 
 		function removeField(field: string) {
-			internalValue.value = internalValue.value.filter((f) => f !== field);
+			if (!draggingRow.value) {
+				internalValue.value = internalValue.value.filter((f) => f !== field);
+			}
 		}
 
 		function addField(field: string) {
 			const newArray = internalValue.value;
 			newArray.push(field);
 			internalValue.value = [...new Set(newArray)];
+		}
+
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
+		}
+
+		function stopDragging() {
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
 		}
 	},
 });

@@ -215,6 +215,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		draggingRow: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -359,11 +363,13 @@ export default defineComponent({
 		}
 
 		async function openFieldDetail() {
-			if (!props.field.meta) {
-				await fieldsStore.updateField(props.field.collection, props.field.field, { meta: {} });
-			}
+			if (props.draggingRow === false) {
+				if (!props.field.meta) {
+					await fieldsStore.updateField(props.field.collection, props.field.field, { meta: {} });
+				}
 
-			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+				router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+			}
 		}
 
 		function useTranslations() {

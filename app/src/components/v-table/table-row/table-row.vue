@@ -2,7 +2,7 @@
 	<tr
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
-		@click="$emit('click')"
+		@click="onClickRow"
 		:style="{
 			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
@@ -83,6 +83,17 @@ export default defineComponent({
 		height: {
 			type: Number,
 			default: 48,
+		},
+		draggingRow: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	methods: {
+		onClickRow() {
+			if (this.draggingRow === false) {
+				this.$emit('click');
+			}
 		},
 	},
 });

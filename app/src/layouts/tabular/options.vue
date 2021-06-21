@@ -28,9 +28,11 @@
 			handle=".drag-handle"
 			:set-data="hideDragImage"
 			:force-fallback="true"
+			@start="startDragging"
+			@end="stopDragging"
 		>
 			<template #item="{ element }">
-				<v-checkbox v-model="fields" :value="element.field" :label="element.name">
+				<v-checkbox v-model="fields" :value="element.field" :label="element.name" :draggingRow="draggingRow">
 					<template #append>
 						<div class="spacer" />
 						<v-icon @click.stop name="drag_handle" class="drag-handle" />
@@ -51,7 +53,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, toRefs, ref, onBeforeUnmount } from 'vue';
 
 import Draggable from 'vuedraggable';
 import { useLayoutState } from '@/composables/use-layout';
@@ -64,7 +66,36 @@ export default defineComponent({
 		const layoutState = useLayoutState();
 		const { tableSpacing, activeFields, hideDragImage, fields, availableFields } = toRefs(layoutState.value);
 
-		return { t, tableSpacing, activeFields, hideDragImage, fields, availableFields };
+		const draggingRow = ref(false);
+		const stopDragTimeout = ref();
+
+		onBeforeUnmount(() => {
+			clearTimeout(stopDragTimeout.value);
+		});
+
+		return {
+			t,
+			tableSpacing,
+			activeFields,
+			hideDragImage,
+			fields,
+			availableFields,
+			draggingRow,
+			startDragging,
+			stopDragging,
+		};
+
+		function stopDraggingAfterDelay() {
+			draggingRow.value = false;
+		}
+
+		function startDragging() {
+			draggingRow.value = true;
+		}
+
+		function stopDragging() {
+			stopDragTimeout.value = setTimeout(stopDraggingAfterDelay);
+		}
 	},
 });
 </script>
