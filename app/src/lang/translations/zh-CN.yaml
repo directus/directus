@@ -349,6 +349,7 @@ card_size: 卡片大小
 sort_field: 排序字段
 sort: 排序
 status: 状态
+remove: 移除
 toggle_manual_sorting: 切换手动排序
 bookmark_doesnt_exist: 书签不存在
 bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
