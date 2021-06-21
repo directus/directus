@@ -86,7 +86,7 @@ export default defineComponent({
 		},
 		to: {
 			type: [String, Object] as PropType<string | RouteLocation>,
-			default: null,
+			default: '',
 		},
 		href: {
 			type: String,
