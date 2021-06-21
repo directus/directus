@@ -3,13 +3,27 @@
 	"version": "9.0.0-rc.76",
 	"description": "Code shared between all directus packages.",
 	"exports": {
-		"./composables": "./dist/composables/index.js",
-		"./utils": "./dist/utils/index.js",
-		"./constants": "./dist/constants/index.js",
-		"./types": "./dist/types/index.js"
+		"./composables": {
+			"import": "./dist/esm/composables/index.js",
+			"require": "./dist/cjs/composables/index.js"
+		},
+		"./utils": {
+			"import": "./dist/esm/utils/index.js",
+			"require": "./dist/cjs/utils/index.js"
+		},
+		"./constants": {
+			"import": "./dist/esm/constants/index.js",
+			"require": "./dist/cjs/constants/index.js"
+		},
+		"./types": {
+			"import": "./dist/esm/types/index.js",
+			"require": "./dist/cjs/types/index.js"
+		}
 	},
 	"scripts": {
-		"build": "tsc --project ./tsconfig.json",
+		"build": "run-p build:*",
+		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
+		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
@@ -20,6 +34,7 @@
 		"vue": "^3.0.5"
 	},
 	"devDependencies": {
+		"npm-run-all": "4.1.5",
 		"rimraf": "^3.0.2",
 		"typescript": "^4.3.2"
 	}

@@ -1,1 +1,1 @@
-export * from './dist/types';
+export * from './dist/esm/types';
