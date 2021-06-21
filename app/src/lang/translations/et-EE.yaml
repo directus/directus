@@ -378,6 +378,7 @@ sort_field: Sorteerimisväli
 add_sort_field: "Lisa sorteerimisväli\n"
 sort: Sorteeri
 status: Staatus
+remove: Eemalda
 toggle_manual_sorting: Luba käsitsi sorteerimine
 bookmark_doesnt_exist: Järjehoidjat ei leitud
 bookmark_doesnt_exist_copy: Järjehoidja, mida sa soovid kasutada, ei leitud.
