@@ -368,6 +368,7 @@ sort_field: Поле сортировки
 add_sort_field: Добавить поле сортировки
 sort: Сортировать
 status: Статус
+remove: Удалить
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
 bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть не найдена.
