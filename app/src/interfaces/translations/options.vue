@@ -33,9 +33,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@/types';
+import { Field, Relation } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
-import { Relation } from '@/types/relations';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({

@@ -63,7 +63,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator } from '@/types';
+import { FilterOperator } from '@directus/shared/types';
 
 export default defineComponent({
 	emits: ['update:modelValue'],
