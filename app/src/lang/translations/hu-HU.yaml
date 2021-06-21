@@ -277,6 +277,7 @@ card_size: Kártya mérete
 sort_field: Rendezési mező
 sort: Rendezés
 status: Állapot
+remove: Eltávolítás
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
 bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.
