@@ -379,6 +379,7 @@ sort_field: เรียงฟิลด์
 add_sort_field: เพิ่มฟิลด์สำหรับเรียง
 sort: เรียง
 status: สถานะ
+remove: เอาออก
 toggle_manual_sorting: สลับค่าการเรียงด้วยตนเอง
 bookmark_doesnt_exist: ไม่มีบุ๊กมาร์ก
 bookmark_doesnt_exist_copy: ไม่พบบุ๊กมาร์กที่พยายามเปิด
