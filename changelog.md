@@ -2,6 +2,18 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.78 (June 21, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#6413](https://github.com/directus/directus/pull/6413) Use correct input type for type in advanced filter sidebar ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6412](https://github.com/directus/directus/pull/6412) Fixed issue that would prevent button/list-item links from functioning  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
 ## v9.0.0-rc.77 (June 21, 2021)
 
 ### :sparkles: New Features
