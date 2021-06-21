@@ -1,6 +1,6 @@
 # Items
 
-> An Item is an object within a Collection that contains the values for one or more fields. Each collection represents a
+> An Item is an object within a Collection that contains the values for one or more fields. Each item represents a
 > **record** in your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
