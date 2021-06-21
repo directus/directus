@@ -379,6 +379,7 @@ sort_field: Поле за сортиране
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
+remove: Премахване
 toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
 bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
