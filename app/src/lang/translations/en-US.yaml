@@ -383,6 +383,7 @@ sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: Sort
 status: Status
+remove: Remove
 toggle_manual_sorting: Toggle Manual Sorting
 bookmark_doesnt_exist: Bookmark Doesn't Exist
 bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found.
