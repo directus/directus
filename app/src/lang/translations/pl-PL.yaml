@@ -378,6 +378,7 @@ sort_field: Pole sortowania
 add_sort_field: Dodaj pole sortowania
 sort: Sortuj
 status: Status
+remove: Usuń
 toggle_manual_sorting: Przełącz ręczne sortowanie
 bookmark_doesnt_exist: Zakładka nie istnieje
 bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
