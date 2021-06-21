@@ -288,6 +288,7 @@ card_size: 卡片大小
 sort_field: 排序欄位
 sort: 排序
 status: 狀態
+remove: 移除
 toggle_manual_sorting: 啟用手動排序
 bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...
