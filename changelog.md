@@ -2,6 +2,77 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.77 (June 21, 2021)
+
+### :sparkles: New Features
+
+- **API**
+  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6341](https://github.com/directus/directus/pull/6341) Add support for `read` hooks on `items` ([@MoltenCoffee](https://github.com/MoltenCoffee))
+  - [#6294](https://github.com/directus/directus/pull/6294) Allow overriding the s-maxage cache header ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :rocket: Improvements
+
+- **API**
+  - :warning: [#6355](https://github.com/directus/directus/pull/6355) Use `no-store` instead of `no-cache` for skipping the cache ([@nachogarcia](https://github.com/nachogarcia))
+  - [#6349](https://github.com/directus/directus/pull/6349) Use existing file extension as default ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6347](https://github.com/directus/directus/pull/6347) Redact tokens from logs ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#6350](https://github.com/directus/directus/pull/6350) Don't send sensitive data in webhooks ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6308](https://github.com/directus/directus/pull/6308) Fixed invalid onDelete constraint for OracleDB ([@aidenfoxx](https://github.com/aidenfoxx))
+- **App**
+  - [#6348](https://github.com/directus/directus/pull/6348) Fixed issue that would cause uploads to the root folder of the file library to fail ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6318](https://github.com/directus/directus/pull/6318) Fixed issue that would prevent setting the placeholder on the input interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6289](https://github.com/directus/directus/pull/6289) Fixed issue that would prevent the "Import from URL" functionality to work in a many to many interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#6360](https://github.com/directus/directus/pull/6360) Add "require('axios')" in API hooks examples ([@paescuj](https://github.com/paescuj))
+- [#6339](https://github.com/directus/directus/pull/6339) Fix broken link in quickstart ([@geertijewski](https://github.com/geertijewski))
+- [#6311](https://github.com/directus/directus/pull/6311) Update SDK doc with note on using multiple instances  ([@martinemmert](https://github.com/martinemmert))
+- [#6284](https://github.com/directus/directus/pull/6284) Add workaround for vite auto-replacement in docs ([@nickrum](https://github.com/nickrum))
+
+### :package: Dependency Updates
+
+- [#6406](https://github.com/directus/directus/pull/6406) chore(deps): update typescript-eslint monorepo to v4.28.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6405](https://github.com/directus/directus/pull/6405) chore(deps): update dependency vue-router to v4.0.10 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6401](https://github.com/directus/directus/pull/6401) chore(deps): update dependency codemirror to v5.62.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6400](https://github.com/directus/directus/pull/6400) chore(deps): update dependency rollup to v2.52.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6399](https://github.com/directus/directus/pull/6399) chore(deps): update dependency swagger-ui-watcher to v2.1.12 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6392](https://github.com/directus/directus/pull/6392) chore(deps): update dependency vite to v2.3.8 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6391](https://github.com/directus/directus/pull/6391) chore(deps): update dependency @types/inquirer to v7.3.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6380](https://github.com/directus/directus/pull/6380) chore(deps): update dependency eslint to v7.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6371](https://github.com/directus/directus/pull/6371) chore(deps): update dependency pinia to v2.0.0-beta.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6363](https://github.com/directus/directus/pull/6363) chore(deps): update dependency @types/jsonwebtoken to v8.5.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6357](https://github.com/directus/directus/pull/6357) chore(deps): update dependency typescript to v4.3.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6342](https://github.com/directus/directus/pull/6342) fix(deps): update dependency chalk to v4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6338](https://github.com/directus/directus/pull/6338) chore(deps): update postgres docker tag to v13 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6337](https://github.com/directus/directus/pull/6337) chore(deps): update dependency rollup to v2.52.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- :warning: [#6336](https://github.com/directus/directus/pull/6336) Use node.js v16 in Docker image ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6334](https://github.com/directus/directus/pull/6334) chore(deps): update dependency fs-extra to v10 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6333](https://github.com/directus/directus/pull/6333) chore(deps): update dependency dotenv to v10 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6332](https://github.com/directus/directus/pull/6332) chore(deps): update mariadb docker tag to v10.6 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6331](https://github.com/directus/directus/pull/6331) chore(deps): update fullcalendar monorepo to v5.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6330](https://github.com/directus/directus/pull/6330) chore(deps): update dependency marked to v2.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6329](https://github.com/directus/directus/pull/6329) chore(deps): update dependency typescript to v4.3.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6328](https://github.com/directus/directus/pull/6328) fix(deps): update dependency ms to v2.1.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6327](https://github.com/directus/directus/pull/6327) chore(deps): update dependency vue-router to v4.0.9 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6324](https://github.com/directus/directus/pull/6324) chore(deps): update dependency globby to v11.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6323](https://github.com/directus/directus/pull/6323) fix(deps): pin dependencies ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6322](https://github.com/directus/directus/pull/6322) Configure Renovate ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6305](https://github.com/directus/directus/pull/6305) Bump sass from 1.35.0 to 1.35.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6304](https://github.com/directus/directus/pull/6304) Bump inquirer from 8.1.0 to 8.1.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6300](https://github.com/directus/directus/pull/6300) Bump rollup from 2.51.2 to 2.52.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6275](https://github.com/directus/directus/pull/6275) Bump @typescript-eslint/eslint-plugin from 4.26.1 to 4.27.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6274](https://github.com/directus/directus/pull/6274) Bump @typescript-eslint/parser from 4.26.1 to 4.27.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6273](https://github.com/directus/directus/pull/6273) Bump sass from 1.34.1 to 1.35.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6272](https://github.com/directus/directus/pull/6272) Bump aws-sdk from 2.927.0 to 2.928.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## v9.0.0-rc.76 (June 14, 2021)
 
 ### :sparkles: New Features
