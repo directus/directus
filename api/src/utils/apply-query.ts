@@ -340,6 +340,22 @@ export function applyFilter(
 				dbQuery[logical].whereNot(key, 'like', `%${compareValue}%`);
 			}
 
+			if (operator === '_starts_with') {
+				dbQuery[logical].where(key, 'like', `${compareValue}%`);
+			}
+
+			if (operator === '_nstarts_with') {
+				dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
+			}
+
+			if (operator === '_ends_with') {
+				dbQuery[logical].where(key, 'like', `%${compareValue}`);
+			}
+
+			if (operator === '_nends_with') {
+				dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
+			}
+
 			if (operator === '_gt') {
 				dbQuery[logical].where(key, '>', compareValue);
 			}

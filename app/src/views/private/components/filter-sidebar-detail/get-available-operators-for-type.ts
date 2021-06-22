@@ -16,7 +16,20 @@ export default function getAvailableOperatorsForType(type: typeof types[number])
 		case 'string':
 			return {
 				type,
-				operators: ['contains', 'ncontains', 'eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+				operators: [
+					'contains',
+					'ncontains',
+					'starts_with',
+					'nstarts_with',
+					'ends_with',
+					'nends_with',
+					'eq',
+					'neq',
+					'empty',
+					'nempty',
+					'in',
+					'nin',
+				],
 			};
 		case 'uuid':
 			return {
