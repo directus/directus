@@ -378,6 +378,7 @@ sort_field: Pole sortowania
 add_sort_field: Dodaj pole sortowania
 sort: Sortuj
 status: Status
+remove: Usuń
 toggle_manual_sorting: Przełącz ręczne sortowanie
 bookmark_doesnt_exist: Zakładka nie istnieje
 bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
@@ -843,7 +844,7 @@ select_existing: Wybierz istniejące
 select_field_type: Wybierz typ pola
 select_interface: Wybierz interfejs
 settings: Ustawienia
-sign_in: Zarejestruj się
+sign_in: Zaloguj się
 sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
 something_went_wrong: Coś poszło nie tak.

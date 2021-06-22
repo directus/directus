@@ -378,6 +378,7 @@ sort_field: Sorteerveld
 add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
 status: Status
+remove: Verwijder
 toggle_manual_sorting: Activeer handmatige volgorde
 bookmark_doesnt_exist: Bladwijzer bestaat niet
 bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.

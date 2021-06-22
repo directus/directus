@@ -359,6 +359,7 @@ card_size: Kart Boyutu
 sort_field: Sıralama Alanı
 sort: Sırala
 status: Durum
+remove: Kaldır
 toggle_manual_sorting: Elle sıralamayı aç/kapa
 bookmark_doesnt_exist_cta: Koleksiyona dön
 select_an_item: Seçim Yapın...
