@@ -294,7 +294,7 @@ export default defineComponent({
 			return emitValue(rawValue);
 		}
 
-		function emitLeaf(rawValue: (string | number)[], { added, removed }: Delta) {
+		function emitLeaf(rawValue: (string | number)[], { added }: Delta) {
 			const allChildrenRecursive = getRecursiveChildrenValues('all');
 			const leafChildrenRecursive = getRecursiveChildrenValues('leaf');
 
@@ -355,7 +355,7 @@ export default defineComponent({
 			return emitValue(rawValue);
 		}
 
-		function emitExclusive(rawValue: (string | number)[], { added, removed }: Delta) {
+		function emitExclusive(rawValue: (string | number)[], { added }: Delta) {
 			const childrenValuesRecursive = getRecursiveChildrenValues('all');
 
 			// When enabling the group level
