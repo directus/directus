@@ -258,7 +258,7 @@ const alterations: AlterationFunctions = {
 	},
 };
 
-export function edit(codemirror: CodeMirror.Editor | null, type: Alteration, options?: Record<string, any>): void {
+export function applyEdit(codemirror: CodeMirror.Editor | null, type: Alteration, options?: Record<string, any>): void {
 	if (codemirror) {
 		const cursor = codemirror.getCursor('head');
 		const cursorFrom = codemirror.getCursor('from');

@@ -153,7 +153,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
-import { edit, CustomSyntax } from './edits';
+import { applyEdit, CustomSyntax } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
 import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
@@ -253,18 +253,18 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		useShortcut('meta+b', () => edit(codemirror, 'bold'), markdownInterface);
-		useShortcut('meta+i', () => edit(codemirror, 'italic'), markdownInterface);
-		useShortcut('meta+k', () => edit(codemirror, 'link'), markdownInterface);
-		useShortcut('meta+alt+d', () => edit(codemirror, 'strikethrough'), markdownInterface);
-		useShortcut('meta+alt+q', () => edit(codemirror, 'blockquote'), markdownInterface);
-		useShortcut('meta+alt+c', () => edit(codemirror, 'code'), markdownInterface);
-		useShortcut('meta+alt+1', () => edit(codemirror, 'heading', { level: 1 }), markdownInterface);
-		useShortcut('meta+alt+2', () => edit(codemirror, 'heading', { level: 2 }), markdownInterface);
-		useShortcut('meta+alt+3', () => edit(codemirror, 'heading', { level: 3 }), markdownInterface);
-		useShortcut('meta+alt+4', () => edit(codemirror, 'heading', { level: 4 }), markdownInterface);
-		useShortcut('meta+alt+5', () => edit(codemirror, 'heading', { level: 5 }), markdownInterface);
-		useShortcut('meta+alt+6', () => edit(codemirror, 'heading', { level: 6 }), markdownInterface);
+		useShortcut('meta+b', () => edit('bold'), markdownInterface);
+		useShortcut('meta+i', () => edit('italic'), markdownInterface);
+		useShortcut('meta+k', () => edit('link'), markdownInterface);
+		useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
+		useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
+		useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
+		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
+		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
+		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
+		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
+		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
+		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
 		return {
 			t,
@@ -292,6 +292,12 @@ export default defineComponent({
 			codemirror.replaceSelection(`![](${url})`);
 
 			imageDialogOpen.value = false;
+		}
+
+		function edit(type: string, options?: Record<string, any>) {
+			if (codemirror) {
+				applyEdit(codemirror, type, options);
+			}
 		}
 	},
 });
