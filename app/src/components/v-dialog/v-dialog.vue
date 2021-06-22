@@ -2,7 +2,7 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport to="#dialog-outlet">
+		<teleport :to="`#${teleport}`">
 			<transition-dialog @after-leave="leave">
 				<div v-if="internalActive" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
@@ -34,6 +34,10 @@ export default defineComponent({
 			type: String,
 			default: 'center',
 			validator: (val: string) => ['center', 'right'].includes(val),
+		},
+		teleport: {
+			type: String,
+			default: 'dialog-outlet',
 		},
 	},
 	setup(props, { emit }) {
