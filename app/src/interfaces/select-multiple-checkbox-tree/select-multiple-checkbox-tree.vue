@@ -1,14 +1,16 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
-		<v-input v-model="search" type="text" :placeholder="t('search')">
-			<template #prepend>
-				<v-icon name="search" />
-			</template>
+		<div class="search">
+			<v-input class="input" v-model="search" type="text" :placeholder="t('search')">
+				<template #prepend>
+					<v-icon name="search" />
+				</template>
 
-			<template #append v-if="search">
-				<v-icon name="clear" clickable @click="search = ''" />
-			</template>
-		</v-input>
+				<template #append v-if="search">
+					<v-icon name="clear" clickable @click="search = ''" />
+				</template>
+			</v-input>
+		</div>
 
 		<v-checkbox-tree
 			@update:model-value="$emit('input', $event)"
@@ -62,8 +64,12 @@ export default defineComponent({
 
 <style scoped>
 .select-multiple-checkbox-tree {
-	padding: 8px;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
+}
+
+.search {
+	padding: 10px;
+	padding-bottom: 0;
 }
 </style>
