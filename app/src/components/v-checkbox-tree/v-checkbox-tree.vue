@@ -11,6 +11,7 @@
 			:text="choice[itemText]"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
+			:disabled="disabled"
 			v-model="value"
 		/>
 	</v-list>
@@ -51,6 +52,10 @@ export default defineComponent({
 		itemChildren: {
 			type: String,
 			default: 'children',
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
