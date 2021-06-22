@@ -10,7 +10,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	if (env.CACHE_ENABLED !== true) return next();
 	if (!cache) return next();
 
-	if (req.headers['cache-control']?.includes('no-cache') || req.headers['Cache-Control']?.includes('no-cache')) {
+	if (req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store')) {
 		return next();
 	}
 

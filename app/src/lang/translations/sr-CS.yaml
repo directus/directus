@@ -379,6 +379,7 @@ sort_field: Polje za Sortiranje
 add_sort_field: Dodaj Polje za Sortiranje
 sort: Sortiranje
 status: Status
+remove: Ukloni
 toggle_manual_sorting: Uključi Ručno Sortiranje
 bookmark_doesnt_exist: Oznaka ne postoji
 bookmark_doesnt_exist_copy: Oznaku koju pokušavate otvoriti nije moguće pronaći.

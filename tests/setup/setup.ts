@@ -25,7 +25,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	const vendors = getDBsToTest();
 
-	const NODE_VERSION = process.env.TEST_NODE_VERSION || '15-alpine';
+	const NODE_VERSION = process.env.TEST_NODE_VERSION || '16-alpine';
 
 	await new Listr([
 		{

@@ -331,6 +331,7 @@ card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
 sort: Rūšiuoti
 status: Būsena
+remove: Pašalinti
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
 bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.

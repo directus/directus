@@ -346,6 +346,7 @@ sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
 status: Stato
+remove: Rimuovere
 bookmark_doesnt_exist: Segnalibro Non Esiste
 bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
 select_an_item: Seleziona un elemento...

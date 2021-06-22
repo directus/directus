@@ -301,6 +301,7 @@ sort_field: Sắp xếp theo trường
 add_sort_field: Sắp xếp theo trường
 sort: Sắp xếp
 status: Trạng thái
+remove: Xoá
 toggle_manual_sorting: Kích hoạt sắp xếp thủ công
 bookmark_doesnt_exist: Bookmark Không Tồn Tại
 bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.

@@ -93,6 +93,7 @@ user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
 status: Статус
+remove: Видалити
 errors:
   ROUTE_NOT_FOUND: Не знайдено
 create_bookmark: Створити закладку

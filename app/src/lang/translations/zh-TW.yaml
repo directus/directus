@@ -108,6 +108,8 @@ time: 時間
 uuid: UUID
 hash: 哈希
 create_translations: 創建翻譯
+refresh_interval: 重新整理間隔
+no_refresh: 不要重新整理
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
@@ -286,6 +288,7 @@ card_size: 卡片大小
 sort_field: 排序欄位
 sort: 排序
 status: 狀態
+remove: 移除
 toggle_manual_sorting: 啟用手動排序
 bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...

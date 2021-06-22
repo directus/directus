@@ -379,6 +379,7 @@ sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 sort: Sortieren
 status: Status
+remove: Löschen
 toggle_manual_sorting: Manuelle Sortierung umschalten
 bookmark_doesnt_exist: Lesezeichen existiert nicht
 bookmark_doesnt_exist_copy: Das zu öffnende Lesezeichen konnte nicht gefunden werden.
