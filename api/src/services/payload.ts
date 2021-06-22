@@ -133,13 +133,6 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
-		async geometry({ action, value }) {
-			if (!value) return;
-			if (action == 'read') {
-				return wkx.Geometry.parse(value).toGeoJSON();
-			}
-			return wkx.Geometry.parseGeoJSON(value).toWkt();
-		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -230,15 +223,18 @@ export class PayloadService {
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
-		if (action == 'read') return payloads;
-
 		const helper = getGeometryHelper();
+		const process =
+			action == 'read'
+				? (value: any) => wkx.Geometry.parse(value).toGeoJSON()
+				: (value: any) => helper.fromText(wkx.Geometry.parseGeoJSON(value).toWkt());
+
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
-				if (name in payload) {
-					payload[name] = helper.fromText(payload[name]);
+				if (payload[name]) {
+					payload[name] = process(payload[name]);
 				}
 			}
 		}

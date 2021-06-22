@@ -26,10 +26,10 @@ export type GeometryOptions = {
 export type SimpleGeometry = Point | Polygon | LineString;
 export type MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
 
-export type AnyGeoJSON = FeatureCollection | Feature | GeometryCollection | Geometry;
-export type AllGeoJSON = FeatureCollection & Feature & GeometryCollection & Geometry;
-export type GeoJSONParser = (entry: any) => Geometry | GeometryCollection | undefined;
-export type GeoJSONSerializer = (entry: Geometry | GeometryCollection) => any;
+export type AnyGeometry = Geometry | GeometryCollection;
+export type AllGeoJSON = Geometry & GeometryCollection & Feature & FeatureCollection;
+export type GeoJSONParser = (entry: any) => AnyGeometry | undefined;
+export type GeoJSONSerializer = (entry: AnyGeometry) => any;
 type Coord = [number, number];
 
 export function expandBBox(bbox: BBox, coord: Coord): BBox {
@@ -41,7 +41,7 @@ export function expandBBox(bbox: BBox, coord: Coord): BBox {
 	];
 }
 
-export function getBBox(object: AnyGeoJSON): BBox {
+export function getBBox(object: AnyGeometry): BBox {
 	let bbox: BBox = [Infinity, Infinity, -Infinity, -Infinity];
 	coordEach(object as AllGeoJSON, (coord) => {
 		bbox = expandBBox(bbox, coord as Coord);
@@ -70,26 +70,26 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
-			return (entry: AnyGeoJSON) => entry;
+			return (entry: AnyGeometry) => entry;
 		case 'wkt':
-			return (entry: AnyGeoJSON) => wkx.Geometry.parseGeoJSON(entry).toWkt();
+			return (entry: AnyGeometry) => wkx.Geometry.parseGeoJSON(entry).toWkt();
 		case 'lnglat':
-			return (entry: AnyGeoJSON) => (entry as Point).coordinates;
+			return (entry: AnyGeometry) => (entry as Point).coordinates;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
 }
 
-export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeoJSON {
+export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeometry {
 	const { geometryFormat } = options;
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
-			return (geom: any) => geom as AnyGeoJSON;
+			return (geom: any) => geom as AnyGeometry;
 		case 'wkt':
-			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeoJSON;
+			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeometry;
 		case 'lnglat':
-			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeoJSON;
+			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeometry;
 		default:
 			throw new Error(i18n.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
@@ -132,19 +132,14 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 	return geojson;
 }
 
-export function flatten(geometry?: Geometry): SimpleGeometry[] {
+export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 	if (!geometry) return [];
 	if (geometry.type == 'GeometryCollection') {
 		return geometry.geometries.flatMap(flatten);
 	}
 	if (geometry.type.startsWith('Multi')) {
-		return geometry.coordinates.map(
-			(coordinates: unknown) =>
-				({
-					type: geometry.type.replace('Multi', ''),
-					coordinates,
-				} as SimpleGeometry)
-		);
+		const type = geometry.type.replace('Multi', '');
+		return (geometry.coordinates as any).map((coordinates: any) => ({ type, coordinates } as SimpleGeometry));
 	}
 	return [geometry as SimpleGeometry];
 }
