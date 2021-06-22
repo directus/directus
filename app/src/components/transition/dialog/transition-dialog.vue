@@ -9,21 +9,21 @@
 
 .dialog-enter-active,
 .dialog-leave-active {
-	transition-duration: var(--fast);
+	transition-duration: var(--medium);
 
 	.v-overlay {
 		opacity: 1;
-		transition: opacity var(--fast) linear;
+		transition: opacity var(--medium) var(--transition-in);
 	}
 
 	&.center > *:not(.v-overlay) {
 		transform: translateY(0px);
-		transition: transform var(--fast) linear;
+		transition: transform var(--medium) var(--transition-in);
 	}
 
 	&.right > *:not(.v-overlay) {
 		transform: translateX(0px);
-		transition: transform var(--fast) linear;
+		transition: transform var(--medium) var(--transition-in);
 	}
 }
 
@@ -31,17 +31,17 @@
 .dialog-leave-to {
 	.v-overlay {
 		opacity: 0;
-		transition: opacity var(--fast) linear;
+		transition: opacity var(--medium) var(--transition-out);
 	}
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(100%);
-		transition: transform var(--fast) linear;
+		transform: translateY(50px);
+		transition: transform var(--medium) var(--transition-out);
 	}
 
 	&.right > *:not(.v-overlay) {
 		transform: translateX(var(--v-drawer-max-width));
-		transition: transform var(--fast) linear;
+		transition: transform var(--medium) var(--transition-out);
 	}
 }
 </style>
