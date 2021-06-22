@@ -27,3 +27,22 @@ body.auto {
 		@include light;
 	}
 }
+
+#dialog-outlet {
+	.container.right .v-drawer {
+		transform-origin: left;
+		transition: var(--medium) var(--transition);
+		transition-property: border-radius, transform;
+	}
+
+	.container.right:not(:last-of-type) .v-drawer {
+		overflow: hidden;
+		border-radius: 10px;
+	}
+
+	@for $i from 1 to 5 {
+		> .container.right:nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
+			transform: scale(#{1 - $i * 0.05}) translateX(-#{($i - 1) * 25}px);
+		}
+	}
+}

@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model="internalActive"
-		@esc="$emit('cancel')"
-		:persistent="persistent"
-		placement="right"
-		teleport="drawer-outlet"
-	>
+	<v-dialog v-model="internalActive" @esc="$emit('cancel')" :persistent="persistent" placement="right">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
