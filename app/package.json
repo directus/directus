@@ -18,7 +18,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development vite",
+		"dev": "vite",
 		"build": "vite build",
 		"serve": "vite preview",
 		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
