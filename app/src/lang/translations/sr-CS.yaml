@@ -856,7 +856,6 @@ template: Šablon
 translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
-weeks: { }
 report_error: Prijavi Grešku
 interfaces:
   presentation-links:
