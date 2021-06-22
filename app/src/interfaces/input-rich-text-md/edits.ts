@@ -1,7 +1,7 @@
 import { Position } from 'codemirror';
 import { cloneDeep } from 'lodash';
 
-type Alteration =
+export type Alteration =
 	| 'bold'
 	| 'italic'
 	| 'strikethrough'

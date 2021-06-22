@@ -153,7 +153,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
-import { applyEdit, CustomSyntax } from './edits';
+import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
 import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
@@ -208,7 +208,10 @@ export default defineComponent({
 
 				codemirror.on('change', (cm) => {
 					const content = cm.getValue();
-					emit('input', content);
+
+					if (content !== props.value && (props.value === null && content === '') === false) {
+						emit('input', content);
+					}
 				});
 			}
 		});
@@ -223,7 +226,7 @@ export default defineComponent({
 				if (existingValue !== newValue) {
 					codemirror.setValue('');
 					codemirror.clearHistory();
-					codemirror.setValue(newValue);
+					codemirror.setValue(newValue ?? '');
 					codemirror.refresh();
 				}
 			}
@@ -294,7 +297,7 @@ export default defineComponent({
 			imageDialogOpen.value = false;
 		}
 
-		function edit(type: string, options?: Record<string, any>) {
+		function edit(type: Alteration, options?: Record<string, any>) {
 			if (codemirror) {
 				applyEdit(codemirror, type, options);
 			}
