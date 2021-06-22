@@ -9,31 +9,39 @@
 
 .dialog-enter-active,
 .dialog-leave-active {
-	transition: opacity var(--slow) var(--transition);
+	transition-duration: var(--fast);
+
+	.v-overlay {
+		opacity: 1;
+		transition: opacity var(--fast) linear;
+	}
 
 	&.center > *:not(.v-overlay) {
 		transform: translateY(0px);
-		transition: transform var(--slow) var(--transition-in);
+		transition: transform var(--fast) linear;
 	}
 
 	&.right > *:not(.v-overlay) {
 		transform: translateX(0px);
-		transition: transform var(--slow) var(--transition-in);
+		transition: transform var(--fast) linear;
 	}
 }
 
 .dialog-enter-from,
 .dialog-leave-to {
-	opacity: 0;
+	.v-overlay {
+		opacity: 0;
+		transition: opacity var(--fast) linear;
+	}
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transform: translateY(100%);
+		transition: transform var(--fast) linear;
 	}
 
 	&.right > *:not(.v-overlay) {
-		transform: translateX(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transform: translateX(var(--v-drawer-max-width));
+		transition: transform var(--fast) linear;
 	}
 }
 </style>

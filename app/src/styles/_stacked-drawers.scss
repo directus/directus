@@ -1,0 +1,21 @@
+#dialog-outlet {
+	.container.right .v-drawer {
+		transition: transform var(--medium) var(--transition);
+	}
+
+	.container.right:not(:last-of-type) .v-drawer {
+		overflow: hidden;
+	}
+
+	@for $i from 1 to 6 {
+		> .container.right:not(.dialog-leave-active):nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
+			transform: translateX(-#{($i - 1) * 50}px);
+		}
+	}
+
+	.container.right:not(:first-of-type) {
+		&.dialog-leave-active {
+			transition: none !important;
+		}
+	}
+}
