@@ -1,6 +1,7 @@
 import { OperatorType } from './types';
+import { types } from '@/types';
 
-export default function getAvailableOperatorsForType(type: string): OperatorType {
+export default function getAvailableOperatorsForType(type: typeof types[number]): OperatorType {
 	/**
 	 * @NOTE
 	 * In the filter, you can't filter on the relational field itself, so we don't have to account
@@ -11,48 +12,54 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 		// Text
 		case 'binary':
 		case 'json':
-		case 'array':
-		case 'status':
-		case 'slug':
-		case 'lang':
 		case 'hash':
 		case 'string':
 			return {
-				type: 'text',
-				operators: ['contains', 'ncontains', 'eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+				type,
+				operators: [
+					'contains',
+					'ncontains',
+					'starts_with',
+					'nstarts_with',
+					'ends_with',
+					'nends_with',
+					'eq',
+					'neq',
+					'empty',
+					'nempty',
+					'in',
+					'nin',
+				],
 			};
 		case 'uuid':
 			return {
-				type: 'text',
+				type,
 				operators: ['eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
 			};
 		// Boolean
 		case 'boolean':
 			return {
-				type: 'checkbox',
+				type,
 				operators: ['eq', 'neq', 'empty', 'nempty'],
 			};
 		// Numbers
 		case 'integer':
 		case 'decimal':
-		case 'sort':
 			return {
-				type: 'number',
+				type,
 				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
 			};
 		// Datetime
-		case 'datetime':
+		case 'dateTime':
 		case 'date':
 		case 'time':
-		case 'datetime_created':
-		case 'datetime_updated':
 			return {
-				type: 'datetime',
+				type,
 				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
 			};
 		default:
 			return {
-				type: 'unknown',
+				type,
 				operators: [
 					'eq',
 					'neq',

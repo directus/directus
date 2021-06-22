@@ -717,6 +717,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			for (const [name, field] of fields) {
+				if (this.schema.collections[this.collection].primary === name) {
+					defaults[name] = null;
+					continue;
+				}
+
 				defaults[name] = field.defaultValue;
 			}
 

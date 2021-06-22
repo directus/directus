@@ -158,8 +158,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
+		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
+
+		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+
 		const newItem: { [field: string]: any } = {
-			...(item.value || {}),
+			...(itemData.data.data || {}),
 			...edits.value,
 		};
 

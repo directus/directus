@@ -1,5 +1,3 @@
-import PinoHttp from '@types/pino-http';
-
 declare module 'grant' {
 	const grant: any;
 	export default grant;
@@ -16,6 +14,7 @@ declare module 'exif-reader' {
 }
 
 declare module 'pino-http' {
+	import PinoHttp from '@types/pino-http';
 	const pinoHttp: PinoHttp;
 	export default pinoHttp;
 	export const stdSerializers: {

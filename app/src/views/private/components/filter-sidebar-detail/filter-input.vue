@@ -1,60 +1,57 @@
 <template>
 	<div class="filter-input">
-		<template v-if="['between', 'nbetween'].includes(operator)">
-			<v-input
-				:type="type"
-				:model-value="csvValue[0]"
-				@update:model-value="setCSV(0, $event)"
-				:disabled="disabled"
-				:placeholder="t('lower_limit')"
-				autofocus
-			>
-				<template #append>
-					<v-icon name="vertical_align_top" />
-				</template>
-			</v-input>
-			<v-input
-				:type="type"
-				:model-value="csvValue[1]"
-				@update:model-value="setCSV(1, $event)"
-				:disabled="disabled"
-				:placeholder="t('upper_limit')"
-			>
-				<template #append>
-					<v-icon name="vertical_align_bottom" />
-				</template>
-			</v-input>
-		</template>
-		<template v-else-if="['in', 'nin'].includes(operator)">
-			<v-input
-				v-for="(val, index) in csvValue"
-				:key="index"
-				:model-value="val"
-				:type="type"
-				@update:model-value="setCSV(index, $event)"
-				:disabled="disabled"
-				:placeholder="t('enter_a_value')"
-				autofocus
-			>
-				<template v-if="csvValue.length > 1" #append>
-					<v-icon name="close" @click="removeCSV(val)" />
-				</template>
-			</v-input>
+		<div class="between" v-if="['between', 'nbetween'].includes(operator)">
+			<div class="field">
+				<component
+					:is="interfaceComponent"
+					:type="type"
+					:value="csvValue[0]"
+					:placeholder="t('lower_limit')"
+					autofocus
+					@input="setCSV(0, $event)"
+				/>
+			</div>
+			<div class="field">
+				<component
+					:is="interfaceComponent"
+					:type="type"
+					:value="csvValue[1]"
+					:placeholder="t('upper_limit')"
+					autofocus
+					@input="setCSV(1, $event)"
+				/>
+			</div>
+		</div>
+		<div class="list" v-else-if="['in', 'nin'].includes(operator)">
+			<div class="field" v-for="(val, index) in csvValue" :key="index">
+				<component
+					:is="interfaceComponent"
+					:type="type"
+					:value="val"
+					:placeholder="t('enter_a_value')"
+					:disabled="disabled"
+					autofocus
+					@input="setCSV(index, $event)"
+				/>
+				<small @click="removeCSV(val)" class="remove">
+					{{ t('remove') }}
+				</small>
+			</div>
+
 			<v-button outlined full-width dashed @click="addCSV" :disabled="disabled">
 				<v-icon name="add" />
 				{{ t('add_new') }}
 			</v-button>
-		</template>
+		</div>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox block :label="t('active')" v-if="type === 'checkbox'" v-model="internalValue" :disabled="disabled" />
-			<v-input
-				:disabled="disabled"
-				v-else
-				autofocus
-				v-model="internalValue"
-				:nullable="false"
+			<component
+				:is="interfaceComponent"
 				:type="type"
+				:value="internalValue"
 				:placeholder="t('enter_a_value')"
+				:disabled="disabled"
+				autofocus
+				@input="internalValue = $event"
 			/>
 		</template>
 	</div>
@@ -63,7 +60,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator } from '@/types';
+import { FilterOperator, types } from '@/types';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
 	emits: ['update:modelValue'],
@@ -73,7 +71,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<'text' | 'checkbox' | 'number' | 'datetime' | 'unknown'>,
+			type: String as PropType<typeof types[number]>,
 			required: true,
 		},
 		operator: {
@@ -106,7 +104,9 @@ export default defineComponent({
 			},
 		});
 
-		return { t, internalValue, csvValue, setCSV, removeCSV, addCSV };
+		const interfaceComponent = computed(() => `interface-${getDefaultInterfaceForType(props.type)}`);
+
+		return { t, internalValue, csvValue, setCSV, removeCSV, addCSV, interfaceComponent };
 
 		function setCSV(index: number, value: string) {
 			const newValue = Object.assign([], csvValue.value, { [index]: value });
@@ -132,5 +132,27 @@ export default defineComponent({
 
 .v-input .v-icon {
 	--v-icon-color: var(--foreground-subdued);
+}
+
+.list .field {
+	margin-bottom: 12px;
+}
+
+.list .field .remove {
+	display: flex;
+	align-items: center;
+	float: right;
+	width: max-content;
+	margin-bottom: 12px;
+	color: var(--foreground-subdued);
+	cursor: pointer;
+}
+
+.list .field .remove:hover {
+	color: var(--danger);
+}
+
+.between .field:first-child {
+	margin-bottom: 12px;
 }
 </style>

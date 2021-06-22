@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.76",
+	"version": "9.0.0-rc.78",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -59,6 +59,9 @@
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
 	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
 	"files": [
 		"dist",
 		"LICENSE",
@@ -66,14 +69,14 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "9.0.0-rc.76",
-		"@directus/drive": "9.0.0-rc.76",
-		"@directus/drive-azure": "9.0.0-rc.76",
-		"@directus/drive-gcs": "9.0.0-rc.76",
-		"@directus/drive-s3": "9.0.0-rc.76",
-		"@directus/format-title": "9.0.0-rc.76",
-		"@directus/schema": "9.0.0-rc.76",
-		"@directus/specs": "9.0.0-rc.76",
+		"@directus/app": "9.0.0-rc.78",
+		"@directus/drive": "9.0.0-rc.78",
+		"@directus/drive-azure": "9.0.0-rc.78",
+		"@directus/drive-gcs": "9.0.0-rc.78",
+		"@directus/drive-s3": "9.0.0-rc.78",
+		"@directus/format-title": "9.0.0-rc.78",
+		"@directus/schema": "9.0.0-rc.78",
+		"@directus/specs": "9.0.0-rc.78",
 		"@godaddy/terminus": "^4.9.0",
 		"argon2": "^0.28.1",
 		"async": "^3.2.0",
@@ -162,10 +165,10 @@
 		"@types/express-pino-logger": "4.0.2",
 		"@types/express-session": "1.17.3",
 		"@types/fs-extra": "9.0.11",
-		"@types/inquirer": "7.3.1",
+		"@types/inquirer": "7.3.2",
 		"@types/js-yaml": "4.0.1",
 		"@types/json2csv": "5.0.2",
-		"@types/jsonwebtoken": "8.5.1",
+		"@types/jsonwebtoken": "8.5.2",
 		"@types/keyv": "3.1.1",
 		"@types/lodash": "4.14.170",
 		"@types/mime-types": "2.1.0",
