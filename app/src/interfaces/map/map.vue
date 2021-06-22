@@ -11,7 +11,7 @@
 				icon="error"
 				center
 				type="danger"
-				:title="$t('interfaces.map.invalid_options')"
+				:title="t('interfaces.map.invalid_options')"
 			>
 				<v-notice type="danger" :icon="false">
 					{{ geometryOptionsError }}
@@ -22,15 +22,15 @@
 				icon="error"
 				center
 				type="warning"
-				:title="$t('layouts.map.invalid_geometry')"
+				:title="t('layouts.map.invalid_geometry')"
 			>
 				<v-notice type="warning" :icon="false">
 					{{ geometryParsingError }}
 				</v-notice>
 				<template #append>
 					<v-card-actions>
-						<v-button small @click="resetValue(false)" class="soft-reset" secondary>{{ $t('continue') }}</v-button>
-						<v-button small @click="resetValue(true)" class="hard-reset">{{ $t('reset') }}</v-button>
+						<v-button small @click="resetValue(false)" class="soft-reset" secondary>{{ t('continue') }}</v-button>
+						<v-button small @click="resetValue(true)" class="hard-reset">{{ t('reset') }}</v-button>
 					</v-card-actions>
 				</template>
 			</v-info>
@@ -41,7 +41,7 @@
 <script lang="ts">
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue';
 import {
 	LngLatBoundsLike,
 	AnimationOptions,
@@ -73,7 +73,7 @@ import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
 import { Field, GeometryFormat } from '@/types';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 
 import { GeometryType } from '@/types';
@@ -120,6 +120,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const container = ref<HTMLElement | null>(null);
 		let map: Map;
 		let mapLoading = ref(true);
@@ -165,6 +166,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			container,
 			mapLoading,
 			resetValue,
@@ -296,7 +298,7 @@ export default defineComponent({
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
 				if (!props.disabled && !isTypeCompatible(geometryType, initialValue!.type)) {
-					geometryParsingError.value = i18n.t('interfaces.map.unexpected_geometry', {
+					geometryParsingError.value = t('interfaces.map.unexpected_geometry', {
 						expected: geometryType,
 						got: initialValue!.type,
 					});
@@ -369,18 +371,23 @@ export default defineComponent({
 .mapbox-gl-draw_point::after {
 	content: '\ef3a'; // add_location
 }
+
 .mapbox-gl-draw_line::after {
 	content: '\e922'; // timeline
 }
+
 .mapbox-gl-draw_polygon::after {
 	content: '\e574'; // category
 }
+
 .mapbox-gl-draw_trash::after {
 	content: '\e872'; // delete
 }
+
 .mapbox-gl-draw_uncombine::after {
 	content: '\e0b6'; // call_split
 }
+
 .mapbox-gl-draw_combine::after {
 	content: '\e0b3'; // call_merge
 }
@@ -391,15 +398,18 @@ export default defineComponent({
 	overflow: hidden;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
+
 	.map {
 		position: relative;
 		width: 100%;
 		height: 500px;
+
 		&.error,
 		&.loading {
 			opacity: 0.25;
 		}
 	}
+
 	.v-info {
 		padding: 20px;
 		background-color: var(--background-subdued);

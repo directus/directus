@@ -1,33 +1,34 @@
 <template>
 	<div class="form-grid">
 		<div class="field half-left">
-			<div class="type-label">{{ $t('interfaces.map.geometry_format') }}</div>
-			<v-input :disabled="true" v-model="geometryFormat" :value="$t(`interfaces.map.${compatibleFormat}`)" />
+			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
+			<v-input :disabled="true" v-model="geometryFormat" :value="t(`interfaces.map.${compatibleFormat}`)" />
 		</div>
 		<div class="field half-right">
-			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
+			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
-				:placeholder="$t('any')"
+				:placeholder="t('any')"
 				:showDeselect="true"
 				:disabled="hasGeometryType || geometryFormat == 'lnglat'"
 				:items="geometryTypes.map((value) => ({ value, text: value }))"
 			/>
 		</div>
 		<div class="field">
-			<div class="type-label">{{ $t('interfaces.map.default_view') }}</div>
+			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
 			<div class="map" ref="mapContainer"></div>
 		</div>
 		<div class="field half-left">
-			<div class="type-label">{{ $t('interfaces.map.fit_bounds') }}</div>
-			<v-checkbox block :input-value="fitBounds" :label="$t('enabled')" />
+			<div class="type-label">{{ t('interfaces.map.fit_bounds') }}</div>
+			<v-checkbox block :input-value="fitBounds" :label="t('enabled')" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
-import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from 'vue';
 import { geometryTypes, GeometryType, GeometryFormat } from '@/types';
 import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -49,10 +50,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isGeometry = props.fieldData.type == 'geometry';
 		const hasGeometryType = isGeometry && !!props.fieldData!.schema!.geometry_type;
 		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
-		console.log(props.fieldData.type, compatibleFormat);
 
 		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
 		const geometryType = ref<GeometryType>(geometryFormat.value == 'lnglat' ? 'Point' : props.value?.geometryType);
@@ -92,6 +94,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			isGeometry,
 			hasGeometryType,
 			compatibleFormat,

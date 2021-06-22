@@ -20,7 +20,7 @@ import {
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
+import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from 'vue';
 
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
@@ -148,7 +148,7 @@ export default defineComponent({
 			});
 
 			watch(
-				() => appStore.state.sidebarOpen,
+				() => appStore.sidebarOpen,
 				(opened) => {
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
@@ -291,34 +291,43 @@ export default defineComponent({
 .mapboxgl-map {
 	font: inherit;
 }
+
 .mapboxgl-ctrl-group {
 	overflow: hidden;
 	background: none;
+
 	&:not(:empty) {
 		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 	}
+
 	button {
 		width: 36px;
 		height: 36px;
 		background: var(--background-subdued) !important;
 		border: none !important;
+
 		span {
 			display: none !important;
 		}
+
 		& + button {
 			margin-top: 1px;
 		}
+
 		&:hover {
 			background: var(--background-normal) !important;
 		}
+
 		&.active {
 			color: var(--background-subdued) !important;
 			background: var(--foreground-normal) !important;
 		}
+
 		&.hidden {
 			display: none;
 		}
 	}
+
 	button::after {
 		display: flex;
 		justify-content: center;
@@ -330,24 +339,31 @@ export default defineComponent({
 		-webkit-font-smoothing: antialiased;
 	}
 }
+
 .mapboxgl-ctrl-zoom-in::after {
 	content: '\e145'; // add
 }
+
 .mapboxgl-ctrl-zoom-out::after {
 	content: '\e15b'; // remove
 }
+
 .mapboxgl-ctrl-compass::after {
 	content: '\e87a'; // explore
 }
+
 .mapboxgl-ctrl-geolocate::after {
 	content: '\e55c'; // my_location
 }
+
 .mapboxgl-ctrl-fitdata::after {
 	content: '\e3c2'; // crop_free
 }
+
 .mapboxgl-ctrl-select::after {
 	content: '\ef52'; // highlight_alt
 }
+
 .mapboxgl-ctrl-unselect::after {
 	content: '\e14c'; // clear
 }
@@ -358,6 +374,7 @@ export default defineComponent({
 	color: var(--foreground-normal);
 	background: var(--background-subdued) !important;
 }
+
 .mapboxgl-ctrl-attrib-button {
 	background-color: var(--foreground-normal) !important;
 	background-image: none !important;
@@ -369,6 +386,7 @@ export default defineComponent({
 	font-family: inherit !important;
 	line-height: inherit !important;
 	background-color: var(--background-subdued);
+
 	&,
 	&.suggestions {
 		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
@@ -394,15 +412,19 @@ export default defineComponent({
 	color: var(--v-list-item-color-active);
 	background-color: var(--background-normal-alt);
 }
+
 .mapboxgl-ctrl-geocoder--button {
 	background: var(--background-normal);
 }
+
 .mapboxgl-ctrl-geocoder--icon {
 	fill: var(--v-icon-color);
 }
+
 .mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
 	fill: var(--v-icon-color-hover);
 }
+
 .mapbox-gl-geocoder--error {
 	color: var(--foreground-subdued);
 }
@@ -420,6 +442,7 @@ export default defineComponent({
 	border: 1px solid rgb(56, 135, 190);
 	pointer-events: none;
 }
+
 .mapboxgl-point-popup {
 	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
 		border-right-color: var(--background-normal);
@@ -449,16 +472,19 @@ export default defineComponent({
 }
 </style>
 
+<style lang="scss">
+#map-container.hover .mapboxgl-canvas-container {
+	cursor: pointer !important;
+}
+
+#map-container.box-select .mapboxgl-canvas-container {
+	cursor: crosshair !important;
+}
+</style>
 <style lang="scss" scoped>
 #map-container {
 	position: relative;
 	width: 100%;
 	height: 100%;
-}
-#map-container.hover::v-deep .mapboxgl-canvas-container {
-	cursor: pointer !important;
-}
-#map-container.box-select::v-deep .mapboxgl-canvas-container {
-	cursor: crosshair !important;
 }
 </style>

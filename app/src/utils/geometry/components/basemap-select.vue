@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import type { Map } from 'maplibre-gl';
 import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { useAppStore } from '@/stores';
@@ -27,7 +27,7 @@ export default defineComponent({
 		const basemaps = getBasemapSources();
 		const basemap = ref<BasemapSource>();
 		const appStore = useAppStore();
-		const { basemap: basemapName } = toRefs(appStore.state);
+		const { basemap: basemapName } = toRefs(appStore);
 
 		function handleInput(name: string) {
 			basemapName.value = name;

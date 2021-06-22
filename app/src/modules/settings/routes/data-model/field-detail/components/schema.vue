@@ -37,10 +37,10 @@
 			<template v-if="fieldData.type == 'geometry'">
 				<template v-if="fieldData.schema">
 					<div class="field half-right">
-						<div class="label type-label">{{ $t('interfaces.map.geometry_type') }}</div>
+						<div class="label type-label">{{ t('interfaces.map.geometry_type') }}</div>
 						<v-select
 							:showDeselect="true"
-							:placeholder="$t('any')"
+							:placeholder="t('any')"
 							:disabled="isExisting"
 							:items="geometryTypes.map((value) => ({ value, text: value }))"
 							v-model="fieldData.schema.geometry_type"
@@ -216,12 +216,12 @@ export const fieldTypes: Array<{ value: DataType; text: TranslateResult | string
 	},
 	{ divider: true },
 	{
-		text: i18n.t('geometry'),
+		text: i18n.global.t('geometry'),
 		value: 'geometry',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('timestamp'),
+		text: i18n.global.t('timestamp'),
 		value: 'timestamp',
 	},
 	{

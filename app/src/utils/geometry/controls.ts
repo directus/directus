@@ -1,6 +1,6 @@
 import { Map, Point } from 'maplibre-gl';
 import BasemapSelectComponent from '@/utils/geometry/components/basemap-select.vue';
-import Vue from 'vue';
+import { createApp } from 'vue';
 
 export class ButtonControl {
 	active: boolean;
@@ -8,7 +8,7 @@ export class ButtonControl {
 	groupElement?: HTMLElement;
 	constructor(private className: string, private callback: (...args: any) => any) {
 		this.element = document.createElement('button');
-		this.element.className = className;
+		this.element.className = this.className;
 		this.element.onclick = callback;
 		this.active = false;
 	}
@@ -37,14 +37,13 @@ export class ButtonControl {
 export class BasemapSelectControl {
 	component?: any;
 	onAdd(map: Map): HTMLElement {
-		this.component = new (Vue.extend(BasemapSelectComponent))({
-			propsData: { map },
-		});
-		this.component.$mount();
+		this.component = createApp(BasemapSelectComponent, { map });
+		this.component.mount();
 		return this.component.$el as HTMLElement;
 	}
 	onRemove(): void {
-		this.component!.$destroy();
+		// this.component!.$destroy(); no longer ex??
+		this.component!.unmount();
 	}
 }
 
@@ -63,7 +62,7 @@ export class BoxSelectControl {
 	selectButton: ButtonControl;
 	unselectButton: ButtonControl;
 
-	map?: Map;
+	map?: Map & { fire: (event: string, data?: any) => void };
 	layers: string[];
 
 	selecting = false;
@@ -102,7 +101,7 @@ export class BoxSelectControl {
 	}
 
 	onAdd(map: Map): HTMLElement {
-		this.map = map;
+		this.map = map as any;
 		this.map!.boxZoom.disable();
 		this.map!.getContainer().appendChild(this.boxElement);
 		this.map!.getContainer().addEventListener('pointerdown', this.onMouseDownHandler, true);
@@ -127,7 +126,12 @@ export class BoxSelectControl {
 	getMousePosition(event: MouseEvent): Point {
 		const container = this.map!.getContainer();
 		const rect = container.getBoundingClientRect();
+		// @ts-ignore
 		return new Point(event.clientX - rect.left - container.clientLeft, event.clientY - rect.top - container.clientTop);
+		// return {
+		// 	x: event.clientX - rect.left - container.clientLeft,
+		// 	y: event.clientY - rect.top - container.clientTop
+		// };
 	}
 
 	onKeyDown(event: KeyboardEvent): void {

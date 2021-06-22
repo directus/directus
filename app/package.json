@@ -68,6 +68,7 @@
 		"@vue/compiler-sfc": "3.1.1",
 		"axios": "0.21.1",
 		"base-64": "1.0.0",
+		"buffer": "^5.7.1",
 		"codemirror": "5.62.0",
 		"copyfiles": "2.4.1",
 		"cropperjs": "1.5.12",
