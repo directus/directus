@@ -17,6 +17,7 @@ src/
 ### src/index.js
 
 ```js
+import { ref } from 'vue';
 import LayoutComponent from './layout.vue';
 
 export default {
