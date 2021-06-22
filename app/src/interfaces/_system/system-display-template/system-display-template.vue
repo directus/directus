@@ -1,17 +1,19 @@
 <template>
-	<v-notice v-if="!collectionField" type="warning">
-		{{ t('interfaces.system-display-template.collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="collection === null" type="warning">
-		{{ t('interfaces.system-display-template.select_a_collection') }}
-	</v-notice>
-	<v-field-template
-		v-else
-		:collection="collection"
-		@update:model-value="$emit('input', $event)"
-		:model-value="value"
-		:disabled="disabled"
-	/>
+	<div class="system-display-template">
+		<v-notice v-if="!collectionField" type="warning">
+			{{ t('interfaces.system-display-template.collection_field_not_setup') }}
+		</v-notice>
+		<v-notice v-else-if="collection === null" type="warning">
+			{{ t('interfaces.system-display-template.select_a_collection') }}
+		</v-notice>
+		<v-field-template
+			v-else
+			:collection="collection"
+			:model-value="value"
+			:disabled="disabled"
+			@update:model-value="$emit('input', $event)"
+		/>
+	</div>
 </template>
 
 <script lang="ts">
@@ -45,6 +47,7 @@ export default defineComponent({
 		const collection = computed(() => {
 			if (!props.collectionField) return null;
 			const collectionName = values.value[props.collectionField];
+
 			const collectionExists = !!collectionsStore.collections.find(
 				(collection) => collection.collection === collectionName
 			);
