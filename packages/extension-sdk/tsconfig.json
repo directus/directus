@@ -1,8 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "ES2018",
-		"lib": ["ES2018"],
-		"module": "CommonJS",
+		"target": "ES2019",
+		"lib": ["ES2019"],
 		"moduleResolution": "node",
 		"declaration": true,
 		"declarationMap": true,
@@ -26,7 +25,6 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"rootDir": "./src",
-		"outDir": "./dist"
 	},
 	"include": ["./src/**/*.ts"]
 }

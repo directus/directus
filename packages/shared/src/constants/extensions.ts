@@ -1,6 +1,6 @@
 import { ApiExtensionType, AppExtensionType, ExtensionType } from '../types';
 
-export const SHARED_DEPS = ['vue'];
+export const SHARED_DEPS = ['@directus/extension-sdk', 'vue'];
 
 export const APP_EXTENSION_TYPES: AppExtensionType[] = ['interface', 'display', 'layout', 'module'];
 export const API_EXTENSION_TYPES: ApiExtensionType[] = ['endpoint', 'hook'];

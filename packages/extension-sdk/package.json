@@ -2,9 +2,15 @@
 	"name": "@directus/extension-sdk",
 	"version": "9.0.0-rc.76",
 	"description": "A toolkit to develop extensions to extend Directus.",
-	"main": "dist/index.js",
+	"main": "dist/cjs/index.js",
+	"exports": {
+		"import": "./dist/esm/index.js",
+		"require": "./dist/cjs/index.js"
+	},
 	"scripts": {
-		"build": "tsc --project ./tsconfig.json",
+		"build": "run-p build:*",
+		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
+		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
@@ -14,6 +20,7 @@
 		"@directus/shared": "9.0.0-rc.76"
 	},
 	"devDependencies": {
+		"npm-run-all": "4.1.5",
 		"rimraf": "^3.0.2",
 		"typescript": "^4.3.2"
 	}
