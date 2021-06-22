@@ -161,7 +161,7 @@ this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszy
 click_here: Kliknij tutaj
 to_manually_setup_translations: aby ręcznie ustawić tłumaczenia.
 click_to_manage_translated_fields: >-
-  Nie ma jeszcze tłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno tłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Istnieją {count} tłumaczone pól. Kliknij tutaj, aby nimi zarządzać.
+  Nie ma jeszcze przetłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno przetłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Ilość przetłumaczonych pół: {count}. Kliknij tutaj, aby nimi zarządzać.
 fields_group: Grupa pól
 no_collections_found: Nie znaleziono żadnych kolekcji.
 new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
@@ -364,7 +364,7 @@ field_width: Szerokość pola
 add_filter: Dodaj Filtr
 upper_limit: Górny limit...
 lower_limit: Dolny limit...
-user_directory: Katalog użytkownika
+user_directory: Katalog użytkowników
 documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
@@ -657,7 +657,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
-page_help_users_collection: '**Katalog Użytkownika** — Lista wszystkich użytkowników systemu w tym projekcie.'
+page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
 activity_feed: Kanał aktywności
