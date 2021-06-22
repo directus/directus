@@ -315,6 +315,7 @@ sort_field: Sorter felt
 add_sort_field: Legg til sorteringsfelt
 sort: Sorter
 status: Status
+remove: Fjern
 toggle_manual_sorting: Veksle manuell sortering
 bookmark_doesnt_exist: Bokmerket finnes ikke
 bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.

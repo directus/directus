@@ -378,6 +378,7 @@ sort_field: Lajittelukenttä
 add_sort_field: Lisää lajittelukenttä
 sort: Järjestä
 status: Tila
+remove: Poista
 toggle_manual_sorting: Vaihda manuaalinen lajittelu
 bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
 bookmark_doesnt_exist_copy: Kirjanmerkkiä, jota yrität avata, ei löytynyt.

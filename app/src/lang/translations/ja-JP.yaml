@@ -188,6 +188,7 @@ modified_on: 修正日時
 sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
+remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。

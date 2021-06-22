@@ -372,6 +372,7 @@ sort_field: Sortir Baris
 add_sort_field: Tambah Baris Sortir
 sort: Sortir
 status: Status
+remove: Hapus
 toggle_manual_sorting: Aktifkan Sortir Manual
 bookmark_doesnt_exist: Bookmark Tidak Tersedia
 bookmark_doesnt_exist_copy: Bookmark yang Anda ingin bukan tidak dapat ditemukan.

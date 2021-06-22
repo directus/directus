@@ -416,6 +416,18 @@ export class GraphQLService {
 					_ncontains: {
 						type: GraphQLString,
 					},
+					_starts_with: {
+						type: GraphQLString,
+					},
+					_nstarts_with: {
+						type: GraphQLString,
+					},
+					_ends_with: {
+						type: GraphQLString,
+					},
+					_nends_with: {
+						type: GraphQLString,
+					},
 					_in: {
 						type: new GraphQLList(GraphQLString),
 					},

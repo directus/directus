@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.76",
+	"version": "9.0.0-rc.78",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -59,6 +59,9 @@
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
 	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
 	"files": [
 		"dist",
 		"LICENSE",
@@ -66,15 +69,15 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "9.0.0-rc.76",
-		"@directus/drive": "9.0.0-rc.76",
-		"@directus/drive-azure": "9.0.0-rc.76",
-		"@directus/drive-gcs": "9.0.0-rc.76",
-		"@directus/drive-s3": "9.0.0-rc.76",
-		"@directus/format-title": "9.0.0-rc.76",
-		"@directus/schema": "9.0.0-rc.76",
+		"@directus/app": "9.0.0-rc.78",
+		"@directus/drive": "9.0.0-rc.78",
+		"@directus/drive-azure": "9.0.0-rc.78",
+		"@directus/drive-gcs": "9.0.0-rc.78",
+		"@directus/drive-s3": "9.0.0-rc.78",
+		"@directus/format-title": "9.0.0-rc.78",
+		"@directus/schema": "9.0.0-rc.78",
 		"@directus/shared": "9.0.0-rc.76",
-		"@directus/specs": "9.0.0-rc.76",
+		"@directus/specs": "9.0.0-rc.78",
 		"@godaddy/terminus": "^4.9.0",
 		"@rollup/plugin-alias": "^3.1.2",
 		"@rollup/plugin-virtual": "^2.0.3",
