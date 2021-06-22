@@ -53,7 +53,7 @@
 		"@types/jest": "26.0.23",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",
-		"jest": "27.0.4",
+		"jest": "27.0.5",
 		"jest-environment-jsdom-global": "2.0.4",
 		"mockdate": "3.0.5",
 		"nock": "13.1.0",
