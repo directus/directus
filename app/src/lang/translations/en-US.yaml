@@ -8,6 +8,11 @@ field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
 add_field: Add Field
 role_name: Role Name
+branch: Branch
+leaf: Leaf
+indeterminate: Indeterminate
+exclusive: Exclusive
+children: Children
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
 edited: Value Edited
@@ -889,6 +894,11 @@ interfaces:
     allow_other: Allow Other
     show_more: 'Show {count} more'
     items_shown: Items Shown
+  select-multiple-checkbox-tree:
+    name: Checkboxes (Tree)
+    description: Choose between multiple options via nested checkboxes
+    value_combining: Value Combining
+    value_combining_note: Controls what value is stored when nested selections are made.
   input-code:
     code: Code
     description: Write or share code snippets
