@@ -698,7 +698,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		if (type === 'files') {
 			nextTick(() => {
-				state.relations[1].related_collection = 'directus_files';
+				state.relations[1].related_collection = state.relations[1].related_collection ?? 'directus_files';
 			});
 		}
 
