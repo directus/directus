@@ -80,7 +80,7 @@ async function generateExtensionBundles() {
 
 		const bundle = await rollup({
 			input: 'entry',
-			external: Object.values(sharedDepsMapping),
+			external: SHARED_DEPS,
 			plugins: [virtual({ entry }), alias({ entries: internalImports })],
 		});
 		const { output } = await bundle.generate({ format: 'es' });
