@@ -30,7 +30,7 @@
 	</v-list-group>
 
 	<v-list-item v-else-if="!children && !hidden">
-		<v-checkbox :checked="checked" :label="text" :value="value" v-model="treeValue" />
+		<v-checkbox :disabled="disabled" :checked="checked" :label="text" :value="value" v-model="treeValue" />
 	</v-list-item>
 </template>
 
