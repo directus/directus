@@ -29,9 +29,9 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "9.0.0-rc.78",
-		"@directus/extension-sdk": "9.0.0-rc.76",
+		"@directus/extension-sdk": "9.0.0-rc.78",
 		"@directus/format-title": "9.0.0-rc.78",
-		"@directus/shared": "9.0.0-rc.76",
+		"@directus/shared": "9.0.0-rc.78",
 		"@fullcalendar/core": "5.8.0",
 		"@fullcalendar/daygrid": "5.8.0",
 		"@fullcalendar/interaction": "5.8.0",
