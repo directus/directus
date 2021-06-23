@@ -11,8 +11,8 @@
 			:bounds="geojsonBounds"
 			:source="directusSource"
 			:layers="directusLayers"
-			@click="handleClick"
-			@select="updateSelection"
+			@featureclick="handleClick"
+			@featureselect="updateSelection"
 			@moveend="cameraOptions = $event"
 		/>
 
@@ -47,13 +47,18 @@
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
-						:value="page"
-						@input="toPage"
+						:model-value="page"
+						@update:model-value="toPage"
 					/>
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ t('per_page') }}</span>
-					<v-select @input="limit = +$event" :value="`${limit}`" :items="['1000', '10000', '100000']" inline />
+					<v-select
+						@update:model-value="limit = +$event"
+						:model-value="`${limit}`"
+						:items="['1000', '10000', '100000']"
+						inline
+					/>
 				</div>
 			</div>
 		</template>

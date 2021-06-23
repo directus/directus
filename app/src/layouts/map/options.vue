@@ -17,22 +17,30 @@
 	</template>
 
 	<div class="field">
+		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
+		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+	</div>
+
+	<div class="field">
 		<v-checkbox v-model="fitViewToData" :label="t('layouts.map.fit_view')" />
 	</div>
+
 	<div class="field">
 		<v-checkbox
-			:label="t('layouts.map.fit_data')"
 			v-model="fitDataToView"
+			:label="t('layouts.map.fit_data')"
 			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
 		/>
 	</div>
+
 	<div class="field">
 		<v-checkbox
-			:label="t('layouts.map.cluster')"
 			v-model="clusterData"
+			:label="t('layouts.map.cluster')"
 			:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"
 		/>
 	</div>
+
 	<div class="field">
 		<v-drawer
 			v-model="customLayerDrawerOpen"
@@ -63,10 +71,16 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
 import { useLayoutState } from '@/composables/use-layout';
+import { useAppStore } from '@/stores';
+import { getBasemapSources } from '@/utils/geometry/basemap';
 
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
+
+		const basemaps = getBasemapSources();
+		const appStore = useAppStore();
+		const { basemap } = toRefs(appStore);
 
 		const layoutState = useLayoutState();
 		const {
@@ -96,6 +110,8 @@ export default defineComponent({
 			resetLayers,
 			updateLayers,
 			customLayers,
+			basemaps,
+			basemap,
 		};
 	},
 });

@@ -1,6 +1,4 @@
 import { Map, Point } from 'maplibre-gl';
-import BasemapSelectComponent from '@/utils/geometry/components/basemap-select.vue';
-import { createApp } from 'vue';
 
 export class ButtonControl {
 	active: boolean;
@@ -31,20 +29,6 @@ export class ButtonControl {
 	onRemove(): void {
 		this.element.remove();
 		this.groupElement?.remove();
-	}
-}
-
-export class BasemapSelectControl {
-	component?: any;
-	onAdd(map: Map): HTMLElement {
-		this.component = createApp(BasemapSelectComponent, { map });
-		const container = document.createElement('div');
-		this.component.mount(container);
-		return container.firstChild as HTMLElement;
-	}
-	onRemove(): void {
-		// this.component!.$destroy(); no longer ex??
-		this.component!.unmount();
 	}
 }
 

@@ -14,7 +14,7 @@ import {
 } from 'geojson';
 import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
-import { useI18n } from 'vue-i18n';
+import { i18n } from '@/lang';
 import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
 
 export type GeometryOptions = {
@@ -66,7 +66,6 @@ export function getGeometryFormatForType(type: DataType): GeometryFormat | undef
 }
 
 export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
-	const { t } = useI18n();
 	const { geometryFormat } = options;
 	switch (geometryFormat) {
 		case 'native':
@@ -77,12 +76,11 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 		case 'lnglat':
 			return (entry) => (entry as Point).coordinates;
 		default:
-			throw new Error(t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
+			throw new Error(i18n.global.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
 }
 
 export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeometry {
-	const { t } = useI18n();
 	const { geometryFormat } = options;
 	switch (geometryFormat) {
 		case 'native':
@@ -93,7 +91,7 @@ export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyG
 		case 'lnglat':
 			return (geom) => ({ type: 'Point', coordinates: [Number(geom[0]), Number(geom[1])] } as AnyGeometry);
 		default:
-			throw new Error(t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
+			throw new Error(i18n.global.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
 }
 

@@ -20,11 +20,12 @@ import {
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from 'vue';
+import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, computed, WatchStopHandle } from 'vue';
 
 import getSetting from '@/utils/get-setting';
 import { useAppStore } from '@/stores';
-import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 export default defineComponent({
 	components: {},
@@ -63,6 +64,12 @@ export default defineComponent({
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
+		const { sidebarOpen, basemap } = toRefs(appStore);
+		const basemaps = getBasemapSources();
+		const style = computed(() => {
+			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+			return getStyleFromBasemapSource(source);
+		});
 
 		const popup = new Popup({
 			closeButton: false,
@@ -75,7 +82,6 @@ export default defineComponent({
 		const attributionControl = new AttributionControl({ compact: true });
 		const navigationControl = new NavigationControl();
 		const geolocateControl = new GeolocateControl();
-		const basemapSelectControl = new BasemapSelectControl();
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 			emit('moveend', null);
 		});
@@ -99,13 +105,12 @@ export default defineComponent({
 		function setupMap() {
 			map = new Map({
 				container: 'map-container',
-				style: { version: 8, layers: [] },
+				style: style.value,
 				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
-			map.addControl(basemapSelectControl, 'top-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
@@ -116,7 +121,7 @@ export default defineComponent({
 			}
 
 			map.on('load', () => {
-				watch(() => props.bounds, fitDataBounds);
+				watch(() => style.value, updateStyle), watch(() => props.bounds, fitBounds);
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('click', '__directus_polygons', onFeatureClick);
 				map.on('click', '__directus_points', onFeatureClick);
@@ -127,10 +132,9 @@ export default defineComponent({
 				map.on('mouseleave', '__directus_polygons', updatePopup);
 				map.on('mouseleave', '__directus_points', updatePopup);
 				map.on('mouseleave', '__directus_lines', updatePopup);
-				map.on('basemapselect', updateStyle);
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
-					emit('select', ids);
+					emit('featureselect', ids);
 				});
 				map.on('moveend', (event) => {
 					if (!event.originalEvent) {
@@ -156,7 +160,7 @@ export default defineComponent({
 			setTimeout(() => map.resize(), 300);
 		}
 
-		function fitDataBounds() {
+		function fitBounds() {
 			const bbox = props.data.bbox as LngLatBoundsLike;
 			if (map && bbox) {
 				map.fitBounds(bbox, {
@@ -166,9 +170,10 @@ export default defineComponent({
 			}
 		}
 
-		function updateStyle() {
+		function updateStyle(style: any) {
 			unwatchers.forEach((unwatch) => unwatch());
 			unwatchers.length = 0;
+			map.setStyle(style, { diff: false });
 			map.once('styledata', startWatchers);
 		}
 
@@ -232,9 +237,9 @@ export default defineComponent({
 			const feature = event.features?.[0];
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
-					emit('select', [feature.id]);
+					emit('featureselect', [feature.id]);
 				} else {
-					emit('click', feature.id);
+					emit('featureclick', feature.id);
 				}
 			}
 		}
@@ -414,7 +419,7 @@ export default defineComponent({
 }
 
 .mapboxgl-ctrl-geocoder--button {
-	background: var(--background-normal);
+	background: var(--background-subdued);
 }
 
 .mapboxgl-ctrl-geocoder--icon {

@@ -11,7 +11,7 @@ import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
-import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
+import { parse as wktToGeoJSON } from 'wellknown';
 
 type Action = 'create' | 'read' | 'update';
 

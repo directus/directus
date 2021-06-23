@@ -4,7 +4,11 @@
 			class="map"
 			ref="container"
 			:class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }"
-		></div>
+		/>
+		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+			<v-icon name="map" />
+			<v-select inline v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+		</div>
 		<transition name="fade">
 			<v-info
 				v-if="geometryOptionsError"
@@ -41,7 +45,7 @@
 <script lang="ts">
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue';
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, toRefs, computed } from 'vue';
 import {
 	LngLatBoundsLike,
 	AnimationOptions,
@@ -56,7 +60,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { ButtonControl, BasemapSelectControl } from '@/utils/geometry/controls';
+import { ButtonControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
 import {
 	flatten,
@@ -75,9 +79,11 @@ import styles from './style';
 import { Field, GeometryFormat } from '@/types';
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
+import { useAppStore } from '@/stores';
 
 import { GeometryType } from '@/types';
 type _Geometry = SimpleGeometry | MultiGeometry;
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
 	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
@@ -130,8 +136,15 @@ export default defineComponent({
 		const geometryParsingError = ref<string | TranslateResult>();
 
 		const geometryType = props.fieldData?.schema?.geometry_type || props.geometryType;
-
 		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
+
+		const basemaps = getBasemapSources();
+		const appStore = useAppStore();
+		const { basemap } = toRefs(appStore);
+		const style = computed(() => {
+			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+			return getStyleFromBasemapSource(source);
+		});
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
@@ -149,7 +162,6 @@ export default defineComponent({
 			fitData: new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds),
 			navigation: new NavigationControl(),
 			geolocate: new GeolocateControl(),
-			basemapSelect: new BasemapSelectControl(),
 		};
 
 		onMounted(() => {
@@ -172,18 +184,19 @@ export default defineComponent({
 			resetValue,
 			geometryParsingError,
 			geometryOptionsError,
+			basemaps,
+			basemap,
 		};
 
 		function setupMap() {
 			map = new Map({
 				container: container.value!,
-				style: { version: 8, layers: [] },
+				style: style.value,
 				attributionControl: false,
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
-			map.addControl(controls.basemapSelect, 'top-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
@@ -416,6 +429,12 @@ export default defineComponent({
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 	}
+
+	.basemap-select {
+		position: absolute;
+		bottom: 10px;
+		left: 10px;
+	}
 }
 
 .center {
@@ -424,11 +443,6 @@ export default defineComponent({
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
-}
-
-.v-progress-circular {
-	--v-progress-circular-background-color: var(--primary-25);
-	--v-progress-circular-color: var(--primary-75);
 }
 
 .v-button.hard-reset {

@@ -21,8 +21,6 @@ import { RelationsService } from './relations';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import Keyv from 'keyv';
 
-export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
-
 export class FieldsService {
 	knex: Knex;
 	accountability: Accountability | null;

@@ -33,7 +33,6 @@ import { geometryTypes, GeometryType, GeometryFormat } from '@/types';
 import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
-import { BasemapSelectControl } from '@/utils/geometry/controls';
 
 export default defineComponent({
 	props: {
@@ -87,7 +86,6 @@ export default defineComponent({
 					pitch: map.getPitch(),
 				};
 			});
-			map.addControl(new BasemapSelectControl(), 'top-right');
 		});
 		onUnmounted(() => {
 			map.remove();
