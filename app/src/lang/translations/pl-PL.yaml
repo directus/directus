@@ -795,8 +795,6 @@ referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
 continue: Kontynuuj
-continue_as: >-
-  <b>{name}</b> jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
 default: Domyślnie
