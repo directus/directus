@@ -79,7 +79,7 @@ validationError:
   unique: 值必须唯一
 all_access: 订购全部功能
 no_access: 无访问权限
-use_custom: 使用自定义颜色
+use_custom: 自定义
 field_standard: 标准
 field_presentation: 展示字段
 field_file: 单个文件
