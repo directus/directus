@@ -127,6 +127,9 @@ export default definePanel({
 			field: 'abbreviate',
 			type: 'boolean',
 			name: '$t:abbreviate_value',
+			schema: {
+				default_value: false,
+			},
 			meta: {
 				interface: 'boolean',
 				width: 'half',
