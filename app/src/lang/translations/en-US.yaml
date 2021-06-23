@@ -817,7 +817,7 @@ referential_action_set_default: Set {field} to its default value
 choose_action: Choose Action
 continue: Continue
 continue_as: >-
-  <b>{name}</b> is currently authenticated. If you recognize this account, press continue.
+  {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 creating_webhook: Creating Webhook
 default: Default
