@@ -30,6 +30,7 @@ export class FieldsService {
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
+	schemaCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -38,7 +39,10 @@ export class FieldsService {
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
-		this.cache = getCache().cache;
+
+		const { cache, schemaCache } = getCache();
+		this.cache = cache;
+		this.schemaCache = schemaCache;
 	}
 
 	private get hasReadAccess() {
@@ -250,6 +254,10 @@ export class FieldsService {
 		if (this.cache && env.CACHE_AUTO_PURGE) {
 			await this.cache.clear();
 		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 	}
 
 	async updateField(collection: string, field: RawField): Promise<string> {
@@ -296,6 +304,10 @@ export class FieldsService {
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
 			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return field.field;
@@ -401,6 +413,10 @@ export class FieldsService {
 
 		if (this.cache && env.CACHE_AUTO_PURGE) {
 			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		emitAsyncSafe(`fields.delete`, {
