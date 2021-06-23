@@ -776,8 +776,6 @@ block: Blok
 inline: Doorlopend
 comment: Reactie
 continue: Doorgaan
-continue_as: >-
-  <b>{name}</b> is momenteel ingelogd. Als je dit account herkent, druk dan op 'Doorgaan'.
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
 default: Standaard
