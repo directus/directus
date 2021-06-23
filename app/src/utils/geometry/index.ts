@@ -15,7 +15,7 @@ import {
 import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
 import { useI18n } from 'vue-i18n';
-import wkx from 'wkx';
+import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
 
 export type GeometryOptions = {
 	geometryField: string;
@@ -29,7 +29,7 @@ export type MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
 export type AnyGeometry = Geometry | GeometryCollection;
 export type AllGeoJSON = Geometry & GeometryCollection & Feature & FeatureCollection;
 export type GeoJSONParser = (entry: any) => AnyGeometry | undefined;
-export type GeoJSONSerializer = (entry: AnyGeometry) => any;
+export type GeoJSONSerializer = (entry: AllGeoJSON) => any;
 type Coord = [number, number];
 
 export function expandBBox(bbox: BBox, coord: Coord): BBox {
@@ -71,11 +71,11 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
-			return (entry: AnyGeometry) => entry;
+			return (entry) => entry;
 		case 'wkt':
-			return (entry: AnyGeometry) => wkx.Geometry.parseGeoJSON(entry).toWkt();
+			return (entry) => geojsonToWKT(entry);
 		case 'lnglat':
-			return (entry: AnyGeometry) => (entry as Point).coordinates;
+			return (entry) => (entry as Point).coordinates;
 		default:
 			throw new Error(t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
@@ -87,11 +87,11 @@ export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyG
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
-			return (geom: any) => geom as AnyGeometry;
+			return (geom) => geom as AnyGeometry;
 		case 'wkt':
-			return (geom: any) => wkx.Geometry.parse(geom).toGeoJSON() as AnyGeometry;
+			return (geom) => wktToGeoJSON(geom) as AnyGeometry;
 		case 'lnglat':
-			return (geom: any) => new wkx.Point(Number(geom[0]), Number(geom[1])).toGeoJSON() as AnyGeometry;
+			return (geom) => ({ type: 'Point', coordinates: [Number(geom[0]), Number(geom[1])] } as AnyGeometry);
 		default:
 			throw new Error(t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}

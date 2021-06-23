@@ -59,6 +59,7 @@
 		"@types/mime-types": "2.1.0",
 		"@types/ms": "0.7.31",
 		"@types/qrcode": "1.4.0",
+		"@types/wellknown": "^0.5.1",
 		"@vitejs/plugin-vue": "1.2.3",
 		"@vue/cli-plugin-babel": "4.5.13",
 		"@vue/cli-plugin-router": "4.5.13",
@@ -68,7 +69,6 @@
 		"@vue/compiler-sfc": "3.1.1",
 		"axios": "0.21.1",
 		"base-64": "1.0.0",
-		"buffer": "^5.7.1",
 		"codemirror": "5.62.0",
 		"copyfiles": "2.4.1",
 		"cropperjs": "1.5.12",
@@ -96,6 +96,7 @@
 		"vue": "3.1.1",
 		"vue-i18n": "9.1.6",
 		"vue-router": "4.0.10",
-		"vuedraggable": "4.0.3"
+		"vuedraggable": "4.0.3",
+		"wellknown": "^0.5.0"
 	}
 }

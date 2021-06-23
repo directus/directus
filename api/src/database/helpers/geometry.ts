@@ -1,6 +1,6 @@
 import { Field, RawField } from '../../types';
 import { Knex } from 'knex';
-import wkx from 'wkx';
+import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
 import getDatabase from '..';
 
 export function getGeometryHelper(): KnexSpatial {
@@ -36,9 +36,11 @@ class KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('st_geomfromtext(?, 4326)', text);
 	}
-	intersects(key: string, geojson: string): Knex.Raw {
-		const wkt = wkx.Geometry.parseGeoJSON(geojson).toWkt();
-		const geometry = this.fromText(wkt);
+	fromGeoJSON(geojson: GeoJSONGeometry): Knex.Raw {
+		return this.fromText(geojsonToWKT(geojson));
+	}
+	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('st_intersects(??, ?)', [key, geometry]);
 	}
 }
@@ -70,9 +72,8 @@ class KnexSpatial_MSSQL extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('geometry::STGeomFromText(?, 4326)', text);
 	}
-	intersects(key: string, geojson: string): Knex.Raw {
-		const wkt = wkx.Geometry.parseGeoJSON(geojson).toWkt();
-		const geometry = this.fromText(wkt);
+	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('??.STIntersects(?) = 1', [key, geometry]);
 	}
 }
@@ -89,9 +90,8 @@ class KnexSpatial_Oracle extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('sdo_geometry(?, 4326)', text);
 	}
-	intersects(key: string, geojson: string): Knex.Raw {
-		const wkt = wkx.Geometry.parseGeoJSON(geojson).toWkt();
-		const geometry = this.fromText(wkt);
+	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw(`sdo_relate(??, ?, 'mask=overlapbdyintersect') = 'TRUE'`, [key, geometry]);
 	}
 }

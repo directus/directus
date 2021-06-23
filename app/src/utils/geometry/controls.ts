@@ -38,8 +38,9 @@ export class BasemapSelectControl {
 	component?: any;
 	onAdd(map: Map): HTMLElement {
 		this.component = createApp(BasemapSelectComponent, { map });
-		this.component.mount();
-		return this.component.$el as HTMLElement;
+		const container = document.createElement('div');
+		this.component.mount(container);
+		return container.firstChild as HTMLElement;
 	}
 	onRemove(): void {
 		// this.component!.$destroy(); no longer ex??

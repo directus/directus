@@ -11,7 +11,7 @@ import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
-import wkx from 'wkx';
+import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -225,9 +225,7 @@ export class PayloadService {
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		const helper = getGeometryHelper();
 		const process =
-			action == 'read'
-				? (value: any) => wkx.Geometry.parse(value).toGeoJSON()
-				: (value: any) => helper.fromText(wkx.Geometry.parseGeoJSON(value).toWkt());
+			action == 'read' ? (value: any) => wktToGeoJSON(value) : (value: any) => helper.fromGeoJSON(JSON.parse(value));
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
