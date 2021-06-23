@@ -794,8 +794,6 @@ referential_action_set_null: Anular el campo {field}
 referential_action_set_default: Establecer {field} a su valor predeterminado
 choose_action: Elegir acción
 continue: Continuar
-continue_as: >-
-  Actualmente <b>{name}</b> ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
 editing_role: 'Rol {role}'
 creating_webhook: Creando Webhook
 default: Predeterminado
