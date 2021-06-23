@@ -8,3 +8,4 @@
 
 /packages/shared @nickrum
 /packages/extension-sdk @nickrum
+/app/vite.config.js @nickrum
