@@ -768,8 +768,6 @@ save_current_datetime: Сохранить Текущую Дату/Время
 block: Блокировать
 comment: Комментарий
 continue: Продолжить
-continue_as: >-
-  <b>{name}</b> в настоящее время аутентифицирован. Если вы узнаете этот аккаунт, нажмите продолжить.
 editing_role: '{role} Роль'
 creating_webhook: Создание Веб-хука
 default: По умолчанию

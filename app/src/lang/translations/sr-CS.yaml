@@ -796,8 +796,6 @@ referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
 continue: Nastavi
-continue_as: >-
-  <b>{name}</b> je trenutno autorizovan. Ukoliko prepoznajete ovaj korisnički račun, pritisnite nastavi.
 editing_role: '{role} Uloga'
 creating_webhook: Kreiranje Webhook-a
 default: Podrazumijevano

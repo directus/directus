@@ -796,8 +796,6 @@ referential_action_set_null: Зануляване на {field}
 referential_action_set_default: Задаване на {field} към стойността по подразбиране
 choose_action: Изберете действие
 continue: Продължение
-continue_as: >-
-  <b>{name}</b> в момента е оторизиран. Ако разпознавате този профил, изберете бутона за продължение.
 editing_role: 'Роля - {role}'
 creating_webhook: Създаване на уеб-кука
 default: По подразбиране

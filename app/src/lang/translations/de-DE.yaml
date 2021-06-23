@@ -796,8 +796,6 @@ referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue: Weiter
-continue_as: >-
-  <b>{name}</b> ist bereits authentifiziert. Wenn Sie dieses Konto kennen, drücken Sie bitte auf Fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default: Standard

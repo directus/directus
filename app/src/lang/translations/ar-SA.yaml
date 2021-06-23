@@ -687,8 +687,6 @@ referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
 continue: واصل
-continue_as: >-
-  تمت مصادقة <b> {name} </b> حاليًا. إذا تعرفت على هذا الحساب ، فاضغط على متابعة.
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
 default: الإفتراضي
