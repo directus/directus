@@ -15,7 +15,8 @@ export type FilterOperator =
 	| 'nbetween'
 	| 'empty'
 	| 'nempty'
-	| 'intersects';
+	| 'intersects'
+	| 'nintersects';
 
 export type Filter = {
 	key: string;

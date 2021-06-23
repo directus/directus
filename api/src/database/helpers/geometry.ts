@@ -43,6 +43,9 @@ class KnexSpatial {
 		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('st_intersects(??, ?)', [key, geometry]);
 	}
+	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects(key, geojson).wrap('NOT ', '');
+	}
 }
 
 class KnexSpatial_PG extends KnexSpatial {
@@ -72,9 +75,15 @@ class KnexSpatial_MSSQL extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('geometry::STGeomFromText(?, 4326)', text);
 	}
-	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+	_intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
-		return this.knex.raw('??.STIntersects(?) = 1', [key, geometry]);
+		return this.knex.raw('??.STIntersects(?)', [key, geometry]);
+	}
+	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects(key, geojson).wrap(``, ` = 1`);
+	}
+	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects(key, geojson).wrap(``, ` = 0`);
 	}
 }
 
@@ -90,8 +99,14 @@ class KnexSpatial_Oracle extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('sdo_geometry(?, 4326)', text);
 	}
-	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+	_intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
-		return this.knex.raw(`sdo_relate(??, ?, 'mask=overlapbdyintersect') = 'TRUE'`, [key, geometry]);
+		return this.knex.raw(`sdo_relate(??, ?, 'mask=overlapbdyintersect')`, [key, geometry]);
+	}
+	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects(key, geojson).wrap(``, ` = 'TRUE'`);
+	}
+	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects(key, geojson).wrap(``, ` = 'FALSE'`);
 	}
 }

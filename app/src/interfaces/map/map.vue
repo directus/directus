@@ -95,8 +95,8 @@ export default defineComponent({
 			default: null,
 		},
 		fieldData: {
-			type: Object as PropType<Field>,
-			required: true,
+			type: Object as PropType<Field | undefined>,
+			required: false,
 		},
 		value: {
 			type: [Object, Array, String] as PropType<any>,
@@ -168,7 +168,7 @@ export default defineComponent({
 			watch(
 				() => props.loading,
 				(loading) => {
-					if (!loading) {
+					if (!loading || !props.fieldData) {
 						setupMap();
 						onUnmounted(() => map.remove());
 					}

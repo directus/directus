@@ -60,7 +60,7 @@ export default function getAvailableOperatorsForType(type: typeof types[number])
 		case 'geometry':
 			return {
 				type,
-				operators: ['eq', 'neq', 'intersects'],
+				operators: ['intersects', 'nintersects'],
 			};
 		default:
 			return {

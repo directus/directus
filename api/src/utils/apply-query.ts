@@ -410,6 +410,11 @@ export function applyFilter(
 				const helper = getGeometryHelper();
 				dbQuery[logical].whereRaw(helper.intersects(key, compareValue));
 			}
+
+			if (operator == '_nintersects') {
+				const helper = getGeometryHelper();
+				dbQuery[logical].whereRaw(helper.nintersects(key, compareValue));
+			}
 		}
 
 		function getWhereColumn(path: string[], collection: string) {

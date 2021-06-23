@@ -500,6 +500,8 @@ operators:
   nempty: Isn't empty
   all: Contains these keys
   has: Contains some of these keys
+  intersects: Intersects
+  nintersects: Doesn't intersects
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -1205,6 +1207,7 @@ layouts:
     end_date_field: End Date Field
   map:
     map: Map
+    basemap: Basemap
     layers: Layers,
     edit_custom_layers: Edit Layers
     cluster_options: Clustering options
