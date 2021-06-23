@@ -684,8 +684,6 @@ block: Blokas
 inline: Toje pačioje eilutėje
 comment: Komentaras
 continue: Tęsti
-continue_as: >-
-  <b>{name}</b> jau yra prisijungęs. Jeigu tai jūs, spauskite tęsti.
 editing_role: '{role} grupė'
 creating_webhook: Kuriamas Webhook'ą
 default: Numatytasis
