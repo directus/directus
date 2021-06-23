@@ -7,13 +7,15 @@ import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
 
-if (env.CACHE_ENABLED === true) {
-	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = getKeyvInstance();
-	cache.on('error', (err) => logger.error(err));
-}
+export function getCache() {
+	if (env.CACHE_ENABLED === true && cache === null) {
+		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
+		cache = getKeyvInstance();
+		cache.on('error', (err) => logger.error(err));
+	}
 
-export default cache;
+	return cache;
+}
 
 function getKeyvInstance() {
 	switch (env.CACHE_STORE) {

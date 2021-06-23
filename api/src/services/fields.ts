@@ -1,7 +1,7 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import cache from '../cache';
+import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
@@ -28,6 +28,7 @@ export class FieldsService {
 	payloadService: PayloadService;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
+	cache = getCache();
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -36,6 +37,7 @@ export class FieldsService {
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
+		this.cache = getCache();
 	}
 
 	private get hasReadAccess() {
@@ -244,8 +246,8 @@ export class FieldsService {
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 	}
 
@@ -291,8 +293,8 @@ export class FieldsService {
 			}
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 
 		return field.field;
@@ -396,8 +398,8 @@ export class FieldsService {
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 
 		emitAsyncSafe(`fields.delete`, {
