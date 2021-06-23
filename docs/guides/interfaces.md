@@ -89,7 +89,7 @@ To be read by the Admin App, your custom interface's Vue component must first be
 We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve @rollup/plugin-replace rollup-plugin-terser rollup-plugin-vue @vue/compiler-sfc
+npm i -D rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-terser rollup-plugin-vue @vue/compiler-sfc
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
@@ -97,7 +97,6 @@ You can then use the following Rollup configuration within `rollup.config.js`:
 ```js
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import vue from 'rollup-plugin-vue';
 
@@ -107,16 +106,8 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
-	plugins: [
-		vue(),
-		nodeResolve(),
-		commonjs(),
-		replace({
-			'process\u200b.env.NODE_ENV': JSON.stringify('production'),
-			preventAssignment: true,
-		}),
-		terser(),
-	],
+	external: ['vue', '@directus/extension-sdk'],
+	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```
 

@@ -42,7 +42,7 @@ export default defineComponent({
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
-			required: true,
+			default: null,
 		},
 		template: {
 			type: String,

@@ -1,6 +1,4 @@
-import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { asyncPool } from '@/utils/async-pool';
 import { App } from 'vue';
 import { getLayouts } from './index';
 import { LayoutConfig } from './types';
@@ -13,18 +11,11 @@ export async function registerLayouts(app: App): Promise<void> {
 	const layouts: LayoutConfig[] = Object.values(layoutModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/layouts/');
-		const customLayouts: string[] = customResponse.data.data || [];
+		const customLayouts: { default: LayoutConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-layout')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
 
-		await asyncPool(5, customLayouts, async (layoutName) => {
-			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/${layoutName}/index.js`);
-				layouts.push(result.default);
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
-			}
-		});
+		layouts.push(...customLayouts.default);
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom layouts`);

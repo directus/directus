@@ -30,9 +30,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@/types';
+import { Relation, Collection, Field } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
-import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
 	emits: ['input'],

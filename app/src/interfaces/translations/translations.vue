@@ -380,6 +380,8 @@ export default defineComponent({
 			async function fetchPreviews() {
 				if (!translationsRelation.value || !languagesRelation.value || !languages.value) return;
 
+				if (props.primaryKey === '+') return;
+
 				loading.value = true;
 
 				try {

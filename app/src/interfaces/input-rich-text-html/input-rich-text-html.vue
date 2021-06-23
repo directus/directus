@@ -4,7 +4,7 @@
 			ref="editorElement"
 			:init="editorOptions"
 			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand"
+			model-events="change keydown blur focus paste ExecCommand SetContent"
 			v-model="internalValue"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
@@ -265,7 +265,9 @@ export default defineComponent({
 				return props.value;
 			},
 			set(newValue: string) {
-				emit('input', newValue);
+				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
+					emit('input', newValue);
+				}
 			},
 		});
 

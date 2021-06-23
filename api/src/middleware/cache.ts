@@ -1,11 +1,13 @@
 import { RequestHandler } from 'express';
-import cache from '../cache';
+import { getCache } from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getCacheKey } from '../utils/get-cache-key';
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
+	const { cache } = getCache();
+
 	if (req.method.toLowerCase() !== 'get') return next();
 	if (env.CACHE_ENABLED !== true) return next();
 	if (!cache) return next();
