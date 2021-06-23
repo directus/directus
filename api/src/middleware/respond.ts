@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { Transform, transforms } from 'json2csv';
 import ms from 'ms';
 import { PassThrough } from 'stream';
-import cache from '../cache';
+import { getCache } from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheKey } from '../utils/get-cache-key';
@@ -10,6 +10,8 @@ import { parse as toXML } from 'js2xmlparser';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
+	const { cache } = getCache();
+
 	if (
 		req.method.toLowerCase() === 'get' &&
 		env.CACHE_ENABLED === true &&

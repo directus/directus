@@ -1,7 +1,7 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import cache from '../cache';
+import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
@@ -18,6 +18,7 @@ import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
 import { isEqual } from 'lodash';
 import { RelationsService } from './relations';
+import Keyv from 'keyv';
 
 export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
@@ -28,6 +29,8 @@ export class FieldsService {
 	payloadService: PayloadService;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
+	cache: Keyv<any> | null;
+	schemaCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -36,6 +39,10 @@ export class FieldsService {
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
+
+		const { cache, schemaCache } = getCache();
+		this.cache = cache;
+		this.schemaCache = schemaCache;
 	}
 
 	private get hasReadAccess() {
@@ -244,8 +251,12 @@ export class FieldsService {
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 	}
 
@@ -291,8 +302,12 @@ export class FieldsService {
 			}
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return field.field;
@@ -396,8 +411,12 @@ export class FieldsService {
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		emitAsyncSafe(`fields.delete`, {
