@@ -2,13 +2,13 @@ import express, { Router } from 'express';
 import path from 'path';
 import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
 import {
+	ensureExtensionsDirs,
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
-	pluralize,
 	resolvePackage,
 } from '@directus/shared/utils';
-import { APP_EXTENSION_TYPES, EXTENSION_TYPES, SHARED_DEPS } from '@directus/shared/constants';
+import { APP_EXTENSION_TYPES, SHARED_DEPS } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
@@ -31,11 +31,17 @@ let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
 
 export async function initializeExtensions(): Promise<void> {
-	await ensureDirsExist();
+	await ensureExtensionsDirs(env.EXTENSIONS_PATH);
 	extensions = await getExtensions();
-	extensionBundles = await generateExtensionBundles();
 
-	logger.info(`Loaded extensions: ${listExtensions().join(', ')}`);
+	if (!('DIRECTUS_DEV' in process.env)) {
+		extensionBundles = await generateExtensionBundles();
+	}
+
+	const loadedExtensions = listExtensions();
+	if (loadedExtensions.length > 0) {
+		logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
+	}
 }
 
 export function listExtensions(type?: ExtensionType): string[] {
@@ -81,7 +87,7 @@ async function generateExtensionBundles() {
 
 		const bundle = await rollup({
 			input: 'entry',
-			external: SHARED_DEPS,
+			external: Object.values(sharedDepsMapping),
 			plugins: [virtual({ entry }), alias({ entries: internalImports })],
 		});
 		const { output } = await bundle.generate({ format: 'es' });
@@ -94,17 +100,6 @@ async function generateExtensionBundles() {
 	return bundles;
 }
 
-async function ensureDirsExist() {
-	for (const extensionType of EXTENSION_TYPES) {
-		const dirPath = path.resolve(env.EXTENSIONS_PATH, pluralize(extensionType));
-		try {
-			await fse.ensureDir(dirPath);
-		} catch (err) {
-			logger.warn(err);
-		}
-	}
-}
-
 async function getSharedDepsMapping(deps: string[]) {
 	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
 
@@ -115,7 +110,7 @@ async function getSharedDepsMapping(deps: string[]) {
 		if (depName) {
 			depsMapping[dep] = `${env.PUBLIC_URL}/admin/${depName}`;
 		} else {
-			logger.warn(`Couldn't find extension internal dependency "${dep}"`);
+			logger.warn(`Couldn't find shared extension dependency "${dep}"`);
 		}
 	}
 
