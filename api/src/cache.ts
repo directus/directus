@@ -8,7 +8,7 @@ import { validateEnv } from './utils/validate-env';
 let cache: Keyv | null = null;
 let schemaCache: Keyv | null = null;
 
-export function getCache() {
+export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 		cache = getKeyvInstance(ms(env.CACHE_TTL as string));
@@ -23,7 +23,7 @@ export function getCache() {
 	return { cache, schemaCache };
 }
 
-function getKeyvInstance(ttl: number | undefined) {
+function getKeyvInstance(ttl: number | undefined): Keyv {
 	switch (env.CACHE_STORE) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl));
