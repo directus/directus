@@ -2,7 +2,7 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
-## v9.0.0-rc.79 (June 22, 2021)
+## v9.0.0-rc.80 (June 22, 2021)
 
 ### :sparkles: New Features
 
@@ -35,6 +35,10 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 - [#6443](https://github.com/directus/directus/pull/6443) update vue monorepo to v3.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
 - [#6439](https://github.com/directus/directus/pull/6439) chore(deps): update dependency marked to v2.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
 - [#6424](https://github.com/directus/directus/pull/6424) chore(deps): update dependency jest to v27.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
+
+## v9.0.0-rc.79 (June 22, 2021)
+
+Nothing to see here.. (Vue's update to 3.1.2 made things go 💥)
 
 ## v9.0.0-rc.78 (June 21, 2021)
 
