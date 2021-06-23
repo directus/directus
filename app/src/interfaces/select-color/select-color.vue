@@ -132,6 +132,10 @@ export default defineComponent({
 					name: 'Light Gray',
 					color: '#ECEFF1',
 				},
+				{
+					name: 'White',
+					color: '#FFFFFF',
+				},
 			],
 		},
 		width: {
