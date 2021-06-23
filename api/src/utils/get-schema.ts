@@ -12,20 +12,32 @@ import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { mergePermissions } from './merge-permissions';
 import getDatabase from '../database';
+import { getCache } from '../cache';
+import env from '../env';
+import ms from 'ms';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
 }): Promise<SchemaOverview> {
-	// Allows for use in the CLI
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
+	const { schemaCache } = getCache();
 
-	const result: SchemaOverview = {
-		collections: {},
-		relations: [],
-		permissions: [],
-	};
+	let result: SchemaOverview;
+
+	if (env.CACHE_SCHEMA !== false && schemaCache) {
+		const cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+
+		if (cachedSchema) {
+			result = cachedSchema;
+		} else {
+			result = await getDatabaseSchema(database, schemaInspector);
+			await schemaCache.set('schema', result, typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+		}
+	} else {
+		result = await getDatabaseSchema(database, schemaInspector);
+	}
 
 	let permissions: Permission[] = [];
 
@@ -64,6 +76,19 @@ export async function getSchema(options?: {
 	}
 
 	result.permissions = permissions;
+
+	return result;
+}
+
+async function getDatabaseSchema(
+	database: Knex,
+	schemaInspector: ReturnType<typeof SchemaInspector>
+): Promise<SchemaOverview> {
+	const result: SchemaOverview = {
+		collections: {},
+		relations: [],
+		permissions: [],
+	};
 
 	const schemaOverview = await schemaInspector.overview();
 

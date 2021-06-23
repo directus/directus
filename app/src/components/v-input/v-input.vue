@@ -58,7 +58,7 @@ import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
 
 export default defineComponent({
-	emits: ['click', 'keydown', 'update:modelValue'],
+	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	inheritAttrs: false,
 	props: {
 		autofocus: {
@@ -149,6 +149,7 @@ export default defineComponent({
 				trimIfEnabled();
 				attrs?.onBlur?.(e);
 			},
+			focus: (e: PointerEvent) => emit('focus', e),
 		}));
 		const attributes = computed(() => omit(attrs, ['class']));
 		const classes = computed(() => [

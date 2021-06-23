@@ -3,7 +3,14 @@
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
+					<span
+						ref="contentEl"
+						class="content"
+						:contenteditable="!disabled"
+						@keydown="onKeyDown"
+						@input="onInput"
+						@click="onClick"
+					>
 						<span class="text" />
 					</span>
 					<span class="placeholder" v-if="placeholder && !modelValue">{{ placeholder }}</span>

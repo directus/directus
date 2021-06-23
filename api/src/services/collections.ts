@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
-import cache from '../cache';
+import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -10,6 +10,7 @@ import logger from '../logger';
 import { FieldsService } from '../services/fields';
 import { RawField } from '../types';
 import { ItemsService, MutationOptions } from '../services/items';
+import Keyv from 'keyv';
 import {
 	AbstractServiceOptions,
 	Accountability,
@@ -30,12 +31,18 @@ export class CollectionsService {
 	accountability: Accountability | null;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
+	cache: Keyv<any> | null;
+	schemaCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
+
+		const { cache, schemaCache } = getCache();
+		this.cache = cache;
+		this.schemaCache = schemaCache;
 	}
 
 	/**
@@ -129,8 +136,12 @@ export class CollectionsService {
 			return payload.collection;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return payload.collection;
@@ -157,8 +168,12 @@ export class CollectionsService {
 			return collectionNames;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return collections;
@@ -417,8 +432,12 @@ export class CollectionsService {
 			await trx.schema.dropTable(collectionKey);
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return collectionKey;
@@ -444,8 +463,12 @@ export class CollectionsService {
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
 		return collectionKeys;

@@ -6,6 +6,7 @@
 				:checked="groupCheckedStateOverride"
 				:label="text"
 				:value="value"
+				:disabled="disabled"
 				v-model="treeValue"
 			/>
 		</template>
@@ -23,12 +24,13 @@
 			:text="choice[itemText]"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
+			:disabled="disabled"
 			v-model="treeValue"
 		/>
 	</v-list-group>
 
 	<v-list-item v-else-if="!children && !hidden">
-		<v-checkbox :checked="checked" :label="text" :value="value" v-model="treeValue" />
+		<v-checkbox :disabled="disabled" :checked="checked" :label="text" :value="value" v-model="treeValue" />
 	</v-list-item>
 </template>
 
@@ -88,13 +90,31 @@ export default defineComponent({
 			type: String,
 			default: 'children',
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const visibleChildrenValues = computed(() => {
 			if (!props.search) return props.children?.map((child) => child[props.itemValue]);
+
 			return props.children
-				?.filter((child) => child[props.itemText].toLowerCase().includes(props.search.toLowerCase()))
+				?.filter(
+					(child) =>
+						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
+						childrenHaveMatch(child.children)
+				)
 				?.map((child) => child[props.itemValue]);
+
+			function childrenHaveMatch(children: Record<string, any>[] | undefined): boolean {
+				if (!children) return false;
+				return children.some(
+					(child) =>
+						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
+						childrenHaveMatch(child[props.itemChildren])
+				);
+			}
 		});
 
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);

@@ -856,7 +856,6 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 interfaces:
   presentation-links:

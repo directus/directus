@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, without } from 'lodash';
-import cache from '../cache';
+import { getCache } from '../cache';
+import Keyv from 'keyv';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
@@ -53,6 +54,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	accountability: Accountability | null;
 	eventScope: string;
 	schema: SchemaOverview;
+	cache: Keyv<any> | null;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -60,6 +62,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
+		this.cache = getCache().cache;
 
 		return this;
 	}
@@ -209,8 +212,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKey;
@@ -237,8 +240,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -525,8 +528,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		if (opts?.emitEvents !== false) {
@@ -590,8 +593,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -674,8 +677,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		if (opts?.emitEvents !== false) {
@@ -718,6 +721,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			for (const [name, field] of fields) {
+				if (this.schema.collections[this.collection].primary === name) {
+					defaults[name] = null;
+					continue;
+				}
+
 				defaults[name] = field.defaultValue;
 			}
 
