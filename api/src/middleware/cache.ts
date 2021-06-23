@@ -6,7 +6,7 @@ import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getCacheKey } from '../utils/get-cache-key';
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
-	const cache = getCache();
+	const { cache } = getCache();
 
 	if (req.method.toLowerCase() !== 'get') return next();
 	if (env.CACHE_ENABLED !== true) return next();

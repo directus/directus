@@ -10,7 +10,7 @@ import { parse as toXML } from 'js2xmlparser';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
-	const cache = getCache();
+	const { cache } = getCache();
 
 	if (
 		req.method.toLowerCase() === 'get' &&

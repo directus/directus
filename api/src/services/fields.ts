@@ -18,6 +18,7 @@ import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
 import { isEqual } from 'lodash';
 import { RelationsService } from './relations';
+import Keyv from 'keyv';
 
 export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
@@ -28,7 +29,7 @@ export class FieldsService {
 	payloadService: PayloadService;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
-	cache = getCache();
+	cache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -37,7 +38,7 @@ export class FieldsService {
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
-		this.cache = getCache();
+		this.cache = getCache().cache;
 	}
 
 	private get hasReadAccess() {

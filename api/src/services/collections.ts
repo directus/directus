@@ -9,6 +9,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
 import { FieldsService, RawField } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
+import Keyv from 'keyv';
 import {
 	AbstractServiceOptions,
 	Accountability,
@@ -29,14 +30,14 @@ export class CollectionsService {
 	accountability: Accountability | null;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
-	cache: ReturnType<typeof getCache>;
+	cache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
-		this.cache = getCache();
+		this.cache = getCache().cache;
 	}
 
 	/**

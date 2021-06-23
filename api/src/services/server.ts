@@ -189,7 +189,7 @@ export class ServerService {
 				return {};
 			}
 
-			const cache = getCache();
+			const { cache } = getCache();
 
 			const checks: Record<string, HealthCheck[]> = {
 				'cache:responseTime': [
