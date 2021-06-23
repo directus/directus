@@ -68,25 +68,27 @@ The storage implementation. See [Storage](#storage) for more information.
 
 Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
 
-**NOTE:** 
+**NOTE:**
 
-If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to unpredictable behaviors. This scenario might be a case while writing tests.
+If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
+unpredictable behaviors. This scenario might be a case while writing tests.
 
-For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test scenario by granting false access rights to your previous logged-in users.
+For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
+Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
+scenario by granting false access rights to your previous logged-in users.
 
 Adding prefixes to your Storage instances would solve this error:
 
 ```js
-import { Directus, MemoryStorage } from "@directus/sdk";
-import { randomBytes } from "crypto";
+import { Directus, MemoryStorage } from '@directus/sdk';
+import { randomBytes } from 'crypto';
 
 // ...
 
-const prefix = randomBytes(8).toString("hex");
+const prefix = randomBytes(8).toString('hex');
 const storage = new MemoryStorage(prefix);
 const url = `http://${host}:${port}`;
 const directus = new Directus(url, { storage });
-
 ```
 
 #### `options.transport`

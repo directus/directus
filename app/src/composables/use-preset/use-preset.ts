@@ -1,6 +1,6 @@
 import { useCollection } from '@/composables/use-collection';
 import { usePresetsStore, useUserStore } from '@/stores';
-import { Filter, Preset } from '@/types/';
+import { Filter, Preset } from '@directus/shared/types';
 import { debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 

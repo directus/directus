@@ -378,6 +378,7 @@ sort_field: Lajittelukenttä
 add_sort_field: Lisää lajittelukenttä
 sort: Järjestä
 status: Tila
+remove: Poista
 toggle_manual_sorting: Vaihda manuaalinen lajittelu
 bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
 bookmark_doesnt_exist_copy: Kirjanmerkkiä, jota yrität avata, ei löytynyt.
@@ -787,8 +788,6 @@ relational_triggers: Relatiiviset käynnistimet
 referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
 continue: Jatka
-continue_as: >-
-  <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
 editing_role: '{role} rooli'
 creating_webhook: Luodaan webhook
 default: Oletus

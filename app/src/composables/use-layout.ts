@@ -1,12 +1,7 @@
 import { getLayouts } from '@/layouts';
-import { LayoutProps } from '@/layouts/types';
-import { computed, reactive, provide, inject, Ref, UnwrapRef } from 'vue';
-
-type LayoutState<T, Options, Query> = {
-	props: LayoutProps<Options, Query>;
-} & T;
-
-const layoutSymbol = Symbol();
+import { computed, reactive, provide, Ref, UnwrapRef } from 'vue';
+import { LayoutProps, LayoutState } from '@directus/shared/types';
+import { LAYOUT_SYMBOL } from '@directus/shared/constants';
 
 export function useLayout<Options = any, Query = any>(
 	layoutName: Ref<string>,
@@ -25,17 +20,7 @@ export function useLayout<Options = any, Query = any>(
 		return reactive<LayoutState<Record<string, any>, Options, Query>>({ ...setupResult, props });
 	});
 
-	provide(layoutSymbol, layoutState);
-
-	return layoutState;
-}
-
-export function useLayoutState<T extends Record<string, any> = Record<string, any>, Options = any, Query = any>(): Ref<
-	UnwrapRef<LayoutState<Record<string, any>, Options, Query>>
-> {
-	const layoutState = inject<Ref<UnwrapRef<LayoutState<T, Options, Query>>>>(layoutSymbol);
-
-	if (!layoutState) throw new Error('[useLayoutState]: This function has to be used inside a layout component.');
+	provide(LAYOUT_SYMBOL, layoutState);
 
 	return layoutState;
 }

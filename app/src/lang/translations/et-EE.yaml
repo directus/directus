@@ -378,6 +378,7 @@ sort_field: Sorteerimisväli
 add_sort_field: "Lisa sorteerimisväli\n"
 sort: Sorteeri
 status: Staatus
+remove: Eemalda
 toggle_manual_sorting: Luba käsitsi sorteerimine
 bookmark_doesnt_exist: Järjehoidjat ei leitud
 bookmark_doesnt_exist_copy: Järjehoidja, mida sa soovid kasutada, ei leitud.
@@ -794,8 +795,6 @@ referential_action_set_null: Nulli {field} väli
 referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
 continue: Continue
-continue_as: >-
-  <b>{name}</b> on selle projekti jaoks juba autenditud. Kui tunned selle konto ära, siis vajuta Jätka.
 editing_role: '{role} roll'
 creating_webhook: Loo veebikonks
 default: Vaikimisi

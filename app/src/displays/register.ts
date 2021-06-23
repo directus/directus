@@ -1,6 +1,4 @@
-import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { asyncPool } from '@/utils/async-pool';
 import { App } from 'vue';
 import { getDisplays } from './index';
 import { DisplayConfig } from './types';
@@ -12,18 +10,11 @@ export async function registerDisplays(app: App): Promise<void> {
 
 	const displays: DisplayConfig[] = Object.values(displayModules).map((module) => module.default);
 	try {
-		const customResponse = await api.get('/extensions/displays/');
-		const customDisplays: string[] = customResponse.data.data || [];
+		const customDisplays: { default: DisplayConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-display')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`);
 
-		await asyncPool(5, customDisplays, async (displayName) => {
-			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/${displayName}/index.js`);
-				displays.push(result.default);
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.warn(`Couldn't load custom displays "${displayName}":`, err);
-			}
-		});
+		displays.push(...customDisplays.default);
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom displays`);
