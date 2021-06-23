@@ -21,6 +21,7 @@ import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 
 type LayoutOptions = {
 	template?: string;
@@ -43,7 +44,7 @@ export default defineLayout<LayoutOptions>({
 		actions: CalendarActions,
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, locale } = useI18n();
 
 		const calendarEl = ref<HTMLElement>();
 		const calendar = ref<Calendar>();
@@ -240,6 +241,17 @@ export default defineLayout<LayoutOptions>({
 				}
 			},
 			{ deep: true, immediate: true }
+		);
+
+		watch(
+			[calendar, locale],
+			async () => {
+				if (calendar.value) {
+					const calendarLocale = await getFullcalendarLocale(locale.value);
+					calendar.value.setOption('locale', calendarLocale);
+				}
+			},
+			{ immediate: true }
 		);
 
 		const showingCount = computed(() => {
