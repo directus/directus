@@ -10,7 +10,7 @@ import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { useFieldsStore } from '@/stores';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 type TimeSeriesOptions = {
@@ -21,7 +21,7 @@ type TimeSeriesOptions = {
 	range: string; // 1 week, etc
 	color: string;
 	decimals: number;
-	precision: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+	precision: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
 	min?: number;
 	max?: number;
 	filter: Filter | null;

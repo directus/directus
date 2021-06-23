@@ -100,6 +100,10 @@ export default definePanel({
 							value: 'day',
 						},
 						{
+							text: 'Week',
+							value: 'week',
+						},
+						{
 							text: 'Month',
 							value: 'month',
 						},

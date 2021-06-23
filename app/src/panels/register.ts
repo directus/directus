@@ -6,13 +6,13 @@ import { PanelConfig } from './types';
 const { panelsRaw } = getPanels();
 
 export async function registerPanels(app: App): Promise<void> {
-	const interfaceModules = import.meta.globEager('./*/**/index.ts');
+	const panelModules = import.meta.globEager('./*/**/index.ts');
 
-	const panels: PanelConfig[] = Object.values(interfaceModules).map((module) => module.default);
+	const panels: PanelConfig[] = Object.values(panelModules).map((module) => module.default);
 
 	try {
 		const customPanels: { default: PanelConfig[] } = import.meta.env.DEV
-			? await import('@directus-extensions-interface')
+			? await import('@directus-extensions-panel')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/panels/index.js`);
 
 		panels.push(...customPanels.default);
@@ -24,10 +24,10 @@ export async function registerPanels(app: App): Promise<void> {
 	panelsRaw.value = panels;
 
 	panelsRaw.value.forEach((inter: PanelConfig) => {
-		app.component('interface-' + inter.id, inter.component);
+		app.component('panel-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
-			app.component(`interface-options-${inter.id}`, inter.options);
+			app.component(`panel-options-${inter.id}`, inter.options);
 		}
 	});
 }
