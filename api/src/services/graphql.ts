@@ -1277,10 +1277,10 @@ export class GraphQLService {
 					},
 				}),
 				resolve: async () => ({
-					interfaces: await listExtensions('interfaces'),
-					displays: await listExtensions('displays'),
-					layouts: await listExtensions('layouts'),
-					modules: await listExtensions('modules'),
+					interfaces: listExtensions('interface'),
+					displays: listExtensions('display'),
+					layouts: listExtensions('layout'),
+					modules: listExtensions('module'),
 				}),
 			},
 			server_specs_oas: {

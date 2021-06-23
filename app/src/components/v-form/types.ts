@@ -1,4 +1,5 @@
-import { Field, FilterOperator } from '@/types';
+import { Field } from '@/types';
+import { FilterOperator } from '@directus/shared/types';
 
 export type FormField = DeepPartial<Field> & {
 	field: string;

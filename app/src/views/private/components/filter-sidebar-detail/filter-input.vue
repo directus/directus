@@ -60,7 +60,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator, types } from '@/types';
+import { FilterOperator } from '@directus/shared/types';
+import { types } from '@/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({

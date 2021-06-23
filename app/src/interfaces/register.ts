@@ -1,6 +1,4 @@
-import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { asyncPool } from '@/utils/async-pool';
 import { App } from 'vue';
 import { getInterfaces } from './index';
 import { InterfaceConfig } from './types';
@@ -13,20 +11,11 @@ export async function registerInterfaces(app: App): Promise<void> {
 	const interfaces: InterfaceConfig[] = Object.values(interfaceModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/interfaces/');
-		const customInterfaces: string[] = customResponse.data.data || [];
+		const customInterfaces: { default: InterfaceConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-interface')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
 
-		await asyncPool(5, customInterfaces, async (interfaceName) => {
-			try {
-				const result = await import(
-					/* @vite-ignore */ `${getRootPath()}extensions/interfaces/${interfaceName}/index.js`
-				);
-				interfaces.push(result.default);
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.warn(`Couldn't load custom interface "${interfaceName}":`, err);
-			}
-		});
+		interfaces.push(...customInterfaces.default);
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);

@@ -3,7 +3,7 @@
 	"version": "9.0.0-rc.80",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
-	"author": "Rijk van Zanten <rijk@rngr.org>",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"main": "dist/index.html",
 	"files": [
 		"dist",
@@ -18,7 +18,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development vite",
+		"dev": "vite",
 		"build": "vite build",
 		"serve": "vite preview",
 		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
@@ -29,7 +29,9 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@directus/docs": "9.0.0-rc.80",
+		"@directus/extension-sdk": "9.0.0-rc.80",
 		"@directus/format-title": "9.0.0-rc.80",
+		"@directus/shared": "9.0.0-rc.80",
 		"@fullcalendar/core": "5.8.0",
 		"@fullcalendar/daygrid": "5.8.0",
 		"@fullcalendar/interaction": "5.8.0",

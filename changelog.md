@@ -7,34 +7,53 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 ### :sparkles: New Features
 
 - **API**
-  - :warning: [#6456](https://github.com/directus/directus/pull/6456) Add schema caching ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6437](https://github.com/directus/directus/pull/6437) Add support for starts/ends with filters ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#6456](https://github.com/directus/directus/pull/6456) Add schema caching
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6437](https://github.com/directus/directus/pull/6437) Add support for starts/ends with filters
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **App**
-  - [#6441](https://github.com/directus/directus/pull/6441) Add checkboxes-tree interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6430](https://github.com/directus/directus/pull/6430) Add Serbian (Latin) Language ([@srkinftel](https://github.com/srkinftel))
+  - [#6441](https://github.com/directus/directus/pull/6441) Add checkboxes-tree interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6430](https://github.com/directus/directus/pull/6430) Add Serbian (Latin) Language
+    ([@srkinftel](https://github.com/srkinftel))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6455](https://github.com/directus/directus/pull/6455) Fixed issue that would prevent source code editing from staging values in wysiwyg ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6454](https://github.com/directus/directus/pull/6454) Fixed color option of the notice presentation interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6453](https://github.com/directus/directus/pull/6453) Fixed issue that would throw error in console when creating a new item in a collection w/ translations  ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6451](https://github.com/directus/directus/pull/6451) Fix creating custom names for recommend collection fields on new collection setup drawer ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6450](https://github.com/directus/directus/pull/6450) Fixed rendering of SVGs in single file image interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6449](https://github.com/directus/directus/pull/6449) Fix header buttons not functioning in markdown interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6447](https://github.com/directus/directus/pull/6447) Don't default to `directus_files` in local store on existing relation ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6442](https://github.com/directus/directus/pull/6442) Fix display template on collection detail page ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6421](https://github.com/directus/directus/pull/6421) Update admin to use `no-store` ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#6361](https://github.com/directus/directus/pull/6361) Fix spacings and icons on presentation link buttons ([@HitomiTenshi](https://github.com/HitomiTenshi))
+  - [#6455](https://github.com/directus/directus/pull/6455) Fixed issue that would prevent source code editing from
+    staging values in wysiwyg ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6454](https://github.com/directus/directus/pull/6454) Fixed color option of the notice presentation interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6453](https://github.com/directus/directus/pull/6453) Fixed issue that would throw error in console when creating
+    a new item in a collection w/ translations ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6451](https://github.com/directus/directus/pull/6451) Fix creating custom names for recommend collection fields on
+    new collection setup drawer ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6450](https://github.com/directus/directus/pull/6450) Fixed rendering of SVGs in single file image interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6449](https://github.com/directus/directus/pull/6449) Fix header buttons not functioning in markdown interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6447](https://github.com/directus/directus/pull/6447) Don't default to `directus_files` in local store on existing
+    relation ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6442](https://github.com/directus/directus/pull/6442) Fix display template on collection detail page
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6421](https://github.com/directus/directus/pull/6421) Update admin to use `no-store`
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6361](https://github.com/directus/directus/pull/6361) Fix spacings and icons on presentation link buttons
+    ([@HitomiTenshi](https://github.com/HitomiTenshi))
 - **API**
-  - [#6444](https://github.com/directus/directus/pull/6444) Don't return default val for PK field in singleton ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6444](https://github.com/directus/directus/pull/6444) Don't return default val for PK field in singleton
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :package: Dependency Updates
 
-- [#6445](https://github.com/directus/directus/pull/6445) fix(deps): update dependency gatsby-source-filesystem to v3.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6443](https://github.com/directus/directus/pull/6443) update vue monorepo to v3.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6439](https://github.com/directus/directus/pull/6439) chore(deps): update dependency marked to v2.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6424](https://github.com/directus/directus/pull/6424) chore(deps): update dependency jest to v27.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6445](https://github.com/directus/directus/pull/6445) fix(deps): update dependency gatsby-source-filesystem to
+  v3.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6443](https://github.com/directus/directus/pull/6443) update vue monorepo to v3.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6439](https://github.com/directus/directus/pull/6439) chore(deps): update dependency marked to v2.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6424](https://github.com/directus/directus/pull/6424) chore(deps): update dependency jest to v27.0.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.79 (June 22, 2021)
 
@@ -45,189 +64,299 @@ Nothing to see here.. (Vue's update to 3.1.2 made things go 💥)
 ### :rocket: Improvements
 
 - **App**
-  - [#6413](https://github.com/directus/directus/pull/6413) Use correct input type for type in advanced filter sidebar ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6413](https://github.com/directus/directus/pull/6413) Use correct input type for type in advanced filter sidebar
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6412](https://github.com/directus/directus/pull/6412) Fixed issue that would prevent button/list-item links from functioning  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6412](https://github.com/directus/directus/pull/6412) Fixed issue that would prevent button/list-item links from
+    functioning ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ## v9.0.0-rc.77 (June 21, 2021)
 
 ### :sparkles: New Features
 
 - **API**
-  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6341](https://github.com/directus/directus/pull/6341) Add support for `read` hooks on `items` ([@MoltenCoffee](https://github.com/MoltenCoffee))
-  - [#6294](https://github.com/directus/directus/pull/6294) Allow overriding the s-maxage cache header ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as
+    Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6341](https://github.com/directus/directus/pull/6341) Add support for `read` hooks on `items`
+    ([@MoltenCoffee](https://github.com/MoltenCoffee))
+  - [#6294](https://github.com/directus/directus/pull/6294) Allow overriding the s-maxage cache header
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **App**
-  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6379](https://github.com/directus/directus/pull/6379) Add ability to specify what fields to clone on "Save as
+    Copy" ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :rocket: Improvements
 
 - **API**
-  - :warning: [#6355](https://github.com/directus/directus/pull/6355) Use `no-store` instead of `no-cache` for skipping the cache ([@nachogarcia](https://github.com/nachogarcia))
-  - [#6349](https://github.com/directus/directus/pull/6349) Use existing file extension as default ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6347](https://github.com/directus/directus/pull/6347) Redact tokens from logs ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - :warning: [#6355](https://github.com/directus/directus/pull/6355) Use `no-store` instead of `no-cache` for skipping
+    the cache ([@nachogarcia](https://github.com/nachogarcia))
+  - [#6349](https://github.com/directus/directus/pull/6349) Use existing file extension as default
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6347](https://github.com/directus/directus/pull/6347) Redact tokens from logs
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :bug: Bug Fixes
 
 - **API**
-  - [#6350](https://github.com/directus/directus/pull/6350) Don't send sensitive data in webhooks ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6308](https://github.com/directus/directus/pull/6308) Fixed invalid onDelete constraint for OracleDB ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6350](https://github.com/directus/directus/pull/6350) Don't send sensitive data in webhooks
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6308](https://github.com/directus/directus/pull/6308) Fixed invalid onDelete constraint for OracleDB
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 - **App**
-  - [#6348](https://github.com/directus/directus/pull/6348) Fixed issue that would cause uploads to the root folder of the file library to fail ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6318](https://github.com/directus/directus/pull/6318) Fixed issue that would prevent setting the placeholder on the input interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6289](https://github.com/directus/directus/pull/6289) Fixed issue that would prevent the "Import from URL" functionality to work in a many to many interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6348](https://github.com/directus/directus/pull/6348) Fixed issue that would cause uploads to the root folder of
+    the file library to fail ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6318](https://github.com/directus/directus/pull/6318) Fixed issue that would prevent setting the placeholder on
+    the input interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6289](https://github.com/directus/directus/pull/6289) Fixed issue that would prevent the "Import from URL"
+    functionality to work in a many to many interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :memo: Documentation
 
-- [#6360](https://github.com/directus/directus/pull/6360) Add "require('axios')" in API hooks examples ([@paescuj](https://github.com/paescuj))
-- [#6339](https://github.com/directus/directus/pull/6339) Fix broken link in quickstart ([@geertijewski](https://github.com/geertijewski))
-- [#6311](https://github.com/directus/directus/pull/6311) Update SDK doc with note on using multiple instances  ([@martinemmert](https://github.com/martinemmert))
-- [#6284](https://github.com/directus/directus/pull/6284) Add workaround for vite auto-replacement in docs ([@nickrum](https://github.com/nickrum))
+- [#6360](https://github.com/directus/directus/pull/6360) Add "require('axios')" in API hooks examples
+  ([@paescuj](https://github.com/paescuj))
+- [#6339](https://github.com/directus/directus/pull/6339) Fix broken link in quickstart
+  ([@geertijewski](https://github.com/geertijewski))
+- [#6311](https://github.com/directus/directus/pull/6311) Update SDK doc with note on using multiple instances
+  ([@martinemmert](https://github.com/martinemmert))
+- [#6284](https://github.com/directus/directus/pull/6284) Add workaround for vite auto-replacement in docs
+  ([@nickrum](https://github.com/nickrum))
 
 ### :package: Dependency Updates
 
-- [#6406](https://github.com/directus/directus/pull/6406) chore(deps): update typescript-eslint monorepo to v4.28.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6405](https://github.com/directus/directus/pull/6405) chore(deps): update dependency vue-router to v4.0.10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6401](https://github.com/directus/directus/pull/6401) chore(deps): update dependency codemirror to v5.62.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6400](https://github.com/directus/directus/pull/6400) chore(deps): update dependency rollup to v2.52.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6399](https://github.com/directus/directus/pull/6399) chore(deps): update dependency swagger-ui-watcher to v2.1.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6392](https://github.com/directus/directus/pull/6392) chore(deps): update dependency vite to v2.3.8 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6391](https://github.com/directus/directus/pull/6391) chore(deps): update dependency @types/inquirer to v7.3.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6380](https://github.com/directus/directus/pull/6380) chore(deps): update dependency eslint to v7.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6371](https://github.com/directus/directus/pull/6371) chore(deps): update dependency pinia to v2.0.0-beta.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6363](https://github.com/directus/directus/pull/6363) chore(deps): update dependency @types/jsonwebtoken to v8.5.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6357](https://github.com/directus/directus/pull/6357) chore(deps): update dependency typescript to v4.3.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6342](https://github.com/directus/directus/pull/6342) fix(deps): update dependency chalk to v4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6338](https://github.com/directus/directus/pull/6338) chore(deps): update postgres docker tag to v13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6337](https://github.com/directus/directus/pull/6337) chore(deps): update dependency rollup to v2.52.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- :warning: [#6336](https://github.com/directus/directus/pull/6336) Use node.js v16 in Docker image ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6334](https://github.com/directus/directus/pull/6334) chore(deps): update dependency fs-extra to v10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6333](https://github.com/directus/directus/pull/6333) chore(deps): update dependency dotenv to v10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6332](https://github.com/directus/directus/pull/6332) chore(deps): update mariadb docker tag to v10.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6331](https://github.com/directus/directus/pull/6331) chore(deps): update fullcalendar monorepo to v5.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6330](https://github.com/directus/directus/pull/6330) chore(deps): update dependency marked to v2.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6329](https://github.com/directus/directus/pull/6329) chore(deps): update dependency typescript to v4.3.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6328](https://github.com/directus/directus/pull/6328) fix(deps): update dependency ms to v2.1.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6327](https://github.com/directus/directus/pull/6327) chore(deps): update dependency vue-router to v4.0.9 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6324](https://github.com/directus/directus/pull/6324) chore(deps): update dependency globby to v11.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6323](https://github.com/directus/directus/pull/6323) fix(deps): pin dependencies ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6322](https://github.com/directus/directus/pull/6322) Configure Renovate ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6305](https://github.com/directus/directus/pull/6305) Bump sass from 1.35.0 to 1.35.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6304](https://github.com/directus/directus/pull/6304) Bump inquirer from 8.1.0 to 8.1.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6300](https://github.com/directus/directus/pull/6300) Bump rollup from 2.51.2 to 2.52.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6275](https://github.com/directus/directus/pull/6275) Bump @typescript-eslint/eslint-plugin from 4.26.1 to 4.27.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6274](https://github.com/directus/directus/pull/6274) Bump @typescript-eslint/parser from 4.26.1 to 4.27.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6273](https://github.com/directus/directus/pull/6273) Bump sass from 1.34.1 to 1.35.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6272](https://github.com/directus/directus/pull/6272) Bump aws-sdk from 2.927.0 to 2.928.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6406](https://github.com/directus/directus/pull/6406) chore(deps): update typescript-eslint monorepo to v4.28.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6405](https://github.com/directus/directus/pull/6405) chore(deps): update dependency vue-router to v4.0.10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6401](https://github.com/directus/directus/pull/6401) chore(deps): update dependency codemirror to v5.62.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6400](https://github.com/directus/directus/pull/6400) chore(deps): update dependency rollup to v2.52.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6399](https://github.com/directus/directus/pull/6399) chore(deps): update dependency swagger-ui-watcher to v2.1.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6392](https://github.com/directus/directus/pull/6392) chore(deps): update dependency vite to v2.3.8
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6391](https://github.com/directus/directus/pull/6391) chore(deps): update dependency @types/inquirer to v7.3.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6380](https://github.com/directus/directus/pull/6380) chore(deps): update dependency eslint to v7.29.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6371](https://github.com/directus/directus/pull/6371) chore(deps): update dependency pinia to v2.0.0-beta.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6363](https://github.com/directus/directus/pull/6363) chore(deps): update dependency @types/jsonwebtoken to v8.5.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6357](https://github.com/directus/directus/pull/6357) chore(deps): update dependency typescript to v4.3.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6342](https://github.com/directus/directus/pull/6342) fix(deps): update dependency chalk to v4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6338](https://github.com/directus/directus/pull/6338) chore(deps): update postgres docker tag to v13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6337](https://github.com/directus/directus/pull/6337) chore(deps): update dependency rollup to v2.52.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- :warning: [#6336](https://github.com/directus/directus/pull/6336) Use node.js v16 in Docker image
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6334](https://github.com/directus/directus/pull/6334) chore(deps): update dependency fs-extra to v10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6333](https://github.com/directus/directus/pull/6333) chore(deps): update dependency dotenv to v10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6332](https://github.com/directus/directus/pull/6332) chore(deps): update mariadb docker tag to v10.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6331](https://github.com/directus/directus/pull/6331) chore(deps): update fullcalendar monorepo to v5.8.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6330](https://github.com/directus/directus/pull/6330) chore(deps): update dependency marked to v2.1.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6329](https://github.com/directus/directus/pull/6329) chore(deps): update dependency typescript to v4.3.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6328](https://github.com/directus/directus/pull/6328) fix(deps): update dependency ms to v2.1.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6327](https://github.com/directus/directus/pull/6327) chore(deps): update dependency vue-router to v4.0.9
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6324](https://github.com/directus/directus/pull/6324) chore(deps): update dependency globby to v11.0.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6323](https://github.com/directus/directus/pull/6323) fix(deps): pin dependencies
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6322](https://github.com/directus/directus/pull/6322) Configure Renovate
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6305](https://github.com/directus/directus/pull/6305) Bump sass from 1.35.0 to 1.35.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6304](https://github.com/directus/directus/pull/6304) Bump inquirer from 8.1.0 to 8.1.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6300](https://github.com/directus/directus/pull/6300) Bump rollup from 2.51.2 to 2.52.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6275](https://github.com/directus/directus/pull/6275) Bump @typescript-eslint/eslint-plugin from 4.26.1 to 4.27.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6274](https://github.com/directus/directus/pull/6274) Bump @typescript-eslint/parser from 4.26.1 to 4.27.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6273](https://github.com/directus/directus/pull/6273) Bump sass from 1.34.1 to 1.35.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6272](https://github.com/directus/directus/pull/6272) Bump aws-sdk from 2.927.0 to 2.928.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
 
 ## v9.0.0-rc.76 (June 14, 2021)
 
 ### :sparkles: New Features
 
 - **API**
-  - [#6221](https://github.com/directus/directus/pull/6221) Add support for date distance adjustment in `$NOW` filter variable ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6216](https://github.com/directus/directus/pull/6216) Added support for nodemailer ignoreTLS option ([@nichols-green](https://github.com/nichols-green))
+  - [#6221](https://github.com/directus/directus/pull/6221) Add support for date distance adjustment in `$NOW` filter
+    variable ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6216](https://github.com/directus/directus/pull/6216) Added support for nodemailer ignoreTLS option
+    ([@nichols-green](https://github.com/nichols-green))
 
 ### :rocket: Improvements
 
 - **API**
-  - [#6211](https://github.com/directus/directus/pull/6211) Optimized oracle schema overview query ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6211](https://github.com/directus/directus/pull/6211) Optimized oracle schema overview query
+    ([@aidenfoxx](https://github.com/aidenfoxx))
 
 ### :bug: Bug Fixes
 
 - **API**
-  - [#6267](https://github.com/directus/directus/pull/6267) Fix issue that would cause emails to be displayed incorrectly in certain email clients ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6225](https://github.com/directus/directus/pull/6225) Fix Oracle env error ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#6208](https://github.com/directus/directus/pull/6208) Moved special check above localTypeMap check. ([@Oreilles](https://github.com/Oreilles))
-  - [#6190](https://github.com/directus/directus/pull/6190) Fix type casting of boolean env var ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6267](https://github.com/directus/directus/pull/6267) Fix issue that would cause emails to be displayed
+    incorrectly in certain email clients ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6225](https://github.com/directus/directus/pull/6225) Fix Oracle env error
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6208](https://github.com/directus/directus/pull/6208) Moved special check above localTypeMap check.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#6190](https://github.com/directus/directus/pull/6190) Fix type casting of boolean env var
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **App**
-  - [#6264](https://github.com/directus/directus/pull/6264) Fixed issue that could cause the HTML interface to emit a change on first load ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6263](https://github.com/directus/directus/pull/6263) Fixed issue that would prevent the m2o from working on foreign keys with no meta row ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6262](https://github.com/directus/directus/pull/6262) Fixes issue that would prevent the layout from refreshing on batch operations ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6258](https://github.com/directus/directus/pull/6258) Fix collection selection in system-collections interface ([@nickrum](https://github.com/nickrum))
-  - [#6236](https://github.com/directus/directus/pull/6236) Fix missing styling for WYSIWYG ([@masterwendu](https://github.com/masterwendu))
-  - [#6212](https://github.com/directus/directus/pull/6212) Fix proxying to the app from a subpath ([@nickrum](https://github.com/nickrum))
+  - [#6264](https://github.com/directus/directus/pull/6264) Fixed issue that could cause the HTML interface to emit a
+    change on first load ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6263](https://github.com/directus/directus/pull/6263) Fixed issue that would prevent the m2o from working on
+    foreign keys with no meta row ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6262](https://github.com/directus/directus/pull/6262) Fixes issue that would prevent the layout from refreshing on
+    batch operations ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6258](https://github.com/directus/directus/pull/6258) Fix collection selection in system-collections interface
+    ([@nickrum](https://github.com/nickrum))
+  - [#6236](https://github.com/directus/directus/pull/6236) Fix missing styling for WYSIWYG
+    ([@masterwendu](https://github.com/masterwendu))
+  - [#6212](https://github.com/directus/directus/pull/6212) Fix proxying to the app from a subpath
+    ([@nickrum](https://github.com/nickrum))
 - **specs**
   - [#6179](https://github.com/directus/directus/pull/6179) Fix OpenAPI specs ([@paescuj](https://github.com/paescuj))
 
 ### :memo: Documentation
 
-- [#6232](https://github.com/directus/directus/pull/6232) Update the app extension docs to work with Vue 3 ([@nickrum](https://github.com/nickrum))
-- [#6209](https://github.com/directus/directus/pull/6209) Add note on file env vars ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6232](https://github.com/directus/directus/pull/6232) Update the app extension docs to work with Vue 3
+  ([@nickrum](https://github.com/nickrum))
+- [#6209](https://github.com/directus/directus/pull/6209) Add note on file env vars
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :package: Dependency Updates
 
-- [#6240](https://github.com/directus/directus/pull/6240) Bump cropperjs from 1.5.11 to 1.5.12 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6239](https://github.com/directus/directus/pull/6239) Bump npm-watch from 0.9.0 to 0.10.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6238](https://github.com/directus/directus/pull/6238) Bump eslint-plugin-vue from 7.11.0 to 7.11.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6237](https://github.com/directus/directus/pull/6237) Bump aws-sdk from 2.926.0 to 2.927.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6201](https://github.com/directus/directus/pull/6201) Bump rollup from 2.51.1 to 2.51.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6200](https://github.com/directus/directus/pull/6200) Bump eslint-plugin-vue from 7.10.0 to 7.11.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6199](https://github.com/directus/directus/pull/6199) Bump aws-sdk from 2.925.0 to 2.926.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6198](https://github.com/directus/directus/pull/6198) Bump gatsby-source-filesystem from 3.7.0 to 3.7.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6240](https://github.com/directus/directus/pull/6240) Bump cropperjs from 1.5.11 to 1.5.12
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6239](https://github.com/directus/directus/pull/6239) Bump npm-watch from 0.9.0 to 0.10.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6238](https://github.com/directus/directus/pull/6238) Bump eslint-plugin-vue from 7.11.0 to 7.11.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6237](https://github.com/directus/directus/pull/6237) Bump aws-sdk from 2.926.0 to 2.927.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6201](https://github.com/directus/directus/pull/6201) Bump rollup from 2.51.1 to 2.51.2
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6200](https://github.com/directus/directus/pull/6200) Bump eslint-plugin-vue from 7.10.0 to 7.11.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6199](https://github.com/directus/directus/pull/6199) Bump aws-sdk from 2.925.0 to 2.926.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6198](https://github.com/directus/directus/pull/6198) Bump gatsby-source-filesystem from 3.7.0 to 3.7.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
 
 ## v9.0.0-rc.75 (June 10, 2021)
 
 ### 🚨 App Extensions
 
-This release includes the big switch from Vue 2 to Vue 3. If you have (complicated) app extensions, make sure to update the build chain of your extension and make sure you're aware of [the breaking changes you might have to account for](https://v3.vuejs.org/guide/migration/introduction.html#breaking-changes). We'll be upgrading the documentation and providing new boilerplates for Vue 3 based extensions in the coming days.
+This release includes the big switch from Vue 2 to Vue 3. If you have (complicated) app extensions, make sure to update
+the build chain of your extension and make sure you're aware of
+[the breaking changes you might have to account for](https://v3.vuejs.org/guide/migration/introduction.html#breaking-changes).
+We'll be upgrading the documentation and providing new boilerplates for Vue 3 based extensions in the coming days.
 
 ### :sparkles: New Features
 
 - **API**
-  - [#6155](https://github.com/directus/directus/pull/6155) Allow any of grant's (nested) configuration parameters (oAuth) ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6140](https://github.com/directus/directus/pull/6140) Add item duplicate fields configuration option to directus_collections ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6101](https://github.com/directus/directus/pull/6101) Add support for _FILE environment variables ([@paescuj](https://github.com/paescuj))
+  - [#6155](https://github.com/directus/directus/pull/6155) Allow any of grant's (nested) configuration parameters
+    (oAuth) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6140](https://github.com/directus/directus/pull/6140) Add item duplicate fields configuration option to
+    directus_collections ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6101](https://github.com/directus/directus/pull/6101) Add support for \_FILE environment variables
+    ([@paescuj](https://github.com/paescuj))
 - **App**
-  - :warning: [#5339](https://github.com/directus/directus/pull/5339) Port the app to Vue 3 ([@nickrum](https://github.com/nickrum))
+  - :warning: [#5339](https://github.com/directus/directus/pull/5339) Port the app to Vue 3
+    ([@nickrum](https://github.com/nickrum))
 
 ### :rocket: Improvements
 
 - **API**
-  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6119](https://github.com/directus/directus/pull/6119) Don't treat numbers larger than the JS max number size as number values in environment variables ([@skizer](https://github.com/skizer))
+  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication
+    (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6119](https://github.com/directus/directus/pull/6119) Don't treat numbers larger than the JS max number size as
+    number values in environment variables ([@skizer](https://github.com/skizer))
 - **App**
-  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6186](https://github.com/directus/directus/pull/6186) Add number formatting to formatted-values display ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6168](https://github.com/directus/directus/pull/6168) Show better message for improperly formatted emails on login ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6118](https://github.com/directus/directus/pull/6118) Support async preRegisterCheck for custom modules ([@t7tran](https://github.com/t7tran))
+  - :warning: [#6187](https://github.com/directus/directus/pull/6187) Add additional check to Two-Factor Authentication
+    (by @masterwendu) ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6186](https://github.com/directus/directus/pull/6186) Add number formatting to formatted-values display
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6168](https://github.com/directus/directus/pull/6168) Show better message for improperly formatted emails on login
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6118](https://github.com/directus/directus/pull/6118) Support async preRegisterCheck for custom modules
+    ([@t7tran](https://github.com/t7tran))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6174](https://github.com/directus/directus/pull/6174) Fix issue that would cause sort order of fields to be corrupted on field changes ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6173](https://github.com/directus/directus/pull/6173) Prevent translation rows from being edited before existing values are loaded ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6172](https://github.com/directus/directus/pull/6172) Fix translations hint not linking to collection ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6174](https://github.com/directus/directus/pull/6174) Fix issue that would cause sort order of fields to be
+    corrupted on field changes ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6173](https://github.com/directus/directus/pull/6173) Prevent translation rows from being edited before existing
+    values are loaded ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6172](https://github.com/directus/directus/pull/6172) Fix translations hint not linking to collection
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6171](https://github.com/directus/directus/pull/6171) Use JSON editor for JSON field type default value
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **API**
-  - [#6167](https://github.com/directus/directus/pull/6167) Cleanup one_allowed_collections field on collection delete ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6163](https://github.com/directus/directus/pull/6163) Fix field update for data types with length or boolean as default value ([@paescuj](https://github.com/paescuj))
-  - [#6153](https://github.com/directus/directus/pull/6153) Fixed issue that would cause foreign key constraints to be missed in pascal cased table names in postgres ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6167](https://github.com/directus/directus/pull/6167) Cleanup one_allowed_collections field on collection delete
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6163](https://github.com/directus/directus/pull/6163) Fix field update for data types with length or boolean as
+    default value ([@paescuj](https://github.com/paescuj))
+  - [#6153](https://github.com/directus/directus/pull/6153) Fixed issue that would cause foreign key constraints to be
+    missed in pascal cased table names in postgres ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :memo: Documentation
 
-- [#6188](https://github.com/directus/directus/pull/6188) Adding an example to cron hook ([@juancarlosjr97](https://github.com/juancarlosjr97))
-- [#6150](https://github.com/directus/directus/pull/6150) Describe breaking change in filter syntax in v8 migration information  ([@nachogarcia](https://github.com/nachogarcia))
-- [#6135](https://github.com/directus/directus/pull/6135) List cron in Event Format Options ([@benhaynes](https://github.com/benhaynes))
+- [#6188](https://github.com/directus/directus/pull/6188) Adding an example to cron hook
+  ([@juancarlosjr97](https://github.com/juancarlosjr97))
+- [#6150](https://github.com/directus/directus/pull/6150) Describe breaking change in filter syntax in v8 migration
+  information ([@nachogarcia](https://github.com/nachogarcia))
+- [#6135](https://github.com/directus/directus/pull/6135) List cron in Event Format Options
+  ([@benhaynes](https://github.com/benhaynes))
 
 ### :package: Dependency Updates
 
-- [#6177](https://github.com/directus/directus/pull/6177) Bump aws-sdk from 2.924.0 to 2.925.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6176](https://github.com/directus/directus/pull/6176) Bump @azure/storage-blob from 12.5.0 to 12.6.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6175](https://github.com/directus/directus/pull/6175) Bump jest-environment-jsdom from 26.6.2 to 27.0.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6147](https://github.com/directus/directus/pull/6147) Bump dotenv from 9.0.2 to 10.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6146](https://github.com/directus/directus/pull/6146) Bump jest-environment-jsdom from 26.6.2 to 27.0.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6145](https://github.com/directus/directus/pull/6145) Bump @types/codemirror from 0.0.109 to 5.60.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6144](https://github.com/directus/directus/pull/6144) Bump lint-staged from 10.5.4 to 11.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6126](https://github.com/directus/directus/pull/6126) Bump execa from 5.0.1 to 5.1.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6125](https://github.com/directus/directus/pull/6125) Bump slugify from 1.5.0 to 1.5.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6124](https://github.com/directus/directus/pull/6124) Bump prettier from 2.3.0 to 2.3.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6123](https://github.com/directus/directus/pull/6123) Bump connect-redis from 5.2.0 to 6.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
-- [#6122](https://github.com/directus/directus/pull/6122) Bump @types/sharp from 0.28.1 to 0.28.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6177](https://github.com/directus/directus/pull/6177) Bump aws-sdk from 2.924.0 to 2.925.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6176](https://github.com/directus/directus/pull/6176) Bump @azure/storage-blob from 12.5.0 to 12.6.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6175](https://github.com/directus/directus/pull/6175) Bump jest-environment-jsdom from 26.6.2 to 27.0.3
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6147](https://github.com/directus/directus/pull/6147) Bump dotenv from 9.0.2 to 10.0.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6146](https://github.com/directus/directus/pull/6146) Bump jest-environment-jsdom from 26.6.2 to 27.0.3
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6145](https://github.com/directus/directus/pull/6145) Bump @types/codemirror from 0.0.109 to 5.60.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6144](https://github.com/directus/directus/pull/6144) Bump lint-staged from 10.5.4 to 11.0.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6126](https://github.com/directus/directus/pull/6126) Bump execa from 5.0.1 to 5.1.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6125](https://github.com/directus/directus/pull/6125) Bump slugify from 1.5.0 to 1.5.3
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6124](https://github.com/directus/directus/pull/6124) Bump prettier from 2.3.0 to 2.3.1
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6123](https://github.com/directus/directus/pull/6123) Bump connect-redis from 5.2.0 to 6.0.0
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
+- [#6122](https://github.com/directus/directus/pull/6122) Bump @types/sharp from 0.28.1 to 0.28.3
+  ([@dependabot[bot]](https://github.com/apps/dependabot))
 
 ## v9.0.0-rc.74 (June 7, 2021)
 

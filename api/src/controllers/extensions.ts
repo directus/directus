@@ -1,28 +1,24 @@
-import express, { Router } from 'express';
-import env from '../env';
-import { RouteNotFoundException } from '../exceptions';
-import { listExtensions } from '../extensions';
-import { respond } from '../middleware/respond';
+import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
+import { RouteNotFoundException } from '../exceptions';
+import { listExtensions, getAppExtensionSource } from '../extensions';
+import { respond } from '../middleware/respond';
+import { depluralize } from '@directus/shared/utils';
+import { AppExtensionType, Plural } from '@directus/shared/types';
+import { APP_EXTENSION_TYPES } from '@directus/shared/constants';
 
 const router = Router();
 
-const extensionsPath = env.EXTENSIONS_PATH as string;
-
-const appExtensions = ['interfaces', 'layouts', 'displays', 'modules'];
-
 router.get(
-	['/:type', '/:type/*'],
+	'/:type',
 	asyncHandler(async (req, res, next) => {
-		if (appExtensions.includes(req.params.type) === false) {
+		const type = depluralize(req.params.type as Plural<AppExtensionType>);
+
+		if (APP_EXTENSION_TYPES.includes(type) === false) {
 			throw new RouteNotFoundException(req.path);
 		}
 
-		return next();
-	}),
-	express.static(extensionsPath),
-	asyncHandler(async (req, res, next) => {
-		const extensions = await listExtensions(req.params.type);
+		const extensions = listExtensions(type);
 
 		res.locals.payload = {
 			data: extensions,
@@ -31,6 +27,25 @@ router.get(
 		return next();
 	}),
 	respond
+);
+
+router.get(
+	'/:type/index.js',
+	asyncHandler(async (req, res) => {
+		const type = depluralize(req.params.type as Plural<AppExtensionType>);
+
+		if (APP_EXTENSION_TYPES.includes(type) === false) {
+			throw new RouteNotFoundException(req.path);
+		}
+
+		const extensionSource = getAppExtensionSource(type);
+		if (extensionSource === undefined) {
+			throw new RouteNotFoundException(req.path);
+		}
+
+		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+		res.end(extensionSource);
+	})
 );
 
 export default router;
