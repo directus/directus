@@ -144,7 +144,7 @@ export default definePanel({
 				},
 			},
 			schema: {
-				default_value: 2,
+				default_value: 0,
 			},
 		},
 		{
