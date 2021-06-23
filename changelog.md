@@ -2,6 +2,40 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.79 (June 22, 2021)
+
+### :sparkles: New Features
+
+- **API**
+  - :warning: [#6456](https://github.com/directus/directus/pull/6456) Add schema caching ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6437](https://github.com/directus/directus/pull/6437) Add support for starts/ends with filters ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#6441](https://github.com/directus/directus/pull/6441) Add checkboxes-tree interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6430](https://github.com/directus/directus/pull/6430) Add Serbian (Latin) Language ([@srkinftel](https://github.com/srkinftel))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6455](https://github.com/directus/directus/pull/6455) Fixed issue that would prevent source code editing from staging values in wysiwyg ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6454](https://github.com/directus/directus/pull/6454) Fixed color option of the notice presentation interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6453](https://github.com/directus/directus/pull/6453) Fixed issue that would throw error in console when creating a new item in a collection w/ translations  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6451](https://github.com/directus/directus/pull/6451) Fix creating custom names for recommend collection fields on new collection setup drawer ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6450](https://github.com/directus/directus/pull/6450) Fixed rendering of SVGs in single file image interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6449](https://github.com/directus/directus/pull/6449) Fix header buttons not functioning in markdown interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6447](https://github.com/directus/directus/pull/6447) Don't default to `directus_files` in local store on existing relation ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6442](https://github.com/directus/directus/pull/6442) Fix display template on collection detail page ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6421](https://github.com/directus/directus/pull/6421) Update admin to use `no-store` ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6361](https://github.com/directus/directus/pull/6361) Fix spacings and icons on presentation link buttons ([@HitomiTenshi](https://github.com/HitomiTenshi))
+- **API**
+  - [#6444](https://github.com/directus/directus/pull/6444) Don't return default val for PK field in singleton ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#6445](https://github.com/directus/directus/pull/6445) fix(deps): update dependency gatsby-source-filesystem to v3.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6443](https://github.com/directus/directus/pull/6443) update vue monorepo to v3.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6439](https://github.com/directus/directus/pull/6439) chore(deps): update dependency marked to v2.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6424](https://github.com/directus/directus/pull/6424) chore(deps): update dependency jest to v27.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.78 (June 21, 2021)
 
 ### :rocket: Improvements
