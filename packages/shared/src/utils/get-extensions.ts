@@ -1,6 +1,6 @@
 import path from 'path';
 import fse from 'fs-extra';
-import { AppExtensionType, Extension } from '../types';
+import { Extension } from '../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
 import { EXTENSION_NAME_REGEX, EXTENSION_TYPES } from '../constants';
@@ -84,12 +84,4 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 	}
 
 	return extensions;
-}
-
-export function generateExtensionsEntry(type: AppExtensionType, extensions: Extension[]): string {
-	const filteredExtensions = extensions.filter((extension) => extension.type === type);
-
-	return `${filteredExtensions
-		.map((extension, i) => `import e${i} from '${path.resolve(extension.path, extension.entrypoint || '')}';\n`)
-		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }
