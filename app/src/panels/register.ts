@@ -1,6 +1,4 @@
-import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { asyncPool } from '@/utils/async-pool';
 import { App } from 'vue';
 import { getPanels } from './index';
 import { PanelConfig } from './types';
@@ -8,33 +6,28 @@ import { PanelConfig } from './types';
 const { panelsRaw } = getPanels();
 
 export async function registerPanels(app: App): Promise<void> {
-	const panelModules = import.meta.globEager('./*/**/index.ts');
+	const interfaceModules = import.meta.globEager('./*/**/index.ts');
 
-	const panels: PanelConfig[] = Object.values(panelModules).map((module) => module.default);
+	const panels: PanelConfig[] = Object.values(interfaceModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/panels/');
-		const customPanels: string[] = customResponse.data.data || [];
+		const customPanels: { default: PanelConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-interface')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/panels/index.js`);
 
-		await asyncPool(5, customPanels, async (panelName) => {
-			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/panels/${panelName}/index.js`);
-				panels.push(result.default);
-			} catch (err) {
-				console.warn(`Couldn't load custom panel "${panelName}":`, err);
-			}
-		});
+		panels.push(...customPanels.default);
 	} catch {
+		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom panels`);
 	}
 
 	panelsRaw.value = panels;
 
-	panelsRaw.value.forEach((panel: PanelConfig) => {
-		app.component('panel-' + panel.id, panel.component);
+	panelsRaw.value.forEach((inter: PanelConfig) => {
+		app.component('interface-' + inter.id, inter.component);
 
-		if (typeof panel.options !== 'function' && Array.isArray(panel.options) === false) {
-			app.component(`panel-options-${panel.id}`, panel.options);
+		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
+			app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});
 }

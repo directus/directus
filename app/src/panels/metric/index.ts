@@ -156,6 +156,7 @@ export default definePanel({
 				width: 'half',
 				options: {
 					placeholder: '$t:prefix_placeholder',
+					trim: false,
 				},
 			},
 		},
@@ -168,6 +169,7 @@ export default definePanel({
 				width: 'half',
 				options: {
 					placeholder: '$t:suffix_placeholder',
+					trim: false,
 				},
 			},
 		},

@@ -1,11 +1,11 @@
 <template>
 	<div class="metric type-title selectable" :class="{ 'has-header': show_header }">
 		<v-progress-circular indeterminate v-if="loading" />
-		<template v-else>
+		<div :style="{ color }" v-else>
 			<span class="prefix">{{ options.prefix }}</span>
-			<span class="value" :style="{ color }">{{ displayValue }}</span>
+			<span class="value">{{ displayValue }}</span>
 			<span class="suffix">{{ options.suffix }}</span>
-		</template>
+		</div>
 	</div>
 </template>
 
@@ -180,12 +180,5 @@ export default defineComponent({
 
 .metric.has-header {
 	height: calc(100% - 16px);
-}
-
-.suffix {
-	position: relative;
-	top: 7px;
-	font-weight: 700;
-	font-size: 24px;
 }
 </style>
