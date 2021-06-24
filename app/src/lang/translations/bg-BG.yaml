@@ -9,6 +9,11 @@ field_name_translations: Превод на името на полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
 role_name: Име на роля
+branch: Клон
+leaf: Листо
+indeterminate: Неопределен
+exclusive: Изключително
+children: Дъщерен
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
@@ -477,6 +482,10 @@ operators:
   nnull: Не е null
   contains: Съдържа
   ncontains: Не съдържа
+  starts_with: Започва с
+  nstarts_with: Не започва с
+  ends_with: Завършва с
+  nends_with: Не завършва с
   between: Е между
   nbetween: Не е между
   empty: Е празно
@@ -796,6 +805,8 @@ referential_action_set_null: Зануляване на {field}
 referential_action_set_default: Задаване на {field} към стойността по подразбиране
 choose_action: Изберете действие
 continue: Продължение
+continue_as: >-
+  {name} в момента е оторизиран. Ако разпознавате този профил, изберете бутона за продължение.
 editing_role: 'Роля - {role}'
 creating_webhook: Създаване на уеб-кука
 default: По подразбиране
@@ -854,6 +865,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   presentation-links:
@@ -871,6 +883,11 @@ interfaces:
     allow_other: Други
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
+  select-multiple-checkbox-tree:
+    name: Отметки (вложена структура)
+    description: Избор измежду множество опции чрез вложени отметки
+    value_combining: Комбинация от стойности
+    value_combining_note: Контрол върху стойността за запазване при направен избор.
   input-code:
     code: Код
     description: Писане или споделяне на кодови откъси
