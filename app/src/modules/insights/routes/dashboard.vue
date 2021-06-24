@@ -78,6 +78,7 @@
 			:edit-mode="editMode"
 			:panels="panels"
 			:zoom-to-fit="zoomToFit"
+			:now="now"
 			@update="stagePanelEdits"
 			@move="movePanelID = $event"
 			@delete="deletePanel"
@@ -188,6 +189,8 @@ export default defineComponent({
 		const stagedPanels = ref<Partial<Panel & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);
 		const panelsToBeDeleted = ref<string[]>([]);
 
+		const now = new Date();
+
 		const panels = computed(() => {
 			const savedPanels = (currentDashboard.value?.panels || []).filter(
 				(panel) => panelsToBeDeleted.value.includes(panel.id) === false
@@ -290,6 +293,7 @@ export default defineComponent({
 			movePanelTo,
 			confirmLeave,
 			discardAndLeave,
+			now,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {

@@ -41,6 +41,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		id: {
+			type: String,
+			required: true,
+		},
+		dashboard: {
+			type: String,
+			required: true,
+		},
+		now: {
+			type: Date,
+			required: true,
+		},
 	},
 	setup(props) {
 		const { d, t, n } = useI18n();
@@ -194,6 +206,8 @@ export default defineComponent({
 					},
 					fontFamily: 'var(--family-sans-serif)',
 					foreColor: 'var(--foreground-subdued)',
+					id: props.id,
+					group: props.dashboard,
 				},
 				series: [],
 				stroke: {
@@ -259,8 +273,8 @@ export default defineComponent({
 					axisBorder: {
 						show: false,
 					},
-					range: new Date().getTime() - adjustDate(new Date(), `-${props.options.range}`)!.getTime(),
-					max: new Date().getTime(),
+					range: props.now.getTime() - adjustDate(props.now, `-${props.options.range}`)!.getTime(),
+					max: props.now.getTime(),
 				},
 				yaxis: {
 					forceNiceScale: true,
@@ -271,6 +285,7 @@ export default defineComponent({
 						formatter: (value: number) => {
 							return value > 10000 ? abbreviateNumber(value, 1) : n(value);
 						},
+						minWidth: 40,
 					},
 				},
 			});

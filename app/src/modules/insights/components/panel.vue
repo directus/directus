@@ -77,7 +77,7 @@
 		</div>
 
 		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
-			<component :is="`panel-${panel.type}`" v-bind="panel" />
+			<component :is="`panel-${panel.type}`" v-bind="panel" :now="now" />
 		</div>
 	</div>
 </template>
@@ -100,6 +100,10 @@ export default defineComponent({
 		editMode: {
 			type: Boolean,
 			default: false,
+		},
+		now: {
+			type: Date,
+			required: true,
 		},
 	},
 	setup(props, { emit }) {
