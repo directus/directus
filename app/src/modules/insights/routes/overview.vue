@@ -7,7 +7,7 @@
 		</template>
 
 		<template #navigation>
-			<insights-navigation />
+			<insights-navigation @create="createDialogActive = true" />
 		</template>
 
 		<template #actions>
