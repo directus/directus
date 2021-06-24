@@ -1,6 +1,5 @@
 import { Component, ComponentPublicInstance } from 'vue';
-import { Item } from '@/components/v-table/types';
-import { Filter } from '@/types';
+import { LayoutProps } from '@directus/shared/types';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
@@ -13,18 +12,6 @@ export interface LayoutConfig<Options = any, Query = any> {
 		actions: Component;
 	};
 	setup: (LayoutOptions: LayoutProps<Options, Query>) => any;
-}
-
-export interface LayoutProps<Options = any, Query = any> {
-	collection: string | null;
-	selection: Item[];
-	layoutOptions: Options;
-	layoutQuery: Query;
-	filters: Filter[];
-	searchQuery: string | null;
-	selectMode: boolean;
-	readonly: boolean;
-	resetPreset?: () => Promise<void>;
 }
 
 export type LayoutContext = Record<string, any>;

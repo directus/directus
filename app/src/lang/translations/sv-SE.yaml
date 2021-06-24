@@ -760,8 +760,6 @@ block: Blockera
 inline: Infogad
 comment: Kommentera
 continue: Fortsätt
-continue_as: >-
-  <b>{name}</b> är för närvarande autentiserad. Om du känner igen detta konto, tryck fortsätt.
 editing_role: '{role} roll'
 creating_webhook: Skapar Webhook
 default: Standard

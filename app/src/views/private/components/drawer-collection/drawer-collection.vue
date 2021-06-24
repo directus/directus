@@ -29,7 +29,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, reactive, computed, toRefs, watch } from 'vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
 import { useLayout } from '@/composables/use-layout';

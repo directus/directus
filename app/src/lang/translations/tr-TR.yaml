@@ -612,8 +612,6 @@ do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
 continue: Devam
-continue_as: >-
-  <b>{name}</b> bu projede oturum açmış durumda. Bu hesabı tanıyorsanız lütfen Devam butonuna basınız.
 editing_role: '{role} Rolü'
 creating_webhook: Webhook Oluştur
 default: Öntanımlı

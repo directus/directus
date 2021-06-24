@@ -1,9 +1,7 @@
-import api from '@/api';
 import { router } from '@/router';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
-import { asyncPool } from '@/utils/async-pool';
 import { getModules } from './index';
 import { ModuleConfig } from './types';
 
@@ -17,19 +15,11 @@ export async function loadModules(): Promise<void> {
 	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
 
 	try {
-		const customResponse = await api.get('/extensions/modules/');
-		const customModules: string[] = customResponse.data.data || [];
+		const customModules: { default: ModuleConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-module')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`);
 
-		await asyncPool(5, customModules, async (moduleName) => {
-			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/${moduleName}/index.js`);
-
-				modules.push(result.default);
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.warn(`Couldn't load custom module "${moduleName}":`, err);
-			}
-		});
+		modules.push(...customModules.default);
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom modules`);

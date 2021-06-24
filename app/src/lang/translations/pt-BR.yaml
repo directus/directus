@@ -795,8 +795,6 @@ referential_action_cascade: Excluir o item {collection} (cascade)
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolha uma ação
 continue: Continuar
-continue_as: >-
-  <b>{name}</b> está atualmente autenticado. Se você reconhecer esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
 creating_webhook: Criando Webhook
 default: Padrão
