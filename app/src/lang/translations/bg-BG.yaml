@@ -9,6 +9,8 @@ field_name_translations: Превод на името на полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
 role_name: Име на роля
+exclusive: Изключително
+children: Дъщерен
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
 edited: Стойността е редактирана
@@ -477,6 +479,10 @@ operators:
   nnull: Не е null
   contains: Съдържа
   ncontains: Не съдържа
+  starts_with: Започва с
+  nstarts_with: Не започва с
+  ends_with: Завършва с
+  nends_with: Не завършва с
   between: Е между
   nbetween: Не е между
   empty: Е празно
@@ -871,6 +877,8 @@ interfaces:
     allow_other: Други
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
+  select-multiple-checkbox-tree:
+    name: Отметки (дървовидна структура)
   input-code:
     code: Код
     description: Писане или споделяне на кодови откъси
