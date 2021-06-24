@@ -255,7 +255,7 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const editsGuard: NavigationGuard = (to) => {
-			if (editMode.value) {
+			if (editMode.value && to.params.primaryKey !== props.primaryKey) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
 				return false;
