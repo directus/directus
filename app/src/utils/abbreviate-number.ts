@@ -23,7 +23,7 @@ export function abbreviateNumber(
 					i++;
 				}
 
-				stringValue = number + units[i];
+				stringValue = number.toFixed(decimalPlaces) + units[i];
 
 				break;
 			}
