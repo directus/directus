@@ -8,7 +8,7 @@ import api from '@/api';
 import ApexCharts from 'apexcharts';
 import { adjustDate } from '@/utils/adjust-date';
 import { useI18n } from 'vue-i18n';
-import { isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
@@ -276,8 +276,8 @@ export default defineComponent({
 				},
 				yaxis: {
 					forceNiceScale: true,
-					min: props.options.min ? Number(props.options.min) : undefined,
-					max: props.options.max ? Number(props.options.max) : undefined,
+					min: isNil(props.options.min) ? undefined : Number(props.options.min),
+					max: isNil(props.options.max) ? undefined : Number(props.options.max),
 					tickAmount: props.height - 2,
 					labels: {
 						formatter: (value: number) => {
