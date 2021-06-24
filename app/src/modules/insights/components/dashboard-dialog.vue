@@ -31,11 +31,12 @@
 <script lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType } from 'vue';
+import { defineComponent, ref, reactive, PropType, watch } from 'vue';
 import { useInsightsStore } from '@/stores';
 import { router } from '@/router';
 import { Dashboard } from '@/types';
 import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'DashboardDialog',
@@ -60,6 +61,17 @@ export default defineComponent({
 			icon: props.dashboard?.icon ?? 'dashboard',
 			note: props.dashboard?.note ?? null,
 		});
+
+		watch(
+			() => props.modelValue,
+			(newValue, oldValue) => {
+				if (isEqual(newValue, oldValue) === false) {
+					values.name = props.dashboard?.name ?? null;
+					values.icon = props.dashboard?.icon ?? 'dashboard';
+					values.note = props.dashboard?.note ?? null;
+				}
+			}
+		);
 
 		const saving = ref(false);
 

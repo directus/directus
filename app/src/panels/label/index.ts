@@ -24,6 +24,9 @@ export default definePanel({
 			meta: {
 				interface: 'select-color',
 				width: 'half',
+				options: {
+					placeholder: '$t:automatic',
+				},
 			},
 		},
 	],

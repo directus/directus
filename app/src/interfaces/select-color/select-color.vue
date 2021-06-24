@@ -3,7 +3,7 @@
 		<template #activator="{ activate }">
 			<v-input
 				:disabled="disabled"
-				:placeholder="t('interfaces.select-color.placeholder')"
+				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
 				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
@@ -96,6 +96,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 			validator: (val: string) => val === null || val === '' || isHex(val),
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		presets: {
 			type: Array as PropType<string[]>,

@@ -34,15 +34,31 @@
 			</template>
 
 			<template v-else>
-				<v-button :active="zoomToFit" class="zoom-to-fit" rounded icon outlined @click="toggleZoomToFit">
+				<v-button
+					v-tooltip.bottom="t('fit_to_screen')"
+					:active="zoomToFit"
+					class="zoom-to-fit"
+					rounded
+					icon
+					outlined
+					@click="toggleZoomToFit"
+				>
 					<v-icon name="aspect_ratio" />
 				</v-button>
 
-				<v-button :active="fullScreen" class="fullscreen" rounded icon outlined @click="toggleFullScreen">
+				<v-button
+					v-tooltip.bottom="t('full_screen')"
+					:active="fullScreen"
+					class="fullscreen"
+					rounded
+					icon
+					outlined
+					@click="toggleFullScreen"
+				>
 					<v-icon name="fullscreen" />
 				</v-button>
 
-				<v-button rounded icon outlined @click="editMode = !editMode">
+				<v-button v-tooltip.bottom="t('edit_panels')" rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
 			</template>

@@ -17,7 +17,7 @@
 						@click="on"
 						rounded
 						icon
-						v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+						v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')"
 						:disabled="createAllowed === false"
 					>
 						<v-icon name="add" />

@@ -601,6 +601,9 @@ no_dashboards: No Dashboards
 no_dashboards_copy: You don’t have any Dashboards yet.
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
+full_screen: Full Screen
+edit_panels: Edit Panels
+fit_to_screen: Fit to Screen
 image_url: Image Url
 alt_text: Alternative Text
 media: Media
