@@ -9,6 +9,8 @@ import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
+import { getCache } from '../cache';
+import Keyv from 'keyv';
 
 export class RelationsService {
 	knex: Knex;
@@ -17,6 +19,7 @@ export class RelationsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
+	schemaCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -31,6 +34,8 @@ export class RelationsService {
 			// allowed to extract the relations regardless of permissions to directus_relations. This
 			// happens in `filterForbidden` down below
 		});
+
+		this.schemaCache = getCache().schemaCache;
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
@@ -183,6 +188,10 @@ export class RelationsService {
 
 			await relationsItemService.createOne(metaRow);
 		});
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 	}
 
 	/**
@@ -259,6 +268,10 @@ export class RelationsService {
 				}
 			}
 		});
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 	}
 
 	/**
@@ -296,6 +309,10 @@ export class RelationsService {
 				await trx('directus_relations').delete().where({ many_collection: collection, many_field: field });
 			}
 		});
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 	}
 
 	/**

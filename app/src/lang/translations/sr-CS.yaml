@@ -379,6 +379,7 @@ sort_field: Polje za Sortiranje
 add_sort_field: Dodaj Polje za Sortiranje
 sort: Sortiranje
 status: Status
+remove: Ukloni
 toggle_manual_sorting: Uključi Ručno Sortiranje
 bookmark_doesnt_exist: Oznaka ne postoji
 bookmark_doesnt_exist_copy: Oznaku koju pokušavate otvoriti nije moguće pronaći.
@@ -795,8 +796,6 @@ referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
 continue: Nastavi
-continue_as: >-
-  <b>{name}</b> je trenutno autorizovan. Ukoliko prepoznajete ovaj korisnički račun, pritisnite nastavi.
 editing_role: '{role} Uloga'
 creating_webhook: Kreiranje Webhook-a
 default: Podrazumijevano
@@ -855,7 +854,6 @@ template: Šablon
 translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
-weeks: { }
 report_error: Prijavi Grešku
 interfaces:
   presentation-links:

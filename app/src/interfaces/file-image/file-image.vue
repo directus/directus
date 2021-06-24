@@ -115,7 +115,11 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			if (width && height) {
+				return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			}
+
+			return `${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(

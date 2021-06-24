@@ -103,7 +103,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, reactive } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import { Preset, Filter } from '@/types';
+import { Preset, Filter } from '@directus/shared/types';
 import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';

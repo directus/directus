@@ -9,7 +9,7 @@
 ::: tip Uploading Files
 
 To learn more about uploading files, see the [Upload a File](/reference/api/system/files/#upload-a-file) and
-[Import a File](<(/reference/api/system/files/#import-a-file)>) endpoints.
+[Import a File](/reference/api/system/files/#import-a-file) endpoints.
 
 :::
 

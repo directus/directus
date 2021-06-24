@@ -80,8 +80,7 @@
 							v-model="info.name"
 							class="monospace"
 							:class="{ active: info.enabled }"
-							clickable
-							@click="info.enabled = true"
+							@focus="info.enabled = true"
 						>
 							<template #prepend>
 								<v-checkbox v-model="info.enabled" />

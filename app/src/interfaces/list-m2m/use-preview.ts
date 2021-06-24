@@ -3,7 +3,7 @@ import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from './use-relation';
 
@@ -83,7 +83,7 @@ export default function usePreview(
 				responseData = responseData
 					.map((item) => {
 						const updatedItem = updatedItems.find((updated) => updated[junctionPkField] === item[junctionPkField]);
-						if (updatedItem !== undefined) return updatedItem;
+						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
 					})
 					.concat(...newItems);
