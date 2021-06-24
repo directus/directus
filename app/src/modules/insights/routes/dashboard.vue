@@ -113,6 +113,19 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -131,6 +144,7 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -237,6 +251,20 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
+		const confirmLeave = ref(false);
+		const leaveTo = ref<string | null>(null);
+
+		const editsGuard: NavigationGuard = (to) => {
+			if (editMode.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
 		return {
 			currentDashboard,
 			editMode,
@@ -260,6 +288,8 @@ export default defineComponent({
 			md,
 			movePanelChoices,
 			movePanelTo,
+			confirmLeave,
+			discardAndLeave,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
@@ -346,6 +376,13 @@ export default defineComponent({
 			stagedPanels.value = [];
 			panelsToBeDeleted.value = [];
 			editMode.value = false;
+		}
+
+		function discardAndLeave() {
+			if (!leaveTo.value) return;
+			cancelChanges();
+			confirmLeave.value = false;
+			router.push(leaveTo.value);
 		}
 
 		function duplicatePanel(panel: Panel) {
