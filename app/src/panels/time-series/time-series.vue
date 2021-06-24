@@ -206,8 +206,6 @@ export default defineComponent({
 					},
 					fontFamily: 'var(--family-sans-serif)',
 					foreColor: 'var(--foreground-subdued)',
-					id: props.id,
-					group: props.dashboard,
 				},
 				series: [],
 				stroke: {
@@ -285,7 +283,6 @@ export default defineComponent({
 						formatter: (value: number) => {
 							return value > 10000 ? abbreviateNumber(value, 1) : n(value);
 						},
-						minWidth: 40,
 					},
 				},
 			});
