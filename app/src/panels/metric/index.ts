@@ -94,6 +94,7 @@ export default definePanel({
 				options: {
 					collectionField: 'collection',
 					allowPrimaryKey: true,
+					placeholder: '$t:primary_key',
 				},
 				width: 'half',
 			},

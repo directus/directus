@@ -12,7 +12,7 @@
 		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
-		:placeholder="t('select_a_field')"
+		:placeholder="placeholder || t('select_a_field')"
 	/>
 </template>
 

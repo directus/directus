@@ -72,7 +72,7 @@ export default defineComponent({
 		);
 
 		const displayValue = computed(() => {
-			if (!metric.value) return null;
+			if (metric.value === null || metric.value === undefined) return null;
 
 			if (props.options.abbreviate) {
 				return abbreviateNumber(metric.value, props.options.decimals);
