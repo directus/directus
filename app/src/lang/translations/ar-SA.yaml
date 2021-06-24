@@ -9,6 +9,7 @@ field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
+branch: فرع
 db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
