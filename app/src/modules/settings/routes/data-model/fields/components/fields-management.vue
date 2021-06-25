@@ -105,6 +105,11 @@ export default defineComponent({
 				text: t('presentation_and_aliases'),
 			},
 			{
+				type: 'group',
+				icon: 'view_in_ar',
+				text: t('group'),
+			},
+			{
 				divider: true,
 			},
 			{
