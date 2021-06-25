@@ -26,7 +26,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { Field, Collection } from '@/types';
 import api from '@/api';

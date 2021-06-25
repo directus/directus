@@ -2,7 +2,11 @@
 	<div class="continue-as">
 		<v-progress-circular v-if="loading" indeterminate />
 		<template v-else>
-			<p v-html="t('continue_as', { name })" />
+			<i18n-t keypath="continue_as" scope="global" tag="p">
+				<template #name>
+					<b>{{ name }}</b>
+				</template>
+			</i18n-t>
 			<div class="actions">
 				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
 				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue') }}</v-button>

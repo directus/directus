@@ -1,6 +1,6 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { Filter, Item } from '@/types/';
+import { Filter, Item } from '@directus/shared/types';
 import filtersToQuery from '@/utils/filters-to-query';
 import moveInArray from '@/utils/move-in-array';
 import { isEqual, orderBy, throttle } from 'lodash';

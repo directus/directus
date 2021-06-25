@@ -20,7 +20,6 @@ create_role: Opprett rolle
 create_user: Opprett bruker
 create_webhook: Lag Webhook
 invite_users: Invitere brukere
-email_examples: 'admin@example.com, user@example.com...'
 invite: Inviter
 emails: E-post
 connection_excellent: Utmerket tilkobling
@@ -318,6 +317,7 @@ sort_field: Sorter felt
 add_sort_field: Legg til sorteringsfelt
 sort: Sorter
 status: Status
+remove: Fjern
 toggle_manual_sorting: Veksle manuell sortering
 bookmark_doesnt_exist: Bokmerket finnes ikke
 bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.

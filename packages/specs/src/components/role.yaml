@@ -19,9 +19,7 @@ properties:
     type: string
     nullable: true
   ip_access:
-    description:
-      Array of IP addresses that are allowed to connect to the API as a
-      user of this role.
+    description: Array of IP addresses that are allowed to connect to the API as a user of this role.
     example: []
     type: array
     items:

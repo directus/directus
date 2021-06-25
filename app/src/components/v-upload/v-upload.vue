@@ -274,7 +274,12 @@ export default defineComponent({
 						url: url.value,
 					});
 
-					emit('input', response.data.data);
+					if (props.multiple) {
+						emit('input', [response.data.data]);
+					} else {
+						emit('input', response.data.data);
+					}
+
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {

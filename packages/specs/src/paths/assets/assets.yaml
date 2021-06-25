@@ -50,11 +50,11 @@ get:
       schema:
         type: boolean
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         text/plain:
           schema:
             type: string
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'

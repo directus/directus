@@ -48,24 +48,28 @@
 
 ## Filter Operators
 
-| Operator     | Description                            |
-| ------------ | -------------------------------------- |
-| `_eq`        | Equal to                               |
-| `_neq`       | Not equal to                           |
-| `_lt`        | Less than                              |
-| `_lte`       | Less than or equal to                  |
-| `_gt`        | Greater than                           |
-| `_gte`       | Greater than or equal to               |
-| `_in`        | Exists in one of the values            |
-| `_nin`       | Not in one of the values               |
-| `_null`      | It is null                             |
-| `_nnull`     | It is not null                         |
-| `_contains`  | Contains the substring                 |
-| `_ncontains` | Doesn't contain the substring          |
-| `_between`   | The value is between two values        |
-| `_nbetween`  | The value is not between two values    |
-| `_empty`     | The value is empty (null or falsy)     |
-| `_nempty`    | The value is not empty (null or falsy) |
+| Operator        | Description                            |
+| --------------- | -------------------------------------- |
+| `_eq`           | Equal to                               |
+| `_neq`          | Not equal to                           |
+| `_lt`           | Less than                              |
+| `_lte`          | Less than or equal to                  |
+| `_gt`           | Greater than                           |
+| `_gte`          | Greater than or equal to               |
+| `_in`           | Exists in one of the values            |
+| `_nin`          | Not in one of the values               |
+| `_null`         | It is null                             |
+| `_nnull`        | It is not null                         |
+| `_contains`     | Contains the substring                 |
+| `_ncontains`    | Doesn't contain the substring          |
+| `_starts_with`  | Contains the substring                 |
+| `_nstarts_with` | Doesn't contain the substring          |
+| `_ends_with`    | Contains the substring                 |
+| `_nends_with`   | Doesn't contain the substring          |
+| `_between`      | The value is between two values        |
+| `_nbetween`     | The value is not between two values    |
+| `_empty`        | The value is empty (null or falsy)     |
+| `_nempty`       | The value is not empty (null or falsy) |
 
 The following operators are **only available in validation permissions**:
 
