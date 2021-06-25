@@ -12,19 +12,37 @@
 			</template>
 		</v-input>
 
-		<div class="group full" v-if="localType === 'group'">
-			<div class="header">
-				<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-				<span class="name">{{ field.field }}</span>
-				<field-select-menu
-					:field="field"
-					@toggleVisibility="toggleVisibility"
-					@setWidth="setWidth($event)"
-					@duplicate="duplicateActive = true"
-					@delete="deleteActive = true"
-				/>
-			</div>
-		</div>
+		<draggable
+			v-if="localType === 'group'"
+			class="field-grid group full"
+			:model-value="nestedFields"
+			:force-fallback="true"
+			handle=".drag-handle"
+			:group="{ name: 'fields' }"
+			:set-data="hideDragImage"
+			item-key="field"
+			@update:model-value="onGroupSortChange"
+		>
+			<template #header>
+				<div class="header full">
+					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+					<span class="name">{{ field.field }}</span>
+					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+					<field-select-menu
+						:field="field"
+						@toggleVisibility="toggleVisibility"
+						@setWidth="setWidth($event)"
+						@duplicate="duplicateActive = true"
+						@delete="deleteActive = true"
+						:no-delete="nestedFields.length > 0"
+					/>
+				</div>
+			</template>
+
+			<template #item="{ element }">
+				<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
+			</template>
+		</draggable>
 
 		<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
 			<template #prepend>
@@ -121,10 +139,12 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { InterfaceConfig } from '@/interfaces/types';
 import FieldSelectMenu from './field-select-menu.vue';
+import hideDragImage from '@/utils/hide-drag-image';
+import Draggable from 'vuedraggable';
 
 export default defineComponent({
 	name: 'field-select',
-	components: { FieldSelectMenu },
+	components: { FieldSelectMenu, Draggable },
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -134,8 +154,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		fields: {
+			type: Array as PropType<Field[]>,
+			default: () => [],
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const router = useRouter();
@@ -157,6 +181,8 @@ export default defineComponent({
 
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
+		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.id));
+
 		return {
 			t,
 			interfaceName,
@@ -175,6 +201,9 @@ export default defineComponent({
 			hidden,
 			toggleVisibility,
 			localType,
+			hideDragImage,
+			onGroupSortChange,
+			nestedFields,
 		};
 
 		function setWidth(width: string) {
@@ -268,6 +297,18 @@ export default defineComponent({
 
 			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
 		}
+
+		async function onGroupSortChange(fields: Field[]) {
+			const updates = fields.map((field, index) => ({
+				field: field.field,
+				meta: {
+					sort: index + 1,
+					group: props.field.meta!.id,
+				},
+			}));
+
+			emit('setNestedSort', updates);
+		}
 	},
 });
 </script>
@@ -331,10 +372,16 @@ export default defineComponent({
 	padding: var(--input-padding);
 	border-radius: var(--border-radius);
 
+	> * {
+		position: relative;
+		z-index: 2;
+	}
+
 	&::before {
 		position: absolute;
 		top: 0;
 		left: -2px;
+		z-index: 1;
 		width: 4px;
 		height: 100%;
 		background-color: var(--primary);
@@ -346,6 +393,7 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
+		z-index: 1;
 		width: 100%;
 		height: 100%;
 		background-color: var(--primary);
@@ -355,8 +403,8 @@ export default defineComponent({
 
 	.header {
 		position: relative;
-		z-index: 2;
 		display: flex;
+		align-items: center;
 		color: var(--primary);
 		font-family: var(--family-monospace);
 
@@ -369,6 +417,17 @@ export default defineComponent({
 		.name {
 			flex-grow: 1;
 		}
+	}
+}
+
+.field-grid {
+	position: relative;
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+	& + & {
+		margin-top: 12px;
 	}
 }
 

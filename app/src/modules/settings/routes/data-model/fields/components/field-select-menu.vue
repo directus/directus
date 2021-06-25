@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
-			<v-icon @click.stop="toggle" name="more_vert" />
+			<v-icon clickable @click.stop="toggle" name="more_vert" />
 		</template>
 
 		<v-list>
@@ -32,17 +32,29 @@
 
 			<v-divider />
 
-			<v-list-item clickable @click="$emit('setWidth', 'half')" :disabled="field.meta && field.meta.width === 'half'">
+			<v-list-item
+				clickable
+				@click="$emit('setWidth', 'half')"
+				:disabled="field.meta?.width === 'half' || localType === 'group'"
+			>
 				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 				<v-list-item-content>{{ t('half_width') }}</v-list-item-content>
 			</v-list-item>
 
-			<v-list-item clickable @click="$emit('setWidth', 'full')" :disabled="field.meta && field.meta.width === 'full'">
+			<v-list-item
+				clickable
+				@click="$emit('setWidth', 'full')"
+				:disabled="field.meta?.width === 'full' || localType === 'group'"
+			>
 				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 				<v-list-item-content>{{ t('full_width') }}</v-list-item-content>
 			</v-list-item>
 
-			<v-list-item clickable @click="$emit('setWidth', 'fill')" :disabled="field.meta && field.meta.width === 'fill'">
+			<v-list-item
+				clickable
+				@click="$emit('setWidth', 'fill')"
+				:disabled="field.meta?.width === 'fill' || localType === 'group'"
+			>
 				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 				<v-list-item-content>{{ t('fill_width') }}</v-list-item-content>
 			</v-list-item>
@@ -53,7 +65,7 @@
 				clickable
 				@click="$emit('delete')"
 				class="danger"
-				:disabled="(field.schema && field.schema.is_primary_key === true) || false"
+				:disabled="field.schema?.is_primary_key === true || noDelete"
 			>
 				<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 				<v-list-item-content>
@@ -77,6 +89,10 @@ export default defineComponent({
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
+		},
+		noDelete: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
