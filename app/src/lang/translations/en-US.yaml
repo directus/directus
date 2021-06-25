@@ -107,6 +107,7 @@ field_m2a: M2A Relationship
 field_o2m: O2M Relationship
 field_m2m: M2M Relationship
 field_translations: Translations
+field_group: Group
 item_permissions: Item Permissions
 field_permissions: Field Permissions
 field_validation: Field Validation
@@ -1078,6 +1079,9 @@ interfaces:
     value_path: Value Path
     trigger: Trigger
     rate: Rate
+  group-raw:
+    name: Raw Fields
+    description: Show the fields as normal.
 displays:
   boolean:
     boolean: Boolean

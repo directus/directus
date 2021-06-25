@@ -38,6 +38,7 @@ export const localTypes = [
 	'm2a',
 	'presentation',
 	'translations',
+	'group',
 ] as const;
 
 export type FieldMeta = {
