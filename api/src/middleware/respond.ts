@@ -2,12 +2,13 @@ import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import env from '../env';
 import { getCacheKey } from '../utils/get-cache-key';
-import cache, { getCache } from '../cache';
+import { getCache } from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 import ms from 'ms';
 import { parse as toXML } from 'js2xmlparser';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
+import { XliffService } from '../services';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
