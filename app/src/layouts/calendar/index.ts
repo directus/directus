@@ -63,23 +63,74 @@ export default defineLayout<LayoutOptions>({
 		);
 
 		const filtersWithCalendarView = computed<Filter[]>(() => {
-			if (!calendar.value || !startDateField.value) return filters.value;
+			if (!calendar.value || !startDateField.value || !endDateField.value) return filters.value;
 
 			return [
 				...filters.value,
 				{
-					key: 'start_date',
-					field: startDateField.value,
-					operator: 'gte',
-					value: formatISO(calendar.value.view.currentStart),
-					hidden: true,
-				},
-				{
-					key: 'end_date',
-					field: startDateField.value,
-					operator: 'lte',
-					value: formatISO(calendar.value.view.currentEnd),
-					hidden: true,
+					operator: 'or',
+					value: [
+						{
+							// event starts in the current month
+							operator: 'and',
+							value: [
+								{
+									key: 'start_date',
+									field: startDateField.value,
+									operator: 'gte',
+									value: formatISO(calendar.value.view.currentStart),
+									hidden: true,
+								},
+								{
+									key: 'end_date',
+									field: startDateField.value,
+									operator: 'lte',
+									value: formatISO(calendar.value.view.currentEnd),
+									hidden: true,
+								},
+							],
+						},
+						{
+							// end of event is in the current month
+							operator: 'and',
+							value: [
+								{
+									key: 'start_date',
+									field: endDateField.value,
+									operator: 'gte',
+									value: formatISO(calendar.value.view.currentStart),
+									hidden: true,
+								},
+								{
+									key: 'end_date',
+									field: endDateField.value,
+									operator: 'lte',
+									value: formatISO(calendar.value.view.currentEnd),
+									hidden: true,
+								},
+							],
+						},
+						{
+							// event starts before the month and ends after the month
+							operator: 'and',
+							value: [
+								{
+									key: 'start_date',
+									field: startDateField.value,
+									operator: 'lt',
+									value: formatISO(calendar.value.view.currentStart),
+									hidden: true,
+								},
+								{
+									key: 'end_date',
+									field: endDateField.value,
+									operator: 'gt',
+									value: formatISO(calendar.value.view.currentEnd),
+									hidden: true,
+								},
+							],
+						},
+					],
 				},
 			];
 		});
