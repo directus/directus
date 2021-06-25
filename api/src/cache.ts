@@ -6,31 +6,39 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
+let schemaCache: Keyv | null = null;
 
-if (env.CACHE_ENABLED === true) {
-	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = getKeyvInstance();
-	cache.on('error', (err) => logger.error(err));
+export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
+	if (env.CACHE_ENABLED === true && cache === null) {
+		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
+		cache = getKeyvInstance(ms(env.CACHE_TTL as string));
+		cache.on('error', (err) => logger.error(err));
+	}
+
+	if (env.CACHE_SCHEMA !== false && schemaCache === null) {
+		schemaCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+		schemaCache.on('error', (err) => logger.error(err));
+	}
+
+	return { cache, schemaCache };
 }
 
-export default cache;
-
-function getKeyvInstance() {
+function getKeyvInstance(ttl: number | undefined): Keyv {
 	switch (env.CACHE_STORE) {
 		case 'redis':
-			return new Keyv(getConfig('redis'));
+			return new Keyv(getConfig('redis', ttl));
 		case 'memcache':
-			return new Keyv(getConfig('memcache'));
+			return new Keyv(getConfig('memcache', ttl));
 		case 'memory':
 		default:
-			return new Keyv(getConfig());
+			return new Keyv(getConfig('memory', ttl));
 	}
 }
 
-function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<any> {
+function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory', ttl: number | undefined): Options<any> {
 	const config: Options<any> = {
 		namespace: env.CACHE_NAMESPACE,
-		ttl: ms(env.CACHE_TTL as string),
+		ttl,
 	};
 
 	if (store === 'redis') {

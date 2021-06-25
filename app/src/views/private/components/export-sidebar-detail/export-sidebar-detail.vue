@@ -36,7 +36,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType, computed } from 'vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import filtersToQuery from '@/utils/filters-to-query';

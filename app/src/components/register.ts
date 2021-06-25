@@ -15,6 +15,7 @@ import VBreadcrumb from './v-breadcrumb';
 import VButton from './v-button/';
 import VCard, { VCardActions, VCardSubtitle, VCardText, VCardTitle } from './v-card';
 import VCheckbox from './v-checkbox/';
+import VCheckboxTree from './v-checkbox-tree/';
 import VChip from './v-chip/';
 import VDetail from './v-detail';
 import VDialog from './v-dialog';
@@ -60,6 +61,7 @@ export function registerComponents(app: App): void {
 	app.component('v-card-title', VCardTitle);
 	app.component('v-card', VCard);
 	app.component('v-checkbox', VCheckbox);
+	app.component('v-checkbox-tree', VCheckboxTree);
 	app.component('v-chip', VChip);
 	app.component('v-detail', VDetail);
 	app.component('v-dialog', VDialog);

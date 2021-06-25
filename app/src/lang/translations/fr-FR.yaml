@@ -20,7 +20,7 @@ create_role: Créer un rôle
 create_user: Créer un utilisateur
 create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
-email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
 emails: E-mails
@@ -379,6 +379,7 @@ sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
 sort: Trier
 status: État
+remove: Retirer
 toggle_manual_sorting: Activer/désactiver le tri manuel
 bookmark_doesnt_exist: Le favori n'existe pas
 bookmark_doesnt_exist_copy: Le favori que vous essayez d'ouvrir est introuvable.
@@ -795,8 +796,6 @@ referential_action_set_null: Vider le champ {field}
 referential_action_set_default: Remettre {field} à sa valeur par défaut
 choose_action: Choisir une action
 continue: Continuer
-continue_as: >-
-  <b>{name}</b> est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
 creating_webhook: Création du Webhook
 default: Défaut
@@ -855,7 +854,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:

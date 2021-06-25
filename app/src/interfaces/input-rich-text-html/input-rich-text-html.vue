@@ -6,7 +6,6 @@
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			v-model="internalValue"
-			@change="onChange"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
@@ -242,6 +241,7 @@ export default defineComponent({
 			editorRef,
 			imageToken
 		);
+
 		const {
 			mediaDrawerOpen,
 			mediaSelection,
@@ -265,7 +265,9 @@ export default defineComponent({
 				return props.value;
 			},
 			set(newValue: string) {
-				emit('input', newValue);
+				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
+					emit('input', newValue);
+				}
 			},
 		});
 
@@ -344,9 +346,6 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
-			onChange(a: any) {
-				console.log(a);
-			},
 		};
 
 		function setup(editor: any) {
@@ -374,9 +373,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
+</style>
+
+<style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .body {

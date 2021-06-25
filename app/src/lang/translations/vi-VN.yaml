@@ -19,7 +19,6 @@ create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
-email_examples: 'admin@example.com, user@example.com...'
 invite: Mời
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
@@ -302,6 +301,7 @@ sort_field: Sắp xếp theo trường
 add_sort_field: Sắp xếp theo trường
 sort: Sắp xếp
 status: Trạng thái
+remove: Xoá
 toggle_manual_sorting: Kích hoạt sắp xếp thủ công
 bookmark_doesnt_exist: Bookmark Không Tồn Tại
 bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.

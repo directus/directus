@@ -20,7 +20,6 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
-email_examples: 'admin@example.com, użytkownik@example.com...'
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
@@ -162,7 +161,7 @@ this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszy
 click_here: Kliknij tutaj
 to_manually_setup_translations: aby ręcznie ustawić tłumaczenia.
 click_to_manage_translated_fields: >-
-  Nie ma jeszcze tłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno tłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Istnieją {count} tłumaczone pól. Kliknij tutaj, aby nimi zarządzać.
+  Nie ma jeszcze przetłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno przetłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Ilość przetłumaczonych pół: {count}. Kliknij tutaj, aby nimi zarządzać.
 fields_group: Grupa pól
 no_collections_found: Nie znaleziono żadnych kolekcji.
 new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
@@ -365,7 +364,7 @@ field_width: Szerokość pola
 add_filter: Dodaj Filtr
 upper_limit: Górny limit...
 lower_limit: Dolny limit...
-user_directory: Katalog użytkownika
+user_directory: Katalog użytkowników
 documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
@@ -379,6 +378,7 @@ sort_field: Pole sortowania
 add_sort_field: Dodaj pole sortowania
 sort: Sortuj
 status: Status
+remove: Usuń
 toggle_manual_sorting: Przełącz ręczne sortowanie
 bookmark_doesnt_exist: Zakładka nie istnieje
 bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
@@ -657,7 +657,7 @@ page_help_settings_presets_item: >-
   **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
 page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
-page_help_users_collection: '**Katalog Użytkownika** — Lista wszystkich użytkowników systemu w tym projekcie.'
+page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
 activity_feed: Kanał aktywności
@@ -795,8 +795,6 @@ referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
 continue: Kontynuuj
-continue_as: >-
-  <b>{name}</b> jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
 default: Domyślnie
@@ -844,7 +842,7 @@ select_existing: Wybierz istniejące
 select_field_type: Wybierz typ pola
 select_interface: Wybierz interfejs
 settings: Ustawienia
-sign_in: Zarejestruj się
+sign_in: Zaloguj się
 sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
 something_went_wrong: Coś poszło nie tak.
@@ -855,7 +853,6 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:

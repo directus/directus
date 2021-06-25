@@ -5,10 +5,10 @@ get:
     - Items
   operationId: getItem
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Fields"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -17,10 +17,10 @@ get:
             properties:
               data:
                 type: object
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
 
 patch:
   summary: Update an Item
@@ -29,15 +29,15 @@ patch:
     - Items
   operationId: updateItem
   parameters:
-    - $ref: "../../openapi.yaml#/components/parameters/Fields"
-    - $ref: "../../openapi.yaml#/components/parameters/Meta"
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   requestBody:
     content:
       application/json:
         schema:
           type: object
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -46,10 +46,10 @@ patch:
             properties:
               data:
                 type: object
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
 
 delete:
   summary: Delete an Item
@@ -58,14 +58,14 @@ delete:
     - Items
   operationId: deleteItem
   responses:
-    "200":
+    '200':
       description: Successful request
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
 parameters:
-  - $ref: "../../openapi.yaml#/components/parameters/Collection"
+  - $ref: '../../openapi.yaml#/components/parameters/Collection'
   - name: id
     description: Index of the item.
     in: path

@@ -98,7 +98,7 @@ To be read by the Admin App, your custom display's Vue component must first be b
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
+npm i -D rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-terser rollup-plugin-vue @vue/compiler-sfc
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
@@ -115,6 +115,7 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
+	external: ['vue', '@directus/extension-sdk'],
 	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```

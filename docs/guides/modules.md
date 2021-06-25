@@ -25,7 +25,7 @@ export default {
 	icon: 'box',
 	routes: [
 		{
-			path: '/',
+			path: '',
 			component: ModuleComponent,
 		},
 	],
@@ -35,7 +35,8 @@ export default {
 - `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this module.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
-- `routes` — Details the routes in your module per the Vue router.
+- `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
+  serving as the base path.
 
 ::: tip TypeScript
 
@@ -130,7 +131,7 @@ To be read by the Admin App, your custom module's Vue component must first be bu
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
+npm i -D rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-terser rollup-plugin-vue @vue/compiler-sfc
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
@@ -147,6 +148,7 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
+	external: ['vue', '@directus/extension-sdk'],
 	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```

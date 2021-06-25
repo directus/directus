@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
@@ -23,7 +25,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	const vendors = getDBsToTest();
 
-	const NODE_VERSION = process.env.TEST_NODE_VERSION || '15-alpine';
+	const NODE_VERSION = process.env.TEST_NODE_VERSION || '16-alpine';
 
 	await new Listr([
 		{

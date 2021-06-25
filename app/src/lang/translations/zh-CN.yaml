@@ -18,7 +18,6 @@ create_role: 创建角色
 create_user: 创建用户
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
-email_examples: 'admin@example.com, user@example.com...'
 invite: 邀请
 emails: 邮箱
 connection_excellent: 优秀的连接状态
@@ -80,7 +79,7 @@ validationError:
   unique: 值必须唯一
 all_access: 订购全部功能
 no_access: 无访问权限
-use_custom: 使用自定义颜色
+use_custom: 自定义
 field_standard: 标准
 field_presentation: 展示字段
 field_file: 单个文件
@@ -350,6 +349,7 @@ card_size: 卡片大小
 sort_field: 排序字段
 sort: 排序
 status: 状态
+remove: 移除
 toggle_manual_sorting: 切换手动排序
 bookmark_doesnt_exist: 书签不存在
 bookmark_doesnt_exist_copy: 找不到您试图打开的书签。

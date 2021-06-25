@@ -185,6 +185,8 @@ export class AuthenticationService {
 			});
 		}
 
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
+
 		emitStatus('success');
 
 		if (allowedAttempts !== null) {
@@ -229,6 +231,8 @@ export class AuthenticationService {
 		await this.knex('directus_sessions')
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
+
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.id });
 
 		return {
 			accessToken,

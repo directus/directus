@@ -1,4 +1,4 @@
-import { Transformation } from './types/assets';
+import { Transformation } from './types';
 
 export const SYSTEM_ASSET_ALLOW_LIST: Transformation[] = [
 	{

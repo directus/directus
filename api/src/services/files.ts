@@ -7,7 +7,6 @@ import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import cache from '../cache';
 import { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
@@ -47,7 +46,7 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);
+		const fileExtension = path.extname(payload.filename_download) || (payload.type && extension(payload.type));
 
 		payload.filename_disk = primaryKey + '.' + fileExtension;
 
@@ -121,8 +120,8 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 
 		emitAsyncSafe(`files.upload`, {
@@ -208,8 +207,8 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return keys;

@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

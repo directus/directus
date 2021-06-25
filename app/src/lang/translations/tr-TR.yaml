@@ -20,7 +20,6 @@ create_role: Rol Oluştur
 create_user: Kullanıcı Oluştur
 create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
-email_examples: 'admin@example.com, user@example.com...'
 invite: Davet et
 email_already_invited: '"{email}" bu e-posta zaten davet edildi'
 emails: E-postalar
@@ -360,6 +359,7 @@ card_size: Kart Boyutu
 sort_field: Sıralama Alanı
 sort: Sırala
 status: Durum
+remove: Kaldır
 toggle_manual_sorting: Elle sıralamayı aç/kapa
 bookmark_doesnt_exist_cta: Koleksiyona dön
 select_an_item: Seçim Yapın...
@@ -612,8 +612,6 @@ do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
 continue: Devam
-continue_as: >-
-  <b>{name}</b> bu projede oturum açmış durumda. Bu hesabı tanıyorsanız lütfen Devam butonuna basınız.
 editing_role: '{role} Rolü'
 creating_webhook: Webhook Oluştur
 default: Öntanımlı

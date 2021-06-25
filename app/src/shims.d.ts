@@ -27,6 +27,30 @@ declare module 'jsonlint-mod' {
 	export default x;
 }
 
+declare module '@directus-extensions-interface' {
+	import { InterfaceConfig } from '@/interfaces/types';
+	const interfaces: InterfaceConfig[];
+	export default interfaces;
+}
+
+declare module '@directus-extensions-display' {
+	import { DisplayConfig } from '@/displays/types';
+	const displays: DisplayConfig[];
+	export default displays;
+}
+
+declare module '@directus-extensions-layout' {
+	import { LayoutConfig } from '@/layouts/types';
+	const layouts: LayoutConfig[];
+	export default layouts;
+}
+
+declare module '@directus-extensions-module' {
+	import { ModuleConfig } from '@/modules/types';
+	const modules: ModuleConfig[];
+	export default modules;
+}
+
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
 type Builtin = Primitive | Function | Date | Error | RegExp;
 type IsTuple<T> = T extends [infer A]
