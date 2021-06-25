@@ -163,7 +163,7 @@ no_refresh: Да не се опреснява
 refresh_interval_seconds: Моментално опресняване | Всяка секунда | Всеки {seconds} секунди
 refresh_interval_minutes: Всяка минута | Всеки {minutes} минути
 auto_generate: Автоматично генериране
-this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
+this_will_auto_setup_fields_relations: Автоматично настройване и генериране на задължителните полета и релации.
 click_here: Натиснете тук
 to_manually_setup_translations: за ръчна настройка на преводи.
 click_to_manage_translated_fields: >-
@@ -210,7 +210,7 @@ edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
 clear_value: Изчистване на стойност
 reset_to_default: Възстановяване към начално състояние
-undo_changes: Отмяна на промените
+undo_changes: Отмяна и напускане
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
@@ -476,8 +476,8 @@ operators:
   gt: По-голямо от
   lte: По-малко или равно
   gte: По-голямо или равно на
-  in: Е сред
-  nin: Не е сред
+  in: Е едно от
+  nin: Не е едно от
   null: Е null
   nnull: Не е null
   contains: Съдържа
@@ -637,8 +637,8 @@ preset_search_placeholder: Заявка за търсене...
 editing_preset: Редактиране на подготвени изгледи
 layout_preview: Предварителен преглед
 layout_setup: Настройка на оформление
-unsaved_changes: Незапазени промени
-unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
+unsaved_changes: Има незапазени промени
+unsaved_changes_copy: Сигурни ли сте, че искате да отмените промените и напуснете тази страница?
 discard_changes: Отмяна на промените
 keep_editing: Продължаване на редакцията
 page_help_collections_overview: '**Обзор на колекциите** — Показва всички налични колекции до които имате достъп.'
@@ -674,7 +674,7 @@ activity_feed: Емисия на активността
 add_new: Добави нов запис
 create_new: Създаване
 all: Всички
-none: Никое
+none: Нищо
 no_layout_collection_selected_yet: Все още не е избран изглед/колекция
 batch_delete_confirm: >-
   Няма избрани записи | Наистина ли искате да изтриете този запис? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
