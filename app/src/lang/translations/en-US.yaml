@@ -107,7 +107,7 @@ field_m2a: M2A Relationship
 field_o2m: O2M Relationship
 field_m2m: M2M Relationship
 field_translations: Translations
-field_group: Group
+field_group: Field Group
 item_permissions: Item Permissions
 field_permissions: Field Permissions
 field_validation: Field Validation

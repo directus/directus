@@ -65,6 +65,7 @@ import hideDragImage from '@/utils/hide-drag-image';
 import { orderBy } from 'lodash';
 
 export default defineComponent({
+	name: 'fields-management',
 	components: { Draggable, FieldSelect },
 	props: {
 		collection: {
@@ -107,7 +108,7 @@ export default defineComponent({
 			{
 				type: 'group',
 				icon: 'view_in_ar',
-				text: t('group'),
+				text: t('field_group'),
 			},
 			{
 				divider: true,
