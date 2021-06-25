@@ -14,14 +14,17 @@
 
 		<draggable
 			v-if="localType === 'group'"
-			class="field-grid group full"
+			class="field-grid group full nested"
 			:model-value="nestedFields"
 			:force-fallback="true"
 			handle=".drag-handle"
 			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
+			:animation="150"
 			item-key="field"
 			@update:model-value="onGroupSortChange"
+			:fallbackOnBody="true"
+			:invertSwap="true"
 		>
 			<template #header>
 				<div class="header full">
@@ -370,6 +373,8 @@ export default defineComponent({
 	position: relative;
 	min-height: var(--input-height);
 	padding: var(--input-padding);
+	padding-top: 40px;
+	padding-bottom: 16px;
 	border-radius: var(--border-radius);
 
 	> * {
@@ -402,9 +407,14 @@ export default defineComponent({
 	}
 
 	.header {
-		position: relative;
+		position: absolute;
+		top: 0;
+		left: 0;
 		display: flex;
 		align-items: center;
+		width: 100%;
+		margin-bottom: 8px;
+		padding-top: 8px;
 		color: var(--primary);
 		font-family: var(--family-monospace);
 
@@ -505,5 +515,14 @@ export default defineComponent({
 	position: relative;
 	left: -8px;
 	color: var(--primary);
+}
+
+.sortable-ghost {
+	border-radius: var(--border-radius);
+	outline: 2px dashed var(--primary);
+
+	> * {
+		opacity: 0;
+	}
 }
 </style>
