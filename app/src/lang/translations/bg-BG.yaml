@@ -221,7 +221,7 @@ display: Показване
 settings_update_success: Настройките са обновени
 title: Заглавие
 revision_delta_created: Създаден
-revision_delta_created_externally: Външно създаден
+revision_delta_created_externally: Създадено отвън
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
 revision_delta_reverted: Възстановен
@@ -755,7 +755,7 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
-    public_foreground: Публично изображение
+    public_foreground: Основно изображение
     public_background: Фоново изображение
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
@@ -912,7 +912,7 @@ interfaces:
     datetime: Дата и час
     description: Въвеждане на дати и часове
     include_seconds: Вклчване на секундите
-    set_to_now: Задаване като сега
+    set_to_now: Задаване на сега
     use_24: Използване на 24 часов формат
   system-display-template:
     display-template: Шаблон при показване
