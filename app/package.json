@@ -71,7 +71,7 @@
 		"front-matter": "4.0.2",
 		"html-entities": "2.3.2",
 		"jsonlint-mod": "1.7.6",
-		"marked": "2.1.2",
+		"marked": "2.1.3",
 		"micromustache": "8.0.3",
 		"mime": "2.5.2",
 		"mitt": "3.0.0",
