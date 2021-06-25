@@ -19,7 +19,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

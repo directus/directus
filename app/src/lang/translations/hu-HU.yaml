@@ -15,7 +15,6 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
@@ -280,6 +279,7 @@ card_size: Kártya mérete
 sort_field: Rendezési mező
 sort: Rendezés
 status: Állapot
+remove: Eltávolítás
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
 bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.

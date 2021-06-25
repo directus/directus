@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import { version } from '../package.json';

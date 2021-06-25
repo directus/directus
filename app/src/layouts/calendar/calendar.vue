@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, onMounted, onUnmounted, toRefs } from 'vue';
 
 import '@fullcalendar/core/vdom';
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

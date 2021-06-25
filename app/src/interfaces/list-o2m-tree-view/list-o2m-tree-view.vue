@@ -56,7 +56,7 @@ import api from '@/api';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { Relation } from '@/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';

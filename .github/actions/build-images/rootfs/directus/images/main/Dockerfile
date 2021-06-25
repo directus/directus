@@ -18,7 +18,7 @@ RUN apk add --no-cache jq \
   directus-api-package.json > package.json
 
 # Directus image
-FROM node:14-alpine
+FROM node:16-alpine
 
 ARG VERSION
 ARG REPOSITORY=directus/directus

@@ -18,7 +18,6 @@ create_role: Creează Rol
 create_user: Creează utilizator
 create_webhook: Creează Webhook
 invite_users: Invită utilizatori
-email_examples: 'admin@exemplu.com, utilizator@exemplu.com...'
 invite: Invită
 emails: E-mailuri
 connection_excellent: Conexiune excelentă

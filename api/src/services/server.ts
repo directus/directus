@@ -6,7 +6,7 @@ import os from 'os';
 import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
-import cache from '../cache';
+import { getCache } from '../cache';
 import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
@@ -188,6 +188,8 @@ export class ServerService {
 			if (env.CACHE_ENABLED !== true) {
 				return {};
 			}
+
+			const { cache } = getCache();
 
 			const checks: Record<string, HealthCheck[]> = {
 				'cache:responseTime': [

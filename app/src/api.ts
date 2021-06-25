@@ -8,7 +8,7 @@ const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
 	headers: {
-		'Cache-Control': 'no-cache',
+		'Cache-Control': 'no-store',
 	},
 });
 

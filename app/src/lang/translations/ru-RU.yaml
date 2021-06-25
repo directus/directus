@@ -20,7 +20,6 @@ create_role: Создать Роль
 create_user: Создать Пользователя
 create_webhook: Создать Веб-хук
 invite_users: Пригласить Пользователей
-email_examples: 'admin@example.com, user@example.com...'
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
@@ -371,6 +370,7 @@ sort_field: Поле сортировки
 add_sort_field: Добавить поле сортировки
 sort: Сортировать
 status: Статус
+remove: Удалить
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
 bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть не найдена.
@@ -770,8 +770,6 @@ save_current_datetime: Сохранить Текущую Дату/Время
 block: Блокировать
 comment: Комментарий
 continue: Продолжить
-continue_as: >-
-  <b>{name}</b> в настоящее время аутентифицирован. Если вы узнаете этот аккаунт, нажмите продолжить.
 editing_role: '{role} Роль'
 creating_webhook: Создание Веб-хука
 default: По умолчанию

@@ -1,4 +1,4 @@
-import { Filter } from '@/types/';
+import { Filter } from '@directus/shared/types';
 import { clone } from 'lodash';
 
 export default function filtersToQuery(filters: readonly Filter[]): { filter: Record<string, any> } {

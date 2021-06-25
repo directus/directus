@@ -20,7 +20,7 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
-email_examples: 'admin@beispiel.org, benutzer@beispiel.org...'
+email_examples: "admin{'@'}beispiel.de, benutzer{'@'}beispiel.de..."
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
@@ -381,6 +381,7 @@ sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 sort: Sortieren
 status: Status
+remove: Löschen
 toggle_manual_sorting: Manuelle Sortierung umschalten
 bookmark_doesnt_exist: Lesezeichen existiert nicht
 bookmark_doesnt_exist_copy: Das zu öffnende Lesezeichen konnte nicht gefunden werden.
@@ -797,8 +798,6 @@ referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue: Weiter
-continue_as: >-
-  <b>{name}</b> ist bereits authentifiziert. Wenn Sie dieses Konto kennen, drücken Sie bitte auf Fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default: Standard
@@ -857,7 +856,6 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 interfaces:
   presentation-links:

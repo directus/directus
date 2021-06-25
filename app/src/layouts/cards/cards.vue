@@ -84,7 +84,7 @@ import { defineComponent, watch, toRefs } from 'vue';
 
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({

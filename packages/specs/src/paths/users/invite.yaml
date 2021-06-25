@@ -1,9 +1,8 @@
 post:
   summary: Invite User(s)
   description:
-    Invites one or more users to this project. It creates a user with an
-    invited status, and then sends an email to the user with instructions on how to
-    activate their account.
+    Invites one or more users to this project. It creates a user with an invited status, and then sends an email to the
+    user with instructions on how to activate their account.
   operationId: invite
   requestBody:
     content:
@@ -15,7 +14,7 @@ post:
               description: Email address or array of email addresses of the to-be-invited user(s).
               type: string
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -23,10 +22,10 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Users"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Users

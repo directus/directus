@@ -1,4 +1,5 @@
 import BaseJoi, { AnySchema } from 'joi';
+import { escapeRegExp } from 'lodash';
 
 /**
  * @TODO
@@ -94,6 +95,32 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 
 			if (operator === '_ncontains') {
 				schema[key] = Joi.string().ncontains(Object.values(value)[0]);
+			}
+
+			if (operator === '_starts_with') {
+				return Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+					name: 'starts_with',
+				});
+			}
+
+			if (operator === '_nstarts_with') {
+				return Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+					name: 'starts_with',
+					invert: true,
+				});
+			}
+
+			if (operator === '_ends_with') {
+				return Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+					name: 'ends_with',
+				});
+			}
+
+			if (operator === '_nends_with') {
+				return Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+					name: 'ends_with',
+					invert: true,
+				});
 			}
 
 			if (operator === '_in') {

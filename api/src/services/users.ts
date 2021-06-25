@@ -2,7 +2,6 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone } from 'lodash';
-import cache from '../cache';
 import getDatabase from '../database';
 import env from '../env';
 import {
@@ -287,8 +286,8 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 	}
 
@@ -343,8 +342,8 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
 	}
 

@@ -1,7 +1,9 @@
 <template>
-	<v-notice :icon="icon" :type="color">
-		<div v-html="md(text)" />
-	</v-notice>
+	<div class="presentation-notice">
+		<v-notice :icon="icon" :type="color">
+			<div v-html="md(text)" />
+		</v-notice>
+	</div>
 </template>
 
 <script lang="ts">

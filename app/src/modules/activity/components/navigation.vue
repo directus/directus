@@ -96,7 +96,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	emits: ['update:filters'],

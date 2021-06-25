@@ -214,7 +214,6 @@ body {
 
 	&.left {
 		margin-right: 8px;
-		margin-left: -4px;
 
 		&.small {
 			margin-right: 4px;
@@ -223,7 +222,6 @@ body {
 	}
 
 	&.right {
-		margin-right: -6px;
 		margin-left: 6px;
 
 		&.small {
