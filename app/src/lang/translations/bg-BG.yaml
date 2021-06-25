@@ -86,7 +86,7 @@ validationError:
   null: Стойността трябва да е null
   nnull: Стойността не трябва да е null
   required: Изисква се стойност
-  unique: Изисква се уникална стойност
+  unique: Само уникални стойности
   regex: Стойността е неправилно форматирана
 all_access: Пълен достъп
 no_access: Без достъп
@@ -236,7 +236,7 @@ item_create_success: Създаден запис | Създадени запис
 item_update_success: Обновен запис | Обновени записи
 item_delete_success: Изтрит запис | Изтрити записи
 this_collection: Тази колекция
-related_collection: Релационна колекция
+related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
@@ -254,7 +254,7 @@ submit: Изпращане
 move_to_folder: Преместване в папка
 move: Преместване
 system: Система
-add_field_related: Добавяне на поле към релационната колекция
+add_field_related: Добавяне на поле към релативната колекция
 interface: Интерфейс
 today: Днес
 yesterday: Вчера
@@ -317,7 +317,7 @@ creating_new_collection: Създаване на колекция
 created_by: Създадено от
 created_on: Създаден на
 creating_collection_info: Именуване на колекцията и настройка на уникално ключово поле...
-creating_collection_system: Включване и применуване на някои от следните незадължителни полета.
+creating_collection_system: Включване и преименуване на някои от следните незадължителни полета.
 auto_increment_integer: Автоматично следващо число
 generated_uuid: Генериран UUID
 manual_string: Ръчно въвеждане на стойност
@@ -326,9 +326,9 @@ save_and_stay: Запазване и оставане
 save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
 creating_items: Създаване на записи
-enable_create_button: Включване на бутона за създаване
+enable_create_button: Показване на бутон за създаване
 selecting_items: Избор на записи
-enable_select_button: Включване на бутона за избор
+enable_select_button: Показване на бутон за избор
 comments: Коментари
 no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
@@ -380,7 +380,7 @@ file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
-sort_field: Поле за сортиране
+sort_field: Сортиране по поле
 add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
@@ -509,7 +509,7 @@ rows: Редове
 columns: Колони
 collection_setup: Настройки на колекция
 optional_system_fields: Незадължителни системни полета
-value_unique: Изисква се уникална стойност
+value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
 display_template: Шаблон при показване
@@ -706,7 +706,7 @@ fields:
     archive_app_filter: Филтър за архиви
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
-    sort_field: Поле за сортиране
+    sort_field: Сортиране по поле
     accountability: Следене за активност и ревизии
   directus_files:
     $thumbnail: Умалена картинка
@@ -884,7 +884,7 @@ interfaces:
     show_more: 'Показване на още {count}'
     items_shown: Показани записи
   select-multiple-checkbox-tree:
-    name: Отметки (вложена структура)
+    name: Дърво от отметки
     description: Избор измежду множество опции чрез вложени отметки
     value_combining: Комбинация от стойности
     value_combining_note: Контрол върху стойността за запазване при направен избор.
@@ -1120,7 +1120,7 @@ displays:
     image: Изображение
     description: Показване на малко изображение
     circle: Кръг
-    circle_label: Показване като кръг
+    circle_label: Показване в кръгла форма
   labels:
     labels: Етикети
     description: Въвеждане както на единичен, така и на множество етикети
@@ -1137,7 +1137,7 @@ displays:
     extension_only_label: Показване само на разширението
   rating:
     rating: Оценка
-    description: Показване на числото като звезди до максималната стойност
+    description: Показване на числото, като брой звезди до максималната стойност
     simple: Опростен
     simple_label: Показване на звездите в опростен вид
   raw:
