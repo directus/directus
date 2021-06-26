@@ -1,13 +1,13 @@
 <template>
 	<div class="group-raw">
-		<v-form
+		<!-- <v-form
 			:initial-values="initialValues"
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
 			:root-group="field.meta.id"
 			@update:model-value="$emit('apply', $event)"
-		/>
+		/> -->
 	</div>
 </template>
 

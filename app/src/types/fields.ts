@@ -1,4 +1,5 @@
 import { Column } from 'knex-schema-inspector/dist/types/column';
+import { FilterOperator } from '@directus/shared/types';
 
 type Translations = {
 	language: string;
@@ -70,4 +71,14 @@ export interface FieldRaw {
 
 export interface Field extends FieldRaw {
 	name: string;
+	children?: Field[] | null;
 }
+
+export type ValidationError = {
+	code: string;
+	field: string;
+	type: FilterOperator;
+	valid?: number | string | (number | string)[];
+	invalid?: number | string | (number | string)[];
+	substring?: string;
+};
