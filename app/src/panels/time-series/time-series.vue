@@ -213,6 +213,12 @@ export default defineComponent({
 					width: 2,
 					lineCap: 'round',
 				},
+				markers: {
+					hover: {
+					  size: undefined,
+					  sizeOffset: 4,
+					}
+				},
 				fill: {
 					type: 'gradient',
 					gradient: {
@@ -233,9 +239,11 @@ export default defineComponent({
 					},
 				},
 				grid: {
+					borderColor: 'var(--border-subdued)',
 					padding: {
-						top: props.show_header ? -20 : 0,
-						bottom: 8,
+						top: props.show_header ? -20 : -4,
+						bottom: 0,
+						left: 8,
 					},
 				},
 				dataLabels: {
@@ -247,9 +255,10 @@ export default defineComponent({
 					},
 					x: {
 						show: true,
-						formatter(date: number) {
-							return d(new Date(date), 'long');
-						},
+						format: 'MMM dd, yyyy, h:mmt',
+						// formatter(date: number) {
+						// 	return d(new Date(date), 'long');
+						// },
 					},
 					y: {
 						title: {
@@ -273,15 +282,37 @@ export default defineComponent({
 					},
 					range: props.now.getTime() - adjustDate(props.now, `-${props.options.range}`)!.getTime(),
 					max: props.now.getTime(),
+					labels: {
+						offsetY: -4,
+						style: {
+							fontFamily: 'var(--family-sans-serif)',
+							foreColor: 'var(--foreground-subdued)',
+							fontWeight: 600,
+							fontSize: '10px',
+						},
+					},
+					crosshairs: {
+	          stroke: {
+	              color: 'var(--border-normal)',
+	          },
+	      	},
 				},
 				yaxis: {
 					forceNiceScale: true,
 					min: isNil(props.options.min) ? undefined : Number(props.options.min),
 					max: isNil(props.options.max) ? undefined : Number(props.options.max),
-					tickAmount: props.height - 2,
+					tickAmount: props.height - 4,
 					labels: {
+						offsetY: 1,
+						offsetX: -4,
 						formatter: (value: number) => {
 							return value > 10000 ? abbreviateNumber(value, 1) : n(value);
+						},
+						style: {
+							fontFamily: 'var(--family-sans-serif)',
+							foreColor: 'var(--foreground-subdued)',
+							fontWeight: 600,
+							fontSize: '10px',
 						},
 					},
 				},
@@ -297,5 +328,25 @@ export default defineComponent({
 .time-series {
 	width: 100%;
 	height: 100%;
+}
+</style>
+<style>
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+	background-color: var(--background-subdued);
+	padding: 0 4px;
+	font-size:  10px !important;
+	font-weight: 600 !important;
+	margin-bottom: 0;
+}
+.apexcharts-tooltip-series-group:last-child {
+	padding-bottom:  0;
+}
+.apexcharts-tooltip-y-group {
+	padding: 0 0 0 4px;
+	font-size:  10px !important;
+	font-weight: 600 !important;
+}
+.apexcharts-tooltip-series-group {
+	padding: 0;
 }
 </style>
