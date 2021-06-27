@@ -1,1 +1,41 @@
 ---
+edit_field: 필드 편집
+item_revision: 아이템 리비전
+duplicate_field: 중복 필드
+field_name_translations: 항목 명 번역
+enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
+add_field: 필드 추가
+role_name: 권한 이름
+branch: 브랜치
+indeterminate: 불확정 상태
+children: 하위
+required: 필수 사항
+requires_value: 필수 항목
+create_preset: 사전설정 생성
+create_role: 역할 생성
+create_user: 사용자 생성
+create_webhook: 웹훅 생성
+invite_users: 사용자 초대
+invite: 초대
+emails: 이메일
+connection_poor: 연결 상태 불량
+rename_folder: 폴더 이름 변경
+delete_folder: 폴더 삭제
+prefix: 접두사
+suffix: 접미사
+reset_bookmark: 북마크 초기화
+rename_bookmark: 북마크 이름 변경
+update_bookmark: 북마크 업데이트
+delete_bookmark: 북마크 삭제
+delete_bookmark_copy: >-
+  정말로 이 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+logoutReason:
+  SIGN_OUT: 로그아웃
+  SESSION_EXPIRED: 세션 만료
+public: 공개
+not_allowed: 허용되지 않음
+fields:
+  directus_fields:
+    translation: 항목 명 번역
+  directus_roles:
+    name: 권한 이름
