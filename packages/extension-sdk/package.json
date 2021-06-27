@@ -8,11 +8,12 @@
 		"require": "./dist/cjs/index.js"
 	},
 	"scripts": {
-		"build": "run-p build:*",
+		"build": "npm run cleanup && run-p build:*",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- -- -w --preserveWatchOutput --incremental",
+		"prepublishOnly": "npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
