@@ -540,7 +540,7 @@ read: Четене
 update: Обновяване
 select_fields: Избор на полета
 format_text: Форматиране на текст
-bold: Удебелен
+bold: Удебеляване
 toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
@@ -568,7 +568,7 @@ wysiwyg_options:
   alignright: Подравняване отдясно
   forecolor: Основен цвят
   backcolor: Цвят на фона
-  bold: Удебелен
+  bold: Удебеляване
   italic: Курсив
   underline: Подчертан
   strikethrough: Зачеркнат
@@ -1018,7 +1018,7 @@ interfaces:
     alphabetize_label: Винаги в азбучен ред
     add_tags: Добавяне на етикет...
   input:
-    input: Въвеждане
+    input: Текстово поле
     description: Ръчно въвеждане на стойност
     trim: Почистване
     trim_label: Почистване на краищата от интервали
@@ -1061,7 +1061,7 @@ interfaces:
     options_override: Наслагване на опции
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
-    description: Автоматично дописване на стойности от външно API.
+    description: Автоматично дописване на стойности чрез външно API.
     results_path: Път до резултатите
     value_path: Път до стойността
     trigger: Задействане
@@ -1114,8 +1114,8 @@ displays:
   icon:
     icon: Икона
     description: Показване като икона
-    filled: Изпълнен
-    filled_label: Използване на вариант с изпълване
+    filled: Запълване
+    filled_label: Използване на изпълнен вариант
   image:
     image: Изображение
     description: Показване на малко изображение
