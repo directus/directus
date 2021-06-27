@@ -982,9 +982,9 @@ interfaces:
     imageToken: Токън за изображенията
     imageToken_label: Какъв (статичен) токън да се добави, към адресите на изображенията
   presentation-notice:
-    notice: Бележка
-    description: Показване на кратка бележка
-    text: Въвеждане на бележката...
+    notice: Пояснение
+    description: Показване на кратко пояснение
+    text: Въвеждане на пояснението...
   list-o2m:
     one-to-many: Един към много
     description: Избор на множество свързани записи
