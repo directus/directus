@@ -47,7 +47,7 @@ const defaults: Record<string, any> = {
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
-	CACHE_TTL: '10m',
+	CACHE_TTL: '5m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
 	CACHE_CONTROL_S_MAXAGE: '0',
@@ -65,7 +65,7 @@ const defaults: Record<string, any> = {
 	TELEMETRY: true,
 
 	ASSETS_CACHE_TTL: '30m',
-	ASSETS_TRANSFORM_MAX_CONCURRENT: 4,
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 };
 

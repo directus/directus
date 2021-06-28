@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
 import {
-	ensureExtensionsDirs,
+	ensureExtensionDirs,
 	getPackageExtensions,
 	getLocalExtensions,
 	generateExtensionsEntry,
@@ -43,12 +43,19 @@ function directusExtensions() {
 	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrys = {};
-	if (process.env.NODE_ENV !== 'production') loadExtensions();
 
 	return [
 		{
 			name: 'directus-extensions-serve',
 			apply: 'serve',
+			config: () => ({
+				optimizeDeps: {
+					include: SHARED_DEPS,
+				},
+			}),
+			async buildStart() {
+				await loadExtensions();
+			},
 			resolveId(id) {
 				if (virtualIds.includes(id)) {
 					return id;
@@ -61,11 +68,6 @@ function directusExtensions() {
 					return extensionEntrys[extensionType];
 				}
 			},
-			config: () => ({
-				optimizeDeps: {
-					include: SHARED_DEPS,
-				},
-			}),
 		},
 		{
 			name: 'directus-extensions-build',
@@ -92,7 +94,7 @@ function directusExtensions() {
 		const apiPath = path.join('..', 'api');
 		const extensionsPath = path.join(apiPath, 'extensions');
 
-		await ensureExtensionsDirs(extensionsPath);
+		await ensureExtensionDirs(extensionsPath);
 		const packageExtensions = await getPackageExtensions(apiPath);
 		const localExtensions = await getLocalExtensions(extensionsPath);
 

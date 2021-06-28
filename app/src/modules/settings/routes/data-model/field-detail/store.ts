@@ -152,6 +152,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
 	else if (type === 'o2m') useO2M();
 	else if (type === 'presentation') usePresentation();
+	else if (type === 'group') useGroup();
 	else if (type === 'm2a') useM2A();
 	else useStandard();
 
@@ -1038,6 +1039,15 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		state.fieldData.meta = {
 			...(state.fieldData.meta || {}),
 			special: ['alias', 'no-data'],
+		};
+	}
+
+	function useGroup() {
+		delete state.fieldData.schema;
+		state.fieldData.type = 'alias';
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data', 'group'],
 		};
 	}
 

@@ -11,7 +11,7 @@
 				<v-checkbox v-model="fieldData.meta.hidden" :label="t('hidden_on_detail')" block />
 			</div>
 
-			<div class="field full">
+			<div class="field full" v-if="localType !== 'group'">
 				<div class="label type-label">{{ t('note') }}</div>
 				<v-input v-model="fieldData.meta.note" :placeholder="t('add_note')" />
 			</div>
