@@ -151,6 +151,31 @@ directus.transport.url = 'https://api2.example.com';
 You can tap into the transport through `directus.transport`. If you are using the (default) `AxiosTransport`, you can
 access axios through `directus.transport.axios`.
 
+#### Intercepting requests and responses
+
+Axios transport offers a wrapper around Axios interceptors to make it easy for you to inject/eject interceptors.
+
+```ts
+const requestInterceptor = directus.transport.requests.intercept((config) => {
+	config.headers["My-Custom-Header"] = "Header value";
+	return config;
+});
+
+// If you don't want the interceptor anymore, remove it
+requestInterceptor.eject();
+```
+
+
+```ts
+const responseInterceptor = directus.transport.responses.intercept((response) => {
+	console.log('Response received', { response });
+	return response;
+});
+
+// If you don't want the interceptor anymore, remove it
+responseInterceptor.eject();
+```
+
 ## Items
 
 You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the
