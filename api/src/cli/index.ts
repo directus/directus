@@ -2,7 +2,7 @@
 
 /* eslint-disable no-console */
 
-import program from 'commander';
+import { program } from 'commander';
 import start from '../start';
 import bootstrap from './commands/bootstrap';
 import count from './commands/count';
