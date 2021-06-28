@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, provide, toRefs } from 'vue';
+import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw } from '@/types';
 import { clone, cloneDeep, isNil, merge, omit } from 'lodash';
