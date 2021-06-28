@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path/posix');
 const fse = require('fs-extra');
 const dirTree = require('directory-tree');
 
@@ -24,10 +24,7 @@ function generateIndex(tree) {
 		.map((child) => {
 			if (child.type === 'file') {
 				const baseName = path.basename(child.name, child.extension);
-				const basePath = path
-					.join(path.dirname(child.path), path.basename(child.path, child.extension))
-					//Escape \u on windows OS due JS intepreting \u as hexa
-					.replace('\\u', '\\\\u');
+				const basePath = path.join(path.dirname(child.path), path.basename(child.path, child.extension));
 
 				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}?raw')}`;
 			} else if (child.type === 'directory') {
