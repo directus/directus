@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
 import {
-	ensureExtensionsDirs,
+	ensureExtensionDirs,
 	getPackageExtensions,
 	getLocalExtensions,
 	generateExtensionsEntry,
@@ -94,7 +94,7 @@ function directusExtensions() {
 		const apiPath = path.join('..', 'api');
 		const extensionsPath = path.join(apiPath, 'extensions');
 
-		await ensureExtensionsDirs(extensionsPath);
+		await ensureExtensionDirs(extensionsPath);
 		const packageExtensions = await getPackageExtensions(apiPath);
 		const localExtensions = await getLocalExtensions(extensionsPath);
 

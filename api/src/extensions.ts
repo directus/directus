@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import path from 'path';
 import { AppExtensionType, Extension, ExtensionType } from '@directus/shared/types';
 import {
-	ensureExtensionsDirs,
+	ensureExtensionDirs,
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
@@ -30,7 +30,7 @@ let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
 
 export async function initializeExtensions(): Promise<void> {
-	await ensureExtensionsDirs(env.EXTENSIONS_PATH);
+	await ensureExtensionDirs(env.EXTENSIONS_PATH);
 	extensions = await getExtensions();
 
 	if (!('DIRECTUS_DEV' in process.env)) {
