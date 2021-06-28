@@ -90,7 +90,7 @@ async function generateExtensionBundles() {
 			makeAbsoluteExternalsRelative: false,
 			plugins: [virtual({ entry }), alias({ entries: internalImports })],
 		});
-		const { output } = await bundle.generate({ format: 'es' });
+		const { output } = await bundle.generate({ format: 'es', compact: true });
 
 		bundles[extensionType] = output[0].code;
 
