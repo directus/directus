@@ -15,7 +15,7 @@
 					db-safe
 					:placeholder="t('a_unique_column_name')"
 				/>
-				<small class="note" v-html="t('schema_setup_key')" />
+				<small class="note">{{ t('schema_setup_key') }}</small>
 			</div>
 
 			<div class="field half">

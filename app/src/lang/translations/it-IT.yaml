@@ -699,8 +699,6 @@ referential_action_field_label_m2o: Alla cancellazione di {collection}...
 referential_action_set_default: Imposta {field} al suo valore predefinito
 choose_action: Scegli azione
 continue: Continua
-continue_as: >-
-  <b>{name}</b> è già autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
 default: Predefinito
 delete: Elimina

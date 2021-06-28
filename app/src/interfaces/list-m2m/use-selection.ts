@@ -1,4 +1,4 @@
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { get } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';

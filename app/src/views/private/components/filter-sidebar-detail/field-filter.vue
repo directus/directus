@@ -43,7 +43,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
 import FilterInput from './filter-input.vue';

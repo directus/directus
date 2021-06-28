@@ -2,10 +2,18 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import yaml from '@rollup/plugin-yaml';
 import path from 'path';
+import {
+	ensureExtensionDirs,
+	getPackageExtensions,
+	getLocalExtensions,
+	generateExtensionsEntry,
+} from '@directus/shared/utils';
+import { SHARED_DEPS, APP_EXTENSION_TYPES } from '@directus/shared/constants';
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		directusExtensions(),
 		vue(),
 		yaml({
 			transform(data) {
@@ -18,7 +26,7 @@ export default defineConfig({
 			'@': path.resolve(__dirname, '/src'),
 		},
 	},
-	base: process.env.NODE_ENV === 'development' ? '/admin/' : '',
+	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {
 		port: 8080,
 		proxy: {
@@ -29,3 +37,71 @@ export default defineConfig({
 		},
 	},
 });
+
+function directusExtensions() {
+	const prefix = '@directus-extensions-';
+	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+
+	let extensionEntrys = {};
+
+	return [
+		{
+			name: 'directus-extensions-serve',
+			apply: 'serve',
+			config: () => ({
+				optimizeDeps: {
+					include: SHARED_DEPS,
+				},
+			}),
+			async buildStart() {
+				await loadExtensions();
+			},
+			resolveId(id) {
+				if (virtualIds.includes(id)) {
+					return id;
+				}
+			},
+			load(id) {
+				if (virtualIds.includes(id)) {
+					const extensionType = id.substring(prefix.length);
+
+					return extensionEntrys[extensionType];
+				}
+			},
+		},
+		{
+			name: 'directus-extensions-build',
+			apply: 'build',
+			config: () => ({
+				build: {
+					rollupOptions: {
+						input: {
+							index: path.resolve(__dirname, 'index.html'),
+							...SHARED_DEPS.reduce((acc, dep) => ({ ...acc, [dep.replace(/\//g, '_')]: dep }), {}),
+						},
+						output: {
+							entryFileNames: '[name].[hash].js',
+						},
+						external: virtualIds,
+						preserveEntrySignatures: 'exports-only',
+					},
+				},
+			}),
+		},
+	];
+
+	async function loadExtensions() {
+		const apiPath = path.join('..', 'api');
+		const extensionsPath = path.join(apiPath, 'extensions');
+
+		await ensureExtensionDirs(extensionsPath);
+		const packageExtensions = await getPackageExtensions(apiPath);
+		const localExtensions = await getLocalExtensions(extensionsPath);
+
+		const extensions = [...packageExtensions, ...localExtensions];
+
+		for (const extensionType of APP_EXTENSION_TYPES) {
+			extensionEntrys[extensionType] = generateExtensionsEntry(extensionType, extensions);
+		}
+	}
+}

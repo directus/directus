@@ -788,8 +788,6 @@ relational_triggers: Relatiiviset käynnistimet
 referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
 continue: Jatka
-continue_as: >-
-  <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
 editing_role: '{role} rooli'
 creating_webhook: Luodaan webhook
 default: Oletus

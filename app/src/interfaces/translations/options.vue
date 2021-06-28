@@ -16,7 +16,7 @@
 		</div>
 
 		<div class="field half">
-			<p class="type-label">{{ $t('translations_display_template') }}</p>
+			<p class="type-label">{{ t('translations_display_template') }}</p>
 			<v-field-template
 				:collection="translationsCollection"
 				v-model="translationsTemplate"
@@ -33,9 +33,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@/types';
+import { Field, Relation } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
-import { Relation } from '@/types/relations';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
