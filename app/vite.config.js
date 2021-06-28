@@ -43,12 +43,19 @@ function directusExtensions() {
 	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrys = {};
-	if (process.env.NODE_ENV !== 'production') loadExtensions();
 
 	return [
 		{
 			name: 'directus-extensions-serve',
 			apply: 'serve',
+			config: () => ({
+				optimizeDeps: {
+					include: SHARED_DEPS,
+				},
+			}),
+			async buildStart() {
+				await loadExtensions();
+			},
 			resolveId(id) {
 				if (virtualIds.includes(id)) {
 					return id;
@@ -61,11 +68,6 @@ function directusExtensions() {
 					return extensionEntrys[extensionType];
 				}
 			},
-			config: () => ({
-				optimizeDeps: {
-					include: SHARED_DEPS,
-				},
-			}),
 		},
 		{
 			name: 'directus-extensions-build',
