@@ -7,6 +7,9 @@
 		"import": "./dist/esm/index.js",
 		"require": "./dist/cjs/index.js"
 	},
+	"bin": {
+		"directus-extension": "cli.js"
+	},
 	"scripts": {
 		"build": "npm run cleanup && run-p build:*",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
@@ -18,7 +21,15 @@
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"@directus/shared": "9.0.0-rc.81"
+		"@directus/shared": "9.0.0-rc.81",
+		"@rollup/plugin-commonjs": "^19.0.0",
+		"@rollup/plugin-node-resolve": "^13.0.0",
+		"@vue/compiler-sfc": "^3.1.1",
+		"commander": "^8.0.0",
+		"ora": "^5.4.0",
+		"rollup": "^2.51.2",
+		"rollup-plugin-terser": "^7.0.2",
+		"rollup-plugin-vue": "^6.0.0"
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
