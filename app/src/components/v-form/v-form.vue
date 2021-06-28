@@ -33,6 +33,7 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-errors="validationErrors"
+				v-bind="field.meta?.options || {}"
 				@apply="apply"
 			/>
 
@@ -225,7 +226,7 @@ export default defineComponent({
 
 			const formFieldsInGroup = computed(() =>
 				formFieldsParsed.value.filter(
-					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta))
+					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
 
