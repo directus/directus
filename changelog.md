@@ -2,6 +2,36 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.81 (June 26, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#6466](https://github.com/directus/directus/pull/6466) Set calendar layout locale based on app locale ([@nickrum](https://github.com/nickrum))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6481](https://github.com/directus/directus/pull/6481) Fix login page not showing user's name on app required permissions role ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6377](https://github.com/directus/directus/pull/6377) Fix app extensions loading and registration ([@nickrum](https://github.com/nickrum))
+
+### :memo: Documentation
+
+- [#6467](https://github.com/directus/directus/pull/6467) Import a File link in Assets tip broken ([@Mrmiffo](https://github.com/Mrmiffo))
+
+### :package: Dependency Updates
+
+- [#6509](https://github.com/directus/directus/pull/6509) update dependency prettier to v2.3.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6507](https://github.com/directus/directus/pull/6507) update dependency marked to v2.1.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6499](https://github.com/directus/directus/pull/6499) update dependency rollup to v2.52.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6497](https://github.com/directus/directus/pull/6497) update dependency eslint-plugin-vue to v7.12.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6482](https://github.com/directus/directus/pull/6482) Update vue to 3.1.2 ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6473](https://github.com/directus/directus/pull/6473) update dependency mitt to v3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6470](https://github.com/directus/directus/pull/6470) update dependency fs-extra to v10 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6469](https://github.com/directus/directus/pull/6469) pin dependencies ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6468](https://github.com/directus/directus/pull/6468) update dependency @types/codemirror to v5.60.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6459](https://github.com/directus/directus/pull/6459) update dependency tinymce to v5.8.2 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.80 (June 22, 2021)
 
 ### :sparkles: New Features
