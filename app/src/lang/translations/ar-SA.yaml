@@ -9,6 +9,10 @@ field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
+branch: فرع
+indeterminate: غير محدد
+exclusive: حصري
+children: اطفال
 db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
 edited: تم تعديل القيمة
@@ -238,14 +242,23 @@ export_data: تصدير البيانات
 format: التنسيق
 use_current_filters_settings: استخدام التصفية و الإعدادات الحالية
 export_collection: 'تصدير {collection}'
+last_page: آخر صفحة
+last_access: آخر وصول
+fill_template: املأ بقيمة النموذج
+a_unique_table_name: اسم جدول فريد...
+a_unique_column_name: اسم عمود فريد...
+enable_custom_values: تمكين القيم المخصصة
 submit: إرسال
 move_to_folder: أنقل إلى مجلد
 move: نقل
 system: نظام
 add_field_related: إضافة حقل إلى مجموعة ذات صلة
+interface: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
+date-fns_time: 'ساعات: دقائق: ثواني'
+date-fns_time_no_seconds: 'س:دد ص'
 month: شهر
 year: سنة
 select_all: تحديد الكل
@@ -263,6 +276,7 @@ months:
   november: نوفمبر
   december: ديسمبر
 drag_mode: وضع السحب
+original: أصلي
 url: الرابط
 import: إستيراد
 file_details: تفاصيل الملف
@@ -278,6 +292,7 @@ zoom: تكبير/تصغير
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+background_color: لون الخلفية
 upload_from_device: استبدال الملف من الجهاز
 choose_from_library: اختر ملف من المكتبة
 import_from_url: استيراد ملف من رابط
@@ -383,6 +398,7 @@ errors:
   INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
+  INVALID_QUERY: طلب غير صحيح
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
   ROUTE_NOT_FOUND: غير موجود
   USER_SUSPENDED: المستخدم موقوف
@@ -402,6 +418,8 @@ back: رجوع
 editing_image: تحرير صورة
 square: مربع
 free: حر
+flip_horizontal: اقلب أفقيا
+flip_vertical: اقلب عموديا
 aspect_ratio: نسبة العرض إلى الارتفاع
 rotate: تدوير
 all_users: كل المستخدمين
@@ -434,6 +452,7 @@ empty_item: عنصر فارغ
 log_in_with: 'تسجيل الدخول باستخدام {provider}'
 advanced_filter: تصفية متقدمة
 delete_advanced_filter: حذف التصفية
+change_advanced_filter_operator: تغيير المشغل
 operators:
   eq: يساوي
   neq: لا يساوي
@@ -446,6 +465,7 @@ operators:
   nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
+  starts_with: إبدا بـ
   between: بين
   nbetween: بين
   empty: فارغ
@@ -500,12 +520,21 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 format_text: تنسيق النص
+image_url: رابط الصورة
+media: وسائط الإعلام
 width: العرض
 height: الارتفاع
 source: مصدر
+url_placeholder: أدخل عنوان الرابط
+display_text: عرض النص
 unlimited: غير محدود
 open_link_in: افتح الرابط في
 wysiwyg_options:
+  alignleft: محاذاة إلى اليسار
+  alignright: محاذاة إلى اليمين
+  backcolor: لون الخلفية
+  italic: خط مائل
+  underline: مسطر
   codeblock: نص برمجي
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
@@ -653,6 +682,8 @@ fields:
     tfa_secret: التحقق بخطوتين
     status: حالة
     role: الدور
+    last_page: آخر صفحة
+    last_access: آخر وصول
   directus_settings:
     project_name: اسم المشروع
     project_url: رابط المشروع
@@ -814,6 +845,8 @@ interfaces:
   file-image:
     image: صورة
     description: حدد أو ارفع صورة
+  system-interface:
+    interface: الواجهة
   select-dropdown-m2o:
     description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب

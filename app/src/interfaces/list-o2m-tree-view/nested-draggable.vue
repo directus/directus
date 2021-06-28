@@ -179,10 +179,6 @@ export default defineComponent({
 	}
 }
 
-.flip-list-move {
-	transition: transform 0.5s;
-}
-
 .ghost .preview {
 	background-color: var(--primary-alt);
 	box-shadow: 0 !important;

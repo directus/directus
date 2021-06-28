@@ -19,8 +19,12 @@ If you're experiencing issues or think you have found a problem in Directus, be 
 8. Check for [existing Issues](https://github.com/directus/directus/issues?q=is%3Aissue) (and
    [Discussions](https://github.com/directus/directus/discussions)) that match your problem
 
-::: tip Source Contributors Those who have installed from source should also remove all dependencies
-(`npx lerna clean -y`) and then reinstall them (`npm install`). :::
+::: tip Source Contributors
+
+Those who have installed from source should also remove all dependencies (`npx lerna clean -y`) and then reinstall them
+(`npm install`).
+
+:::
 
 If you're still experiencing a problem after completing the above steps, you can chat through things on our
 [community support](#community-support) or [report a bug](/contributing/introduction/#bug-reporting).
