@@ -16,7 +16,7 @@
 		</div>
 
 		<div class="field half">
-			<p class="type-label">{{ $t('translations_display_template') }}</p>
+			<p class="type-label">{{ t('translations_display_template') }}</p>
 			<v-field-template
 				:collection="translationsCollection"
 				v-model="translationsTemplate"
