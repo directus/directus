@@ -87,6 +87,7 @@ async function generateExtensionBundles() {
 		const bundle = await rollup({
 			input: 'entry',
 			external: Object.values(sharedDepsMapping),
+			makeAbsoluteExternalsRelative: false,
 			plugins: [virtual({ entry }), alias({ entries: internalImports })],
 		});
 		const { output } = await bundle.generate({ format: 'es' });
@@ -101,13 +102,14 @@ async function generateExtensionBundles() {
 
 async function getSharedDepsMapping(deps: string[]) {
 	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
+	const adminUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL + 'admin' : env.PUBLIC_URL + '/admin';
 
 	const depsMapping: Record<string, string> = {};
 	for (const dep of deps) {
 		const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
 
 		if (depName) {
-			depsMapping[dep] = `${env.PUBLIC_URL}/admin/${depName}`;
+			depsMapping[dep] = `${adminUrl}/${depName}`;
 		} else {
 			logger.warn(`Couldn't find shared extension dependency "${dep}"`);
 		}
