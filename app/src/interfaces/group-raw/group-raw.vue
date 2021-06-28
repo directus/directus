@@ -1,13 +1,15 @@
 <template>
 	<div class="group-raw">
-		<!-- <v-form
+		<v-form
 			:initial-values="initialValues"
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:root-group="field.meta.id"
+			:group="field.meta.id"
+			:validation-errors="validationErrors"
+			:loading="loading"
 			@update:model-value="$emit('apply', $event)"
-		/> -->
+		/>
 	</div>
 </template>
 
@@ -17,6 +19,7 @@ import { defineComponent, PropType } from 'vue';
 import { ValidationError } from '@/types';
 
 export default defineComponent({
+	emits: ['apply'],
 	name: 'interface-group-raw',
 	props: {
 		field: {
@@ -59,13 +62,6 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		return {};
 	},
 });
 </script>

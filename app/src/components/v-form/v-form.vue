@@ -24,7 +24,7 @@
 				:is="`interface-${field.meta?.interface || 'group-raw'}`"
 				:key="field.field"
 				:field="field"
-				:fields="fields"
+				:fields="getFieldsForGroup(field.meta.id)"
 				:values="values || {}"
 				:initial-values="initialValues || {}"
 				:disabled="disabled"
@@ -33,7 +33,7 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-errors="validationErrors"
-				@input="apply"
+				@apply="apply"
 			/>
 
 			<form-field
@@ -119,6 +119,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		group: {
+			type: Number,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const { t } = useI18n();
@@ -143,7 +147,7 @@ export default defineComponent({
 			}
 		});
 
-		const { formFields } = useForm();
+		const { formFields, getFieldsForGroup } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -183,6 +187,7 @@ export default defineComponent({
 			el,
 			gridClass,
 			omit,
+			getFieldsForGroup,
 		};
 
 		function useForm() {
@@ -218,7 +223,13 @@ export default defineComponent({
 				return formFields.value.map((field) => blockPrimaryKey(field));
 			});
 
-			return { formFields: formFieldsParsed, isDisabled };
+			const formFieldsInGroup = computed(() =>
+				formFieldsParsed.value.filter(
+					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta))
+				)
+			);
+
+			return { formFields: formFieldsInGroup, isDisabled, getFieldsForGroup };
 
 			function isDisabled(field: Field) {
 				return (
@@ -227,6 +238,20 @@ export default defineComponent({
 					field.meta?.readonly === true ||
 					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 				);
+			}
+
+			function getFieldsForGroup(group: null | number): Field[] {
+				const fieldsInGroup: Field[] = formFieldsParsed.value.filter(
+					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
+				);
+
+				for (const field of fieldsInGroup) {
+					if (field.meta?.special?.includes('group')) {
+						fieldsInGroup.push(...getFieldsForGroup(field.meta!.id));
+					}
+				}
+
+				return fieldsInGroup;
 			}
 		}
 
