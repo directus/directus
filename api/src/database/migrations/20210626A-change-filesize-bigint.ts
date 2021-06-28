@@ -8,6 +8,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_files', (table) => {
-		table.integer('filesize').notNullable().defaultTo(0).alter();
+		table.integer('filesize').nullable().defaultTo(null).alter();
 	});
 }
