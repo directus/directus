@@ -191,7 +191,7 @@ describe('axios transport', function () {
 			.defaultReplyHeaders({
 				'x-new-header-value': (req) => {
 					return (req.getHeader('x-new-header') || '').toString();
-				}
+				},
 			})
 			.get('/test')
 			.times(3)

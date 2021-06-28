@@ -6,7 +6,7 @@ export type AxiosTransportRefreshHandler = () => Promise<void>;
 
 export type AxiosEjector = {
 	eject(): void;
-}
+};
 
 export type AxiosInterceptorFunction<T> = (
 	onFulfilled?: (value: T) => T | Promise<T>,
@@ -15,7 +15,7 @@ export type AxiosInterceptorFunction<T> = (
 
 export type AxiosInterceptor<T> = {
 	intercept: AxiosInterceptorFunction<T>;
-}
+};
 
 /**
  * Axios transport implementation
@@ -57,10 +57,10 @@ export class AxiosTransport implements ITransport {
 				return {
 					eject: () => {
 						this._axios.interceptors.request.eject(id);
-					}
+					},
 				};
-			}
-		}
+			},
+		};
 	}
 
 	get responses(): AxiosInterceptor<AxiosResponse> {
@@ -70,16 +70,16 @@ export class AxiosTransport implements ITransport {
 				return {
 					eject: () => {
 						this._axios.interceptors.response.eject(id);
-					}
+					},
 				};
-			}
-		}
+			},
+		};
 	}
 
 	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
-		data?: any,
+		data?: Record<string, any>,
 		options?: TransportOptions
 	): Promise<TransportResponse<T, R>> {
 		try {
