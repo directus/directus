@@ -5,6 +5,8 @@ import env from '../env';
 import logger from '../logger';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
+import { Migration } from './migrations/run';
+import fse from 'fs-extra';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
