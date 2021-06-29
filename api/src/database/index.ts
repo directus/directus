@@ -127,3 +127,17 @@ export async function isInstalled(): Promise<boolean> {
 	// exists when using the installer CLI.
 	return await inspector.hasTable('directus_collections');
 }
+
+export const validateMigrations = async (): Promise<boolean> => {
+	const database = getDatabase();
+	try {
+		const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
+		const completedMigrationFiles = completedMigrations.map((migration) => {
+			return `${migration.version}-${migration.name.toLowerCase()}.ts`.replace(/ /g, '-');
+		});
+		const migrationFiles = await fse.readdir('./migrations');
+		return completedMigrationFiles.every((migration) => migrationFiles.includes(migration));
+	} catch (error) {
+		return error;
+	}
+};

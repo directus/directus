@@ -24,7 +24,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import { isInstalled, validateDBConnection } from './database';
+import { isInstalled, validateDBConnection, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
@@ -54,6 +54,9 @@ export default async function createApp(): Promise<express.Application> {
 		process.exit(1);
 	}
 
+	if ((await validateMigrations()) === false) {
+		logger.warn(`Database migrations have not all been run`);
+	}
 	await initializeExtensions();
 
 	registerExtensionHooks();

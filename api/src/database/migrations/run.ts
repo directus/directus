@@ -6,7 +6,7 @@ import { Knex } from 'knex';
 import path from 'path';
 import env from '../../env';
 
-type Migration = {
+export type Migration = {
 	version: string;
 	name: string;
 	timestamp: Date;
