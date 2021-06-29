@@ -382,27 +382,27 @@ export default defineComponent({
 
 <style lang="scss">
 .mapbox-gl-draw_point::after {
-	content: '\ef3a'; // add_location
+	content: 'add_location';
 }
 
 .mapbox-gl-draw_line::after {
-	content: '\e922'; // timeline
+	content: 'timeline';
 }
 
 .mapbox-gl-draw_polygon::after {
-	content: '\e574'; // category
+	content: 'category';
 }
 
 .mapbox-gl-draw_trash::after {
-	content: '\e872'; // delete
+	content: 'delete';
 }
 
 .mapbox-gl-draw_uncombine::after {
-	content: '\e0b6'; // call_split
+	content: 'call_split';
 }
 
 .mapbox-gl-draw_combine::after {
-	content: '\e0b3'; // call_merge
+	content: 'call_merge';
 }
 </style>
 

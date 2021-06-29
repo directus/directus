@@ -117,9 +117,9 @@ export default defineComponent({
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(boxSelectControl, 'top-left');
 			map.addControl(attributionControl, 'top-right');
-			// if (mapboxKey) {
-			// 	map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
-			// }
+			if (mapboxKey) {
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
+			}
 
 			map.on('load', () => {
 				watch(() => style.value, updateStyle), watch(() => props.bounds, fitBounds);
@@ -357,31 +357,31 @@ export default defineComponent({
 }
 
 .mapboxgl-ctrl-zoom-in::after {
-	content: '\e145'; // add
+	content: 'add';
 }
 
 .mapboxgl-ctrl-zoom-out::after {
-	content: '\e15b'; // remove
+	content: 'remove';
 }
 
 .mapboxgl-ctrl-compass::after {
-	content: '\e87a'; // explore
+	content: 'explore';
 }
 
 .mapboxgl-ctrl-geolocate::after {
-	content: '\e55c'; // my_location
+	content: 'my_location';
 }
 
 .mapboxgl-ctrl-fitdata::after {
-	content: '\e3c2'; // crop_free
+	content: 'crop_free';
 }
 
 .mapboxgl-ctrl-select::after {
-	content: '\ef52'; // highlight_alt
+	content: 'highlight_alt';
 }
 
 .mapboxgl-ctrl-unselect::after {
-	content: '\e14c'; // clear
+	content: 'clear';
 }
 
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
