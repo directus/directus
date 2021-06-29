@@ -25,7 +25,7 @@ export class HelperMySQL implements HelperFn {
 	}
 
 	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DAYOFWEEK??.??)', [table, column]);
+		return this.knex.raw('DAYOFWEEK(??.??)', [table, column]);
 	}
 
 	hour(table: string, column: string): Knex.Raw {
