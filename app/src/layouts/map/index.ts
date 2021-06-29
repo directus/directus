@@ -11,7 +11,7 @@ import { CameraOptions, AnyLayer } from 'maplibre-gl';
 import { GeometryOptions, toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
 import { useRouter } from 'vue-router';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -160,7 +160,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return {
 				key: 'bbox-filter',
 				field: geometryField.value,
-				operator: 'intersects',
+				operator: 'intersects_bbox',
 				value: {
 					type: 'Polygon',
 					coordinates: [bboxPolygon],
@@ -301,6 +301,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		return {
 			template,
+			selection,
 			geojson,
 			directusSource,
 			directusLayers,

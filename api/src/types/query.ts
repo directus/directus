@@ -36,6 +36,10 @@ export type FilterOperator =
 	| 'null'
 	| 'nnull'
 	| 'empty'
-	| 'nempty';
+	| 'nempty'
+	| 'intersects'
+	| 'nintersects'
+	| 'bbox_intersects'
+	| 'bbox_nintersects';
 
 export type ValidationOperator = 'required' | 'regex';

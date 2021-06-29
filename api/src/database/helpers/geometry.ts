@@ -3,25 +3,27 @@ import { Knex } from 'knex';
 import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
 import getDatabase from '..';
 
+let geometryHelper: KnexSpatial | undefined;
+
 export function getGeometryHelper(): KnexSpatial {
-	const db = getDatabase();
-	const client = db.client.config.client;
-	switch (client) {
-		case 'mysql':
-		case 'mariadb':
-		case 'sqlite3':
-			return new KnexSpatial(db);
-		case 'pg':
-			return new KnexSpatial_PG(db);
-		case 'redshift':
-			return new KnexSpatial_Redshift(db);
-		case 'mssql':
-			return new KnexSpatial_MSSQL(db);
-		case 'oracledb':
-			return new KnexSpatial_Oracle(db);
-		default:
+	if (!geometryHelper) {
+		const db = getDatabase();
+		const client = db.client.config.client as string;
+		const constructor = {
+			mysql: KnexSpatial,
+			mariadb: KnexSpatial,
+			sqlite3: KnexSpatial,
+			pg: KnexSpatial_PG,
+			redshift: KnexSpatial_Redshift,
+			mssql: KnexSpatial_MSSQL,
+			oracledb: KnexSpatial_Oracle,
+		}[client];
+		if (!constructor) {
 			throw new Error(`Geometry helper not implemented on ${client}.`);
+		}
+		geometryHelper = new constructor(db);
 	}
+	return geometryHelper;
 }
 
 class KnexSpatial {
@@ -46,12 +48,23 @@ class KnexSpatial {
 	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		return this.intersects(key, geojson).wrap('NOT ', '');
 	}
+	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
+		return this.knex.raw('intersects(??, ?)', [key, geometry]);
+	}
+	nintersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.intersects_bbox(key, geojson).wrap('NOT ', '');
+	}
 }
 
 class KnexSpatial_PG extends KnexSpatial {
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
 		const type = field.schema?.geometry_type ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type})`);
+	}
+	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
+		return this.knex.raw('?? && ?', [key, geometry]);
 	}
 }
 
@@ -75,15 +88,31 @@ class KnexSpatial_MSSQL extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('geometry::STGeomFromText(?, 4326)', text);
 	}
+	isTrue(expression: Knex.Raw) {
+		return expression.wrap(``, ` = 1`);
+	}
+	isFalse(expression: Knex.Raw) {
+		return expression.wrap(``, ` = 0`);
+	}
 	_intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('??.STIntersects(?)', [key, geometry]);
 	}
 	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.intersects(key, geojson).wrap(``, ` = 1`);
+		return this.isTrue(this.intersects(key, geojson));
 	}
 	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.intersects(key, geojson).wrap(``, ` = 0`);
+		return this.isFalse(this.intersects(key, geojson));
+	}
+	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
+		return this.knex.raw('??.STEnvelope().STIntersects(?.STEnvelope())', [key, geometry]);
+	}
+	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.isTrue(this.intersects(key, geojson));
+	}
+	nintersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.isFalse(this.intersects(key, geojson));
 	}
 }
 
@@ -99,14 +128,30 @@ class KnexSpatial_Oracle extends KnexSpatial {
 	fromText(text: string): Knex.Raw {
 		return this.knex.raw('sdo_geometry(?, 4326)', text);
 	}
+	isTrue(expression: Knex.Raw) {
+		return expression.wrap(``, ` = 'TRUE'`);
+	}
+	isFalse(expression: Knex.Raw) {
+		return expression.wrap(``, ` = 'FALSE'`);
+	}
 	_intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
-		return this.knex.raw(`sdo_relate(??, ?, 'mask=overlapbdyintersect')`, [key, geometry]);
+		return this.knex.raw(`sdo_overlapbdyintersect(??, ?)`, [key, geometry]);
 	}
 	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.intersects(key, geojson).wrap(``, ` = 'TRUE'`);
+		return this.isTrue(this.intersects(key, geojson));
 	}
 	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.intersects(key, geojson).wrap(``, ` = 'FALSE'`);
+		return this.isFalse(this.intersects(key, geojson));
+	}
+	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		const geometry = this.fromGeoJSON(geojson);
+		return this.knex.raw(`sdo_overlapbdyintersect(sdo_geom.sdo_mbr(??), sdo_geom.sdo_mbr(?))`, [key, geometry]);
+	}
+	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.isTrue(this._intersects_bbox(key, geojson));
+	}
+	nintersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+		return this.isFalse(this._intersects_bbox(key, geojson));
 	}
 }

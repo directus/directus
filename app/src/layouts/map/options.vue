@@ -22,15 +22,15 @@
 	</div>
 
 	<div class="field">
-		<v-checkbox v-model="fitViewToData" :label="t('layouts.map.fit_view')" />
-	</div>
-
-	<div class="field">
 		<v-checkbox
 			v-model="fitDataToView"
 			:label="t('layouts.map.fit_data')"
 			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
 		/>
+	</div>
+
+	<div class="field">
+		<v-checkbox v-model="fitViewToData" :label="t('layouts.map.fit_view')" />
 	</div>
 
 	<div class="field">
@@ -70,7 +70,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 import { useAppStore } from '@/stores';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 

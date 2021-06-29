@@ -406,14 +406,21 @@ export function applyFilter(
 				dbQuery[logical].whereNotBetween(key, value);
 			}
 
+			const geometryHelper = getGeometryHelper();
+
 			if (operator == '_intersects') {
-				const helper = getGeometryHelper();
-				dbQuery[logical].whereRaw(helper.intersects(key, compareValue));
+				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
 			}
 
 			if (operator == '_nintersects') {
-				const helper = getGeometryHelper();
-				dbQuery[logical].whereRaw(helper.nintersects(key, compareValue));
+				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+			}
+			if (operator == '_intersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+			}
+
+			if (operator == '_nintersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
 			}
 		}
 

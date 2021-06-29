@@ -1,5 +1,5 @@
 <template>
-	<div id="map-container" ref="container" :class="{ hover: hoveredFeature != null }"></div>
+	<div id="map-container" ref="container" :class="{ hover: hoveredFeature || hoveredCluster }"></div>
 </template>
 
 <script lang="ts">
@@ -62,6 +62,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
+		const hoveredCluster = ref<boolean>();
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 		const { sidebarOpen, basemap } = toRefs(appStore);
@@ -100,7 +101,7 @@ export default defineComponent({
 			map.remove();
 		});
 
-		return { container, hoveredFeature };
+		return { container, hoveredFeature, hoveredCluster };
 
 		function setupMap() {
 			map = new Map({
@@ -116,22 +117,24 @@ export default defineComponent({
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(boxSelectControl, 'top-left');
 			map.addControl(attributionControl, 'top-right');
-			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
-			}
+			// if (mapboxKey) {
+			// 	map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
+			// }
 
 			map.on('load', () => {
 				watch(() => style.value, updateStyle), watch(() => props.bounds, fitBounds);
-				map.on('click', '__directus_clusters', expandCluster);
 				map.on('click', '__directus_polygons', onFeatureClick);
-				map.on('click', '__directus_points', onFeatureClick);
-				map.on('click', '__directus_lines', onFeatureClick);
 				map.on('mousemove', '__directus_polygons', updatePopup);
-				map.on('mousemove', '__directus_points', updatePopup);
-				map.on('mousemove', '__directus_lines', updatePopup);
 				map.on('mouseleave', '__directus_polygons', updatePopup);
+				map.on('click', '__directus_points', onFeatureClick);
+				map.on('mousemove', '__directus_points', updatePopup);
 				map.on('mouseleave', '__directus_points', updatePopup);
+				map.on('click', '__directus_lines', onFeatureClick);
+				map.on('mousemove', '__directus_lines', updatePopup);
 				map.on('mouseleave', '__directus_lines', updatePopup);
+				map.on('click', '__directus_clusters', expandCluster);
+				map.on('mousemove', '__directus_clusters', hoverCluster);
+				map.on('mouseleave', '__directus_clusters', hoverCluster);
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', ids);
@@ -287,6 +290,14 @@ export default defineComponent({
 					speed: 1.3,
 				});
 			});
+		}
+
+		function hoverCluster(event: MapLayerMouseEvent) {
+			if (event.type == 'mousemove') {
+				hoveredCluster.value = true;
+			} else {
+				hoveredCluster.value = false;
+			}
 		}
 	},
 });
