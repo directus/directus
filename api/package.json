@@ -187,7 +187,7 @@
 		"@types/uuid-validate": "0.0.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
-		"ts-node-dev": "1.1.6",
+		"ts-node-dev": "1.1.7",
 		"typescript": "4.3.4"
 	}
 }
