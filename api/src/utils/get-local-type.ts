@@ -91,6 +91,8 @@ export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): typeof types[number] | 'unknown' {
+	if (column === undefined) return 'unknown';
+
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;
