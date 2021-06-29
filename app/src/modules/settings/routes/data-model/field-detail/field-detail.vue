@@ -192,8 +192,8 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: LocalType = 'standard';
-			type = getLocalTypeForField(props.collection, props.field);
+			let type: LocalType;
+			type = getLocalTypeForField(props.collection, props.field)!;
 
 			return type;
 		});
@@ -255,7 +255,7 @@ export default defineComponent({
 					},
 				];
 
-				if (props.type !== 'presentation') {
+				if (props.type !== 'presentation' && props.type !== 'group') {
 					tabs.push({
 						text: t('display'),
 						value: 'display',
@@ -390,7 +390,7 @@ export default defineComponent({
 
 				await Promise.all(
 					state.relations.map((relation) => {
-						const relationExists = !!relationsStore.getRelationForField(relation.collection, relation.field);
+						const relationExists = !!relationsStore.getRelationForField(relation.collection!, relation.field!);
 
 						if (relationExists) {
 							return api.patch(`/relations/${relation.collection}/${relation.field}`, relation);

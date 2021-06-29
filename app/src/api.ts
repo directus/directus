@@ -38,15 +38,16 @@ export const onRequest = (config: AxiosRequestConfig): RequestConfig => {
 
 export const onResponse = (response: AxiosResponse | Response): AxiosResponse | Response => {
 	const requestsStore = useRequestsStore();
-	const id = (response.config as RequestConfig).id;
-	requestsStore.endRequest(id);
+	const id = (response.config as RequestConfig)?.id;
+	if (id) requestsStore.endRequest(id);
 	return response;
 };
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
 	const requestsStore = useRequestsStore();
-	const id = (error.response.config as RequestConfig).id;
-	requestsStore.endRequest(id);
+	const id = (error.response?.config as RequestConfig)?.id;
+
+	if (id) requestsStore.endRequest(id);
 
 	// If a request fails with the unauthorized error, it either means that your user doesn't have
 	// access, or that your session doesn't exist / has expired.
