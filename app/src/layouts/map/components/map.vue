@@ -1,5 +1,9 @@
 <template>
-	<div id="map-container" ref="container" :class="{ hover: hoveredFeature || hoveredCluster }"></div>
+	<div
+		id="map-container"
+		ref="container"
+		:class="{ select: selectMode, hover: hoveredFeature || hoveredCluster }"
+	></div>
 </template>
 
 <script lang="ts">
@@ -63,6 +67,7 @@ export default defineComponent({
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
 		const hoveredCluster = ref<boolean>();
+		const selectMode = ref<boolean>();
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 		const { sidebarOpen, basemap } = toRefs(appStore);
@@ -101,7 +106,7 @@ export default defineComponent({
 			map.remove();
 		});
 
-		return { container, hoveredFeature, hoveredCluster };
+		return { container, hoveredFeature, hoveredCluster, selectMode };
 
 		function setupMap() {
 			map = new Map({
@@ -135,6 +140,8 @@ export default defineComponent({
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('mousemove', '__directus_clusters', hoverCluster);
 				map.on('mouseleave', '__directus_clusters', hoverCluster);
+				map.on('select.enable', () => (selectMode.value = true));
+				map.on('select.disable', () => (selectMode.value = false));
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', ids);
@@ -493,7 +500,7 @@ export default defineComponent({
 	cursor: pointer !important;
 }
 
-#map-container.box-select .mapboxgl-canvas-container {
+#map-container.select .mapboxgl-canvas-container {
 	cursor: crosshair !important;
 }
 </style>

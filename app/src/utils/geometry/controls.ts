@@ -134,7 +134,6 @@ export class BoxSelectControl {
 		this.shiftPressed = yes;
 		this.selectButton.activate(yes);
 		this.map!.fire(`select.${yes ? 'enable' : 'disable'}`);
-		this.map!.getContainer().classList[yes ? 'add' : 'remove']('box-select');
 	}
 
 	onKeyUp(event: KeyboardEvent): void {
