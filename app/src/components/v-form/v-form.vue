@@ -204,7 +204,13 @@ export default defineComponent({
 				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
 			});
 
-			const { formFields } = useFormFields(fields);
+			const fieldsInGroup = computed(() =>
+				fields.value.filter(
+					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
+				)
+			);
+
+			const { formFields } = useFormFields(fieldsInGroup);
 
 			const formFieldsParsed = computed(() => {
 				const blockPrimaryKey = (field: Field) => {
@@ -224,13 +230,7 @@ export default defineComponent({
 				return formFields.value.map((field) => blockPrimaryKey(field));
 			});
 
-			const formFieldsInGroup = computed(() =>
-				formFieldsParsed.value.filter(
-					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
-				)
-			);
-
-			return { formFields: formFieldsInGroup, isDisabled, getFieldsForGroup };
+			return { formFields: formFieldsParsed, isDisabled, getFieldsForGroup };
 
 			function isDisabled(field: Field) {
 				return (
@@ -242,7 +242,7 @@ export default defineComponent({
 			}
 
 			function getFieldsForGroup(group: null | number): Field[] {
-				const fieldsInGroup: Field[] = formFieldsParsed.value.filter(
+				const fieldsInGroup: Field[] = fields.value.filter(
 					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
 				);
 
