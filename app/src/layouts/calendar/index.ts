@@ -13,7 +13,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { ref, watch, toRefs, computed, Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { Field } from '@/types';
-import { Item, Filter } from '@directus/shared/types';
+import { Item, Filter, LogicalOperatorFilter } from '@directus/shared/types';
 import useItems from '@/composables/use-items';
 import useCollection from '@/composables/use-collection';
 import { formatISO } from 'date-fns';
@@ -62,18 +62,18 @@ export default defineLayout<LayoutOptions>({
 			})
 		);
 
-		const filtersWithCalendarView = computed<Filter[]>(() => {
+		const filtersWithCalendarView = computed<(Filter | LogicalOperatorFilter)[]>(() => {
 			if (!calendar.value || !startDateField.value || !endDateField.value) return filters.value;
 
 			return [
 				...filters.value,
 				{
 					operator: 'or',
-					value: [
+					filters: [
 						{
 							// event starts in the current month
 							operator: 'and',
-							value: [
+							filters: [
 								{
 									key: 'start_date',
 									field: startDateField.value,
@@ -93,7 +93,7 @@ export default defineLayout<LayoutOptions>({
 						{
 							// end of event is in the current month
 							operator: 'and',
-							value: [
+							filters: [
 								{
 									key: 'start_date',
 									field: endDateField.value,
@@ -113,7 +113,7 @@ export default defineLayout<LayoutOptions>({
 						{
 							// event starts before the month and ends after the month
 							operator: 'and',
-							value: [
+							filters: [
 								{
 									key: 'start_date',
 									field: startDateField.value,

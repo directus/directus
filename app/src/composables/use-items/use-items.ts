@@ -1,6 +1,6 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { Filter, Item } from '@directus/shared/types';
+import { LogicalOperatorFilter, Filter, Item } from '@directus/shared/types';
 import filtersToQuery from '@/utils/filters-to-query';
 import moveInArray from '@/utils/move-in-array';
 import { isEqual, orderBy, throttle } from 'lodash';
@@ -11,7 +11,7 @@ type Query = {
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
 	page: Ref<number>;
-	filters: Ref<readonly Filter[]>;
+	filters: Ref<readonly (LogicalOperatorFilter | Filter)[]>;
 	searchQuery: Ref<string | null>;
 };
 
@@ -161,7 +161,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 		// Make sure all fields that are used to filter are fetched
 		if (fields.value.includes('*') === false) {
-			filters.value.forEach((filter) => {
+			getFieldFilters(filters.value).forEach((filter) => {
 				if (fieldsToFetch.includes(filter.field) === false) {
 					fieldsToFetch.push(filter.field);
 				}
@@ -226,6 +226,20 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 			loadingTimeout = null;
 			loading.value = false;
 		}
+	}
+
+	function getFieldFilters(filters: readonly (LogicalOperatorFilter | Filter)[]): Filter[] {
+		const fieldFilters: Filter[] = [];
+		filters.forEach((filter) => {
+			const fieldFilter = filter as Filter;
+			const loFilter = filter as LogicalOperatorFilter;
+			if (!!fieldFilter.field === true) {
+				fieldFilters.push(filter as Filter);
+			} else if (!!loFilter.filters === true) {
+				fieldFilters.push(...getFieldFilters(loFilter.filters));
+			}
+		});
+		return fieldFilters;
 	}
 
 	async function getItemCount() {

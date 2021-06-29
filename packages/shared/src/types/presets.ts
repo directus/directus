@@ -16,12 +16,19 @@ export type FilterOperator =
 	| 'empty'
 	| 'nempty';
 
+export type LogicalOperatorFilterOption = 'and' | 'or';
+
 export type Filter = {
 	key: string;
 	field: string;
 	operator: FilterOperator;
 	value: string;
 	locked?: boolean;
+};
+
+export type LogicalOperatorFilter = {
+	operator: LogicalOperatorFilterOption;
+	filters: Filter[];
 };
 
 export type Preset = {
