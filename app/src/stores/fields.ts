@@ -164,7 +164,7 @@ export const useFieldsStore = defineStore({
 				unexpectedError(err);
 			}
 		},
-		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
+		async updateFields(collectionKey: string, updates: DeepPartial<Field>[]) {
 			const updateID = nanoid();
 			const stateClone = [...this.fields];
 
@@ -246,11 +246,11 @@ export const useFieldsStore = defineStore({
 		/**
 		 * Retrieve field info for a field or a related field
 		 */
-		getField(collection: string, fieldKey: string) {
+		getField(collection: string, fieldKey: string): Field | null {
 			if (fieldKey.includes('.')) {
-				return this.getRelationalField(collection, fieldKey);
+				return this.getRelationalField(collection, fieldKey) || null;
 			} else {
-				return this.fields.find((field) => field.collection === collection && field.field === fieldKey);
+				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
 			}
 		},
 		/**

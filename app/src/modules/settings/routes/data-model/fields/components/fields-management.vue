@@ -1,21 +1,24 @@
 <template>
 	<div class="fields-management">
-		<div class="field-grid">
+		<div class="field-grid" v-if="lockedFields.length > 0">
 			<field-select disabled v-for="field in lockedFields" :key="field.field" :field="field" />
 		</div>
 
 		<draggable
 			class="field-grid"
-			:model-value="usableFields"
+			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
 			:force-fallback="true"
 			handle=".drag-handle"
-			group="fields"
+			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
-			@update:model-value="setSort"
 			item-key="field"
+			@update:model-value="setSort"
+			:animation="150"
+			:fallbackOnBody="true"
+			:invertSwap="true"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" />
+				<field-select :field="element" :fields="usableFields" @setNestedSort="setNestedSort" />
 			</template>
 		</draggable>
 
@@ -62,9 +65,10 @@ import { Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
-import { orderBy } from 'lodash';
+import { orderBy, isNil } from 'lodash';
 
 export default defineComponent({
+	name: 'fields-management',
 	components: { Draggable, FieldSelect },
 	props: {
 		collection: {
@@ -103,6 +107,11 @@ export default defineComponent({
 				type: 'presentation',
 				icon: 'scatter_plot',
 				text: t('presentation_and_aliases'),
+			},
+			{
+				type: 'group',
+				icon: 'view_in_ar',
+				text: t('field_group'),
 			},
 			{
 				divider: true,
@@ -150,17 +159,26 @@ export default defineComponent({
 			},
 		]);
 
-		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions };
+		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions, setNestedSort, isNil };
 
 		async function setSort(fields: Field[]) {
 			const updates = fields.map((field, index) => ({
 				field: field.field,
 				meta: {
 					sort: index + 1,
+					group: null,
 				},
 			}));
 
 			await fieldsStore.updateFields(collection.value, updates);
+		}
+
+		async function setNestedSort(updates?: Field[]) {
+			updates = (updates || []).filter((val) => isNil(val) === false);
+
+			if (updates.length > 0) {
+				await fieldsStore.updateFields(collection.value, updates);
+			}
 		}
 	},
 });
@@ -180,10 +198,7 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 12px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-
-	& + & {
-		margin-top: 12px;
-	}
+	padding-bottom: 24px;
 }
 
 .add-field {
@@ -191,7 +206,7 @@ export default defineComponent({
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 
-	margin-top: 12px;
+	margin-top: -8px;
 
 	.v-icon {
 		margin-right: 8px;

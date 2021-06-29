@@ -2,6 +2,44 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.82 (June 28, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#6553](https://github.com/directus/directus/pull/6553) Add support for field grouping ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Extensions**
+  - [#6548](https://github.com/directus/directus/pull/6548) Add directus-extension CLI to extension-sdk ([@nickrum](https://github.com/nickrum))
+- **sdk**
+  - [#6538](https://github.com/directus/directus/pull/6538) Adds request and response interceptors on Axios transport ([@WoLfulus](https://github.com/WoLfulus))
+
+### :rocket: Improvements
+
+- **API**
+  - [#6541](https://github.com/directus/directus/pull/6541) Pass on errors thrown in MailService ([@luanmm](https://github.com/luanmm))
+- **App**
+  - [#6215](https://github.com/directus/directus/pull/6215) Added escaping on file paths including "\u" ([@skizer](https://github.com/skizer))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6555](https://github.com/directus/directus/pull/6555) Fix auto-fill of directus_files in relational setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6530](https://github.com/directus/directus/pull/6530) Fix translations interface options crashing the App ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without origin ([@nickrum](https://github.com/nickrum))
+  - [#6516](https://github.com/directus/directus/pull/6516) Changed filesize to bigint for large files ([@Enhed](https://github.com/Enhed))
+- **Extensions**
+  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without origin ([@nickrum](https://github.com/nickrum))
+
+### :package: Dependency Updates
+
+- [#6547](https://github.com/directus/directus/pull/6547) update typescript-eslint monorepo to v4.28.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6546](https://github.com/directus/directus/pull/6546) update dependency jest to v27.0.6 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6520](https://github.com/directus/directus/pull/6520) update dependency @vitejs/plugin-vue to v1.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6518](https://github.com/directus/directus/pull/6518) update dependency simple-git-hooks to v2.5.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6498](https://github.com/directus/directus/pull/6498) update dependency commander to v8 ([@renovate[bot]](https://github.com/apps/renovate))
+
+
 ## v9.0.0-rc.81 (June 26, 2021)
 
 ### :rocket: Improvements

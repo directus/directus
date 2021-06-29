@@ -70,7 +70,7 @@ import { md } from '@/utils/md';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
-import { ValidationError } from './types';
+import { ValidationError } from '@/types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
 
