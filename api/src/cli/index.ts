@@ -63,7 +63,11 @@ rolesCommand
 
 program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 
-program.command('bootstrap').description('Initialize or update the database').action(bootstrap);
+program
+	.command('bootstrap')
+	.description('Initialize or update the database')
+	.option('--skipAdminInit', 'Skips the creation of the default Admin Role and User')
+	.action(bootstrap);
 
 program.parseAsync(process.argv).catch((err) => {
 	console.error(err);
