@@ -19,7 +19,7 @@
 					rounded
 					icon
 					outlined
-					@click="cancelChanges"
+					@click="attemptCancelChanges"
 				>
 					<v-icon name="clear" />
 				</v-button>
@@ -124,6 +124,19 @@
 						{{ t('discard_changes') }}
 					</v-button>
 					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelChanges">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -254,6 +267,7 @@ export default defineComponent({
 			return withBorderRadii;
 		});
 
+		const confirmCancel = ref(false);
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
@@ -286,7 +300,7 @@ export default defineComponent({
 			movePanelID,
 			movePanel,
 			deletePanel,
-			cancelChanges,
+			attemptCancelChanges,
 			duplicatePanel,
 			movePanelLoading,
 			t,
@@ -300,6 +314,8 @@ export default defineComponent({
 			confirmLeave,
 			discardAndLeave,
 			now,
+			confirmCancel,
+			cancelChanges,
 		};
 
 		function stagePanelEdits(event: { edits: Partial<Panel>; id?: string }) {
@@ -382,7 +398,18 @@ export default defineComponent({
 			if (id.startsWith('_') === false) panelsToBeDeleted.value.push(id);
 		}
 
+		function attemptCancelChanges(): void {
+			const hasEdits = stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0;
+
+			if (hasEdits) {
+				confirmCancel.value = true;
+			} else {
+				cancelChanges();
+			}
+		}
+
 		function cancelChanges() {
+			confirmCancel.value = false;
 			stagedPanels.value = [];
 			panelsToBeDeleted.value = [];
 			editMode.value = false;
