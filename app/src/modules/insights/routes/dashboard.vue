@@ -24,7 +24,7 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button rounded icon outlined v-tooltip.bottom="t('add_new')" :to="`/insights/${currentDashboard.id}/+`">
+				<v-button rounded icon outlined v-tooltip.bottom="t('create_panel')" :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
 				</v-button>
 
@@ -258,10 +258,16 @@ export default defineComponent({
 		const leaveTo = ref<string | null>(null);
 
 		const editsGuard: NavigationGuard = (to) => {
+			const hasEdits = panelsToBeDeleted.value.length > 0 || stagedPanels.value.length > 0;
+
 			if (editMode.value && to.params.primaryKey !== props.primaryKey) {
-				confirmLeave.value = true;
-				leaveTo.value = to.fullPath;
-				return false;
+				if (hasEdits) {
+					confirmLeave.value = true;
+					leaveTo.value = to.fullPath;
+					return false;
+				} else {
+					editMode.value = false;
+				}
 			}
 		};
 

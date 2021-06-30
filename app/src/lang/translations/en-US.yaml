@@ -21,6 +21,7 @@ required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
 create_preset: Create Preset
+create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
 create_webhook: Create Webhook
