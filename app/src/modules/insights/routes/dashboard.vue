@@ -192,7 +192,12 @@ export default defineComponent({
 		const zoomToFit = ref(false);
 
 		watch(editMode, (editModeEnabled) => {
-			if (editModeEnabled) zoomToFit.value = false;
+			if (editModeEnabled) {
+				zoomToFit.value = false;
+				window.onbeforeunload = () => '';
+			} else {
+				window.onbeforeunload = null;
+			}
 		});
 
 		const currentDashboard = computed(() =>
