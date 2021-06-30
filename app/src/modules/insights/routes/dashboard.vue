@@ -145,7 +145,7 @@
 
 <script lang="ts">
 import InsightsNavigation from '../components/navigation.vue';
-import { defineComponent, computed, ref, toRefs, inject } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch } from 'vue';
 import { useInsightsStore, useAppStore } from '@/stores';
 import InsightsNotFound from './not-found.vue';
 import { Panel } from '@/types';
@@ -158,7 +158,7 @@ import { useI18n } from 'vue-i18n';
 import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
-import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -190,6 +190,10 @@ export default defineComponent({
 		const movePanelID = ref<string | null>();
 
 		const zoomToFit = ref(false);
+
+		watch(editMode, (editModeEnabled) => {
+			if (editModeEnabled) zoomToFit.value = false;
+		});
 
 		const currentDashboard = computed(() =>
 			insightsStore.dashboards.find((dashboard) => dashboard.id === props.primaryKey)
