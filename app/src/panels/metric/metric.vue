@@ -16,6 +16,7 @@ import { isEqual } from 'lodash';
 import { Filter } from '@/types';
 import { useI18n } from 'vue-i18n';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
+import { isNil } from 'lodash';
 
 type MetricOptions = {
 	abbreviate: boolean;
@@ -72,7 +73,7 @@ export default defineComponent({
 		);
 
 		const displayValue = computed(() => {
-			if (metric.value === null || metric.value === undefined) return null;
+			if (isNil(metric.value)) return null;
 
 			if (props.options.abbreviate) {
 				return abbreviateNumber(metric.value, props.options.decimals);
@@ -85,7 +86,7 @@ export default defineComponent({
 		});
 
 		const color = computed(() => {
-			if (!metric.value) return null;
+			if (isNil(metric.value)) return null;
 
 			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
 

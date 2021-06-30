@@ -53,9 +53,17 @@ export default defineComponent({
 			type: Date,
 			required: true,
 		},
+		showXAxis: {
+			type: Boolean,
+			default: true,
+		},
+		showYAxis: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props) {
-		const { d, t, n } = useI18n();
+		const { t, n } = useI18n();
 
 		const fieldsStore = useFieldsStore();
 
@@ -66,7 +74,7 @@ export default defineComponent({
 		const chart = ref<ApexCharts>();
 
 		const valueLabel = computed(() => {
-			const field = fieldsStore.getField(props.options.collection, props.options.valueField);
+			const field = fieldsStore.getField(props.options.collection, props.options.valueField)!;
 			const operation = t(props.options.function);
 			return `${field.name} (${operation})`;
 		});
@@ -270,6 +278,7 @@ export default defineComponent({
 					},
 				},
 				xaxis: {
+					show: props.showXAxis,
 					type: 'datetime',
 					tooltip: {
 						enabled: false,
@@ -298,6 +307,7 @@ export default defineComponent({
 					},
 				},
 				yaxis: {
+					show: props.showXAxis,
 					forceNiceScale: true,
 					min: isNil(props.options.min) ? undefined : Number(props.options.min),
 					max: isNil(props.options.max) ? undefined : Number(props.options.max),

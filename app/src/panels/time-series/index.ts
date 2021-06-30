@@ -256,6 +256,30 @@ export default definePanel({
 				},
 			},
 		},
+		{
+			field: 'showXAxis',
+			type: 'boolean',
+			name: '$t:show_x_axis',
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+			schema: {
+				default_value: true,
+			},
+		},
+		{
+			field: 'showYAxis',
+			type: 'boolean',
+			name: '$t:show_y_axis',
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 	minWidth: 12,
 	minHeight: 6,

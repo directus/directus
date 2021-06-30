@@ -128,7 +128,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.workspace-box {
+.workspace-padding-box {
 	position: relative;
 }
 
@@ -168,7 +168,7 @@ export default defineComponent({
 	pointer-events: none;
 }
 
-.workspace.editing::before {
+.workspace-padding-box.editing .workspace::before {
 	opacity: 1;
 }
 </style>
