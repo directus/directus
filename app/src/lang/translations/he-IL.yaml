@@ -91,9 +91,11 @@ displays:
     simple: פשוט
   user:
     avatar: צלמית
+    both: שניהם
 layouts:
   cards:
     title: כותרת
+    subtitle: כותרת משנית
   tabular:
     fields: שדות
   calendar:
