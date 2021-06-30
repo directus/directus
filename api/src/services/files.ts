@@ -190,7 +190,7 @@ export class FilesService extends ItemsService {
 	 * Delete multiple files
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const files = await super.readMany(keys, { fields: ['id', 'storage'] });
+		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenException();
