@@ -7,6 +7,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { TranslateResult } from 'vue-i18n';
+import { COLLECTIONS_DENY_LIST } from '@/constants';
+import { orderBy } from 'lodash';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
@@ -23,6 +25,15 @@ export const useCollectionsStore = defineStore({
 			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== false);
+		},
+		crudSafeSystemCollections(): Collection[] {
+			return orderBy(
+				this.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === true;
+				}),
+				['collection'],
+				['asc']
+			).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false);
 		},
 	},
 	actions: {

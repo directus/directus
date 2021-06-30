@@ -21,3 +21,17 @@ export const DIRECTUS_LOGO = `
 ⠀⠀⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 `;
+
+/**
+ * These are the system endpoints that don't have full/regular CRUD operations available.
+ */
+export const COLLECTIONS_DENY_LIST = [
+	'directus_activity',
+	'directus_collections',
+	'directus_fields',
+	'directus_migrations',
+	'directus_relations',
+	'directus_revisions',
+	'directus_sessions',
+	'directus_settings',
+];

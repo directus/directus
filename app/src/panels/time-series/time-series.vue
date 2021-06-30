@@ -215,9 +215,9 @@ export default defineComponent({
 				},
 				markers: {
 					hover: {
-					  size: undefined,
-					  sizeOffset: 4,
-					}
+						size: undefined,
+						sizeOffset: 4,
+					},
 				},
 				fill: {
 					type: 'gradient',
@@ -292,10 +292,10 @@ export default defineComponent({
 						},
 					},
 					crosshairs: {
-	          stroke: {
-	              color: 'var(--border-normal)',
-	          },
-	      	},
+						stroke: {
+							color: 'var(--border-normal)',
+						},
+					},
 				},
 				yaxis: {
 					forceNiceScale: true,
@@ -330,23 +330,27 @@ export default defineComponent({
 	height: 100%;
 }
 </style>
+
 <style>
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	background-color: var(--background-subdued);
-	padding: 0 4px;
-	font-size:  10px !important;
-	font-weight: 600 !important;
 	margin-bottom: 0;
+	padding: 0 4px;
+	font-weight: 600 !important;
+	font-size: 10px !important;
+	background-color: var(--background-subdued);
 }
-.apexcharts-tooltip-series-group:last-child {
-	padding-bottom:  0;
-}
+
 .apexcharts-tooltip-y-group {
 	padding: 0 0 0 4px;
-	font-size:  10px !important;
 	font-weight: 600 !important;
+	font-size: 10px !important;
 }
+
 .apexcharts-tooltip-series-group {
 	padding: 0;
+}
+
+.apexcharts-tooltip-series-group:last-child {
+	padding-bottom: 0;
 }
 </style>

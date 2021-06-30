@@ -14,6 +14,9 @@ export default definePanel({
 			name: '$t:collection',
 			meta: {
 				interface: 'system-collection',
+				options: {
+					includeSystem: true,
+				},
 				width: 'half',
 			},
 		},

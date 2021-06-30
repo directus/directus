@@ -35,11 +35,10 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.collections;
-
-			return collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
-			);
+			return [
+				...collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false),
+				...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
+			];
 		});
 
 		const items = computed(() => {
