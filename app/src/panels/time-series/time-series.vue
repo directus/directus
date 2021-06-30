@@ -309,7 +309,12 @@ export default defineComponent({
 						offsetY: 1,
 						offsetX: -4,
 						formatter: (value: number) => {
-							return value > 10000 ? abbreviateNumber(value, 1) : n(value);
+							return value > 10000
+								? abbreviateNumber(value, 1)
+								: n(value, 'decimal', {
+										minimumFractionDigits: props.options.decimals ?? 0,
+										maximumFractionDigits: props.options.decimals ?? 0,
+								  } as any);
 						},
 						style: {
 							fontFamily: 'var(--family-sans-serif)',
