@@ -54,7 +54,7 @@ export default async function createApp(): Promise<express.Application> {
 		process.exit(1);
 	}
 
-	if ((await validateMigrations()) === false) {
+	if ((await validateMigrations()) === false || typeof (await validateMigrations()) !== 'boolean') {
 		logger.warn(`Database migrations have not all been run`);
 	}
 	await initializeExtensions();
