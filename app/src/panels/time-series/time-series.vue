@@ -25,6 +25,8 @@ type TimeSeriesOptions = {
 	min?: number;
 	max?: number;
 	filter: Filter | null;
+	showXAxis?: boolean;
+	showYAxis?: boolean;
 };
 
 export default defineComponent({
@@ -53,17 +55,9 @@ export default defineComponent({
 			type: Date,
 			required: true,
 		},
-		showXAxis: {
-			type: Boolean,
-			default: true,
-		},
-		showYAxis: {
-			type: Boolean,
-			default: true,
-		},
 	},
 	setup(props) {
-		const { t, n } = useI18n();
+		const { d, t, n } = useI18n();
 
 		const fieldsStore = useFieldsStore();
 
@@ -263,10 +257,9 @@ export default defineComponent({
 					},
 					x: {
 						show: true,
-						format: 'MMM dd, yyyy, h:mmt',
-						// formatter(date: number) {
-						// 	return d(new Date(date), 'long');
-						// },
+						formatter(date: number) {
+							return d(new Date(date), 'long');
+						},
 					},
 					y: {
 						title: {
@@ -278,7 +271,6 @@ export default defineComponent({
 					},
 				},
 				xaxis: {
-					show: props.showXAxis,
 					type: 'datetime',
 					tooltip: {
 						enabled: false,
@@ -292,6 +284,7 @@ export default defineComponent({
 					range: props.now.getTime() - adjustDate(props.now, `-${props.options.range}`)!.getTime(),
 					max: props.now.getTime(),
 					labels: {
+						show: props.options.showXAxis ?? true,
 						offsetY: -4,
 						style: {
 							fontFamily: 'var(--family-sans-serif)',
@@ -307,7 +300,7 @@ export default defineComponent({
 					},
 				},
 				yaxis: {
-					show: props.showXAxis,
+					show: props.options.showYAxis ?? true,
 					forceNiceScale: true,
 					min: isNil(props.options.min) ? undefined : Number(props.options.min),
 					max: isNil(props.options.max) ? undefined : Number(props.options.max),
