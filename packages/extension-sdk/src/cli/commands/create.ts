@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
-import { EXTENSION_TYPES } from '@directus/shared/constants';
+import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
 import { ExtensionType } from '@directus/shared/types';
 
 const pkg = require('../../../../package.json');
@@ -53,7 +53,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 		name: `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
-		'directus:extension': {
+		[EXTENSION_PKG_KEY]: {
 			type: type,
 			path: 'dist/index.js',
 			host: `^${pkg.version}`,
