@@ -130,7 +130,7 @@ export async function isInstalled(): Promise<boolean> {
 	return await inspector.hasTable('directus_collections');
 }
 
-export const validateMigrations = async (): Promise<boolean> => {
+export async function validateMigrations() {
 	const database = getDatabase();
 	try {
 		const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
