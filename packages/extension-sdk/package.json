@@ -18,6 +18,9 @@
 		"dev": "npm run build -- -- -w --preserveWatchOutput --incremental",
 		"prepublishOnly": "npm run cleanup && npm run build"
 	},
+	"engines": {
+		"node": ">=12.20.0"
+	},
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
