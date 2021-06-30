@@ -1,16 +1,29 @@
 <template>
-	<div class="workspace" :class="{ editing: editMode }" :style="[workspaceSize, { transform: `scale(${zoomScale})` }]">
-		<insights-panel
-			v-for="panel in panels"
-			:key="panel.id"
-			:panel="panel"
-			:edit-mode="editMode"
-			:now="now"
-			@update="$emit('update', { edits: $event, id: panel.id })"
-			@move="$emit('move', panel.id)"
-			@delete="$emit('delete', panel.id)"
-			@duplicate="$emit('duplicate', panel)"
-		/>
+	<div
+		class="workspace-padding-box"
+		:class="{ editing: editMode }"
+		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+	>
+		<div
+			class="workspace"
+			:style="{
+				transform: `scale(${zoomScale})`,
+				width: workspaceSize.width + 'px',
+				height: workspaceSize.height + 'px',
+			}"
+		>
+			<insights-panel
+				v-for="panel in panels"
+				:key="panel.id"
+				:panel="panel"
+				:edit-mode="editMode"
+				:now="now"
+				@update="$emit('update', { edits: $event, id: panel.id })"
+				@move="$emit('move', panel.id)"
+				@delete="$emit('delete', panel.id)"
+				@duplicate="$emit('duplicate', panel)"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -46,6 +59,8 @@ export default defineComponent({
 		const mainElement = inject('main-element', ref<Element>());
 		const mainElementSize = useElementSize(mainElement);
 
+		const paddingSize = computed(() => Number(getVar('--content-padding')?.slice(0, -2) || 0));
+
 		const workspaceSize = computed(() => {
 			const furthestPanelX = props.panels.reduce(
 				(aggr, panel) => {
@@ -71,26 +86,16 @@ export default defineComponent({
 				{ position_y: 0, height: 0 }
 			);
 
-			let contentPaddingPx = 32;
-
-			if (document.querySelector('#main-content')) {
-				const contentPadding = getComputedStyle(
-					document.querySelector('#main-content') as HTMLElement
-				).getPropertyValue('--content-padding');
-
-				contentPaddingPx = Number(contentPadding.substring(0, contentPadding.length - 2));
-			}
-
 			if (props.editMode === true) {
 				return {
-					width: (furthestPanelX.position_x! + furthestPanelX.width! + 25) * 20 + 'px',
-					height: (furthestPanelY.position_y! + furthestPanelY.height! + 25) * 20 + 'px',
+					width: (furthestPanelX.position_x! + furthestPanelX.width! + 25) * 20,
+					height: (furthestPanelY.position_y! + furthestPanelY.height! + 25) * 20,
 				};
 			}
 
 			return {
-				width: (furthestPanelX.position_x! + furthestPanelX.width! - 1) * 20 + contentPaddingPx + 'px',
-				height: (furthestPanelY.position_y! + furthestPanelY.height! - 1) * 20 + contentPaddingPx + 'px',
+				width: (furthestPanelX.position_x! + furthestPanelX.width! - 1) * 20,
+				height: (furthestPanelY.position_y! + furthestPanelY.height! - 1) * 20,
 			};
 		});
 
@@ -99,37 +104,42 @@ export default defineComponent({
 
 			const { width, height } = mainElementSize;
 
-			const contentPadding = getComputedStyle(document.querySelector('#main-content') as HTMLElement).getPropertyValue(
-				'--content-padding'
-			);
-
-			const contentPaddingPx = Number(contentPadding.substring(0, contentPadding.length - 2));
-
-			const scaleWidth: number =
-				(width.value - 2 * contentPaddingPx) /
-				Number(workspaceSize.value.width.substring(0, workspaceSize.value.width.length - 2));
-
-			const scaleHeight: number =
-				(height.value - 114 - contentPaddingPx) /
-				Number(workspaceSize.value.height.substring(0, workspaceSize.value.height.length - 2));
+			const scaleWidth: number = (width.value - paddingSize.value * 2) / workspaceSize.value.width;
+			const scaleHeight: number = (height.value - 114 - paddingSize.value * 2) / workspaceSize.value.height;
 
 			return Math.min(scaleWidth, scaleHeight);
 		});
 
-		return { workspaceSize, mainElement, zoomScale };
+		const workspaceBoxSize = computed(() => {
+			return {
+				width: workspaceSize.value.width * zoomScale.value + paddingSize.value * 2,
+				height: workspaceSize.value.height * zoomScale.value + paddingSize.value * 2,
+			};
+		});
+
+		return { workspaceSize, workspaceBoxSize, mainElement, zoomScale };
+
+		function getVar(cssVar: string) {
+			if (!mainElement.value) return;
+			return getComputedStyle(mainElement.value).getPropertyValue(cssVar).trim();
+		}
 	},
 });
 </script>
 
 <style scoped>
+.workspace-box {
+	position: relative;
+}
+
 .workspace {
+	position: absolute;
+	left: var(--content-padding);
 	display: grid;
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
-	min-width: calc(100% - var(--content-padding) - var(--content-padding));
+	min-width: calc(100%);
 	min-height: calc(100% - 120px);
-	margin-left: var(--content-padding);
-	overflow: visible;
 	transform: scale(1);
 	transform-origin: top left;
 

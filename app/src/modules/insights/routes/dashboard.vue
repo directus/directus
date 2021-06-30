@@ -74,16 +74,18 @@
 			<insights-navigation />
 		</template>
 
-		<insights-workspace
-			:edit-mode="editMode"
-			:panels="panels"
-			:zoom-to-fit="zoomToFit"
-			:now="now"
-			@update="stagePanelEdits"
-			@move="movePanelID = $event"
-			@delete="deletePanel"
-			@duplicate="duplicatePanel"
-		/>
+		<div class="padding-box">
+			<insights-workspace
+				:edit-mode="editMode"
+				:panels="panels"
+				:zoom-to-fit="zoomToFit"
+				:now="now"
+				@update="stagePanelEdits"
+				@move="movePanelID = $event"
+				@delete="deletePanel"
+				@duplicate="duplicatePanel"
+			/>
+		</div>
 
 		<router-view
 			name="detail"
