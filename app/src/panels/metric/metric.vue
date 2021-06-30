@@ -76,12 +76,12 @@ export default defineComponent({
 			if (isNil(metric.value)) return null;
 
 			if (props.options.abbreviate) {
-				return abbreviateNumber(metric.value, props.options.decimals);
+				return abbreviateNumber(metric.value, props.options.decimals ?? 0);
 			}
 
 			return n(Number(metric.value), 'decimal', {
-				minimumFractionDigits: props.options.decimals,
-				maximumFractionDigits: props.options.decimals,
+				minimumFractionDigits: props.options.decimals ?? 0,
+				maximumFractionDigits: props.options.decimals ?? 0,
 			} as any);
 		});
 
