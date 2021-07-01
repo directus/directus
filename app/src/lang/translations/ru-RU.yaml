@@ -10,6 +10,7 @@ field_name_translations: Переводы Названия Поля
 enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
 add_field: Добавить поле
 role_name: Название роли
+children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать Архивные Элементы
 edited: Изменённое значение
@@ -879,7 +880,9 @@ interfaces:
   select-dropdown:
     choices_placeholder: Добавить вариант
     allow_other: Разрешить другие
-    allow_other_label: Разрешить другие значения
+    allow_other_label: Допускаются и другие значения
+    allow_none: Может быть пустым
+    allow_none_label: Можно не указывать значение
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
   select-multiple-dropdown:
