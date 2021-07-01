@@ -27,8 +27,9 @@ const resolvePreset = (input: TransformationPreset, file: File): Transformation[
 			const args = (presetTransform.arguments || []).map((arg) => JSON.parse(arg.argument));
 			const transform: Transformation = [presetTransform.method, ...args] as any;
 			return [...transforms, transform];
-		} catch (_) {
-			return transforms;
+		} catch (err) {
+			err.message = `Error parsing ${presetTransform.method} asset transformation: ${err.message}`;
+			throw err;
 		}
 	}, [] as Transformation[]);
 
