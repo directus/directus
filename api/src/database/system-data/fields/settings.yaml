@@ -287,22 +287,23 @@ fields:
                         - value: bandbool
                           text: bandbool
                   width: half
-                - field: options
-                  name: Options
+                - field: arguments
+                  name: Arguments
                   type: json
                   meta:
                     interface: list
-                    note: A list of options to pass to the Sharp method.
+                    note: A list of arguments to pass to the Sharp method.
                     options:
-                      template: '{{option}}'
+                      template: '{{argument}}'
                       fields:
-                        - field: option
-                          name: Option
+                        - field: argument
+                          name: Argument
                           type: string
                           schema:
                             is_nullable: false
                           meta:
                             interface: input-code
+                            note: JSON representation of the argument
                             options:
                               language: json
                               lineNumber: false

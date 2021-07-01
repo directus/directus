@@ -74,7 +74,7 @@ export type TransformationPreset = TransformationPresetFormat &
 		// "Additional Transformations"
 		transforms?: {
 			method: keyof AllowedSharpMethods;
-			options?: { option: string }[];
+			arguments?: { argument: string }[];
 		}[];
 	};
 

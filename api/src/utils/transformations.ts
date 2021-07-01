@@ -24,8 +24,8 @@ const resolvePreset = (input: TransformationPreset, file: File): Transformation[
 	// Add any additional transforms
 	const additional = (input.transforms || []).reduce((transforms, presetTransform) => {
 		try {
-			const options = (presetTransform.options || []).map((option) => JSON.parse(option.option));
-			const transform: Transformation = [presetTransform.method, ...options] as any;
+			const args = (presetTransform.arguments || []).map((arg) => JSON.parse(arg.argument));
+			const transform: Transformation = [presetTransform.method, ...args] as any;
 			return [...transforms, transform];
 		} catch (_) {
 			return transforms;
