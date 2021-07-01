@@ -464,6 +464,10 @@ operators:
   nnull: Не null
   contains: Содержит
   ncontains: Не содержит
+  starts_with: Начинается с
+  nstarts_with: Не начинается с
+  ends_with: Оканчивается на
+  nends_with: Не оканчивается на
   between: Между
   nbetween: Не между
   empty: Пустой
@@ -857,6 +861,7 @@ interfaces:
     color: Цвет
     description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
+    preset_colors_add_label: Добавить новый цвет...
     name_placeholder: Введите название цвета...
   datetime:
     datetime: Дата и время
@@ -874,6 +879,7 @@ interfaces:
   select-dropdown:
     choices_placeholder: Добавить вариант
     allow_other: Разрешить другие
+    allow_other_label: Разрешить другие значения
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
   select-multiple-dropdown:
@@ -907,6 +913,7 @@ interfaces:
     display_template: Шаблон отображения
   input-rich-text-md:
     markdown: Markdown
+    customSyntax: Произвольные блоки
   list-o2m:
     one-to-many: Один ко многим
   select-radio:
@@ -1074,3 +1081,5 @@ layouts:
     cozy: Уютный
   calendar:
     calendar: Календарь
+    start_date_field: Поле даты начала
+    end_date_field: Поле даты окончания
