@@ -84,6 +84,13 @@ router.get(
 				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
 			}
 
+			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
+			if (transforms.length > Number(env.ASSETS_TRANSFORM_MAX_OPERATIONS)) {
+				throw new InvalidQueryException(
+					`"transforms" Parameter is only allowed ${env.ASSETS_TRANSFORM_MAX_OPERATIONS} transformations.`
+				);
+			}
+
 			// Check the transformations are valid
 			transforms.forEach((transform) => {
 				const name = transform[0];
