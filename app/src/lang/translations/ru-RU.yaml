@@ -4,6 +4,7 @@ item_revision: Версия Элемента
 duplicate_field: Дубликат Поля
 half_width: Половина Ширины
 full_width: Полная ширина
+group: Группа
 fill_width: Полная Ширина
 field_name_translations: Переводы Названия Поля
 enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
@@ -1057,7 +1058,7 @@ displays:
     circle_label: Показывать пользователя в круге
 layouts:
   cards:
-    cards: Карты
+    cards: Карточки
     image_source: Источник изображения
     image_fit: Подгон Изображения
     crop: Обрезать
