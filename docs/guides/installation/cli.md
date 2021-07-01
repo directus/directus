@@ -5,7 +5,7 @@
 Directus requires two things to run: [Node.js](https://nodejs.dev) and a Database. For both these system requirements,
 we aim to support the current LTS release (and newer).
 
-To run Directus, you currently need Node 12.12 or newer, and one of the following databases:
+To run Directus, you currently need Node 12.20 or newer, and one of the following databases:
 
 | Database      | Version |
 | ------------- | ------- |

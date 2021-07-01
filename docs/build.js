@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path/posix');
 const fse = require('fs-extra');
 const dirTree = require('directory-tree');
 

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.80",
+	"version": "9.0.0-rc.83",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -21,11 +21,12 @@
 		}
 	},
 	"scripts": {
-		"build": "run-p build:*",
+		"build": "run-p \"build:* -- {@}\" --",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
+		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
@@ -36,6 +37,6 @@
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"typescript": "4.3.4"
+		"typescript": "4.3.5"
 	}
 }
