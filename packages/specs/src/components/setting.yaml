@@ -104,15 +104,15 @@ properties:
               method:
                 description: The Sharp method name
                 type: string
-              options:
-                description: A list of options to pass to the Sharp method
+              arguments:
+                description: A list of arguments to pass to the Sharp method
                 type: array
                 nullable: true
                 items:
                   type: object
                   properties:
-                    option:
-                      description: A JSON representation of the option value
+                    argument:
+                      description: A JSON representation of the argument value
                       type: string
     example: null
     nullable: true
