@@ -150,6 +150,7 @@
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.3",
+		"object-hash": "^2.2.0",
 		"pg": "^8.6.0",
 		"sqlite3": "^5.0.2",
 		"tedious": "^11.0.8"
@@ -178,6 +179,7 @@
 		"@types/node": "15.12.2",
 		"@types/node-cron": "2.0.4",
 		"@types/nodemailer": "6.4.4",
+		"@types/object-hash": "^2.1.0",
 		"@types/qs": "6.9.7",
 		"@types/sharp": "0.28.4",
 		"@types/stream-json": "1.7.1",

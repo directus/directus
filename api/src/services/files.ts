@@ -49,7 +49,7 @@ export class FilesService extends ItemsService {
 		const fileExtension =
 			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
-		payload.filename_disk = primaryKey + fileExtension;
+		payload.filename_disk = primaryKey + (fileExtension || '');
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';

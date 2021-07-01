@@ -1,15 +1,24 @@
 import { Range, StatResponse } from '@directus/drive';
-import { Knex } from 'knex';
-import path from 'path';
-import sharp, { ResizeOptions } from 'sharp';
-import getDatabase from '../database';
-import { RangeNotSatisfiableException, IllegalAssetTransformation } from '../exceptions';
-import storage from '../storage';
-import { AbstractServiceOptions, Accountability, Transformation } from '../types';
-import { AuthorizationService } from './authorization';
 import { Semaphore } from 'async-mutex';
+import { Knex } from 'knex';
+import { contentType } from 'mime-types';
+import ObjectHash from 'object-hash';
+import path from 'path';
+import sharp from 'sharp';
+import getDatabase from '../database';
 import env from '../env';
-import { File } from '../types';
+import { IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import storage from '../storage';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types';
+import { AuthorizationService } from './authorization';
+import * as TransformationUtils from '../utils/transformations';
 
 sharp.concurrency(1);
 
@@ -30,7 +39,7 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: Transformation,
+		transformation: TransformationParams | TransformationPreset,
 		range?: Range
 	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
 		const publicSettings = await this.knex
@@ -53,17 +62,22 @@ export class AssetsService {
 		}
 
 		const type = file.type;
+		const transforms = TransformationUtils.resolve(transformation, file);
 
 		// We can only transform JPEG, PNG, and WebP
-		if (type && Object.keys(transformation).length > 0 && ['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
-			const resizeOptions = this.parseTransformation(transformation);
+		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
+			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
 			const assetFilename =
 				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
-				this.getAssetSuffix(transformation) +
-				path.extname(file.filename_disk);
+				getAssetSuffix(transforms) +
+				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
 			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+
+			if (maybeNewFormat) {
+				file.type = contentType(assetFilename) || null;
+			}
 
 			if (exists) {
 				return {
@@ -94,15 +108,9 @@ export class AssetsService {
 				const transformer = sharp({
 					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
 					sequentialRead: true,
-				})
-					.rotate()
-					.resize(resizeOptions);
+				}).rotate();
 
-				if (transformation.quality) {
-					transformer.toFormat(type.substring(6) as 'jpeg' | 'png' | 'webp', {
-						quality: Number(transformation.quality),
-					});
-				}
+				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
 				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
 
@@ -118,28 +126,9 @@ export class AssetsService {
 			return { stream: readStream, file, stat };
 		}
 	}
-
-	private parseTransformation(transformation: Transformation): ResizeOptions {
-		const resizeOptions: ResizeOptions = {};
-
-		if (transformation.width) resizeOptions.width = Number(transformation.width);
-		if (transformation.height) resizeOptions.height = Number(transformation.height);
-		if (transformation.fit) resizeOptions.fit = transformation.fit;
-		if (transformation.withoutEnlargement)
-			resizeOptions.withoutEnlargement = Boolean(transformation.withoutEnlargement);
-
-		return resizeOptions;
-	}
-
-	private getAssetSuffix(transformation: Transformation) {
-		if (Object.keys(transformation).length === 0) return '';
-
-		return (
-			'__' +
-			Object.entries(transformation)
-				.sort((a, b) => (a[0] > b[0] ? 1 : -1))
-				.map((e) => e.join('_'))
-				.join(',')
-		);
-	}
 }
+
+const getAssetSuffix = (transforms: Transformation[]) => {
+	if (Object.keys(transforms).length === 0) return '';
+	return `__${ObjectHash.sha1(transforms)}`;
+};
