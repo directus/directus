@@ -61,8 +61,8 @@ reset_system_permissions_to: 'Сбросить системные разреше
 reset_system_permissions_copy: Это перезапишет любые индивидуальные разрешения, которые вы могли задать системным коллекциям. Вы уверены?
 app_access_minimum: Минимальный доступ приложения
 recommended_defaults: Рекомендуемые значения по умолчанию
-unarchive: Разархивировать
-unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
+unarchive: Извлечь из архива
+unarchive_confirm: Точно хотите извлечь этот элемент их архива?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
 unknown_validation_errors: 'Обнаружены ошибки валидации для следующих скрытых полей:'
 validationError:
@@ -685,6 +685,7 @@ fields:
     hidden: Скрыто
     singleton: Синглтон
     translations: Переводы названия коллекции
+    archive_app_filter: Архивный фильтр
     archive_value: Заархивировать содержимое
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
