@@ -10,9 +10,10 @@ field_name_translations: Переводы Названия Поля
 enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
 add_field: Добавить поле
 role_name: Название роли
+branch: Ветка
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
-show_archived_items: Показать Архивные Элементы
+show_archived_items: Показать элементы в архиве
 edited: Изменённое значение
 required: Необходимые
 required_for_app_access: Требуется для доступа к приложению
@@ -53,7 +54,7 @@ os_type: Тип ОС
 os_version: Версия ОС
 os_uptime: Время работы ОС
 os_totalmem: Память ОС
-archive: Архивировать
+archive: Архив
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
@@ -61,7 +62,7 @@ reset_system_permissions_to: 'Сбросить системные разреше
 reset_system_permissions_copy: Это перезапишет любые индивидуальные разрешения, которые вы могли задать системным коллекциям. Вы уверены?
 app_access_minimum: Минимальный доступ приложения
 recommended_defaults: Рекомендуемые значения по умолчанию
-unarchive: Извлечь из архива
+unarchive: Извлечь их архива
 unarchive_confirm: Точно хотите извлечь этот элемент их архива?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
 unknown_validation_errors: 'Обнаружены ошибки валидации для следующих скрытых полей:'
@@ -92,9 +93,10 @@ field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
 field_files: Несколько Файлов
-field_m2o: Связка M2O
+field_m2o: Отношение M2O
+field_m2a: Отношение M2A
 field_o2m: Связка O2M
-field_m2m: Связка M2M
+field_m2m: Отношение M2M
 field_translations: Переводы
 field_group: Группа полей
 item_permissions: Разрешения Элемента
@@ -175,10 +177,10 @@ default_value: Значение По умолчанию
 standard_field: Стандартное Поле
 single_file: Один Файл
 multiple_files: Несколько Файлов
-m2o_relationship: Связка Many to One
+m2o_relationship: Отношение Многие к Одному
 o2m_relationship: Связка One to Many
-m2m_relationship: Связка Many to Many
-m2a_relationship: Связка Many to Any
+m2m_relationship: Отношение Многие ко Многим
+m2a_relationship: Отношение Многие к Любому
 invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
@@ -332,6 +334,7 @@ interface_not_found: 'Интерфейс "{interface}" не найден.'
 reset_interface: Сбросить Интерфейс
 display_not_found: 'Отображение "{display}" не найдено.'
 reset_display: Сбросить Отображение
+list-m2a: Конструктор (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет Файлов | Один Файл | {count} Файлов'
@@ -686,8 +689,8 @@ fields:
     singleton: Синглтон
     translations: Переводы названия коллекции
     archive_app_filter: Архивный фильтр
-    archive_value: Заархивировать содержимое
-    unarchive_value: Распаковать содержимое
+    archive_value: Значение для архива
+    unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
   directus_files:
     $thumbnail: Миниатюра
@@ -935,9 +938,9 @@ interfaces:
     interface-options: Настройки интерфейса
     description: Окно выбора параметров интерфейса
   list-m2m:
-    many-to-many: Многие ко многим
+    many-to-many: Многие ко Многим
   select-dropdown-m2o:
-    many-to-one: Многие к одному
+    many-to-one: Многие к Одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
   input-rich-text-md:
@@ -947,6 +950,7 @@ interfaces:
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
+    imageToken: Ключ изображения
   list-o2m:
     one-to-many: Один ко многим
   select-radio:
@@ -991,6 +995,7 @@ interfaces:
     description: Введите простой текст (несколько строк)
   boolean:
     toggle: Переключить
+    label_placeholder: Введите метку...
     label_default: Включен
   translations:
     display_template: Шаблон отображения
