@@ -56,6 +56,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 		[EXTENSION_PKG_KEY]: {
 			type: type,
 			path: 'dist/index.js',
+			source: 'src/index.js',
 			host: `^${pkg.version}`,
 			hidden: false,
 		},
