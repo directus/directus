@@ -106,6 +106,7 @@ export default defineComponent({
 		const listComponent = ref<ComponentPublicInstance>();
 
 		const contextMenu = ref();
+		const contextMenuTarget = ref<undefined | string>();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
@@ -163,6 +164,7 @@ export default defineComponent({
 			searchQuery,
 			listComponent,
 			activateContextMenu,
+			contextMenuTarget,
 		};
 
 		function isActive(name: string) {
@@ -177,7 +179,8 @@ export default defineComponent({
 			}
 		}
 
-		function activateContextMenu(event: PointerEvent) {
+		function activateContextMenu(event: PointerEvent, target?: string) {
+			contextMenuTarget.value = target;
 			contextMenu.value.activate(event);
 		}
 	},
