@@ -5,7 +5,6 @@
 			<span @click.stop="toggle" class="toggle">
 				<span class="label">
 					{{ displayValue.length }}
-					<template v-if="displayValue.length >= 100">+</template>
 					{{ t('items') }}
 				</span>
 			</span>
