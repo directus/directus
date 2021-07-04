@@ -37,7 +37,14 @@
 			</template>
 		</template>
 
-		<v-list-item v-else v-for="navItem in navItems" :key="navItem.to" :to="navItem.to" query>
+		<v-list-item
+			v-else
+			v-for="navItem in navItems"
+			:key="navItem.to"
+			:to="navItem.to"
+			query
+			@contextmenu.prevent.stop="activateContextMenu($event, navItem.to)"
+		>
 			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
@@ -65,7 +72,14 @@
 		<template v-if="hiddenShown">
 			<v-divider />
 
-			<v-list-item class="hidden-collection" v-for="navItem in hiddenNavItems" :key="navItem.to" :to="navItem.to" query>
+			<v-list-item
+				class="hidden-collection"
+				v-for="navItem in hiddenNavItems"
+				:key="navItem.to"
+				:to="navItem.to"
+				query
+				@contextmenu.prevent.stop="activateContextMenu($event, navItem.to)"
+			>
 				<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="navItem.name" />
