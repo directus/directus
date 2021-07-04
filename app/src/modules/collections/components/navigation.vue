@@ -97,6 +97,18 @@
 						<v-text-overflow :text="hiddenShown ? t('hide_hidden_collections') : t('show_hidden_collections')" />
 					</v-list-item-content>
 				</v-list-item>
+				<v-list-item
+					v-if="isAdmin && contextMenuTarget && contextMenuTarget.includes('/collections')"
+					clickable
+					:to="'/settings/data-model' + contextMenuTarget.replace('/collections', '')"
+				>
+					<v-list-item-icon>
+						<v-icon name="list_alt" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('edit_collection')" />
+					</v-list-item-content>
+				</v-list-item>
 			</v-list>
 		</v-menu>
 	</v-list>
