@@ -12,6 +12,7 @@ role_name: Role Name
 branch: Branch
 leaf: Leaf
 indeterminate: Indeterminate
+edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
 db_only_click_to_configure: 'Database Only: Click to Configure '
