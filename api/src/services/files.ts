@@ -46,7 +46,8 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type));
+		const fileExtension =
+			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + fileExtension;
 
