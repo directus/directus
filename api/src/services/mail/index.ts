@@ -67,12 +67,7 @@ export class MailService {
 			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
 		}
 
-		try {
-			await this.mailer.sendMail({ ...emailOptions, from, html });
-		} catch (error) {
-			logger.warn('[Email] Unexpected error while sending an email:');
-			logger.warn(error);
-		}
+		await this.mailer.sendMail({ ...emailOptions, from, html });
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {

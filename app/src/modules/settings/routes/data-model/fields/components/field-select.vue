@@ -1,5 +1,5 @@
 <template>
-	<div :class="(field.meta && field.meta.width) || 'full'">
+	<div class="field-select" :class="field.meta?.width || 'full'">
 		<v-input disabled v-if="disabled" class="field">
 			<template #prepend>
 				<v-icon name="lock" v-tooltip="t('system_fields_locked')" />
@@ -12,47 +12,40 @@
 			</template>
 		</v-input>
 
-		<div v-else-if="localType === 'translations'" class="group">
-			<div class="header">
-				<v-icon class="drag-handle" name="drag_indicator" />
-				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
-				<div class="spacer" />
-				<v-icon small name="group_work" v-tooltip="t('fields_group')" />
-				<v-menu show-arrow placement="bottom-end">
-					<template #activator="{ toggle }">
-						<span class="group-options" @click="toggle">
-							<v-icon name="more_vert" />
-						</span>
-					</template>
+		<draggable
+			v-if="localType === 'group'"
+			class="field-grid group full nested"
+			:model-value="nestedFields"
+			:force-fallback="true"
+			handle=".drag-handle"
+			:group="{ name: 'fields' }"
+			:set-data="hideDragImage"
+			:animation="150"
+			item-key="field"
+			@update:model-value="onGroupSortChange"
+			:fallbackOnBody="true"
+			:invertSwap="true"
+		>
+			<template #header>
+				<div class="header full">
+					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+					<span class="name">{{ field.field }}</span>
+					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+					<field-select-menu
+						:field="field"
+						@toggleVisibility="toggleVisibility"
+						@setWidth="setWidth($event)"
+						@duplicate="duplicateActive = true"
+						@delete="deleteActive = true"
+						:no-delete="nestedFields.length > 0"
+					/>
+				</div>
+			</template>
 
-					<v-list>
-						<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-							<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('edit_field') }}
-							</v-list-item-content>
-						</v-list-item>
-
-						<v-divider />
-
-						<v-list-item clickable @click="deleteActive = true" class="danger">
-							<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('delete_field') }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</div>
-
-			<router-link :to="`/settings/data-model/${translationsCollection}`">
-				<v-notice type="info" icon="translate">
-					<div>{{ t('click_to_manage_translated_fields', translationsFieldsCount) }}</div>
-					<div class="spacer" />
-					<v-icon name="launch" />
-				</v-notice>
-			</router-link>
-		</div>
+			<template #item="{ element }">
+				<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
+			</template>
+		</draggable>
 
 		<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
 			<template #prepend>
@@ -86,69 +79,13 @@
 						v-tooltip="t('db_only_click_to_configure')"
 					/>
 					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
-					<v-menu show-arrow placement="bottom-end">
-						<template #activator="{ toggle }">
-							<v-icon @click.stop="toggle" name="more_vert" />
-						</template>
-
-						<v-list>
-							<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-								<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
-								<v-list-item-content>
-									{{ t('edit_field') }}
-								</v-list-item-content>
-							</v-list-item>
-
-							<v-list-item v-if="duplicable" clickable @click="duplicateActive = true">
-								<v-list-item-icon>
-									<v-icon name="content_copy" />
-								</v-list-item-icon>
-								<v-list-item-content>{{ t('duplicate_field') }}</v-list-item-content>
-							</v-list-item>
-
-							<v-list-item clickable @click="toggleVisibility">
-								<template v-if="hidden === false">
-									<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-									<v-list-item-content>{{ t('hide_field_on_detail') }}</v-list-item-content>
-								</template>
-								<template v-else>
-									<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-									<v-list-item-content>{{ t('show_field_on_detail') }}</v-list-item-content>
-								</template>
-							</v-list-item>
-
-							<v-divider />
-
-							<v-list-item clickable @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
-								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-								<v-list-item-content>{{ t('half_width') }}</v-list-item-content>
-							</v-list-item>
-
-							<v-list-item clickable @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
-								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-								<v-list-item-content>{{ t('full_width') }}</v-list-item-content>
-							</v-list-item>
-
-							<v-list-item clickable @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
-								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-								<v-list-item-content>{{ t('fill_width') }}</v-list-item-content>
-							</v-list-item>
-
-							<v-divider />
-
-							<v-list-item
-								clickable
-								@click="deleteActive = true"
-								class="danger"
-								:disabled="(field.schema && field.schema.is_primary_key === true) || false"
-							>
-								<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-								<v-list-item-content>
-									{{ t('delete_field') }}
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
+					<field-select-menu
+						:field="field"
+						@toggleVisibility="toggleVisibility"
+						@setWidth="setWidth($event)"
+						@duplicate="duplicateActive = true"
+						@delete="deleteActive = true"
+					/>
 				</div>
 			</template>
 		</v-input>
@@ -196,7 +133,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { Field } from '@/types';
-import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
@@ -204,8 +141,13 @@ import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { InterfaceConfig } from '@/interfaces/types';
+import FieldSelectMenu from './field-select-menu.vue';
+import hideDragImage from '@/utils/hide-drag-image';
+import Draggable from 'vuedraggable';
 
 export default defineComponent({
+	name: 'field-select',
+	components: { FieldSelectMenu, Draggable },
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -215,13 +157,16 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		fields: {
+			type: Array as PropType<Field[]>,
+			default: () => [],
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const router = useRouter();
 
-		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const { interfaces } = getInterfaces();
@@ -229,8 +174,7 @@ export default defineComponent({
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating, duplicable } =
-			useDuplicate();
+		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 		const interfaceName = computed(() => {
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
@@ -240,7 +184,7 @@ export default defineComponent({
 
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
-		const { translationsCollection, translationsFieldsCount } = useTranslations();
+		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.id));
 
 		return {
 			t,
@@ -260,9 +204,9 @@ export default defineComponent({
 			hidden,
 			toggleVisibility,
 			localType,
-			translationsCollection,
-			translationsFieldsCount,
-			duplicable,
+			hideDragImage,
+			onGroupSortChange,
+			nestedFields,
 		};
 
 		function setWidth(width: string) {
@@ -303,14 +247,6 @@ export default defineComponent({
 			);
 			const duplicateTo = ref(props.field.collection);
 
-			const duplicable = computed(() => {
-				return (
-					['o2m', 'm2m', 'm2o', 'files', 'file', 'm2a'].includes(
-						getLocalTypeForField(props.field.collection, props.field.field)
-					) === false && props.field.schema?.is_primary_key === false
-				);
-			});
-
 			return {
 				duplicateActive,
 				duplicateName,
@@ -318,7 +254,6 @@ export default defineComponent({
 				duplicateTo,
 				saveDuplicate,
 				duplicating,
-				duplicable,
 			};
 
 			async function saveDuplicate() {
@@ -366,28 +301,16 @@ export default defineComponent({
 			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
 		}
 
-		function useTranslations() {
-			const translationsCollection = computed(() => {
-				if (localType.value !== 'translations') return null;
+		async function onGroupSortChange(fields: Field[]) {
+			const updates = fields.map((field, index) => ({
+				field: field.field,
+				meta: {
+					sort: index + 1,
+					group: props.field.meta!.id,
+				},
+			}));
 
-				const relation = relationsStore.relations.find((relation) => {
-					return (
-						relation.related_collection === props.field.collection && relation.meta?.one_field === props.field.field
-					);
-				});
-
-				if (!relation) return null;
-
-				return relation.collection;
-			});
-
-			const translationsFieldsCount = computed<number>(() => {
-				if (!translationsCollection.value) return 0;
-				const fields = fieldsStore.getFieldsForCollection(translationsCollection.value);
-				return fields.filter((field: Field) => field.meta?.hidden !== true).length;
-			});
-
-			return { translationsCollection, translationsFieldsCount };
+			emit('setNestedSort', updates);
 		}
 	},
 });
@@ -395,6 +318,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
+
+.field-select {
+	--input-height: 48px;
+	--input-padding: 8px;
+}
 
 .full,
 .fill {
@@ -443,43 +371,77 @@ export default defineComponent({
 
 .group {
 	position: relative;
+	min-height: var(--input-height);
 	padding: var(--input-padding);
-	background-color: var(--card-face-color);
+	padding-top: 40px;
+	padding-bottom: 16px;
 	border-radius: var(--border-radius);
-	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+
+	> * {
+		position: relative;
+		z-index: 2;
+	}
+
+	&::before {
+		position: absolute;
+		top: 0;
+		left: -2px;
+		z-index: 1;
+		width: 4px;
+		height: 100%;
+		background-color: var(--primary);
+		border-radius: 2px;
+		content: '';
+	}
+
+	&::after {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		background-color: var(--primary);
+		opacity: 0.1;
+		content: '';
+	}
 
 	.header {
+		position: absolute;
+		top: 0;
+		left: 0;
 		display: flex;
 		align-items: center;
-		margin-bottom: var(--input-padding);
-	}
-
-	.name {
+		width: 100%;
+		margin-bottom: 8px;
+		padding-top: 8px;
+		color: var(--primary);
 		font-family: var(--family-monospace);
-	}
 
-	.drag-handle {
-		margin-right: 8px;
-		transition: color var(--fast) var(--transition);
+		.drag-handle {
+			--v-icon-color: var(--primary);
 
-		&:hover {
-			color: var(--foreground);
+			margin-right: 8px;
+		}
+
+		.name {
+			flex-grow: 1;
 		}
 	}
+}
 
-	.group-options {
-		cursor: pointer;
-	}
+.field-grid {
+	position: relative;
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
-	.v-notice {
-		cursor: pointer;
+	& + & {
+		margin-top: 12px;
 	}
 }
 
 .field {
-	--input-height: 48px;
-	--input-padding: 8px;
-
 	:deep(.input) {
 		background-color: var(--card-face-color) !important;
 		border: none !important;
@@ -553,5 +515,14 @@ export default defineComponent({
 	position: relative;
 	left: -8px;
 	color: var(--primary);
+}
+
+.sortable-ghost {
+	border-radius: var(--border-radius);
+	outline: 2px dashed var(--primary);
+
+	> * {
+		opacity: 0;
+	}
 }
 </style>

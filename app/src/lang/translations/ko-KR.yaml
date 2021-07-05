@@ -1,1 +1,137 @@
 ---
+edit_field: 필드 편집
+item_revision: 아이템 리비전
+duplicate_field: 중복 필드
+field_name_translations: 항목 명 번역
+enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
+add_field: 필드 추가
+role_name: 권한 이름
+branch: 브랜치
+indeterminate: 불확정 상태
+children: 하위
+required: 필수 사항
+requires_value: 필수 항목
+create_preset: 사전설정 생성
+create_role: 역할 생성
+create_user: 사용자 생성
+create_webhook: 웹훅 생성
+invite_users: 사용자 초대
+invite: 초대
+emails: 이메일
+connection_poor: 연결 상태 불량
+rename_folder: 폴더 이름 변경
+delete_folder: 폴더 삭제
+prefix: 접두사
+suffix: 접미사
+reset_bookmark: 북마크 초기화
+rename_bookmark: 북마크 이름 변경
+update_bookmark: 북마크 업데이트
+delete_bookmark: 북마크 삭제
+delete_bookmark_copy: >-
+  정말로 이 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+logoutReason:
+  SIGN_OUT: 로그아웃
+  SESSION_EXPIRED: 세션 만료
+public: 공개
+not_allowed: 허용되지 않음
+validationError:
+  unique: 생산Key는 유일해야만 합니다.
+all_access: 모든 액세스
+no_access: 접근 불가
+use_custom: 직접 설정
+nullable: NULL허용
+field_standard: 표준
+field_file: 단일 파일
+field_files: 여러 파일들
+field_translations: 번역
+delete_field: 필드 삭제
+language: 언어
+global: 글로벌
+camera: 카메라
+exposure: 노출
+shutter: 셔터
+iso: ISO
+focal_length: 초점 거리
+create_field: 필드 생성
+reset_page_preferences: 앱 환경설정 초기화
+hidden_field: 숨김 필드
+hidden_on_detail: 실행 시 숨김
+key: 키
+alias: 별칭
+auto_generate: 자동 생성
+click_here: 여기를 클릭하세요
+fields_group: 필드 그룹
+no_collections_found: 컬렉션 없음
+search_collection: 컬렉션 검색
+new_field: '새 필드'
+new_collection: '새 컬렉션'
+choose_a_type: 유형을 선택...
+default_value: 기본값
+standard_field: 표준 항목들
+single_file: 단일 파일
+multiple_files: 여러 파일들
+invalid_item: 비정상적인 아이템
+next: 다음
+field_name: 필드 이름
+translations: 번역
+note: 메모
+enter_a_value: 값 입력
+length: 길이
+unique: 고유
+post_comment_success: 댓글 작성됨
+format: 형식
+export_collection: '컬렉션 내보내기'
+last_page: 마지막 페이지
+last_access: 최근 접속
+submit: 확인
+move_to_folder: 폴더로 이동
+move: 이동
+system: 시스템
+interface: 인터페이스
+today: 오늘
+yesterday: 어제
+delete_comment: 댓글 삭제
+month: 월
+year: 년
+select_all: 모두 선택
+months:
+  january: 1월
+  february: 2월
+  march: 3월
+  april: 4월
+  may: 5월
+  june: 6월
+  july: 7월
+  august: 8월
+  september: 9월
+  october: 10월
+  november: 11월
+  december: 12월
+drag_mode: 끌기 모드
+type: 타입
+creating_new_collection: 새 컬렉션 만들기
+value_unique: 생산Key는 유일해야만 합니다.
+wysiwyg_options:
+  selectall: 모두 선택
+fields:
+  directus_collections:
+    note: 메모
+  directus_users:
+    language: 언어
+    last_page: 마지막 페이지
+    last_access: 최근 접속
+  directus_fields:
+    note: 메모
+    translation: 항목 명 번역
+  directus_roles:
+    name: 권한 이름
+interfaces:
+  select-dropdown:
+    choices_value_placeholder: 값 입력
+  system-interface:
+    interface: 인터페이스
+displays:
+  datetime:
+    format: 형식
+  labels:
+    choices_value_placeholder: 값 입력
