@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.80",
+	"version": "9.0.0-rc.83",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -60,7 +60,7 @@
 		"prepublishOnly": "npm run build"
 	},
 	"engines": {
-		"node": ">=12.0.0"
+		"node": ">=12.20.0"
 	},
 	"files": [
 		"dist",
@@ -69,15 +69,15 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "9.0.0-rc.80",
-		"@directus/drive": "9.0.0-rc.80",
-		"@directus/drive-azure": "9.0.0-rc.80",
-		"@directus/drive-gcs": "9.0.0-rc.80",
-		"@directus/drive-s3": "9.0.0-rc.80",
-		"@directus/format-title": "9.0.0-rc.80",
-		"@directus/schema": "9.0.0-rc.80",
-    "@directus/shared": "9.0.0-rc.80",
-		"@directus/specs": "9.0.0-rc.80",
+		"@directus/app": "9.0.0-rc.83",
+		"@directus/drive": "9.0.0-rc.83",
+		"@directus/drive-azure": "9.0.0-rc.83",
+		"@directus/drive-gcs": "9.0.0-rc.83",
+		"@directus/drive-s3": "9.0.0-rc.83",
+		"@directus/format-title": "9.0.0-rc.83",
+		"@directus/schema": "9.0.0-rc.83",
+		"@directus/shared": "9.0.0-rc.83",
+		"@directus/specs": "9.0.0-rc.83",
 		"@godaddy/terminus": "^4.9.0",
 		"@rollup/plugin-alias": "^3.1.2",
 		"@rollup/plugin-virtual": "^2.0.3",
@@ -89,7 +89,7 @@
 		"busboy": "^0.3.1",
 		"camelcase": "^6.2.0",
 		"chalk": "^4.1.1",
-		"commander": "^7.2.0",
+		"commander": "^8.0.0",
 		"cookie-parser": "^1.4.5",
 		"cors": "^2.8.5",
 		"csv-parser": "^3.0.0",
@@ -172,7 +172,7 @@
 		"@types/inquirer": "7.3.2",
 		"@types/js-yaml": "4.0.1",
 		"@types/json2csv": "5.0.2",
-		"@types/jsonwebtoken": "8.5.2",
+		"@types/jsonwebtoken": "8.5.3",
 		"@types/keyv": "3.1.1",
 		"@types/lodash": "4.14.170",
 		"@types/mime-types": "2.1.0",
@@ -182,12 +182,12 @@
 		"@types/nodemailer": "6.4.2",
 		"@types/qs": "6.9.6",
 		"@types/sharp": "0.28.3",
-		"@types/stream-json": "1.7.0",
-		"@types/uuid": "8.3.0",
+		"@types/stream-json": "1.7.1",
+		"@types/uuid": "8.3.1",
 		"@types/uuid-validate": "0.0.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
-		"ts-node-dev": "1.1.6",
-		"typescript": "4.3.4"
+		"ts-node-dev": "1.1.8",
+		"typescript": "4.3.5"
 	}
 }
