@@ -1,10 +1,13 @@
-import path from 'path';
+import path from 'path/posix';
 import { AppExtensionType, Extension } from '../types';
 
 export function generateExtensionsEntry(type: AppExtensionType, extensions: Extension[]): string {
 	const filteredExtensions = extensions.filter((extension) => extension.type === type);
 
 	return `${filteredExtensions
-		.map((extension, i) => `import e${i} from '${path.resolve(extension.path, extension.entrypoint || '')}';\n`)
+		.map(
+			(extension, i) =>
+				`import e${i} from './${path.relative('.', path.resolve(extension.path, extension.entrypoint || ''))}';\n`
+		)
 		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }

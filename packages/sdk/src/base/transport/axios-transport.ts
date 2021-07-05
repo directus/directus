@@ -1,8 +1,21 @@
 import { IStorage } from '../../storage';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
 
 export type AxiosTransportRefreshHandler = () => Promise<void>;
+
+export type AxiosEjector = {
+	eject(): void;
+};
+
+export type AxiosInterceptorFunction<T> = (
+	onFulfilled?: (value: T) => T | Promise<T>,
+	onRejected?: (error: any) => any
+) => AxiosEjector;
+
+export type AxiosInterceptor<T> = {
+	intercept: AxiosInterceptorFunction<T>;
+};
 
 /**
  * Axios transport implementation
@@ -37,10 +50,36 @@ export class AxiosTransport implements ITransport {
 		return this._axios;
 	}
 
-	private async request<T = any, R = any>(
+	get requests(): AxiosInterceptor<AxiosRequestConfig> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.request.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.request.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	get responses(): AxiosInterceptor<AxiosResponse> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.response.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.response.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
-		data?: any,
+		data?: Record<string, any>,
 		options?: TransportOptions
 	): Promise<TransportResponse<T, R>> {
 		try {

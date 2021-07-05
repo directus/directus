@@ -40,6 +40,13 @@ information.
 
 :::
 
+::: tip Skip Admin User/Role
+
+You can pass the `--skipAdminInit` option to `bootstrap`, if you're creating your Admin role/user in another way (with a
+custom migration or an external service, for example).
+
+:::
+
 ### Install the Database
 
 ```

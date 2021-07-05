@@ -57,7 +57,6 @@ body {
 
 	span.wrapper {
 		display: flex;
-		margin-right: 16px;
 		color: var(--v-divider-label-color);
 
 		:slotted(.v-icon) {
@@ -67,6 +66,7 @@ body {
 	}
 
 	.type-text {
+		width: 100%;
 		color: var(--v-divider-label-color);
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
