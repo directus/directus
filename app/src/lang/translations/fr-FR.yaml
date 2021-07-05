@@ -4,11 +4,15 @@ item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
+group: Groupe
 fill_width: Pleine largeur
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
+branch: Branche
+leaf: Feuille
+indeterminate: Indéterminé
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
