@@ -283,7 +283,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			event: `${this.eventScope}.read`,
 			accountability: this.accountability,
 			collection: this.collection,
-			// item: ,
+			query,
 			action: 'read',
 			payload: records,
 			schema: this.schema,
