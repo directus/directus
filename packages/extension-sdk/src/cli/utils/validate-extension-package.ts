@@ -1,10 +1,10 @@
-export default function validateExtensionPackage(options: Record<string, any>): boolean {
+export default function validateExtensionPackage(extension: Record<string, any>): boolean {
 	if (
-		options.type === undefined ||
-		options.path === undefined ||
-		options.source === undefined ||
-		options.host === undefined ||
-		options.hidden === undefined
+		extension.type === undefined ||
+		extension.path === undefined ||
+		extension.source === undefined ||
+		extension.host === undefined ||
+		extension.hidden === undefined
 	) {
 		return false;
 	}
