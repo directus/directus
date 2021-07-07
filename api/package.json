@@ -171,7 +171,7 @@
 		"@types/fs-extra": "9.0.12",
 		"@types/inquirer": "7.3.3",
 		"@types/js-yaml": "4.0.2",
-		"@types/json2csv": "5.0.2",
+		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.4",
 		"@types/keyv": "3.1.1",
 		"@types/lodash": "4.14.170",
