@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import path from 'path';
 import chalk from 'chalk';
 import fse from 'fs-extra';
@@ -11,29 +9,29 @@ import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
 import { APP_EXTENSION_TYPES, EXTENSION_PKG_KEY, SHARED_DEPS } from '@directus/shared/constants';
+import log from '../utils/logger';
 
 export default async function build(options: { input: string; output: string }): Promise<void> {
 	const packagePath = path.resolve('package.json');
 
 	if (!(await fse.pathExists(packagePath))) {
-		console.log(`${chalk.bold.red('[Error]')} Current directory is not a package.`);
+		log(`Current directory is not a package.`, 'error');
 		process.exit(1);
 	}
 
 	const packageManifest = await fse.readJSON(packagePath);
 
 	if (!packageManifest[EXTENSION_PKG_KEY] || !packageManifest[EXTENSION_PKG_KEY].type) {
-		console.log(`${chalk.bold.yellow('[Warn]')} Current directory is not a Directus extension.`);
+		log(`Current directory is not a Directus extension.`, 'warn');
 	} else {
 		const type = packageManifest[EXTENSION_PKG_KEY].type;
 
 		if (!APP_EXTENSION_TYPES.includes(type)) {
-			console.log(
-				`${chalk.bold.yellow('[Warn]')} Extension type ${chalk.bold(
-					type
-				)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map((t) => chalk.bold.magenta(t)).join(
-					', '
-				)}.`
+			log(
+				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map(
+					(t) => chalk.bold.magenta(t)
+				).join(', ')}.`,
+				'warn'
 			);
 		}
 	}
