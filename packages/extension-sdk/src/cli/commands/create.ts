@@ -4,17 +4,17 @@ import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
 import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
-import { ExtensionType } from '@directus/shared/types';
+import { isExtension } from '@directus/shared/utils';
 import log from '../utils/logger';
 
 const pkg = require('../../../../package.json');
 
 const TEMPLATE_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'templates');
 
-export default async function create(type: ExtensionType, name: string): Promise<void> {
+export default async function create(type: string, name: string): Promise<void> {
 	const targetPath = path.resolve(name);
 
-	if (!EXTENSION_TYPES.includes(type)) {
+	if (!isExtension(type)) {
 		log(
 			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
