@@ -169,7 +169,7 @@
 		"@types/express-pino-logger": "4.0.2",
 		"@types/express-session": "1.17.3",
 		"@types/fs-extra": "9.0.11",
-		"@types/inquirer": "7.3.2",
+		"@types/inquirer": "7.3.3",
 		"@types/js-yaml": "4.0.1",
 		"@types/json2csv": "5.0.2",
 		"@types/jsonwebtoken": "8.5.3",
