@@ -27,7 +27,7 @@
 	},
 	"devDependencies": {
 		"@types/dockerode": "3.2.4",
-		"@types/jest": "26.0.23",
+		"@types/jest": "26.0.24",
 		"@types/listr": "0.14.3",
 		"@types/node": "15.12.2",
 		"@types/supertest": "2.0.11",
