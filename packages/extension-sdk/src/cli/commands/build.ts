@@ -15,7 +15,13 @@ export default async function build(options: { input: string; output: string }):
 	const bundle = await rollup({
 		input: options.input,
 		external: SHARED_DEPS,
-		plugins: [vue(), styles(), nodeResolve(), commonjs(), terser()],
+		plugins: [
+			vue({ preprocessStyles: true }),
+			styles(),
+			nodeResolve(),
+			commonjs({ esmExternals: true, sourceMap: false }),
+			terser(),
+		],
 	});
 
 	await bundle.write({
