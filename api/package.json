@@ -165,7 +165,7 @@
 		"@types/cookie-parser": "1.4.2",
 		"@types/cors": "2.8.10",
 		"@types/destroy": "1.0.0",
-		"@types/express": "4.17.12",
+		"@types/express": "4.17.13",
 		"@types/express-pino-logger": "4.0.2",
 		"@types/express-session": "1.17.4",
 		"@types/fs-extra": "9.0.11",
