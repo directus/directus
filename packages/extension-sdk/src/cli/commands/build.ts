@@ -31,7 +31,7 @@ export default async function build(options: { input: string; output: string }):
 			console.log(
 				`${chalk.bold.yellow('[Warn]')} Extension type ${chalk.bold(
 					type
-				)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map((t) => chalk.bold.cyan(t)).join(
+				)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map((t) => chalk.bold.magenta(t)).join(
 					', '
 				)}.`
 			);

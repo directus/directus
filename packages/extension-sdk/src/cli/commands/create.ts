@@ -19,7 +19,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 		console.log(
 			`${chalk.bold.red('[Error]')} Extension type ${chalk.bold(
 				type
-			)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) => chalk.bold.cyan(t)).join(', ')}.`
+			)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) => chalk.bold.magenta(t)).join(', ')}.`
 		);
 		process.exit(1);
 	}
