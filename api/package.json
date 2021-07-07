@@ -158,7 +158,7 @@
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"@types/async": "3.2.6",
+		"@types/async": "3.2.7",
 		"@types/atob": "2.1.2",
 		"@types/body-parser": "1.19.0",
 		"@types/busboy": "0.2.4",
