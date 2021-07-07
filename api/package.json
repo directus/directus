@@ -160,7 +160,7 @@
 	"devDependencies": {
 		"@types/async": "3.2.7",
 		"@types/atob": "2.1.2",
-		"@types/body-parser": "1.19.0",
+		"@types/body-parser": "1.19.1",
 		"@types/busboy": "0.2.4",
 		"@types/cookie-parser": "1.4.2",
 		"@types/cors": "2.8.11",
