@@ -52,7 +52,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
-			type: type,
+			type,
 			path: 'dist/index.js',
 			source: 'src/index.js',
 			host: `^${pkg.version}`,
