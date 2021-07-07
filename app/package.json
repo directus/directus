@@ -42,7 +42,7 @@
 		"@sindresorhus/slugify": "2.1.0",
 		"@tinymce/tinymce-vue": "4.0.3",
 		"@types/base-64": "1.0.0",
-		"@types/bytes": "3.1.0",
+		"@types/bytes": "3.1.1",
 		"@types/codemirror": "5.60.2",
 		"@types/color": "3.0.1",
 		"@types/diff": "5.0.1",
