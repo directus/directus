@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import path from 'path';
 import chalk from 'chalk';
 import fse from 'fs-extra';
@@ -7,6 +5,7 @@ import execa from 'execa';
 import ora from 'ora';
 import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
 import { ExtensionType } from '@directus/shared/types';
+import log from '../utils/logger';
 
 const pkg = require('../../../../package.json');
 
@@ -16,10 +15,11 @@ export default async function create(type: ExtensionType, name: string): Promise
 	const targetPath = path.resolve(name);
 
 	if (!EXTENSION_TYPES.includes(type)) {
-		console.log(
-			`${chalk.bold.red('[Error]')} Extension type ${chalk.bold(
-				type
-			)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) => chalk.bold.magenta(t)).join(', ')}.`
+		log(
+			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
+				chalk.bold.magenta(t)
+			).join(', ')}.`,
+			'error'
 		);
 		process.exit(1);
 	}
@@ -28,16 +28,14 @@ export default async function create(type: ExtensionType, name: string): Promise
 		const info = await fse.stat(targetPath);
 
 		if (!info.isDirectory()) {
-			console.log(
-				`${chalk.bold.red('[Error]')} Destination ${chalk.bold(name)} already exists and is not a directory.`
-			);
+			log(`Destination ${chalk.bold(name)} already exists and is not a directory.`, 'error');
 			process.exit(1);
 		}
 
 		const files = await fse.readdir(targetPath);
 
 		if (files.length > 0) {
-			console.log(`${chalk.bold.red('[Error]')} Destination ${chalk.bold(name)} already exists and is not empty.`);
+			log(`Destination ${chalk.bold(name)} already exists and is not empty.`, 'error');
 			process.exit(1);
 		}
 	}
@@ -54,7 +52,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${type}`],
 		[EXTENSION_PKG_KEY]: {
-			type: type,
+			type,
 			path: 'dist/index.js',
 			source: 'src/index.js',
 			host: `^${pkg.version}`,
@@ -74,7 +72,7 @@ export default async function create(type: ExtensionType, name: string): Promise
 
 	spinner.succeed('Done');
 
-	console.log(`
+	log(`
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 Build your extension by running:

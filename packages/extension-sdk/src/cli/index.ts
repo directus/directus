@@ -14,8 +14,10 @@ program.command('create').arguments('<type> <name>').description('Scaffold a new
 program
 	.command('build')
 	.description('Bundle a Directus extension to a single entrypoint')
-	.option('-i, --input <file>', 'change the default entrypoint', 'src/index.js')
-	.option('-o, --output <file>', 'change the default output file', 'dist/index.js')
+	.option('-t, --type <type>', 'overwrite the extension type read from package manifest')
+	.option('-i, --input <file>', 'overwrite the entrypoint read from package manifest')
+	.option('-o, --output <file>', 'overwrite the output file read from package manifest')
+	.option('-f, --force', 'ignore the package manifest')
 	.action(build);
 
 program.parse(process.argv);
