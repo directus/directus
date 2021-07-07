@@ -99,3 +99,8 @@ export type UserType = SystemType<{
 	// TODO: complete
 	email: string;
 }>;
+
+export type TfaType = SystemType<{
+	secret: string;
+	otpauth_url: string;
+}>;
