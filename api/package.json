@@ -170,7 +170,7 @@
 		"@types/express-session": "1.17.4",
 		"@types/fs-extra": "9.0.12",
 		"@types/inquirer": "7.3.3",
-		"@types/js-yaml": "4.0.1",
+		"@types/js-yaml": "4.0.2",
 		"@types/json2csv": "5.0.2",
 		"@types/jsonwebtoken": "8.5.3",
 		"@types/keyv": "3.1.1",
