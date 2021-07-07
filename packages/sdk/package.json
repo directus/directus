@@ -50,7 +50,7 @@
 		"@rollup/plugin-commonjs": "19.0.0",
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.0",
-		"@types/jest": "26.0.23",
+		"@types/jest": "26.0.24",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",
 		"jest": "27.0.6",
