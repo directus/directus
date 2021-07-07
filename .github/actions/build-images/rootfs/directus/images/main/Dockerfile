@@ -81,7 +81,7 @@ COPY --from=builder --chown=node:node /directus/package.json .
 RUN \
   # Install Directus and runtime dependencies
   # (retry if it fails for some reason, e.g. release not published yet)
-  for i in $(seq 15); do npm install "directus@${VERSION}" && break || if [ $i -eq 15 ]; then exit 1; else sleep 30; fi; done && \
+  for i in $(seq 15); do npm install --save-exact "directus@${VERSION}" && break || if [ $i -eq 15 ]; then exit 1; else sleep 30; fi; done && \
   npm install \
   # Create data directories
   && mkdir -p \
