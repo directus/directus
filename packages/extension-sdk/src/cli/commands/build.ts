@@ -11,7 +11,7 @@ import vue from 'rollup-plugin-vue';
 import { APP_EXTENSION_TYPES, EXTENSION_PKG_KEY, SHARED_DEPS } from '@directus/shared/constants';
 import { AppExtensionType } from '@directus/shared/types';
 import log from '../utils/logger';
-import validateExtensionPackage from '../utils/validate-extension-package';
+import validateExtensionPackage from '../utils/validate-extension-manifest';
 
 type BuildOptions = { type: AppExtensionType; input: string; output: string; force: boolean };
 
