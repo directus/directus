@@ -4,25 +4,37 @@ item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
+group: Grupė
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
 add_field: Pridėti lauką
 role_name: Vaidmens pavadinimas
+branch: Šaka
+leaf: Lapas
+indeterminate: Neapibrėžta
+exclusive: Išskirtinis
+children: Vaikai
+db_only_click_to_configure: 'Tik duomenų bazė: spausti, kad konfigūruoti '
 show_archived_items: Rodyti archyvuotus elementus
+edited: Vertė redaguota
 required: Privalomas
+required_for_app_access: Reikalinga aplikacijos prieigai
 requires_value: Reikalinga reikšmė
 create_preset: Sukurti išankstinę parinktį
 create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
+email_examples: "administratorius{'@'}pavyzdys.lt, naudotojas{'@'}pavyzdys.lt..."
 invite: Pakviesti
+email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai
 connection_excellent: Puiki ryšio kokybė
 connection_good: Gera ryšio kokybė
 connection_fair: Patenkinama ryšio kokybė
 connection_poor: Prasta ryšio kokybė
+primary: Pirminis
 rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
 prefix: Priešdėlis
@@ -50,6 +62,8 @@ archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
 archive_confirm_count: >-
   Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
+reset_system_permissions_to: 'Atstatyti sisteminius leidimus į:'
+reset_system_permissions_copy: Šis veiksmas perrašys visus pasirinktinus leidimus, kuriuos galėjote pritaikyti sistemos rinkiniams. Ar jūs įsitikinę?
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
@@ -744,6 +758,8 @@ value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
+  presentation-links:
+    primary: Pirminis
   input-code:
     code: Kodas
   system-collection:
