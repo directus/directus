@@ -172,6 +172,10 @@ click_to_manage_translated_fields: >-
   Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 no_collections_found: Kolekcijų nerasta.
+new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
+search_collection: Ieškoti kolekcijoje...
+new_field: 'Naujas laukas'
+new_collection: 'Nauja kolekcija'
 add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
 add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
 add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
