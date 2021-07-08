@@ -179,7 +179,7 @@
 		"@types/ms": "0.7.31",
 		"@types/node": "15.12.2",
 		"@types/node-cron": "2.0.3",
-		"@types/nodemailer": "6.4.2",
+		"@types/nodemailer": "6.4.4",
 		"@types/qs": "6.9.6",
 		"@types/sharp": "0.28.4",
 		"@types/stream-json": "1.7.1",
