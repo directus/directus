@@ -9,33 +9,34 @@ import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
 import { APP_EXTENSION_TYPES, EXTENSION_PKG_KEY, SHARED_DEPS } from '@directus/shared/constants';
-import { AppExtensionType } from '@directus/shared/types';
+import { isAppExtension } from '@directus/shared/utils';
+import { ExtensionManifest } from '@directus/shared/types';
 import log from '../utils/logger';
-import validateExtensionPackage from '../utils/validate-extension-package';
+import validateExtensionManifest from '../utils/validate-extension-manifest';
 
-type BuildOptions = { type: AppExtensionType; input: string; output: string; force: boolean };
+type BuildOptions = { type: string; input: string; output: string; force: boolean };
 
 export default async function build(options: BuildOptions): Promise<void> {
 	const packagePath = path.resolve('package.json');
-	let packageManifest: Record<string, any> = {};
+	let extensionManifest: ExtensionManifest = {};
 
 	if (!(await fse.pathExists(packagePath))) {
 		log(`Current directory is not a package.`, !options.force ? 'error' : 'warn');
 		if (!options.force) process.exit(1);
 	} else {
-		packageManifest = await fse.readJSON(packagePath);
+		extensionManifest = await fse.readJSON(packagePath);
 
-		if (!packageManifest[EXTENSION_PKG_KEY] || !validateExtensionPackage(packageManifest[EXTENSION_PKG_KEY])) {
+		if (!validateExtensionManifest(extensionManifest)) {
 			log(`Current directory is not a Directus extension.`, !options.force ? 'error' : 'warn');
 			if (!options.force) process.exit(1);
 		}
 	}
 
-	const type = options.type || packageManifest[EXTENSION_PKG_KEY]?.type;
-	const input = options.input || packageManifest[EXTENSION_PKG_KEY]?.source;
-	const output = options.output || packageManifest[EXTENSION_PKG_KEY]?.path;
+	const type = options.type || extensionManifest[EXTENSION_PKG_KEY]?.type;
+	const input = options.input || extensionManifest[EXTENSION_PKG_KEY]?.source;
+	const output = options.output || extensionManifest[EXTENSION_PKG_KEY]?.path;
 
-	if (!APP_EXTENSION_TYPES.includes(type)) {
+	if (!type || !isAppExtension(type)) {
 		log(
 			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
@@ -45,7 +46,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		if (!options.force) process.exit(1);
 	}
 
-	if (!(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
+	if (!input || !(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
 		log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
 		process.exit(1);
 	}
