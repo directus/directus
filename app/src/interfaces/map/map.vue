@@ -202,7 +202,7 @@ export default defineComponent({
 			map.addControl(controls.fitData, 'top-left');
 			map.addControl(controls.draw as IControl, 'top-left');
 			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey }), 'top-right');
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
 			}
 
 			map.on('load', async () => {
