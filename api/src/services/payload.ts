@@ -225,7 +225,9 @@ export class PayloadService {
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		const helper = getGeometryHelper();
 		const process =
-			action == 'read' ? (value: any) => wktToGeoJSON(value) : (value: any) => helper.fromGeoJSON(JSON.parse(value));
+			action == 'read'
+				? (value: any) => wktToGeoJSON(value)
+				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
