@@ -56,7 +56,7 @@
 					<v-select
 						@update:model-value="limit = +$event"
 						:model-value="`${limit}`"
-						:items="['1000', '10000', '100000']"
+						:items="['100', '1000', '10000', '100000']"
 						inline
 					/>
 				</div>

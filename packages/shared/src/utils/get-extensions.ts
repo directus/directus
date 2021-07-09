@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import { Extension } from '../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import { EXTENSION_NAME_REGEX, EXTENSION_TYPES } from '../constants';
+import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, EXTENSION_TYPES } from '../constants';
 import { pluralize } from './pluralize';
 
 export async function getPackageExtensions(root: string): Promise<Extension[]> {
@@ -19,7 +19,7 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 			const extensionPath = resolvePackage(extensionName, root);
 			const extensionPkg = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
-			if (extensionPkg['directus:extension'].type === 'pack') {
+			if (extensionPkg[EXTENSION_PKG_KEY].type === 'pack') {
 				const extensionChildren = Object.keys(extensionPkg.dependencies).filter((dep) =>
 					EXTENSION_NAME_REGEX.test(dep)
 				);
@@ -28,8 +28,8 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 					path: extensionPath,
 					name: extensionName,
 					version: extensionPkg.version,
-					type: extensionPkg['directus:extension'].type,
-					host: extensionPkg['directus:extension'].host,
+					type: extensionPkg[EXTENSION_PKG_KEY].type,
+					host: extensionPkg[EXTENSION_PKG_KEY].host,
 					children: extensionChildren,
 					local: false,
 					root: root === undefined,
@@ -42,9 +42,9 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 					path: extensionPath,
 					name: extensionName,
 					version: extensionPkg.version,
-					type: extensionPkg['directus:extension'].type,
-					entrypoint: extensionPkg['directus:extension'].path,
-					host: extensionPkg['directus:extension'].host,
+					type: extensionPkg[EXTENSION_PKG_KEY].type,
+					entrypoint: extensionPkg[EXTENSION_PKG_KEY].path,
+					host: extensionPkg[EXTENSION_PKG_KEY].host,
 					local: false,
 					root: root === undefined,
 				});

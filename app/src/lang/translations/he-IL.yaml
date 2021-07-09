@@ -1,8 +1,27 @@
 ---
 edit_field: ערוך שדה
+half_width: חצי עמוד
 full_width: רוחב מלא
+fill_width: עמוד מלא
 add_field: הוסף שדה
+role_name: שם תפקיד
+branch: ענף
+exclusive: בלעדי
+children: ילדים
+edited: ערך נערך
+required: שדה חובה
+create_preset: יצירת הגדרה מראש
+create_role: צור תפקיד
+create_user: צור משתמש
+create_webhook: צור Webhook
+invite_users: הזמן משתמשים
+invite: הזמן
+public: פומבי
+not_allowed: לא מורשה
 directus_version: גרסת דירקטוס
+node_version: Node Version
+node_uptime: Node Uptime
+os_type: OS Type
 title: כותרת
 checksum: מחרוזת בדיקה
 users: משתמשים
@@ -49,6 +68,7 @@ fields:
     status: סטטוס
     role: תפקיד
   directus_roles:
+    name: שם תפקיד
     description: תיאור
 comment: הערה
 description: תיאור
@@ -64,8 +84,19 @@ interfaces:
 displays:
   collection:
     collection: מאגר
+  mime-type:
+    mime-type: MIME Type
+  rating:
+    rating: דירוג
+    simple: פשוט
   user:
     avatar: צלמית
+    both: שניהם
 layouts:
   cards:
     title: כותרת
+    subtitle: כותרת משנית
+  tabular:
+    fields: שדות
+  calendar:
+    calendar: לוח שנה

@@ -16,7 +16,9 @@ export type FilterOperator =
 	| 'empty'
 	| 'nempty'
 	| 'intersects'
-	| 'nintersects';
+	| 'nintersects'
+	| 'intersects_bbox'
+	| 'nintersects_bbox';
 
 export type Filter = {
 	key: string;
