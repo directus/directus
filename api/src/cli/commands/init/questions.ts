@@ -50,6 +50,13 @@ const password = (): Record<string, string> => ({
 	mask: '*',
 });
 
+const encrypt = (): Record<string, string | boolean> => ({
+	type: 'confirm',
+	name: 'options__encrypt',
+	message: 'Encrypt Connection:',
+	default: false,
+});
+
 const ssl = (): Record<string, string | boolean> => ({
 	type: 'confirm',
 	name: 'ssl',
@@ -62,5 +69,5 @@ export const databaseQuestions = {
 	mysql: [host, port, database, user, password],
 	pg: [host, port, database, user, password, ssl],
 	oracledb: [host, port, database, user, password],
-	mssql: [host, port, database, user, password],
+	mssql: [host, port, database, user, password, encrypt],
 };
