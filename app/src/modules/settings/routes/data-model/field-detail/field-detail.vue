@@ -192,8 +192,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: LocalType;
-			type = getLocalTypeForField(props.collection, props.field)!;
+			const type = getLocalTypeForField(props.collection, props.field) || 'standard';
 
 			return type;
 		});
