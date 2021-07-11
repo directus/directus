@@ -1,13 +1,13 @@
 SHELL=bash
 
-version=latest
-tag=$(version)
+version=$(shell git describe --tags --abbrev=0)
+tag=latest
 cmd=
 user=directus
 registry=docker.io
 repository=directus/directus
 
-.PHONY: build
+.PHONY: build-images
 
 build-images:
 	docker build \

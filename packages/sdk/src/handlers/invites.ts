@@ -8,10 +8,11 @@ export class InvitesHandler {
 		this.transport = transport;
 	}
 
-	async send(email: string, role: ID): Promise<void> {
+	async send(email: string, role: ID, invite_url?: string): Promise<void> {
 		await this.transport.post('/users/invite', {
 			email,
 			role,
+			invite_url,
 		});
 	}
 
