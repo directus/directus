@@ -76,7 +76,7 @@
 		"mime": "2.5.2",
 		"mitt": "3.0.0",
 		"nanoid": "3.1.23",
-		"pinia": "2.0.0-beta.3",
+		"pinia": "2.0.0-beta.5",
 		"prettier": "2.3.2",
 		"pretty-ms": "7.0.1",
 		"qrcode": "1.4.4",
