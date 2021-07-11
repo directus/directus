@@ -76,7 +76,7 @@
 		"yargs-parser": "^20.2.7"
 	},
 	"devDependencies": {
-		"@types/figlet": "1.5.2",
+		"@types/figlet": "1.5.4",
 		"@types/fs-extra": "9.0.12",
 		"@types/jest": "26.0.24",
 		"@types/js-yaml": "4.0.2",
