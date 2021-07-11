@@ -1,21 +1,9 @@
-# Builder image
-FROM alpine:latest AS builder
+FROM node:16-alpine as builder
 
-ARG VERSION
-ARG REPOSITORY=directus/directus
-
-# Get runtime dependencies from optional dependencies
-# defined in package.json of Directus API package
 WORKDIR /directus
-RUN apk add --no-cache jq \
-  && wget -O directus-api-package.json "https://raw.githubusercontent.com/${REPOSITORY}/${VERSION}/api/package.json" \
-  && jq '{ \
-  name: "directus-project", \
-  version: "1.0.0", \
-  description: "Directus Project", \
-  dependencies: .optionalDependencies \
-  }' \
-  directus-api-package.json > package.json
+COPY /dist .
+#RUN npm i -g yargs pino pino-colada
+RUN npm i --only=production
 
 # Directus image
 FROM node:16-alpine
@@ -62,11 +50,6 @@ RUN \
   bash \
   ssmtp \
   util-linux \
-  # Install global node dependencies
-  && npm install -g \
-  yargs \
-  pino \
-  pino-colada \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus
@@ -75,32 +58,23 @@ RUN \
 USER node
 WORKDIR /directus
 
-# Get package.json from builder image
-COPY --from=builder --chown=node:node /directus/package.json .
+COPY --from=builder --chown=node:node /directus .
+#COPY --from=builder --chown=node:node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN \
-  # Install Directus and runtime dependencies
-  # (retry if it fails for some reason, e.g. release not published yet)
-  for i in $(seq 15); do npm install --save-exact "directus@${VERSION}" && break || if [ $i -eq 15 ]; then exit 1; else sleep 30; fi; done && \
-  npm install \
   # Create data directories
-  && mkdir -p \
+  mkdir -p \
     database \
     extensions/displays \
     extensions/interfaces \
     extensions/layouts \
     extensions/modules \
     uploads
-
 # Expose data directories as volumes
 VOLUME \
   /directus/database \
   /directus/extensions \
   /directus/uploads
 
-# Copy rootfs files
-COPY ./rootfs /
-
 EXPOSE 8055
-SHELL ["/bin/bash", "-c"]
-ENTRYPOINT ["entrypoint"]
+CMD npx directus bootstrap && npx directus start
