@@ -2,20 +2,22 @@
 
 set -e
 
-function bootstrap() {
+bootstrap() {
   local warn=false
 
-  if [ "${KEY}" == "" ] ; then
-    export KEY=$(uuidgen)
+  if [[ -z $KEY && -z $KEY_FILE ]]; then
+    KEY=$(uuidgen)
+    export KEY
     warn=true
   fi
 
-  if [ "${SECRET}" == "" ] ; then
-    export SECRET=$(node -e 'console.log(require("nanoid").nanoid(32))')
+  if [[ -z $SECRET && -z $SECRET_FILE ]]; then
+    SECRET=$(node -e 'console.log(require("nanoid").nanoid(32))')
+    export SECRET
     warn=true
   fi
 
-  if [ "${warn}" == "true" ] ; then
+  if [[ $warn == 'true' ]]; then
     print --level=warn --stdin <<WARN
 >
 >                         WARNING!
@@ -32,33 +34,33 @@ WARN
   fi
 
   # Create folder if using sqlite and file doesn't exist
-  if [ "${DB_CLIENT}" == "sqlite3" ] ; then
-    if [ "${DB_FILENAME}" == "" ] ; then
+  if [[ $DB_CLIENT == 'sqlite3' ]]; then
+    if [[ -z $DB_FILENAME ]]; then
       print --level=error "Missing DB_FILENAME environment variable"
       exit 1
     fi
 
-    if [ ! -f "${DB_FILENAME}" ] ; then
-      mkdir -p $(dirname ${DB_FILENAME})
+    if [[ ! -f $DB_FILENAME ]]; then
+      mkdir -p "$(dirname "$DB_FILENAME")"
     fi
   fi
 
   npx directus bootstrap
 }
 
-command=""
-if [ $# -eq 0 ] ; then
+command=''
+if [[ $# -eq 0 ]]; then
   command="start"
-elif [ "${1}" == "bash" ] || [ "${1}" == "shell" ] ; then
+elif [[ $1 == 'bash' || $1 == 'shell' ]]; then
   shift
-  exec bash $@
-elif [ "${1}" == "command" ] ; then
+  exec bash "$@"
+elif [[ $1 == 'command' ]]; then
   shift
-  exec $@
+  exec "$@"
 else
-  command="${1}"
+  command="$1"
   shift
 fi
 
 bootstrap
-exec npx directus "${command}" $@
+exec npx directus "$command" "$@"
