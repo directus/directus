@@ -49,7 +49,7 @@
 		"@types/dompurify": "2.2.3",
 		"@types/lodash": "4.14.171",
 		"@types/markdown-it": "12.0.3",
-		"@types/marked": "2.0.3",
+		"@types/marked": "2.0.4",
 		"@types/mime-types": "2.1.0",
 		"@types/ms": "0.7.31",
 		"@types/qrcode": "1.4.1",
