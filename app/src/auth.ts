@@ -9,10 +9,42 @@ export type LoginCredentials = {
 	password: string;
 };
 
+export type LDAPLoginCredentials = {
+	userCN: string;
+	password: string;
+};
+
 export async function login(credentials: LoginCredentials): Promise<void> {
 	const appStore = useAppStore();
 
 	const response = await api.post(`/auth/login`, {
+		...credentials,
+		mode: 'cookie',
+	});
+
+	const accessToken = response.data.data.access_token;
+
+	// Add the header to the API handler for every request
+	api.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+
+	// Refresh the token 10 seconds before the access token expires. This means the user will stay
+	// logged in without any noticable hickups or delays
+
+	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
+	// for tokens that last > 24 days. Ref #4054
+	if (response.data.data.expires <= 2100000000) {
+		setTimeout(() => refresh(), response.data.data.expires - 10000);
+	}
+
+	appStore.authenticated = true;
+
+	await hydrate();
+}
+
+export async function ldapLogin(credentials: LDAPLoginCredentials): Promise<void> {
+	const appStore = useAppStore();
+
+	const response = await api.post(`/auth/login/ldap`, {
 		...credentials,
 		mode: 'cookie',
 	});

@@ -53,7 +53,7 @@ import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
 import { ActivityService } from './activity';
-import { AuthenticationService } from './authentication';
+import { BasicAuthenticationService } from './authentication/basicauthentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
@@ -1366,7 +1366,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 						role: null,
 					};
-					const authenticationService = new AuthenticationService({
+					const authenticationService = new BasicAuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
 					});
@@ -1403,7 +1403,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 						role: null,
 					};
-					const authenticationService = new AuthenticationService({
+					const authenticationService = new BasicAuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
 					});
@@ -1439,7 +1439,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 						role: null,
 					};
-					const authenticationService = new AuthenticationService({
+					const authenticationService = new BasicAuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
 					});
@@ -1510,7 +1510,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
+					const authService = new BasicAuthenticationService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1547,7 +1547,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
+					const authService = new BasicAuthenticationService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});

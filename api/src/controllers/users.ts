@@ -4,7 +4,7 @@ import { ForbiddenException, InvalidCredentialsException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService } from '../services';
+import { BasicAuthenticationService, MetaService, UsersService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
@@ -311,7 +311,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const authService = new AuthenticationService({
+		const authService = new BasicAuthenticationService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -367,7 +367,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const authService = new AuthenticationService({
+		const authService = new BasicAuthenticationService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});

@@ -8,7 +8,12 @@ import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailable
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
-import { AuthenticationService, UsersService } from '../services';
+import {
+	AuthenticationService,
+	BasicAuthenticationService,
+	LDAPAuthenticationService,
+	UsersService,
+} from '../services';
 import asyncHandler from '../utils/async-handler';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '../utils/to-array';
@@ -22,22 +27,28 @@ const loginSchema = Joi.object({
 	otp: Joi.string(),
 }).unknown();
 
-router.post(
-	'/login',
-	asyncHandler(async (req, res, next) => {
+const ldapLoginSchema = Joi.object({
+	userCN: Joi.string().required(),
+	password: Joi.string().required(),
+	mode: Joi.string().valid('cookie', 'json'),
+	otp: Joi.string(),
+}).unknown();
+
+const generateLoginHandler =
+	(AuthenticationProvider: AuthenticationService, loginSchema: any) => async (req: any, res: any, next: any) => {
+		const { error } = loginSchema.validate(req.body);
+		if (error) throw new InvalidPayloadException(error.message);
+
 		const accountability = {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
 			role: null,
 		};
 
-		const authenticationService = new AuthenticationService({
+		const authenticationService = new AuthenticationProvider({
 			accountability: accountability,
 			schema: req.schema,
 		});
-
-		const { error } = loginSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
 
 		const mode = req.body.mode || 'json';
 
@@ -70,9 +81,11 @@ router.post(
 
 		res.locals.payload = payload;
 		return next();
-	}),
-	respond
-);
+	};
+
+router.post('/login', asyncHandler(generateLoginHandler(BasicAuthenticationService, loginSchema)), respond);
+
+router.post('/login/ldap', asyncHandler(generateLoginHandler(LDAPAuthenticationService, ldapLoginSchema)), respond);
 
 router.post(
 	'/refresh',
@@ -83,7 +96,7 @@ router.post(
 			role: null,
 		};
 
-		const authenticationService = new AuthenticationService({
+		const authenticationService = new BasicAuthenticationService({
 			accountability: accountability,
 			schema: req.schema,
 		});
@@ -131,7 +144,7 @@ router.post(
 			role: null,
 		};
 
-		const authenticationService = new AuthenticationService({
+		const authenticationService = new BasicAuthenticationService({
 			accountability: accountability,
 			schema: req.schema,
 		});
@@ -277,7 +290,7 @@ router.get(
 			role: null,
 		};
 
-		const authenticationService = new AuthenticationService({
+		const authenticationService = new BasicAuthenticationService({
 			accountability: accountability,
 			schema: req.schema,
 		});

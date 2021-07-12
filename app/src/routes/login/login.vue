@@ -4,7 +4,9 @@
 
 		<continue-as v-if="authenticated" />
 
-		<login-form v-else :sso-error="ssoErrorCode" />
+		<login-form :sso-error="ssoErrorCode" />
+
+		<ldap-form />
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
@@ -24,6 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
+import LDAPForm from './components/ldap-form/';
 import { useAppStore } from '@/stores';
 
 import { LogoutReason } from '@/auth';
@@ -39,7 +42,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	components: { LoginForm, ContinueAs },
+	components: { LoginForm, ContinueAs, LdapForm: LDAPForm }, // TODO: I hate this
 	setup() {
 		const { t, te } = useI18n();
 

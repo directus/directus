@@ -16,7 +16,7 @@ import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
-import { AuthenticationService } from './authentication';
+import { BasicAuthenticationService } from './authentication/basicauthentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -354,7 +354,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new AuthenticationService({
+		const authService = new BasicAuthenticationService({
 			knex: this.knex,
 			schema: this.schema,
 			accountability: this.accountability,
@@ -368,7 +368,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
-		const authService = new AuthenticationService({
+		const authService = new BasicAuthenticationService({
 			schema: this.schema,
 		});
 
