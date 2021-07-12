@@ -6,7 +6,8 @@ on:
       - 'v*'
 
 env:
-  GHCR_IMAGE: ghcr.io/cynova/directus
+  GHCR_IMAGE: ghcr.io/directus/directus
+  DOCKERHUB_IMAGE: directus/directus
 
 jobs:
   create-release:
