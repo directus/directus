@@ -12,6 +12,7 @@ import {
 	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
+import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
@@ -41,25 +42,34 @@ export class UsersService extends ItemsService {
 	 * the email is unique regardless of casing
 	 */
 	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey) {
-		if (emails.length > 0) {
-			const query = this.knex
-				.select('email')
-				.from('directus_users')
-				.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
+		if (!emails.length) {
+			return;
+		}
 
-			if (excludeKey) {
-				query.whereNot('id', excludeKey);
-			}
+		if (emails.some((email) => email === null)) {
+			throw new ContainsNullValuesException('email', {
+				collection: 'directus_users',
+				field: 'email',
+			});
+		}
 
-			const results = await query;
+		const query = this.knex
+			.select('email')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails.map((email) => email.toLowerCase())]);
 
-			if (results.length > 0) {
-				throw new RecordNotUniqueException('email', {
-					collection: 'directus_users',
-					field: 'email',
-					invalid: results[0].email,
-				});
-			}
+		if (excludeKey) {
+			query.whereNot('id', excludeKey);
+		}
+
+		const results = await query;
+
+		if (results.length > 0) {
+			throw new RecordNotUniqueException('email', {
+				collection: 'directus_users',
+				field: 'email',
+				invalid: results[0].email,
+			});
 		}
 	}
 
@@ -68,6 +78,10 @@ export class UsersService extends ItemsService {
 	 * directus_settings.auth_password_policy
 	 */
 	private async checkPasswordPolicy(passwords: string[]) {
+		if (!passwords.length) {
+			return;
+		}
+
 		const settingsService = new SettingsService({
 			schema: this.schema,
 			knex: this.knex,
@@ -77,7 +91,7 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		if (policyRegExString) {
+		if (!policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
 
 			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
@@ -103,11 +117,16 @@ export class UsersService extends ItemsService {
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
-		if (data.password) {
+		if (data.email) {
+			await this.checkUniqueEmails([data.email]);
+		} else {
+			throw new InvalidPayloadException('Create user requires a valid email address');
+		}
+
+		if (data.password !== undefined) {
 			await this.checkPasswordPolicy([data.password]);
 		}
+
 		return await this.service.createOne(data, opts);
 	}
 
@@ -115,30 +134,26 @@ export class UsersService extends ItemsService {
 	 * Create multiple new users
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data
-			.map((payload: Record<string, any>) => payload.email)
-			.filter((e) => e)
-			.map((e) => e.toLowerCase()) as string[];
-
-		await this.checkUniqueEmails(emails);
-
+		const emails = data.map((payload: Record<string, any>) => payload.email).filter((e) => e);
 		const passwords = data.map((payload) => payload.password).filter((pw) => pw);
 
-		if (passwords.length > 0) {
-			await this.checkPasswordPolicy(passwords);
+		if (emails.length) {
+			await this.checkUniqueEmails(emails);
+		} else {
+			throw new InvalidPayloadException('Create user requires a valid email address');
 		}
+
+		await this.checkPasswordPolicy(passwords);
 
 		return await this.service.createMany(data, opts);
 	}
 
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email], key);
+		if (data.email !== undefined) {
+			await this.checkUniqueEmails([data.email], key);
 		}
 
-		if (data.password) {
+		if (data.password !== undefined) {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
@@ -150,13 +165,11 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email]);
+		if (data.email !== undefined) {
+			await this.checkUniqueEmails([data.email]);
 		}
 
-		if (data.password) {
+		if (data.password !== undefined) {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
@@ -168,13 +181,11 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email]);
+		if (data.email !== undefined) {
+			await this.checkUniqueEmails([data.email]);
 		}
 
-		if (data.password) {
+		if (data.password !== undefined) {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
@@ -285,21 +296,12 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		const passwordHashed = await argon2.hash(password);
-
-		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
-
-		if (this.cache && env.CACHE_AUTO_PURGE) {
-			await this.cache.clear();
-		}
+		await this.service.updateOne(user.id, { password: await argon2.hash(password), status: 'active' });
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
-		if (user.user_dn) {
-			throw new InvalidPayloadException('Cannot alter LDAP password.');
-		}
 
 		const mailService = new MailService({
 			schema: this.schema,
@@ -344,17 +346,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		if (user.user_dn) {
-			throw new InvalidPayloadException('Cannot alter LDAP password.');
-		}
-
-		const passwordHashed = await argon2.hash(password);
-
-		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
-
-		if (this.cache && env.CACHE_AUTO_PURGE) {
-			await this.cache.clear();
-		}
+		await this.service.updateOne(user.id, { password: await argon2.hash(password), status: 'active' });
 	}
 
 	async generateTFA(pk: string): Promise<Record<string, string>> {
@@ -398,11 +390,11 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
+		await this.updateOne(pk, { tfa_secret: secret });
 	}
 
 	async disableTFA(pk: string): Promise<void> {
-		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
+		await this.updateOne(pk, { tfa_secret: null });
 	}
 
 	/**

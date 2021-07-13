@@ -153,6 +153,8 @@ export default defineComponent({
 
 			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
 				return t('validationError.unique');
+			} else if (props.validationError.code === 'CONTAINS_NULL_VALUES') {
+				return t('validationError.nnull');
 			} else {
 				return t(`validationError.${props.validationError.type}`, props.validationError);
 			}
