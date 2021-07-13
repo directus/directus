@@ -16,7 +16,7 @@ import { Field } from '@/types';
 import { Item, Filter } from '@directus/shared/types';
 import useItems from '@/composables/use-items';
 import useCollection from '@/composables/use-collection';
-import { formatISO } from 'date-fns';
+import { formatISO, parse } from 'date-fns';
 import { router } from '@/router';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -301,11 +301,23 @@ export default defineLayout<LayoutOptions>({
 		function parseEvent(item: Item): EventInput | null {
 			if (!startDateField.value || !primaryKeyField.value) return null;
 
+			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
+			const endDate = endDateField.value
+				? allDay
+					? parse(item[endDateField.value], 'yyyy-MM-dd', new Date())
+					: item[endDateField.value]
+				: undefined;
+
+			if (endDate && allDay) {
+				endDate.setDate(endDate.getDate() + 1);
+			}
+
 			return {
 				id: item[primaryKeyField.value.field],
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
-				end: endDateField.value ? item[endDateField.value] : null,
+				end: endDate,
+				allDay,
 			};
 		}
 
