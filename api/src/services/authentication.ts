@@ -59,7 +59,7 @@ export abstract class AuthenticationService {
 	async authenticateUser(
 		user: User,
 		options: AuthenticateOptions,
-		emitStatus: (status: string) => void
+		emitStatus: (status: 'fail' | 'success') => void
 	): Promise<AuthenticatedResponse> {
 		const { ip, userAgent, otp } = options;
 
@@ -205,12 +205,16 @@ export abstract class AuthenticationService {
 	}
 
 	generateTFASecret(): string {
-		const secret = authenticator.generateSecret();
-		return secret;
+		return authenticator.generateSecret();
 	}
 
 	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
 		const user = await this.knex.select('email').from('directus_users').where({ id: pk }).first();
+
+		if (!user.email) {
+			throw new InvalidPayloadException('User must have a valid email to enable TFA.');
+		}
+
 		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
 		return authenticator.keyuri(user.email, project?.project_name || 'Directus', secret);
 	}
@@ -223,6 +227,7 @@ export abstract class AuthenticationService {
 			if (!user.tfa_secret) {
 				throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
 			}
+
 			tfaSecret = user.tfa_secret;
 		} else {
 			tfaSecret = secret;

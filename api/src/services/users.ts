@@ -105,6 +105,9 @@ export class UsersService extends ItemsService {
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const email = data.email.toLowerCase();
 		await this.checkUniqueEmails([email]);
+		if (data.password) {
+			await this.checkPasswordPolicy([data.password]);
+		}
 		return await this.service.createOne(data, opts);
 	}
 
@@ -294,6 +297,9 @@ export class UsersService extends ItemsService {
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
+		if (user.user_dn) {
+			throw new InvalidPayloadException('Cannot alter LDAP password.');
+		}
 
 		const mailService = new MailService({
 			schema: this.schema,
@@ -336,6 +342,10 @@ export class UsersService extends ItemsService {
 
 		if (!user || user.status !== 'active') {
 			throw new ForbiddenException();
+		}
+
+		if (user.user_dn) {
+			throw new InvalidPayloadException('Cannot alter LDAP password.');
 		}
 
 		const passwordHashed = await argon2.hash(password);

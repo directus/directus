@@ -306,17 +306,17 @@ router.post(
 			throw new InvalidPayloadException(`"password" is required`);
 		}
 
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		const authService = new BasicAuthenticationService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+		// TODO: How to verify LDAP.
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const { url, secret } = await service.generateTFA(req.accountability.user);
 
 		res.locals.payload = { data: { secret, otpauth_url: url } };
