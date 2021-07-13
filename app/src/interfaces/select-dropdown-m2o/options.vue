@@ -7,6 +7,10 @@
 			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.display_template') }}</p>
 			<v-field-template :collection="relatedCollection" v-model="template" :depth="2"></v-field-template>
 		</div>
+		<div class="field full">
+			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.filter') }}</p>
+			<interface-input-code :value="filter" @input="filter = $event" language="json" type="json" />
+		</div>
 	</div>
 </template>
 
@@ -50,6 +54,18 @@ export default defineComponent({
 			},
 		});
 
+		const filter = computed({
+			get() {
+				return props.value?.filter;
+			},
+			set(newFilter: string) {
+				emit('input', {
+					...(props.value || {}),
+					filter: newFilter,
+				});
+			},
+		});
+
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -59,7 +75,7 @@ export default defineComponent({
 			return relation?.related_collection || null;
 		});
 
-		return { t, template, relatedCollection };
+		return { t, template, relatedCollection, filter };
 	},
 });
 </script>
