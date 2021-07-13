@@ -318,6 +318,9 @@ export class PayloadService {
 
 			const relatedPrimary = this.schema.collections[relatedCollection].primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
+
+			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
 			const hasPrimaryKey = relatedPrimary in relatedRecord;
 
 			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];

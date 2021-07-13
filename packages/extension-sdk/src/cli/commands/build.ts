@@ -2,14 +2,14 @@ import path from 'path';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
-import { rollup } from 'rollup';
+import { OutputOptions as RollupOutputOptions, rollup, RollupOptions } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import { APP_EXTENSION_TYPES, EXTENSION_PKG_KEY, SHARED_DEPS } from '@directus/shared/constants';
-import { isAppExtension } from '@directus/shared/utils';
+import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } from '@directus/shared/constants';
+import { isAppExtension, isExtension } from '@directus/shared/utils';
 import { ExtensionManifest } from '@directus/shared/types';
 import log from '../utils/logger';
 import validateExtensionManifest from '../utils/validate-extension-manifest';
@@ -36,14 +36,14 @@ export default async function build(options: BuildOptions): Promise<void> {
 	const input = options.input || extensionManifest[EXTENSION_PKG_KEY]?.source;
 	const output = options.output || extensionManifest[EXTENSION_PKG_KEY]?.path;
 
-	if (!type || !isAppExtension(type)) {
+	if (!type || !isExtension(type)) {
 		log(
-			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${APP_EXTENSION_TYPES.map((t) =>
+			`Extension type ${chalk.bold(type)} does not exist. Available extension types: ${EXTENSION_TYPES.map((t) =>
 				chalk.bold.magenta(t)
 			).join(', ')}.`,
-			!options.force ? 'error' : 'warn'
+			'error'
 		);
-		if (!options.force) process.exit(1);
+		process.exit(1);
 	}
 
 	if (!input || !(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
@@ -56,26 +56,55 @@ export default async function build(options: BuildOptions): Promise<void> {
 		process.exit(1);
 	}
 
+	const isApp = isAppExtension(type);
+
 	const spinner = ora('Building Directus extension...').start();
 
-	const bundle = await rollup({
-		input,
-		external: SHARED_DEPS,
-		plugins: [
-			vue({ preprocessStyles: true }),
-			styles(),
-			nodeResolve(),
-			commonjs({ esmExternals: true, sourceMap: false }),
-			terser(),
-		],
-	});
+	const rollupOptions = getRollupOptions(isApp, input);
+	const rollupOutputOptions = getRollupOutputOptions(isApp, output);
 
-	await bundle.write({
-		format: 'es',
-		file: output,
-	});
+	const bundle = await rollup(rollupOptions);
+
+	await bundle.write(rollupOutputOptions);
 
 	await bundle.close();
 
 	spinner.succeed('Done');
+}
+
+function getRollupOptions(isApp: boolean, input: string): RollupOptions {
+	if (isApp) {
+		return {
+			input,
+			external: APP_SHARED_DEPS,
+			plugins: [
+				vue({ preprocessStyles: true }),
+				styles(),
+				nodeResolve(),
+				commonjs({ esmExternals: true, sourceMap: false }),
+				terser(),
+			],
+		};
+	} else {
+		return {
+			input,
+			external: API_SHARED_DEPS,
+			plugins: [nodeResolve(), commonjs({ sourceMap: false }), terser()],
+		};
+	}
+}
+
+function getRollupOutputOptions(isApp: boolean, output: string): RollupOutputOptions {
+	if (isApp) {
+		return {
+			file: output,
+			format: 'es',
+		};
+	} else {
+		return {
+			file: output,
+			format: 'cjs',
+			exports: 'default',
+		};
+	}
 }

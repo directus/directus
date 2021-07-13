@@ -161,7 +161,7 @@ router.post(
 router.post(
 	'/password/request',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.email) {
+		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
 
@@ -190,11 +190,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.token) {
+		if (req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (!req.body.password) {
+		if (req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 

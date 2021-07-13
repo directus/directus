@@ -1,9 +1,5 @@
-const axios = require('axios');
-
-module.exports = function registerHook() {
-	return {
-		'items.create': function () {
-			axios.post('http://example.com/webhook');
-		},
-	};
-};
+export default () => ({
+	'items.create': () => {
+		console.log('Item created!');
+	},
+});
