@@ -39,7 +39,7 @@ necessary.
 | -------------------- | ------------------------------------------------------- | -------------- |
 | `NPM_TOKEN`          | Your NPM token. Make sure to use the type "automation". | `12345678-...` |
 | `DOCKERHUB_USERNAME` | Dockerhub Username                                      | `directus`     |
-| `DOCKERHUB_TOKEN`    | Dockerhub Password                                      | `hunter2`      |
+| `DOCKERHUB_PASSWORD` | Dockerhub Password                                      | `hunter2`      |
 
 ## 2. Create a release
 

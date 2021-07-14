@@ -15,7 +15,7 @@
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
 		"pack": "node docker/pack",
-		"release": "lerna version",
+		"release": "lerna version --exact",
 		"test": "lerna run test",
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
