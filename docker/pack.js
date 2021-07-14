@@ -9,7 +9,7 @@ const apiPackageJSON = require(path.resolve(__dirname, '../api/package.json'));
 
 const projectPackageJSON = {
 	name: 'directus-project',
-	version: '1.0.0',
+	private: true,
 	description: 'Directus Project',
 	dependencies: apiPackageJSON.optionalDependencies,
 };
