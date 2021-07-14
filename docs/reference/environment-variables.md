@@ -1,7 +1,7 @@
 # Environment Variables
 
-> Environment variables are used for all configuration within Directus projects. They can either be defined as plain environment variables or via the `.env`
-> file in the root directory, which is created during the installation process.
+> Environment variables are used for all configuration within Directus projects. They can either be defined as plain
+> environment variables or via the `.env` file in the root directory, which is created during the installation process.
 
 [[toc]]
 
@@ -326,10 +326,11 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### Mailgun (`mailgun`)
 
-| Variable                | Description                                                                       | Default Value |
-| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
-| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --            |
-| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --            |
+| Variable                | Description                                                                       | Default Value     |
+| ----------------------- | --------------------------------------------------------------------------------- | ----------------- |
+| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
+| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
+| `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
 
 ## Misc.
 
