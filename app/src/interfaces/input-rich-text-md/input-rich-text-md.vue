@@ -206,12 +206,12 @@ export default defineComponent({
 					value: props.value || '',
 				});
 
-				codemirror.on('change', (cm) => {
+				codemirror.on('change', (cm, { origin }) => {
+					if (origin === 'setValue') return;
+
 					const content = cm.getValue();
 
-					if (content !== props.value && (props.value === null && content === '') === false) {
-						emit('input', content);
-					}
+					emit('input', content);
 				});
 			}
 		});

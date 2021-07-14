@@ -4,11 +4,17 @@ item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
+group: Grupa
 fill_width: Szerokość wypełnienia
 field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
 add_field: Dodaj pole
 role_name: Nazwa roli
+branch: Gałąź
+leaf: Arkusz
+indeterminate: Nieokreślony
+exclusive: Ekskluzywny
+children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 show_archived_items: Pokaż zarchiwizowane elementy
 edited: Wartość zmieniona
@@ -20,6 +26,7 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
+email_examples: "admin@example.com, użytkownik@example.com..."
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
@@ -97,6 +104,7 @@ field_m2a: Powiązanie M2A
 field_o2m: Powiązanie 02M
 field_m2m: Powiązanie M2M
 field_translations: Tłumaczenia
+field_group: Grupa pól
 item_permissions: Uprawnienia
 field_permissions: Uprawnienia pola
 field_validation: Walidacja pola
@@ -476,6 +484,10 @@ operators:
   nnull: Nie jest puste
   contains: Zawiera
   ncontains: Nie zawiera
+  starts_with: Zaczyna się od
+  nstarts_with: Nie zaczyna się od
+  ends_with: Kończy się na
+  nends_with: Nie kończy się na
   between: Jest pomiędzy
   nbetween: Nie jest pomiędzy
   empty: Jest pusty
@@ -795,6 +807,8 @@ referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
 continue: Kontynuuj
+continue_as: >-
+  {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
 default: Domyślnie
@@ -853,6 +867,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
@@ -870,6 +885,11 @@ interfaces:
     allow_other: Zezwól na inne
     show_more: 'Pokaż {count} więcej'
     items_shown: Wyświetlane elementy
+  select-multiple-checkbox-tree:
+    name: Pola wyboru (Tree)
+    description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
+    value_combining: Połączenie wartości
+    value_combining_note: Kontroluje wartość zapisaną podczas zagnieżdżonych wyborów.
   input-code:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
@@ -1048,6 +1068,9 @@ interfaces:
     value_path: Ścieżka bazowa
     trigger: Wyzwalacz
     rate: Oceń
+  group-raw:
+    name: Surowe pola
+    description: Pokaż pola jako normalne.
 displays:
   boolean:
     boolean: Wartość logiczna
