@@ -2,7 +2,6 @@ FROM node:16-alpine as builder
 
 WORKDIR /directus
 COPY /dist .
-#RUN npm i -g yargs pino pino-colada
 RUN npm i --only=production
 
 # Directus image
@@ -47,9 +46,7 @@ RUN \
   # - 'ssmtp' to be able to send mails
   # - 'util-linux' not sure if this is required
   apk upgrade --no-cache && apk add --no-cache \
-  bash \
   ssmtp \
-  util-linux \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus
@@ -59,7 +56,6 @@ USER node
 WORKDIR /directus
 
 COPY --from=builder --chown=node:node /directus .
-#COPY --from=builder --chown=node:node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN \
   # Create data directories
