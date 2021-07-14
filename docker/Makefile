@@ -7,7 +7,7 @@ user=directus
 registry=docker.io
 repository=directus/directus
 
-.PHONY: .
+.PHONY: build-images
 
 build-images:
 	npm run build
