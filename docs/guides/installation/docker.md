@@ -46,7 +46,8 @@ for data persistence (note that these can be changed through environment variabl
 
 ## Docker Compose
 
-When using Docker compose, you can use the following setup to get you started - make sure to change all sensitive values (`SECRET`, `DB_PASSWORD`, ...) in production:
+When using Docker compose, you can use the following setup to get you started - make sure to change all sensitive values
+(`SECRET`, `DB_PASSWORD`, ...) in production:
 
 ```yaml
 version: '3.2'
@@ -109,3 +110,17 @@ services:
 networks:
   directus:
 ```
+
+## Supported Databases
+
+The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
+used with most of the supported databases and storage adapters without having to create a custom image.
+
+::: warning OracleDB
+
+OracleDB's Node client (`node-oracledb`) requires a couple more native dependencies, and specific configurations in
+order to run. The official Directus Docker image does not include these dependencies. See
+[https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple](https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple)
+for more information on what to include for OracleDB.
+
+:::
