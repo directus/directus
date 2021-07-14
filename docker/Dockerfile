@@ -12,7 +12,6 @@ ARG VERSION
 ARG REPOSITORY=directus/directus
 
 LABEL directus.version="${VERSION}"
-LABEL org.opencontainers.image.source https://github.com/${REPOSITORY}
 
 # Default environment variables
 # (see https://docs.directus.io/reference/environment-variables/)
