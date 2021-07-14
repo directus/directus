@@ -41,10 +41,7 @@ ENV \
   EMAIL_SENDMAIL_PATH="/usr/sbin/sendmail"
 
 RUN \
-  # Install system dependencies
-  # - 'bash' for entrypoint script
-  # - 'ssmtp' to be able to send mails
-  # - 'util-linux' not sure if this is required
+  # Upgrade system and install 'ssmtp' to be able to send mails
   apk upgrade --no-cache && apk add --no-cache \
   ssmtp \
   # Create directory for Directus with corresponding ownership
