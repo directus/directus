@@ -4,6 +4,7 @@ item_revision: التعديلات على العنصر
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
+group: المجموعة
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية

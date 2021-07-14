@@ -949,7 +949,7 @@ interfaces:
     description: Kasutajaliidese valikute tegemise hüpikaken
   list-m2m:
     many-to-many: Mitu mitmele
-    description: Vali mitu seoetud kirjet
+    description: Vali mitu seotud kirjet
   select-dropdown-m2o:
     many-to-one: Mitu ühele
     description: Vali üksik seotud kirje

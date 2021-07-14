@@ -4,11 +4,17 @@ item_revision: Revisione elemento
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
+group: Gruppo
 fill_width: Riempi larghezza
 field_name_translations: Traduzioni nome del campo
 enter_password_to_enable_tfa: Inserisci la tua password per abilitare l'autenticazione a due fattori
 add_field: Aggiungi campo
 role_name: Nome ruolo
+branch: Ramo
+leaf: Foglia
+indeterminate: Indeterminato
+exclusive: Esclusivo
+children: Bambini
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
 edited: Valore Modificato
@@ -20,6 +26,7 @@ create_role: Crea ruolo
 create_user: Crea utente
 create_webhook: Crea webhook
 invite_users: Invita utenti
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
