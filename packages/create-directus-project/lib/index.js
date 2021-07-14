@@ -56,22 +56,43 @@ async function create(directory) {
 
 	const spinner = ora('Installing Directus').start();
 
-	await execa('npm', ['init', '-y'], {
-		cwd: rootPath,
-		stdin: 'ignore',
-	});
+	try {
+		await execa('npm', ['init', '-y'], {
+			cwd: rootPath,
+			stdin: 'ignore',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
 
-	await execa('npm', ['install', 'directus', '--production', '--no-optional'], {
-		cwd: rootPath,
-		stdin: 'ignore',
-	});
+	try {
+		await execa('npm', ['install', 'directus', '--production', '--no-optional'], {
+			cwd: rootPath,
+			stdin: 'ignore',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
 
 	spinner.stop();
 
-	await execa('npx', ['directus', 'init'], {
-		cwd: rootPath,
-		stdio: 'inherit',
-	});
+	try {
+		await execa('npx', ['directus', 'init'], {
+			cwd: rootPath,
+			stdio: 'inherit',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
 
 	process.exit(0);
 }
