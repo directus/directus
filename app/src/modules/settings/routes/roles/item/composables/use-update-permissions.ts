@@ -44,8 +44,8 @@ export default function useUpdatePermissions(
 			try {
 				await api.patch(`/permissions/${permission.id}`, {
 					fields: '*',
-					permissions: null,
-					validation: null,
+					permissions: {},
+					validation: {},
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -60,6 +60,8 @@ export default function useUpdatePermissions(
 					collection: collection.value.collection,
 					action: action,
 					fields: '*',
+					permissions: {},
+					validation: {},
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -111,8 +113,8 @@ export default function useUpdatePermissions(
 					try {
 						await api.patch(`/permissions/${permission.id}`, {
 							fields: '*',
-							permissions: null,
-							validation: null,
+							permissions: {},
+							validation: {},
 						});
 					} catch (err) {
 						unexpectedError(err);
@@ -124,6 +126,8 @@ export default function useUpdatePermissions(
 							collection: collection.value.collection,
 							action: action,
 							fields: '*',
+							permissions: {},
+							validation: {},
 						});
 					} catch (err) {
 						unexpectedError(err);
