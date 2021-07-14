@@ -2,7 +2,8 @@ FROM node:16-alpine as builder
 
 WORKDIR /directus
 COPY /dist .
-RUN npm i --only=production
+RUN npm i --only=production --no-package-lock
+RUN rm *.tgz
 
 # Directus image
 FROM node:16-alpine
