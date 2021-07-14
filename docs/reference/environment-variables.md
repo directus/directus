@@ -1,7 +1,7 @@
 # Environment Variables
 
-> Environment Variables are used for all configuration within Directus projects. They are managed in the root `.env`
-> file, which is created during the installation process.
+> Environment variables are used for all configuration within Directus projects. They can either be defined as plain environment variables or via the `.env`
+> file in the root directory, which is created during the installation process.
 
 [[toc]]
 
