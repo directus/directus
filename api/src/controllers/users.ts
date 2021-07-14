@@ -4,9 +4,10 @@ import { ForbiddenException, InvalidCredentialsException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { BasicAuthenticationService, MetaService, UsersService } from '../services';
+import { MetaService, UsersService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import getAuthService from '../utils/get-auth-service';
 
 const router = express.Router();
 
@@ -306,11 +307,11 @@ router.post(
 			throw new InvalidPayloadException(`"password" is required`);
 		}
 
-		const authService = new BasicAuthenticationService({
+		const authService = new (getAuthService(req.accountability))({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		// TODO: How to verify LDAP.
+
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
 		const service = new UsersService({
@@ -367,11 +368,10 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const authService = new BasicAuthenticationService({
+		const authService = new (getAuthService(req.accountability))({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-
 		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
 
 		if (otpValid === false) {

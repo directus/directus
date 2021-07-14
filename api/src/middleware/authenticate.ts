@@ -39,7 +39,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		const user = await database
-			.select('role', 'directus_roles.admin_access', 'directus_roles.app_access')
+			.select('role', 'user_dn', 'directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -56,10 +56,11 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+		req.accountability.ldap = !!user.user_dn;
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
-			.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
+			.select('id', 'role', 'user_dn', 'directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -76,6 +77,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+		req.accountability.ldap = !!user.user_dn;
 	}
 
 	return next();

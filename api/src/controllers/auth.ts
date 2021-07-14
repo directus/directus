@@ -8,13 +8,9 @@ import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailable
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
-import {
-	AuthenticationService,
-	BasicAuthenticationService,
-	LDAPAuthenticationService,
-	UsersService,
-} from '../services';
+import { UsersService, BasicAuthenticationService } from '../services';
 import asyncHandler from '../utils/async-handler';
+import getAuthService from '../utils/get-auth-service';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '../utils/to-array';
 
@@ -27,34 +23,30 @@ const loginSchema = Joi.object({
 	otp: Joi.string(),
 }).unknown();
 
-const ldapLoginSchema = Joi.object({
+const ldapSchema = Joi.object({
 	userCN: Joi.string().required(),
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
 }).unknown();
 
-const generateLoginHandler = (AuthenticationImpl: any, loginSchema: any) => async (req: any, res: any, next: any) => {
-	const { error } = loginSchema.validate(req.body);
-	if (error) throw new InvalidPayloadException(error.message);
+const loginHandler = (accountability: any, schema: any) => async (req: any, res: any, next: any) => {
+	const { error } = schema.validate(req.body);
 
-	const accountability = {
-		ip: req.ip,
-		userAgent: req.get('user-agent'),
-		role: null,
-	};
+	if (error) {
+		throw new InvalidPayloadException(error.message);
+	}
 
-	const authenticationService = new AuthenticationImpl({
+	const authService = new (getAuthService(accountability))({
 		accountability: accountability,
 		schema: req.schema,
 	});
 
 	const mode = req.body.mode || 'json';
-
 	const ip = req.ip;
 	const userAgent = req.get('user-agent');
 
-	const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+	const { accessToken, refreshToken, expires } = await authService.authenticate({
 		...req.body,
 		ip,
 		userAgent,
@@ -82,9 +74,34 @@ const generateLoginHandler = (AuthenticationImpl: any, loginSchema: any) => asyn
 	return next();
 };
 
-router.post('/login', asyncHandler(generateLoginHandler(BasicAuthenticationService, loginSchema)), respond);
+router.post(
+	'/login',
+	asyncHandler(async (req, res, next) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
 
-router.post('/login/ldap', asyncHandler(generateLoginHandler(LDAPAuthenticationService, ldapLoginSchema)), respond);
+		return loginHandler(accountability, loginSchema)(req, res, next);
+	}),
+	respond
+);
+
+router.post(
+	'/login/ldap',
+	asyncHandler(async (req, res, next) => {
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+			ldap: true,
+		};
+
+		return loginHandler(accountability, ldapSchema)(req, res, next);
+	}),
+	respond
+);
 
 router.post(
 	'/refresh',
@@ -95,7 +112,7 @@ router.post(
 			role: null,
 		};
 
-		const authenticationService = new BasicAuthenticationService({
+		const authenticationService = new (getAuthService(accountability))({
 			accountability: accountability,
 			schema: req.schema,
 		});
@@ -143,7 +160,7 @@ router.post(
 			role: null,
 		};
 
-		const authenticationService = new BasicAuthenticationService({
+		const authenticationService = new (getAuthService(accountability))({
 			accountability: accountability,
 			schema: req.schema,
 		});

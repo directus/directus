@@ -15,9 +15,9 @@ import { RecordNotUniqueException } from '../exceptions/database/record-not-uniq
 import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import getAuthService from '../utils/get-auth-service';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
-import { BasicAuthenticationService } from './authentication/basicauthentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -91,7 +91,7 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		if (!policyRegExString) {
+		if (policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
 
 			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
@@ -120,7 +120,7 @@ export class UsersService extends ItemsService {
 		if (data.email) {
 			await this.checkUniqueEmails([data.email]);
 		} else {
-			throw new InvalidPayloadException('Create user requires a valid email address');
+			throw new InvalidPayloadException('Create user requires a valid email address.');
 		}
 
 		if (data.password !== undefined) {
@@ -137,10 +137,10 @@ export class UsersService extends ItemsService {
 		const emails = data.map((payload: Record<string, any>) => payload.email).filter((e) => e);
 		const passwords = data.map((payload) => payload.password).filter((pw) => pw);
 
-		if (emails.length) {
+		if (emails.length === data.length) {
 			await this.checkUniqueEmails(emails);
 		} else {
-			throw new InvalidPayloadException('Create user requires a valid email address');
+			throw new InvalidPayloadException('Create users requires valid email addresses.');
 		}
 
 		await this.checkPasswordPolicy(passwords);
@@ -161,6 +161,14 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
+		if ('user_dn' in data) {
+			throw new InvalidPayloadException(`You can't change the "user_dn" value manually.`);
+		}
+
+		if ('password' in data && this.accountability?.ldap) {
+			throw new InvalidPayloadException(`You can't set a password for an LDAP user.`);
+		}
+
 		return await this.service.updateOne(key, data, opts);
 	}
 
@@ -177,6 +185,14 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
+		if ('user_dn' in data) {
+			throw new InvalidPayloadException(`You can't change the "user_dn" value manually.`);
+		}
+
+		if ('password' in data && this.accountability?.ldap) {
+			throw new InvalidPayloadException(`You can't set a password for an LDAP user.`);
+		}
+
 		return await this.service.updateMany(keys, data, opts);
 	}
 
@@ -191,6 +207,14 @@ export class UsersService extends ItemsService {
 
 		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+		}
+
+		if ('user_dn' in data) {
+			throw new InvalidPayloadException(`You can't change the "user_dn" value manually.`);
+		}
+
+		if ('password' in data && this.accountability?.ldap) {
+			throw new InvalidPayloadException(`You can't set a password for an LDAP user.`);
 		}
 
 		return await this.service.updateByQuery(query, data, opts);
@@ -356,7 +380,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new BasicAuthenticationService({
+		const authService = new (getAuthService(this.accountability))({
 			knex: this.knex,
 			schema: this.schema,
 			accountability: this.accountability,
@@ -370,7 +394,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
-		const authService = new BasicAuthenticationService({
+		const authService = new (getAuthService(this.accountability))({
 			schema: this.schema,
 		});
 

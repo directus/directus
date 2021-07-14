@@ -7,16 +7,18 @@ import ldap, {
 	InvalidCredentialsError,
 } from 'ldapjs';
 import { merge } from 'lodash';
-import emitter, { emitAsyncSafe } from '../../emitter';
-import { InvalidCredentialsException, ForbiddenException } from '../../exceptions';
 import { AuthenticationService, AuthenticateOptions, AuthenticatedResponse } from '../authentication';
 import { ItemsService } from '../items';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
+import emitter, { emitAsyncSafe } from '../../emitter';
+import { InvalidCredentialsException, ForbiddenException } from '../../exceptions';
+import { AbstractServiceOptions } from '../../types';
+import logger from '../../logger';
 import env from '../../env';
 
 interface LDAPAuthenticateOptions extends AuthenticateOptions {
 	userCN: string;
-	password?: string;
+	password: string;
 }
 
 interface UserInfo {
@@ -25,16 +27,31 @@ interface UserInfo {
 	email?: string;
 }
 
-const generateUserGroupFilter = (groupClass: string, groupAttribute: string, userDN: string) =>
-	`(&(objectClass=${groupClass})(${groupAttribute}=${userDN}))`;
-
+/**
+ * TODO: Add unbind before throw.
+ */
 export class LDAPAuthenticationService extends AuthenticationService {
+	client: Client;
+
+	constructor(options: AbstractServiceOptions) {
+		super(options);
+
+		this.client = ldap.createClient(
+			getConfigFromEnv('LDAP_', [
+				'LDAP_USER_DN',
+				'LDAP_GROUP_DN',
+				'LDAP_GROUP_CLASS',
+				'LDAP_GROUP_ATTRIBUTE',
+			]) as ClientOptions
+		);
+	}
+
 	/**
 	 * Bind LDAP user to active session.
 	 */
-	private bind(ldapClient: Client, userDN: string, password?: string): Promise<void> {
+	private bind(userDN: string, password: string): Promise<void> {
 		return new Promise((resolve, reject) => {
-			ldapClient.bind(userDN, password as string, (err: Error | null) => {
+			this.client.bind(userDN, password, (err: Error | null) => {
 				if (err) {
 					return reject(err);
 				}
@@ -46,9 +63,9 @@ export class LDAPAuthenticationService extends AuthenticationService {
 	/**
 	 * Fetch LDAP user info.
 	 */
-	private fetchUserInfo(ldapClient: Client, userDN: string): Promise<UserInfo> {
+	private fetchUserInfo(userDN: string): Promise<UserInfo> {
 		return new Promise((resolve, reject) => {
-			ldapClient.search(
+			this.client.search(
 				userDN,
 				{ attributes: ['givenName', 'sn', 'mail'] },
 				(err: Error | null, res: SearchCallbackResponse) => {
@@ -58,9 +75,9 @@ export class LDAPAuthenticationService extends AuthenticationService {
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
 						resolve({
-							firstName: (object.givenName as string) || undefined,
-							lastName: (object.sn as string) || undefined,
-							email: (object.mail as string) || undefined,
+							firstName: typeof object.givenName === 'string' ? object.givenName : undefined,
+							lastName: typeof object.sn === 'string' ? object.sn : undefined,
+							email: typeof object.mail === 'string' ? object.mail : undefined,
 						});
 					});
 
@@ -77,17 +94,17 @@ export class LDAPAuthenticationService extends AuthenticationService {
 	}
 
 	/**
-	 * Fetch user groups.
+	 * Fetch LDAP user groups.
 	 */
-	private fetchUserGroups(ldapClient: Client, userDN: string): Promise<string[]> {
+	private fetchUserGroups(userDN: string): Promise<string[]> {
 		return new Promise((resolve, reject) => {
-			const userGroups: string[] = [];
+			let userGroups: string[] = [];
 
-			ldapClient.search(
+			this.client.search(
 				env.LDAP_GROUP_DN,
 				{
 					attributes: ['cn'],
-					filter: generateUserGroupFilter(env.LDAP_GROUP_CLASS, env.LDAP_GROUP_ATTRIBUTE, userDN),
+					filter: `(&(objectClass=${env.LDAP_GROUP_CLASS})(${env.LDAP_GROUP_ATTRIBUTE}=${userDN}))`,
 					scope: 'one',
 				},
 				(err: Error | null, res: SearchCallbackResponse) => {
@@ -96,7 +113,11 @@ export class LDAPAuthenticationService extends AuthenticationService {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						userGroups.push(object.cn as string);
+						if (typeof object.cn === 'object') {
+							userGroups = [...userGroups, ...object.cn];
+						} else {
+							userGroups.push(object.cn);
+						}
 					});
 
 					res.on('error', (err: Error | null) => {
@@ -133,14 +154,6 @@ export class LDAPAuthenticationService extends AuthenticationService {
 	}
 
 	async authenticate(options: LDAPAuthenticateOptions): Promise<AuthenticatedResponse> {
-		const ldapClient = ldap.createClient(
-			getConfigFromEnv('LDAP_', [
-				'LDAP_USER_DN',
-				'LDAP_GROUP_DN',
-				'LDAP_GROUP_CLASS',
-				'LDAP_GROUP_ATTRIBUTE',
-			]) as ClientOptions
-		);
 		const userDN = `cn=${options.userCN},${env.LDAP_USER_DN}`;
 		let user = await this.getUser(userDN);
 
@@ -176,17 +189,17 @@ export class LDAPAuthenticationService extends AuthenticationService {
 		 * Authenticate user.
 		 */
 		try {
-			await this.bind(ldapClient, userDN, options.password);
+			await this.bind(userDN, options.password);
 		} catch (err) {
-			emitStatus('fail');
 			if (err instanceof InvalidCredentialsError) {
+				emitStatus('fail');
 				throw new InvalidCredentialsException();
 			}
 			throw err;
 		}
 
 		/**
-		 * Register user information.
+		 * Update user information.
 		 */
 		const itemsService = new ItemsService('directus_users', {
 			knex: this.knex,
@@ -194,37 +207,53 @@ export class LDAPAuthenticationService extends AuthenticationService {
 		});
 
 		if (!user) {
-			try {
-				const { firstName, lastName, email } = await this.fetchUserInfo(ldapClient, userDN);
-				await itemsService.createOne({
-					user_dn: userDN.toLowerCase(),
-					first_name: firstName,
-					last_name: lastName,
-					email,
-				});
-			} catch (err) {
-				emitStatus('fail');
-				throw err;
-			}
+			const { firstName, lastName, email } = await this.fetchUserInfo(userDN);
+
+			await itemsService.createOne({
+				user_dn: userDN.toLowerCase(),
+				first_name: firstName,
+				last_name: lastName,
+				email,
+			});
 
 			user = await this.getUser(userDN);
 		}
 
 		if (user) {
-			const userGroups = await this.fetchUserGroups(ldapClient, userDN);
-			const userRole = await this.getUserRole(userGroups);
+			try {
+				const userGroups = await this.fetchUserGroups(userDN);
+				const userRole = (await this.getUserRole(userGroups)) ?? null;
 
-			itemsService.updateOne(user.id, {
-				role: userRole,
-			});
+				await itemsService.updateOne(user.id, { role: userRole });
+			} catch (err) {
+				logger.warn(`Fetching role for user "${userDN}" failed unexpectedly.`);
+				await itemsService.updateOne(user.id, { role: null });
+			}
 		}
 
-		ldapClient.destroy();
+		this.client.unbind();
 
 		return this.authenticateUser(user, options, emitStatus);
 	}
 
-	async verifyPassword(): Promise<boolean> {
+	async verifyPassword(userId: string, password: string): Promise<boolean> {
+		const user = await this.knex.select('user_dn').from('directus_users').where({ id: userId }).first();
+
+		if (!user?.user_dn) {
+			throw new InvalidCredentialsException();
+		}
+
+		try {
+			await this.bind(user.user_dn, password);
+		} catch (err) {
+			if (err instanceof InvalidCredentialsError) {
+				throw new InvalidCredentialsException();
+			}
+			throw err;
+		}
+
+		this.client.unbind();
+
 		return true;
 	}
 }

@@ -71,11 +71,7 @@ export class BasicAuthenticationService extends AuthenticationService {
 	async verifyPassword(userId: string, password: string): Promise<boolean> {
 		const user = await this.knex.select('password').from('directus_users').where({ id: userId }).first();
 
-		if (!user || !user.password) {
-			throw new InvalidCredentialsException();
-		}
-
-		if ((await argon2.verify(user.password, password)) === false) {
+		if (!user?.password || (await argon2.verify(user.password, password)) === false) {
 			throw new InvalidCredentialsException();
 		}
 
