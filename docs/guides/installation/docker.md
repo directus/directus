@@ -46,7 +46,7 @@ for data persistence (note that these can be changed through environment variabl
 
 ## Docker Compose
 
-When using Docker compose, you can use the following setup to get you started:
+When using Docker compose, you can use the following setup to get you started - make sure to change all sensitive values (`SECRET`, `DB_PASSWORD`, ...) in production:
 
 ```yaml
 version: '3.2'
