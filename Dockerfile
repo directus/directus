@@ -30,7 +30,7 @@ WORKDIR /directus
 
 COPY . .
 
-RUN npm install && npx lerna bootstrap
+RUN npm install
 
 WORKDIR /directus/api
 

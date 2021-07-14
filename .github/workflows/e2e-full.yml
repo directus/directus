@@ -10,7 +10,8 @@ jobs:
       fail-fast: false
       matrix:
         db: ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3']
-        node-version: ['12-alpine', '14-alpine', '16-alpine']
+        # node-version: ['12-alpine', '14-alpine', '16-alpine']
+        node-version: ['16-alpine']
     env:
       CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
     steps:
