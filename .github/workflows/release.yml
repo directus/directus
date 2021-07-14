@@ -67,6 +67,7 @@ jobs:
       - run: npx lerna publish --force-publish --exact from-git --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   build-images:
     runs-on: ubuntu-latest
