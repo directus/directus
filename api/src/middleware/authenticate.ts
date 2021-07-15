@@ -17,6 +17,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		app: false,
 		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
 		userAgent: req.get('user-agent'),
+		ldap: false,
 	};
 
 	if (!req.token) return next();

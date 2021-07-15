@@ -301,11 +301,16 @@ export default defineComponent({
 			'modified_by',
 			'modified_on',
 			'last_access',
-			'user_dn',
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+			return fields.value.filter((field: Field) => {
+				// Password shouldn't be editable for LDAP users
+				if (field.field === 'password' && !!item.value?.user_dn) {
+					field.meta.readonly = true;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);

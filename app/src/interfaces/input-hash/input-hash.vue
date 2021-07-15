@@ -8,7 +8,7 @@
 		:class="{ hashed: isHashed && !localValue }"
 	>
 		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<v-icon class="lock" :name="(isHashed && !localValue) || disabled ? 'lock' : 'lock_open'" />
 		</template>
 	</v-input>
 </template>

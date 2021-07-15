@@ -8,7 +8,7 @@ import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailable
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
-import { UsersService, BasicAuthenticationService } from '../services';
+import { BasicAuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import getAuthService from '../utils/get-auth-service';
 import getEmailFromProfile from '../utils/get-email-from-profile';
@@ -30,7 +30,7 @@ const ldapSchema = Joi.object({
 	otp: Joi.string(),
 }).unknown();
 
-const loginHandler = (accountability: any, schema: any) => async (req: any, res: any, next: any) => {
+const authHandler = (accountability: any, schema: any) => async (req: any, res: any, next: any) => {
 	const { error } = schema.validate(req.body);
 
 	if (error) {
@@ -83,7 +83,7 @@ router.post(
 			role: null,
 		};
 
-		return loginHandler(accountability, loginSchema)(req, res, next);
+		return authHandler(accountability, loginSchema)(req, res, next);
 	}),
 	respond
 );
@@ -98,7 +98,7 @@ router.post(
 			ldap: true,
 		};
 
-		return loginHandler(accountability, ldapSchema)(req, res, next);
+		return authHandler(accountability, ldapSchema)(req, res, next);
 	}),
 	respond
 );

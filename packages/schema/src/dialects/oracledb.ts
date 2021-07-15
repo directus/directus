@@ -4,7 +4,7 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
-	private static _mapColumnAutoIncrement(column: Column): Column {
+	private static mapColumnAutoIncrement(column: Column): Column {
 		// Knex doesn't support AUTO_INCREMENT. Assume all numeric primary
 		// keys without a default are AUTO_INCREMENT
 		const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.is_primary_key;
@@ -22,11 +22,11 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
 		if (column) {
 			const columnInfo: Column = await super.columnInfo(table!, column!);
-			return Oracle._mapColumnAutoIncrement(columnInfo);
+			return Oracle.mapColumnAutoIncrement(columnInfo);
 		}
 
 		const columnInfo: Column[] = await super.columnInfo(table!);
-		return columnInfo.map(Oracle._mapColumnAutoIncrement);
+		return columnInfo.map(Oracle.mapColumnAutoIncrement);
 	}
 
 	async overview(): Promise<SchemaOverview> {

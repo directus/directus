@@ -150,3 +150,11 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: user_dn
+    interface: input
+    readonly: true
+    options:
+      iconRight: account_circle
+      title: User DN
+    width: full
