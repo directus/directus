@@ -196,9 +196,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable           | Description                        | Default Value |
-| ------------------ | ---------------------------------- | ------------- |
-| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable                 | Description                        | Default Value |
+| ------------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance | ---           |
 
 ### Database
 
