@@ -268,6 +268,7 @@ export default defineComponent({
 				if (newField.meta) {
 					delete newField.meta.id;
 					delete newField.meta.sort;
+					delete newField.meta.group;
 				}
 
 				if (newField.schema) {
