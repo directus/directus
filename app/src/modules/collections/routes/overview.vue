@@ -38,7 +38,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_collections_overview'))" />
+				<div v-md="t('page_help_collections_overview')" class="page-description" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -52,8 +52,6 @@ import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import useNavigation, { NavItem } from '../composables/use-navigation';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
-
-import { md } from '@/utils/md';
 
 export default defineComponent({
 	name: 'CollectionsOverview',
@@ -92,7 +90,7 @@ export default defineComponent({
 
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return { t, tableHeaders, navItems, navigateToCollection, isAdmin, md };
+		return { t, tableHeaders, navItems, navigateToCollection, isAdmin };
 
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);

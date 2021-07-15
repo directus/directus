@@ -78,7 +78,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_presets_item'))" />
+				<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 			</sidebar-detail>
 
 			<div class="layout-sidebar">
@@ -108,7 +108,6 @@ import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
-import { md } from '@/utils/md';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
 
@@ -193,7 +192,6 @@ export default defineComponent({
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
-			md,
 			updateFilters,
 			searchQuery,
 		};

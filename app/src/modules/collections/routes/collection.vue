@@ -210,14 +210,8 @@
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div
+					v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
 					class="page-description"
-					v-html="
-						md(
-							t('page_help_collections_collection', {
-								collection: currentCollection.name,
-							})
-						)
-					"
 				/>
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
@@ -255,7 +249,6 @@ import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import { useRouter } from 'vue-router';
-import { md } from '@/utils/md';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -386,7 +379,6 @@ export default defineComponent({
 			editingBookmark,
 			editBookmark,
 			breadcrumb,
-			md,
 			clearFilters,
 			confirmArchive,
 			archive,
