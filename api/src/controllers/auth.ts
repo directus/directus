@@ -235,11 +235,13 @@ router.get(
 
 		if (req.query?.redirect && req.session) {
 			req.session.redirect = req.query.redirect as string;
+			req.session.mode = req.query.mode || 'cookie';
 		}
 
 		const hookPayload = {
 			provider: req.params.provider,
 			redirect: req.query?.redirect,
+			mode: req.query?.mode || 'cookie'
 		};
 
 		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
@@ -270,6 +272,7 @@ router.get(
 	'/oauth/:provider/callback',
 	asyncHandler(async (req, res, next) => {
 		const redirect = req.session.redirect;
+		const mode = req.session.mode;
 
 		const accountability = {
 			ip: req.ip,
@@ -340,13 +343,20 @@ router.get(
 		emitStatus('success');
 
 		if (redirect) {
-			res.cookie('directus_refresh_token', refreshToken, {
-				httpOnly: true,
-				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-			});
+			if (mode === 'query') {
+				const query = `access_token=${accessToken}&refresh_token=${refreshToken}&expires=${expires}`
+				return res.redirect(`${redirect}${redirect.includes('?') ? '' : '?'}${query}`)
+			}
+			
+			if (mode === 'cookie') {
+				res.cookie('directus_refresh_token', refreshToken, {
+					httpOnly: true,
+					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				});
+			}
 
 			return res.redirect(redirect);
 		} else {
