@@ -10,12 +10,14 @@ repository=directus/directus
 .PHONY: build-images
 
 build-images:
+	npm run build
+	npm run pack
 	docker build \
 		--build-arg VERSION=$(version) \
 		--build-arg REPOSITORY=$(repository) \
 		-t directus:temp \
-		-f ./build-images/rootfs/directus/images/main/Dockerfile \
-		./build-images/rootfs/directus/images/main
+		-f ./Dockerfile \
+		..
 
 	docker tag directus:temp $(registry)/$(repository):$(version)
 	docker tag directus:temp $(registry)/$(repository):$(tag)

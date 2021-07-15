@@ -4,8 +4,8 @@
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
 		:model-value="localValue"
-		@update:model-value="emitValue"
 		:class="{ hashed: isHashed && !localValue }"
+		@update:model-value="emitValue"
 	>
 		<template #append>
 			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
@@ -18,7 +18,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -37,6 +36,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

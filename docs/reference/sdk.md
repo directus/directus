@@ -157,14 +157,13 @@ Axios transport offers a wrapper around Axios interceptors to make it easy for y
 
 ```ts
 const requestInterceptor = directus.transport.requests.intercept((config) => {
-	config.headers["My-Custom-Header"] = "Header value";
+	config.headers['My-Custom-Header'] = 'Header value';
 	return config;
 });
 
 // If you don't want the interceptor anymore, remove it
 requestInterceptor.eject();
 ```
-
 
 ```ts
 const responseInterceptor = directus.transport.responses.intercept((response) => {

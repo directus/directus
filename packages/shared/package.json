@@ -32,7 +32,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"fs-extra": "10.0.0",
-		"vue": "3.1.2"
+		"vue": "3.1.4"
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5",

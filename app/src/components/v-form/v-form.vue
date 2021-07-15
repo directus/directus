@@ -1,6 +1,6 @@
 <template>
-	<div class="v-form" ref="el" :class="gridClass">
-		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
+	<div ref="el" class="v-form" :class="gridClass">
+		<v-notice v-if="unknownValidationErrors.length > 0" type="danger" class="full">
 			<div>
 				<p>{{ t('unknown_validation_errors') }}</p>
 				<ul>
@@ -19,10 +19,10 @@
 
 		<template v-for="(field, index) in formFields">
 			<component
-				v-if="field.meta?.special?.includes('group')"
-				:class="field.meta?.width || 'full'"
 				:is="`interface-${field.meta?.interface || 'group-raw'}`"
+				v-if="field.meta?.special?.includes('group')"
 				:key="field.field"
+				:class="field.meta?.width || 'full'"
 				:field="field"
 				:fields="getFieldsForGroup(field.meta.id)"
 				:values="values || {}"
@@ -75,9 +75,8 @@ type FieldValues = {
 };
 
 export default defineComponent({
-	name: 'v-form',
+	name: 'VForm',
 	components: { FormField },
-	emits: ['update:modelValue'],
 	props: {
 		collection: {
 			type: String,
@@ -125,6 +124,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

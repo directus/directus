@@ -16,11 +16,11 @@
 			<template #activator="{ toggle, active }">
 				<v-input
 					clickable
-					@click="toggle"
 					:class="{ active }"
 					readonly
 					:model-value="t('add_filter')"
 					:disabled="loading"
+					@click="toggle"
 				>
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
@@ -28,7 +28,7 @@
 			</template>
 
 			<v-list>
-				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
+				<field-list-item v-for="field in fieldTree" :key="field.field" :field="field" @add="addFilterForField" />
 			</v-list>
 		</v-menu>
 
@@ -55,7 +55,6 @@ import getAvailableOperatorsForType from './get-available-operators-for-type';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FieldFilter, FieldListItem },
 	props: {
 		modelValue: {
@@ -71,6 +70,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

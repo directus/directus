@@ -1,16 +1,16 @@
 <template>
 	<component
 		:is="url ? 'a' : 'div'"
+		ref="noopener noreferer"
+		v-tooltip.right="urlTooltip"
 		:href="url"
 		target="_blank"
-		ref="noopener noreferer"
 		class="module-bar-logo"
 		:class="{ loading: showLoader }"
-		v-tooltip.right="urlTooltip"
 	>
 		<template v-if="customLogoPath">
 			<transition name="fade">
-				<v-progress-linear indeterminate rounded v-if="showLoader" @animationiteration="stopSpinnerIfQueueIsEmpty" />
+				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>

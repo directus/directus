@@ -20,10 +20,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -49,13 +49,13 @@
 		</template>
 
 		<v-form
+			v-model="edits"
 			:loading="loading"
 			:initial-values="item"
 			collection="directus_webhooks"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
-			v-model="edits"
 		/>
 
 		<template #sidebar>
@@ -79,7 +79,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import { md } from '@/utils/md';
 
 export default defineComponent({
-	name: 'webhooks-item',
+	name: 'WebhooksItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {

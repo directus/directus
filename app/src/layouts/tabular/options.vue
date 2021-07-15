@@ -33,7 +33,7 @@
 				<v-checkbox v-model="fields" :value="element.field" :label="element.name">
 					<template #append>
 						<div class="spacer" />
-						<v-icon @click.stop name="drag_handle" class="drag-handle" />
+						<v-icon name="drag_handle" class="drag-handle" @click.stop />
 					</template>
 				</v-checkbox>
 			</template>
@@ -41,8 +41,8 @@
 
 		<v-checkbox
 			v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
-			v-model="fields"
 			:key="field.field"
+			v-model="fields"
 			:value="field.field"
 			:label="field.name"
 		/>

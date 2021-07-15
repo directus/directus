@@ -12,9 +12,9 @@
 		<p class="type-label">{{ t('field', 0) }}</p>
 		<interface-select-multiple-checkbox
 			:value="fields"
-			@input="fields = $event"
 			type="json"
 			:choices="fieldsInCollection"
+			@input="fields = $event"
 		/>
 
 		<div v-if="appMinimal" class="app-minimal">
@@ -33,7 +33,6 @@ import useSync from '@/composables/use-sync';
 import { useFieldsStore } from '@/stores';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -48,6 +47,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

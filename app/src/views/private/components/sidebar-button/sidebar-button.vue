@@ -1,14 +1,14 @@
 <template>
 	<component
-		class="sidebar-button"
 		:is="to ? 'router-link' : 'button'"
+		class="sidebar-button"
 		:class="{ active }"
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
 			<v-icon :name="icon" outline />
 		</div>
-		<div class="title" v-if="sidebarOpen">
+		<div v-if="sidebarOpen" class="title">
 			<slot />
 		</div>
 	</component>
@@ -19,7 +19,6 @@ import { defineComponent, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		to: {
 			type: String,
@@ -34,6 +33,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup() {
 		const appStore = useAppStore();
 		const { sidebarOpen } = toRefs(appStore);

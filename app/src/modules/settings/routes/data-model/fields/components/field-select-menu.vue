@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
-			<v-icon clickable @click.stop="toggle" name="more_vert" />
+			<v-icon clickable name="more_vert" @click.stop="toggle" />
 		</template>
 
 		<v-list>
@@ -34,8 +34,8 @@
 
 			<v-list-item
 				clickable
-				@click="$emit('setWidth', 'half')"
 				:disabled="field.meta?.width === 'half' || localType === 'group'"
+				@click="$emit('setWidth', 'half')"
 			>
 				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 				<v-list-item-content>{{ t('half_width') }}</v-list-item-content>
@@ -43,8 +43,8 @@
 
 			<v-list-item
 				clickable
-				@click="$emit('setWidth', 'full')"
 				:disabled="field.meta?.width === 'full' || localType === 'group'"
+				@click="$emit('setWidth', 'full')"
 			>
 				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 				<v-list-item-content>{{ t('full_width') }}</v-list-item-content>
@@ -52,8 +52,8 @@
 
 			<v-list-item
 				clickable
-				@click="$emit('setWidth', 'fill')"
 				:disabled="field.meta?.width === 'fill' || localType === 'group'"
+				@click="$emit('setWidth', 'fill')"
 			>
 				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 				<v-list-item-content>{{ t('fill_width') }}</v-list-item-content>
@@ -63,9 +63,9 @@
 
 			<v-list-item
 				clickable
-				@click="$emit('delete')"
 				class="danger"
 				:disabled="field.schema?.is_primary_key === true || noDelete"
+				@click="$emit('delete')"
 			>
 				<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
 				<v-list-item-content>
@@ -83,8 +83,7 @@ import { useI18n } from 'vue-i18n';
 import { getLocalTypeForField } from '../../get-local-type';
 
 export default defineComponent({
-	name: 'field-select-menu',
-	emits: ['toggleVisibility', 'duplicate', 'delete', 'setWidth'],
+	name: 'FieldSelectMenu',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -95,6 +94,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['toggleVisibility', 'duplicate', 'delete', 'setWidth'],
 	setup(props) {
 		const { t } = useI18n();
 

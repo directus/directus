@@ -7,7 +7,7 @@
 		</template>
 
 		<template #title>
-			<h1 v-html="title" class="type-title"></h1>
+			<h1 class="type-title" v-html="title"></h1>
 		</template>
 
 		<template #navigation>

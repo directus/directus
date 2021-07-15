@@ -8,35 +8,35 @@
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
+					v-model="relations[0].collection"
 					db-safe
 					:placeholder="t('collection') + '...'"
-					v-model="relations[0].collection"
 					:nullable="false"
 					:disabled="isExisting"
 					:class="{ matches: relatedCollectionExists }"
 				>
-					<template #append v-if="!isExisting">
+					<template v-if="!isExisting" #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
+									v-tooltip="t('select_existing')"
 									name="list_alt"
 									clickable
-									@click="toggle"
-									v-tooltip="t('select_existing')"
 									:disabled="isExisting"
+									@click="toggle"
 								/>
 							</template>
 
 							<v-list class="monospace">
 								<v-list-item
-									v-for="collection in availableCollections"
-									:key="collection.collection"
-									:active="relations[0].collection === collection.collection"
-									@click="relations[0].collection = collection.collection"
+									v-for="availableCollection in availableCollections"
+									:key="availableCollection.collection"
+									:active="relations[0].collection === availableCollection.collection"
 									clickable
+									@click="relations[0].collection = availableCollection.collection"
 								>
 									<v-list-item-content>
-										{{ collection.collection }}
+										{{ availableCollection.collection }}
 									</v-list-item-content>
 								</v-list-item>
 
@@ -45,14 +45,14 @@
 								<v-list-group>
 									<template #activator>{{ t('system') }}</template>
 									<v-list-item
-										v-for="collection in systemCollections"
-										:key="collection.collection"
-										:active="relations[0].collection === collection.collection"
-										@click="relations[0].collection = collection.collection"
+										v-for="systemCollection in systemCollections"
+										:key="systemCollection.collection"
+										:active="relations[0].collection === systemCollection.collection"
 										clickable
+										@click="relations[0].collection = systemCollection.collection"
 									>
 										<v-list-item-content>
-											{{ collection.collection }}
+											{{ systemCollection.collection }}
 										</v-list-item-content>
 									</v-list-item>
 								</v-list-group>
@@ -60,7 +60,7 @@
 						</v-menu>
 					</template>
 
-					<template #input v-if="isExisting">
+					<template v-if="isExisting" #input>
 						<v-text-overflow :text="relations[0].collection" />
 					</template>
 				</v-input>
@@ -71,17 +71,17 @@
 				</template>
 			</v-input>
 			<v-input
-				db-safe
 				v-model="relations[0].field"
+				db-safe
 				:nullable="false"
 				:disabled="isExisting"
 				:placeholder="t('foreign_key') + '...'"
 				:class="{ matches: relatedFieldExists }"
 			>
-				<template #append v-if="fields && fields.length > 0 && !isExisting">
+				<template v-if="fields && fields.length > 0 && !isExisting" #append>
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
+							<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
 						</template>
 
 						<v-list class="monospace">
@@ -90,8 +90,8 @@
 								:key="field.value"
 								:active="relations[0].field === field.value"
 								:disabled="field.disabled"
-								@click="relations[0].field = field.value"
 								clickable
+								@click="relations[0].field = field.value"
 							>
 								<v-list-item-content>
 									{{ field.text }}
@@ -101,23 +101,23 @@
 					</v-menu>
 				</template>
 
-				<template #input v-if="isExisting">
+				<template v-if="isExisting" #input>
 					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
 			<v-icon class="arrow" name="arrow_forward" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
+		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
 
-		<div class="corresponding" v-if="!isExisting">
+		<div v-if="!isExisting" class="corresponding">
 			<div class="field">
 				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox block :disabled="isExisting" :label="correspondingLabel" v-model="hasCorresponding" />
+				<v-checkbox v-model="hasCorresponding" block :disabled="isExisting" :label="correspondingLabel" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ t('field_name') }}</div>
-				<v-input disabled v-model="relations[0].field" :placeholder="t('field_name') + '...'" db-safe />
+				<v-input v-model="relations[0].field" disabled :placeholder="t('field_name') + '...'" db-safe />
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
@@ -126,15 +126,15 @@
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 
 			<v-input
-				db-safe
 				v-model="relations[0].meta.sort_field"
+				db-safe
 				:placeholder="t('add_sort_field') + '...'"
 				:class="{ matches: sortFieldExists }"
 			>
-				<template #append v-if="fields && fields.length > 0 && !isExisting">
+				<template v-if="fields && fields.length > 0 && !isExisting" #append>
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
+							<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
 						</template>
 
 						<v-list class="monospace">
@@ -142,9 +142,9 @@
 								v-for="field in fields"
 								:key="field.value"
 								:active="relations[0].meta.sort_field === field.value"
-								@click="relations[0].meta.sort_field = field.value"
 								clickable
 								:disabled="field.disabled"
+								@click="relations[0].meta.sort_field = field.value"
 							>
 								<v-list-item-content>
 									{{ field.text }}
@@ -223,7 +223,7 @@
 			</div>
 		</div>
 
-		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ t('new_data_alert') }}
 

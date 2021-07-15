@@ -2,16 +2,16 @@
 	<div class="actions">
 		<v-button
 			v-if="!isExisting && currentTabIndex < tabs.length - 1"
-			@click="nextTab"
+			v-tooltip.bottom="t('next')"
 			:disabled="nextDisabled"
 			icon
 			rounded
-			v-tooltip.bottom="t('next')"
+			@click="nextTab"
 		>
 			<v-icon name="arrow_forward" />
 		</v-button>
 
-		<v-button v-else @click="$emit('save')" :loading="saving" icon rounded v-tooltip.bottom="t('save')">
+		<v-button v-else v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="$emit('save')">
 			<v-icon name="check" />
 		</v-button>
 	</div>
@@ -29,7 +29,6 @@ type Tab = {
 };
 
 export default defineComponent({
-	emits: ['save', 'update:current'],
 	props: {
 		collection: {
 			type: String,
@@ -52,6 +51,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['save', 'update:current'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

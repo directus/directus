@@ -7,7 +7,7 @@
 		{{ t('no_options_available') }}
 	</v-notice>
 
-	<div class="inset" v-else>
+	<div v-else class="inset">
 		<v-form
 			v-if="Array.isArray(selectedInterface.options)"
 			:fields="selectedInterface.options"
@@ -17,11 +17,11 @@
 		/>
 
 		<component
-			:value="value"
-			@input="$emit('input', $event)"
-			:field-data="fieldData"
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else
+			:value="value"
+			:field-data="fieldData"
+			@input="$emit('input', $event)"
 		/>
 	</div>
 </template>
@@ -33,7 +33,6 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Object,
@@ -44,6 +43,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const { t } = useI18n();
 

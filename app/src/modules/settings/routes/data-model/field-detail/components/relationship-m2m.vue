@@ -8,35 +8,35 @@
 			<div class="field">
 				<div class="type-label">{{ t('junction_collection') }}</div>
 				<v-input
-					:class="{ matches: junctionCollectionExists }"
 					v-model="junctionCollection"
+					:class="{ matches: junctionCollectionExists }"
 					:nullable="false"
 					:placeholder="t('collection') + '...'"
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
-					<template #append v-if="!isExisting">
+					<template v-if="!isExisting" #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
+									v-tooltip="t('select_existing')"
 									name="list_alt"
 									clickable
-									@click="toggle"
-									v-tooltip="t('select_existing')"
 									:disabled="autoFill || isExisting"
+									@click="toggle"
 								/>
 							</template>
 
 							<v-list class="monospace">
 								<v-list-item
-									v-for="collection in availableCollections"
-									:key="collection.collection"
-									:active="relations[0].collection === collection.collection"
-									@click="junctionCollection = collection.collection"
+									v-for="availableCollection in availableCollections"
+									:key="availableCollection.collection"
+									:active="relations[0].collection === availableCollection.collection"
 									clickable
+									@click="junctionCollection = availableCollection.collection"
 								>
 									<v-list-item-content>
-										{{ collection.collection }}
+										{{ availableCollection.collection }}
 									</v-list-item-content>
 								</v-list-item>
 
@@ -45,14 +45,14 @@
 								<v-list-group>
 									<template #activator>{{ t('system') }}</template>
 									<v-list-item
-										v-for="collection in systemCollections"
-										:key="collection.collection"
-										:active="relations[0].collection === collection.collection"
-										@click="junctionCollection = collection.collection"
+										v-for="systemCollection in systemCollections"
+										:key="systemCollection.collection"
+										:active="relations[0].collection === systemCollection.collection"
 										clickable
+										@click="junctionCollection = systemCollection.collection"
 									>
 										<v-list-item-content>
-											{{ collection.collection }}
+											{{ systemCollection.collection }}
 										</v-list-item-content>
 									</v-list-item>
 								</v-list-group>
@@ -60,7 +60,7 @@
 						</v-menu>
 					</template>
 
-					<template #input v-if="isExisting">
+					<template v-if="isExisting" #input>
 						<v-text-overflow :text="junctionCollection" />
 					</template>
 				</v-input>
@@ -68,9 +68,9 @@
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
+					v-model="relations[1].related_collection"
 					:autofocus="autoFill"
 					:class="{ matches: relatedCollectionExists }"
-					v-model="relations[1].related_collection"
 					:nullable="false"
 					:placeholder="t('collection') + '...'"
 					:disabled="type === 'files' || isExisting"
@@ -78,26 +78,26 @@
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
-							<template #activator="{ toggle }" v-if="!isExisting">
+							<template v-if="!isExisting" #activator="{ toggle }">
 								<v-icon
+									v-tooltip="t('select_existing')"
 									name="list_alt"
 									clickable
-									@click="toggle"
-									v-tooltip="t('select_existing')"
 									:disabled="type === 'files' || isExisting"
+									@click="toggle"
 								/>
 							</template>
 
 							<v-list class="monospace">
 								<v-list-item
-									v-for="collection in availableCollections"
-									:key="collection.collection"
-									:active="relations[1].related_collection === collection.collection"
-									@click="relations[1].related_collection = collection.collection"
+									v-for="availableCollection in availableCollections"
+									:key="availableCollection.collection"
+									:active="relations[1].related_collection === availableCollection.collection"
 									clickable
+									@click="relations[1].related_collection = availableCollection.collection"
 								>
 									<v-list-item-content>
-										{{ collection.collection }}
+										{{ availableCollection.collection }}
 									</v-list-item-content>
 								</v-list-item>
 
@@ -106,14 +106,14 @@
 								<v-list-group>
 									<template #activator>{{ t('system') }}</template>
 									<v-list-item
-										v-for="collection in systemCollections"
-										:key="collection.collection"
-										:active="relations[1].related_collection === collection.collection"
-										@click="relations[1].related_collection = collection.collection"
+										v-for="systemCollection in systemCollections"
+										:key="systemCollection.collection"
+										:active="relations[1].related_collection === systemCollection.collection"
 										clickable
+										@click="relations[1].related_collection = systemCollection.collection"
 									>
 										<v-list-item-content>
-											{{ collection.collection }}
+											{{ systemCollection.collection }}
 										</v-list-item-content>
 									</v-list-item>
 								</v-list-group>
@@ -121,29 +121,29 @@
 						</v-menu>
 					</template>
 
-					<template #input v-if="isExisting">
+					<template v-if="isExisting" #input>
 						<v-text-overflow :text="relations[1].related_collection" />
 					</template>
 				</v-input>
 			</div>
 			<v-input disabled :model-value="currentPrimaryKeyField" />
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[0].field) }"
 				v-model="relations[0].field"
+				:class="{ matches: junctionFieldExists(relations[0].field) }"
 				:nullable="false"
 				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists && !isExisting">
+				<template v-if="junctionCollectionExists && !isExisting" #append>
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
+								v-tooltip="t('select_existing')"
 								name="list_alt"
 								clickable
-								@click="toggle"
-								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
+								@click="toggle"
 							/>
 						</template>
 
@@ -153,8 +153,8 @@
 								:key="item.value"
 								:active="relations[0].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].field = item.value"
 								clickable
+								@click="relations[0].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -164,29 +164,29 @@
 					</v-menu>
 				</template>
 
-				<template #input v-if="isExisting">
+				<template v-if="isExisting" #input>
 					<v-text-overflow :text="relations[0].field" />
 				</template>
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[1].field) }"
 				v-model="relations[1].field"
+				:class="{ matches: junctionFieldExists(relations[1].field) }"
 				:nullable="false"
 				:placeholder="t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists && !isExisting">
+				<template v-if="junctionCollectionExists && !isExisting" #append>
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
+								v-tooltip="t('select_existing')"
 								name="list_alt"
 								clickable
-								@click="toggle"
-								v-tooltip="t('select_existing')"
 								:disabled="autoFill || isExisting"
+								@click="toggle"
 							/>
 						</template>
 
@@ -196,8 +196,8 @@
 								:key="item.value"
 								:active="relations[1].field === item.value"
 								:disabled="item.disabled"
-								@click="relations[1].field = item.value"
 								clickable
+								@click="relations[1].field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -207,29 +207,29 @@
 					</v-menu>
 				</template>
 
-				<template #input v-if="isExisting">
+				<template v-if="isExisting" #input>
 					<v-text-overflow :text="relations[1].field" />
 				</template>
 			</v-input>
-			<v-input disabled v-model="relatedPrimaryKeyField" :placeholder="t('primary_key') + '...'" />
+			<v-input v-model="relatedPrimaryKeyField" disabled :placeholder="t('primary_key') + '...'" />
 			<div class="spacer" />
-			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="t('auto_fill')" />
+			<v-checkbox v-if="!isExisting" v-model="autoFill" block :label="t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
+		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
 
-		<div class="corresponding" v-if="!isExisting">
+		<div v-if="!isExisting" class="corresponding">
 			<div class="field">
 				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
+				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
-					:disabled="hasCorresponding === false"
 					v-model="correspondingField"
+					:disabled="hasCorresponding === false"
 					:placeholder="t('field_name') + '...'"
 					db-safe
 				/>
@@ -241,15 +241,15 @@
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[0].meta.sort_field) }"
 				v-model="relations[0].meta.sort_field"
+				:class="{ matches: junctionFieldExists(relations[0].meta.sort_field) }"
 				:placeholder="t('add_sort_field') + '...'"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template v-if="junctionCollectionExists" #append>
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
-							<v-icon name="list_alt" clickable @click="toggle" v-tooltip="t('select_existing')" />
+							<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
 						</template>
 
 						<v-list class="monospace">
@@ -258,8 +258,8 @@
 								:key="item.value"
 								:active="relations[0].meta.sort_field === item.value"
 								:disabled="item.disabled"
-								@click="relations[0].meta.sort_field = item.value"
 								clickable
+								@click="relations[0].meta.sort_field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}
@@ -377,7 +377,7 @@
 			</div>
 		</div>
 
-		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ t('new_data_alert') }}
 

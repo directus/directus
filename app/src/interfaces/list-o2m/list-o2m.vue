@@ -1,8 +1,8 @@
 <template>
-	<v-notice type="warning" v-if="!relation">
+	<v-notice v-if="!relation" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
-	<div class="one-to-many" v-else>
+	<div v-else class="one-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
 				v-for="n in (value || []).length || 3"
@@ -19,10 +19,10 @@
 			<draggable
 				:force-fallback="true"
 				:model-value="sortedItems"
-				@update:model-value="sortItems($event)"
 				item-key="id"
 				handle=".drag-handle"
 				:disabled="!relation.meta.sort_field"
+				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
 					<v-list-item
@@ -46,7 +46,7 @@
 			</draggable>
 		</v-list>
 
-		<div class="actions" v-if="!disabled">
+		<div v-if="!disabled" class="actions">
 			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="currentlyEditing = '+'">
 				{{ t('create_new') }}
 			</v-button>
@@ -72,8 +72,8 @@
 			:collection="relatedCollection.collection"
 			:selection="[]"
 			:filters="selectionFilters"
-			@input="stageSelection"
 			multiple
+			@input="stageSelection"
 		/>
 	</div>
 </template>
@@ -96,7 +96,6 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
@@ -132,6 +131,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

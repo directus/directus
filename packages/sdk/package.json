@@ -47,9 +47,9 @@
 		"axios": "^0.21.1"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "19.0.0",
+		"@rollup/plugin-commonjs": "19.0.1",
 		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "13.0.0",
+		"@rollup/plugin-node-resolve": "13.0.1",
 		"@types/jest": "26.0.24",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",
@@ -59,7 +59,7 @@
 		"nock": "13.1.1",
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
-		"rollup": "2.53.1",
+		"rollup": "2.53.2",
 		"rollup-plugin-copy": "3.4.0",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",

@@ -4,11 +4,11 @@
 		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		@cancel="router.push('/settings/data-model')"
 		:sidebar-label="t(currentTab[0])"
+		@cancel="router.push('/settings/data-model')"
 	>
 		<template #sidebar>
-			<v-tabs vertical v-model="currentTab">
+			<v-tabs v-model="currentTab" vertical>
 				<v-tab value="collection_setup">{{ t('collection_setup') }}</v-tab>
 				<v-tab value="optional_system_fields" :disabled="!collectionName">
 					{{ t('optional_system_fields') }}
@@ -16,7 +16,7 @@
 			</v-tabs>
 		</template>
 
-		<v-tabs-items class="content" v-model="currentTab">
+		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="collection_setup">
 				<v-notice type="info">{{ t('creating_collection_info') }}</v-notice>
 
@@ -24,28 +24,29 @@
 					<div class="field half">
 						<div class="type-label">
 							{{ t('name') }}
-							<v-icon class="required" v-tooltip="t('required')" name="star" sup />
+							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
 						</div>
 						<v-input
+							v-model="collectionName"
 							autofocus
 							class="monospace"
-							v-model="collectionName"
 							db-safe
 							:placeholder="t('a_unique_table_name')"
 						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('singleton') }}</div>
-						<v-checkbox block :label="t('singleton_label')" v-model="singleton" />
+						<v-checkbox v-model="singleton" block :label="t('singleton_label')" />
 					</div>
 					<v-divider class="full" />
 					<div class="field half">
 						<div class="type-label">{{ t('primary_key_field') }}</div>
-						<v-input class="monospace" v-model="primaryKeyFieldName" db-safe :placeholder="t('a_unique_column_name')" />
+						<v-input v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('type') }}</div>
 						<v-select
+							v-model="primaryKeyFieldType"
 							:items="[
 								{
 									text: t('auto_increment_integer'),
@@ -60,7 +61,6 @@
 									value: 'manual',
 								},
 							]"
-							v-model="primaryKeyFieldType"
 						/>
 					</div>
 				</div>
@@ -70,9 +70,9 @@
 
 				<div class="grid system">
 					<div
-						class="field"
 						v-for="(info, field, index) in systemFields"
 						:key="field"
+						class="field"
 						:class="index % 2 === 0 ? 'half' : 'half-right'"
 					>
 						<div class="type-label">{{ t(info.label) }}</div>
@@ -97,22 +97,22 @@
 
 		<template #actions>
 			<v-button
-				:disabled="!collectionName || collectionName.length === 0"
 				v-if="currentTab[0] === 'collection_setup'"
-				@click="currentTab = ['optional_system_fields']"
 				v-tooltip.bottom="t('next')"
+				:disabled="!collectionName || collectionName.length === 0"
 				icon
 				rounded
+				@click="currentTab = ['optional_system_fields']"
 			>
 				<v-icon name="arrow_forward" />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'optional_system_fields'"
-				@click="save"
-				:loading="saving"
 				v-tooltip.bottom="t('finish_setup')"
+				:loading="saving"
 				icon
 				rounded
+				@click="save"
 			>
 				<v-icon name="check" />
 			</v-button>

@@ -12,12 +12,12 @@
 		>
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
+			<v-list-item-icon v-if="$slots.default" class="activator-icon" :class="{ active: groupActive }">
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-if="groupActive">
+		<div v-if="groupActive" class="items">
 			<slot />
 		</div>
 	</div>
@@ -28,7 +28,6 @@ import { defineComponent } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		multiple: {
 			type: Boolean,
@@ -67,6 +66,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props, { emit }) {
 		const { active: groupActive, toggle } = useGroupable({
 			group: props.scope,

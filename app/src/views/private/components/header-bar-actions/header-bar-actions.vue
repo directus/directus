@@ -6,13 +6,13 @@
 
 		<div class="action-buttons">
 			<v-button
+				v-if="showSidebarToggle"
 				class="sidebar-toggle"
 				icon
 				rounded
 				secondary
 				outlined
 				@click="$emit('toggle:sidebar')"
-				v-if="showSidebarToggle"
 			>
 				<v-icon name="info" outline />
 			</v-button>
@@ -26,13 +26,13 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-	emits: ['toggle:sidebar'],
 	props: {
 		showSidebarToggle: {
 			type: Boolean,
 			default: false,
 		},
 	},
+	emits: ['toggle:sidebar'],
 	setup() {
 		const active = ref(false);
 		return { active };
