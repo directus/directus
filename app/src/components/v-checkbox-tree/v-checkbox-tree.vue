@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, defineComponent, PropType, watch } from 'vue';
+import { computed, ref, defineComponent, PropType } from 'vue';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
