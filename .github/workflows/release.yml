@@ -63,11 +63,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - run: npx lerna publish from-git --no-verify-access --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   build-images:
     runs-on: ubuntu-latest
