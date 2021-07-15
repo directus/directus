@@ -64,7 +64,7 @@ jobs:
         with:
           node-version: '16.x'
 
-      - run: npx lerna publish --force-publish --exact from-git --yes
+      - run: npx lerna publish --no-verify-access --force-publish --exact from-git --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
