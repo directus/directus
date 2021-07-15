@@ -1,5 +1,10 @@
 <template>
-	<v-list-group v-if="children" v-show="visibleChildrenValues.length > 0" :value="value">
+	<v-list-group
+		v-if="children"
+		v-show="visibleChildrenValues.length > 0"
+		:value="value"
+		:open="typeof search === 'string' && search.length > 0"
+	>
 		<template #activator>
 			<v-checkbox
 				v-model="treeValue"
