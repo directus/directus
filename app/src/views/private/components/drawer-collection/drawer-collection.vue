@@ -55,6 +55,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		filter: {
+			type: Object as PropType<any>,
+			default: () => null,
+		},
 		filters: {
 			type: Array as PropType<Filter[]>,
 			default: () => [],
@@ -67,7 +71,7 @@ export default defineComponent({
 		const { internalActive } = useActiveState();
 		const { internalSelection, localSelection, onSelect } = useSelection();
 
-		const { collection } = toRefs(props);
+		const { collection, filter } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
 		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection, ref(null), true);
@@ -103,6 +107,7 @@ export default defineComponent({
 				selection: layoutSelection,
 				layoutOptions: localOptions,
 				layoutQuery: localQuery,
+				filter: filter,
 				filters: layoutFilters,
 				searchQuery,
 				selectMode: true,

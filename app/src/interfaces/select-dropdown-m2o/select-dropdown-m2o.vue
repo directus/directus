@@ -80,6 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
+			:filter="filter"
 			@input="stageSelection"
 		/>
 	</div>
@@ -133,11 +134,15 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		filter: {
+			type: Object as PropType<any>,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collection } = toRefs(props);
+		const { collection, filter } = toRefs(props);
 
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();

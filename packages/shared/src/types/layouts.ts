@@ -6,6 +6,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
+	filter: Record<string, unknown> | null;
 	filters: Filter[];
 	searchQuery: string | null;
 	selectMode: boolean;

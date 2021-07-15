@@ -51,7 +51,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const table = ref<ComponentPublicInstance>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
-		const { collection, searchQuery, selection, layoutOptions, layoutQuery, filters } = toRefs(props);
+		const { collection, searchQuery, selection, layoutOptions, layoutQuery, filter, filters } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -64,6 +64,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
+				filter: filter,
 				filters: filters,
 				searchQuery: searchQuery,
 			}
