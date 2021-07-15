@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, inject, watch, toRefs, ComponentPublicInstance } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { debounce, clone } from 'lodash';
 import useCollection from '@/composables/use-collection';

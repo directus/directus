@@ -1,3 +1,4 @@
+export * from './define-extension';
 export * from './ensure-extension-dirs';
 export * from './generate-extensions-entry';
 export * from './get-extensions';

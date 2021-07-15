@@ -26,7 +26,7 @@ declare module 'jsonlint-mod' {
 }
 
 declare module '@directus-extensions-interface' {
-	import { InterfaceConfig } from '@/interfaces/types';
+	import { InterfaceConfig } from '@directus/shared/types';
 	const interfaces: InterfaceConfig[];
 	export default interfaces;
 }

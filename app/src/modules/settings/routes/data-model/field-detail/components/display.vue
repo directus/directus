@@ -44,7 +44,7 @@ import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { clone } from 'lodash';
 
 import { state, availableDisplays } from '../store';
-import { InterfaceConfig } from '@/interfaces/types';
+import { InterfaceConfig } from '@directus/shared/types';
 import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({

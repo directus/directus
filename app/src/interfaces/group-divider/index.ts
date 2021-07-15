@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupDivider from './group-divider.vue';
 
 export default defineInterface({

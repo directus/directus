@@ -20,7 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType } from 'vue';
 import { useFieldsStore } from '@/stores';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {

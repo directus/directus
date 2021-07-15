@@ -1,7 +1,7 @@
 import { getDisplays } from '@/displays';
 import { DisplayConfig } from '@/displays/types';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types/';
+import { Field } from '@directus/shared/types';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();

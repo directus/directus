@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getInterfaces } from './index';
-import { InterfaceConfig } from './types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 const { interfacesRaw } = getInterfaces();
 

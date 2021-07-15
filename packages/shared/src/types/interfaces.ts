@@ -1,6 +1,6 @@
-import { Field, localTypes, types } from '@/types';
-import { DeepPartial } from '@directus/shared/types';
+import { Field, LocalType, Type } from './fields';
 import { Component } from 'vue';
+import { DeepPartial } from './misc';
 
 export interface InterfaceConfig {
 	id: string;
@@ -9,8 +9,8 @@ export interface InterfaceConfig {
 	description?: string;
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
-	types: typeof types[number][];
-	groups?: readonly typeof localTypes[number][];
+	types: Type[];
+	groups?: LocalType[];
 	relational?: boolean;
 	hideLabel?: boolean;
 	hideLoader?: boolean;

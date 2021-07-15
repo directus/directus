@@ -2,8 +2,7 @@
 
 import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
-import { Field } from '@/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { clone, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';

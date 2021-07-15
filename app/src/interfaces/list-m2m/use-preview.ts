@@ -1,7 +1,7 @@
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';

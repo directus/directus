@@ -1,4 +1,4 @@
-import { InterfaceConfig, InterfaceDefineParam } from './types';
+import { InterfaceConfig, InterfaceDefineParam } from '../types';
 
 export function defineInterface(config: InterfaceDefineParam): InterfaceConfig {
 	let options: InterfaceConfig;

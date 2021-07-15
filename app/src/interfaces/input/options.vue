@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {

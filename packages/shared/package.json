@@ -31,6 +31,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"fs-extra": "10.0.0",
+		"knex-schema-inspector": "1.5.11",
 		"vue": "3.1.5"
 	},
 	"devDependencies": {
