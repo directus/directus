@@ -47,6 +47,12 @@ import { session } from './middleware/session';
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
+	try {
+		new URL(env.PUBLIC_URL);
+	} catch {
+		logger.warn('PUBLIC_URL is not a valid URL');
+	}
+
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
