@@ -206,7 +206,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields } });
+					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields, limit: -1 } });
 					languages.value = response.data.data;
 				} catch (err) {
 					unexpectedError(err);

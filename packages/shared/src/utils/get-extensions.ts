@@ -8,6 +8,9 @@ import { pluralize } from './pluralize';
 
 export async function getPackageExtensions(root: string): Promise<Extension[]> {
 	const pkg = await fse.readJSON(path.resolve(path.join(root, 'package.json')));
+
+	if (!pkg.dependencies) return [];
+
 	const extensionNames = Object.keys(pkg.dependencies).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
 	return listExtensionsChildren(extensionNames);

@@ -2,6 +2,20 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.83 (July 14, 2021)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#6566](https://github.com/directus/directus/pull/6566) Fix half-width fields before groups causing trouble ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#6561](https://github.com/directus/directus/pull/6561) Add limit options for deleteMany files ([@Enhed](https://github.com/Enhed))
+  - [#6558](https://github.com/directus/directus/pull/6558) Fixed typo in MySQL dialect ([@Oreilles](https://github.com/Oreilles))
+
+### :package: Dependency Updates
+
+- [#6564](https://github.com/directus/directus/pull/6564) update dependency ts-node-dev to v1.1.7 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.82 (June 28, 2021)
 
 ### :sparkles: New Features

@@ -526,6 +526,8 @@ export default defineComponent({
 	--sidebar-detail-color: var(--primary);
 	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
+
+	display: contents;
 }
 
 :deep(.layout-options) {
