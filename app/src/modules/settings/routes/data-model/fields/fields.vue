@@ -77,7 +77,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_datamodel_fields'))" />
+				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -93,7 +93,6 @@ import FieldsManagement from './components/fields-management.vue';
 import useItem from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import { md } from '@/utils/md';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -151,7 +150,6 @@ export default defineComponent({
 			deleteAndQuit,
 			saveAndQuit,
 			hasEdits,
-			md,
 		};
 
 		async function deleteAndQuit() {
