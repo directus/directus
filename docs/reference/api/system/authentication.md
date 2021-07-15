@@ -386,4 +386,19 @@ GET /auth/oauth/:provider
 </div>
 </div>
 
+### Query Parameters
+
+<div class="definitions">
+
+`redirect`\
+URL where to redirect when login is successful. Example: https://example.com/auth/login
+
+`mode`\
+Use only when redirect url is set. One of `cookie`, `query`.
+Defaults to `cookie`. Note: 
+If you used cookie as mode in the redirection, the refresh token is sent in a cookie `directus_refresh_token`, if you used the query mode the parameters `access_token`, `refresh_token` and `expires` will be added in the query string when redirecting
+
+
+</div>
+
 ---
