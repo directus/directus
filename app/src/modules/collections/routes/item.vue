@@ -4,16 +4,16 @@
 	/>
 
 	<private-view v-else :title="title">
-		<template #title v-if="collectionInfo.meta && collectionInfo.meta.singleton === true">
+		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
 		</template>
 
-		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
-			<h1 class="type-title" v-else>
+			<h1 v-else class="type-title">
 				<render-template
 					:collection="collectionInfo.collection"
 					:item="templateData"
@@ -36,12 +36,12 @@
 
 			<v-button
 				v-else
+				v-tooltip.bottom="t('back')"
 				class="header-icon"
 				rounded
 				icon
 				secondary
 				exact
-				v-tooltip.bottom="t('back')"
 				@click="router.back()"
 			>
 				<v-icon name="arrow_back" />
@@ -60,13 +60,13 @@
 			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -76,10 +76,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -89,18 +89,18 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
-				@esc="confirmArchive = false"
 				:disabled="archiveAllowed === false"
+				@esc="confirmArchive = false"
 			>
 				<template #activator="{ on }">
 					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
 						class="action-archive"
-						v-tooltip.bottom="archiveTooltip"
-						@click="on"
 						:disabled="item === null || archiveAllowed !== true"
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						@click="on"
 					>
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>
@@ -110,10 +110,10 @@
 					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmArchive = false" secondary>
+						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
+						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -121,11 +121,11 @@
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="isSavable === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -148,13 +148,13 @@
 
 		<v-form
 			ref="form"
+			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
-			v-model="edits"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -176,10 +176,10 @@
 			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				ref="revisionsDrawerDetail"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:scope="accountabilityScope"
-				ref="revisionsDrawerDetail"
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
@@ -213,7 +213,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	name: 'collections-item',
+	name: 'CollectionsItem',
 	components: {
 		CollectionsNavigation,
 		CollectionsNavigationSearch,

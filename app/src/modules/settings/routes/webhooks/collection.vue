@@ -15,7 +15,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />
@@ -26,10 +26,10 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -37,22 +37,22 @@
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_webhook')">
+			<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
-		<component class="layout" :is="`layout-${layout}`">
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -100,7 +100,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-collection',
+	name: 'WebhooksCollection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
 	setup() {
 		const { t } = useI18n();

@@ -4,11 +4,11 @@
 			<v-input
 				:active="active"
 				clickable
-				@click="toggle"
 				readonly
 				:model-value="displayValue"
 				:disabled="disabled"
 				:placeholder="t('enter_a_value')"
+				@click="toggle"
 			>
 				<template v-if="!disabled" #append>
 					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
@@ -16,36 +16,36 @@
 			</v-input>
 		</template>
 
-		<div class="date-selects" v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'">
+		<div v-if="type === 'timestamp' || type === 'dateTime' || type === 'date'" class="date-selects">
 			<div class="month">
-				<v-select :placeholder="t('month')" :items="monthItems" v-model="month" />
+				<v-select v-model="month" :placeholder="t('month')" :items="monthItems" />
 			</div>
 			<div class="date">
-				<v-select :placeholder="t('date')" :items="dateItems" v-model="date" />
+				<v-select v-model="date" :placeholder="t('date')" :items="dateItems" />
 			</div>
 			<div class="year">
-				<v-select :placeholder="t('year')" :items="yearItems" v-model="year" allow-other />
+				<v-select v-model="year" :placeholder="t('year')" :items="yearItems" allow-other />
 			</div>
 		</div>
 
 		<v-divider v-if="type === 'timestamp' || type === 'dateTime'" />
 
 		<div
-			class="time-selects"
 			v-if="type === 'timestamp' || type === 'dateTime' || type === 'time'"
+			class="time-selects"
 			:class="{ seconds: includeSeconds, 'use-24': use24 }"
 		>
 			<div class="hour">
-				<v-select :items="hourItems" v-model="hours" />
+				<v-select v-model="hours" :items="hourItems" />
 			</div>
 			<div class="minutes">
-				<v-select :items="minutesSecondItems" v-model="minutes" />
+				<v-select v-model="minutes" :items="minutesSecondItems" />
 			</div>
 			<div v-if="includeSeconds" class="seconds">
-				<v-select :items="minutesSecondItems" v-model="seconds" />
+				<v-select v-model="seconds" :items="minutesSecondItems" />
 			</div>
-			<div class="period" v-if="use24 === false">
-				<v-select :items="['am', 'pm']" v-model="period" />
+			<div v-if="use24 === false" class="period">
+				<v-select v-model="period" :items="['am', 'pm']" />
 			</div>
 		</div>
 
@@ -62,7 +62,6 @@ import formatLocalized from '@/utils/localized-format';
 import { formatISO, parseISO, format, parse } from 'date-fns';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -86,6 +85,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -1,5 +1,5 @@
 <template>
-	<v-tabs vertical v-model="internalCurrentTab">
+	<v-tabs v-model="internalCurrentTab" vertical>
 		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tab.disabled">
 			{{ tab.text }}
 		</v-tab>
@@ -11,7 +11,6 @@ import { defineComponent, PropType } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['update:current'],
 	props: {
 		tabs: {
 			type: Array as PropType<string[]>,
@@ -26,6 +25,7 @@ export default defineComponent({
 			default: 'standard',
 		},
 	},
+	emits: ['update:current'],
 	setup(props, { emit }) {
 		const internalCurrentTab = useSync(props, 'current', emit);
 

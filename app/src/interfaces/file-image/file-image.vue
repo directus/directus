@@ -2,26 +2,26 @@
 	<div class="image">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice class="disabled-placeholder" v-else-if="disabled && !image" center icon="block">
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
 			{{ t('disabled') }}
 		</v-notice>
 
-		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
+		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<img :src="src" alt="" role="presentation" />
 
 			<div class="shadow" />
 
-			<div class="actions" v-if="!disabled">
-				<v-button icon rounded @click="lightboxActive = true" v-tooltip="t('zoom')">
+			<div v-if="!disabled" class="actions">
+				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="t('download')">
+				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="t('edit')">
+				<v-button v-tooltip="t('edit')" icon rounded @click="editDrawerActive = true">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button icon rounded @click="deselect" v-tooltip="t('deselect')">
+				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
 					<v-icon name="close" />
 				</v-button>
 			</div>
@@ -40,9 +40,9 @@
 				@input="stageEdits"
 			/>
 
-			<file-lightbox v-model="lightboxActive" :id="image.id" />
+			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else @input="setImage" from-library from-url />
+		<v-upload v-else from-library from-url @input="setImage" />
 	</div>
 </template>
 
@@ -68,7 +68,6 @@ type Image = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
@@ -80,6 +79,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 

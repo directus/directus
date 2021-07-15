@@ -1,5 +1,5 @@
 <template>
-	<div class="file-preview" v-if="type && !imgError">
+	<div v-if="type && !imgError" class="file-preview">
 		<div
 			v-if="type === 'image'"
 			class="image"
@@ -20,7 +20,6 @@
 import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		mime: {
 			type: String,
@@ -47,6 +46,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props) {
 		const imgError = ref(false);
 

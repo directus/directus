@@ -18,7 +18,7 @@
 			<activity-navigation v-model:filters="filters" />
 		</template>
 
-		<component class="layout" :is="`layout-${layout}`" />
+		<component :is="`layout-${layout}`" class="layout" />
 
 		<router-view name="detail" :primary-key="primaryKey" />
 
@@ -44,7 +44,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
-	name: 'activity-collection',
+	name: 'ActivityCollection',
 	components: { ActivityNavigation, FilterSidebarDetail, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {

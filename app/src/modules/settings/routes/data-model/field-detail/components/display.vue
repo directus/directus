@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
+		<v-fancy-select v-model="fieldData.meta.display" class="select" :items="selectItems" />
 
-		<v-notice class="not-found" type="danger" v-if="fieldData.meta.display && !selectedDisplay">
+		<v-notice v-if="fieldData.meta.display && !selectedDisplay" class="not-found" type="danger">
 			{{ t('display_not_found', { display: fieldData.meta.display }) }}
 			<div class="spacer" />
 			<button @click="fieldData.meta.display = null">{{ t('reset_display') }}</button>
@@ -15,21 +15,21 @@
 
 			<v-form
 				v-else-if="Array.isArray(selectedDisplay.options)"
+				v-model="fieldData.meta.display_options"
 				:fields="selectedDisplay.options"
 				primary-key="+"
-				v-model="fieldData.meta.display_options"
 			/>
 
 			<component
+				:is="`display-options-${selectedDisplay.id}`"
+				v-else
 				:value="fieldData.meta.display_options"
-				@input="fieldData.meta.display_options = $event"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
 				:new-fields="newFields"
 				:new-collections="newCollections"
-				:is="`display-options-${selectedDisplay.id}`"
-				v-else
+				@input="fieldData.meta.display_options = $event"
 			/>
 		</template>
 	</div>

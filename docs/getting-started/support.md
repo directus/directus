@@ -21,8 +21,8 @@ If you're experiencing issues or think you have found a problem in Directus, be 
 
 ::: tip Source Contributors
 
-Those who have installed from source should also remove all dependencies
-(`npx lerna clean -y`) and then reinstall them (`npm install`).
+Those who have installed from source should also remove all dependencies (`npx lerna clean -y`) and then reinstall them
+(`npm install`).
 
 :::
 

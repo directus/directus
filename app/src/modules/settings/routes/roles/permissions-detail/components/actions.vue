@@ -1,6 +1,6 @@
 <template>
 	<div class="actions">
-		<v-button @click="save" :loading="loading" icon rounded v-tooltip.bottom="t('save')">
+		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
 			<v-icon name="check" />
 		</v-button>
 	</div>
@@ -15,7 +15,6 @@ import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	emits: ['refresh'],
 	props: {
 		roleKey: {
 			type: String,
@@ -26,6 +25,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['refresh'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

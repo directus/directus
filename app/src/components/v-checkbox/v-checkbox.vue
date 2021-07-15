@@ -2,20 +2,20 @@
 	<component
 		:is="customValue ? 'div' : 'button'"
 		class="v-checkbox"
-		@click.stop="toggleInput"
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
 		:class="{ checked: isChecked, indeterminate, block }"
+		@click.stop="toggleInput"
 	>
-		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
-			<input class="custom-input" v-else v-model="internalValue" />
+			<input v-else v-model="internalValue" class="custom-input" />
 		</span>
-		<div class="append" v-if="$slots.append"><slot name="append" /></div>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</component>
 </template>
 
@@ -24,7 +24,6 @@ import { defineComponent, computed } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
 	props: {
 		value: {
 			type: String,
@@ -71,6 +70,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
 	setup(props, { emit }) {
 		const internalValue = useSync(props, 'value', emit);
 

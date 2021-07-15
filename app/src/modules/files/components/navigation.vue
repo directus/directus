@@ -7,7 +7,7 @@
 		</template>
 
 		<div class="folders">
-			<v-item-group scope="files-navigation" multiple v-model="openFolders">
+			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
 					<template #activator>
 						<v-list-item-icon>

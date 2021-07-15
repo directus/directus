@@ -3,14 +3,14 @@
 		<v-skeleton-loader v-for="n in 5" :key="n" />
 	</div>
 
-	<v-list class="translations" v-else>
+	<v-list v-else class="translations">
 		<v-list-item
 			v-for="(languageItem, i) in languages"
 			:key="languageItem[languagesPrimaryKeyField]"
 			clickable
-			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 			class="language-row"
 			block
+			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 		>
 			<v-icon class="translate" name="translate" left />
 			<render-template :template="internalLanguageTemplate" :collection="languagesCollection" :item="languageItem" />
@@ -48,7 +48,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { isPlainObject } from 'lodash';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { DrawerItem },
 	props: {
 		collection: {
@@ -76,6 +75,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();

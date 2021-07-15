@@ -2,18 +2,19 @@
 	<v-list-group v-if="children" v-show="visibleChildrenValues.length > 0" :value="value">
 		<template #activator>
 			<v-checkbox
+				v-model="treeValue"
 				:indeterminate="groupIndeterminateState"
 				:checked="groupCheckedStateOverride"
 				:label="text"
 				:value="value"
 				:disabled="disabled"
-				v-model="treeValue"
 			/>
 		</template>
 
 		<v-checkbox-tree-checkbox
 			v-for="choice in children"
 			:key="choice[itemValue]"
+			v-model="treeValue"
 			:value-combining="valueCombining"
 			:checked="childrenCheckedStateOverride"
 			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
@@ -25,12 +26,11 @@
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
-			v-model="treeValue"
 		/>
 	</v-list-group>
 
 	<v-list-item v-else-if="!children && !hidden">
-		<v-checkbox :disabled="disabled" :checked="checked" :label="text" :value="value" v-model="treeValue" />
+		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value" />
 	</v-list-item>
 </template>
 
@@ -44,7 +44,7 @@ type Delta = {
 };
 
 export default defineComponent({
-	name: 'v-checkbox-tree-checkbox',
+	name: 'VCheckboxTreeCheckbox',
 	props: {
 		text: {
 			type: String,
@@ -95,6 +95,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const visibleChildrenValues = computed(() => {
 			if (!props.search) return props.children?.map((child) => child[props.itemValue]);

@@ -4,8 +4,8 @@
 		<div class="modules">
 			<v-button
 				v-for="module in internalModules"
-				v-tooltip.right="module.name"
 				:key="module.id"
+				v-tooltip.right="module.name"
 				icon
 				x-large
 				:to="module.to"

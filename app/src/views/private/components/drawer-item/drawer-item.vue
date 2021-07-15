@@ -1,9 +1,9 @@
 <template>
 	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
-		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
-			<h1 class="type-title" v-else>
+			<h1 v-else class="type-title">
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
@@ -13,7 +13,7 @@
 		</template>
 
 		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
+			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -27,7 +27,7 @@
 					:width="file.width"
 					:height="file.height"
 					:title="file.title"
-					:inModal="true"
+					:in-modal="true"
 				/>
 
 				<v-form
@@ -44,11 +44,11 @@
 			</template>
 
 			<v-form
+				v-model="internalEdits"
 				:loading="loading"
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:fields="fields"
-				v-model="internalEdits"
 			/>
 		</div>
 	</v-drawer>
@@ -69,7 +69,6 @@ import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	emits: ['update:active', 'input'],
 	components: { FilePreview },
 	props: {
 		active: {
@@ -107,6 +106,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:active', 'input'],
 	setup(props, { emit }) {
 		const { t, te } = useI18n();
 

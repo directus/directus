@@ -1,5 +1,5 @@
 <template>
-	<v-menu attached v-model="menuActive">
+	<v-menu v-model="menuActive" attached>
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
@@ -13,17 +13,17 @@
 					>
 						<span class="text" />
 					</span>
-					<span class="placeholder" v-if="placeholder && !modelValue">{{ placeholder }}</span>
+					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline clickable @click="toggle" :disabled="disabled" />
+					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
 			</v-input>
 		</template>
 
 		<v-list v-if="!disabled" :mandatory="false">
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
+			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>
@@ -36,7 +36,6 @@ import { FieldTree } from './types';
 import { Field, Relation } from '@/types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FieldListItem },
 	props: {
 		disabled: {
@@ -68,6 +67,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const contentEl = ref<HTMLElement | null>(null);
 

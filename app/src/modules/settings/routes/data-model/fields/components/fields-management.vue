@@ -1,7 +1,7 @@
 <template>
 	<div class="fields-management">
-		<div class="field-grid" v-if="lockedFields.length > 0">
-			<field-select disabled v-for="field in lockedFields" :key="field.field" :field="field" />
+		<div v-if="lockedFields.length > 0" class="field-grid">
+			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
 		</div>
 
 		<draggable
@@ -12,10 +12,10 @@
 			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
 			item-key="field"
-			@update:model-value="setSort"
 			:animation="150"
-			:fallbackOnBody="true"
-			:invertSwap="true"
+			:fallback-on-body="true"
+			:invert-swap="true"
+			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
 				<field-select :field="element" :fields="usableFields" @setNestedSort="setNestedSort" />
@@ -25,7 +25,6 @@
 		<v-menu attached>
 			<template #activator="{ toggle, active }">
 				<v-button
-					@click="toggle"
 					class="add-field"
 					align="left"
 					:dashed="!active"
@@ -33,6 +32,7 @@
 					outlined
 					large
 					full-width
+					@click="toggle"
 				>
 					<v-icon name="add" />
 					{{ t('create_field') }}
@@ -68,7 +68,7 @@ import hideDragImage from '@/utils/hide-drag-image';
 import { orderBy, isNil } from 'lodash';
 
 export default defineComponent({
-	name: 'fields-management',
+	name: 'FieldsManagement',
 	components: { Draggable, FieldSelect },
 	props: {
 		collection: {

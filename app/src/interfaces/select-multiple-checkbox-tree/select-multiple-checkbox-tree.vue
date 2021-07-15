@@ -1,24 +1,24 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
 		<div class="search">
-			<v-input class="input" v-model="search" type="text" :placeholder="t('search')">
+			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />
 				</template>
 
-				<template #append v-if="search">
+				<template v-if="search" #append>
 					<v-icon name="clear" clickable @click="search = ''" />
 				</template>
 			</v-input>
 		</div>
 
 		<v-checkbox-tree
-			@update:model-value="$emit('input', $event)"
 			:model-value="value"
 			:search="search"
 			:disabled="disabled"
 			:choices="choices"
 			:value-combining="valueCombining"
+			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
 </template>
@@ -34,7 +34,6 @@ type Choice = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Array as PropType<string[]>,
@@ -53,6 +52,7 @@ export default defineComponent({
 			default: 'all',
 		},
 	},
+	emits: ['input'],
 	setup() {
 		const { t } = useI18n();
 		const search = ref('');
