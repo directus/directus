@@ -23,8 +23,7 @@
 		"serve": "vite preview",
 		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
 		"predev": "npm run copy-docs-images",
-		"prebuild": "npm run copy-docs-images",
-		"prepublishOnly": "npm run build"
+		"prebuild": "npm run copy-docs-images"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {

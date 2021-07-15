@@ -18,7 +18,6 @@
 		"dist"
 	],
 	"scripts": {
-		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",

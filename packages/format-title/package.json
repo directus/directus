@@ -29,8 +29,7 @@
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "rollup -c rollup.config.js",
-		"start": "rollup -c rollup.config.js -w",
-		"prepublishOnly": "npm run build"
+		"start": "rollup -c rollup.config.js -w"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "19.0.1",

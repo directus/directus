@@ -7,8 +7,7 @@
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
 		"prepare": "npm run build",
-		"dev": "npm-watch build",
-		"prepublishOnly": "npm run build"
+		"dev": "npm-watch build"
 	},
 	"watch": {
 		"build": {
