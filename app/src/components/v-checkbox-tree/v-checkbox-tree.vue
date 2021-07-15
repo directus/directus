@@ -1,8 +1,9 @@
 <template>
-	<v-list :mandatory="false" v-model="openSelection">
+	<v-list v-model="openSelection" :mandatory="false">
 		<v-checkbox-tree-checkbox
 			v-for="choice in choices"
 			:key="choice[itemValue]"
+			v-model="value"
 			:value-combining="valueCombining"
 			:search="search"
 			:item-text="itemText"
@@ -12,7 +13,6 @@
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
-			v-model="value"
 		/>
 	</v-list>
 </template>
@@ -22,7 +22,7 @@ import { computed, ref, defineComponent, PropType } from 'vue';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
 export default defineComponent({
-	name: 'v-checkbox-tree',
+	name: 'VCheckboxTree',
 	components: { VCheckboxTreeCheckbox },
 	props: {
 		choices: {
@@ -58,6 +58,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const value = computed({
 			get() {

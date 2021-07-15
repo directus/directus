@@ -5,9 +5,9 @@
 	<interface-select-multiple-checkbox
 		v-else
 		:choices="items"
-		@input="$emit('input', $event)"
 		:value="value"
 		:disabled="disabled"
+		@input="$emit('input', $event)"
 	/>
 </template>
 
@@ -17,7 +17,6 @@ import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Array,
@@ -32,6 +31,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const { t } = useI18n();
 

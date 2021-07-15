@@ -36,7 +36,7 @@
 				</div>
 			</transition-expand>
 
-			<span class="reset-toggle" v-if="systemVisible && appAccess">
+			<span v-if="systemVisible && appAccess" class="reset-toggle">
 				{{ t('reset_system_permissions_to') }}
 				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
 				/
@@ -46,14 +46,14 @@
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
-		<v-dialog @update:model-value="resetActive = false" :model-value="!!resetActive" @esc="resetActive = false">
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
 					{{ t('reset_system_permissions_copy') }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button @click="resetActive = false" secondary>{{ t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions(resetActive === 'recommended')" :loading="resetting">
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
 						{{ t('reset') }}
 					</v-button>
 				</v-card-actions>

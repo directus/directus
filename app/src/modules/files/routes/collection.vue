@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title" :class="{ dragging }">
-		<template #headline v-if="breadcrumb">
+		<template v-if="breadcrumb" #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
@@ -19,9 +19,9 @@
 
 			<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @esc="moveToDialogActive = false">
+			<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
-					<v-button rounded icon @click="on" class="folder" v-tooltip.bottom="t('move_to_folder')">
+					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" @click="on">
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -34,25 +34,25 @@
 					</v-card-text>
 
 					<v-card-actions>
-						<v-button @click="moveToDialogActive = false" secondary>
+						<v-button secondary @click="moveToDialogActive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="moveToFolder" :loading="moving">
+						<v-button :loading="moving" @click="moveToFolder">
 							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -62,10 +62,10 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -73,23 +73,23 @@
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				class="action-batch"
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				rounded
 				icon
 				class="add-new"
 				:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
-				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -100,7 +100,7 @@
 			<files-navigation :current-folder="folder" />
 		</template>
 
-		<component class="layout" :is="`layout-${layout}`">
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -127,8 +127,8 @@
 		<router-view name="addNew" :folder="folder" @upload="refresh" />
 
 		<drawer-batch
-			:primary-keys="selection"
 			v-model:active="batchEditActive"
+			:primary-keys="selection"
 			collection="directus_files"
 			@refresh="refresh"
 		/>
@@ -178,7 +178,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'files-collection',
+	name: 'FilesCollection',
 	components: {
 		FilesNavigation,
 		FilterSidebarDetail,

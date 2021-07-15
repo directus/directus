@@ -1,27 +1,27 @@
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div class="selected" v-if="internalSelection.length > 0" @click="internalSelection = []">
+			<div v-if="internalSelection.length > 0" class="selected" @click="internalSelection = []">
 				<v-icon name="cancel" outline />
 				<span class="label">{{ t('n_items_selected', internalSelection.length) }}</span>
 			</div>
-			<button class="select-all" v-else @click="$emit('select-all')">
+			<button v-else class="select-all" @click="$emit('select-all')">
 				<v-icon name="check_circle" outline />
 				<span class="label">{{ t('select_all') }}</span>
 			</button>
 		</div>
 		<div class="end">
 			<v-icon
+				v-tooltip.top="t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
-				v-tooltip.top="t('card_size')"
 				clickable
 				@click="toggleSize"
 			/>
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div class="sort-selector" v-tooltip.top="t('sort_field')" @click="toggle">
+					<div v-tooltip.top="t('sort_field')" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</div>
 				</template>
@@ -40,10 +40,10 @@
 				</v-list>
 			</v-menu>
 			<v-icon
+				v-tooltip.top="t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
-				v-tooltip.top="t('sort_direction')"
 				clickable
 				@click="toggleDescending"
 			/>
@@ -58,7 +58,6 @@ import { Field } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
 	props: {
 		fields: {
 			type: Array as PropType<Field[]>,
@@ -77,6 +76,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

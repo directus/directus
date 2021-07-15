@@ -1,9 +1,9 @@
 <template>
-	<div class="interface-input-rich-text-md" :class="view[0]" ref="markdownInterface">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.heading')">
+					<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
 						<v-icon name="title" />
 					</v-button>
 				</template>
@@ -16,63 +16,63 @@
 			</v-menu>
 
 			<v-button
+				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 				small
 				icon
 				@click="edit('bold')"
-				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 			>
 				<v-icon name="format_bold" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 				small
 				icon
 				@click="edit('italic')"
-				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 			>
 				<v-icon name="format_italic" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 				small
 				icon
 				@click="edit('strikethrough')"
-				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
-			<v-button small icon @click="edit('listBulleted')" v-tooltip="t('wysiwyg_options.bullist')">
+			<v-button v-tooltip="t('wysiwyg_options.bullist')" small icon @click="edit('listBulleted')">
 				<v-icon name="format_list_bulleted" />
 			</v-button>
-			<v-button small icon @click="edit('listNumbered')" v-tooltip="t('wysiwyg_options.numlist')">
+			<v-button v-tooltip="t('wysiwyg_options.numlist')" small icon @click="edit('listNumbered')">
 				<v-icon name="format_list_numbered" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 				small
 				icon
 				@click="edit('blockquote')"
-				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 			>
 				<v-icon name="format_quote" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 				small
 				icon
 				@click="edit('code')"
-				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 			>
 				<v-icon name="code" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 				small
 				icon
 				@click="edit('link')"
-				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 			>
 				<v-icon name="insert_link" />
 			</v-button>
 
 			<v-menu show-arrow :close-on-content-click="false">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.table')">
+					<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
 						<v-icon name="table_chart" />
 					</v-button>
 				</template>
@@ -81,11 +81,11 @@
 					<div class="table-options">
 						<div class="field half">
 							<p class="type-label">{{ t('rows') }}</p>
-							<v-input :min="1" type="number" v-model="table.rows" />
+							<v-input v-model="table.rows" :min="1" type="number" />
 						</div>
 						<div class="field half">
 							<p class="type-label">{{ t('columns') }}</p>
-							<v-input :min="1" type="number" v-model="table.columns" />
+							<v-input v-model="table.columns" :min="1" type="number" />
 						</div>
 						<div class="field full">
 							<v-button
@@ -104,24 +104,24 @@
 				</template>
 			</v-menu>
 
-			<v-button @click="imageDialogOpen = true" small icon v-tooltip="t('wysiwyg_options.image')">
+			<v-button v-tooltip="t('wysiwyg_options.image')" small icon @click="imageDialogOpen = true">
 				<v-icon name="insert_photo" />
 			</v-button>
 
 			<v-button
 				v-for="custom in customSyntax"
+				:key="custom.name"
+				v-tooltip="custom.name"
 				small
 				icon
-				:key="custom.name"
 				@click="edit('custom', custom)"
-				v-tooltip="custom.name"
 			>
 				<v-icon :name="custom.icon" />
 			</v-button>
 
 			<div class="spacer"></div>
 
-			<v-item-group class="view" mandatory v-model="view" rounded>
+			<v-item-group v-model="view" class="view" mandatory rounded>
 				<v-button x-small value="editor">Editor</v-button>
 				<v-button x-small value="preview">Preview</v-button>
 			</v-item-group>
@@ -135,10 +135,10 @@
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onImageUpload" from-url from-library />
+					<v-upload from-url from-library @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="imageDialogOpen = null" secondary>{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -162,7 +162,6 @@ import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -185,6 +184,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

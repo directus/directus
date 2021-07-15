@@ -2,10 +2,10 @@
 	<div v-if="collection.collection.startsWith('directus_') === false">
 		<v-menu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
-				<v-icon name="more_vert" clickable @click="toggle" class="ctx-toggle" />
+				<v-icon name="more_vert" clickable class="ctx-toggle" @click="toggle" />
 			</template>
 			<v-list>
-				<v-list-item clickable @click="deleteActive = true" class="danger">
+				<v-list-item clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>

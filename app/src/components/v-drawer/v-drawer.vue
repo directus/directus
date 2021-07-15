@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="internalActive" @esc="$emit('cancel')" :persistent="persistent" placement="right">
+	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="$emit('cancel')">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
@@ -7,12 +7,12 @@
 		<article class="v-drawer">
 			<v-button
 				v-if="cancelable"
+				v-tooltip.bottom="t('cancel')"
 				class="cancel"
-				@click="$emit('cancel')"
 				icon
 				rounded
 				secondary
-				v-tooltip.bottom="t('cancel')"
+				@click="$emit('cancel')"
 			>
 				<v-icon name="close" />
 			</v-button>
@@ -23,7 +23,7 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
-					<header-bar :title="title" @primary="$emit('cancel')" primary-action-icon="close">
+					<header-bar :title="title" primary-action-icon="close" @primary="$emit('cancel')">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -63,7 +63,6 @@ import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['cancel', 'update:modelValue'],
 	components: {
 		HeaderBar,
 	},
@@ -97,6 +96,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['cancel', 'update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

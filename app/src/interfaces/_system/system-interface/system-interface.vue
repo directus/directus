@@ -5,9 +5,9 @@
 	<v-select
 		v-else
 		:items="items"
-		@update:model-value="$emit('input', $event)"
 		:model-value="value"
 		:placeholder="t('interfaces.system-interface.placeholder')"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
@@ -18,7 +18,6 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -29,6 +28,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

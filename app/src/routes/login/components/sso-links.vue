@@ -3,7 +3,7 @@
 		<template v-if="providers && providers.length > 0">
 			<v-divider />
 
-			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
+			<a v-for="provider in providers" :key="provider.name" class="sso-link" :href="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</a>
 		</template>

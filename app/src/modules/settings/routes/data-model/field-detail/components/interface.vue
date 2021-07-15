@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
+		<v-fancy-select v-model="fieldData.meta.interface" class="select" :items="selectItems" />
 
-		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
+		<v-notice v-if="fieldData.meta.interface && !selectedInterface" class="not-found" type="danger">
 			{{ t('interface_not_found', { interface: fieldData.meta.interface }) }}
 			<div class="spacer" />
 			<button @click="fieldData.meta.interface = null">{{ t('reset_interface') }}</button>
@@ -15,21 +15,21 @@
 
 			<v-form
 				v-else-if="Array.isArray(selectedInterface.options)"
+				v-model="fieldData.meta.options"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				v-model="fieldData.meta.options"
 			/>
 
 			<component
+				:is="`interface-options-${selectedInterface.id}`"
+				v-else
 				:value="fieldData.meta.options"
-				@input="fieldData.meta.options = $event"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
 				:new-fields="newFields"
 				:new-collections="newCollections"
-				:is="`interface-options-${selectedInterface.id}`"
-				v-else
+				@input="fieldData.meta.options = $event"
 			/>
 		</template>
 	</div>

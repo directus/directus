@@ -7,15 +7,15 @@
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @esc="confirmDelete = false">
+			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('delete')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -25,10 +25,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -36,22 +36,22 @@
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="t('invite_users')"
 				rounded
 				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="t('invite_users')"
 				class="invite-user"
+				@click="userInviteModalActive = true"
 			>
 				<v-icon name="person_add" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -71,12 +71,12 @@
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
+				v-model="edits"
 				collection="directus_roles"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
-				v-model="edits"
 			/>
 		</div>
 
@@ -101,7 +101,7 @@ import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
 export default defineComponent({
-	name: 'roles-item',
+	name: 'RolesItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
 	props: {
 		primaryKey: {

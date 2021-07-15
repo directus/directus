@@ -1,5 +1,5 @@
 <template>
-	<div class="md" :class="pageClass" v-html="html" @click="onClick" />
+	<div class="md" :class="pageClass" @click="onClick" v-html="html" />
 </template>
 
 <script lang="ts">

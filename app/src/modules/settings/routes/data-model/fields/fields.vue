@@ -11,13 +11,13 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-if="item && item.collection.startsWith('directus_') === false"
+						v-tooltip.bottom="t('delete_collection')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="t('delete_collection')"
-						v-if="item && item.collection.startsWith('directus_') === false"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -27,10 +27,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -38,12 +38,12 @@
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -65,12 +65,12 @@
 			<router-view name="field" :collection="collection" :field="field" :type="type" />
 
 			<v-form
+				v-model="edits.meta"
 				collection="directus_collections"
 				:loading="loading"
 				:initial-values="item && item.meta"
 				:batch-mode="isBatch"
 				:primary-key="collection"
-				v-model="edits.meta"
 				:disabled="item && item.collection.startsWith('directus_')"
 			/>
 		</div>

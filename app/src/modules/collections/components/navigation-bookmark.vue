@@ -10,7 +10,7 @@
 
 		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
 			<v-list>
-				<v-list-item clickable @click="renameActive = true" :disabled="isMine === false">
+				<v-list-item clickable :disabled="isMine === false" @click="renameActive = true">
 					<v-list-item-icon>
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
@@ -18,7 +18,7 @@
 						<v-text-overflow :text="t('rename_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable @click="deleteActive = true" class="danger" :disabled="isMine === false">
+				<v-list-item clickable class="danger" :disabled="isMine === false" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
@@ -37,7 +37,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
+					<v-button :disabled="renameValue === null" :loading="renameSaving" @click="renameSave">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -49,7 +49,7 @@
 				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="deleteSave" :loading="deleteSaving" class="action-delete">
+					<v-button :loading="deleteSaving" class="action-delete" @click="deleteSave">
 						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>

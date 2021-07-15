@@ -24,14 +24,14 @@
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="t('no_collections')" v-else center>
+		<v-info v-else icon="box" :title="t('no_collections')" center>
 			<template v-if="isAdmin">
 				{{ t('no_collections_copy_admin') }}
 			</template>
 			<template v-else>
 				{{ t('no_collections_copy') }}
 			</template>
-			<template #append v-if="isAdmin">
+			<template v-if="isAdmin" #append>
 				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 		</v-info>
@@ -56,7 +56,7 @@ import { useUserStore } from '@/stores';
 import { md } from '@/utils/md';
 
 export default defineComponent({
-	name: 'collections-overview',
+	name: 'CollectionsOverview',
 	components: {
 		CollectionsNavigation,
 		CollectionsNavigationSearch,

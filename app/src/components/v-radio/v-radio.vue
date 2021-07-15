@@ -18,7 +18,6 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		value: {
 			type: String,
@@ -49,6 +48,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
 			return props.modelValue === props.value;
