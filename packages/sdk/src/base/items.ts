@@ -64,7 +64,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 			}
 		);
 	}
-	
+
 	async updateByQuery(updateQuery: QueryMany<T>, data: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>> {
 		return await this.transport.patch<PartialItem<T>[]>(
 			`${this.endpoint}`,
