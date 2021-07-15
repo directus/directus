@@ -543,7 +543,7 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[this.collection].primary;
+					const primaryKeyField = this.schema.collections[relation.collection].primary;
 
 					for (const item of alterations.update) {
 						await itemsService.updateOne(

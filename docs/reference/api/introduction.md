@@ -138,14 +138,6 @@ Alternatively, you can provide an object detailing the changes as follows:
 This is useful if you need to have more tightly control on staged changes, or when you're working with a big relational
 dataset.
 
-::: warning Deleting Relational Data
-
-Directus won't _delete_ relational data from the database. Instead, relational "deletions" will nullify the related
-foreign key. This means that your data will never suddenly disappear, but it also means that you might end up with
-orphaned items.
-
-:::
-
 #### Many-to-Any (Union Types)
 
 Many-to-Any fields work very similar to a "regular" many-to-many, with the exception that the related field can pull in
