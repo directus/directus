@@ -156,5 +156,4 @@ fields:
     readonly: true
     options:
       iconRight: account_circle
-      title: User DN
     width: full

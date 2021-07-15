@@ -306,7 +306,7 @@ export default defineComponent({
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
 				// Password shouldn't be editable for LDAP users
-				if (field.field === 'password' && !!item.value?.user_dn) {
+				if (field.field === 'password' && item.value?.user_dn) {
 					field.meta.readonly = true;
 				}
 				return !fieldsDenyList.includes(field.field);

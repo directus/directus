@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone, cloneDeep, uniq } from 'lodash';
+import { clone, uniq } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import {
