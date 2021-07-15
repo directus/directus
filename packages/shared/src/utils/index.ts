@@ -5,3 +5,4 @@ export * from './is-extension';
 export * from './list-folders';
 export * from './pluralize';
 export * from './resolve-package';
+export * from './validate-extension-manifest';
