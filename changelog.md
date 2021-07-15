@@ -2,122 +2,217 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.85 (July 15, 2021)
+
+### :bug: Bug Fixes
+
+- **shared**
+  - [#6836](https://github.com/directus/directus/pull/6836) Fix production build on node versions <16
+    ([@nickrum](https://github.com/nickrum))
+
 ## v9.0.0-rc.84 (July 15, 2021)
 
 ### :sparkles: New Features
 
 - **sdk**
-  - [#6824](https://github.com/directus/directus/pull/6824) add updateByQuery to js sdk ([@wc-matteo](https://github.com/wc-matteo))
-  - [#6742](https://github.com/directus/directus/pull/6742) Support invite_url in SDK invite method ([@paescuj](https://github.com/paescuj))
+  - [#6824](https://github.com/directus/directus/pull/6824) add updateByQuery to js sdk
+    ([@wc-matteo](https://github.com/wc-matteo))
+  - [#6742](https://github.com/directus/directus/pull/6742) Support invite_url in SDK invite method
+    ([@paescuj](https://github.com/paescuj))
 - **App**
-  - [#6799](https://github.com/directus/directus/pull/6799) Support Slovenian language ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6799](https://github.com/directus/directus/pull/6799) Support Slovenian language
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **Docker**
-  - [#6796](https://github.com/directus/directus/pull/6796) Add support for Docker ARM image ([@paescuj](https://github.com/paescuj))
+  - [#6796](https://github.com/directus/directus/pull/6796) Add support for Docker ARM image
+    ([@paescuj](https://github.com/paescuj))
 - **Extensions**
-  - [#6735](https://github.com/directus/directus/pull/6735) Allow extension-sdk to bundle API extensions as well ([@nickrum](https://github.com/nickrum))
+  - [#6735](https://github.com/directus/directus/pull/6735) Allow extension-sdk to bundle API extensions as well
+    ([@nickrum](https://github.com/nickrum))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#6835](https://github.com/directus/directus/pull/6835) Add v-md directive ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6640](https://github.com/directus/directus/pull/6640) Support arrays in formatted-json-value display ([@Kematia](https://github.com/Kematia))
+  - [#6835](https://github.com/directus/directus/pull/6835) Add v-md directive
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6640](https://github.com/directus/directus/pull/6640) Support arrays in formatted-json-value display
+    ([@Kematia](https://github.com/Kematia))
 - **Extensions**
-  - [#6835](https://github.com/directus/directus/pull/6835) Add v-md directive ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6706](https://github.com/directus/directus/pull/6706) Configure build command based on extension manifest ([@nickrum](https://github.com/nickrum))
+  - [#6835](https://github.com/directus/directus/pull/6835) Add v-md directive
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6706](https://github.com/directus/directus/pull/6706) Configure build command based on extension manifest
+    ([@nickrum](https://github.com/nickrum))
 - **API**
-  - [#6804](https://github.com/directus/directus/pull/6804) Allow setting a custom mailgun host ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6746](https://github.com/directus/directus/pull/6746) Add encrypt option to MS SQL questions ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6734](https://github.com/directus/directus/pull/6734) No error message from password reset request #6658 ([@dannycoulombe](https://github.com/dannycoulombe))
+  - [#6804](https://github.com/directus/directus/pull/6804) Allow setting a custom mailgun host
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6746](https://github.com/directus/directus/pull/6746) Add encrypt option to MS SQL questions
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6734](https://github.com/directus/directus/pull/6734) No error message from password reset request #6658
+    ([@dannycoulombe](https://github.com/dannycoulombe))
 - **create-directus-project**
-  - [#6791](https://github.com/directus/directus/pull/6791) Catch and show errors in execa calls ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6791](https://github.com/directus/directus/pull/6791) Catch and show errors in execa calls
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **Docker**
-  - [#6659](https://github.com/directus/directus/pull/6659) Install exact version of Directus ([@paescuj](https://github.com/paescuj))
+  - [#6659](https://github.com/directus/directus/pull/6659) Install exact version of Directus
+    ([@paescuj](https://github.com/paescuj))
 
 ### :bug: Bug Fixes
 
 - **Misc.**
-  - [#6813](https://github.com/directus/directus/pull/6813) Add required deps for Docker ARM build ([@paescuj](https://github.com/paescuj))
-  - [#6805](https://github.com/directus/directus/pull/6805) disable lerna access verification ([@SeanDylanGoff](https://github.com/SeanDylanGoff))
+  - [#6813](https://github.com/directus/directus/pull/6813) Add required deps for Docker ARM build
+    ([@paescuj](https://github.com/paescuj))
+  - [#6805](https://github.com/directus/directus/pull/6805) disable lerna access verification
+    ([@SeanDylanGoff](https://github.com/SeanDylanGoff))
 - **App**
-  - [#6810](https://github.com/directus/directus/pull/6810) Fix sidebar overflow in preset detail ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6809](https://github.com/directus/directus/pull/6809) Fix relationship setup not showing current collection ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6807](https://github.com/directus/directus/pull/6807) Clear group when duplicating field ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6806](https://github.com/directus/directus/pull/6806) Fix system locked fields showing double ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6801](https://github.com/directus/directus/pull/6801) Fix permissions/validation default value for full ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6800](https://github.com/directus/directus/pull/6800) Fetch all languages in the translations interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6733](https://github.com/directus/directus/pull/6733) Fix md editor being empty when editing existing value ([@nickrum](https://github.com/nickrum))
-  - [#6732](https://github.com/directus/directus/pull/6732) Fix two small issues around field grouping ([@nickrum](https://github.com/nickrum))
+  - [#6810](https://github.com/directus/directus/pull/6810) Fix sidebar overflow in preset detail
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6809](https://github.com/directus/directus/pull/6809) Fix relationship setup not showing current collection
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6807](https://github.com/directus/directus/pull/6807) Clear group when duplicating field
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6806](https://github.com/directus/directus/pull/6806) Fix system locked fields showing double
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6801](https://github.com/directus/directus/pull/6801) Fix permissions/validation default value for full
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6800](https://github.com/directus/directus/pull/6800) Fetch all languages in the translations interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6733](https://github.com/directus/directus/pull/6733) Fix md editor being empty when editing existing value
+    ([@nickrum](https://github.com/nickrum))
+  - [#6732](https://github.com/directus/directus/pull/6732) Fix two small issues around field grouping
+    ([@nickrum](https://github.com/nickrum))
 - **API**
-  - [#6808](https://github.com/directus/directus/pull/6808) Use [String] for CSV type in GraphQL ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6783](https://github.com/directus/directus/pull/6783) Fixed issue that would prevent reordering in M2A ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6740](https://github.com/directus/directus/pull/6740) Fix "Duplicate environment variable" error message never showing up ([@paescuj](https://github.com/paescuj))
-  - [#6722](https://github.com/directus/directus/pull/6722) Fixed migration changing filesize failing on Oracle ([@aidenfoxx](https://github.com/aidenfoxx))
-  - [#6645](https://github.com/directus/directus/pull/6645) Fix item.read hook not firing for readByQuery ([@MoltenCoffee](https://github.com/MoltenCoffee))
+  - [#6808](https://github.com/directus/directus/pull/6808) Use [String] for CSV type in GraphQL
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6783](https://github.com/directus/directus/pull/6783) Fixed issue that would prevent reordering in M2A
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6740](https://github.com/directus/directus/pull/6740) Fix "Duplicate environment variable" error message never
+    showing up ([@paescuj](https://github.com/paescuj))
+  - [#6722](https://github.com/directus/directus/pull/6722) Fixed migration changing filesize failing on Oracle
+    ([@aidenfoxx](https://github.com/aidenfoxx))
+  - [#6645](https://github.com/directus/directus/pull/6645) Fix item.read hook not firing for readByQuery
+    ([@MoltenCoffee](https://github.com/MoltenCoffee))
 - **Extensions**
-  - [#6700](https://github.com/directus/directus/pull/6700) Fix requiring vue from a cjs/umd dependency in a extension ([@nickrum](https://github.com/nickrum))
+  - [#6700](https://github.com/directus/directus/pull/6700) Fix requiring vue from a cjs/umd dependency in a extension
+    ([@nickrum](https://github.com/nickrum))
 
 ### :memo: Documentation
 
-- [#6785](https://github.com/directus/directus/pull/6785) Clarify definition of environment variables ([@paescuj](https://github.com/paescuj))
-- [#6784](https://github.com/directus/directus/pull/6784) Add note about sensitive values in Docker guide ([@paescuj](https://github.com/paescuj))
+- [#6785](https://github.com/directus/directus/pull/6785) Clarify definition of environment variables
+  ([@paescuj](https://github.com/paescuj))
+- [#6784](https://github.com/directus/directus/pull/6784) Add note about sensitive values in Docker guide
+  ([@paescuj](https://github.com/paescuj))
 
 ### :package: Dependency Updates
 
-- [#6828](https://github.com/directus/directus/pull/6828) update dependency @rollup/plugin-node-resolve to v13.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6826](https://github.com/directus/directus/pull/6826) update dependency @rollup/plugin-commonjs to v19.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6812](https://github.com/directus/directus/pull/6812) update dependency rollup to v2.53.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6788](https://github.com/directus/directus/pull/6788) update dependency tedious to v11.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6780](https://github.com/directus/directus/pull/6780) update dependency vue-i18n to v9.1.7 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6777](https://github.com/directus/directus/pull/6777) update dependency lint-staged to v11.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6769](https://github.com/directus/directus/pull/6769) update typescript-eslint monorepo to v4.28.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6768](https://github.com/directus/directus/pull/6768) update dependency vite to v2.4.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6767](https://github.com/directus/directus/pull/6767) update dependency @vitejs/plugin-vue to v1.2.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6748](https://github.com/directus/directus/pull/6748) update dependency pinia to v2.0.0-beta.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6747](https://github.com/directus/directus/pull/6747) update dependency knex to v0.95.7 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6745](https://github.com/directus/directus/pull/6745) update dependency @tinymce/tinymce-vue to v4.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6744](https://github.com/directus/directus/pull/6744) update dependency ts-node to v10.1.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6727](https://github.com/directus/directus/pull/6727) update dependency @types/cors to v2.8.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6726](https://github.com/directus/directus/pull/6726) update dependency @types/figlet to v1.5.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6724](https://github.com/directus/directus/pull/6724) update dependency @types/marked-terminal to v3.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6717](https://github.com/directus/directus/pull/6717) update dependency sass to v1.35.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6716](https://github.com/directus/directus/pull/6716) update dependency @types/qs to v6.9.7 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6715](https://github.com/directus/directus/pull/6715) update dependency @types/qrcode to v1.4.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6712](https://github.com/directus/directus/pull/6712) update dependency @types/nodemailer to v6.4.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6711](https://github.com/directus/directus/pull/6711) update dependency gatsby-source-filesystem to v3.9.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6710](https://github.com/directus/directus/pull/6710) update dependency rollup to v2.53.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6708](https://github.com/directus/directus/pull/6708) update dependency @types/node-cron to v2.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6707](https://github.com/directus/directus/pull/6707) update dependency @types/marked to v2.0.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6705](https://github.com/directus/directus/pull/6705) update dependency @types/markdown-it to v12.0.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6704](https://github.com/directus/directus/pull/6704) update dependency @types/lodash to v4.14.171 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6702](https://github.com/directus/directus/pull/6702) update dependency @types/listr to v0.14.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6701](https://github.com/directus/directus/pull/6701) update dependency @types/keyv to v3.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6697](https://github.com/directus/directus/pull/6697) update dependency @types/jsonwebtoken to v8.5.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6696](https://github.com/directus/directus/pull/6696) update dependency @types/json2csv to v5.0.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6694](https://github.com/directus/directus/pull/6694) update dependency @types/js-yaml to v4.0.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6692](https://github.com/directus/directus/pull/6692) update dependency @types/jest to v26.0.24 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6690](https://github.com/directus/directus/pull/6690) update dependency @types/inquirer to v7.3.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6689](https://github.com/directus/directus/pull/6689) update dependency @types/fs-extra to v9.0.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6688](https://github.com/directus/directus/pull/6688) update dependency @types/figlet to v1.5.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6687](https://github.com/directus/directus/pull/6687) update dependency @types/express-session to v1.17.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6686](https://github.com/directus/directus/pull/6686) update dependency @types/express to v4.17.13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6685](https://github.com/directus/directus/pull/6685) update dependency @types/dockerode to v3.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6683](https://github.com/directus/directus/pull/6683) update dependency @types/diff to v5.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6682](https://github.com/directus/directus/pull/6682) update dependency @types/cors to v2.8.11 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6681](https://github.com/directus/directus/pull/6681) update dependency @types/color to v3.0.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6680](https://github.com/directus/directus/pull/6680) update dependency @types/codemirror to v5.60.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6679](https://github.com/directus/directus/pull/6679) update dependency @types/bytes to v3.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6678](https://github.com/directus/directus/pull/6678) update dependency @types/busboy to v0.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6677](https://github.com/directus/directus/pull/6677) update dependency @types/body-parser to v1.19.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6676](https://github.com/directus/directus/pull/6676) update dependency @types/async to v3.2.7 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6675](https://github.com/directus/directus/pull/6675) update dependency @types/sharp to v0.28.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6669](https://github.com/directus/directus/pull/6669) update dependency vite to v2.4.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6668](https://github.com/directus/directus/pull/6668) update dependency eslint-plugin-vue to v7.13.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6667](https://github.com/directus/directus/pull/6667) update dependency dompurify to v2.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6660](https://github.com/directus/directus/pull/6660) update typescript-eslint monorepo to v4.28.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6657](https://github.com/directus/directus/pull/6657) update dependency vite to v2.4.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6652](https://github.com/directus/directus/pull/6652) update dependency nock to v13.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6634](https://github.com/directus/directus/pull/6634) update dependency @types/stream-json to v1.7.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6630](https://github.com/directus/directus/pull/6630) update dependency eslint to v7.30.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6828](https://github.com/directus/directus/pull/6828) update dependency @rollup/plugin-node-resolve to v13.0.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6826](https://github.com/directus/directus/pull/6826) update dependency @rollup/plugin-commonjs to v19.0.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6812](https://github.com/directus/directus/pull/6812) update dependency rollup to v2.53.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6788](https://github.com/directus/directus/pull/6788) update dependency tedious to v11.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6780](https://github.com/directus/directus/pull/6780) update dependency vue-i18n to v9.1.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6777](https://github.com/directus/directus/pull/6777) update dependency lint-staged to v11.0.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6769](https://github.com/directus/directus/pull/6769) update typescript-eslint monorepo to v4.28.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6768](https://github.com/directus/directus/pull/6768) update dependency vite to v2.4.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6767](https://github.com/directus/directus/pull/6767) update dependency @vitejs/plugin-vue to v1.2.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6748](https://github.com/directus/directus/pull/6748) update dependency pinia to v2.0.0-beta.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6747](https://github.com/directus/directus/pull/6747) update dependency knex to v0.95.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6745](https://github.com/directus/directus/pull/6745) update dependency @tinymce/tinymce-vue to v4.0.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6744](https://github.com/directus/directus/pull/6744) update dependency ts-node to v10.1.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6727](https://github.com/directus/directus/pull/6727) update dependency @types/cors to v2.8.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6726](https://github.com/directus/directus/pull/6726) update dependency @types/figlet to v1.5.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6724](https://github.com/directus/directus/pull/6724) update dependency @types/marked-terminal to v3.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6717](https://github.com/directus/directus/pull/6717) update dependency sass to v1.35.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6716](https://github.com/directus/directus/pull/6716) update dependency @types/qs to v6.9.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6715](https://github.com/directus/directus/pull/6715) update dependency @types/qrcode to v1.4.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6712](https://github.com/directus/directus/pull/6712) update dependency @types/nodemailer to v6.4.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6711](https://github.com/directus/directus/pull/6711) update dependency gatsby-source-filesystem to v3.9.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6710](https://github.com/directus/directus/pull/6710) update dependency rollup to v2.53.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6708](https://github.com/directus/directus/pull/6708) update dependency @types/node-cron to v2.0.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6707](https://github.com/directus/directus/pull/6707) update dependency @types/marked to v2.0.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6705](https://github.com/directus/directus/pull/6705) update dependency @types/markdown-it to v12.0.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6704](https://github.com/directus/directus/pull/6704) update dependency @types/lodash to v4.14.171
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6702](https://github.com/directus/directus/pull/6702) update dependency @types/listr to v0.14.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6701](https://github.com/directus/directus/pull/6701) update dependency @types/keyv to v3.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6697](https://github.com/directus/directus/pull/6697) update dependency @types/jsonwebtoken to v8.5.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6696](https://github.com/directus/directus/pull/6696) update dependency @types/json2csv to v5.0.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6694](https://github.com/directus/directus/pull/6694) update dependency @types/js-yaml to v4.0.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6692](https://github.com/directus/directus/pull/6692) update dependency @types/jest to v26.0.24
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6690](https://github.com/directus/directus/pull/6690) update dependency @types/inquirer to v7.3.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6689](https://github.com/directus/directus/pull/6689) update dependency @types/fs-extra to v9.0.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6688](https://github.com/directus/directus/pull/6688) update dependency @types/figlet to v1.5.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6687](https://github.com/directus/directus/pull/6687) update dependency @types/express-session to v1.17.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6686](https://github.com/directus/directus/pull/6686) update dependency @types/express to v4.17.13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6685](https://github.com/directus/directus/pull/6685) update dependency @types/dockerode to v3.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6683](https://github.com/directus/directus/pull/6683) update dependency @types/diff to v5.0.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6682](https://github.com/directus/directus/pull/6682) update dependency @types/cors to v2.8.11
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6681](https://github.com/directus/directus/pull/6681) update dependency @types/color to v3.0.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6680](https://github.com/directus/directus/pull/6680) update dependency @types/codemirror to v5.60.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6679](https://github.com/directus/directus/pull/6679) update dependency @types/bytes to v3.1.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6678](https://github.com/directus/directus/pull/6678) update dependency @types/busboy to v0.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6677](https://github.com/directus/directus/pull/6677) update dependency @types/body-parser to v1.19.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6676](https://github.com/directus/directus/pull/6676) update dependency @types/async to v3.2.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6675](https://github.com/directus/directus/pull/6675) update dependency @types/sharp to v0.28.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6669](https://github.com/directus/directus/pull/6669) update dependency vite to v2.4.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6668](https://github.com/directus/directus/pull/6668) update dependency eslint-plugin-vue to v7.13.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6667](https://github.com/directus/directus/pull/6667) update dependency dompurify to v2.3.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6660](https://github.com/directus/directus/pull/6660) update typescript-eslint monorepo to v4.28.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6657](https://github.com/directus/directus/pull/6657) update dependency vite to v2.4.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6652](https://github.com/directus/directus/pull/6652) update dependency nock to v13.1.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6634](https://github.com/directus/directus/pull/6634) update dependency @types/stream-json to v1.7.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6630](https://github.com/directus/directus/pull/6630) update dependency eslint to v7.30.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.83 (July 14, 2021)
 
