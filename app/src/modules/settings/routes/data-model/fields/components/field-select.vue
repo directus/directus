@@ -12,120 +12,122 @@
 			</template>
 		</v-input>
 
-		<draggable
-			v-if="localType === 'group'"
-			class="field-grid group full nested"
-			:model-value="nestedFields"
-			:force-fallback="true"
-			handle=".drag-handle"
-			:group="{ name: 'fields' }"
-			:set-data="hideDragImage"
-			:animation="150"
-			item-key="field"
-			@update:model-value="onGroupSortChange"
-			:fallbackOnBody="true"
-			:invertSwap="true"
-		>
-			<template #header>
-				<div class="header full">
-					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-					<span class="name">{{ field.field }}</span>
-					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
-					<field-select-menu
-						:field="field"
-						@toggleVisibility="toggleVisibility"
-						@setWidth="setWidth($event)"
-						@duplicate="duplicateActive = true"
-						@delete="deleteActive = true"
-						:no-delete="nestedFields.length > 0"
-					/>
-				</div>
-			</template>
-
-			<template #item="{ element }">
-				<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
-			</template>
-		</draggable>
-
-		<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
-			<template #prepend>
-				<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-			</template>
-
-			<template #input>
-				<div class="label" v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name">
-					<span class="name">
-						{{ field.field }}
-						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
-					</span>
-					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-					<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
-				</div>
-			</template>
-
-			<template #append>
-				<div class="icons">
-					<v-icon
-						v-if="field.schema && field.schema.is_primary_key"
-						name="vpn_key"
-						small
-						v-tooltip="t('primary_key')"
-					/>
-					<v-icon
-						v-if="!field.meta"
-						name="report_problem"
-						class="unmanaged"
-						small
-						v-tooltip="t('db_only_click_to_configure')"
-					/>
-					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
-					<field-select-menu
-						:field="field"
-						@toggleVisibility="toggleVisibility"
-						@setWidth="setWidth($event)"
-						@duplicate="duplicateActive = true"
-						@delete="deleteActive = true"
-					/>
-				</div>
-			</template>
-		</v-input>
-
-		<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
-			<v-card class="duplicate">
-				<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
-				<v-card-text>
-					<div class="form-grid">
-						<div class="field">
-							<span class="type-label">{{ t('collection', 0) }}</span>
-							<v-select class="monospace" :items="collections" v-model="duplicateTo" />
-						</div>
-
-						<div class="field">
-							<span class="type-label">{{ t('field', 0) }}</span>
-							<v-input class="monospace" v-model="duplicateName" db-safe autofocus />
-						</div>
+		<template v-else>
+			<draggable
+				v-if="localType === 'group'"
+				class="field-grid group full nested"
+				:model-value="nestedFields"
+				:force-fallback="true"
+				handle=".drag-handle"
+				:group="{ name: 'fields' }"
+				:set-data="hideDragImage"
+				:animation="150"
+				item-key="field"
+				@update:model-value="onGroupSortChange"
+				:fallbackOnBody="true"
+				:invertSwap="true"
+			>
+				<template #header>
+					<div class="header full">
+						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+						<span class="name">{{ field.field }}</span>
+						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+						<field-select-menu
+							:field="field"
+							@toggleVisibility="toggleVisibility"
+							@setWidth="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+							:no-delete="nestedFields.length > 0"
+						/>
 					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="duplicateActive = false">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button @click="saveDuplicate" :disabled="duplicateName === null" :loading="duplicating">
-						{{ t('duplicate') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				</template>
 
-		<v-dialog v-model="deleteActive" @esc="deleteActive = false">
-			<v-card>
-				<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
-				<v-card-actions>
-					<v-button @click="deleteActive = false" secondary>{{ t('cancel') }}</v-button>
-					<v-button :loading="deleting" @click="deleteField" class="delete">{{ t('delete') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				<template #item="{ element }">
+					<field-select :field="element" :fields="fields" @setNestedSort="$emit('setNestedSort', $event)" />
+				</template>
+			</draggable>
+
+			<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
+				<template #prepend>
+					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+				</template>
+
+				<template #input>
+					<div class="label" v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name">
+						<span class="name">
+							{{ field.field }}
+							<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
+						</span>
+						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+					</div>
+				</template>
+
+				<template #append>
+					<div class="icons">
+						<v-icon
+							v-if="field.schema && field.schema.is_primary_key"
+							name="vpn_key"
+							small
+							v-tooltip="t('primary_key')"
+						/>
+						<v-icon
+							v-if="!field.meta"
+							name="report_problem"
+							class="unmanaged"
+							small
+							v-tooltip="t('db_only_click_to_configure')"
+						/>
+						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+						<field-select-menu
+							:field="field"
+							@toggleVisibility="toggleVisibility"
+							@setWidth="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+						/>
+					</div>
+				</template>
+			</v-input>
+
+			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
+				<v-card class="duplicate">
+					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
+					<v-card-text>
+						<div class="form-grid">
+							<div class="field">
+								<span class="type-label">{{ t('collection', 0) }}</span>
+								<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+							</div>
+
+							<div class="field">
+								<span class="type-label">{{ t('field', 0) }}</span>
+								<v-input class="monospace" v-model="duplicateName" db-safe autofocus />
+							</div>
+						</div>
+					</v-card-text>
+					<v-card-actions>
+						<v-button secondary @click="duplicateActive = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button @click="saveDuplicate" :disabled="duplicateName === null" :loading="duplicating">
+							{{ t('duplicate') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+				<v-card>
+					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
+					<v-card-actions>
+						<v-button @click="deleteActive = false" secondary>{{ t('cancel') }}</v-button>
+						<v-button :loading="deleting" @click="deleteField" class="delete">{{ t('delete') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</template>
 	</div>
 </template>
 
