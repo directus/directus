@@ -241,7 +241,7 @@ router.get(
 		const hookPayload = {
 			provider: req.params.provider,
 			redirect: req.query?.redirect,
-			mode: req.query?.mode || 'cookie'
+			mode: req.query?.mode || 'cookie',
 		};
 
 		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
@@ -344,10 +344,10 @@ router.get(
 
 		if (redirect) {
 			if (mode === 'query') {
-				const query = `access_token=${accessToken}&refresh_token=${refreshToken}&expires=${expires}`
-				return res.redirect(`${redirect}${redirect.includes('?') ? '' : '?'}${query}`)
+				const query = `access_token=${accessToken}&refresh_token=${refreshToken}&expires=${expires}`;
+				return res.redirect(`${redirect}${redirect.includes('?') ? '' : '?'}${query}`);
 			}
-			
+
 			if (mode === 'cookie') {
 				res.cookie('directus_refresh_token', refreshToken, {
 					httpOnly: true,
