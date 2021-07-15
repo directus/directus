@@ -97,6 +97,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['apply'],
 });
 </script>
 

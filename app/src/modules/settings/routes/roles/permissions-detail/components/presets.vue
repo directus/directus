@@ -8,7 +8,7 @@
 				})
 			}}
 		</v-notice>
-		<interface-input-code :value="presets" @input="presets = $event" language="json" type="json" />
+		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
 	</div>
 </template>
 
@@ -19,7 +19,6 @@ import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -30,6 +29,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -7,8 +7,8 @@
 		:text="displayInfo.handler(value, options, { type })"
 	/>
 	<component
-		v-else
 		:is="`display-${display}`"
+		v-else
 		v-bind="options"
 		:interface="interface"
 		:interface-options="interfaceOptions"

@@ -4,6 +4,7 @@
 			<div class="field full">
 				<p class="type-label">{{ t('format') }}</p>
 				<v-select
+					v-model="format"
 					:items="[
 						{
 							text: t('csv'),
@@ -18,7 +19,6 @@
 							value: 'xml',
 						},
 					]"
-					v-model="format"
 				/>
 				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>

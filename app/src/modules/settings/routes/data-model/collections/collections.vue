@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon to="/settings/data-model/+" v-tooltip.bottom="t('create_collection')">
+			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -19,7 +19,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info type="warning" icon="box" :title="t('no_collections')" v-if="items.length === 0" center>
+			<v-info v-if="items.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -31,10 +31,10 @@
 				v-else
 				v-model:headers="tableHeaders"
 				:items="items"
-				@click:row="openCollection"
 				show-resize
 				fixed-header
 				item-key="collection"
+				@click:row="openCollection"
 			>
 				<template #[`item.icon`]="{ item }">
 					<v-icon
@@ -72,11 +72,11 @@
 
 				<template #item-append="{ item }">
 					<v-icon
+						v-if="!item.meta && item.collection.startsWith('directus_') === false"
+						v-tooltip="t('db_only_click_to_configure')"
 						small
 						class="no-meta"
 						name="report_problem"
-						v-if="!item.meta && item.collection.startsWith('directus_') === false"
-						v-tooltip="t('db_only_click_to_configure')"
 					/>
 					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
 				</template>

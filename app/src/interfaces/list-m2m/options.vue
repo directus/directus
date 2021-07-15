@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="junctionCollection === null">
+	<v-notice v-if="junctionCollection === null" type="warning">
 		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
@@ -18,12 +18,12 @@
 
 		<div class="field half-left">
 			<p class="type-label">{{ t('creating_items') }}</p>
-			<v-checkbox block :label="t('enable_create_button')" v-model="enableCreate" />
+			<v-checkbox v-model="enableCreate" block :label="t('enable_create_button')" />
 		</div>
 
 		<div class="field half-right">
 			<p class="type-label">{{ t('selecting_items') }}</p>
-			<v-checkbox block :label="t('enable_select_button')" v-model="enableSelect" />
+			<v-checkbox v-model="enableSelect" block :label="t('enable_select_button')" />
 		</div>
 	</div>
 </template>
@@ -34,7 +34,6 @@ import { Relation, Collection, Field } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		collection: {
 			type: String,
@@ -61,6 +60,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

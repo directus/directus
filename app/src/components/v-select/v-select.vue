@@ -17,10 +17,10 @@
 				readonly
 				:model-value="displayValue"
 				clickable
-				@click="toggle"
 				:placeholder="placeholder"
 				:disabled="disabled"
 				:active="active"
+				@click="toggle"
 			>
 				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
 				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
@@ -29,7 +29,7 @@
 
 		<v-list class="list">
 			<template v-if="showDeselect">
-				<v-list-item clickable @click="$emit('update:modelValue', null)" :disabled="modelValue === null">
+				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -73,40 +73,40 @@
 			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
 				<v-list-item-content>
 					<input
-						class="other-input"
-						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 						v-model="otherValue"
+						class="other-input"
 						:placeholder="t('other')"
+						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
 				</v-list-item-content>
 			</v-list-item>
 
 			<template v-if="allowOther && multiple === true">
 				<v-list-item
-					v-for="otherValue in otherValues"
-					:key="otherValue.key"
-					:active="(modelValue || []).includes(otherValue.value)"
+					v-for="otherVal in otherValues"
+					:key="otherVal.key"
+					:active="(modelValue || []).includes(otherVal.value)"
 					@click.stop
 				>
 					<v-list-item-icon>
 						<v-checkbox
 							:model-value="modelValue || []"
-							:value="otherValue.value"
+							:value="otherVal.value"
 							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>
 						<input
-							class="other-input"
-							:value="otherValue.value"
-							:placeholder="t('other')"
 							v-focus
-							@input="setOtherValue(otherValue.key, $event.target.value)"
-							@blur="otherValue.value.length === 0 && setOtherValue(otherValue.key, null)"
+							class="other-input"
+							:value="otherVal.value"
+							:placeholder="t('other')"
+							@input="setOtherValue(otherVal.key, $event.target.value)"
+							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" clickable @click="setOtherValue(otherValue.key, null)" />
+						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
@@ -129,7 +129,6 @@ type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,
@@ -192,6 +191,7 @@ export default defineComponent({
 			default: 3,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

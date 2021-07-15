@@ -7,82 +7,114 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6566](https://github.com/directus/directus/pull/6566) Fix half-width fields before groups causing trouble ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6566](https://github.com/directus/directus/pull/6566) Fix half-width fields before groups causing trouble
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **API**
-  - [#6561](https://github.com/directus/directus/pull/6561) Add limit options for deleteMany files ([@Enhed](https://github.com/Enhed))
-  - [#6558](https://github.com/directus/directus/pull/6558) Fixed typo in MySQL dialect ([@Oreilles](https://github.com/Oreilles))
+  - [#6561](https://github.com/directus/directus/pull/6561) Add limit options for deleteMany files
+    ([@Enhed](https://github.com/Enhed))
+  - [#6558](https://github.com/directus/directus/pull/6558) Fixed typo in MySQL dialect
+    ([@Oreilles](https://github.com/Oreilles))
 
 ### :package: Dependency Updates
 
-- [#6564](https://github.com/directus/directus/pull/6564) update dependency ts-node-dev to v1.1.7 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6564](https://github.com/directus/directus/pull/6564) update dependency ts-node-dev to v1.1.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.82 (June 28, 2021)
 
 ### :sparkles: New Features
 
 - **App**
-  - [#6553](https://github.com/directus/directus/pull/6553) Add support for field grouping ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6553](https://github.com/directus/directus/pull/6553) Add support for field grouping
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **Extensions**
-  - [#6548](https://github.com/directus/directus/pull/6548) Add directus-extension CLI to extension-sdk ([@nickrum](https://github.com/nickrum))
+  - [#6548](https://github.com/directus/directus/pull/6548) Add directus-extension CLI to extension-sdk
+    ([@nickrum](https://github.com/nickrum))
 - **sdk**
-  - [#6538](https://github.com/directus/directus/pull/6538) Adds request and response interceptors on Axios transport ([@WoLfulus](https://github.com/WoLfulus))
+  - [#6538](https://github.com/directus/directus/pull/6538) Adds request and response interceptors on Axios transport
+    ([@WoLfulus](https://github.com/WoLfulus))
 
 ### :rocket: Improvements
 
 - **API**
-  - [#6541](https://github.com/directus/directus/pull/6541) Pass on errors thrown in MailService ([@luanmm](https://github.com/luanmm))
+  - [#6541](https://github.com/directus/directus/pull/6541) Pass on errors thrown in MailService
+    ([@luanmm](https://github.com/luanmm))
 - **App**
-  - [#6215](https://github.com/directus/directus/pull/6215) Added escaping on file paths including "\u" ([@skizer](https://github.com/skizer))
+  - [#6215](https://github.com/directus/directus/pull/6215) Added escaping on file paths including "\u"
+    ([@skizer](https://github.com/skizer))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6555](https://github.com/directus/directus/pull/6555) Fix auto-fill of directus_files in relational setup ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6530](https://github.com/directus/directus/pull/6530) Fix translations interface options crashing the App ([@nickrum](https://github.com/nickrum))
+  - [#6555](https://github.com/directus/directus/pull/6555) Fix auto-fill of directus_files in relational setup
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6530](https://github.com/directus/directus/pull/6530) Fix translations interface options crashing the App
+    ([@nickrum](https://github.com/nickrum))
 - **API**
-  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without origin ([@nickrum](https://github.com/nickrum))
-  - [#6516](https://github.com/directus/directus/pull/6516) Changed filesize to bigint for large files ([@Enhed](https://github.com/Enhed))
+  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without
+    origin ([@nickrum](https://github.com/nickrum))
+  - [#6516](https://github.com/directus/directus/pull/6516) Changed filesize to bigint for large files
+    ([@Enhed](https://github.com/Enhed))
 - **Extensions**
-  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without origin ([@nickrum](https://github.com/nickrum))
+  - [#6534](https://github.com/directus/directus/pull/6534) Fix extension loading when PUBLIC_URL is absolute without
+    origin ([@nickrum](https://github.com/nickrum))
 
 ### :package: Dependency Updates
 
-- [#6547](https://github.com/directus/directus/pull/6547) update typescript-eslint monorepo to v4.28.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6546](https://github.com/directus/directus/pull/6546) update dependency jest to v27.0.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6520](https://github.com/directus/directus/pull/6520) update dependency @vitejs/plugin-vue to v1.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6518](https://github.com/directus/directus/pull/6518) update dependency simple-git-hooks to v2.5.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6498](https://github.com/directus/directus/pull/6498) update dependency commander to v8 ([@renovate[bot]](https://github.com/apps/renovate))
-
+- [#6547](https://github.com/directus/directus/pull/6547) update typescript-eslint monorepo to v4.28.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6546](https://github.com/directus/directus/pull/6546) update dependency jest to v27.0.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6520](https://github.com/directus/directus/pull/6520) update dependency @vitejs/plugin-vue to v1.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6518](https://github.com/directus/directus/pull/6518) update dependency simple-git-hooks to v2.5.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6498](https://github.com/directus/directus/pull/6498) update dependency commander to v8
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.81 (June 26, 2021)
 
 ### :rocket: Improvements
 
 - **App**
-  - [#6466](https://github.com/directus/directus/pull/6466) Set calendar layout locale based on app locale ([@nickrum](https://github.com/nickrum))
+  - [#6466](https://github.com/directus/directus/pull/6466) Set calendar layout locale based on app locale
+    ([@nickrum](https://github.com/nickrum))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#6481](https://github.com/directus/directus/pull/6481) Fix login page not showing user's name on app required permissions role ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#6377](https://github.com/directus/directus/pull/6377) Fix app extensions loading and registration ([@nickrum](https://github.com/nickrum))
+  - [#6481](https://github.com/directus/directus/pull/6481) Fix login page not showing user's name on app required
+    permissions role ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6377](https://github.com/directus/directus/pull/6377) Fix app extensions loading and registration
+    ([@nickrum](https://github.com/nickrum))
 
 ### :memo: Documentation
 
-- [#6467](https://github.com/directus/directus/pull/6467) Import a File link in Assets tip broken ([@Mrmiffo](https://github.com/Mrmiffo))
+- [#6467](https://github.com/directus/directus/pull/6467) Import a File link in Assets tip broken
+  ([@Mrmiffo](https://github.com/Mrmiffo))
 
 ### :package: Dependency Updates
 
-- [#6509](https://github.com/directus/directus/pull/6509) update dependency prettier to v2.3.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6507](https://github.com/directus/directus/pull/6507) update dependency marked to v2.1.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6499](https://github.com/directus/directus/pull/6499) update dependency rollup to v2.52.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6497](https://github.com/directus/directus/pull/6497) update dependency eslint-plugin-vue to v7.12.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6482](https://github.com/directus/directus/pull/6482) Update vue to 3.1.2 ([@rijkvanzanten](https://github.com/rijkvanzanten))
-- [#6473](https://github.com/directus/directus/pull/6473) update dependency mitt to v3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6470](https://github.com/directus/directus/pull/6470) update dependency fs-extra to v10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6469](https://github.com/directus/directus/pull/6469) pin dependencies ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6468](https://github.com/directus/directus/pull/6468) update dependency @types/codemirror to v5.60.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#6459](https://github.com/directus/directus/pull/6459) update dependency tinymce to v5.8.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6509](https://github.com/directus/directus/pull/6509) update dependency prettier to v2.3.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6507](https://github.com/directus/directus/pull/6507) update dependency marked to v2.1.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6499](https://github.com/directus/directus/pull/6499) update dependency rollup to v2.52.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6497](https://github.com/directus/directus/pull/6497) update dependency eslint-plugin-vue to v7.12.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6482](https://github.com/directus/directus/pull/6482) Update vue to 3.1.2
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#6473](https://github.com/directus/directus/pull/6473) update dependency mitt to v3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6470](https://github.com/directus/directus/pull/6470) update dependency fs-extra to v10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6469](https://github.com/directus/directus/pull/6469) pin dependencies
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6468](https://github.com/directus/directus/pull/6468) update dependency @types/codemirror to v5.60.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#6459](https://github.com/directus/directus/pull/6459) update dependency tinymce to v5.8.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.80 (June 22, 2021)
 

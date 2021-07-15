@@ -8,9 +8,9 @@
 			<draggable
 				:force-fallback="true"
 				:model-value="value"
-				@update:model-value="$emit('input', $event)"
 				item-key="id"
 				handle=".drag-handle"
+				@update:model-value="$emit('input', $event)"
 			>
 				<template #item="{ element, index }">
 					<v-list-item :dense="value.length > 4" block @click="active = index">
@@ -22,19 +22,19 @@
 				</template>
 			</draggable>
 		</v-list>
-		<v-button @click="addNew" class="add-new" v-if="showAddNew">
+		<v-button v-if="showAddNew" class="add-new" @click="addNew">
 			{{ addLabel }}
 		</v-button>
 
 		<v-drawer
 			:model-value="drawerOpen"
-			@update:model-value="closeDrawer()"
 			:title="displayValue || headerPlaceholder"
 			persistent
+			@update:model-value="closeDrawer()"
 			@cancel="closeDrawer()"
 		>
 			<template #actions>
-				<v-button @click="closeDrawer()" icon rounded v-tooltip.bottom="t('save')">
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="closeDrawer()">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -62,7 +62,6 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { Draggable },
 	props: {
 		value: {
@@ -98,6 +97,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

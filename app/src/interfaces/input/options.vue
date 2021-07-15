@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-form :fields="fields" v-model="options" />
+		<v-form v-model="options" :fields="fields" />
 	</div>
 </template>
 
@@ -9,7 +9,6 @@ import { computed, defineComponent, PropType } from 'vue';
 import { Field } from '@/types';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		fieldData: {
 			type: Object as PropType<Field>,
@@ -20,6 +19,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const options = computed({
 			get() {

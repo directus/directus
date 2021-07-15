@@ -8,12 +8,12 @@
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
 		<component
-			v-if="interfaceExists"
 			:is="
 				field.meta && field.meta.interface
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
+			v-if="interfaceExists"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
@@ -43,7 +43,6 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -78,6 +77,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props) {
 		const { t } = useI18n();
 

@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_role')">
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -76,7 +76,7 @@ type Role = {
 };
 
 export default defineComponent({
-	name: 'roles-collection',
+	name: 'RolesCollection',
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {

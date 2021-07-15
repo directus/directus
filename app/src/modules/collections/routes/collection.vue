@@ -16,40 +16,40 @@
 			<div class="bookmark-controls">
 				<bookmark-add
 					v-if="!bookmark"
-					class="add"
 					v-model="bookmarkDialogActive"
-					@save="createBookmark"
+					class="add"
 					:saving="creatingBookmark"
+					@save="createBookmark"
 				>
 					<template #activator="{ on }">
 						<v-icon
+							v-tooltip.right="t('create_bookmark')"
 							class="toggle"
 							clickable
-							@click="on"
 							name="bookmark_outline"
-							v-tooltip.right="t('create_bookmark')"
+							@click="on"
 						/>
 					</template>
 				</bookmark-add>
 
-				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
+				<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" />
 
 				<template v-else-if="bookmarkIsMine">
 					<v-icon
+						v-tooltip.bottom="t('update_bookmark')"
 						class="save"
 						clickable
-						@click="savePreset()"
 						name="bookmark_save"
-						v-tooltip.bottom="t('update_bookmark')"
+						@click="savePreset()"
 					/>
 				</template>
 
 				<bookmark-add
 					v-else
-					class="add"
 					v-model="bookmarkDialogActive"
-					@save="createBookmark"
+					class="add"
 					:saving="creatingBookmark"
+					@save="createBookmark"
 				>
 					<template #activator="{ on }">
 						<v-icon class="toggle" name="bookmark_outline" clickable @click="on" />
@@ -58,11 +58,11 @@
 
 				<v-icon
 					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					v-tooltip.bottom="t('reset_bookmark')"
 					name="settings_backup_restore"
 					clickable
-					@click="clearLocalSave"
 					class="clear"
-					v-tooltip.bottom="t('reset_bookmark')"
+					@click="clearLocalSave"
 				/>
 			</div>
 		</template>
@@ -74,15 +74,15 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -92,10 +92,10 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -103,18 +103,18 @@
 			</v-dialog>
 
 			<v-dialog
+				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 				v-model="confirmArchive"
 				@esc="confirmArchive = false"
-				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 			>
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="batchArchiveAllowed ? t('archive') : t('not_allowed')"
 						:disabled="batchArchiveAllowed !== true"
 						rounded
 						icon
 						class="action-archive"
 						@click="on"
-						v-tooltip.bottom="batchArchiveAllowed ? t('archive') : t('not_allowed')"
 					>
 						<v-icon name="archive" outline />
 					</v-button>
@@ -124,10 +124,10 @@
 					<v-card-title>{{ t('archive_confirm_count', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmArchive = false" secondary>
+						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="archive" class="action-archive" :loading="archiving">
+						<v-button class="action-archive" :loading="archiving" @click="archive">
 							{{ t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -135,22 +135,22 @@
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				class="action-batch"
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				rounded
 				icon
 				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -163,8 +163,8 @@
 		</template>
 
 		<v-info
-			type="warning"
 			v-if="bookmark && bookmarkExists === false"
+			type="warning"
 			:title="t('bookmark_doesnt_exist')"
 			icon="bookmark"
 			center
@@ -178,7 +178,7 @@
 			</template>
 		</v-info>
 
-		<component v-else class="layout" :is="`layout-${layout || 'tabular'}`">
+		<component :is="`layout-${layout || 'tabular'}`" v-else class="layout">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -193,7 +193,7 @@
 				<v-info :title="t('item_count', 0)" :icon="currentCollection.icon" center>
 					{{ t('no_items_copy') }}
 
-					<template #append v-if="createAllowed">
+					<template v-if="createAllowed" #append>
 						<v-button :to="`/collections/${collection}/+`">{{ t('create_item') }}</v-button>
 					</template>
 				</v-info>
@@ -201,8 +201,8 @@
 		</component>
 
 		<drawer-batch
-			:primary-keys="selection"
 			v-model:active="batchEditActive"
+			:primary-keys="selection"
 			:collection="collection"
 			@refresh="refresh"
 		/>
@@ -222,7 +222,7 @@
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<component :is="`layout-sidebar-${layout || 'tabular'}`" />
-			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
+			<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 		</template>
 
 		<v-dialog :model-value="deleteError !== null">
@@ -265,7 +265,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'collections-collection',
+	name: 'CollectionsCollection',
 	components: {
 		CollectionsNavigation,
 		CollectionsNavigationSearch,

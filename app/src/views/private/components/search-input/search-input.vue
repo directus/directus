@@ -1,13 +1,13 @@
 <template>
 	<div
+		v-click-outside="disable"
+		v-tooltip.bottom="active ? null : t('search')"
 		class="search-input"
 		:class="{ active, 'has-content': !!modelValue }"
-		v-click-outside="disable"
 		@click="active = true"
-		v-tooltip.bottom="active ? null : t('search')"
 	>
 		<v-icon name="search" />
-		<input ref="input" :value="modelValue" @input="emitValue" @paste="emitValue" :placeholder="t('search_items')" />
+		<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 		<v-icon v-if="modelValue" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
@@ -17,13 +17,13 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: String,
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

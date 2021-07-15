@@ -1,13 +1,13 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="t('email')" />
-		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="t('password')" />
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
 		<transition-expand>
-			<v-input type="text" :placeholder="t('otp')" v-if="requiresTFA" v-model="otp" autofocus />
+			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
 		</transition-expand>
 
-		<v-notice type="warning" v-if="error">
+		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">

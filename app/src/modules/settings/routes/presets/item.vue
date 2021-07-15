@@ -15,12 +15,12 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('delete')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="preset === null || id === '+'"
 						@click="on"
-						v-tooltip.bottom="t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -30,10 +30,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -41,22 +41,22 @@
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				icon
 				rounded
 				:disabled="hasEdits === false"
 				:loading="saving"
 				@click="save"
-				v-tooltip.bottom="t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="preset-item">
-			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
+			<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
 
 			<div class="layout">
-				<component v-if="values.layout && values.collection" :is="`layout-${values.layout}`">
+				<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection">
 					<template #no-results>
 						<v-info :title="t('no_results')" icon="search" center>
 							{{ t('no_results_copy') }}
@@ -86,11 +86,11 @@
 					<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
 				</sidebar-detail>
 
-				<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
+				<component :is="`layout-sidebar-${values.layout}`" v-if="values.layout && values.collection" />
 
 				<sidebar-detail icon="layers" :title="t('layout_options')">
 					<div class="layout-options">
-						<component v-if="values.layout && values.collection" :is="`layout-options-${values.layout}`" />
+						<component :is="`layout-options-${values.layout}`" v-if="values.layout && values.collection" />
 					</div>
 				</sidebar-detail>
 			</div>
