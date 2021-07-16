@@ -129,7 +129,7 @@
 
 		<div ref="codemirrorEl"></div>
 
-		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
@@ -155,7 +155,6 @@ import 'codemirror/addon/display/placeholder.js';
 
 import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
@@ -232,7 +231,7 @@ export default defineComponent({
 			}
 		);
 
-		const html = computed(() => {
+		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
 			if (!props.imageToken) {
@@ -246,9 +245,7 @@ export default defineComponent({
 				}
 			}
 
-			const html = md(mdString);
-
-			return html;
+			return mdString;
 		});
 
 		const table = reactive({
@@ -274,7 +271,7 @@ export default defineComponent({
 			codemirrorEl,
 			edit,
 			view,
-			html,
+			markdownString,
 			table,
 			onImageUpload,
 			imageDialogOpen,

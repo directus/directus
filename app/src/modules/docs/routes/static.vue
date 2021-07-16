@@ -7,7 +7,7 @@
 		</template>
 
 		<template #title>
-			<h1 class="type-title" v-html="title"></h1>
+			<h1 class="type-title">{{ title }}</h1>
 		</template>
 
 		<template #navigation>
@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_docs_global'))" />
+				<div v-md="t('page_help_docs_global')" class="page-description" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -31,7 +31,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
 import { useRoute, RouteLocation } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
-import { md } from '@/utils/md';
 
 const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
@@ -84,7 +83,7 @@ export default defineComponent({
 			{ immediate: true, flush: 'post' }
 		);
 
-		return { t, route, markdown, title, markdownWithoutTitle, md };
+		return { t, route, markdown, title, markdownWithoutTitle };
 	},
 });
 </script>

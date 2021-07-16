@@ -23,7 +23,7 @@
 		</v-textarea>
 
 		<div v-else class="content">
-			<span class="selectable" v-html="htmlContent" />
+			<span v-md="activity.comment" class="selectable" />
 
 			<!-- @TODO: Dynamically add element below if the comment overflows -->
 			<!-- <div v-if="activity.id == 204" class="expand-text">
@@ -35,10 +35,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
@@ -60,13 +59,12 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const textarea = ref<ComponentPublicInstance>();
-		const htmlContent = computed(() => (props.activity.comment ? md(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
 		useShortcut('meta+enter', saveEdits, textarea);
 
-		return { t, htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);

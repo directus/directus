@@ -118,7 +118,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_users_collection'))" />
+				<div v-md="t('page_help_users_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<component :is="`layout-sidebar-${layout}`" />
@@ -137,7 +137,6 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '@/stores';
-import { md } from '@/utils/md';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -237,7 +236,6 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			md,
 			clearFilters,
 			userInviteModalActive,
 			refresh,

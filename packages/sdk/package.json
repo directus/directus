@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.83",
+	"version": "9.0.0-rc.85",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -17,7 +17,6 @@
 		"dist"
 	],
 	"scripts": {
-		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",
@@ -49,7 +48,7 @@
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "19.0.1",
 		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "13.0.1",
+		"@rollup/plugin-node-resolve": "13.0.2",
 		"@types/jest": "26.0.24",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",

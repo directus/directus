@@ -87,7 +87,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_datamodel_collections'))" />
+				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
 			<collections-filter v-model="activeTypes" />
 		</template>
@@ -105,7 +105,6 @@ import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
-import { md } from '@/utils/md';
 
 const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 
@@ -143,7 +142,7 @@ export default defineComponent({
 
 		const { items } = useItems();
 
-		return { t, tableHeaders, items, openCollection, activeTypes, md };
+		return { t, tableHeaders, items, openCollection, activeTypes };
 
 		function useItems() {
 			const visible = computed(() => {
