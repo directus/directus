@@ -9,16 +9,15 @@ import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
 import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } from '@directus/shared/constants';
-import { isAppExtension, isExtension } from '@directus/shared/utils';
-import { ExtensionManifest } from '@directus/shared/types';
+import { isAppExtension, isExtension, validateExtensionManifest } from '@directus/shared/utils';
+import { ExtensionManifestRaw } from '@directus/shared/types';
 import log from '../utils/logger';
-import validateExtensionManifest from '../utils/validate-extension-manifest';
 
 type BuildOptions = { type: string; input: string; output: string; force: boolean };
 
 export default async function build(options: BuildOptions): Promise<void> {
 	const packagePath = path.resolve('package.json');
-	let extensionManifest: ExtensionManifest = {};
+	let extensionManifest: ExtensionManifestRaw = {};
 
 	if (!(await fse.pathExists(packagePath))) {
 		log(`Current directory is not a package.`, !options.force ? 'error' : 'warn');
