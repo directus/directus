@@ -58,6 +58,7 @@ export type FieldMeta = {
 	translations: null | Translations[];
 	width: Width | null;
 	note: string | null;
+	conditions: Condition[] | null;
 	system?: true;
 };
 
@@ -81,4 +82,14 @@ export type ValidationError = {
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
+};
+
+export type Condition = {
+	name: string;
+	rule: Record<string, any>;
+	overrides: {
+		readonly?: boolean;
+		hidden?: boolean;
+		options?: Record<string, any>;
+	};
 };

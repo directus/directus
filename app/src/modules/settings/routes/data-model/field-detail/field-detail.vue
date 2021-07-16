@@ -83,6 +83,8 @@
 				:collection="collection"
 				:type="localType"
 			/>
+
+			<setup-conditions v-if="currentTab[0] === 'conditions'" :collection="collection" :type="localType" />
 		</div>
 
 		<template #actions>
@@ -125,6 +127,7 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
+import SetupConditions from './components/conditions.vue';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
@@ -149,6 +152,7 @@ export default defineComponent({
 		SetupTranslations,
 		SetupInterface,
 		SetupDisplay,
+		SetupConditions,
 	},
 	props: {
 		collection: {
@@ -283,6 +287,12 @@ export default defineComponent({
 						]
 					);
 				}
+
+				tabs.push({
+					text: t('conditions'),
+					value: 'conditions',
+					disabled: interfaceDisplayDisabled(),
+				});
 
 				return tabs;
 			});

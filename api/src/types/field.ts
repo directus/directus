@@ -1,4 +1,5 @@
 import { Column } from 'knex-schema-inspector/dist/types/column';
+import { Filter } from './query';
 
 export const types = [
 	'bigInteger',
@@ -33,6 +34,7 @@ export type FieldMeta = {
 	group: number | null;
 	note: string | null;
 	translations: null;
+	conditions: Condition[];
 };
 
 export type Field = {
@@ -41,4 +43,14 @@ export type Field = {
 	type: typeof types[number];
 	schema: Column | null;
 	meta: FieldMeta | null;
+};
+
+export type Condition = {
+	name: string;
+	rule: Filter;
+	overrides: {
+		readonly?: boolean;
+		hidden?: boolean;
+		options?: Record<string, any>;
+	};
 };
