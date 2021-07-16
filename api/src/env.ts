@@ -16,7 +16,7 @@ const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
 	PORT: 8055,
-	PUBLIC_URL: 'http://localhost:8055',
+	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	STORAGE_LOCATIONS: 'local',
