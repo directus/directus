@@ -2,6 +2,10 @@ import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
 import { clone, pick } from 'lodash';
+import ffprobe from 'ffprobe';
+import { file } from 'tmp-promise';
+import * as fs from 'fs';
+import stream from 'stream';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
@@ -20,6 +24,8 @@ import net from 'net';
 import os from 'os';
 
 const lookupDNS = promisify(lookup);
+
+const pipeline = promisify(stream.pipeline);
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -89,6 +95,28 @@ export class FilesService extends ItemsService {
 			payload.title ??= title;
 			payload.tags ??= tags;
 			payload.metadata ??= metadata;
+		}
+
+		if (['video/mpeg', 'audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/ogg', 'video/ogg'].includes(payload.type)) {
+			const ffprobeStatic = require('@ffprobe-installer/ffprobe');
+			const mediaStream = await storage.disk(data.storage).getStream(payload.filename_disk);
+			const { path, cleanup } = await file();
+			const tempFileWriteStream = fs.createWriteStream(path);
+			await pipeline(mediaStream, tempFileWriteStream);
+			const probe = await ffprobe(path, { path: ffprobeStatic.path });
+			cleanup();
+			if (probe.streams.length > 0) {
+				if (probe.streams[0].duration) {
+					payload.duration = Math.round(probe.streams[0].duration * 1000);
+				}
+				for (const stream of probe.streams) {
+					if (stream.width && stream.height) {
+						payload.width = stream.width;
+						payload.height = stream.height;
+						break;
+					}
+				}
+			}
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
