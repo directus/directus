@@ -68,6 +68,7 @@ import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
+import generateJoi from '@/utils/generate-joi';
 
 type FieldValues = {
 	[field: string]: any;
@@ -211,7 +212,7 @@ export default defineComponent({
 			const { formFields } = useFormFields(fieldsInGroup);
 
 			const formFieldsParsed = computed(() => {
-				const blockPrimaryKey = (field: Field) => {
+				const setPrimaryKeyReadonly = (field: Field) => {
 					if (
 						field.schema?.has_auto_increment === true ||
 						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
@@ -225,7 +226,34 @@ export default defineComponent({
 					return field;
 				};
 
-				return formFields.value.map((field) => blockPrimaryKey(field));
+				const applyConditions = (field: Field) => {
+					if (field.meta && Array.isArray(field.meta?.conditions)) {
+						const conditions = field.meta.conditions.reverse();
+
+						const matchingCondition = conditions.find((condition) => {
+							const schema = generateJoi(condition.rule, { requireAll: true });
+							const { error } = schema.validate(values.value);
+							return isNil(error);
+						});
+
+						if (matchingCondition) {
+							return {
+								...field,
+								meta: merge({}, field.meta || {}, {
+									readonly: matchingCondition.readonly,
+									options: matchingCondition.options,
+									hidden: matchingCondition.hidden,
+								}),
+							};
+						}
+
+						return field;
+					} else {
+						return field;
+					}
+				};
+
+				return formFields.value.map((field) => setPrimaryKeyReadonly(field)).map((field) => applyConditions(field));
 			});
 
 			return { formFields: formFieldsParsed, isDisabled, getFieldsForGroup };

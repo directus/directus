@@ -87,9 +87,8 @@ export type ValidationError = {
 export type Condition = {
 	name: string;
 	rule: Record<string, any>;
-	overrides: {
-		readonly?: boolean;
-		hidden?: boolean;
-		options?: Record<string, any>;
-	};
+
+	readonly?: boolean;
+	hidden?: boolean;
+	options?: Record<string, any>;
 };

@@ -47,10 +47,9 @@ export type Field = {
 
 export type Condition = {
 	name: string;
-	rule: Filter;
-	overrides: {
-		readonly?: boolean;
-		hidden?: boolean;
-		options?: Record<string, any>;
-	};
+	rule: Record<string, any>;
+
+	readonly?: boolean;
+	hidden?: boolean;
+	options?: Record<string, any>;
 };
