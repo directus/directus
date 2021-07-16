@@ -76,7 +76,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_webhooks_collection'))" />
+				<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
 			<component :is="`layout-sidebar-${layout}`" />
@@ -89,7 +89,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, reactive } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import { md } from '@/utils/md';
 import { usePreset } from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
@@ -138,7 +137,6 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			md,
 			clearFilters,
 		};
 
