@@ -224,7 +224,7 @@ export default defineComponent({
 
 				const applyConditions = (field: Field) => {
 					if (field.meta && Array.isArray(field.meta?.conditions)) {
-						const conditions = field.meta.conditions.reverse();
+						const conditions = [...field.meta.conditions].reverse();
 
 						const matchingCondition = conditions.find((condition) => {
 							const schema = generateJoi(condition.rule, { requireAll: true });
