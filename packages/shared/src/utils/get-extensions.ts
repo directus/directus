@@ -11,7 +11,7 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
-		pkg = await fse.readJSON(path.resolve(path.join(root, 'package.json')));
+		pkg = await fse.readJSON(path.resolve(root, 'package.json'));
 	} catch {
 		throw new Error('Current folder does not contain a package.json file');
 	}
@@ -72,7 +72,7 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 
 	for (const extensionType of EXTENSION_TYPES) {
 		const typeDir = pluralize(extensionType);
-		const typePath = path.resolve(path.join(root, typeDir));
+		const typePath = path.resolve(root, typeDir);
 
 		try {
 			const extensionNames = await listFolders(typePath);
