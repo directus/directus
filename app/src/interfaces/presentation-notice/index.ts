@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfacePresentationNotice from './presentation-notice.vue';
 
 export default defineInterface({

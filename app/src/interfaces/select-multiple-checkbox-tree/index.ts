@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import { DeepPartial, Field } from '@directus/shared/types';
 import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
 

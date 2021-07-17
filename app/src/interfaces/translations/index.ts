@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import TranslationsOptions from './options.vue';
 import InterfaceTranslations from './translations.vue';
 

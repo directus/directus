@@ -7,10 +7,6 @@
 			"import": "./dist/esm/composables/index.js",
 			"require": "./dist/cjs/composables/index.js"
 		},
-		"./utils": {
-			"import": "./dist/esm/utils/index.js",
-			"require": "./dist/cjs/utils/index.js"
-		},
 		"./constants": {
 			"import": "./dist/esm/constants/index.js",
 			"require": "./dist/cjs/constants/index.js"
@@ -18,6 +14,18 @@
 		"./types": {
 			"import": "./dist/esm/types/index.js",
 			"require": "./dist/cjs/types/index.js"
+		},
+		"./utils": {
+			"import": "./dist/esm/utils/index.js",
+			"require": "./dist/cjs/utils/index.js"
+		},
+		"./utils/browser": {
+			"import": "./dist/esm/utils/browser/index.js",
+			"require": "./dist/cjs/utils/browser/index.js"
+		},
+		"./utils/node": {
+			"import": "./dist/esm/utils/browser/index.js",
+			"require": "./dist/cjs/utils/browser/index.js"
 		}
 	},
 	"scripts": {

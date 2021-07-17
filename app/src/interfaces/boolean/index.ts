@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceBoolean from './boolean.vue';
 
 export default defineInterface({

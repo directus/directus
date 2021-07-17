@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSelectIcon from './select-icon.vue';
 
 export default defineInterface({

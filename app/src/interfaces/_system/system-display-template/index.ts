@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSystemDisplayTemplate from './system-display-template.vue';
 
 export default defineInterface({

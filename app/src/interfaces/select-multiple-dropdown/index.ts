@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSelectMultipleDropdown from './select-multiple-dropdown.vue';
 
 export default defineInterface({
