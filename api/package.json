@@ -117,7 +117,6 @@
 		"knex-schema-inspector": "1.5.11",
 		"liquidjs": "^9.25.0",
 		"lodash": "^4.17.21",
-		"log-symbols": "^3.0.0",
 		"macos-release": "^2.4.1",
 		"mime-types": "^2.1.31",
 		"ms": "^2.1.3",

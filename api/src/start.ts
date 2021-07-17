@@ -2,8 +2,6 @@ import emitter, { emitAsyncSafe } from './emitter';
 import env from './env';
 import logger from './logger';
 import checkForUpdate from 'update-check';
-import logSym from 'log-symbols';
-import chalk from 'chalk';
 import pkg from '../package.json';
 
 // If this file is called directly using node, start the server
@@ -32,10 +30,8 @@ export default async function start(): Promise<void> {
 			}
 
 			if (update) {
-				// eslint-disable-next-line no-console
-				console.log(`${logSym.info} ${chalk.yellow.bold(`New Version Available`)} (${update.latest})`);
-				// eslint-disable-next-line no-console
-				console.log('You can update by running: ' + chalk.cyan(`npx ${pkg.name}@latest [command]`));
+				logger.warn(`New Version Available (${update.latest})\nYou can update by running: npx ${pkg.name}@latest [command]
+				`)
 			}
 
 			logger.info(`Server started at port ${port}`);
