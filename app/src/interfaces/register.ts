@@ -11,11 +11,16 @@ export async function registerInterfaces(app: App): Promise<void> {
 	const interfaces: InterfaceConfig[] = Object.values(interfaceModules).map((module) => module.default);
 
 	try {
-		const customInterfaces: { default: InterfaceConfig[] } = import.meta.env.DEV
-			? await import('@directus-extensions-interface')
-			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
-
-		interfaces.push(...customInterfaces.default);
+		if (import.meta.env.DEV) {
+			const customInterfaceModules = import.meta.globEager('../../../api/extensions/interfaces/*/index.js');
+			const customInterfaces: InterfaceConfig[] = Object.values(customInterfaceModules).map((module) => module.default);
+			interfaces.push(...customInterfaces);
+		} else {
+			const customInterfaces: { default: InterfaceConfig[] } = await import(
+				/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`
+			);
+			interfaces.push(...customInterfaces.default);
+		}
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);

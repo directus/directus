@@ -10,11 +10,16 @@ export async function registerDisplays(app: App): Promise<void> {
 
 	const displays: DisplayConfig[] = Object.values(displayModules).map((module) => module.default);
 	try {
-		const customDisplays: { default: DisplayConfig[] } = import.meta.env.DEV
-			? await import('@directus-extensions-display')
-			: await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`);
-
-		displays.push(...customDisplays.default);
+		if (import.meta.env.DEV) {
+			const customDisplayModules = import.meta.globEager('../../../api/extensions/displays/*/index.js');
+			const customDisplays: DisplayConfig[] = Object.values(customDisplayModules).map((module) => module.default);
+			displays.push(...customDisplays);
+		} else {
+			const customDisplays: { default: DisplayConfig[] } = await import(
+				/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`
+			);
+			displays.push(...customDisplays.default);
+		}
 	} catch {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom displays`);
