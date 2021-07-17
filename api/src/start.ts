@@ -31,7 +31,7 @@ export default async function start(): Promise<void> {
 
 			if (update) {
 				logger.warn(`New Version Available (${update.latest})\nYou can update by running: npx ${pkg.name}@latest [command]
-				`)
+				`);
 			}
 
 			logger.info(`Server started at port ${port}`);
