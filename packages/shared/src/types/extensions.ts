@@ -19,7 +19,7 @@ export type Extension = {
 	root: boolean;
 };
 
-export type ExtensionManifest = {
+export type ExtensionManifestRaw = {
 	name?: string;
 	version?: string;
 	dependencies?: Record<string, string>;
@@ -30,5 +30,19 @@ export type ExtensionManifest = {
 		source?: string;
 		host?: string;
 		hidden?: boolean;
+	};
+};
+
+export type ExtensionManifest = {
+	name: string;
+	version: string;
+	dependencies?: Record<string, string>;
+
+	[EXTENSION_PKG_KEY]: {
+		type: ExtensionPackageType;
+		path: string;
+		source: string;
+		host: string;
+		hidden: boolean;
 	};
 };
