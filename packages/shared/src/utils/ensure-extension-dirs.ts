@@ -6,6 +6,10 @@ import { EXTENSION_TYPES } from '../constants';
 export async function ensureExtensionDirs(extensionsPath: string): Promise<void> {
 	for (const extensionType of EXTENSION_TYPES) {
 		const dirPath = path.resolve(extensionsPath, pluralize(extensionType));
-		await fse.ensureDir(dirPath);
+		try {
+			await fse.ensureDir(dirPath);
+		} catch {
+			throw new Error(`Extension folder "${dirPath}" couldn't be opened`);
+		}
 	}
 }
