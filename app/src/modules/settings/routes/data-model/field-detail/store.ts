@@ -11,7 +11,7 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Collection, Field, localTypes, Relation } from '@/types';
-import { Item } from '@directus/shared/types';
+import { DeepPartial, Item } from '@directus/shared/types';
 import { clone, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
