@@ -611,6 +611,13 @@ page_help_settings_roles_collection: '**Browse Roles** - 列出管理员、公�
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
   **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
+page_help_settings_presets_item: >-
+  **预设详细信息** - 管理书签和默认收藏预设的表格。
+page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
+page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
+page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
+page_help_users_item: >-
+  **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -650,12 +657,18 @@ fields:
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
   directus_files:
+    $thumbnail: 缩略图
     title: 标题
     description: 描述
     tags: 标签
     location: 地理位置
+    storage: 存储
+    filename_disk: 文件名(磁盘)
+    filename_download: 文件名(下载)
     metadata: 元数据（Metadata）
+    type: Mime 类型
     filesize: 文件大小
+    modified_by: 修改人：
     modified_on: 修改于
     created_on: 创建于
     created_by: 创建自
@@ -682,6 +695,7 @@ fields:
     tfa_secret: 2FA（双因素身份验证）
     status: 状态
     role: 角色
+    token: Token
     last_page: 尾页
     last_access: 上次访问
   directus_settings:
@@ -695,6 +709,8 @@ fields:
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
     storage_asset_presets: 存储资产预设
+    storage_asset_transform: 存储资产转换
+    custom_css: 自定义 CSS
   directus_fields:
     collection: 集合名称
     icon: 集合 Icon
@@ -728,9 +744,23 @@ save_current_datetime: 保存当前日期/时间
 block: 阻止
 inline: 内联
 comment: 注释
+relational_triggers: 关联触发器
+referential_action_field_label_m2o: 删除 {collection} 时...
+referential_action_field_label_o2m: 取消选择 {collection}...
+referential_action_no_action: 防止删除
+referential_action_cascade: 删除 {collection} 项 (分类)
+referential_action_set_null: 伪装 {field} 字段
+referential_action_set_default: 设置 {field} 为默认值
+choose_action: 选择操作
 continue: 继续
+continue_as: >-
+  {name} 目前已被身份验证。如果您确认此帐户，请按继续。
+editing_role: '{role} 角色'
+creating_webhook: 正在创建 Webhook
 default: 默认
 delete: 删除
+delete_are_you_sure: >-
+  此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
   您确定要删除字段 "{field}" 吗? 此操作无法撤消。
 description: 描述
@@ -738,6 +768,7 @@ done: 已完成
 duplicate: 复制
 email: 邮箱
 embed: 嵌入
+fallback_icon: 备用图标
 field: 字段 | 字段
 file: 文件
 file_library: 文件管理
@@ -745,11 +776,16 @@ forgot_password: 忘记密码
 hidden: 隐藏
 icon: 图标
 info: 更多信息
+normal: 标准
+success: 成功
+warning: 警示
+danger: 危险
 junction_collection: 交叉集合
 latency: 延迟
 login: 登录
 my_activity: 操作记录
 not_authenticated: 未认证
+authenticated: 已认证。
 options: 选项
 otp: 一次性密码
 password: 密码
@@ -763,6 +799,7 @@ save: 保存
 schema: Schema
 search: 搜索
 select_existing: 选择现有
+select_field_type: 选择字段类型
 select_interface: 选择接口
 settings: 设置
 sign_in: 登录
@@ -770,12 +807,27 @@ sign_out: 退出登录
 sign_out_confirm: 您确定要退出登录吗?
 something_went_wrong: 出了点问题。
 sort_direction: 排序
+sort_asc: 升序
+sort_desc: 降序
 template: 模板
 translation: 翻译
 value: 值
+view_project: 查看项目
+report_error: 报告错误
 interfaces:
   presentation-links:
+    presentation-links: 按钮链接
+    links: 链接
+    description: 启动动态URL的可配置链接按钮
+    style: 样式
     primary: 主要的
+    link: 链接
+    button: 按钮
+    error: 无法执行操作
+  select-multiple-checkbox:
+    checkboxes: 复选框
+    description: 通过复选框选择多个选项
+    allow_other: 允许其他
   input-code:
     code: 代码
   system-collection:
@@ -797,6 +849,7 @@ interfaces:
   presentation-divider:
     divider: 分隔线
   select-dropdown:
+    allow_other: 允许其他
     choices_value_placeholder: 输入值...
   file:
     file: 文件
@@ -812,12 +865,69 @@ interfaces:
     interface: 接口
   select-dropdown-m2o:
     display_template: 显示模板
+  input-rich-text-md:
+    customSyntax: 自定义块
+    customSyntax_label: 添加自定义语法类型
+    customSyntax_add: 添加自定义语法
+    box: Block / Inline
+    imageToken: 图像Token
+    imageToken_label: 添加到源图片的Token
+  presentation-notice:
+    notice: 提示
+    description: 显示一个快捷提示
+    text: 在此输入通知内容...
+  list-o2m:
+    one-to-many: 一对多
+    description: 选择多个相关项目
+    no_collection: 找不到collection
+  select-radio:
+    radio-buttons: 单选按钮
+    description: 选择多项选择
+  list:
+    repeater: 中继器
+    description: 创建同一结构的多个条目
+    edit_fields: 编辑字段
+    add_label: '"创建新"标签'
+    field_name_placeholder: 输入字段名称...
+    field_note_placeholder: 输入字段备注...
   slider:
     slider: 滑块
+    description: 使用滑块选择一个数字
+    always_show_value: 总是显示
   tags:
     tags: 标签
+    description: 选择或添加标签
+    whitespace: 空白
+    hyphen: 用连字符替换
+    underscore: 将空格替换为下划线
+    remove: 删除空格
+    capitalization: 大写
+    uppercase: 转为大写
+    lowercase: 转为小写
+    auto_formatter: 自动格式化标题
+    alphabetize: 按字母表排序
+    alphabetize_label: 强制按字母顺序排序
+    add_tags: 添加标签...
+  input:
+    input: Input
+    description: 手动输入一个值
+    trim: Trim
+    trim_label: 修剪开始和结束
+    mask_label: 隐藏真实值
+    clear: 已清除的值
+    clear_label: 保存为空字符串
+    minimum_value: 最小值
+    maximum_value: 最大值
+    step_interval: 步骤间隔
+    slug: Slugify
+    slug_label: 使输入的 URL 安全
+  input-multiline:
+    textarea: Textarea
+    description: 输入多行纯文本
   boolean:
     toggle: 切换
+    description: 开启或关闭
+    label_placeholder: 输入标签...
     label_default: 已启用
   translations:
     display_template: 显示模板
