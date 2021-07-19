@@ -11,6 +11,7 @@ enter_password_to_enable_tfa: 输入您的密码以启用两步验证
 add_field: 添加字段
 role_name: 角色名称
 branch: 分支
+leaf: Leaf
 indeterminate: 不确定的状态
 exclusive: 唯一的
 children: 子页面
@@ -491,8 +492,12 @@ operators:
   nbetween: 不介于
   empty: 空
   nempty: 不是空的
+  all: 包含这些关键词
+  has: 包含其中之一的关键词
 loading: 正在载入...
 drop_to_upload: 拖拽文件并上传
+item: 条目
+items: 条目
 upload_file: 上传文件
 upload_file_indeterminate: 正在上传文件...
 upload_file_success: 文件已上传
@@ -510,6 +515,8 @@ value_unique: 值必须唯一
 all_activity: 所有活动的
 create_item: 创建项目
 display_template: 显示模板
+language_display_template: 语言显示模板
+translations_display_template: 翻译显示模板
 n_items_selected: '没有选定项目 | 1 项选定项目 | {n} 项选定项目'
 per_page: 每页
 all_files: 所有文件
@@ -540,8 +547,21 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+image_url: 图片 Url
+alt_text: 替代文本
+media: Media
 width: 宽
 height: 高度
+source: 来源
+url_placeholder: 输入网址...
+display_text: 显示文本
+display_text_placeholder: 输入显示文本...
+tooltip: 提示
+tooltip_placeholder: 输入工具提示...
+unlimited: 无限制
+open_link_in: 打开链接于
+new_tab: 新的选项卡
+current_tab: 当前选项卡
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -558,7 +578,13 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
+  bullist: 符号列表
+  numlist: 数字列表
+  hr: 水平线
+  link: 添加/编辑链接
   unlink: 移除链接
+  media: 添加/编辑媒体
+  image: 添加/编辑图像
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -579,21 +605,40 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
+  visualaid: 显示不可见的元素
+  source_code: 编辑源代码
   fullscreen: 全屏显示
+  directionality: 方向
 dropdown: 下拉列表
 choices: 选择项
+choices_option_configured_incorrectly: 选择配置错误
 deselect: 取消选择
+deselect_all: 取消全选
 other: 其他...
 adding_user: 添加用户
+unknown_user: 未知用户
+creating_in: '在 {collection} 中创建条目'
+editing_in: '在 {collection} 中编辑条目'
+creating_unit: '正在创建 {unit}'
+editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
 settings_permissions: 角色与权限
 settings_project: 项目设置
 settings_webhooks: Webhook
+settings_presets: 预设&书签
+one_or_more_options_are_missing: 缺少一个或多个选项
+scope: Scope
+select: 选择...
 layout: 布局
+tree_view: 树状图
 changes_are_permanent: 更改是永久的
+preset_name_placeholder: 为空时作为默认值...
+preset_search_placeholder: 搜索...
 editing_preset: 编辑预设​​​​​​​
+layout_preview: 布局预览
+layout_setup: 布局设置
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
@@ -603,6 +648,15 @@ page_help_collections_collection: >-
   **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
 page_help_collections_item: >-
   **条目详情l** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
+page_help_activity_collection: >-
+  **浏览活动** - 您所有用户的系统和内容活动的完整列表。
+page_help_docs_global: >-
+  **文档概述** - 专为本项目的版本和模式设计的文档。
+page_help_files_collection: >-
+  **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
+page_help_files_item: >-
+  **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
+page_help_settings_project: "**项目设置** — — 你的项目的全局配置选项。"
 page_help_settings_datamodel_collections: >-
   **数据模型: 集合** - 列出所有可用的集合。这包括可见、隐藏和系统集合，以及可以添加的数据库表（当前还未加入并管理）。
 page_help_settings_datamodel_fields: >-
@@ -828,6 +882,7 @@ interfaces:
     checkboxes: 复选框
     description: 通过复选框选择多个选项
     allow_other: 允许其他
+    show_more: '显示更多 {count}'
   input-code:
     code: 代码
   system-collection:
@@ -931,28 +986,81 @@ interfaces:
     label_default: 已启用
   translations:
     display_template: 显示模板
+  list-o2m-tree-view:
+    description: 递归显示树状图
+    recursive_only: 树状图仅适用于递归关系。
   user:
     user: 用户
+    description: 选择一个已有的用户
+    select_mode: 选择模式
     modes:
+      auto: 自动
       dropdown: 下拉列表
+      modal: 模式
+  input-rich-text-html:
+    wysiwyg: 所见即所得
+    description: 富文本编辑器
+    toolbar: 工具栏
+    custom_formats: 自定义格式
+    options_override: 覆盖选项
+  input-autocomplete-api:
+    input-autocomplete-api: 自动完成 Input (API)
+    description: 一个事先搜索的外部API
+    results_path: 结果路径
+    value_path: 值路径
+    trigger: 触发器
+    rate: Rate
+  group-raw:
+    name: 原始字段
+    description: 以正常方式显示字段。
 displays:
   boolean:
     boolean: 布尔值
+    description: 显示开启或关闭状态
+    label_on: 标签开启
+    label_on_placeholder: 在标签上输入...
+    label_off: 关闭标签
+    label_off_placeholder: 输入关闭标签...
     icon_on: 图标开启
     icon_off: 关闭图标
+    color_on: 启用颜色
+    color_off: 禁用颜色
   collection:
     collection: 集合
+    description: 显示收藏
+    icon_label: 显示收藏的图标
   color:
     color: 颜色
+    description: 显示一个彩色的圆点
+    default_color: 默认颜色
   datetime:
     datetime: 日期时间
+    description: 显示与时间相关的值
     format: 格式
+    format_note: >-
+      自定义格式接受__[日期字段符号表](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Long
+    short: Short
+    relative: 相对
+    relative_label: '显示相对时间，例如 5 分钟前'
   file:
     file: 文件
+    description: 显示文件
   filesize:
     filesize: 文件大小
+    description: 显示文件大小
+  formatted-value:
+    formatted-value: 格式化值
+    description: 显示文本格式化
+    format_title: 格式化标题
+    format_title_label: 自动格式化外观
+    bold_label: 使用粗体
+  formatted-json-value:
+    formatted-json-value: 格式化JSON值
+    description: 显示对象的格式化版本
   icon:
     icon: 图标
+    description: 显示图标
   image:
     circle: 圆圈
   labels:
