@@ -38,7 +38,7 @@ declare module '@directus-extensions-display' {
 }
 
 declare module '@directus-extensions-layout' {
-	import { LayoutConfig } from '@/layouts/types';
+	import { LayoutConfig } from '@directus/shared/types';
 	const layouts: LayoutConfig[];
 	export default layouts;
 }
