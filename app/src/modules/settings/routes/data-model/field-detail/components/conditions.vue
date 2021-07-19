@@ -52,7 +52,7 @@ export default defineComponent({
 				name: t('rule'),
 				type: 'json',
 				meta: {
-					interface: 'code',
+					interface: 'system-filter-setup',
 					options: {
 						language: 'json',
 					},
