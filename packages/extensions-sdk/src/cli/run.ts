@@ -9,7 +9,12 @@ const program = new Command();
 program.name('directus-extension').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
 
-program.command('create').arguments('<type> <name>').description('Scaffold a new Directus extension').action(create);
+program
+	.command('create')
+	.arguments('<type> <name>')
+	.description('Scaffold a new Directus extension')
+	.option('-l, --language <language>', 'specify the language to use', 'javascript')
+	.action(create);
 
 program
 	.command('build')

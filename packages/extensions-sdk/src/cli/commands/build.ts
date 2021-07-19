@@ -12,7 +12,7 @@ import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
 import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } from '@directus/shared/constants';
 import { isAppExtension, isExtension, validateExtensionManifest } from '@directus/shared/utils';
-import { ExtensionManifestRaw } from '@directus/shared/types';
+import { ExtensionManifestRaw, ExtensionType } from '@directus/shared/types';
 import log from '../utils/logger';
 import loadConfig from '../utils/load-config';
 
@@ -60,12 +60,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	const config = await loadConfig();
 
-	const isApp = isAppExtension(type);
-
 	const spinner = ora('Building Directus extension...').start();
 
-	const rollupOptions = getRollupOptions(isApp, input, config.plugins);
-	const rollupOutputOptions = getRollupOutputOptions(isApp, output);
+	const rollupOptions = getRollupOptions(type, input, config.plugins);
+	const rollupOutputOptions = getRollupOutputOptions(type, output);
 
 	const bundle = await rollup(rollupOptions);
 
@@ -76,8 +74,8 @@ export default async function build(options: BuildOptions): Promise<void> {
 	spinner.succeed(chalk.bold('Done'));
 }
 
-function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = []): RollupOptions {
-	if (isApp) {
+function getRollupOptions(type: ExtensionType, input: string, plugins: Plugin[] = []): RollupOptions {
+	if (isAppExtension(type)) {
 		return {
 			input,
 			external: APP_SHARED_DEPS,
@@ -118,8 +116,8 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 	}
 }
 
-function getRollupOutputOptions(isApp: boolean, output: string): RollupOutputOptions {
-	if (isApp) {
+function getRollupOutputOptions(type: ExtensionType, output: string): RollupOutputOptions {
+	if (isAppExtension(type)) {
 		return {
 			file: output,
 			format: 'es',
