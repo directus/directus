@@ -6,6 +6,8 @@ import {
 	LayoutConfig,
 	LayoutContext,
 	LayoutDefineParam,
+	ModuleConfig,
+	ModuleDefineParam,
 } from '../../types';
 
 export function defineInterface(config: InterfaceDefineParam): InterfaceConfig {
@@ -40,6 +42,18 @@ export function defineLayout<Options = any, Query = any>(
 	if (typeof config === 'function') {
 		const context: LayoutContext = {};
 		options = config(context);
+	} else {
+		options = config;
+	}
+
+	return options;
+}
+
+export function defineModule(config: ModuleDefineParam): ModuleConfig {
+	let options: ModuleConfig;
+
+	if (typeof config === 'function') {
+		options = config();
 	} else {
 		options = config;
 	}
