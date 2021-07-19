@@ -27,7 +27,7 @@
 		"npm": ">=7.0.0"
 	},
 	"devDependencies": {
-		"@types/dockerode": "3.2.5",
+		"@types/dockerode": "3.2.6",
 		"@types/jest": "26.0.24",
 		"@types/listr": "0.14.4",
 		"@types/node": "15.12.2",
