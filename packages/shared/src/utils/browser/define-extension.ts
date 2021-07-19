@@ -8,6 +8,8 @@ import {
 	LayoutDefineParam,
 	ModuleConfig,
 	ModuleDefineParam,
+	HookRegisterFunction,
+	EndpointRegisterFunction,
 } from '../../types';
 
 export function defineInterface(config: InterfaceDefineParam): InterfaceConfig {
@@ -59,4 +61,12 @@ export function defineModule(config: ModuleDefineParam): ModuleConfig {
 	}
 
 	return options;
+}
+
+export function defineHook(fn: HookRegisterFunction): HookRegisterFunction {
+	return fn;
+}
+
+export function defineEndpoint(fn: EndpointRegisterFunction): EndpointRegisterFunction {
+	return fn;
 }
