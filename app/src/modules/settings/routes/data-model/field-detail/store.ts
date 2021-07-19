@@ -6,9 +6,8 @@
  */
 
 import { getDisplays } from '@/displays';
-import { DisplayConfig } from '@/displays/types';
 import { getInterfaces } from '@/interfaces';
-import { DeepPartial, Field, InterfaceConfig, Item, LocalType } from '@directus/shared/types';
+import { DeepPartial, DisplayConfig, Field, InterfaceConfig, Item, LocalType } from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Collection, Relation } from '@/types';
 

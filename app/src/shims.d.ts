@@ -32,7 +32,7 @@ declare module '@directus-extensions-interface' {
 }
 
 declare module '@directus-extensions-display' {
-	import { DisplayConfig } from '@/displays/types';
+	import { DisplayConfig } from '@directus/shared/types';
 	const displays: DisplayConfig[];
 	export default displays;
 }

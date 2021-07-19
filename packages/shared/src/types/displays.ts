@@ -1,5 +1,6 @@
-import { DeepPartial, Field, LocalType, Type } from '@directus/shared/types';
 import { Component } from 'vue';
+import { Field, LocalType, Type } from './fields';
+import { DeepPartial } from './misc';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;
@@ -26,8 +27,7 @@ export interface DisplayConfig {
 	icon: string;
 	description?: string;
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	handler: DisplayHandlerFunction | Component | Function;
+	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;
 	types: Type[];
 	groups?: LocalType[];
