@@ -2,7 +2,7 @@
 
 Directus is published to both [DockerHub](https://hub.docker.com/r/directus/directus) and
 [GitHub Packages](https://github.com/orgs/directus/packages/container/package/directus) under `directus/directus`. To
-run Directus straight from DockerHub, run:
+use the Directus image from DockerHub, run:
 
 ```bash
 docker run -p 8055:8055 directus/directus
@@ -10,16 +10,18 @@ docker run -p 8055:8055 directus/directus
 
 ### Installing Specific Versions
 
-For every version we release, we update/publish three tags. This allows you to use the latest released version, the
-latest minor (eg v9.1) or a specific version (eg v9.1.2). To run Directus on a specific version, run:
+Each released version is available under its own tag (e.g. 9.0.0-rc.85). To use a specific version of Directus, run:
 
 ```bash
-docker run -p 8055:8055 directus/directus:v9
-# OR
-docker run -p 8055:8055 directus/directus:v9.1
-# OR
-docker run -p 8055:8055 directus/directus:v9.1.2
+docker run -p 8055:8055 directus/directus:9.0.0-rc.85
 ```
+
+::: warning Change In Naming of Docker Tags
+
+Before 9.0.0-rc.84 the Docker tags were prefixed by a "v" - e.g. v9.0.0-rc.83.
+
+:::
+
 
 ### Create admin user using docker
 
@@ -50,7 +52,7 @@ When using Docker compose, you can use the following setup to get you started - 
 (`SECRET`, `DB_PASSWORD`, ...) in production:
 
 ```yaml
-version: '3.2'
+version: '3'
 services:
   database:
     container_name: database
@@ -76,11 +78,11 @@ services:
     ports:
       - 8055:8055
     volumes:
-      # By default, Directus images writes uploads to /directus/uploads
+      # By default, uploads are stored in /directus/uploads
       # Always make sure your volumes matches the storage root when using
       # local driver
       - ./uploads:/directus/uploads
-      # Make sure to also mount the volume When using SQLite
+      # Make sure to also mount the volume when using SQLite
       # - ./database:/directus/database
       # If you want to load extensions from the host
       # - ./extensions:/directus/extensions
