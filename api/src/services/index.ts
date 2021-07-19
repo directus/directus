@@ -19,6 +19,7 @@ export * from './roles';
 export * from './server';
 export * from './settings';
 export * from './specifications';
+export * from './tfa';
 export * from './users';
 export * from './utils';
 export * from './webhooks';

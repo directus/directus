@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone } from 'lodash';
+import { clone, uniq } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import {
@@ -12,6 +12,7 @@ import {
 	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
+import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
@@ -25,14 +26,12 @@ export class UsersService extends ItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	service: ItemsService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.service = new ItemsService('directus_users', options);
 		this.schema = options.schema;
 	}
 
@@ -40,26 +39,31 @@ export class UsersService extends ItemsService {
 	 * User email has to be unique case-insensitive. This is an additional check to make sure that
 	 * the email is unique regardless of casing
 	 */
-	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey) {
-		if (emails.length > 0) {
-			const query = this.knex
-				.select('email')
-				.from('directus_users')
-				.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
+	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey): Promise<void> {
+		if (emails.some((email) => email === null)) {
+			throw new ContainsNullValuesException('email', {
+				collection: 'directus_users',
+				field: 'email',
+			});
+		}
 
-			if (excludeKey) {
-				query.whereNot('id', excludeKey);
-			}
+		const query = this.knex
+			.select('email')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails.map((email) => email.toLowerCase())]);
 
-			const results = await query;
+		if (excludeKey) {
+			query.whereNot('id', excludeKey);
+		}
 
-			if (results.length > 0) {
-				throw new RecordNotUniqueException('email', {
-					collection: 'directus_users',
-					field: 'email',
-					invalid: results[0].email,
-				});
-			}
+		const results = await query;
+
+		if (results.length > 0) {
+			throw new RecordNotUniqueException('email', {
+				collection: 'directus_users',
+				field: 'email',
+				invalid: results[0].email,
+			});
 		}
 	}
 
@@ -67,7 +71,7 @@ export class UsersService extends ItemsService {
 	 * Check if the provided password matches the strictness as configured in
 	 * directus_settings.auth_password_policy
 	 */
-	private async checkPasswordPolicy(passwords: string[]) {
+	private async checkPasswordPolicy(passwords: string[]): Promise<void> {
 		const settingsService = new SettingsService({
 			schema: this.schema,
 			knex: this.knex,
@@ -95,114 +99,84 @@ export class UsersService extends ItemsService {
 				}
 			}
 		}
-
-		return true;
 	}
 
 	/**
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
-		return await this.service.createOne(data, opts);
+		const result = await this.createMany([data], opts);
+		return result[0];
 	}
 
 	/**
 	 * Create multiple new users
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data
-			.map((payload: Record<string, any>) => payload.email)
-			.filter((e) => e)
-			.map((e) => e.toLowerCase()) as string[];
-
-		await this.checkUniqueEmails(emails);
-
+		const emails = uniq(data.map((payload) => payload.email).filter((e) => e));
 		const passwords = data.map((payload) => payload.password).filter((pw) => pw);
 
-		if (passwords.length > 0) {
+		if (emails.length) {
+			await this.checkUniqueEmails(emails);
+		}
+
+		if (passwords.length) {
 			await this.checkPasswordPolicy(passwords);
 		}
 
-		return await this.service.createMany(data, opts);
+		return await super.createMany(data, opts);
 	}
 
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email], key);
-		}
-
-		if (data.password) {
-			await this.checkPasswordPolicy([data.password]);
-		}
-
-		if ('tfa_secret' in data) {
-			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
-		}
-
-		return await this.service.updateOne(key, data, opts);
-	}
-
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email]);
-		}
-
-		if (data.password) {
-			await this.checkPasswordPolicy([data.password]);
-		}
-
-		if ('tfa_secret' in data) {
-			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
-		}
-
-		return await this.service.updateMany(keys, data, opts);
-	}
-
+	/**
+	 * Update many users by query
+	 */
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email?.toLowerCase();
-
-		if (email) {
-			await this.checkUniqueEmails([email]);
-		}
-
-		if (data.password) {
-			await this.checkPasswordPolicy([data.password]);
-		}
-
-		if ('tfa_secret' in data) {
-			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
-		}
-
-		return await this.service.updateByQuery(query, data, opts);
+		const keys = await this.getKeysByQuery(query);
+		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
 
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNot('directus_users.id', key)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
-		}
-
-		await this.service.deleteOne(key, opts);
-
+	/**
+	 * Update a single user by primary key
+	 */
+	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.updateMany([key], data, opts);
 		return key;
 	}
 
+	/**
+	 * Update many users by primary key
+	 */
+	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if ('email' in data) {
+			await this.checkUniqueEmails([data.email]);
+		}
+
+		if ('password' in data) {
+			await this.checkPasswordPolicy([data.password]);
+		}
+
+		if ('tfa_secret' in data) {
+			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+		}
+
+		if ('source' in data || 'source_key' in data || 'source_data' in data) {
+			throw new InvalidPayloadException(`You can't change "source" values manually.`);
+		}
+
+		return await super.updateMany(keys, data, opts);
+	}
+
+	/**
+	 * Delete a single user by primary key
+	 */
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.deleteMany([key], opts);
+		return key;
+	}
+
+	/**
+	 * Delete multiple users by primary key
+	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		// Make sure there's at least one admin user left after this deletion is done
 		const otherAdminUsers = await this.knex
@@ -219,7 +193,7 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
-		await this.service.deleteMany(keys, opts);
+		await super.deleteMany(keys, opts);
 
 		return keys;
 	}
@@ -345,54 +319,6 @@ export class UsersService extends ItemsService {
 		if (this.cache && env.CACHE_AUTO_PURGE) {
 			await this.cache.clear();
 		}
-	}
-
-	async generateTFA(pk: string): Promise<Record<string, string>> {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
-
-		if (user?.tfa_secret !== null) {
-			throw new InvalidPayloadException('TFA Secret is already set for this user');
-		}
-
-		const authService = new AuthenticationService({
-			knex: this.knex,
-			schema: this.schema,
-			accountability: this.accountability,
-		});
-		const secret = authService.generateTFASecret();
-
-		return {
-			secret,
-			url: await authService.generateOTPAuthURL(pk, secret),
-		};
-	}
-
-	async enableTFA(pk: string, otp: string, secret: string): Promise<void> {
-		const authService = new AuthenticationService({
-			schema: this.schema,
-		});
-
-		if (!pk) {
-			throw new InvalidCredentialsException();
-		}
-
-		const otpValid = await authService.verifyOTP(pk, otp, secret);
-
-		if (otpValid === false) {
-			throw new InvalidPayloadException(`"otp" is invalid`);
-		}
-
-		const userSecret = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
-
-		if (userSecret?.tfa_secret !== null) {
-			throw new InvalidPayloadException('TFA Secret is already set for this user');
-		}
-
-		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });
-	}
-
-	async disableTFA(pk: string): Promise<void> {
-		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
 
 	/**

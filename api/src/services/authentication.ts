@@ -3,18 +3,13 @@ import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
-import { authenticator } from 'otplib';
 import getDatabase from '../database';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import {
-	InvalidCredentialsException,
-	InvalidOTPException,
-	InvalidPayloadException,
-	UserSuspendedException,
-} from '../exceptions';
+import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
-import { ActivityService } from '../services/activity';
+import { ActivityService } from './activity';
+import { TFAService } from './tfa';
 import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
 import { SettingsService } from './settings';
 import { merge } from 'lodash';
@@ -140,7 +135,8 @@ export class AuthenticationService {
 		}
 
 		if (user.tfa_secret && otp) {
-			const otpValid = await this.verifyOTP(user.id, otp);
+			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
+			const otpValid = await tfaService.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
@@ -207,21 +203,16 @@ export class AuthenticationService {
 		}
 
 		const record = await this.knex
-			.select<Session & { email: string; id: string }>(
-				'directus_sessions.*',
-				'directus_users.email',
-				'directus_users.id'
-			)
+			.select<Session & { user: string; expires: string }>('user', 'expires')
 			.from('directus_sessions')
-			.where({ 'directus_sessions.token': refreshToken })
-			.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
+			.where({ token: refreshToken })
 			.first();
 
-		if (!record || !record.email || record.expires < new Date()) {
+		if (!record || record.expires < new Date()) {
 			throw new InvalidCredentialsException();
 		}
 
-		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
+		const accessToken = jwt.sign({ id: record.user }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 
@@ -232,45 +223,18 @@ export class AuthenticationService {
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
 
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.id });
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user });
 
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: record.id,
+			id: record.user,
 		};
 	}
 
 	async logout(refreshToken: string): Promise<void> {
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
-	}
-
-	generateTFASecret(): string {
-		const secret = authenticator.generateSecret();
-		return secret;
-	}
-
-	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
-		const user = await this.knex.select('email').from('directus_users').where({ id: pk }).first();
-		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
-		return authenticator.keyuri(user.email, project?.project_name || 'Directus', secret);
-	}
-
-	async verifyOTP(pk: string, otp: string, secret?: string): Promise<boolean> {
-		let tfaSecret: string;
-		if (!secret) {
-			const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
-
-			if (!user.tfa_secret) {
-				throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
-			}
-			tfaSecret = user.tfa_secret;
-		} else {
-			tfaSecret = secret;
-		}
-
-		return authenticator.check(otp, tfaSecret);
 	}
 
 	async verifyPassword(pk: string, password: string): Promise<boolean> {

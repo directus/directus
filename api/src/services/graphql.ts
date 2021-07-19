@@ -67,6 +67,7 @@ import { RolesService } from './roles';
 import { ServerService } from './server';
 import { SettingsService } from './settings';
 import { SpecificationService } from './specifications';
+import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
@@ -1514,8 +1515,12 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+					const tfaService = new TFAService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
 					await authService.verifyPassword(this.accountability.user, args.password);
-					const { url, secret } = await service.generateTFA(this.accountability.user);
+					const { url, secret } = await tfaService.generateTFA(this.accountability.user);
 					return { secret, otpauth_url: url };
 				},
 			},
@@ -1527,7 +1532,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1543,15 +1548,11 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const authService = new AuthenticationService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+					const otpValid = await service.verifyOTP(this.accountability.user, args.otp);
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}
