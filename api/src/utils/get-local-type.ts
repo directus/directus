@@ -1,6 +1,7 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FieldMeta, types } from '../types';
+import { FieldMeta } from '@directus/shared/types';
+import { types } from '@directus/shared/constants';
 
 /**
  * Typemap graciously provided by @gpetrov

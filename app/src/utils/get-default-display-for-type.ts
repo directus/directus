@@ -1,4 +1,4 @@
-import { types } from '@/types';
+import { types } from '@directus/shared/constants';
 
 const defaultDisplayMap: Record<typeof types[number], string> = {
 	alias: 'raw',

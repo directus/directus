@@ -1,5 +1,6 @@
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FilterOperator } from '@directus/shared/types';
+import { FilterOperator } from './presets';
+import { types } from '../constants/field-types';
 
 type Translations = {
 	language: string;
@@ -7,40 +8,6 @@ type Translations = {
 };
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
-
-export const types = [
-	'alias',
-	'bigInteger',
-	'boolean',
-	'date',
-	'dateTime',
-	'decimal',
-	'float',
-	'integer',
-	'json',
-	'string',
-	'text',
-	'time',
-	'timestamp',
-	'binary',
-	'uuid',
-	'hash',
-	'csv',
-	'unknown',
-] as const;
-
-export const localTypes = [
-	'standard',
-	'file',
-	'files',
-	'm2o',
-	'o2m',
-	'm2m',
-	'm2a',
-	'presentation',
-	'translations',
-	'group',
-] as const;
 
 export type FieldMeta = {
 	id: number;

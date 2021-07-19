@@ -9,7 +9,7 @@ import {
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
 import { GraphQLDate } from '../services/graphql';
-import { types } from '../types';
+import { types } from '@directus/shared/constants';
 
 export function getGraphQLType(
 	localType: typeof types[number] | 'alias' | 'unknown'

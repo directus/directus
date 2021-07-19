@@ -1,4 +1,4 @@
-import { types } from './field';
+import { types } from '@directus/shared/constants';
 import { Permission } from './permissions';
 import { Relation } from './relation';
 

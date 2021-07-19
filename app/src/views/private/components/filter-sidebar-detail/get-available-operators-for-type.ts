@@ -1,5 +1,5 @@
 import { OperatorType } from './types';
-import { types } from '@/types';
+import { types } from '@directus/shared/constants';
 
 export default function getAvailableOperatorsForType(type: typeof types[number]): OperatorType {
 	/**

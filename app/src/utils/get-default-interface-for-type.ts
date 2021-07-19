@@ -1,4 +1,4 @@
-import { types } from '@/types';
+import { types } from '@directus/shared/constants';
 
 const defaultInterfaceMap: Record<typeof types[number], string> = {
 	alias: 'input',

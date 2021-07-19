@@ -11,8 +11,9 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
-import { Field } from '../types/field';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { Field, FieldMeta } from '@directus/shared/types';
+import { types } from '@directus/shared/constants';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
@@ -433,6 +434,9 @@ export class FieldsService {
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
 		let column: Knex.ColumnBuilder;
+
+		// Don't attempt to add a DB column for alias / corrupt fields
+		if (field.type === 'alias' || field.type === 'unknown') return;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);

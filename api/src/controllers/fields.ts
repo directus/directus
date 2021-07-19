@@ -6,7 +6,8 @@ import validateCollection from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { FieldsService } from '../services/fields';
-import { Field, types } from '../types';
+import { Field } from '@directus/shared/types';
+import { types } from '@directus/shared/constants';
 import asyncHandler from '../utils/async-handler';
 
 const router = Router();
