@@ -12,3 +12,15 @@ export function languageToShort(language: Language): LanguageShort {
 		return 'ts';
 	}
 }
+
+export function getLanguageFromPath(path: string): string {
+	const fileExtension = path.substring(path.lastIndexOf('.') + 1);
+
+	if (fileExtension === 'js') {
+		return 'javascript';
+	} else if (fileExtension === 'ts') {
+		return 'typescript';
+	} else {
+		return fileExtension;
+	}
+}
