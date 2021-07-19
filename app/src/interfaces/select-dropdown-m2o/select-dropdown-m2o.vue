@@ -1,23 +1,23 @@
 <template>
-	<v-notice type="warning" v-if="!relation">
+	<v-notice v-if="!relation" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
-	<v-notice type="warning" v-else-if="!displayTemplate">
+	<v-notice v-else-if="!displayTemplate" type="warning">
 		{{ t('display_template_not_setup') }}
 	</v-notice>
-	<div class="many-to-one" v-else>
+	<div v-else class="many-to-one">
 		<v-menu v-model="menuActive" attached :disabled="disabled">
 			<template #activator="{ active }">
-				<v-skeleton-loader type="input" v-if="loadingCurrent" />
+				<v-skeleton-loader v-if="loadingCurrent" type="input" />
 				<v-input
+					v-else
 					:active="active"
 					clickable
-					@click="onPreviewClick"
-					v-else
 					:placeholder="t('select_an_item')"
 					:disabled="disabled"
+					@click="onPreviewClick"
 				>
-					<template #input v-if="currentItem">
+					<template v-if="currentItem" #input>
 						<div class="preview">
 							<render-template
 								:collection="relatedCollection.collection"
@@ -27,13 +27,13 @@
 						</div>
 					</template>
 
-					<template #append v-if="!disabled">
+					<template v-if="!disabled" #append>
 						<template v-if="currentItem">
-							<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editModalActive = true" />
-							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="t('deselect')" />
+							<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
+							<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', null)" />
 						</template>
 						<template v-else>
-							<v-icon class="add" name="add" v-tooltip="t('create_item')" @click.stop="editModalActive = true" />
+							<v-icon v-tooltip="t('create_item')" class="add" name="add" @click.stop="editModalActive = true" />
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 					</template>
@@ -106,7 +106,6 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
  */
 
 export default defineComponent({
-	emits: ['input'],
 	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {
@@ -134,6 +133,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

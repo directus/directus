@@ -11,13 +11,13 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" :disabled="deleteAllowed === false">
+			<v-dialog v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					>
@@ -29,10 +29,10 @@
 					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -42,18 +42,18 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
-				@esc="confirmArchive = false"
 				:disabled="archiveAllowed === false"
+				@esc="confirmArchive = false"
 			>
 				<template #activator="{ on }">
 					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
 						class="action-archive"
-						v-tooltip.bottom="archiveTooltip"
-						@click="on"
 						:disabled="item === null || archiveAllowed !== true"
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						@click="on"
 					>
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>
@@ -63,10 +63,10 @@
 					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmArchive = false" secondary>
+						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
+						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -74,11 +74,11 @@
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
@@ -99,7 +99,7 @@
 		</template>
 
 		<div class="user-item">
-			<div class="user-box" v-if="isNew === false">
+			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
 					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
@@ -120,17 +120,18 @@
 							<v-icon name="alternate_email" small outline />
 							{{ item.email }}
 						</div>
-						<div class="location" v-if="item.location">
+						<div v-if="item.location" class="location">
 							<v-icon name="place" small outline />
 							{{ item.location }}
 						</div>
-						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
+						<v-chip v-if="roleName" :class="item.status" small>{{ roleName }}</v-chip>
 					</template>
 				</div>
 			</div>
 
 			<v-form
 				ref="form"
+				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
 				:fields="formFields"
 				:loading="loading"
@@ -138,7 +139,6 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
-				v-model="edits"
 			/>
 		</div>
 
@@ -159,9 +159,9 @@
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				ref="revisionsDrawerDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -199,7 +199,7 @@ import { useUserStore } from '@/stores';
 import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
-	name: 'users-item',
+	name: 'UsersItem',
 	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
 		primaryKey: {

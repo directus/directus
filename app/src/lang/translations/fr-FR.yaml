@@ -4,11 +4,17 @@ item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
+group: Groupe
 fill_width: Pleine largeur
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
+branch: Branche
+leaf: Feuille
+indeterminate: Indéterminé
+exclusive: Exclusif
+children: Les enfants
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
@@ -98,6 +104,7 @@ field_m2a: Relation M2A
 field_o2m: Relation O2M
 field_m2m: Relation M2M
 field_translations: Traductions
+field_group: Groupe de Champs
 item_permissions: Autorisations pour l'élément
 field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
@@ -477,6 +484,10 @@ operators:
   nnull: N'est pas null
   contains: Contient
   ncontains: Ne contient pas
+  starts_with: Commence par
+  nstarts_with: Ne commence pas par
+  ends_with: Termine par
+  nends_with: Ne finit pas par
   between: Est entre
   nbetween: N'est pas entre
   empty: Est vide
@@ -796,6 +807,8 @@ referential_action_set_null: Vider le champ {field}
 referential_action_set_default: Remettre {field} à sa valeur par défaut
 choose_action: Choisir une action
 continue: Continuer
+continue_as: >-
+  {name} est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
 creating_webhook: Création du Webhook
 default: Défaut
@@ -854,6 +867,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
@@ -871,6 +885,11 @@ interfaces:
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
+  select-multiple-checkbox-tree:
+    name: Cases à cocher (Arborescence)
+    description: Choisissez entre plusieurs options via des cases à cocher imbriquées
+    value_combining: Combinaison de valeurs
+    value_combining_note: Contrôle la valeur stockée lorsque des sélections imbriquées sont faites.
   input-code:
     code: Code
     description: Écrire ou partager des extraits de code
@@ -1049,6 +1068,9 @@ interfaces:
     value_path: Chemin de la valeur
     trigger: Déclencheur
     rate: Débit
+  group-raw:
+    name: Champs bruts
+    description: Afficher les champs comme normal.
 displays:
   boolean:
     boolean: Booléen

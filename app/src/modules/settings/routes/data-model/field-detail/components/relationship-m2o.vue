@@ -8,36 +8,36 @@
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
 				<v-input
-					:class="{ matches: relatedCollectionExists }"
-					db-safe
 					key="related-collection"
 					v-model="relations[0].related_collection"
+					:class="{ matches: relatedCollectionExists }"
+					db-safe
 					:nullable="false"
 					:disabled="isExisting"
 					:placeholder="t('collection') + '...'"
 				>
-					<template #append v-if="!isExisting">
+					<template v-if="!isExisting" #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
+									v-tooltip="t('select_existing')"
 									name="list_alt"
 									clickable
-									@click="toggle"
-									v-tooltip="t('select_existing')"
 									:disabled="isExisting"
+									@click="toggle"
 								/>
 							</template>
 
 							<v-list class="monospace">
 								<v-list-item
-									v-for="collection in availableCollections"
-									:key="collection.collection"
-									:active="relations[0].related_collection === collection.collection"
-									@click="relations[0].related_collection = collection.collection"
+									v-for="availableCollection in availableCollections"
+									:key="availableCollection.collection"
+									:active="relations[0].related_collection === availableCollection.collection"
 									clickable
+									@click="relations[0].related_collection = availableCollection.collection"
 								>
 									<v-list-item-content>
-										{{ collection.collection }}
+										{{ availableCollection.collection }}
 									</v-list-item-content>
 								</v-list-item>
 
@@ -46,14 +46,14 @@
 								<v-list-group>
 									<template #activator>{{ t('system') }}</template>
 									<v-list-item
-										v-for="collection in systemCollections"
-										:key="collection.collection"
-										:active="relations[0].related_collection === collection.collection"
-										@click="relations[0].related_collection = collection.collection"
+										v-for="systemCollection in systemCollections"
+										:key="systemCollection.collection"
+										:active="relations[0].related_collection === systemCollection.collection"
 										clickable
+										@click="relations[0].related_collection = systemCollection.collection"
 									>
 										<v-list-item-content>
-											{{ collection.collection }}
+											{{ systemCollection.collection }}
 										</v-list-item-content>
 									</v-list-item>
 								</v-list-group>
@@ -61,7 +61,7 @@
 						</v-menu>
 					</template>
 
-					<template #input v-if="isExisting">
+					<template v-if="isExisting" #input>
 						<v-text-overflow :text="relations[0].related_collection" />
 					</template>
 				</v-input>
@@ -75,18 +75,18 @@
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider large :inline-title="false" v-if="!isExisting">{{ t('corresponding_field') }}</v-divider>
+		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
 
-		<div class="grid" v-if="!isExisting">
+		<div v-if="!isExisting" class="grid">
 			<div class="field">
 				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
+				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ t('field_name') }}</div>
 				<v-input
-					:disabled="hasCorresponding === false"
 					v-model="correspondingField"
+					:disabled="hasCorresponding === false"
 					:placeholder="t('field_name') + '...'"
 					db-safe
 				/>
@@ -136,7 +136,7 @@
 			</div>
 		</div>
 
-		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ t('new_data_alert') }}
 

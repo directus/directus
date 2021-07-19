@@ -1,3 +1,5 @@
+import { EXTENSION_PKG_KEY } from '../constants';
+
 export type ApiExtensionType = 'endpoint' | 'hook';
 export type AppExtensionType = 'interface' | 'display' | 'layout' | 'module';
 export type ExtensionType = ApiExtensionType | AppExtensionType;
@@ -15,4 +17,32 @@ export type Extension = {
 
 	local: boolean;
 	root: boolean;
+};
+
+export type ExtensionManifestRaw = {
+	name?: string;
+	version?: string;
+	dependencies?: Record<string, string>;
+
+	[EXTENSION_PKG_KEY]?: {
+		type?: string;
+		path?: string;
+		source?: string;
+		host?: string;
+		hidden?: boolean;
+	};
+};
+
+export type ExtensionManifest = {
+	name: string;
+	version: string;
+	dependencies?: Record<string, string>;
+
+	[EXTENSION_PKG_KEY]: {
+		type: ExtensionPackageType;
+		path: string;
+		source: string;
+		host: string;
+		hidden: boolean;
+	};
 };

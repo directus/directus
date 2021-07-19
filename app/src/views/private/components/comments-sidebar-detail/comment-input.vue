@@ -1,10 +1,10 @@
 <template>
 	<v-textarea
+		ref="textarea"
+		v-model="newCommentContent"
 		class="new-comment"
 		:placeholder="t('leave_comment')"
-		v-model="newCommentContent"
 		expand-on-focus
-		ref="textarea"
 	>
 		<template #append>
 			<!-- <v-icon name="alternate_email" class="add-mention" />
@@ -13,8 +13,8 @@
 				:disabled="!newCommentContent || newCommentContent.length === 0"
 				:loading="saving"
 				class="post-comment"
-				@click="postComment"
 				x-small
+				@click="postComment"
 			>
 				{{ t('submit') }}
 			</v-button>

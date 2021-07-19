@@ -18,13 +18,13 @@
 			<activity-navigation v-model:filters="filters" />
 		</template>
 
-		<component class="layout" :is="`layout-${layout}`" />
+		<component :is="`layout-${layout}`" class="layout" />
 
 		<router-view name="detail" :primary-key="primaryKey" />
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_activity_collection'))" />
+				<div v-md="t('page_help_activity_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<component :is="`layout-sidebar-${layout}`" />
@@ -38,13 +38,12 @@ import { defineComponent, computed, ref, reactive } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import usePreset from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
-import { md } from '@/utils/md';
 import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
-	name: 'activity-collection',
+	name: 'ActivityCollection',
 	components: { ActivityNavigation, FilterSidebarDetail, LayoutSidebarDetail, SearchInput },
 	props: {
 		primaryKey: {
@@ -72,7 +71,7 @@ export default defineComponent({
 			})
 		);
 
-		return { t, breadcrumb, md, layout, layoutOptions, layoutQuery, searchQuery, filters };
+		return { t, breadcrumb, layout, layoutOptions, layoutQuery, searchQuery, filters };
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {

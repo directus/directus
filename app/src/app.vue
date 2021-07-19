@@ -1,7 +1,7 @@
 <template>
 	<div id="directus" :style="brandStyle">
 		<transition name="fade">
-			<div class="hydrating" v-if="hydrating">
+			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>

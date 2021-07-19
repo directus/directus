@@ -1,10 +1,11 @@
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-model="props.selection"
 			v-if="loading || itemCount > 0"
-			class="table"
 			ref="table"
+			v-model="props.selection"
+			v-model:headers="tableHeaders"
+			class="table"
 			fixed-header
 			:show-select="props.readonly ? false : props.selection !== undefined"
 			show-resize
@@ -12,7 +13,6 @@
 			:sort="tableSort"
 			:items="items"
 			:loading="loading"
-			v-model:headers="tableHeaders"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"
@@ -23,7 +23,7 @@
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
-			<template v-for="header in tableHeaders" :key="header.value" v-slot:[`item.${header.value}`]="{ item }">
+			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
 					:value="item[header.value]"
 					:display="header.field.display"
@@ -52,10 +52,10 @@
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ t('per_page') }}</span>
 						<v-select
-							@update:model-value="limit = +$event"
 							:model-value="`${limit}`"
 							:items="['25', '50', '100', '250', '500', ' 1000']"
 							inline
+							@update:model-value="limit = +$event"
 						/>
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 			<template #append>
 				<v-error :error="error" />
 
-				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
+				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
 					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>

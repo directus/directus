@@ -222,7 +222,11 @@ export class PayloadService {
 			['dateTime', 'date', 'timestamp'].includes(field.type)
 		);
 
-		if (dateColumns.length === 0) return payloads;
+		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
+			return field.type === 'time';
+		});
+
+		if (dateColumns.length === 0 && timeColumns.length === 0) return payloads;
 
 		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
@@ -266,6 +270,22 @@ export class PayloadService {
 							payload[name] = newValue;
 						}
 					}
+				}
+			}
+		}
+
+		/**
+		 * Some DB drivers (MS SQL f.e.) return time values as Date objects. For consistencies sake,
+		 * we'll abstract those back to hh:mm:ss
+		 */
+		for (const [name] of timeColumns) {
+			for (const payload of payloads) {
+				const value = payload[name];
+
+				if (!value) continue;
+
+				if (action === 'read') {
+					if (value instanceof Date) payload[name] = format(value, 'HH:mm:ss');
 				}
 			}
 		}
@@ -318,6 +338,9 @@ export class PayloadService {
 
 			const relatedPrimary = this.schema.collections[relatedCollection].primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
+
+			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
 			const hasPrimaryKey = relatedPrimary in relatedRecord;
 
 			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];
@@ -540,7 +563,7 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[this.collection].primary;
+					const primaryKeyField = this.schema.collections[relation.collection].primary;
 
 					for (const item of alterations.update) {
 						await itemsService.updateOne(

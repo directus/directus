@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="!url || !resultsPath || !valuePath">
+	<v-notice v-if="!url || !resultsPath || !valuePath" type="warning">
 		{{ t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
@@ -82,6 +82,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -1,6 +1,6 @@
 <template>
 	<transition name="fade">
-		<span class="item-count" v-if="itemCount">
+		<span v-if="itemCount" class="item-count">
 			{{ showingCount }}
 		</span>
 	</transition>

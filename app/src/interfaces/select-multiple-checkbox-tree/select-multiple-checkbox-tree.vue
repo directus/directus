@@ -1,30 +1,31 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
 		<div class="search">
-			<v-input class="input" v-model="search" type="text" :placeholder="t('search')">
+			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />
 				</template>
 
-				<template #append v-if="search">
+				<template v-if="search" #append>
 					<v-icon name="clear" clickable @click="search = ''" />
 				</template>
 			</v-input>
 		</div>
 
 		<v-checkbox-tree
-			@update:model-value="$emit('input', $event)"
 			:model-value="value"
-			:search="search"
+			:search="searchDebounced"
 			:disabled="disabled"
 			:choices="choices"
 			:value-combining="valueCombining"
+			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { debounce } from 'lodash';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -34,7 +35,6 @@ type Choice = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Array as PropType<string[]>,
@@ -53,11 +53,20 @@ export default defineComponent({
 			default: 'all',
 		},
 	},
+	emits: ['input'],
 	setup() {
 		const { t } = useI18n();
 		const search = ref('');
 
-		return { search, t };
+		const setSearchDebounced = debounce((val: string) => {
+			searchDebounced.value = val;
+		}, 250);
+
+		watch(search, setSearchDebounced);
+
+		const searchDebounced = ref('');
+
+		return { search, t, searchDebounced };
 	},
 });
 </script>

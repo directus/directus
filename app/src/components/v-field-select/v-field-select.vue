@@ -5,23 +5,23 @@
 
 	<draggable
 		v-else
-		:force-fallback="true"
 		v-model="selectedFields"
+		:force-fallback="true"
 		item-key="field"
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		class="v-field-select"
 	>
 		<template #item="{ element }">
-			<v-chip class="field draggable" v-tooltip="element.field" @click="removeField(element.field)">
+			<v-chip v-tooltip="element.field" class="field draggable" @click="removeField(element.field)">
 				{{ element.name }}
 			</v-chip>
 		</template>
 
 		<template #footer>
-			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
+			<v-menu v-model="menuActive" show-arrow class="add" placement="bottom">
 				<template #activator="{ toggle }">
-					<v-button @click="toggle" small>
+					<v-button small @click="toggle">
 						{{ t('add_field') }}
 						<v-icon small name="add" />
 					</v-button>
@@ -53,7 +53,6 @@ import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FieldListItem, Draggable },
 	props: {
 		disabled: {
@@ -77,6 +76,7 @@ export default defineComponent({
 			default: () => ({ fields: [], collections: [], relations: [] }),
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

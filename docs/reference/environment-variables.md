@@ -1,21 +1,24 @@
 # Environment Variables
 
-> Environment Variables are used for all configuration within Directus projects. They are managed in the root `.env`
-> file, which is created during the installation process.
+> Environment variables are used for all configuration within Directus projects. They can either be defined as plain
+> environment variables or via the `.env` file in the root directory, which is created during the installation process.
 
 [[toc]]
 
 ## General
 
-| Variable           | Description                                                                                                | Default Value |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
-| `PORT`             | What port to run the API under.                                                                            | `8055`        |
-| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
-| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
-| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
-| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
-| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
+| Variable                   | Description                                                                                                | Default Value |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`              | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`                     | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
+
+<sup>[1]</sup> The PUBLIC_URL value is used for things like oAuth redirects, forgot-password emails, and logos that
+needs to be publicly available on the internet.
 
 ## Database
 
@@ -193,9 +196,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable           | Description                        | Default Value |
-| ------------------ | ---------------------------------- | ------------- |
-| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable                 | Description                        | Default Value |
+| ------------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance | ---           |
 
 ### Database
 
@@ -326,10 +329,11 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### Mailgun (`mailgun`)
 
-| Variable                | Description                                                                       | Default Value |
-| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
-| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --            |
-| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --            |
+| Variable                | Description                                                                       | Default Value     |
+| ----------------------- | --------------------------------------------------------------------------------- | ----------------- |
+| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
+| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
+| `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
 
 ## Misc.
 

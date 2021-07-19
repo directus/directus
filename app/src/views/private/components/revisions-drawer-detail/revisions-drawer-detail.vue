@@ -4,7 +4,7 @@
 		icon="change_history"
 		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
 	>
-		<v-progress-linear indeterminate v-if="loading" />
+		<v-progress-linear v-if="loading" indeterminate />
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
@@ -15,7 +15,7 @@
 				</template>
 			</template>
 
-			<v-divider class="other" v-if="revisionsCount > 100">
+			<v-divider v-if="revisionsCount > 100" class="other">
 				{{ t('count_other_revisions', revisionsCount - 101) }}
 			</v-divider>
 
@@ -34,9 +34,9 @@
 
 		<revisions-drawer
 			v-if="revisions"
-			:revisions="revisions"
 			v-model:current="modalCurrentRevision"
 			v-model:active="modalActive"
+			:revisions="revisions"
 			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
@@ -57,7 +57,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
-	emits: ['revert'],
 	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {
@@ -69,6 +68,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['revert'],
 	setup(props) {
 		const { t } = useI18n();
 

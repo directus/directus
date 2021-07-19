@@ -74,6 +74,7 @@ issue doesn't already exist, you can [submit a bug report](https://github.com/di
 Issues. Please ensure the following for all submissions:
 
 - You are experiencing an actual bug, not a configuration issue
+- You are using the official (pre-built) version of directus and not a fork
 - You are not asking a question or requesting a new feature
 - You have checked that no similar issue already exists
 - You have entered a clear and concise title

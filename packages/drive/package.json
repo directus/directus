@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.83",
+	"version": "9.0.0-rc.85",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -50,8 +50,8 @@
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
-		"@types/fs-extra": "9.0.11",
-		"@types/jest": "26.0.23",
+		"@types/fs-extra": "9.0.12",
+		"@types/jest": "26.0.24",
 		"@types/node": "15.12.2",
 		"dotenv": "10.0.0",
 		"jest": "27.0.6",

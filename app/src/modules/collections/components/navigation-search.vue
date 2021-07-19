@@ -1,6 +1,6 @@
 <template>
-	<div class="container" v-show="searchQuery !== null || visible > 20">
-		<v-input small class="search" v-model="searchQuery" :placeholder="t('search_collection')">
+	<div v-show="searchQuery !== null || visible > 20" class="container">
+		<v-input v-model="searchQuery" small class="search" :placeholder="t('search_collection')">
 			<template #prepend><v-icon small name="search" /></template>
 		</v-input>
 	</div>
