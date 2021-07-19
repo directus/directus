@@ -4,11 +4,13 @@ item_revision: Xem Phiên bản
 duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
+group: Chọn nhóm
 fill_width: Rộng toàn bộ
 field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
 add_field: Thêm trường
 role_name: Tên Quyền
+branch: Chọn nhánh
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
 show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc

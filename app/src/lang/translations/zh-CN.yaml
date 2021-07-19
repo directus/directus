@@ -4,21 +4,31 @@ item_revision: 项目修订
 duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
+group: 群组
 fill_width: 填充宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用两步验证
 add_field: 添加字段
 role_name: 角色名称
+branch: 分支
+leaf: Leaf
+indeterminate: 不确定的状态
+exclusive: 唯一的
+children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置 '
 show_archived_items: 显示存档项目
+edited: 已编辑的值
 required: 必填
+required_for_app_access: 应用程序访问所需的
 requires_value: 必填值
 create_preset: 创建预设
 create_role: 创建角色
 create_user: 创建用户
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: 邀请
+email_already_invited: 电子邮件 "{email}" 已被邀请
 emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
@@ -55,6 +65,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: '重置系统权限为：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
 the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
+app_access_minimum: 应用访问最小值
 recommended_defaults: 推荐的默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
@@ -77,9 +88,13 @@ validationError:
   nnull: 值不能为null
   required: 值是必需的
   unique: 值必须唯一
+  regex: 值格式不正确
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 自定义
+nullable: 允许为空
+allow_null_value: 允许空值
+enter_value_to_replace_nulls: 请输入一个新的值来替换当前在此字段内的任何NULL。
 field_standard: 标准
 field_presentation: 展示字段
 field_file: 单个文件
@@ -89,6 +104,7 @@ field_m2a: M2A Relationship
 field_o2m: O2M 关系
 field_m2m: M2M 关系
 field_translations: 翻译
+field_group: 字段组
 item_permissions: 项目权限
 field_permissions: 字段权限
 field_validation: 字段验证
@@ -116,6 +132,7 @@ exposure: 过期：
 shutter: 快门
 iso: ISO
 focal_length: 焦距
+schema_setup_key: 此字段的数据库列名称和 API 密钥
 create_field: 创建字段
 creating_new_field: '新字段 ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -133,6 +150,7 @@ decimal: 十进制
 float: 浮点数
 integer: 整数
 json: JSON
+xml: XML
 string: 字符串
 text: 文字
 time: 时间
@@ -143,6 +161,7 @@ not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
 refresh_interval: 刷新间隔
+no_refresh: 不刷新
 refresh_interval_seconds: 即时刷新 | 每秒 | 每 {seconds} 秒
 refresh_interval_minutes: 每分钟 | 每 {minutes} 分钟
 auto_generate: 自动生成
@@ -203,31 +222,42 @@ confirm_revert_body: 此操作会使条目恢复至选中状态
 display: 显示
 settings_update_success: 设置已更新
 title: 标题
+revision_delta_created: 已创建
+revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
 revision_delta_reverted: Reverted
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
+private_user: 私人用户
 revision_preview: 修订预览
 updates_made: 更新完成
 leave_comment: 留下注释...
+post_comment_success: 评论已发布
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
 item_delete_success: 项目已删除 | 项目已删除
 this_collection: 此集合
 related_collection: 相关集合
 related_collections: 相关集合
+translations_collection: 翻译收藏
 languages_collection: 语言集合
 export_data: 导出数据
 format: 格式
+use_current_filters_settings: 使用当前筛选器和设置
 export_collection: '导出 {collection}'
 last_page: 尾页
 last_access: 上次访问
 fill_template: 使用模板填入
+a_unique_table_name: 唯一的表名...
+a_unique_column_name: 唯一列名称...
+enable_custom_values: 启用自定义值
 submit: 提交
+move_to_folder: 移动到文件夹
 move: 移动
 system: 系统
 add_field_related: 将字段添加到关联集合
+interface: 接口
 today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
@@ -261,6 +291,7 @@ import: Import
 file_details: 文件信息
 dimensions: 尺寸
 size: 大小
+created: 已创建
 modified: 已修改
 checksum: 校验和
 owner: 所有者
@@ -296,6 +327,10 @@ save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_as_copy: 另存为
 add_existing: 添加现有
+creating_items: 创建项目
+enable_create_button: 启用创建按钮
+selecting_items: 选择项目
+enable_select_button: 启用选择按钮
 comments: 注释
 no_comments: 暂无评论
 click_to_expand: 单击展开
@@ -310,6 +345,7 @@ interface_not_found: '未找到接口 "{interface}"。'
 reset_interface: 重置接口
 display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
+list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
 no_items_copy: 此集合中没有项目。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
@@ -347,6 +383,7 @@ collection_created: 集合已创建
 modified_on: 修改于
 card_size: 卡片大小
 sort_field: 排序字段
+add_sort_field: 添加排序字段
 sort: 排序
 status: 状态
 remove: 移除
@@ -370,13 +407,19 @@ errors:
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
   INVALID_OTP: 错误的一次性密码
+  INVALID_PAYLOAD: 无效的内容
   INVALID_QUERY: 无效的查询
   ITEM_LIMIT_REACHED: 项目已达到限制
   ITEM_NOT_FOUND: 找不到项目
   ROUTE_NOT_FOUND: 未找到
+  RECORD_NOT_UNIQUE: 检测到重复的值
+  USER_SUSPENDED: 用户已禁用
+  CONTAINS_NULL_VALUES: 字段包含空值
   UNKNOWN: 未知错误
   INTERNAL_SERVER_ERROR: 未知错误
+value_hashed: 哈希值
 bookmark_name: 书签名称
+create_bookmark: 创建书签
 edit_bookmark: 编辑书签
 bookmarks: 书签
 presets: 预设
@@ -384,6 +427,7 @@ unexpected_error: 未知错误
 unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
+no_app_access_copy: 此用户不允许使用管理员应用程序。
 password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
@@ -426,6 +470,7 @@ empty_item: 空项
 log_in_with: '使用 {provider} 登录'
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
+change_advanced_filter_operator: 更改操作者
 operators:
   eq: 等于
   neq: 不等于
@@ -439,12 +484,20 @@ operators:
   nnull: 不是空的
   contains: 包含
   ncontains: 不包含
+  starts_with: 开始于
+  nstarts_with: 不是以xx开始
+  ends_with: 结束于
+  nends_with: 结尾不是
   between: 介于
   nbetween: 不介于
   empty: 空
   nempty: 不是空的
+  all: 包含这些关键词
+  has: 包含其中之一的关键词
 loading: 正在载入...
 drop_to_upload: 拖拽文件并上传
+item: 条目
+items: 条目
 upload_file: 上传文件
 upload_file_indeterminate: 正在上传文件...
 upload_file_success: 文件已上传
@@ -462,6 +515,8 @@ value_unique: 值必须唯一
 all_activity: 所有活动的
 create_item: 创建项目
 display_template: 显示模板
+language_display_template: 语言显示模板
+translations_display_template: 翻译显示模板
 n_items_selected: '没有选定项目 | 1 项选定项目 | {n} 项选定项目'
 per_page: 每页
 all_files: 所有文件
@@ -492,8 +547,21 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+image_url: 图片 Url
+alt_text: 替代文本
+media: Media
 width: 宽
 height: 高度
+source: 来源
+url_placeholder: 输入网址...
+display_text: 显示文本
+display_text_placeholder: 输入显示文本...
+tooltip: 提示
+tooltip_placeholder: 输入工具提示...
+unlimited: 无限制
+open_link_in: 打开链接于
+new_tab: 新的选项卡
+current_tab: 当前选项卡
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -510,7 +578,13 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
+  bullist: 符号列表
+  numlist: 数字列表
+  hr: 水平线
+  link: 添加/编辑链接
   unlink: 移除链接
+  media: 添加/编辑媒体
+  image: 添加/编辑图像
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -531,21 +605,40 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
+  visualaid: 显示不可见的元素
+  source_code: 编辑源代码
   fullscreen: 全屏显示
+  directionality: 方向
 dropdown: 下拉列表
 choices: 选择项
+choices_option_configured_incorrectly: 选择配置错误
 deselect: 取消选择
+deselect_all: 取消全选
 other: 其他...
 adding_user: 添加用户
+unknown_user: 未知用户
+creating_in: '在 {collection} 中创建条目'
+editing_in: '在 {collection} 中编辑条目'
+creating_unit: '正在创建 {unit}'
+editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
 settings_permissions: 角色与权限
 settings_project: 项目设置
 settings_webhooks: Webhook
+settings_presets: 预设&书签
+one_or_more_options_are_missing: 缺少一个或多个选项
+scope: Scope
+select: 选择...
 layout: 布局
+tree_view: 树状图
 changes_are_permanent: 更改是永久的
+preset_name_placeholder: 为空时作为默认值...
+preset_search_placeholder: 搜索...
 editing_preset: 编辑预设​​​​​​​
+layout_preview: 布局预览
+layout_setup: 布局设置
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
@@ -555,8 +648,30 @@ page_help_collections_collection: >-
   **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
 page_help_collections_item: >-
   **条目详情l** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
+page_help_activity_collection: >-
+  **浏览活动** - 您所有用户的系统和内容活动的完整列表。
+page_help_docs_global: >-
+  **文档概述** - 专为本项目的版本和模式设计的文档。
+page_help_files_collection: >-
+  **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
+page_help_files_item: >-
+  **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
+page_help_settings_project: "**项目设置** — — 你的项目的全局配置选项。"
 page_help_settings_datamodel_collections: >-
   **数据模型: 集合** - 列出所有可用的集合。这包括可见、隐藏和系统集合，以及可以添加的数据库表（当前还未加入并管理）。
+page_help_settings_datamodel_fields: >-
+  **数据模型: Collection** — 用于管理此集合及其字段的表单
+page_help_settings_roles_collection: '**Browse Roles** - 列出管理员、公共和自定义用户角色。'
+page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
+page_help_settings_presets_collection: >-
+  **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
+page_help_settings_presets_item: >-
+  **预设详细信息** - 管理书签和默认收藏预设的表格。
+page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
+page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
+page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
+page_help_users_item: >-
+  **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -596,12 +711,18 @@ fields:
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
   directus_files:
+    $thumbnail: 缩略图
     title: 标题
     description: 描述
     tags: 标签
     location: 地理位置
+    storage: 存储
+    filename_disk: 文件名(磁盘)
+    filename_download: 文件名(下载)
     metadata: 元数据（Metadata）
+    type: Mime 类型
     filesize: 文件大小
+    modified_by: 修改人：
     modified_on: 修改于
     created_on: 创建于
     created_by: 创建自
@@ -628,6 +749,7 @@ fields:
     tfa_secret: 2FA（双因素身份验证）
     status: 状态
     role: 角色
+    token: Token
     last_page: 尾页
     last_access: 上次访问
   directus_settings:
@@ -641,6 +763,8 @@ fields:
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
     storage_asset_presets: 存储资产预设
+    storage_asset_transform: 存储资产转换
+    custom_css: 自定义 CSS
   directus_fields:
     collection: 集合名称
     icon: 集合 Icon
@@ -674,9 +798,23 @@ save_current_datetime: 保存当前日期/时间
 block: 阻止
 inline: 内联
 comment: 注释
+relational_triggers: 关联触发器
+referential_action_field_label_m2o: 删除 {collection} 时...
+referential_action_field_label_o2m: 取消选择 {collection}...
+referential_action_no_action: 防止删除
+referential_action_cascade: 删除 {collection} 项 (分类)
+referential_action_set_null: 伪装 {field} 字段
+referential_action_set_default: 设置 {field} 为默认值
+choose_action: 选择操作
 continue: 继续
+continue_as: >-
+  {name} 目前已被身份验证。如果您确认此帐户，请按继续。
+editing_role: '{role} 角色'
+creating_webhook: 正在创建 Webhook
 default: 默认
 delete: 删除
+delete_are_you_sure: >-
+  此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
   您确定要删除字段 "{field}" 吗? 此操作无法撤消。
 description: 描述
@@ -684,6 +822,7 @@ done: 已完成
 duplicate: 复制
 email: 邮箱
 embed: 嵌入
+fallback_icon: 备用图标
 field: 字段 | 字段
 file: 文件
 file_library: 文件管理
@@ -691,11 +830,16 @@ forgot_password: 忘记密码
 hidden: 隐藏
 icon: 图标
 info: 更多信息
+normal: 标准
+success: 成功
+warning: 警示
+danger: 危险
 junction_collection: 交叉集合
 latency: 延迟
 login: 登录
 my_activity: 操作记录
 not_authenticated: 未认证
+authenticated: 已认证。
 options: 选项
 otp: 一次性密码
 password: 密码
@@ -709,6 +853,7 @@ save: 保存
 schema: Schema
 search: 搜索
 select_existing: 选择现有
+select_field_type: 选择字段类型
 select_interface: 选择接口
 settings: 设置
 sign_in: 登录
@@ -716,12 +861,33 @@ sign_out: 退出登录
 sign_out_confirm: 您确定要退出登录吗?
 something_went_wrong: 出了点问题。
 sort_direction: 排序
+sort_asc: 升序
+sort_desc: 降序
 template: 模板
 translation: 翻译
 value: 值
+view_project: 查看项目
+report_error: 报告错误
 interfaces:
   presentation-links:
+    presentation-links: 按钮链接
+    links: 链接
+    description: 启动动态URL的可配置链接按钮
+    style: 样式
     primary: 主要的
+    link: 链接
+    button: 按钮
+    error: 无法执行操作
+  select-multiple-checkbox:
+    checkboxes: 复选框
+    description: 通过复选框选择多个选项
+    allow_other: 允许其他
+    show_more: '显示更多 {count}'
+    items_shown: 显示条目
+  select-multiple-checkbox-tree:
+    name: 复选框 (树状)
+    description: 通过复选框选择多个选项
+    value_combining: 组合值
   input-code:
     code: 代码
   system-collection:
@@ -743,6 +909,7 @@ interfaces:
   presentation-divider:
     divider: 分隔线
   select-dropdown:
+    allow_other: 允许其他
     choices_value_placeholder: 输入值...
   file:
     file: 文件
@@ -754,40 +921,158 @@ interfaces:
     hash: Hash
   select-icon:
     icon: 图标
+  file-image:
+    image: 图片
+  system-interface:
+    interface: 接口
   select-dropdown-m2o:
     display_template: 显示模板
+  input-rich-text-md:
+    customSyntax: 自定义块
+    customSyntax_label: 添加自定义语法类型
+    customSyntax_add: 添加自定义语法
+    box: Block / Inline
+    imageToken: 图像Token
+    imageToken_label: 添加到源图片的Token
+  presentation-notice:
+    notice: 提示
+    description: 显示一个快捷提示
+    text: 在此输入通知内容...
+  list-o2m:
+    one-to-many: 一对多
+    description: 选择多个相关项目
+    no_collection: 找不到collection
+  select-radio:
+    radio-buttons: 单选按钮
+    description: 选择多项选择
+  list:
+    repeater: 中继器
+    description: 创建同一结构的多个条目
+    edit_fields: 编辑字段
+    add_label: '"创建新"标签'
+    field_name_placeholder: 输入字段名称...
+    field_note_placeholder: 输入字段备注...
   slider:
     slider: 滑块
+    description: 使用滑块选择一个数字
+    always_show_value: 总是显示
   tags:
     tags: 标签
+    description: 选择或添加标签
+    whitespace: 空白
+    hyphen: 用连字符替换
+    underscore: 将空格替换为下划线
+    remove: 删除空格
+    capitalization: 大写
+    uppercase: 转为大写
+    lowercase: 转为小写
+    auto_formatter: 自动格式化标题
+    alphabetize: 按字母表排序
+    alphabetize_label: 强制按字母顺序排序
+    add_tags: 添加标签...
+  input:
+    input: Input
+    description: 手动输入一个值
+    trim: Trim
+    trim_label: 修剪开始和结束
+    mask_label: 隐藏真实值
+    clear: 已清除的值
+    clear_label: 保存为空字符串
+    minimum_value: 最小值
+    maximum_value: 最大值
+    step_interval: 步骤间隔
+    slug: Slugify
+    slug_label: 使输入的 URL 安全
+  input-multiline:
+    textarea: Textarea
+    description: 输入多行纯文本
   boolean:
     toggle: 切换
+    description: 开启或关闭
+    label_placeholder: 输入标签...
     label_default: 已启用
   translations:
     display_template: 显示模板
+  list-o2m-tree-view:
+    description: 递归显示树状图
+    recursive_only: 树状图仅适用于递归关系。
   user:
     user: 用户
+    description: 选择一个已有的用户
+    select_mode: 选择模式
     modes:
+      auto: 自动
       dropdown: 下拉列表
+      modal: 模式
+  input-rich-text-html:
+    wysiwyg: 所见即所得
+    description: 富文本编辑器
+    toolbar: 工具栏
+    custom_formats: 自定义格式
+    options_override: 覆盖选项
+  input-autocomplete-api:
+    input-autocomplete-api: 自动完成 Input (API)
+    description: 一个事先搜索的外部API
+    results_path: 结果路径
+    value_path: 值路径
+    trigger: 触发器
+    rate: Rate
+  group-raw:
+    name: 原始字段
+    description: 以正常方式显示字段。
 displays:
   boolean:
     boolean: 布尔值
+    description: 显示开启或关闭状态
+    label_on: 标签开启
+    label_on_placeholder: 在标签上输入...
+    label_off: 关闭标签
+    label_off_placeholder: 输入关闭标签...
     icon_on: 图标开启
     icon_off: 关闭图标
+    color_on: 启用颜色
+    color_off: 禁用颜色
   collection:
     collection: 集合
+    description: 显示收藏
+    icon_label: 显示收藏的图标
   color:
     color: 颜色
+    description: 显示一个彩色的圆点
+    default_color: 默认颜色
   datetime:
     datetime: 日期时间
+    description: 显示与时间相关的值
     format: 格式
+    format_note: >-
+      自定义格式接受__[日期字段符号表](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Long
+    short: Short
+    relative: 相对
+    relative_label: '显示相对时间，例如 5 分钟前'
   file:
     file: 文件
+    description: 显示文件
   filesize:
     filesize: 文件大小
+    description: 显示文件大小
+  formatted-value:
+    formatted-value: 格式化值
+    description: 显示文本格式化
+    format_title: 格式化标题
+    format_title_label: 自动格式化外观
+    bold_label: 使用粗体
+  formatted-json-value:
+    formatted-json-value: 格式化JSON值
+    description: 显示对象的格式化版本
   icon:
     icon: 图标
+    description: 显示图标
+    filled: 填充
+    filled_label: 使用填充变量
   image:
+    image: 图片
+    description: 显示一个小的图像预览
     circle: 圆圈
   labels:
     choices_value_placeholder: 输入值...
