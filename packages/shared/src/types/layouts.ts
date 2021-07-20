@@ -1,12 +1,12 @@
 import { Item } from './items';
-import { Filter } from './presets';
+import { AppFilter } from './presets';
 
 export interface LayoutProps<Options = any, Query = any> {
 	collection: string | null;
 	selection: Item[];
 	layoutOptions: Options;
 	layoutQuery: Query;
-	filters: Filter[];
+	filters: AppFilter[];
 	searchQuery: string | null;
 	selectMode: boolean;
 	readonly: boolean;

@@ -18,7 +18,8 @@
 		"./types": {
 			"import": "./dist/esm/types/index.js",
 			"require": "./dist/cjs/types/index.js"
-		}
+		},
+		"./": "./"
 	},
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",

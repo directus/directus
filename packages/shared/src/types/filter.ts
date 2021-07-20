@@ -43,23 +43,3 @@ export type FieldFilterOperator = {
 	_empty?: boolean;
 	_nempty?: boolean;
 };
-
-const filterA: FieldFilter = {
-	author: {
-		_eq: 'Rijk',
-	},
-};
-
-const filterB: FieldFilter = {
-	author: {
-		name: 'Rijk', // << This should be illegal
-	},
-};
-
-const filterC: FieldFilter = {
-	author: {
-		name: {
-			_eq: 'Rijk',
-		},
-	},
-};
