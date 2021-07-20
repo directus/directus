@@ -890,6 +890,7 @@ interfaces:
     value_combining: 组合值
   input-code:
     code: 代码
+    description: 编辑或分享代码片段
   system-collection:
     collection: 集合
     description: 在现有集合之间选择
