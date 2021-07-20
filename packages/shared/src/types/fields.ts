@@ -1,5 +1,5 @@
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FilterOperator } from './presets';
+import { FilterOperator } from './filter';
 import { types } from '../constants/field-types';
 
 type Translations = {

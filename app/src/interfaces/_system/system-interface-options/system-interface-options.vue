@@ -40,7 +40,7 @@ export default defineComponent({
 		},
 		interfaceField: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		interface: {
 			type: String,

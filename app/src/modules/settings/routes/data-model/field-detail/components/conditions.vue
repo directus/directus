@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { Field, Condition } from '@/types';
+import { Field, Condition } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { state } from '../store';
 import { get, set } from 'lodash';
@@ -22,7 +22,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
 
 		const value = computed({
@@ -54,7 +54,7 @@ export default defineComponent({
 				meta: {
 					interface: 'system-filter-setup',
 					options: {
-						language: 'json',
+						collectionKey: props.collection,
 					},
 				},
 			},
@@ -95,7 +95,7 @@ export default defineComponent({
 			},
 		]);
 
-		return { repeaterFields, value };
+		return { repeaterFields, value, state };
 	},
 });
 </script>
