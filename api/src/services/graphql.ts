@@ -1376,7 +1376,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 					});
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1407,13 +1407,13 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
 					const result = await authenticationService.refresh(currentRefreshToken);
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1443,7 +1443,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
