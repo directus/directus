@@ -59,7 +59,7 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -88,7 +88,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -107,7 +107,7 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -136,7 +136,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -144,8 +144,8 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies.directus_refresh_token) {
-			res.clearCookie('directus_refresh_token', {
+		if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
+			res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
@@ -340,7 +340,7 @@ router.get(
 		emitStatus('success');
 
 		if (redirect) {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
