@@ -64,13 +64,12 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
-import { Field, FieldRaw } from '@/types';
+import { Field, FieldRaw, ValidationError } from '@directus/shared/types';
 import { clone, cloneDeep, isNil, merge, omit } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
-import { ValidationError } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
-import generateJoi from '@/utils/generate-joi';
+import { validatePayload } from '@directus/shared/dist/esm/utils/validate-payload';
 
 type FieldValues = {
 	[field: string]: any;
@@ -227,9 +226,8 @@ export default defineComponent({
 						const conditions = [...field.meta.conditions].reverse();
 
 						const matchingCondition = conditions.find((condition) => {
-							const schema = generateJoi(condition.rule, { requireAll: true });
-							const { error } = schema.validate(values.value);
-							return isNil(error);
+							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
+							return errors.length === 0;
 						});
 
 						if (matchingCondition) {
