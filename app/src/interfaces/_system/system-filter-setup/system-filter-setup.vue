@@ -62,3 +62,11 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+.filter-setup {
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--border-radius);
+	padding: 12px;
+}
+</style>

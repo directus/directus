@@ -7,7 +7,7 @@ import {
 	getPackageExtensions,
 	getLocalExtensions,
 	generateExtensionsEntry,
-} from '@directus/shared/utils';
+} from '@directus/shared/utils/node';
 import { APP_SHARED_DEPS, APP_EXTENSION_TYPES } from '@directus/shared/constants';
 
 // https://vitejs.dev/config/

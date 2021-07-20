@@ -16,14 +16,19 @@
 				:scope="Object.keys(level)[0]"
 				:value="Object.values(level)[0]"
 				:fields="fields"
-				@update:scope="updateScope(index, $event)"
-				@update:value="updateValue(index, $event)"
+				@update:scope="updateListScope(index, $event)"
+				@update:value="updateListValue(index, $event)"
 			/>
 
 			<filter-level :fields="fields" @update:scope="addNewClause" />
 		</template>
 
-		<filter-field v-else-if="scope" :field="fields.find((f) => f.field === scope)" :value="value" />
+		<filter-field
+			v-else-if="scope"
+			:field="fields.find((f) => f.field === scope)"
+			:value="Object.values(value)[0]"
+			@update:value="updateValue"
+		/>
 	</div>
 </template>
 
@@ -36,6 +41,7 @@ import FilterField from './filter-field.vue';
 
 export default defineComponent({
 	name: 'filter-level',
+	components: { FilterField },
 	props: {
 		scope: {
 			type: String,
@@ -61,11 +67,11 @@ export default defineComponent({
 		const scopeOptions = computed(() => {
 			const options = [
 				{
-					text: t('and'),
+					text: t('and').toUpperCase(),
 					value: '_and',
 				},
 				{
-					text: t('or'),
+					text: t('or').toUpperCase(),
 					value: '_or',
 				},
 				{
@@ -83,11 +89,11 @@ export default defineComponent({
 			return options;
 		});
 
-		return { scopeOptions, t, addNewClause, updateScope };
+		return { scopeOptions, t, addNewClause, updateListScope, updateListValue, updateValue };
 
 		function addNewClause(scope: string) {
 			emit('update:value', [
-				...((props.value as FieldFilter[]) ?? []),
+				...(Array.isArray(props.value) ? props.value : []),
 				{
 					[scope]: {
 						_eq: '',
@@ -96,7 +102,13 @@ export default defineComponent({
 			]);
 		}
 
-		function updateScope(index: number, scope: string | null) {
+		function updateValue(newVal: FieldFilter) {
+			emit('update:value', {
+				[props.scope]: newVal,
+			});
+		}
+
+		function updateListScope(index: number, scope: string | null) {
 			const currentValue = (props.value as FieldFilter[]) ?? [];
 
 			if (scope === null) {
@@ -105,16 +117,36 @@ export default defineComponent({
 				emit('update:value', [...currentValue.slice(0, index), { [scope]: {} }, ...currentValue.slice(index + 1)]);
 			}
 		}
+
+		function updateListValue(index: number, value: FieldFilter) {
+			const currentValue = (props.value as FieldFilter[]) ?? [];
+
+			if (updateListValue === null) {
+				emit('update:value', [...currentValue.slice(0, index), ...currentValue.slice(index + 1)]);
+			} else {
+				emit('update:value', [
+					...currentValue.slice(0, index),
+					{ [Object.keys(currentValue[index])[0]]: value },
+					...currentValue.slice(index + 1),
+				]);
+			}
+		}
 	},
 });
 </script>
 
 <style scoped>
 .filter-level {
-	padding-left: 8px;
+	padding-left: 12px;
+	border-left: 2px solid var(--border-subdued);
+}
+
+.filter-level + .filter-level {
+	margin-top: 12px;
 }
 
 .root {
 	padding-left: 0;
+	border-left: none;
 }
 </style>
