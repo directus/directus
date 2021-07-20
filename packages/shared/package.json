@@ -11,6 +11,10 @@
 			"import": "./dist/esm/utils/index.js",
 			"require": "./dist/cjs/utils/index.js"
 		},
+		"./utils/node": {
+			"import": "./dist/esm/utils/node.js",
+			"require": "./dist/cjs/utils/node.js"
+		},
 		"./constants": {
 			"import": "./dist/esm/constants/index.js",
 			"require": "./dist/cjs/constants/index.js"
@@ -18,8 +22,7 @@
 		"./types": {
 			"import": "./dist/esm/types/index.js",
 			"require": "./dist/cjs/types/index.js"
-		},
-		"./": "./"
+		}
 	},
 	"scripts": {
 		"build": "run-p \"build:* -- {@}\" --",
@@ -29,9 +32,14 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"author": "Nicola Krumschmidt",
+	"maintainers": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"fs-extra": "10.0.0",
+		"joi": "^17.4.1",
+		"lodash": "^4.17.21",
 		"vue": "3.1.5"
 	},
 	"devDependencies": {

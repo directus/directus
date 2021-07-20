@@ -5,6 +5,8 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+and: And
+or: Or
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication

@@ -1,5 +1,5 @@
 import path from 'path';
-import { AppExtensionType, Extension } from '../types';
+import { AppExtensionType, Extension } from '../../types';
 
 export function generateExtensionsEntry(type: AppExtensionType, extensions: Extension[]): string {
 	const filteredExtensions = extensions.filter((extension) => extension.type === type);

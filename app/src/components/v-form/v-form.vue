@@ -69,7 +69,7 @@ import { clone, cloneDeep, isNil, merge, omit } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
-import { validatePayload } from '@directus/shared/dist/esm/utils/validate-payload';
+import { validatePayload } from '@directus/shared/utils';
 
 type FieldValues = {
 	[field: string]: any;
