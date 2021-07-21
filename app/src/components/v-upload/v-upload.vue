@@ -119,7 +119,7 @@ export default defineComponent({
 		},
 		folder: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
@@ -163,10 +163,10 @@ export default defineComponent({
 				uploading.value = true;
 				progress.value = 0;
 
-				const customPresets: any = {};
+				const folderPreset: { folder?: string } = {};
 
 				if (props.folder) {
-					customPresets.folder = props.folder;
+					folderPreset.folder = props.folder;
 				}
 
 				try {
@@ -180,7 +180,7 @@ export default defineComponent({
 							},
 							preset: {
 								...props.preset,
-								...customPresets,
+								...folderPreset,
 							},
 						});
 
@@ -194,7 +194,7 @@ export default defineComponent({
 							fileId: props.fileId,
 							preset: {
 								...props.preset,
-								...customPresets,
+								...folderPreset,
 							},
 						});
 
