@@ -20,12 +20,12 @@ export type FieldMeta = {
 	hidden: boolean;
 	interface: string | null;
 	display: string | null;
-	options: null | Record<string, any>;
-	display_options: null | Record<string, any>;
+	options: Record<string, any> | null;
+	display_options: Record<string, any> | null;
 	readonly: boolean;
 	sort: number | null;
 	special: string[] | null;
-	translations: null | Translations[];
+	translations: Translations[] | null;
 	width: Width | null;
 	note: string | null;
 	system?: true;
