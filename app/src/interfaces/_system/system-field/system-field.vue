@@ -28,6 +28,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		collectionKey: {
+			type: String,
+			default: null,
+		},
 		collection: {
 			type: String,
 			default: null,
@@ -61,9 +65,21 @@ export default defineComponent({
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
+		const collection = computed(() => {
+			if (props.collectionField) {
+				return values.value[props.collectionField];
+			}
+
+			if (props.collectionKey) {
+				return props.collectionKey;
+			}
+
+			return props.collection;
+		});
+
 		const fields = computed(() => {
-			if (!props.collectionField && !props.collection) return [];
-			return fieldsStore.getFieldsForCollection(values.value[props.collectionField] || props.collection);
+			if (!collection.value) return [];
+			return fieldsStore.getFieldsForCollection(collection.value);
 		});
 
 		const selectItems = computed(() =>

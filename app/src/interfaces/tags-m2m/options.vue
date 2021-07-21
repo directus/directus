@@ -58,21 +58,25 @@ export default defineComponent({
 				field: 'referencingField',
 				name: t('interfaces.tags-m2m.reference-field'),
 				type: 'string',
-				collection: manyCollection,
 				required: true,
 				meta: {
 					width: 'full',
 					interface: 'field',
+					options: {
+						collectionKey: manyCollection,
+					},
 				},
 			},
 			{
 				field: 'displayTemplate',
 				name: t('display'),
 				type: 'string',
-				collection: manyCollection,
 				meta: {
 					width: 'full',
 					interface: 'display-template',
+					options: {
+						collectionKey: manyCollection,
+					},
 				},
 			},
 			{
