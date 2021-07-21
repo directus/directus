@@ -1,0 +1,41 @@
+{
+  "name": "@directus/auth",
+  "version": "9.0.0-rc.84",
+  "description": "Flexible and Fluent way to manage storage in Node.js.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "contributors": [
+    "Rijk van Zanten <rijkvanzanten@me.com>",
+    "Aiden Foxx <aiden@foxx.io>"
+  ],
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json",
+    "cleanup": "run-p cleanup:*",
+    "cleanup:dist": "rimraf ./dist",
+    "cleanup:coverage": "rimraf ./coverage",
+    "test:watch": "jest --coverage --watchAll",
+    "test": "jest --coverage",
+    "dev": "npm run build -- -w --preserveWatchOutput --incremental"
+  },
+  "dependencies": {
+    "argon2": "^0.28.1"
+  },
+  "devDependencies": {
+    "jest": "27.0.6",
+    "npm-run-all": "4.1.5",
+    "ts-jest": "27.0.3",
+    "typescript": "4.3.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/directus/directus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/directus/directus/issues"
+  },
+  "gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
+}

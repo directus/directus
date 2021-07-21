@@ -9,7 +9,6 @@ import {
 	ForbiddenException,
 	InvalidPayloadException,
 	UnprocessableEntityException,
-	InvalidCredentialsException,
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
@@ -17,7 +16,6 @@ import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '../utils/to-array';
-import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -159,8 +157,8 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		if ('source' in data || 'source_key' in data || 'source_data' in data) {
-			throw new InvalidPayloadException(`You can't change "source" values manually.`);
+		if ('provider' in data || 'provider_key' in data || 'provider_data' in data) {
+			throw new InvalidPayloadException(`You can't change "provider" values manually.`);
 		}
 
 		return await super.updateMany(keys, data, opts);

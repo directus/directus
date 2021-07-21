@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import ms from 'ms';
@@ -6,7 +5,10 @@ import { nanoid } from 'nanoid';
 import getDatabase from '../database';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
+import auth from '../auth';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import { InvalidCredentialsException, User } from '@directus/auth';
+import { InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
@@ -15,8 +17,9 @@ import { SettingsService } from './settings';
 import { merge } from 'lodash';
 
 type AuthenticateOptions = {
-	email: string;
-	password?: string;
+	identifier: string;
+	secret?: string;
+	provider?: string;
 	ip?: string | null;
 	userAgent?: string | null;
 	otp?: string;
@@ -47,17 +50,16 @@ export class AuthenticationService {
 	async authenticate(
 		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
-		const settingsService = new SettingsService({
-			knex: this.knex,
-			schema: this.schema,
-		});
+		const { identifier, secret, ip, userAgent, otp } = options;
 
-		const { email, password, ip, userAgent, otp } = options;
+		const providerKey = options.provider ?? DEFAULT_AUTH_PROVIDER;
+		const provider = auth.getProvider(providerKey);
 
 		let user = await this.knex
-			.select('id', 'password', 'role', 'tfa_secret', 'status')
+			.select<User & { tfa_secret: string | null }>('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
+			.where('id', await provider.userID(identifier))
+			.andWhere('provider', providerKey)
 			.first();
 
 		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
@@ -98,6 +100,11 @@ export class AuthenticationService {
 			}
 		}
 
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
 		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
 			fields: ['auth_login_attempts'],
 		});
@@ -117,15 +124,12 @@ export class AuthenticationService {
 			}
 		}
 
-		if (password !== undefined) {
-			if (!user.password) {
+		if (secret !== undefined) {
+			try {
+				await provider.verify(user, secret);
+			} catch (e) {
 				emitStatus('fail');
-				throw new InvalidCredentialsException();
-			}
-
-			if ((await argon2.verify(user.password, password)) === false) {
-				emitStatus('fail');
-				throw new InvalidCredentialsException();
+				throw e;
 			}
 		}
 
@@ -156,7 +160,6 @@ export class AuthenticationService {
 		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
-
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
@@ -202,17 +205,22 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const record = await this.knex
-			.select<Session & { user: string; expires: string }>('user', 'expires')
-			.from('directus_sessions')
-			.where({ token: refreshToken })
+		const session = await this.knex
+			.select<Session & User>('s.expires', 'u.id', 'u.password', 'u.role', 'u.status', 'u.provider')
+			.from('directus_sessions as s')
+			.innerJoin('directus_users as u', 's.user', 'u.id')
+			.where('token', refreshToken)
 			.first();
 
-		if (!record || record.expires < new Date()) {
+		if (!session || session.expires < new Date()) {
 			throw new InvalidCredentialsException();
 		}
 
-		const accessToken = jwt.sign({ id: record.user }, env.SECRET as string, {
+		const provider = auth.getProvider(session.provider);
+
+		await provider.refresh(session);
+
+		const accessToken = jwt.sign({ id: session.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 
@@ -223,31 +231,45 @@ export class AuthenticationService {
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
 
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user });
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: session.id });
 
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: record.user,
+			id: session.id,
 		};
 	}
 
 	async logout(refreshToken: string): Promise<void> {
-		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
+		const user = await this.knex
+			.select<User>('u.id', 'u.password', 'u.role', 'u.status', 'u.provider')
+			.from('directus_sessions as s')
+			.innerJoin('directus_users as u', 's.user', 'u.id')
+			.where('token', refreshToken)
+			.first();
+
+		if (user) {
+			const provider = auth.getProvider(user.provider);
+
+			await provider.logout(user);
+			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
+		}
 	}
 
-	async verifyPassword(pk: string, password: string): Promise<boolean> {
-		const userRecord = await this.knex.select('password').from('directus_users').where({ id: pk }).first();
+	async verifyPassword(userID: string, secret: string): Promise<void> {
+		const user = await this.knex
+			.select<User>('id', 'password', 'role', 'status', 'provider')
+			.from('directus_users')
+			.where('id', userID)
+			.first();
 
-		if (!userRecord || !userRecord.password) {
+		if (!user) {
 			throw new InvalidCredentialsException();
 		}
 
-		if ((await argon2.verify(userRecord.password, password)) === false) {
-			throw new InvalidCredentialsException();
-		}
+		const provider = auth.getProvider(user.provider);
 
-		return true;
+		await provider.verify(user, secret);
 	}
 }

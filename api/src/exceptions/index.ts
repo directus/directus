@@ -4,7 +4,6 @@ export * from './forbidden';
 export * from './graphql-validation';
 export * from './hit-rate-limit';
 export * from './illegal-asset-transformation';
-export * from './invalid-credentials';
 export * from './invalid-ip';
 export * from './invalid-otp';
 export * from './invalid-payload';

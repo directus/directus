@@ -46,7 +46,8 @@ import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
 import getDatabase from '../database';
 import env from '../env';
-import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { BaseException } from '@directus/shared/exceptions';
+import { GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -1507,7 +1508,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
-					const service = new UsersService({
+					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
@@ -1515,12 +1516,8 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					const tfaService = new TFAService({
-						accountability: this.accountability,
-						schema: this.schema,
-					});
 					await authService.verifyPassword(this.accountability.user, args.password);
-					const { url, secret } = await tfaService.generateTFA(this.accountability.user);
+					const { url, secret } = await service.generateTFA(this.accountability.user);
 					return { secret, otpauth_url: url };
 				},
 			},

@@ -4,7 +4,9 @@ import Joi from 'joi';
 import ms from 'ms';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
+import getDatabase from '../database';
+import { InvalidCredentialsException } from '@directus/auth';
+import { RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
@@ -15,64 +17,74 @@ import { toArray } from '../utils/to-array';
 
 const router = Router();
 
-const loginSchema = Joi.object({
-	email: Joi.string().email().required(),
-	password: Joi.string().required(),
-	mode: Joi.string().valid('cookie', 'json'),
-	otp: Joi.string(),
-}).unknown();
-
-router.post(
-	'/login',
-	asyncHandler(async (req, res, next) => {
-		const accountability = {
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			role: null,
-		};
-
-		const authenticationService = new AuthenticationService({
-			accountability: accountability,
-			schema: req.schema,
-		});
-
-		const { error } = loginSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
-
-		const mode = req.body.mode || 'json';
-
-		const ip = req.ip;
-		const userAgent = req.get('user-agent');
-
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			...req.body,
-			ip,
-			userAgent,
-		});
-
-		const payload = {
-			data: { access_token: accessToken, expires },
-		} as Record<string, Record<string, any>>;
-
-		if (mode === 'json') {
-			payload.data.refresh_token = refreshToken;
-		}
-
-		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
-				httpOnly: true,
-				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-			});
-		}
-
-		res.locals.payload = payload;
-		return next();
+const loginSchema = Joi.alternatives().try(
+	Joi.object().keys({
+		email: Joi.string().email().required(),
+		password: Joi.string().required(),
+		mode: Joi.string().valid('cookie', 'json'),
+		otp: Joi.string(),
 	}),
-	respond
+	Joi.object().keys({
+		identifier: Joi.string().email().required(),
+		secret: Joi.string().required(),
+		mode: Joi.string().valid('cookie', 'json'),
+		otp: Joi.string(),
+	})
 );
+
+const loginHandler = async (req: any, res: any, next: any) => {
+	const accountability = {
+		ip: req.ip,
+		userAgent: req.get('user-agent'),
+		role: null,
+	};
+
+	const authenticationService = new AuthenticationService({
+		accountability: accountability,
+		schema: req.schema,
+	});
+
+	const { error } = loginSchema.validate(req.body);
+	if (error) throw new InvalidPayloadException(error.message);
+
+	const mode = req.body.mode || 'json';
+
+	const ip = req.ip;
+	const userAgent = req.get('user-agent');
+
+	const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+		...req.body,
+		identifier: req.body.email ?? req.body.identifier,
+		secret: req.body.password ?? req.body.secret,
+		ip,
+		userAgent,
+	});
+
+	const payload = {
+		data: { access_token: accessToken, expires },
+	} as Record<string, Record<string, any>>;
+
+	if (mode === 'json') {
+		payload.data.refresh_token = refreshToken;
+	}
+
+	if (mode === 'cookie') {
+		res.cookie('directus_refresh_token', refreshToken, {
+			httpOnly: true,
+			domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+			maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+			secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+			sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+		});
+	}
+
+	res.locals.payload = payload;
+	return next();
+};
+
+router.post('/login', asyncHandler(loginHandler), respond);
+
+router.post('/login/:provider', asyncHandler(loginHandler), respond);
 
 router.post(
 	'/refresh',
@@ -315,8 +327,16 @@ router.get(
 				// Do nothing
 			});
 
+			const database = getDatabase();
+			const user = await database.select('provider').from('directus_users').where('email', email).first();
+
+			if (!user) {
+				throw new InvalidCredentialsException('Email does not match existing directus user');
+			}
+
 			authResponse = await authenticationService.authenticate({
-				email,
+				identifier: email,
+				provider: user.provider,
 			});
 		} catch (error) {
 			emitStatus('fail');

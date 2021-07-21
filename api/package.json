@@ -69,6 +69,7 @@
 		"example.env"
 	],
 	"dependencies": {
+		"@directus/auth": "9.0.0-rc.84",
 		"@directus/app": "9.0.0-rc.84",
 		"@directus/drive": "9.0.0-rc.84",
 		"@directus/drive-azure": "9.0.0-rc.84",

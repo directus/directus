@@ -150,3 +150,16 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: provider
+    interface: select-dropdown
+    width: half
+
+  - field: provider_key
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+
+  - field: provider_data
+    hidden: true
