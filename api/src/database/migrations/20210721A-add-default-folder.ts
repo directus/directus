@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_files', (table) => {
-		table.dropForeign(['storage_default_folder']);
+		table.dropForeign(['storage_default_folder'], indexName);
 		table.dropColumn('storage_default_folder');
 	});
 }
