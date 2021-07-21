@@ -1,17 +1,25 @@
-import VueI18n from 'vue-i18n';
-import { VueConstructor, Component } from 'vue';
+import { Component, ComponentPublicInstance } from 'vue';
+import { LayoutProps } from '@directus/shared/types';
 
-export type LayoutConfig = {
+export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
+	name: string;
 	icon: string;
-	name: string | VueI18n.TranslateResult;
 	component: Component;
-};
+	slots: {
+		options: Component;
+		sidebar: Component;
+		actions: Component;
+	};
+	setup: (LayoutOptions: LayoutProps<Options, Query>) => any;
+}
 
-export type LayoutContext = { i18n: VueI18n };
+export type LayoutContext = Record<string, any>;
 
-export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
+export type LayoutDefineParam<Options = any, Query = any> =
+	| LayoutConfig<Options, Query>
+	| ((context: LayoutContext) => LayoutConfig<Options, Query>);
 
-export interface LayoutComponent extends VueConstructor {
+export interface LayoutComponent extends ComponentPublicInstance {
 	refresh: () => Promise<void>;
 }

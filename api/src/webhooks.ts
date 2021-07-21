@@ -1,19 +1,19 @@
-import { Webhook } from './types';
-import emitter from './emitter';
-import database from './database';
-import { ListenerFn } from 'eventemitter2';
 import axios from 'axios';
+import { ListenerFn } from 'eventemitter2';
+import getDatabase from './database';
+import emitter from './emitter';
 import logger from './logger';
+import { Webhook } from './types';
+import { pick } from 'lodash';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 
-export async function register() {
+export async function register(): Promise<void> {
 	unregister();
 
-	const webhooks = await database
-		.select<Webhook[]>('*')
-		.from('directus_webhooks')
-		.where({ status: 'active' });
+	const database = getDatabase();
+
+	const webhooks = await database.select<Webhook[]>('*').from('directus_webhooks').where({ status: 'active' });
 
 	for (const webhook of webhooks) {
 		if (webhook.actions === '*') {
@@ -32,7 +32,7 @@ export async function register() {
 	}
 }
 
-export function unregister() {
+export function unregister(): void {
 	for (const { event, handler } of registered) {
 		emitter.off(event, handler);
 	}
@@ -43,17 +43,23 @@ export function unregister() {
 function createHandler(webhook: Webhook): ListenerFn {
 	return async (data) => {
 		const collectionAllowList = webhook.collections.split(',');
-		if (
-			collectionAllowList.includes('*') === false &&
-			collectionAllowList.includes(data.collection) === false
-		)
-			return;
+		if (collectionAllowList.includes('*') === false && collectionAllowList.includes(data.collection) === false) return;
+
+		const webhookPayload = pick(data, [
+			'event',
+			'accountability.user',
+			'accountability.role',
+			'collection',
+			'item',
+			'action',
+			'payload',
+		]);
 
 		try {
 			await axios({
 				url: webhook.url,
 				method: webhook.method,
-				data: webhook.data ? data : null,
+				data: webhook.data ? webhookPayload : null,
 			});
 		} catch (error) {
 			logger.warn(`Webhook "${webhook.name}" (id: ${webhook.id}) failed`);

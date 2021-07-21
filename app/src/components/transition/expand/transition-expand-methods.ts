@@ -11,7 +11,7 @@ interface HTMLExpandElement extends HTMLElement {
 	};
 }
 
-export default function (expandedParentClass = '', xAxis = false) {
+export default function (expandedParentClass = '', xAxis = false): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
@@ -40,9 +40,7 @@ export default function (expandedParentClass = '', xAxis = false) {
 			void el.offsetHeight; // force reflow
 
 			el.style.transition =
-				initialStyle.transition !== ''
-					? initialStyle.transition
-					: `${sizeProperty} var(--medium) var(--transition)`;
+				initialStyle.transition !== '' ? initialStyle.transition : `${sizeProperty} var(--medium) var(--transition)`;
 
 			if (expandedParentClass && el._parent) {
 				el._parent.classList.add(expandedParentClass);

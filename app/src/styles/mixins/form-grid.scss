@@ -1,13 +1,11 @@
-@import './breakpoint.scss';
-
 @mixin form-grid {
 	display: grid;
 	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
-	gap: var(--v-form-vertical-gap) var(--v-form-horizontal-gap);
+	gap: var(--form-vertical-gap) var(--form-horizontal-gap);
 
 	&.with-fill {
 		grid-template-columns:
-			[start] minmax(0, var(--v-form-column-max-width)) [half] minmax(0, var(--v-form-column-max-width))
+			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))
 			[full] 1fr [fill];
 	}
 
@@ -15,11 +13,10 @@
 		margin-bottom: 8px;
 	}
 
-	// full by default
 	.field {
 		grid-column: start / fill;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			grid-column: start / full;
 		}
 	}
@@ -29,7 +26,7 @@
 	.half-space {
 		grid-column: start / fill;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			grid-column: start / half;
 		}
 	}
@@ -38,7 +35,7 @@
 	.half-right {
 		grid-column: start / fill;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			grid-column: half / full;
 		}
 	}
@@ -46,7 +43,7 @@
 	.full {
 		grid-column: start / fill;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			grid-column: start / full;
 		}
 	}

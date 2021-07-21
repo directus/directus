@@ -1,12 +1,12 @@
 <template>
 	<div class="updates">
 		<v-notice type="info">
-			{{ $t('changes_made') }}
+			{{ t('changes_made') }}
 			<br />
-			{{ $t('no_relational_data') }}
+			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div class="change" v-for="change in changes" :key="change.name">
+		<div v-for="change in changes" :key="change.name" class="change">
 			<div class="type-label">{{ change.name }}</div>
 			<revisions-drawer-updates-change deleted :changes="change.changes" />
 			<revisions-drawer-updates-change added :changes="change.changes" />
@@ -15,11 +15,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
 import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
 import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { RevisionsDrawerUpdatesChange },
@@ -34,6 +36,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const previousRevision = computed(() => {
@@ -48,38 +52,50 @@ export default defineComponent({
 
 			const changedFields = Object.keys(props.revision.delta);
 
-			return changedFields.map((fieldKey) => {
-				const name = fieldsStore.getField(props.revision.collection, fieldKey).name;
-				const currentValue = props.revision.delta[fieldKey];
-				const previousValue = previousRevision.value.data[fieldKey];
+			return changedFields
+				.map((fieldKey) => {
+					const name = fieldsStore.getField(props.revision.collection, fieldKey)?.name;
 
-				let changes;
+					if (!name) return null;
 
-				if (typeof currentValue === 'string' && currentValue.length > 25) {
-					changes = diffWordsWithSpace(previousValue, currentValue);
-				} else if (Array.isArray(currentValue)) {
-					changes = diffArrays(previousValue, currentValue);
-				} else if (typeof currentValue === 'object') {
-					changes = diffJson(previousValue, currentValue);
-				} else {
-					// This is considering the whole thing a change
-					changes = [
-						{
-							removed: true,
-							value: previousValue,
-						},
-						{
-							added: true,
-							value: currentValue,
-						},
-					];
-				}
+					const currentValue = props.revision.delta[fieldKey];
+					const previousValue = previousRevision.value.data[fieldKey];
 
-				return { name, changes };
-			});
+					if (isEqual(currentValue, previousValue)) return null;
+
+					let changes;
+
+					if (typeof previousValue === 'string' && typeof currentValue === 'string' && currentValue.length > 25) {
+						changes = diffWordsWithSpace(previousValue, currentValue);
+					} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
+						changes = diffArrays(previousValue, currentValue);
+					} else if (
+						previousValue &&
+						currentValue &&
+						typeof currentValue === 'object' &&
+						typeof currentValue === 'object'
+					) {
+						changes = diffJson(previousValue, currentValue);
+					} else {
+						// This is considering the whole thing a change
+						changes = [
+							{
+								removed: true,
+								value: previousValue,
+							},
+							{
+								added: true,
+								value: currentValue,
+							},
+						];
+					}
+
+					return { name, changes };
+				})
+				.filter((change) => change);
 		});
 
-		return { changes, previousRevision };
+		return { t, changes, previousRevision };
 	},
 });
 </script>

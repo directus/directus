@@ -1,5 +1,5 @@
-import Knex from 'knex';
-import { uniq, merge } from 'lodash';
+import { Knex } from 'knex';
+import { merge, uniq } from 'lodash';
 
 const defaults = {
 	collection: null,
@@ -1206,8 +1206,7 @@ const systemFields = [
 					text: 'Weak – Minimum 8 Characters',
 				},
 				{
-					value:
-						"/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/",
+					value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/",
 					text: 'Strong – Upper / Lowercase / Numbers / Special',
 				},
 			],
@@ -1640,15 +1639,12 @@ const systemFields = [
 	return merge({}, defaults, row);
 });
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	const fieldKeys = uniq(systemFields.map((field: any) => field.field));
 
-	await knex('directus_fields')
-		.delete()
-		.where('collection', 'like', 'directus_%')
-		.whereIn('field', fieldKeys);
+	await knex('directus_fields').delete().where('collection', 'like', 'directus_%').whereIn('field', fieldKeys);
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	await knex.insert(systemFields).into('directus_fields');
 }

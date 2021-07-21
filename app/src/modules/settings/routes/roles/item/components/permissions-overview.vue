@@ -1,8 +1,8 @@
 <template>
 	<div class="permissions-overview">
 		<h2 class="title type-label">
-			{{ $t('permissions') }}
-			<span class="instant-save">{{ $t('saves_automatically') }}</span>
+			{{ t('permissions') }}
+			<span class="instant-save">{{ t('saves_automatically') }}</span>
 		</h2>
 
 		<div class="table">
@@ -18,7 +18,7 @@
 			/>
 
 			<button class="system-toggle" @click="systemVisible = !systemVisible">
-				{{ $t('system_collections') }}
+				{{ t('system_collections') }}
 				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
 			</button>
 
@@ -31,29 +31,31 @@
 						:role="role"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
+						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
 					/>
 				</div>
 			</transition-expand>
 
-			<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
-				{{ $t('reset_system_permissions') }}
-			</button>
+			<span v-if="systemVisible && appAccess" class="reset-toggle">
+				{{ t('reset_system_permissions_to') }}
+				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+				/
+				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+			</span>
 		</div>
 
-		<router-view
-			name="permissionsDetail"
-			:role-key="role"
-			:permission-key="permission"
-			@refresh="refreshPermission"
-		/>
+		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
-		<v-dialog v-model="resetActive" @esc="resetActive = false">
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
 			<v-card>
-				<v-card-title>{{ $t('reset_system_permissions') }}</v-card-title>
-				<v-card-text>{{ $t('reset_system_permissions_copy') }}</v-card-text>
+				<v-card-title>
+					{{ t('reset_system_permissions_copy') }}
+				</v-card-title>
 				<v-card-actions>
-					<v-button @click="resetActive = false" secondary>{{ $t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions" :loading="resetting">{{ $t('reset') }}</v-button>
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
+						{{ t('reset') }}
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -61,13 +63,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, provide } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, provide, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
-import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -88,18 +91,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.state.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
-			)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.state.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === true
-			)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
 		);
 
 		const systemVisible = ref(false);
@@ -110,9 +111,12 @@ export default defineComponent({
 
 		fetchPermissions();
 
+		watch(() => props.permission, fetchPermissions, { immediate: true });
+
 		provide('refresh-permissions', fetchPermissions);
 
 		return {
+			t,
 			systemVisible,
 			regularCollections,
 			systemCollections,
@@ -125,6 +129,7 @@ export default defineComponent({
 			resetSystemPermissions,
 			resetting,
 			resetError,
+			appMinimalPermissions,
 		};
 
 		function usePermissions() {
@@ -177,13 +182,13 @@ export default defineComponent({
 		}
 
 		function useReset() {
-			const resetActive = ref(false);
+			const resetActive = ref<string | boolean>(false);
 			const resetting = ref(false);
 			const resetError = ref<any>(null);
 
 			return { resetActive, resetSystemPermissions, resetting, resetError };
 
-			async function resetSystemPermissions() {
+			async function resetSystemPermissions(useRecommended: boolean) {
 				resetting.value = true;
 
 				const toBeDeleted = permissions.value
@@ -192,13 +197,13 @@ export default defineComponent({
 
 				try {
 					if (toBeDeleted.length > 0) {
-						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
+						await api.delete(`/permissions`, { data: toBeDeleted });
 					}
 
-					if (props.role !== null && props.appAccess === true) {
+					if (props.role !== null && props.appAccess === true && useRecommended === true) {
 						await api.post(
 							'/permissions',
-							appRequiredPermissions.map((permission) => ({
+							appRecommendedPermissions.map((permission) => ({
 								...permission,
 								role: props.role,
 							}))
@@ -235,7 +240,7 @@ export default defineComponent({
 
 .table {
 	max-width: 792px;
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
@@ -255,10 +260,15 @@ export default defineComponent({
 	display: block;
 	margin: 8px auto;
 	color: var(--foreground-subdued);
-	transition: color var(--fast) var(--transition);
+	text-align: center;
 
-	&:hover {
-		color: var(--foreground);
+	button {
+		color: var(--primary) !important;
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--foreground-normal) !important;
 	}
 }
 </style>

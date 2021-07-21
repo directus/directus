@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="field"
 		:key="field.field"
+		class="field"
 		:class="[(field.meta && field.meta.width) || 'full', { invalid: validationError }]"
 	>
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
@@ -13,61 +13,64 @@
 					:disabled="isDisabled"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:edited="isEdited"
+					:has-error="!!validationError"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
 
 			<form-field-menu
 				:field="field"
-				:value="_value"
+				:model-value="internalValue"
 				:initial-value="initialValue"
-				@input="emitValue($event)"
+				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
-		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
+		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
 
 		<form-field-interface
-			:value="_value"
+			:autofocus="autofocus"
+			:model-value="internalValue"
 			:field="field"
 			:loading="loading"
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			@input="emitValue($event)"
+			@update:model-value="emitValue($event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
-				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
+				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea class="raw-value" v-model="rawValue" :placeholder="$t('enter_raw_value')" />
+					<v-textarea v-model="rawValue" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="showRaw = false">{{ $t('done') }}</v-button>
+					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
+		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="note" />
 
-		<small class="validation-error" v-if="validationError">
-			{{ $t(`validationError.${validationError.type}`, validationError) }}
+		<small v-if="validationError" class="validation-error">
+			{{ validationMessage }}
 		</small>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { Field } from '../../types/';
-import marked from 'marked';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref } from 'vue';
+import { Field } from '@/types/';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
-import { ValidationError } from './types';
-import { getJSType } from '../../utils/get-js-type';
+import { ValidationError } from '@/types';
+import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
@@ -89,7 +92,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
 			default: undefined,
 		},
@@ -109,8 +112,15 @@ export default defineComponent({
 			type: Object as PropType<ValidationError>,
 			default: null,
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const isDisabled = computed(() => {
 			if (props.disabled) return true;
 			if (props.field?.meta?.readonly === true) return true;
@@ -118,21 +128,46 @@ export default defineComponent({
 			return false;
 		});
 
-		const _value = computed(() => {
-			if (props.value !== undefined) return props.value;
+		const defaultValue = computed(() => {
+			const value = props.field.schema?.default_value;
+
+			if (value !== undefined) return value;
+			return null;
+		});
+
+		const internalValue = computed(() => {
+			if (props.modelValue !== undefined) return props.modelValue;
 			if (props.initialValue !== undefined) return props.initialValue;
-			return props.field.schema?.default_value;
+			return defaultValue.value;
+		});
+
+		const isEdited = computed<boolean>(() => {
+			return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 		});
 
 		const { showRaw, rawValue } = useRaw();
 
-		return { isDisabled, marked, _value, emitValue, showRaw, rawValue };
+		const validationMessage = computed(() => {
+			if (!props.validationError) return null;
+
+			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
+				return t('validationError.unique');
+			} else {
+				return t(`validationError.${props.validationError.type}`, props.validationError);
+			}
+		});
+
+		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
-			if (isEqual(value, props.initialValue) || (value === null && props.initialValue === undefined)) {
+			if (
+				(isEqual(value, props.initialValue) ||
+					(props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
+				props.batchMode === false
+			) {
 				emit('unset', props.field);
 			} else {
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
@@ -147,30 +182,30 @@ export default defineComponent({
 				get() {
 					switch (type.value) {
 						case 'object':
-							return JSON.stringify(_value.value, null, '\t');
+							return JSON.stringify(internalValue.value, null, '\t');
 						case 'string':
 						case 'number':
 						case 'boolean':
 						default:
-							return _value.value;
+							return internalValue.value;
 					}
 				},
 				set(newRawValue: string) {
 					switch (type.value) {
 						case 'string':
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 						case 'number':
-							emit('input', Number(newRawValue));
+							emit('update:modelValue', Number(newRawValue));
 							break;
 						case 'boolean':
-							emit('input', newRawValue === 'true');
+							emit('update:modelValue', newRawValue === 'true');
 							break;
 						case 'object':
-							emit('input', JSON.parse(newRawValue));
+							emit('update:modelValue', JSON.parse(newRawValue));
 							break;
 						default:
-							emit('input', newRawValue);
+							emit('update:modelValue', newRawValue);
 							break;
 					}
 				},
@@ -189,6 +224,7 @@ export default defineComponent({
 
 .note {
 	display: block;
+	max-width: 520px;
 	margin-top: 4px;
 	color: var(--foreground-subdued);
 	font-style: italic;

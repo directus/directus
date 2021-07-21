@@ -1,29 +1,30 @@
 <template>
 	<div class="v-list-group">
 		<v-list-item
-			:active="active"
 			class="activator"
+			:active="active"
 			:to="to"
 			:exact="exact"
-			@click="onClick"
 			:disabled="disabled"
 			:dense="dense"
+			clickable
+			@click="onClick"
 		>
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
+			<v-list-item-icon v-if="$slots.default" class="activator-icon" :class="{ active: groupActive }">
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-show="groupActive">
+		<div v-if="groupActive" class="items">
 			<slot />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -34,7 +35,7 @@ export default defineComponent({
 		},
 		to: {
 			type: String,
-			default: null,
+			default: '',
 		},
 		active: {
 			type: Boolean,
@@ -45,6 +46,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		clickable: {
 			type: Boolean,
 			default: false,
 		},
@@ -60,20 +65,25 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		open: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props, { listeners, emit }) {
-		const { multiple } = toRefs(props);
-
-		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
+	emits: ['click'],
+	setup(props, { emit }) {
+		const { active, toggle } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});
+
+		const groupActive = computed(() => active.value || props.open);
 
 		return { groupActive, toggle, onClick };
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
-			if (listeners.click) return emit('click', event);
+			if (props.clickable) return emit('click', event);
 
 			event.stopPropagation();
 			toggle();

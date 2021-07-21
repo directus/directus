@@ -5,40 +5,40 @@
 				v-if="showManualSort"
 				class="manual cell"
 				:class="{ 'sorted-manually': sort.by === manualSortKey }"
-				@click="toggleManualSort"
 				scope="col"
+				@click="toggleManualSort"
 			>
-				<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small />
+				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
 				<v-checkbox
-					:inputValue="allItemsSelected"
+					:model-value="allItemsSelected"
 					:indeterminate="someItemsSelected"
-					@change="toggleSelectAll"
+					@update:model-value="toggleSelectAll"
 				/>
 			</th>
 
-			<th
-				v-for="header in headers"
-				:key="header.value"
-				:class="getClassesForHeader(header)"
-				class="cell"
-				scope="col"
-			>
+			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
 				<div class="content" @click="changeSort(header)">
 					<span v-show="header.width > 90 || header.width === null">
 						<slot :name="`header.${header.value}`" :header="header">
 							{{ header.text }}
 						</slot>
 					</span>
-					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small />
+					<v-icon
+						v-if="header.sortable"
+						v-tooltip.top="t(getTooltipForSortIcon(header))"
+						name="sort"
+						class="sort-icon"
+						small
+					/>
 				</div>
 				<span
-					class="resize-handle"
 					v-if="showResize"
+					class="resize-handle"
 					@click.stop
-					@mousedown="onResizeHandleMouseDown(header, $event)"
+					@pointerdown="onResizeHandleMouseDown(header, $event)"
 				/>
 			</th>
 
@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from 'vue';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
@@ -101,16 +102,20 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const dragging = ref<boolean>(false);
 		const dragStartX = ref<number>(0);
 		const dragStartWidth = ref<number>(0);
 		const dragHeader = ref<Header | null>(null);
 
-		useEventListener(window, 'mousemove', throttle(onMouseMove, 40));
-		useEventListener(window, 'mouseup', onMouseUp);
+		useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
+		useEventListener(window, 'pointerup', onMouseUp);
 
 		return {
+			t,
 			changeSort,
 			dragging,
 			dragHeader,
@@ -121,6 +126,7 @@ export default defineComponent({
 			onResizeHandleMouseDown,
 			toggleManualSort,
 			toggleSelectAll,
+			getTooltipForSortIcon,
 		};
 
 		function getClassesForHeader(header: Header) {
@@ -143,6 +149,10 @@ export default defineComponent({
 			}
 
 			return classes;
+		}
+
+		function getTooltipForSortIcon(header: Header) {
+			return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
 		}
 
 		function changeSort(header: Header) {
@@ -180,7 +190,7 @@ export default defineComponent({
 			emit('toggle-select-all', !props.allItemsSelected);
 		}
 
-		function onResizeHandleMouseDown(header: Header, event: MouseEvent) {
+		function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 			const target = event.target as HTMLDivElement;
 			const parent = target.parentElement as HTMLTableHeaderCellElement;
 
@@ -190,7 +200,7 @@ export default defineComponent({
 			dragHeader.value = header;
 		}
 
-		function onMouseMove(event: MouseEvent) {
+		function onMouseMove(event: PointerEvent) {
 			if (dragging.value === true) {
 				const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
 				const currentHeaders = clone(props.headers);
@@ -252,6 +262,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			height: 100%;
+			color: var(--foreground-normal-alt);
 			font-weight: 600;
 
 			> span {
@@ -264,6 +275,7 @@ export default defineComponent({
 
 	.sortable {
 		cursor: pointer;
+
 		.sort-icon {
 			margin-left: 4px;
 			color: var(--foreground-subdued);

@@ -1,5 +1,5 @@
-import { createStore } from 'pinia';
 import api from '@/api';
+import { defineStore } from 'pinia';
 
 type Info = {
 	project: null | {
@@ -26,18 +26,18 @@ type Info = {
 	};
 };
 
-export const useServerStore = createStore({
+export const useServerStore = defineStore({
 	id: 'serverStore',
 	state: () => ({
 		info: null as null | Info,
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/server/info`);
-			this.state.info = response.data.data;
+			const response = await api.get(`/server/info`, { params: { limit: -1 } });
+			this.info = response.data.data;
 		},
 		dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 	},
 });

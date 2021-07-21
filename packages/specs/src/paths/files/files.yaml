@@ -5,7 +5,7 @@ get:
     - Files
   operationId: getFiles
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -15,9 +15,9 @@ get:
               data:
                 type: array
                 items:
-                  $ref: "../../openapi.yaml#/components/schemas/Files"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+                  $ref: '../../openapi.yaml#/components/schemas/Files'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
 post:
   summary: Create a File
@@ -34,7 +34,7 @@ post:
             data:
               type: string
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -42,6 +42,6 @@ post:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Files"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+                $ref: '../../openapi.yaml#/components/schemas/Files'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

@@ -1,21 +1,20 @@
-import VueI18n from 'vue-i18n';
-import { RouteConfig } from 'vue-router';
-import { Ref } from '@vue/composition-api';
-import { User, Permission } from '@/types';
+import { Permission, User } from '@/types';
+import { Ref } from 'vue';
+import { RouteRecordRaw } from 'vue-router';
 
-export type ModuleConfig = {
+export interface ModuleConfig {
 	id: string;
+	name: string;
 	hidden?: boolean | Ref<boolean>;
 	icon: string;
-	name: string | VueI18n.TranslateResult;
-	routes?: RouteConfig[];
+	routes?: RouteRecordRaw[];
 	link?: string;
 	color?: string;
-	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;
+	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;
 	order?: number;
 	persistent?: boolean;
-};
+}
 
-export type ModuleContext = { i18n: VueI18n };
+export type ModuleContext = Record<string, unknown>;
 
-export type ModuleDefineParam = ModuleConfig | ((context: ModuleContext) => ModuleConfig);
+export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);

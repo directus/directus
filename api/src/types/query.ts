@@ -7,10 +7,9 @@ export type Query = {
 	limit?: number;
 	offset?: number;
 	page?: number;
-	single?: boolean;
 	meta?: Meta[];
 	search?: string;
-	export?: 'json' | 'csv';
+	export?: 'json' | 'csv' | 'xml';
 	deep?: Record<string, Query>;
 };
 
@@ -38,3 +37,5 @@ export type FilterOperator =
 	| 'nnull'
 	| 'empty'
 	| 'nempty';
+
+export type ValidationOperator = 'required' | 'regex';

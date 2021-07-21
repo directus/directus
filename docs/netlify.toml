@@ -1,0 +1,5 @@
+[[redirects]]
+from = "/"
+to = "/getting-started/introduction/"
+force = true
+status = 200

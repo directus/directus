@@ -1,16 +1,17 @@
 <template>
 	<div class="actions">
-		<v-button @click="save" :loading="loading" icon rounded v-tooltip.bottom="$t('save')">
+		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
 			<v-icon name="check" />
 		</v-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, inject } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, ref } from 'vue';
 import { Permission } from '@/types';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -24,10 +25,15 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['refresh'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const loading = ref(false);
 
-		return { save, loading };
+		return { t, save, loading };
 
 		async function save() {
 			loading.value = true;

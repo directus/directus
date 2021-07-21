@@ -1,119 +1,116 @@
 <template>
 	<div>
-		<v-notice type="info">
-			{{ $t('schema_setup_title') }}
-		</v-notice>
-
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
-					{{ $t('key') }}
+					{{ t('key') }}
 					<v-icon class="required" sup name="star" />
 				</div>
 				<v-input
+					v-model="fieldData.field"
 					:disabled="isExisting"
 					autofocus
 					class="monospace"
-					v-model="fieldData.field"
+					:nullable="false"
 					db-safe
-					:placeholder="$t('a_unique_column_name')"
+					:placeholder="t('a_unique_column_name')"
 				/>
+				<small class="note">{{ t('schema_setup_key') }}</small>
 			</div>
 
 			<div class="field half">
 				<div class="label type-label">
-					{{ $t('type') }}
+					{{ t('type') }}
 					<v-icon class="required" sup name="star" />
 				</div>
-				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :model-value="t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
-					:value="fieldData.type"
+					:model-value="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@input="fieldData.type = $event"
+					@update:model-value="fieldData.type = $event"
 				/>
 			</div>
 
 			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
-				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('length') }}</div>
+				<div v-if="fieldData.schema" class="field half">
+					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
-						type="number"
-						:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
-						:disabled="isExisting || fieldData.type !== 'string'"
 						v-model="fieldData.schema.max_length"
+						type="number"
+						:placeholder="fieldData.type !== 'string' ? t('not_available_for_type') : '255'"
+						:disabled="isExisting || fieldData.type !== 'string'"
 					/>
 				</div>
 			</template>
 
 			<template v-else>
-				<div class="field half" v-if="fieldData.schema">
-					<div class="label type-label">{{ $t('precision_scale') }}</div>
+				<div v-if="fieldData.schema" class="field half">
+					<div class="label type-label">{{ t('precision_scale') }}</div>
 					<div class="precision-scale">
-						<v-input type="number" :placeholder="10" v-model="fieldData.schema.precision" />
-
-						<v-input type="number" :placeholder="5" v-model="fieldData.schema.scale" />
+						<v-input v-model="fieldData.schema.numeric_precision" type="number" :placeholder="10" />
+						<v-input v-model="fieldData.schema.numeric_scale" type="number" :placeholder="5" />
 					</div>
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
+			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
-					<div class="label type-label">{{ $t('on_create') }}</div>
-					<v-select :items="onCreateOptions" v-model="onCreateValue" />
+					<div class="label type-label">{{ t('on_create') }}</div>
+					<v-select v-model="onCreateValue" :items="onCreateOptions" />
 				</div>
 
 				<div class="field half-right">
-					<div class="label type-label">{{ $t('on_update') }}</div>
-					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
+					<div class="label type-label">{{ t('on_update') }}</div>
+					<v-select v-model="onUpdateValue" :items="onUpdateOptions" />
 				</div>
 			</template>
 
 			<!-- @TODO see https://github.com/directus/directus/issues/639
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('unique') }}</div>
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
-					:label="$t('value_unique')"
-					:input-value="fieldData.schema.is_unique === false"
-					@change="fieldData.schema.is_unique = !$event"
+					:label="t('value_unique')"
+					:model-value="fieldData.schema.is_unique === false"
+					@update:model-value="fieldData.schema.is_unique = !$event"
 					block
 				/>
 			</div> -->
 
-			<div class="field full" v-if="fieldData.schema && fieldData.schema.is_primary_key !== true">
-				<div class="label type-label">{{ $t('default_value') }}</div>
+			<div v-if="fieldData.schema && fieldData.schema.is_primary_key !== true" class="field full">
+				<div class="label type-label">{{ t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
-					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					class="monospace"
+					placeholder="NULL"
 				/>
 				<v-textarea
-					v-else-if="['text', 'json'].includes(fieldData.type)"
-					class="monospace"
+					v-else-if="['text'].includes(fieldData.type)"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					class="monospace"
+					placeholder="NULL"
 				/>
 				<v-input
 					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(fieldData.type)"
+					v-model="defaultValue"
 					type="number"
 					class="monospace"
-					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-input
-					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
-					class="monospace"
+					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(fieldData.type)"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					class="monospace"
+					placeholder="NULL"
 				/>
 				<v-select
 					v-else-if="fieldData.type === 'boolean'"
-					class="monospace"
 					v-model="defaultValue"
+					class="monospace"
 					:items="[
 						{
 							text: 'true',
@@ -129,22 +126,34 @@
 						},
 					]"
 				/>
-				<v-input
-					v-else
-					class="monospace"
-					v-model="defaultValue"
-					disabled
-					:placeholder="$t('add_a_default_value')"
+				<interface-input-code
+					v-else-if="fieldData.type === 'json'"
+					:value="defaultValue || ''"
+					language="JSON"
+					placeholder="NULL"
+					type="json"
+					@input="defaultValue = $event"
+				/>
+				<v-input v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
+			</div>
+
+			<div v-if="fieldData.schema" class="field half-left">
+				<div class="label type-label">{{ t('nullable') }}</div>
+				<v-checkbox
+					:model-value="fieldData.schema.is_nullable"
+					:label="t('allow_null_value')"
+					block
+					@update:model-value="fieldData.schema.is_nullable = $event"
 				/>
 			</div>
 
-			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('required') }}</div>
+			<div v-if="fieldData.schema" class="field half-right">
+				<div class="label type-label">{{ t('unique') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_nullable === false"
-					@change="fieldData.schema.is_nullable = !$event"
-					:label="$t('requires_value')"
+					:model-value="fieldData.schema.is_unique"
+					:label="t('value_unique')"
 					block
+					@update:model-value="fieldData.schema.is_unique = $event"
 				/>
 			</div>
 		</div>
@@ -152,72 +161,75 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '../../../../../../composables/use-sync';
-import { types } from '../../../../../../types';
-import i18n from '../../../../../../lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
+import { i18n } from '@/lang';
 import { state } from '../store';
 
 export const fieldTypes = [
 	{
-		text: i18n.t('string'),
+		text: i18n.global.t('string'),
 		value: 'string',
 	},
 	{
-		text: i18n.t('text'),
+		text: i18n.global.t('text'),
 		value: 'text',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('boolean'),
+		text: i18n.global.t('boolean'),
 		value: 'boolean',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('integer'),
+		text: i18n.global.t('integer'),
 		value: 'integer',
 	},
 	{
-		text: i18n.t('bigInteger'),
+		text: i18n.global.t('bigInteger'),
 		value: 'bigInteger',
 	},
 	{
-		text: i18n.t('float'),
+		text: i18n.global.t('float'),
 		value: 'float',
 	},
 	{
-		text: i18n.t('decimal'),
+		text: i18n.global.t('decimal'),
 		value: 'decimal',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('timestamp'),
+		text: i18n.global.t('timestamp'),
 		value: 'timestamp',
 	},
 	{
-		text: i18n.t('datetime'),
+		text: i18n.global.t('datetime'),
 		value: 'dateTime',
 	},
 	{
-		text: i18n.t('date'),
+		text: i18n.global.t('date'),
 		value: 'date',
 	},
 	{
-		text: i18n.t('time'),
+		text: i18n.global.t('time'),
 		value: 'time',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('json'),
+		text: i18n.global.t('json'),
 		value: 'json',
 	},
 	{
-		text: i18n.t('csv'),
+		text: i18n.global.t('csv'),
 		value: 'csv',
 	},
 	{
-		text: i18n.t('uuid'),
+		text: i18n.global.t('uuid'),
 		value: 'uuid',
+	},
+	{
+		text: i18n.global.t('hash'),
+		value: 'hash',
 	},
 ];
 
@@ -232,36 +244,48 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
+		const { t } = useI18n();
+
 		const typesWithLabels = computed(() => {
 			return fieldTypes;
 		});
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2o', 'translations'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);
 		});
 
 		const typePlaceholder = computed(() => {
 			if (props.type === 'm2o') {
-				return i18n.t('determined_by_relationship');
+				return t('determined_by_relationship');
 			}
 
-			return i18n.t('choose_a_type');
+			return t('choose_a_type');
 		});
 
 		const defaultValue = computed({
 			get() {
-				return state.fieldData.schema.default_value;
+				return state.fieldData.schema?.default_value;
 			},
 			set(newVal: any) {
-				state.fieldData.schema.default_value = newVal;
+				state.fieldData.schema = {
+					...(state.fieldData.schema || {}),
+					default_value: newVal,
+				};
 			},
 		});
 
 		const { onCreateOptions, onCreateValue } = useOnCreate();
 		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
 
+		const hasCreateUpdateTriggers = computed(() => {
+			return (
+				['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type || '') && props.type !== 'file'
+			);
+		});
+
 		return {
+			t,
 			fieldData: state.fieldData,
 			typesWithLabels,
 			typeDisabled,
@@ -271,6 +295,7 @@ export default defineComponent({
 			onCreateValue,
 			onUpdateOptions,
 			onUpdateValue,
+			hasCreateUpdateTriggers,
 		};
 
 		function useOnCreate() {
@@ -278,32 +303,42 @@ export default defineComponent({
 
 			const onCreateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('generate_and_save_uuid'),
+							text: t('generate_and_save_uuid'),
 							value: 'uuid',
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-created',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-created'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-created'].includes(value));
+					}
+
+					return options;
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-created',
 						},
 					];
@@ -314,7 +349,7 @@ export default defineComponent({
 
 			const onCreateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onCreateSpecials) {
 						if (specials.includes(special)) {
@@ -325,9 +360,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onCreateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onCreateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
@@ -343,28 +381,38 @@ export default defineComponent({
 
 			const onUpdateOptions = computed(() => {
 				if (state.fieldData.type === 'uuid') {
-					return [
+					const options = [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: t('save_current_user_id'),
 							value: 'user-updated',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: t('save_current_user_role'),
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_users') {
+						return options.filter(({ value }) => [null, 'user-updated'].includes(value));
+					}
+
+					if (props.type === 'm2o' && state.relations[0]?.related_collection === 'directus_roles') {
+						return options.filter(({ value }) => [null, 'role-updated'].includes(value));
+					}
+
+					return options;
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type!)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: t('save_current_datetime'),
 							value: 'date-updated',
 						},
 					];
@@ -375,7 +423,7 @@ export default defineComponent({
 
 			const onUpdateValue = computed({
 				get() {
-					const specials = state.fieldData.meta.special || [];
+					const specials = state.fieldData.meta?.special || [];
 
 					for (const special of onUpdateSpecials) {
 						if (specials.includes(special)) {
@@ -386,9 +434,12 @@ export default defineComponent({
 					return null;
 				},
 				set(newOption: string | null) {
-					state.fieldData.meta.special = (state.fieldData.meta.special || []).filter(
-						(special: string) => onUpdateSpecials.includes(special) === false
-					);
+					state.fieldData.meta = {
+						...(state.fieldData.meta || {}),
+						special: (state.fieldData.meta?.special || []).filter(
+							(special: string) => onUpdateSpecials.includes(special) === false
+						),
+					};
 
 					if (newOption) {
 						state.fieldData.meta.special = [...(state.fieldData.meta.special || []), newOption];
@@ -403,14 +454,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
+}
+
+.note {
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 
 .monospace {

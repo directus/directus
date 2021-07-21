@@ -1,11 +1,12 @@
-import { i18n } from '@/lang';
-import { LayoutDefineParam, LayoutContext, LayoutConfig } from './types';
+import { LayoutConfig, LayoutContext, LayoutDefineParam } from './types';
 
-export function defineLayout(config: LayoutDefineParam): LayoutConfig {
-	let options: LayoutConfig;
+export function defineLayout<Options = any, Query = any>(
+	config: LayoutDefineParam<Options, Query>
+): LayoutConfig<Options, Query> {
+	let options: LayoutConfig<Options, Query>;
 
 	if (typeof config === 'function') {
-		const context: LayoutContext = { i18n };
+		const context: LayoutContext = {};
 		options = config(context);
 	} else {
 		options = config;

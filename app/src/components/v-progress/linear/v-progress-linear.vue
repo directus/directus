@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -55,6 +55,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
+	emits: ['animationiteration'],
 });
 </script>
 
@@ -119,11 +120,11 @@ body {
 
 @keyframes indeterminate {
 	0% {
-		transform: scaleX(0);
+		transform: scaleX(0) translateX(-30%);
 	}
 
 	10% {
-		transform: scaleX(0);
+		transform: scaleX(0) translateX(-30%);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
 	}
 

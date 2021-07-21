@@ -1,12 +1,10 @@
 import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
-import { schemaInspector } from '../database';
+import asyncHandler from '../utils/async-handler';
+import { getSchema } from '../utils/get-schema';
 
-const getSchema: RequestHandler = asyncHandler(async (req, res, next) => {
-	const schemaOverview = await schemaInspector.overview();
-	req.schema = schemaOverview;
-
+const schema: RequestHandler = asyncHandler(async (req, res, next) => {
+	req.schema = await getSchema({ accountability: req.accountability });
 	return next();
 });
 
-export default getSchema;
+export default schema;

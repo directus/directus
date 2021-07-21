@@ -3,9 +3,9 @@
 		<module-bar-logo />
 		<div class="modules">
 			<v-button
-				v-for="module in _modules"
-				v-tooltip.right="module.name"
+				v-for="module in internalModules"
 				:key="module.id"
+				v-tooltip.right="module.name"
 				icon
 				x-large
 				:to="module.to"
@@ -14,7 +14,7 @@
 				:style="
 					module.color
 						? {
-								'--v-button-color-activated': module.color,
+								'--v-button-color-active': module.color,
 						  }
 						: null
 				"
@@ -27,13 +27,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, computed } from '@vue/composition-api';
+import { defineComponent, computed, unref } from 'vue';
 
 import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
+import { ModuleConfig } from '@/modules/types';
 
 export default defineComponent({
 	components: {
@@ -42,23 +43,21 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const modules = getModules();
+		const { modules } = getModules();
 
-		const _modules = computed(() => {
-			const customModuleListing = userStore.state.currentUser?.role.module_list;
+		const internalModules = computed(() => {
+			const customModuleListing = userStore.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
 				modules.value
-					.map((module) => ({
+					.map((module: ModuleConfig) => ({
 						...module,
 						href: module.link || null,
-						to: module.link === undefined ? `/${module.id}/` : null,
+						to: module.link === undefined ? `/${module.id}` : null,
 					}))
-					.filter((module) => {
-						if (module.hidden !== undefined) {
-							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
-								return false;
-							}
+					.filter((module: ModuleConfig) => {
+						if (module.hidden !== undefined && unref(module.hidden) === true) {
+							return false;
 						}
 						return true;
 					}),
@@ -81,24 +80,22 @@ export default defineComponent({
 							};
 						}
 					}),
-					...registeredModules.filter((module) => module.persistent === true)
-				]
+					...registeredModules.filter((module) => module.persistent === true),
+				];
 			}
-
 			return registeredModules;
 		});
-
-		return { _modules };
+		return { internalModules, modules };
 	},
 });
 </script>
 
 <style>
 body {
-    --module-background: #18222F;
-    --module-background-alt: var(--background-normal);
-    --module-icon: #8196B1;
-    --module-icon-alt: var(--foreground-normal);
+	--module-background: #18222f;
+	--module-background-alt: var(--background-normal);
+	--module-icon: #8196b1;
+	--module-icon-alt: var(--foreground-normal-alt);
 }
 </style>
 
@@ -119,10 +116,10 @@ body {
 	.v-button {
 		--v-button-color: var(--module-icon);
 		--v-button-color-hover: var(--white);
-		--v-button-color-activated: var(--module-icon-alt);
+		--v-button-color-active: var(--module-icon-alt);
 		--v-button-background-color: var(--module-background);
 		--v-button-background-color-hover: var(--module-background);
-		--v-button-background-color-activated: var(--module-background-alt);
+		--v-button-background-color-active: var(--module-background-alt);
 	}
 }
 </style>

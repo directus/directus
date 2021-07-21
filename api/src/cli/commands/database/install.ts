@@ -1,17 +1,20 @@
-import Knex from 'knex';
-import installSeeds from '../../../database/seeds/run';
-import runMigrations from '../../../database/migrations/run';
+/* eslint-disable no-console */
 
-export default async function start() {
-	const database = require('../../../database/index').default as Knex;
+import runMigrations from '../../../database/migrations/run';
+import installSeeds from '../../../database/seeds/run';
+import getDatabase from '../../../database';
+
+export default async function start(): Promise<void> {
+	const database = getDatabase();
 
 	try {
 		await installSeeds(database);
 		await runMigrations(database, 'latest');
+		database.destroy();
+		process.exit(0);
 	} catch (err) {
 		console.log(err);
-		process.exit(1);
-	} finally {
 		database.destroy();
+		process.exit(1);
 	}
 }

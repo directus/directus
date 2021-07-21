@@ -1,0 +1,167 @@
+en-US:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: true
+
+bg-BG:
+  short:
+    year: numeric
+    month: numeric
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+cs-CZ:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+de-DE:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+fr-FR:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+it-IT:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+ms-MY:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+nl-NL:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+pl-PL:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+pt-BR:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+ru-RU:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: false
+
+zh-CN:
+  short:
+    year: numeric
+    month: short
+    day: numeric
+  long:
+    year: numeric
+    month: short
+    day: numeric
+    weekday: short
+    hour: numeric
+    minute: numeric
+    hour12: true

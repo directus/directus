@@ -1,18 +1,18 @@
 <template>
-	<v-dialog v-model="_active" @esc="$emit('cancel')" :persistent="persistent" placement="right">
+	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="$emit('cancel')">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
 
 		<article class="v-drawer">
 			<v-button
-				v-if="showCancel"
+				v-if="cancelable"
+				v-tooltip.bottom="t('cancel')"
 				class="cancel"
-				@click="$emit('cancel')"
 				icon
 				rounded
 				secondary
-				v-tooltip.bottom="$t('cancel')"
+				@click="$emit('cancel')"
 			>
 				<v-icon name="close" />
 			</v-button>
@@ -23,7 +23,8 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
-					<header-bar :title="title" @primary="$emit('cancel')" primary-action-icon="close">
+					<header-bar :title="title" primary-action-icon="close" @primary="$emit('cancel')">
+						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
@@ -56,17 +57,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, provide } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, provide } from 'vue';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
-import i18n from '../../lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: {
 		HeaderBar,
-	},
-	model: {
-		prop: 'active',
-		event: 'toggle',
 	},
 	props: {
 		title: {
@@ -77,7 +75,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -91,31 +89,34 @@ export default defineComponent({
 		},
 		sidebarLabel: {
 			type: String,
-			default: i18n.t('sidebar'),
+			default: i18n.global.t('sidebar'),
+		},
+		cancelable: {
+			type: Boolean,
+			default: true,
 		},
 	},
-	setup(props, { emit, listeners }) {
+	emits: ['cancel', 'update:modelValue'],
+	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const localActive = ref(false);
 
 		const mainEl = ref<Element>();
 
 		provide('main-element', mainEl);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
-		const showCancel = computed(() => {
-			return listeners.hasOwnProperty('cancel');
-		});
-
-		return { _active, mainEl, showCancel };
+		return { t, internalActive, mainEl };
 	},
 });
 </script>
@@ -127,8 +128,6 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-drawer {
 	position: relative;
 	display: flex;
@@ -150,21 +149,33 @@ body {
 
 	.header-icon {
 		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-activated: var(--background-normal);
+		--v-button-background-color-active: var(--background-normal);
 		--v-button-background-color-hover: var(--background-normal-alt);
 		--v-button-color-disabled: var(--foreground-normal);
 	}
 
 	.content {
+		--border-radius: 6px;
+		--input-height: 60px;
+		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--form-vertical-gap: 52px;
+
 		position: relative;
 		display: flex;
 		flex-grow: 1;
 		overflow: hidden;
 
+		// Page Content Spacing (Could be converted to Project Setting toggle)
+		font-size: 15px;
+		line-height: 24px;
+
 		.sidebar {
+			--v-list-item-background-color-hover: var(--background-normal-alt);
+			--v-list-item-background-color-active: var(--background-normal-alt);
+
 			display: none;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				position: relative;
 				z-index: 2;
 				display: block;
@@ -180,7 +191,7 @@ body {
 		.v-overlay {
 			--v-overlay-z-index: 1;
 
-			@include breakpoint(medium) {
+			@media (min-width: 960px) {
 				--v-overlay-z-index: none;
 
 				display: none;
@@ -194,14 +205,14 @@ body {
 			flex-grow: 1;
 			overflow: auto;
 
-			@include breakpoint(small) {
+			@media (min-width: 600px) {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
 		}
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		width: calc(100% - 64px);
 	}
 }
@@ -214,7 +225,7 @@ body {
 		border-radius: var(--border-radius);
 	}
 
-	@include breakpoint(medium) {
+	@media (min-width: 960px) {
 		display: none;
 	}
 }

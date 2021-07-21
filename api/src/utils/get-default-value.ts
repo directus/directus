@@ -1,20 +1,22 @@
+import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import { Column } from 'knex-schema-inspector/dist/types/column';
 import getLocalType from './get-local-type';
-import { Column } from '@directus/schema/dist/types/column';
-import { SchemaOverview } from '../types';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column
-) {
+): string | boolean | null {
 	const type = getLocalType(column);
 
-	let defaultValue = column.default_value || null;
+	let defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;
+	if (defaultValue === 'null') return null;
+	if (defaultValue === 'NULL') return null;
 
 	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite
 	if (
 		typeof defaultValue === 'string' &&
-		defaultValue.startsWith(`'`) &&
-		defaultValue.endsWith(`'`)
+		((defaultValue.startsWith(`'`) && defaultValue.endsWith(`'`)) ||
+			(defaultValue.startsWith(`"`) && defaultValue.endsWith(`"`)))
 	) {
 		defaultValue = defaultValue.slice(1, -1);
 	}
@@ -24,7 +26,7 @@ export default function getDefaultValue(
 		case 'integer':
 		case 'decimal':
 		case 'float':
-			return Number(defaultValue);
+			return Number.isNaN(Number(defaultValue)) === false ? Number(defaultValue) : defaultValue;
 		case 'boolean':
 			return castToBoolean(defaultValue);
 		default:

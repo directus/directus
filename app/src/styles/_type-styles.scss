@@ -1,9 +1,10 @@
 @import './mixins/type-styles.scss';
 
 :root {
-	--family-monospace: 'Fira Code', monospace;
+	--family-monospace: 'Fira Mono', monospace, sans-serif;
 	--family-serif: 'Merriweather', serif;
-	--family-sans-serif: 'Inter', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+	--family-sans-serif: 'Inter', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial',
+		sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .type-title {

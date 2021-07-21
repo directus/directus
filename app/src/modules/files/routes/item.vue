@@ -1,8 +1,8 @@
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
+	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact :to="to">
+			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -15,91 +15,91 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						@click="on"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="moveToDialogActive" v-if="isNew === false" @esc="moveToDialogActive = false">
+			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('move_to_folder')"
 						rounded
 						icon
 						:disabled="item === null"
-						@click="on"
 						class="folder"
-						v-tooltip.bottom="$t('move_to_folder')"
+						@click="on"
 					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 
 					<v-card-text>
 						<folder-picker v-model="selectedFolder" />
 					</v-card-text>
 
 					<v-card-actions>
-						<v-button @click="moveToDialogActive = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="moveToDialogActive = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="moveToFolder" :loading="moving">
-							{{ $t('move') }}
+						<v-button :loading="moving" @click="moveToFolder">
+							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="downloadFile" class="download" v-tooltip.bottom="$t('download')">
+			<v-button v-tooltip.bottom="t('download')" rounded icon class="download" @click="downloadFile">
 				<v-icon name="save_alt" />
 			</v-button>
 
 			<v-button
 				v-if="item && item.type.includes('image')"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
-				@click="editActive = true"
 				class="edit"
-				v-tooltip.bottom="$t('edit')"
+				@click="editActive = true"
 			>
 				<v-icon name="tune" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false || saveAllowed === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false || saveAllowed === false"
+						v-if="hasEdits === true || saveAllowed === true"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
@@ -125,31 +125,32 @@
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
-				@refresh="refresh"
 				v-model="editActive"
+				@refresh="refresh"
 			/>
 
 			<v-form
 				ref="form"
+				v-model="edits"
 				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
-				v-model="edits"
+				:validation-errors="validationErrors"
 			/>
 		</div>
 
 		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -157,10 +158,10 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false"
+				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				ref="revisionsDrawerDetail"
 				collection="directus_files"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -169,55 +170,36 @@
 			/>
 		</template>
 
-		<replace-file v-model="replaceFileDialogActive" @replaced="refresh" :file="item" />
+		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '../../../lang';
-import router from '../../../router';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import FilePreview from '../../../views/private/components/file-preview';
-import ImageEditor from '../../../views/private/components/image-editor';
-import { nanoid } from 'nanoid';
-import FileLightbox from '../../../views/private/components/file-lightbox';
-import { useFieldsStore } from '../../../stores/';
-import { Field } from '../../../types';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import FilePreview from '@/views/private/components/file-preview';
+import ImageEditor from '@/views/private/components/image-editor';
+import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import useFormFields from '../../../composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
-import api, { addTokenToURL } from '../../../api';
-import getRootPath from '../../../utils/get-root-path';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';
-import useShortcut from '../../../composables/use-shortcut';
+import useShortcut from '@/composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
-import { usePermissions } from '../../../composables/use-permissions';
-import { notify } from '../../../utils/notify';
-import { unexpectedError } from '../../../utils/unexpected-error';
-
-type Values = {
-	[field: string]: any;
-};
+import { usePermissions } from '@/composables/use-permissions';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
-	name: 'files-item',
-	beforeRouteLeave(to, from, next) {
-		const self = this as any;
-		const hasEdits = Object.keys(self.edits).length > 0;
-
-		if (hasEdits) {
-			self.confirmLeave = true;
-			self.leaveTo = to.fullPath;
-			return next(false);
-		}
-
-		return next();
-	},
+	name: 'FilesItem',
 	components: {
 		FilesNavigation,
 		RevisionsDrawerDetail,
@@ -237,13 +219,16 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
-		const fieldsStore = useFieldsStore();
 		const replaceFileDialogActive = ref(false);
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			isNew,
@@ -258,16 +243,19 @@ export default defineComponent({
 			saveAsCopy,
 			isBatch,
 			refresh,
+			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+
+		unsavedChanges(hasEdits);
+
 		const confirmDelete = ref(false);
 		const editActive = ref(false);
 		const fileSrc = computed(() => {
 			if (item.value && item.value.modified_on) {
 				return addTokenToURL(
-					getRootPath() +
-						`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+					getRootPath() + `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
 				);
 			}
 
@@ -292,7 +280,7 @@ export default defineComponent({
 		];
 
 		const to = computed(() => {
-			if (item.value && item.value?.folder) return `/files?folder=${item.value.folder}`;
+			if (item.value && item.value?.folder) return `/files/folders/${item.value.folder}`;
 			else return '/files';
 		});
 
@@ -303,7 +291,17 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+		const editsGuard: NavigationGuard = (to) => {
+			if (hasEdits.value) {
+				confirmLeave.value = true;
+				leaveTo.value = to.fullPath;
+				return false;
+			}
+		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
+
+		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			ref('directus_files'),
 			item,
 			isNew
@@ -314,6 +312,8 @@ export default defineComponent({
 		});
 
 		return {
+			t,
+			router,
 			item,
 			loading,
 			error,
@@ -349,6 +349,8 @@ export default defineComponent({
 			updateAllowed,
 			fields,
 			fieldsFiltered,
+			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {
@@ -356,7 +358,7 @@ export default defineComponent({
 				if (!item?.value?.folder) {
 					return [
 						{
-							name: i18n.t('file_library'),
+							name: t('file_library'),
 							to: '/files',
 						},
 					];
@@ -364,13 +366,8 @@ export default defineComponent({
 
 				return [
 					{
-						name: i18n.t('file_library'),
-						to: {
-							path: `/files/`,
-							query: {
-								folder: item?.value?.folder,
-							},
-						},
+						name: t('file_library'),
+						to: { path: `/files/folders/${item.value.folder}` },
 					},
 				];
 			});
@@ -381,7 +378,7 @@ export default defineComponent({
 		async function saveAndQuit() {
 			try {
 				await save();
-				router.push(`/files`);
+				router.push(to.value);
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -398,13 +395,13 @@ export default defineComponent({
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/files/${newPrimaryKey}`);
+			if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/files`);
+				router.push(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
@@ -417,7 +414,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}?download`;
+			const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
 			window.open(filePath, '_blank');
 		}
 
@@ -449,10 +446,10 @@ export default defineComponent({
 					);
 
 					await refresh();
-					const folder = response.data.data.folder?.name || i18n.t('file_library');
+					const folder = response.data.data.folder?.name || t('file_library');
 
 					notify({
-						title: i18n.t('file_moved', { folder }),
+						title: t('file_moved', { folder }),
 						type: 'success',
 						icon: 'folder_move',
 					});
@@ -470,9 +467,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
@@ -483,9 +480,9 @@ export default defineComponent({
 .edit,
 .folder,
 .download {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 

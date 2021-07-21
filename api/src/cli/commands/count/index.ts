@@ -1,5 +1,9 @@
-export default async function count(collection: string) {
-	const database = require('../../../database/index').default;
+/* eslint-disable no-console */
+
+import getDatabase from '../../../database';
+
+export default async function count(collection: string): Promise<void> {
+	const database = getDatabase();
 
 	if (!collection) {
 		console.error('Collection is required');
@@ -11,9 +15,11 @@ export default async function count(collection: string) {
 		const count = Number(records[0].count);
 
 		console.log(count);
+		database.destroy();
+		process.exit(0);
 	} catch (err) {
 		console.error(err);
-	} finally {
 		database.destroy();
+		process.exit(1);
 	}
 }

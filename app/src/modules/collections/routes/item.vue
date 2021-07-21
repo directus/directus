@@ -4,19 +4,19 @@
 	/>
 
 	<private-view v-else :title="title">
-		<template #title v-if="collectionInfo.meta && collectionInfo.meta.singleton === true">
+		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
 		</template>
 
-		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
+		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
-			<h1 class="type-title" v-else>
+			<h1 v-else class="type-title">
 				<render-template
 					:collection="collectionInfo.collection"
-					:item="templateValues"
+					:item="templateData"
 					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
@@ -36,13 +36,13 @@
 
 			<v-button
 				v-else
+				v-tooltip.bottom="t('back')"
 				class="header-icon"
 				rounded
 				icon
 				secondary
 				exact
-				v-tooltip.bottom="$t('back')"
-				:to="'/collections/' + collection"
+				@click="router.back()"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -51,41 +51,36 @@
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: $t('collections'), to: '/collections' }]"
+				:items="[{ name: t('collections'), to: '/collections' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog
-				v-if="!isNew"
-				v-model="confirmDelete"
-				:disabled="deleteAllowed === false"
-				@esc="confirmDelete = false"
-			>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
-						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -94,51 +89,50 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
-				@esc="confirmArchive = false"
 				:disabled="archiveAllowed === false"
+				@esc="confirmArchive = false"
 			>
 				<template #activator="{ on }">
 					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
 						class="action-archive"
-						v-tooltip.bottom="archiveTooltip"
-						@click="on"
 						:disabled="item === null || archiveAllowed !== true"
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						@click="on"
 					>
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmArchive = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmArchive = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="toggleArchive" class="action-archive" :loading="archiving">
-							{{ isArchived ? $t('unarchive') : $t('archive') }}
+						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
+							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:disabled="isSavable === false || saveAllowed === false"
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true"
-						:disabled="isSavable === false"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -148,83 +142,80 @@
 		</template>
 
 		<template #navigation>
+			<collections-navigation-search />
 			<collections-navigation />
 		</template>
 
 		<v-form
 			ref="form"
+			v-model="edits"
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
-			v-model="edits"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ $t('discard_changes') }}
+						{{ t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey"
-				:collection="collection"
-				:primary-key="_primaryKey"
+				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
 				ref="revisionsDrawerDetail"
-				@revert="refresh"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+				:scope="accountabilityScope"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && _primaryKey"
+				v-if="isNew === false && internalPrimaryKey"
 				:collection="collection"
-				:primary-key="_primaryKey"
+				:primary-key="internalPrimaryKey"
 			/>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
-import Vue from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
+import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '../../../router';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '../../../composables/use-collection';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import i18n from '../../../lang';
-import marked from 'marked';
-import useShortcut from '../../../composables/use-shortcut';
-import { NavigationGuard } from 'vue-router';
-import { useUserStore, usePermissionsStore } from '../../../stores';
-import generateJoi from '../../../utils/generate-joi';
-import { cloneDeep } from 'lodash';
-import { Field } from '../../../types';
-import { usePermissions } from '../../../composables/use-permissions';
-
-type Values = {
-	[field: string]: any;
-};
+import useCollection from '@/composables/use-collection';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import useShortcut from '@/composables/use-shortcut';
+import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import { usePermissions } from '@/composables/use-permissions';
+import unsavedChanges from '@/composables/unsaved-changes';
+import { useTitle } from '@/composables/use-title';
+import { renderStringTemplate } from '@/utils/render-string-template';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
-	name: 'collections-item',
+	name: 'CollectionsItem',
 	components: {
 		CollectionsNavigation,
+		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
@@ -245,16 +236,24 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t, te } = useI18n();
+
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
-		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, isSingleton } = useCollection(collection);
+		const {
+			info: collectionInfo,
+			defaults,
+			primaryKeyField,
+			isSingleton,
+			accountabilityScope,
+		} = useCollection(collection);
 
 		const {
 			isNew,
@@ -273,6 +272,8 @@ export default defineComponent({
 			refresh,
 			validationErrors,
 		} = useItem(collection, primaryKey);
+
+		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
 
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
@@ -294,51 +295,70 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
+		unsavedChanges(isSavable);
+
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
-		const templateValues = computed(() => {
-			return {
-				...(item.value || {}),
-				...edits.value,
-			};
+		const title = computed(() => {
+			if (te(`collection_names_singular.${props.collection}`)) {
+				return isNew.value
+					? t('creating_unit', { unit: t(`collection_names_singular.${props.collection}`) })
+					: t('editing_unit', { unit: t(`collection_names_singular.${props.collection}`) });
+			}
+
+			return isNew.value
+				? t('creating_in', { collection: collectionInfo.value?.name })
+				: t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
-		const title = computed(() => {
-			return isNew.value
-				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
-				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
+		const tabTitle = computed(() => {
+			let tabTitle = (collectionInfo.value?.name || '') + ' | ';
+
+			if (collectionInfo.value && collectionInfo.value.meta) {
+				if (collectionInfo.value.meta.singleton === true) {
+					return tabTitle + collectionInfo.value.name;
+				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
+					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
+
+					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+				}
+			}
+
+			return tabTitle + title.value;
 		});
+
+		useTitle(tabTitle);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.t('not_allowed');
-			if (isArchived.value === true) return i18n.t('unarchive');
-			return i18n.t('archive');
+			if (archiveAllowed.value === false) return t('not_allowed');
+			if (isArchived.value === true) return t('unarchive');
+			return t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
-		const navigationGuard: NavigationGuard = (to, from, next) => {
+		const editsGuard: NavigationGuard = (to) => {
 			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
-				return next(false);
+				return false;
 			}
-
-			return next();
 		};
+		onBeforeRouteUpdate(editsGuard);
+		onBeforeRouteLeave(editsGuard);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			collection,
 			item,
 			isNew
 		);
 
-		const _primaryKey = computed(() => {
+		const internalPrimaryKey = computed(() => {
 			if (isNew.value) return '+';
 
 			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
@@ -347,6 +367,8 @@ export default defineComponent({
 		});
 
 		return {
+			t,
+			router,
 			item,
 			loading,
 			error,
@@ -365,17 +387,16 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			templateValues,
+			templateData,
+			templateDataLoading,
 			archiveTooltip,
 			breadcrumb,
 			title,
 			revisionsDrawerDetail,
-			marked,
 			refresh,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
-			navigationGuard,
 			deleteAllowed,
 			saveAllowed,
 			archiveAllowed,
@@ -386,7 +407,10 @@ export default defineComponent({
 			form,
 			fields,
 			isSingleton,
-			_primaryKey,
+			internalPrimaryKey,
+			revisionsAllowed,
+			revert,
+			accountabilityScope,
 		};
 
 		function useBreadcrumb() {
@@ -422,7 +446,7 @@ export default defineComponent({
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-					router.replace(`/collections/${props.collection}/${newPrimaryKey}`);
+					router.replace(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 				}
 			} catch {
 				// Save shows unexpected error dialog
@@ -448,7 +472,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -480,46 +504,46 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
 		}
-	},
-	beforeRouteLeave(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
-	},
-	beforeRouteUpdate(to, from, next) {
-		return (this as any).navigationGuard(to, from, next);
+
+		function revert(values: Record<string, any>) {
+			edits.value = {
+				...edits.value,
+				...values,
+			};
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins/breakpoint';
-
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-archive {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
 	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-activated: var(--foreground-normal);
+	--v-button-color-active: var(--foreground-normal);
 }
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		padding: var(--content-padding);
 		padding-bottom: var(--content-padding-bottom);
 	}

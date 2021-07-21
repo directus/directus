@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="!displayValue" />
+	<value-null v-if="displayValue === null || displayValue === undefined" />
 
 	<span v-else class="display-formatted-text" :class="[{ bold }, font]" :style="{ color }">
 		{{ displayValue }}
@@ -7,18 +7,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import formatTitle from '@directus/format-title';
+import { decode } from 'html-entities';
+import { useI18n } from 'vue-i18n';
+import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		formatTitle: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		bold: {
 			type: Boolean,
@@ -35,10 +38,22 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { n } = useI18n();
+
 		const displayValue = computed(() => {
-			if (!props.value) return null;
+			if (isNil(props.value) || props.value === '') return null;
+
+			if (typeof props.value === 'number') {
+				return n(props.value);
+			}
+
 			let value = String(props.value);
-			value = props.value.replace(/(<([^>]+)>)/gi, '');
+
+			// Strip out all HTML tags
+			value = value.replace(/(<([^>]+)>)/gi, '');
+
+			// Decode any HTML encoded characters (like &copy;)
+			value = decode(value);
 
 			if (props.formatTitle) {
 				value = formatTitle(value);
@@ -56,7 +71,7 @@ export default defineComponent({
 .display-formatted-text {
 	display: inline-block;
 	overflow: hidden;
-	line-height: 22px;
+	line-height: 26px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 

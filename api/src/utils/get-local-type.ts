@@ -1,5 +1,6 @@
-import { FieldMeta, types, SchemaOverview } from '../types';
-import { Column } from '@directus/schema/dist/types/column';
+import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import { Column } from 'knex-schema-inspector/dist/types/column';
+import { FieldMeta, types } from '../types';
 
 /**
  * Typemap graciously provided by @gpetrov
@@ -44,6 +45,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	year: { type: 'integer' },
 	blob: { type: 'binary' },
 	mediumblob: { type: 'binary' },
+	'int unsigned': { type: 'integer' },
 
 	// MS SQL
 	bit: { type: 'boolean' },
@@ -55,9 +57,11 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	nchar: { type: 'text' },
 	binary: { type: 'binary' },
 	varbinary: { type: 'binary' },
+	uniqueidentifier: { type: 'uuid' },
 
 	// Postgres
 	json: { type: 'json' },
+	jsonb: { type: 'json' },
 	uuid: { type: 'uuid' },
 	int2: { type: 'integer' },
 	serial4: { type: 'integer' },
@@ -78,26 +82,34 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	'time without time zone': { type: 'time' },
 	float4: { type: 'float' },
 	float8: { type: 'float' },
+
+	// Oracle
+	number: { type: 'integer' },
 };
 
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
-	field?: FieldMeta
+	field?: { special?: FieldMeta['special'] }
 ): typeof types[number] | 'unknown' {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
+	const special = field?.special;
+	if (special) {
+		if (special.includes('json')) return 'json';
+		if (special.includes('hash')) return 'hash';
+		if (special.includes('csv')) return 'csv';
+		if (special.includes('uuid')) return 'uuid';
+	}
+
 	/** Handle Postgres numeric decimals */
-	if (
-		column.data_type === 'numeric' &&
-		column.numeric_precision !== null &&
-		column.numeric_scale !== null
-	) {
+	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
 	}
 
-	if (field?.special?.includes('json')) return 'json';
-	if (field?.special?.includes('csv')) return 'csv';
-	if (field?.special?.includes('uuid')) return 'uuid';
+	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
+	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+		return 'text';
+	}
 
 	if (type) {
 		return type.type;

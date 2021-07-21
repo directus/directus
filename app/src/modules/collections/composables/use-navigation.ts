@@ -1,14 +1,13 @@
-import { computed, Ref, ref } from '@vue/composition-api';
-
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
-import VueI18n from 'vue-i18n';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 
 export type NavItem = {
 	collection: string;
-	name: string | VueI18n.TranslateResult;
+	name: string;
 	to: string;
 	icon: string;
+	color: string | null | undefined;
 	note: string | null;
 };
 
@@ -19,39 +18,45 @@ export type NavItemGroup = {
 };
 
 let activeGroups: Ref<string[]>;
+let hiddenShown: Ref<boolean>;
 
-export default function useNavigation() {
-	if (!activeGroups) activeGroups = ref([]);
+function collectionToNavItem(collection: Collection): NavItem {
+	return {
+		collection: collection.collection,
+		name: collection.name,
+		icon: collection.meta?.icon || 'label',
+		color: collection.meta?.color,
+		note: collection.meta?.note || null,
+		to: `/collections/${collection.collection}`,
+	};
+}
 
+type UsableNavigation = {
+	customNavItems: ComputedRef<NavItemGroup[] | null>;
+	navItems: ComputedRef<NavItem[]>;
+	activeGroups: Ref<string[]>;
+	hiddenNavItems: ComputedRef<NavItem[]>;
+	hiddenShown: Ref<boolean>;
+	search: (item: NavItem) => boolean;
+};
+
+export default function useNavigation(searchQuery?: Ref<string | null>): UsableNavigation {
 	const collectionsStore = useCollectionsStore();
-
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
-		if (!userStore.state.currentUser) return null;
-		if (!userStore.state.currentUser.role.collection_list) return null;
+		if (!userStore.currentUser) return null;
+		if (!userStore.currentUser.role.collection_list) return null;
 
-		return userStore.state.currentUser?.role.collection_list.map((groupRaw) => {
+		return userStore.currentUser?.role.collection_list.map((groupRaw) => {
 			const group: NavItemGroup = {
 				name: groupRaw.group_name,
 				accordion: groupRaw.accordion,
 				items: groupRaw.collections
-					.map(({ collection }) => {
-						const collectionInfo = collectionsStore.getCollection(collection);
-
-						if (!collectionInfo) return null;
-
-						const navItem: NavItem = {
-							collection: collection,
-							name: collectionInfo.name,
-							icon: collectionInfo.meta?.icon || 'label',
-							note: collectionInfo.meta?.note || null,
-							to: `/collections/${collection}`,
-						};
-
-						return navItem;
-					})
-					.filter((c) => c) as NavItem[],
+					.map(({ collection }) => collectionsStore.getCollection(collection) as Collection)
+					.filter((collection) => !!collection)
+					.map(collectionToNavItem)
+					.filter(search),
 			};
 
 			return group;
@@ -59,22 +64,38 @@ export default function useNavigation() {
 	});
 
 	const navItems = computed<NavItem[]>(() => {
-		return collectionsStore.visibleCollections.value
-			.map((collection: Collection) => {
-				const navItem: NavItem = {
-					collection: collection.collection,
-					name: collection.name,
-					icon: collection.meta?.icon || 'label',
-					note: collection.meta?.note || null,
-					to: `/collections/${collection.collection}`,
-				};
-
-				return navItem;
-			})
+		return collectionsStore.visibleCollections
+			.map(collectionToNavItem)
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
-			});
+			})
+			.filter(search);
 	});
 
-	return { customNavItems, navItems, activeGroups };
+	const hiddenNavItems = computed<NavItem[]>(() => {
+		return collectionsStore.hiddenCollections
+			.map(collectionToNavItem)
+			.sort((navA: NavItem, navB: NavItem) => {
+				return navA.name > navB.name ? 1 : -1;
+			})
+			.filter(search);
+	});
+
+	if (!activeGroups) {
+		activeGroups = ref(
+			customNavItems.value?.filter(({ accordion }) => accordion === 'start_open').map(({ name }) => name) ?? []
+		);
+	}
+
+	if (hiddenShown === undefined) {
+		hiddenShown = ref(false);
+	}
+
+	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown, search };
+
+	function search(item: NavItem) {
+		if (!searchQuery?.value) return true;
+		if (typeof item.name !== 'string') return true;
+		return item.name.toLocaleLowerCase().includes(searchQuery.value.toLocaleLowerCase());
+	}
 }

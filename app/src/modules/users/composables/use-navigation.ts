@@ -1,12 +1,11 @@
-import { ref, Ref } from '@vue/composition-api';
-
 import api from '@/api';
 import { Role } from '@/types';
+import { ref, Ref } from 'vue';
 
 let roles: Ref<Role[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export default function useNavigation() {
+export default function useNavigation(): { roles: Ref<Role[] | null>; loading: Ref<boolean> } {
 	if (roles === null) {
 		roles = ref<Role[] | null>(null);
 	}
@@ -28,7 +27,7 @@ export default function useNavigation() {
 		const rolesResponse = await api.get(`/roles`, {
 			params: {
 				sort: 'name',
-			}
+			},
 		});
 		roles.value = rolesResponse.data.data;
 		loading.value = false;

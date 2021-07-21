@@ -1,9 +1,9 @@
-import Knex, { ColumnBuilder } from 'knex';
 import fse from 'fs-extra';
-import path from 'path';
 import yaml from 'js-yaml';
+import { Knex } from 'knex';
+import { isObject } from 'lodash';
+import path from 'path';
 import { types } from '../../types';
-import { isObject, merge } from 'lodash';
 
 type TableSeed = {
 	table: string;
@@ -25,7 +25,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {
@@ -39,11 +39,11 @@ export default async function runSeed(database: Knex) {
 
 		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
 
-		const seedData = yaml.safeLoad(yamlRaw) as TableSeed;
+		const seedData = yaml.load(yamlRaw) as TableSeed;
 
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
-				let column: ColumnBuilder;
+				let column: Knex.ColumnBuilder;
 
 				if (columnInfo.type === 'string') {
 					column = tableBuilder.string(columnName, columnInfo.length);
@@ -51,6 +51,8 @@ export default async function runSeed(database: Knex) {
 					column = tableBuilder.increments();
 				} else if (columnInfo.type === 'csv') {
 					column = tableBuilder.string(columnName);
+				} else if (columnInfo.type === 'hash') {
+					column = tableBuilder.string(columnName, 255);
 				} else {
 					column = tableBuilder[columnInfo.type!](columnName);
 				}
@@ -86,9 +88,7 @@ export default async function runSeed(database: Knex) {
 				}
 
 				if (columnInfo.references) {
-					column
-						.references(columnInfo.references.column)
-						.inTable(columnInfo.references.table);
+					column.references(columnInfo.references.column).inTable(columnInfo.references.table);
 				}
 			}
 		});

@@ -1,18 +1,30 @@
-import { computed, Ref, ref } from '@vue/composition-api';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Collection, Field } from '@/types';
+import { computed, ref, Ref, ComputedRef } from 'vue';
 
-export function useCollection(collectionKey: string | Ref<string>) {
+type UsableCollection = {
+	info: ComputedRef<Collection | null>;
+	fields: ComputedRef<Field[]>;
+	defaults: Record<string, any>;
+	primaryKeyField: ComputedRef<Field | null>;
+	userCreatedField: ComputedRef<Field | null>;
+	sortField: ComputedRef<string | null>;
+	isSingleton: ComputedRef<boolean>;
+	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
+};
+
+export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
-	const collection: Ref<string> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
+	const collection: Ref<string | null> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
-		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);
+		return collectionsStore.collections.find(({ collection: key }) => key === collection.value) || null;
 	});
 
-	const fields = computed<Field[]>(() => {
+	const fields = computed(() => {
+		if (!collection.value) return [];
 		return fieldsStore.getFieldsForCollection(collection.value);
 	});
 
@@ -31,11 +43,10 @@ export function useCollection(collectionKey: string | Ref<string>) {
 	});
 
 	const primaryKeyField = computed(() => {
-		// Every collection has a primary key; rules of the land
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return fields.value?.find(
-			(field) => field.collection === collection.value && field.schema?.is_primary_key === true
-		)!;
+		return (
+			fields.value.find((field) => field.collection === collection.value && field.schema?.is_primary_key === true) ||
+			null
+		);
 	});
 
 	const userCreatedField = computed(() => {
@@ -50,5 +61,11 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return info.value?.meta?.singleton === true;
 	});
 
-	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton };
+	const accountabilityScope = computed(() => {
+		if (!info.value) return null;
+		if (!info.value.meta) return null;
+		return info.value.meta.accountability;
+	});
+
+	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton, accountabilityScope };
 }

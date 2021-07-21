@@ -1,61 +1,61 @@
 <template>
-	<div
-		class="v-input"
-		@click="$emit('click', $event)"
-		:class="{ 'full-width': fullWidth, 'has-click': hasClick, disabled: disabled }"
-	>
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
-			<slot name="prepend-outer" :value="value" :disabled="disabled" />
+			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 		<div class="input" :class="{ disabled, active }">
 			<div v-if="$slots.prepend" class="prepend">
-				<slot name="prepend" :value="value" :disabled="disabled" />
+				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
 				<input
-					v-bind="$attrs"
+					ref="input"
 					v-focus="autofocus"
-					v-on="_listeners"
+					v-bind="attributes"
+					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="value"
-					ref="input"
+					:value="modelValue"
+					v-on="listeners"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
-					:class="{ disabled: max !== null && parseInt(value, 10) >= max }"
+					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
+					clickable
+					:disabled="!isStepUpAllowed"
 					@click="stepUp"
-					:disabled="disabled"
 				/>
 				<v-icon
-					:class="{ disabled: min !== null && parseInt(value, 10) <= min }"
+					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
+					clickable
+					:disabled="!isStepDownAllowed"
 					@click="stepDown"
-					:disabled="disabled"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
-				<slot name="append" :value="value" :disabled="disabled" />
+				<slot name="append" :value="modelValue" :disabled="disabled" />
 			</div>
 		</div>
 		<div v-if="$slots['append-outer']" class="append-outer">
-			<slot name="append-outer" :value="value" :disabled="disabled" />
+			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import slugify from '@sindresorhus/slugify';
+import { omit } from 'lodash';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -65,6 +65,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		clickable: {
 			type: Boolean,
 			default: false,
 		},
@@ -80,9 +84,13 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number],
 			default: null,
+		},
+		nullable: {
+			type: Boolean,
+			default: true,
 		},
 		slug: {
 			type: Boolean,
@@ -125,21 +133,43 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		autocomplete: {
+			type: String,
+			default: 'off',
+		},
 	},
-	setup(props, { emit, listeners }) {
+	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
+	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
-		const _listeners = computed(() => ({
-			...listeners,
+		const listeners = computed(() => ({
 			input: emitValue,
 			keydown: processValue,
+			blur: (e: Event) => {
+				trimIfEnabled();
+				attrs?.onBlur?.(e);
+			},
+			focus: (e: PointerEvent) => emit('focus', e),
 		}));
+		const attributes = computed(() => omit(attrs, ['class']));
+		const classes = computed(() => [
+			{
+				'full-width': props.fullWidth,
+				'has-click': props.clickable,
+				disabled: props.disabled,
+			},
+			...((attrs.class || '') as string).split(' '),
+		]);
 
-		const hasClick = computed(() => {
-			return listeners.click !== undefined;
+		const isStepUpAllowed = computed(() => {
+			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, input };
+		const isStepDownAllowed = computed(() => {
+			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
+		});
+
+		return { listeners, attributes, classes, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
@@ -164,7 +194,7 @@ export default defineComponent({
 			if (props.dbSafe === true) {
 				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
 
-				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
@@ -179,16 +209,23 @@ export default defineComponent({
 			emit('keydown', event);
 		}
 
+		function trimIfEnabled() {
+			if (props.modelValue && props.trim) {
+				emit('update:modelValue', String(props.modelValue).trim());
+			}
+		}
+
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.type === 'number') {
-				emit('input', Number(value));
-			} else {
-				if (props.trim === true) {
-					value = value.trim();
-				}
+			if (props.nullable === true && !value) {
+				emit('update:modelValue', null);
+				return;
+			}
 
+			if (props.type === 'number') {
+				emit('update:modelValue', Number(value));
+			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
 					value = slugify(value, { separator: props.slugSeparator });
@@ -202,33 +239,31 @@ export default defineComponent({
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				}
 
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
 		function stepUp() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.max !== null && props.value >= props.max) return;
+			if (isStepUpAllowed.value === false) return;
 
 			input.value.stepUp();
 
 			if (input.value.value != null) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			}
 		}
 
 		function stepDown() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.min !== null && props.value <= props.min) return;
+			if (isStepDownAllowed.value === false) return;
 
 			input.value.stepDown();
 
 			if (input.value.value) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			} else {
-				return emit('input', props.min || 0);
+				return emit('update:modelValue', props.min || 0);
 			}
 		}
 	},
@@ -247,6 +282,7 @@ body {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
 	--v-input-color: var(--foreground-normal);
+	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
@@ -259,14 +295,17 @@ body {
 	}
 
 	.input {
+		position: relative;
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
+		padding-top: 0px;
+		padding-bottom: 0px;
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
-		background-color: var(--background-page);
+		background-color: var(--v-input-background-color);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
@@ -308,7 +347,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -317,7 +356,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
 		}
 
@@ -343,6 +382,9 @@ body {
 		flex-grow: 1;
 		width: 20px; // allows flex to grow/shrink to allow for slots
 		height: 100%;
+		padding: var(--input-padding);
+		padding-right: 0px;
+		padding-left: 0px;
 		font-family: var(--v-input-font-family);
 		background-color: transparent;
 		border: none;
@@ -358,7 +400,12 @@ body {
 			-webkit-appearance: none;
 		}
 
+		&:focus {
+			border-color: var(--v-input-border-color-focus);
+		}
+
 		/* Firefox */
+
 		&[type='number'] {
 			-moz-appearance: textfield;
 		}
@@ -381,6 +428,7 @@ body {
 
 		input {
 			pointer-events: none;
+
 			.prefix,
 			.suffix {
 				color: var(--foreground-subdued);

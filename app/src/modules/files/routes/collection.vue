@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title" :class="{ dragging }">
-		<template #headline v-if="breadcrumb">
+		<template v-if="breadcrumb" #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
@@ -11,85 +11,85 @@
 		</template>
 
 		<template #actions:prepend>
-			<portal-target name="actions:prepend" />
+			<component :is="`layout-actions-${layout}`" />
 		</template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="queryFilters && queryFilters.folder" :disabled="createFolderAllowed !== true" />
+			<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @esc="moveToDialogActive = false">
+			<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
-					<v-button rounded icon @click="on" class="folder" v-tooltip.bottom="$t('move_to_folder')">
+					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" @click="on">
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 
 					<v-card-text>
 						<folder-picker v-model="selectedFolder" />
 					</v-card-text>
 
 					<v-card-actions>
-						<v-button @click="moveToDialogActive = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="moveToDialogActive = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="moveToFolder" :loading="moving">
-							{{ $t('move') }}
+						<v-button :loading="moving" @click="moveToFolder">
+							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				class="action-batch"
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				rounded
 				icon
 				class="add-new"
-				:to="{ path: '/files/+', query: queryFilters }"
-				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -97,58 +97,48 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="queryFilters && queryFilters.folder" />
+			<files-navigation :current-folder="folder" />
 		</template>
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_files"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters="filtersWithFolderAndType"
-			:search-query="searchQuery"
-			:reset-preset="resetPreset"
-			@update:filters="filters = $event"
-		>
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('file_count', 0)" icon="folder" center>
-					{{ $t('no_files_copy') }}
+				<v-info :title="t('file_count', 0)" icon="folder" center>
+					{{ t('no_files_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/files/+', query: queryFilters }">{{ $t('add_file') }}</v-button>
+						<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+							{{ t('add_file') }}
+						</v-button>
 					</template>
 				</v-info>
 			</template>
 		</component>
 
-		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
+		<router-view name="addNew" :folder="folder" @upload="refresh" />
 
 		<drawer-batch
+			v-model:active="batchEditActive"
 			:primary-keys="selection"
-			:active.sync="batchEditActive"
 			collection="directus_files"
 			@refresh="refresh"
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_files_collection')" class="page-description" />
 			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
-			<portal-target name="sidebar" />
+			<layout-sidebar-detail v-model="layout" />
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 
 		<template v-if="showDropEffect">
@@ -161,36 +151,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, reactive, PropType, onMounted, onUnmounted, nextTick } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '../../../lang';
-import api from '../../../api';
-import { LayoutComponent } from '../../../layouts/types';
-import usePreset from '../../../composables/use-preset';
-import FilterSidebarDetail from '../../../views/private/components/filter-sidebar-detail';
-import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import api from '@/api';
+import usePreset from '@/composables/use-preset';
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '../../../views/private/components/search-input';
-import marked from 'marked';
+import SearchInput from '@/views/private/components/search-input';
 import FolderPicker from '../components/folder-picker.vue';
-import emitter, { Events } from '../../../events';
-import router from '../../../router';
-import Vue from 'vue';
-import { useNotificationsStore, useUserStore, usePermissionsStore } from '../../../stores';
+import emitter, { Events } from '@/events';
+import { useRouter } from 'vue-router';
+import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
-import useFolders from '../composables/use-folders';
-import useEventListener from '../../../composables/use-event-listener';
-import uploadFiles from '../../../utils/upload-files';
-import { unexpectedError } from '../../../utils/unexpected-error';
-import DrawerBatch from '../../../views/private/components/drawer-batch';
-import { useCollection } from '../../../composables/use-collection';
+import useFolders, { Folder } from '../composables/use-folders';
+import useEventListener from '@/composables/use-event-listener';
+import { useLayout } from '@/composables/use-layout';
+import uploadFiles from '@/utils/upload-files';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
 };
 
 export default defineComponent({
-	name: 'files-collection',
+	name: 'FilesCollection',
 	components: {
 		FilesNavigation,
 		FilterSidebarDetail,
@@ -201,8 +188,8 @@ export default defineComponent({
 		DrawerBatch,
 	},
 	props: {
-		queryFilters: {
-			type: Object as PropType<Record<string, string>>,
+		folder: {
+			type: String,
 			default: null,
 		},
 		special: {
@@ -211,19 +198,18 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const notificationsStore = useNotificationsStore();
 		const permissionsStore = usePermissionsStore();
 		const { folders } = useFolders();
-		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
-
-		const { info: currentCollection } = useCollection(ref('directus_files'));
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
-			ref('directus_files')
-		);
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -231,7 +217,6 @@ export default defineComponent({
 
 		const filtersWithFolderAndType = computed(() => {
 			const filtersParsed: any[] = [
-				...filters.value,
 				{
 					locked: true,
 					field: 'type',
@@ -241,15 +226,13 @@ export default defineComponent({
 			];
 
 			if (props.special === null) {
-				if (Object.keys(props.queryFilters).length > 0) {
-					for (const [field, value] of Object.entries(props.queryFilters)) {
-						filtersParsed.push({
-							locked: true,
-							operator: 'eq',
-							field,
-							value,
-						});
-					}
+				if (props.folder !== null) {
+					filtersParsed.push({
+						locked: true,
+						operator: 'eq',
+						field: 'folder',
+						value: props.folder,
+					});
 				} else {
 					filtersParsed.push({
 						locked: true,
@@ -260,12 +243,12 @@ export default defineComponent({
 				}
 			}
 
-			if (props.special === 'mine' && userStore.state.currentUser) {
+			if (props.special === 'mine' && userStore.currentUser) {
 				filtersParsed.push({
 					locked: true,
 					operator: 'eq',
 					field: 'uploaded_by',
-					value: userStore.state.currentUser.id,
+					value: userStore.currentUser.id,
 				});
 			}
 
@@ -280,6 +263,30 @@ export default defineComponent({
 
 			return filtersParsed;
 		});
+
+		const layoutFilters = computed<any[]>({
+			get() {
+				return [...filters.value, ...filtersWithFolderAndType.value];
+			},
+			set(newFilters) {
+				filters.value = newFilters;
+			},
+		});
+
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_files',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters: layoutFilters,
+				searchQuery,
+				resetPreset,
+				selectMode: false,
+				readonly: false,
+			})
+		);
 
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
@@ -296,17 +303,16 @@ export default defineComponent({
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
 
 		return {
+			t,
 			breadcrumb,
 			title,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
 			filtersWithFolderAndType,
 			searchQuery,
-			marked,
 			moveToDialogActive,
 			moveToFolder,
 			moving,
@@ -350,7 +356,7 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutRef.value?.refresh?.();
+					await layoutState.value.refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;
@@ -365,33 +371,33 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const title = computed(() => {
 				if (props.special === 'all') {
-					return i18n.t('all_files');
+					return t('all_files');
 				}
 
 				if (props.special === 'mine') {
-					return i18n.t('my_files');
+					return t('my_files');
 				}
 
 				if (props.special === 'recent') {
-					return i18n.t('recent_files');
+					return t('recent_files');
 				}
 
-				if (props.queryFilters?.folder) {
-					const folder = folders.value?.find((folder) => folder.id === props.queryFilters.folder);
+				if (props.folder) {
+					const folder = folders.value?.find((folder: Folder) => folder.id === props.folder);
 
 					if (folder) {
 						return folder.name;
 					}
 				}
 
-				return i18n.t('file_library');
+				return t('file_library');
 			});
 
 			const breadcrumb = computed(() => {
-				if (title.value !== i18n.t('file_library')) {
+				if (title.value !== t('file_library')) {
 					return [
 						{
-							name: i18n.t('file_library'),
+							name: t('file_library'),
 							to: `/files`,
 						},
 					];
@@ -412,18 +418,22 @@ export default defineComponent({
 
 			async function moveToFolder() {
 				moving.value = true;
+
 				try {
-					await api.patch(`/files/${selection.value}`, {
-						folder: selectedFolder.value,
+					await api.patch(`/files`, {
+						keys: selection.value,
+						data: {
+							folder: selectedFolder.value,
+						},
 					});
 
 					selection.value = [];
 
 					if (selectedFolder.value) {
-						router.push(`/files?folder=${selectedFolder.value}`);
+						router.push(`/files/folders/${selectedFolder.value}`);
 					}
 
-					await Vue.nextTick();
+					await nextTick();
 					await refresh();
 				} catch (err) {
 					unexpectedError(err);
@@ -435,7 +445,7 @@ export default defineComponent({
 		}
 
 		function refresh() {
-			layoutRef.value?.refresh();
+			layoutState.value.refresh();
 		}
 
 		function clearFilters() {
@@ -445,40 +455,40 @@ export default defineComponent({
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const updatePermissions = permissionsStore.state.permissions.find(
+				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
 				);
 				return !!updatePermissions;
 			});
 
 			const batchDeleteAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const deletePermissions = permissionsStore.state.permissions.find(
+				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
 				);
 				return !!deletePermissions;
 			});
 
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
 				);
 				return !!createPermissions;
 			});
 
 			const createFolderAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
 				);
 				return !!createPermissions;
@@ -503,7 +513,7 @@ export default defineComponent({
 				showDropEffect.value = true;
 
 				dragNotificationID = notificationsStore.add({
-					title: i18n.t('drop_to_upload'),
+					title: t('drop_to_upload'),
 					icon: 'cloud_upload',
 					type: 'info',
 					persist: true,
@@ -578,10 +588,14 @@ export default defineComponent({
 				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
-					title: i18n.tc('upload_file_indeterminate', files.length, {
-						done: 0,
-						total: files.length,
-					}),
+					title: t(
+						'upload_files_indeterminate',
+						{
+							done: 0,
+							total: files.length,
+						},
+						files.length
+					),
 					type: 'info',
 					persist: true,
 					closeable: false,
@@ -589,9 +603,9 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, {
-					preset: props.queryFilters?.folder
+					preset: props.folder
 						? {
-								folder: props.queryFilters.folder,
+								folder: props.folder,
 						  }
 						: {},
 					onProgressChange: (progress) => {
@@ -601,10 +615,14 @@ export default defineComponent({
 						const done = progress.filter((p) => p === 100).length;
 
 						notificationsStore.update(fileUploadNotificationID, {
-							title: i18n.tc('upload_file_indeterminate', files.length, {
-								done,
-								total,
-							}),
+							title: t(
+								'upload_files_indeterminate',
+								{
+									done,
+									total,
+								},
+								files.length
+							),
 							loading: false,
 							progress: percentageDone,
 						});
@@ -621,23 +639,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .folder {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 
@@ -688,11 +706,11 @@ export default defineComponent({
 }
 
 .dragging {
-	::v-deep * {
+	:deep(*) {
 		pointer-events: none;
 	}
 
-	::v-deep [data-dropzone] {
+	:deep([data-dropzone]) {
 		pointer-events: all;
 	}
 }

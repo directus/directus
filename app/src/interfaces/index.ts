@@ -1,12 +1,9 @@
-import { ref, Ref } from '@vue/composition-api';
+import { shallowRef, Ref } from 'vue';
 import { InterfaceConfig } from './types';
 
-let interfaces: Ref<InterfaceConfig[]>;
+const interfacesRaw: Ref<InterfaceConfig[]> = shallowRef([]);
+const interfaces: Ref<InterfaceConfig[]> = shallowRef([]);
 
-export function getInterfaces() {
-	if (!interfaces) {
-		interfaces = ref([]);
-	}
-
-	return interfaces;
+export function getInterfaces(): { interfaces: Ref<InterfaceConfig[]>; interfacesRaw: Ref<InterfaceConfig[]> } {
+	return { interfaces, interfacesRaw };
 }

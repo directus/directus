@@ -1,24 +1,24 @@
 import { defineInterface } from '../define';
 import InterfaceFile from './file.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'file',
-	name: i18n.t('interfaces.file.file'),
-	description: i18n.t('interfaces.file.description'),
+	name: '$t:interfaces.file.file',
+	description: '$t:interfaces.file.description',
 	icon: 'note_add',
 	component: InterfaceFile,
 	types: ['uuid'],
-	localTypes: ['file'],
-	relationship: 'm2o',
+	groups: ['file'],
+	relational: true,
 	options: [
 		{
 			field: 'folder',
-			name: i18n.t('interfaces.folder.folder'),
+			name: '$t:interfaces.folder.folder',
 			type: 'uuid',
 			meta: {
 				width: 'full',
-				interface: 'folder',
-				note: i18n.t('interfaces.folder.field_hint'),
+				interface: 'system-folder',
+				note: '$t:interfaces.system-folder.field_hint',
 				options: {
 					defaultLabel: 'system',
 				},
@@ -29,4 +29,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['file'],
-}));
+});

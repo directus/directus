@@ -1,0 +1,3 @@
+files:
+  - source: /app/src/lang/translations/en-US.yaml
+    translation: /app/src/lang/translations/%locale%.yaml
