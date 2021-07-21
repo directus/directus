@@ -428,6 +428,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
+  system-folder:
+    folder: フォルダ
   tags:
     tags: タグ
   translations:

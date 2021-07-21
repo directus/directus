@@ -972,6 +972,8 @@ interfaces:
     one-to-many: One to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบตาราง
+  system-folder:
+    folder: โฟลเดอร์
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
     description: เลือกได้ 1 จากหลายตัวเลือก

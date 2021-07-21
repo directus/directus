@@ -864,6 +864,8 @@ interfaces:
     interface: Gränssnitt
   select-dropdown-m2o:
     display_template: Visningsmall
+  system-folder:
+    folder: Mapp
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage

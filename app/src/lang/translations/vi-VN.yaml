@@ -606,6 +606,8 @@ interfaces:
     interface: Giao diện
   select-dropdown-m2o:
     display_template: Mẫu hiển thị
+  system-folder:
+    folder: Thư mục
   slider:
     slider: Thanh trượt
   tags:

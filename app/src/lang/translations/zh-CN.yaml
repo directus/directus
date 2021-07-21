@@ -943,6 +943,8 @@ interfaces:
     one-to-many: 一对多
     description: 选择多个相关项目
     no_collection: 找不到collection
+  system-folder:
+    folder: 文件夹
   select-radio:
     radio-buttons: 单选按钮
     description: 选择多项选择
