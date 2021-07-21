@@ -63,7 +63,7 @@
 		"stylelint-scss": "3.20.1",
 		"supertest": "6.1.4",
 		"tedious": "11.2.0",
-		"ts-jest": "27.0.3",
+		"ts-jest": "27.0.4",
 		"ts-node": "10.1.0"
 	},
 	"simple-git-hooks": {
