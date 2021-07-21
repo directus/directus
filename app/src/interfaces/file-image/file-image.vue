@@ -80,7 +80,7 @@ export default defineComponent({
 		},
 		folder: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
