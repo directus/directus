@@ -1,4 +1,4 @@
-# Custom API Endpoints <small></small>
+# Custom API Endpoints
 
 > Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the
 > platform.

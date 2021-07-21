@@ -1,4 +1,4 @@
-# Email Templates <small></small>
+# Email Template
 
 > Templates can be used to add custom templates for your emails, or to override the system emails used for things like
 > resetting a password or inviting a user.

@@ -1,4 +1,4 @@
-# Interfaces <small></small>
+# Interfaces
 
 > Interfaces determine how you view or interact with a field. In most cases, they offer some sort of input tailored to
 > managing data of a specific type, but can also be used exclusively for presentation.

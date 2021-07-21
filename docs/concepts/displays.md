@@ -1,4 +1,4 @@
-# Displays <small></small>
+# Displays
 
 > Displays are the smaller, read-only counterpart to Interfaces, defining how a field's data will be displayed inline
 > throughout the App.

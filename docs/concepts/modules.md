@@ -1,4 +1,4 @@
-# Modules <small></small>
+# Modules
 
 > Modules are the highest and broadest level of organization within the App. There are several modules included
 > out-of-the-box, however you can also add your own.

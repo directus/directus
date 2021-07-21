@@ -1,4 +1,4 @@
-# Custom Modules <small></small>
+# Custom Modules
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
 > platform. [Learn more about Modules](/concepts/modules/).

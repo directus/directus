@@ -1,4 +1,4 @@
-# Custom Interfaces <small></small>
+# Custom Interfaces
 
 > Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page.
 > [Learn more about Interfaces](/concepts/interfaces/).

@@ -1,4 +1,4 @@
-# Custom Layouts <small></small>
+# Custom Layouts
 
 > Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages.
 > [Learn more about Layouts](/guides/layouts/).

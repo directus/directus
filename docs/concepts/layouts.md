@@ -1,4 +1,4 @@
-# Layouts <small></small>
+# Layouts
 
 > Layouts determine how you view or interact with a Collection's Items. In most cases, they offer a way to browse items
 > based on a specific type of data, but can also be used to interact with data.

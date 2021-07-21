@@ -1,4 +1,4 @@
-# Custom API Hooks <small></small>
+# Custom API Hooks
 
 > Custom API Hooks allow running custom logic when a specified event occurs within your project. They can be registered
 > as either "blocking" or immediate.
