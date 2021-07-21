@@ -7,8 +7,9 @@
 
 <script lang="ts">
 import { Field, Relation, Collection } from '@/types';
-import { defineComponent, PropType } from '@vue/composition-api';
-import i18n from '@/lang';
+import { defineComponent, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 export default defineComponent({
 	props: {
 		collection: {
@@ -37,22 +38,25 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const junctionRelation = props.relations.find(
-			(relation) => relation.one_collection === props.collection && relation.one_field === props.fieldData.field
+			(relation) =>
+				relation.related_collection === props.collection && relation.meta?.one_field === props.fieldData.field
 		);
 
 		const manyCollection = junctionRelation
 			? props.relations.find(
 					(relation) =>
-						relation.many_collection === junctionRelation.many_collection &&
-						junctionRelation.many_field === relation.junction_field
-			  )?.one_collection
+						relation.collection === junctionRelation.collection &&
+						junctionRelation.field === relation.meta?.junction_field
+			  )?.related_collection
 			: null;
 
 		const options = [
 			{
 				field: 'referencingField',
-				name: i18n.t('interfaces.tags-m2m.reference-field'),
+				name: t('interfaces.tags-m2m.reference-field'),
 				type: 'string',
 				collection: manyCollection,
 				required: true,
@@ -63,7 +67,7 @@ export default defineComponent({
 			},
 			{
 				field: 'displayTemplate',
-				name: i18n.t('display'),
+				name: t('display'),
 				type: 'string',
 				collection: manyCollection,
 				meta: {
@@ -73,25 +77,25 @@ export default defineComponent({
 			},
 			{
 				field: 'placeholder',
-				name: i18n.t('placeholder'),
+				name: t('placeholder'),
 				type: 'string',
 				meta: {
 					width: 'full',
 					interface: 'text-input',
 					options: {
-						placeholder: i18n.t('enter_a_placeholder'),
+						placeholder: t('enter_a_placeholder'),
 					},
 				},
 			},
 			{
 				field: 'allowCustom',
-				name: i18n.t('interfaces.dropdown.allow_other'),
+				name: t('interfaces.dropdown.allow_other'),
 				type: 'boolean',
 				meta: {
 					width: 'half',
 					interface: 'toggle',
 					options: {
-						label: i18n.t('interfaces.dropdown.allow_other_label'),
+						label: t('interfaces.dropdown.allow_other_label'),
 					},
 				},
 				schema: {
@@ -100,7 +104,7 @@ export default defineComponent({
 			},
 			{
 				field: 'closeOnSelect',
-				name: i18n.t('interfaces.tags-m2m.close-on-select'),
+				name: t('interfaces.tags-m2m.close-on-select'),
 				type: 'boolean',
 				meta: {
 					width: 'half',
@@ -112,13 +116,13 @@ export default defineComponent({
 			},
 			{
 				field: 'alphabetize',
-				name: i18n.t('interfaces.tags.alphabetize'),
+				name: t('interfaces.tags.alphabetize'),
 				type: 'boolean',
 				meta: {
 					width: 'half-left',
 					interface: 'toggle',
 					options: {
-						label: i18n.t('interfaces.tags.alphabetize_label'),
+						label: t('interfaces.tags.alphabetize_label'),
 					},
 				},
 				schema: {
@@ -127,7 +131,7 @@ export default defineComponent({
 			},
 			{
 				field: 'iconLeft',
-				name: i18n.t('icon_left'),
+				name: t('icon_left'),
 				type: 'string',
 				meta: {
 					width: 'half',
@@ -136,7 +140,7 @@ export default defineComponent({
 			},
 			{
 				field: 'iconRight',
-				name: i18n.t('icon_right'),
+				name: t('icon_right'),
 				type: 'string',
 				meta: {
 					width: 'half',

@@ -1,6 +1,6 @@
 <template>
 	<v-notice type="warning" v-if="!junction || !relation || !junction.junction_field">
-		{{ $t('relationship_not_setup') }}
+		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div class="tags-m2m" v-else>
 		<v-menu
@@ -30,7 +30,7 @@
 			<v-list>
 				<v-list-item v-if="allowCustom && localInput" @click="addItemFromCurrentInput">
 					<v-list-item-content class="add-custom">
-						{{ $t('interfaces.tags-m2m.new-item-with', { argument: localInput }) }}
+						{{ t('interfaces.tags-m2m.new-item-with', { argument: localInput }) }}
 					</v-list-item-content>
 				</v-list-item>
 				<template v-if="suggestedItems.length">
@@ -47,7 +47,7 @@
 				</template>
 				<template v-else-if="!allowCustom">
 					<v-list-item class="no-items">
-						{{ $t('no_items') }}
+						{{ t('no_items') }}
 					</v-list-item>
 				</template>
 			</v-list>
@@ -73,14 +73,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, toRefs, watch, computed } from '@vue/composition-api';
-import useActions from '../many-to-many/use-actions';
-import useRelation from '../many-to-many/use-relation';
-import usePreview from '../many-to-many/use-preview';
-import useEdit from '../many-to-many/use-edit';
-import useSelection from '../many-to-many/use-selection';
+import { defineComponent, ref, PropType, toRefs, watch, computed } from 'vue';
+import useActions from '../list-m2m/use-actions';
+import useRelation from '../list-m2m/use-relation';
+import usePreview from '../list-m2m/use-preview';
+import useEdit from '../list-m2m/use-edit';
+import useSelection from '../list-m2m/use-selection';
 import api from '@/api';
 import { debounce } from 'lodash';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -137,7 +138,9 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const { value, collection, field, referencingField } = toRefs(props);
 		const localInput = ref<string>('');
 		const suggestedItems = ref<object[]>([]);
@@ -161,7 +164,6 @@ export default defineComponent({
 		const { items } = usePreview(
 			value,
 			fields,
-			referencingField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -207,6 +209,7 @@ export default defineComponent({
 			addItemFromCurrentInput,
 			addItemFromSuggestion,
 			deleteItem,
+			t,
 		};
 
 		function emitter(newVal: any[] | null) {
@@ -373,7 +376,7 @@ export default defineComponent({
 
 		&:hover {
 			--v-chip-close-color: var(--white);
-			::v-deep .chip-content .close-outline .close:hover {
+			:deep(.chip-content .close-outline .close:hover) {
 				--v-icon-color: var(--danger);
 			}
 		}
