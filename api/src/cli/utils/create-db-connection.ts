@@ -1,4 +1,4 @@
-import knex, { Config } from 'knex';
+import { knex, Knex } from 'knex';
 import path from 'path';
 
 export type Credentials = {
@@ -9,12 +9,13 @@ export type Credentials = {
 	user?: string;
 	password?: string;
 	ssl?: boolean;
+	options__encrypt?: boolean;
 };
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
 	credentials: Credentials
-) {
-	let connection: Config['connection'] = {};
+): Knex<any, unknown[]> {
+	let connection: Knex.Config['connection'] = {};
 
 	if (client === 'sqlite3') {
 		const { filename } = credentials;
@@ -23,31 +24,31 @@ export default function createDBConnection(
 			filename: filename as string,
 		};
 	} else {
-		if (client !== 'pg') {
-			const { host, port, database, user, password } = credentials as Credentials;
+		const { host, port, database, user, password } = credentials as Credentials;
 
-			connection = {
-				host: host,
-				port: port,
-				database: database,
-				user: user,
-				password: password,
-			};
-		} else {
-			const { host, port, database, user, password, ssl } = credentials as Credentials;
+		connection = {
+			host: host,
+			port: Number(port),
+			database: database,
+			user: user,
+			password: password,
+		};
 
-			connection = {
-				host: host,
-				port: port,
-				database: database,
-				user: user,
-				password: password,
-				ssl: ssl,
+		if (client === 'pg') {
+			const { ssl } = credentials as Credentials;
+			connection['ssl'] = ssl;
+		}
+
+		if (client === 'mssql') {
+			const { options__encrypt } = credentials as Credentials;
+
+			(connection as Knex.MsSqlConnectionConfig)['options'] = {
+				encrypt: options__encrypt,
 			};
 		}
 	}
 
-	const knexConfig: Config = {
+	const knexConfig: Knex.Config = {
 		client: client,
 		connection: connection,
 		seeds: {

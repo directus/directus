@@ -1,12 +1,9 @@
-import { ref, Ref } from '@vue/composition-api';
+import { shallowRef, Ref } from 'vue';
 import { DisplayConfig } from './types';
 
-let displays: Ref<DisplayConfig[]>;
+const displaysRaw: Ref<DisplayConfig[]> = shallowRef([]);
+const displays: Ref<DisplayConfig[]> = shallowRef([]);
 
-export function getDisplays() {
-	if (!displays) {
-		displays = ref([]);
-	}
-
-	return displays;
+export function getDisplays(): { displays: Ref<DisplayConfig[]>; displaysRaw: Ref<DisplayConfig[]> } {
+	return { displays, displaysRaw };
 }

@@ -1,7 +1,7 @@
-import { deepMap } from './deep-map';
 import { useUserStore } from '@/stores';
+import { deepMap } from './deep-map';
 
-export function parseFilter(filter: Record<string, any>) {
+export function parseFilter(filter: Record<string, any>): Record<string, any> {
 	const userStore = useUserStore();
 
 	return deepMap(filter, (val: any, key: string) => {
@@ -14,8 +14,8 @@ export function parseFilter(filter: Record<string, any>) {
 		}
 
 		if (val === '$NOW') return new Date();
-		if (val === '$CURRENT_USER') return userStore.state?.currentUser?.id || null;
-		if (val === '$CURRENT_ROLE') return userStore.state?.currentUser?.role?.id || null;
+		if (val === '$CURRENT_USER') return userStore?.currentUser?.id || null;
+		if (val === '$CURRENT_ROLE') return userStore?.currentUser?.role?.id || null;
 
 		return val;
 	});

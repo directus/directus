@@ -1,11 +1,12 @@
-import { Filter } from '@/types/';
+import { Filter } from '@directus/shared/types';
 import { clone } from 'lodash';
 
-export default function filtersToQuery(filters: readonly Filter[]) {
+export default function filtersToQuery(filters: readonly Filter[]): { filter: Record<string, any> } {
 	const filterList: Record<string, any>[] = [];
 
 	for (const filter of filters) {
-		let { field, operator, value } = clone(filter) as any;
+		const { field, operator } = clone(filter) as any;
+		let { value } = clone(filter) as any;
 
 		if (['empty', 'nempty', 'null', 'nnull'].includes(operator)) {
 			value = true;

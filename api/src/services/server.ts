@@ -1,20 +1,21 @@
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import Knex from 'knex';
-import database from '../database';
+import { Knex } from 'knex';
+import { merge } from 'lodash';
+import macosRelease from 'macos-release';
+import { nanoid } from 'nanoid';
 import os from 'os';
+import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
-import macosRelease from 'macos-release';
-import { SettingsService } from './settings';
-import { transporter } from '../mail';
+import { getCache } from '../cache';
+import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
-import { performance } from 'perf_hooks';
-import cache from '../cache';
+import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { nanoid } from 'nanoid';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { toArray } from '../utils/to-array';
-import { merge } from 'lodash';
+import getMailer from '../mailer';
+import { SettingsService } from './settings';
 
 export class ServerService {
 	knex: Knex;
@@ -23,13 +24,13 @@ export class ServerService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
-	async serverInfo() {
+	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 
 		const projectInfo = await this.settingsService.readSingleton({
@@ -69,7 +70,7 @@ export class ServerService {
 		return info;
 	}
 
-	async health() {
+	async health(): Promise<Record<string, any>> {
 		const checkID = nanoid(5);
 
 		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype
@@ -88,6 +89,7 @@ export class ServerService {
 			observedUnit?: string;
 			status: 'ok' | 'warn' | 'error';
 			output?: any;
+			threshold?: number;
 		};
 
 		const data: HealthData = {
@@ -102,11 +104,15 @@ export class ServerService {
 		for (const [service, healthData] of Object.entries(data.checks)) {
 			for (const healthCheck of healthData) {
 				if (healthCheck.status === 'warn' && data.status === 'ok') {
+					logger.warn(
+						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
+					);
 					data.status = 'warn';
 					continue;
 				}
 
 				if (healthCheck.status === 'error' && (data.status === 'ok' || data.status === 'warn')) {
+					logger.error(healthCheck.output, '%s in ERROR state', service);
 					data.status = 'error';
 					break;
 				}
@@ -123,6 +129,7 @@ export class ServerService {
 		}
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+			const database = getDatabase();
 			const client = env.DB_CLIENT;
 
 			const checks: Record<string, HealthCheck[]> = {};
@@ -135,27 +142,27 @@ export class ServerService {
 					componentType: 'datastore',
 					observedUnit: 'ms',
 					observedValue: 0,
+					threshold: 150,
 				},
 			];
 
 			const startTime = performance.now();
 
-			try {
-				await database.raw('SELECT 1');
+			if (await hasDatabaseConnection()) {
 				checks[`${client}:responseTime`][0].status = 'ok';
-			} catch (err) {
+			} else {
 				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = err;
-			} finally {
-				const endTime = performance.now();
-				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+			}
 
-				if (
-					checks[`${client}:responseTime`][0].observedValue! > 50 &&
-					checks[`${client}:responseTime`][0].status !== 'error'
-				) {
-					checks[`${client}:responseTime`][0].status = 'warn';
-				}
+			const endTime = performance.now();
+			checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+
+			if (
+				checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
+				checks[`${client}:responseTime`][0].status !== 'error'
+			) {
+				checks[`${client}:responseTime`][0].status = 'warn';
 			}
 
 			checks[`${client}:connectionsAvailable`] = [
@@ -182,6 +189,8 @@ export class ServerService {
 				return {};
 			}
 
+			const { cache } = getCache();
+
 			const checks: Record<string, HealthCheck[]> = {
 				'cache:responseTime': [
 					{
@@ -189,6 +198,7 @@ export class ServerService {
 						componentType: 'cache',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 150,
 					},
 				],
 			};
@@ -205,7 +215,10 @@ export class ServerService {
 				const endTime = performance.now();
 				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
-				if (checks['cache:responseTime'][0].observedValue > 50 && checks['cache:responseTime'][0].status !== 'error') {
+				if (
+					checks['cache:responseTime'][0].observedValue > checks['cache:responseTime'][0].threshold! &&
+					checks['cache:responseTime'][0].status !== 'error'
+				) {
 					checks['cache:responseTime'][0].status = 'warn';
 				}
 			}
@@ -225,6 +238,7 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 150,
 					},
 				],
 			};
@@ -242,7 +256,7 @@ export class ServerService {
 				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > 50 &&
+					checks['rateLimiter:responseTime'][0].observedValue > checks['rateLimiter:responseTime'][0].threshold! &&
 					checks['rateLimiter:responseTime'][0].status !== 'error'
 				) {
 					checks['rateLimiter:responseTime'][0].status = 'warn';
@@ -264,6 +278,7 @@ export class ServerService {
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 750,
 					},
 				];
 
@@ -281,7 +296,8 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! > 500 &&
+						checks[`storage:${location}:responseTime`][0].observedValue! >
+							checks[`storage:${location}:responseTime`][0].threshold! &&
 						checks[`storage:${location}:responseTime`][0].status !== 'error'
 					) {
 						checks[`storage:${location}:responseTime`][0].status = 'warn';
@@ -302,8 +318,10 @@ export class ServerService {
 				],
 			};
 
+			const mailer = getMailer();
+
 			try {
-				await transporter?.verify();
+				await mailer.verify();
 			} catch (err) {
 				checks['email:connection'][0].status = 'error';
 				checks['email:connection'][0].output = err;

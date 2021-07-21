@@ -1,14 +1,16 @@
-import { drivers } from '../drivers';
-import { Credentials } from '../create-db-connection';
-import { v4 as uuidv4 } from 'uuid';
-import { nanoid } from 'nanoid';
-import { Liquid } from 'liquidjs';
 import fs from 'fs';
-import { promisify } from 'util';
+import { Liquid } from 'liquidjs';
+import { nanoid } from 'nanoid';
 import path from 'path';
+import { promisify } from 'util';
+import { v4 as uuidv4 } from 'uuid';
+import { Credentials } from '../create-db-connection';
+import { drivers } from '../drivers';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const fchmod = promisify(fs.fchmod);
+const open = promisify(fs.open);
 
 const liquidEngine = new Liquid({
 	extname: '.liquid',
@@ -21,7 +23,11 @@ const defaults = {
 	},
 };
 
-export default async function createEnv(client: keyof typeof drivers, credentials: Credentials, directory: string) {
+export default async function createEnv(
+	client: keyof typeof drivers,
+	credentials: Credentials,
+	directory: string
+): Promise<void> {
 	const config: Record<string, any> = {
 		...defaults,
 		database: {
@@ -46,4 +52,5 @@ export default async function createEnv(client: keyof typeof drivers, credential
 	const templateString = await readFile(path.join(__dirname, 'env-stub.liquid'), 'utf8');
 	const text = await liquidEngine.parseAndRender(templateString, configAsStrings);
 	await writeFile(path.join(directory, '.env'), text);
+	await fchmod(await open(path.join(directory, '.env'), 'r+'), 0o640);
 }

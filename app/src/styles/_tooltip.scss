@@ -12,6 +12,7 @@
 	max-width: 260px;
 	padding: 4px 8px;
 	color: var(--tooltip-foreground-color);
+	word-break: break-word;
 	background-color: var(--tooltip-background-color);
 	border-radius: 4px;
 	transition: opacity 200ms;

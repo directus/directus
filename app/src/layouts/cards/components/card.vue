@@ -1,39 +1,41 @@
 <template>
 	<div class="card" :class="{ loading, readonly }" @click="handleClick">
-		<div class="header" :class="{ selected: item && value.includes(item[itemKey]) }">
+		<div class="header" :class="{ selected: item && modelValue.includes(item[itemKey]) }">
 			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
 				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
 			</div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<p v-if="type" class="type type-title">{{ type }}</p>
+				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
 					<img
+						v-if="imageSource"
 						class="image"
 						loading="lazy"
-						v-if="imageSource"
 						:src="imageSource"
 						alt=""
 						role="presentation"
+						@error="imgError = true"
 					/>
-					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" />
+					<img v-else-if="svgSource" class="svg" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
 					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
 		<v-skeleton-loader v-if="loading" type="text" />
 		<template v-else>
-			<div class="title" v-if="$slots.title"><slot name="title" /></div>
-			<div class="subtitle" v-if="$slots.subtitle"><slot name="subtitle" /></div>
+			<div v-if="$slots.title" class="title"><slot name="title" /></div>
+			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import router from '@/router';
-import getRootPath from '@/utils/get-root-path';
+import { defineComponent, PropType, computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 type File = {
 	[key: string]: any;
@@ -64,7 +66,7 @@ export default defineComponent({
 			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: () => [],
 		},
@@ -85,11 +87,16 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
+		const router = useRouter();
+
+		const imgError = ref(false);
+
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image')) return null;
-			return props.file.type.split('/')[1];
+			if (!imgError.value && props.file.type.startsWith('image')) return null;
+			return readableMimeType(props.file.type, true);
 		});
 
 		const imageSource = computed(() => {
@@ -119,21 +126,21 @@ export default defineComponent({
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
-			return props.value.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
+			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick };
+		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError };
 
 		function toggleSelection() {
 			if (!props.item) return null;
 
-			if (props.value.includes(props.item[props.itemKey])) {
+			if (props.modelValue.includes(props.item[props.itemKey])) {
 				emit(
-					'input',
-					props.value.filter((key) => key !== props.item[props.itemKey])
+					'update:modelValue',
+					props.modelValue.filter((key) => key !== props.item[props.itemKey])
 				);
 			} else {
-				emit('input', [...props.value, props.item[props.itemKey]]);
+				emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
 			}
 		}
 
@@ -141,8 +148,7 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				router.push(props.to, () => {});
+				router.push(props.to);
 			}
 		}
 	},
@@ -185,6 +191,7 @@ export default defineComponent({
 		}
 
 		.svg {
+			position: absolute;
 			width: 50%;
 			height: 50%;
 			object-fit: contain;
@@ -274,14 +281,11 @@ export default defineComponent({
 	align-items: center;
 	width: 100%;
 	height: 20px;
+	margin-top: 4px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-.title {
-	margin-top: 4px;
 }
 
 .subtitle {

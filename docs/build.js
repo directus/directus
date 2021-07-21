@@ -1,47 +1,45 @@
-const fse = require('fs-extra');
 const path = require('path');
-const { promisify } = require('util');
-const copyfiles = promisify(require('copyfiles'));
-const rimraf = promisify(require('rimraf'));
+const fse = require('fs-extra');
 const dirTree = require('directory-tree');
-const yaml = require('js-yaml');
 
-async function build() {
-	console.log('Building docs...');
+// eslint-disable-next-line no-console
+console.log('Building docs...');
 
-	const start = Date.now();
+const tree = dirTree('.', {
+	extensions: /\.md$/,
+	exclude: /(node_modules|.vuepress|.vscode|dist)/,
+	normalizePath: true,
+});
 
-	const distPath = path.resolve(__dirname, './dist');
+const index = `export default ${generateIndex(tree.children)};`;
 
-	await rimraf(distPath);
+fse.ensureDirSync('dist');
+fse.writeFileSync('dist/index.js', index);
 
-	const tree = dirTree('.', { extensions: /\.md/, exclude: /(dist|node_modules)/ });
+// eslint-disable-next-line no-console
+console.log('Built docs');
 
-	await fse.ensureDir(distPath);
+function generateIndex(tree) {
+	const children = tree
+		.map((child) => {
+			if (child.type === 'file') {
+				const baseName = path.posix.basename(child.name, child.extension);
+				const basePath = path.posix.join(
+					path.posix.dirname(child.path),
+					path.posix.basename(child.path, child.extension)
+				);
 
-	await fse.writeJSON('./dist/index.json', tree);
+				return `{name:'${baseName}',path:'${basePath}',import:()=>import('../${child.path}?raw')}`;
+			} else if (child.type === 'directory') {
+				const children = generateIndex(child.children);
 
-	await copyfiles(['./**/*.md', distPath], { exclude: './node_modules/**/*.*' });
-	await copyfiles(['./assets/**/*.*', distPath], { exclude: './node_modules/**/*.*' });
+				if (children === '[]') return null;
+				return `{name:'${child.name}',path:'${child.path}',children:${children}}`;
+			} else {
+				return null;
+			}
+		})
+		.filter((child) => child !== null);
 
-	const yamlFiles = [];
-	const filesInRoot = await fse.readdir(__dirname);
-
-	for (const file of filesInRoot) {
-		if (file.endsWith('.yaml')) {
-			yamlFiles.push(file);
-		}
-	}
-
-	for (const yamlFile of yamlFiles) {
-		const yamlString = await fse.readFile(yamlFile, 'utf8');
-		await fse.writeJSON(
-			'./dist/' + yamlFile.replace('.yaml', '.json'),
-			yaml.safeLoad(yamlString)
-		);
-	}
-
-	console.log(`Built docs in ${Date.now() - start} ms`);
+	return `[${children.join(',')}]`;
 }
-
-build();

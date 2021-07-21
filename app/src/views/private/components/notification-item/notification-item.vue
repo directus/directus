@@ -1,8 +1,8 @@
 <template>
 	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
-		<div class="icon" v-if="loading || progress || icon">
-			<v-progress-circular indeterminate small v-if="loading" />
-			<v-progress-circular small v-else-if="progress" :value="progress" />
+		<div v-if="loading || progress || icon" class="icon">
+			<v-progress-circular v-if="loading" indeterminate small />
+			<v-progress-circular v-else-if="progress" small :value="progress" />
 			<v-icon v-else :name="icon" />
 		</div>
 
@@ -11,12 +11,12 @@
 			<p v-if="text" class="text selectable">{{ text }}</p>
 		</div>
 
-		<v-icon v-if="showClose" name="close" @click="close" class="close" />
+		<v-icon v-if="showClose" name="close" clickable class="close" @click="close" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({

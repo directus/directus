@@ -2,19 +2,26 @@
 	<div>
 		<v-notice type="info">
 			{{
-				$t('permissions_for_role', {
-					action: $t(permission.action).toLowerCase(),
-					role: role ? role.name : $t('public'),
+				t('permissions_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public'),
 				})
 			}}
 		</v-notice>
 
-		<interface-code v-model="permissions" language="json" type="json" />
+		<interface-input-code :value="permissions" language="json" type="json" @input="permissions = $event" />
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
 
@@ -28,23 +35,30 @@ export default defineComponent({
 			type: Object as PropType<Role>,
 			default: null,
 		},
+		appMinimal: {
+			type: Object as PropType<Partial<Permission>>,
+			default: undefined,
+		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
-		const _permission = useSync(props, 'permission', emit);
+		const { t } = useI18n();
+
+		const internalPermission = useSync(props, 'permission', emit);
 
 		const permissions = computed({
 			get() {
-				return _permission.value.permissions;
+				return internalPermission.value.permissions;
 			},
 			set(newPermissions: Record<string, any> | null) {
-				_permission.value = {
-					..._permission.value,
+				internalPermission.value = {
+					...internalPermission.value,
 					permissions: newPermissions,
 				};
 			},
 		});
 
-		return { permissions };
+		return { t, permissions };
 	},
 });
 </script>
@@ -52,5 +66,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.app-minimal {
+	.v-divider {
+		margin: 24px 0;
+	}
+
+	.v-notice {
+		margin-bottom: 24px;
+	}
+
+	.app-minimal-preview {
+		padding: 16px;
+		font-family: var(--family-monospace);
+		background-color: var(--background-subdued);
+		border-radius: var(--border-radius);
+	}
 }
 </style>

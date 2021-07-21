@@ -1,7 +1,7 @@
-import { ref, computed } from '@vue/composition-api';
-import prettyMS from 'pretty-ms';
-import bytes from 'bytes';
 import api from '@/api';
+import bytes from 'bytes';
+import prettyMS from 'pretty-ms';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 
 type ServerInfo = {
 	directus: {
@@ -19,7 +19,28 @@ type ServerInfo = {
 	};
 };
 
-export function useProjectInfo() {
+type UsableProjectInfo = {
+	info: Ref<ServerInfo | undefined>;
+	parsedInfo: ComputedRef<{
+		directus: {
+			version: string;
+		};
+		node: {
+			version: string;
+			uptime: string;
+		};
+		os: {
+			type: string;
+			version: string;
+			uptime: string;
+			totalmem: string;
+		};
+	} | null>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+};
+
+export function useProjectInfo(): UsableProjectInfo {
 	const info = ref<ServerInfo>();
 	const loading = ref(false);
 	const error = ref<any>();

@@ -1,0 +1,69 @@
+---
+edit_field: Талбарыг засах
+item_revision: Хяналт
+duplicate_field: Талбарыг хувилах
+half_width: Тал өргөн
+full_width: Бүтэн өргөн
+fill_width: Өргөн дүүрэн
+field_name_translations: Талбарын нэрний орчуулга
+enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү
+add_field: Талбар нэмэх
+role_name: Үүргийн нэр
+db_only_click_to_configure: 'Зөвхөн дата баазад хамаатай: Дарж өөрчилнө үү '
+show_archived_items: Архивласан зүйлсийг харах
+edited: Зассан утга
+required: Зайлшгүй
+required_for_app_access: Апп холбоход шаардлагатай
+requires_value: Утга оруулах шаардлагатай
+create_preset: Тохируулга үүсгэх
+create_role: Үүрэг үүсгэх
+create_user: Хэрэглэгч үүсгэх
+create_webhook: Webhook үүсгэх
+invite_users: Хэрэглэгч урих
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+invite: Урих
+email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
+emails: Имэйл
+connection_excellent: Холболт маш сайн
+connection_good: Холболт сайн
+connection_fair: Холболт дунд зэрэг
+connection_poor: Холболт муу
+primary: Үндсэн
+rename_folder: Хавтасны нэр өөрчлөх
+delete_folder: Хавтас устгах
+prefix: Угтвар
+suffix: Дагавар
+reset_bookmark: Тэмдэглэгээг хуучин хэвэнд оруулах
+rename_bookmark: Тэмдэглэгээний нэрийг өөрчлөх
+update_bookmark: Тэмдэглээг шинэлэх
+delete_bookmark: Тэмдэглэгээг устгах
+delete_bookmark_copy: >-
+  "{bookmark}" тэмдэглэгээг устгахдаа итгэлтэй байна уу? Устгасан бол сэргээх боломжгүй.
+logoutReason:
+  SIGN_OUT: Сайтаас гарсан
+  SESSION_EXPIRED: Холболтын хугацаа дууссан
+public: Нийтийн
+public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
+not_allowed: Зөвшөөрөгдөөгүй
+directus_version: Directus хувилбар
+node_version: Node хувилбар
+node_uptime: Node ажиллаж буй хугацаа
+os_type: Үйлдлийн системийн төрөл
+os_version: Үйлдлийн системийн хувилбар
+os_uptime: Үйлдлийн системийн ажиллаж буй хугацаа
+os_totalmem: Үйлдлийн системийн санах ой
+archive: Архивлах
+archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
+archive_confirm_count: >-
+  Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} 
+  зүйлсийг архивлахдаа итгэлтэй байна уу?
+reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
+reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
+fields:
+  directus_fields:
+    translation: Талбарын нэрний орчуулга
+  directus_roles:
+    name: Үүргийн нэр
+interfaces:
+  presentation-links:
+    primary: Үндсэн

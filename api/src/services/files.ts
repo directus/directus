@@ -1,31 +1,48 @@
-import { ItemsService } from './items';
-import storage from '../storage';
-import sharp from 'sharp';
-import { parse as parseICC } from 'icc';
+import formatTitle from '@directus/format-title';
+import axios, { AxiosResponse } from 'axios';
 import parseEXIF from 'exif-reader';
-import parseIPTC from '../utils/parse-iptc';
-import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import { parse as parseICC } from 'icc';
 import { clone } from 'lodash';
-import cache from '../cache';
-import { ForbiddenException } from '../exceptions';
-import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
+import sharp from 'sharp';
+import url from 'url';
+import { emitAsyncSafe } from '../emitter';
 import env from '../env';
+import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
+import logger from '../logger';
+import storage from '../storage';
+import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import parseIPTC from '../utils/parse-iptc';
+import { toArray } from '../utils/to-array';
+import { ItemsService, MutationOptions } from './items';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
 
-	async upload(
+	/**
+	 * Upload a single new file to the configured storage adapter
+	 */
+	async uploadOne(
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey
-	) {
+	): Promise<PrimaryKey> {
 		const payload = clone(data);
 
+		if ('folder' in payload === false) {
+			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
+
+			if (settings?.storage_default_folder) {
+				payload.folder = settings.storage_default_folder;
+			}
+		}
+
 		if (primaryKey !== undefined) {
+			await this.updateOne(primaryKey, payload, { emitEvents: false });
+
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.disk(payload.storage);
@@ -33,50 +50,74 @@ export class FilesService extends ItemsService {
 			for await (const file of disk.flatList(String(primaryKey))) {
 				await disk.delete(file.path);
 			}
-
-			await this.update(payload, primaryKey);
 		} else {
-			primaryKey = await this.create(payload);
+			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);
+		const fileExtension =
+			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
-		payload.filename_disk = primaryKey + '.' + fileExtension;
+		payload.filename_disk = primaryKey + (fileExtension || '');
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
 		}
 
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
-			const pipeline = sharp();
+		try {
+			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+		} catch (err) {
+			logger.warn(`Couldn't save file ${payload.filename_disk}`);
+			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
+		}
 
-			pipeline.metadata().then((meta) => {
+		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		payload.filesize = size;
+
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
+			const meta = await sharp(buffer.content, {}).metadata();
+
+			if (meta.orientation && meta.orientation >= 5) {
+				payload.height = meta.width;
+				payload.width = meta.height;
+			} else {
 				payload.width = meta.width;
 				payload.height = meta.height;
-				payload.filesize = meta.size;
-				payload.metadata = {};
+			}
 
-				if (meta.icc) {
+			payload.filesize = meta.size;
+			payload.metadata = {};
+
+			if (meta.icc) {
+				try {
 					payload.metadata.icc = parseICC(meta.icc);
+				} catch (err) {
+					logger.warn(`Couldn't extract ICC information from file`);
+					logger.warn(err);
 				}
+			}
 
-				if (meta.exif) {
+			if (meta.exif) {
+				try {
 					payload.metadata.exif = parseEXIF(meta.exif);
+				} catch (err) {
+					logger.warn(`Couldn't extract EXIF information from file`);
+					logger.warn(err);
 				}
+			}
 
-				if (meta.iptc) {
+			if (meta.iptc) {
+				try {
 					payload.metadata.iptc = parseIPTC(meta.iptc);
-
-					payload.title = payload.title || payload.metadata.iptc.headline;
+					payload.title = payload.metadata.iptc.headline || payload.title;
 					payload.description = payload.description || payload.metadata.iptc.caption;
+					payload.tags = payload.metadata.iptc.keywords;
+				} catch (err) {
+					logger.warn(`Couldn't extract IPTC information from file`);
+					logger.warn(err);
 				}
-			});
-
-			await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-		} else {
-			await storage.disk(data.storage).put(payload.filename_disk, stream);
-			const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
-			payload.filesize = size;
+			}
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -85,28 +126,86 @@ export class FilesService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 		});
-		await sudoService.update(payload, primaryKey);
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
+
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
 		}
+
+		emitAsyncSafe(`files.upload`, {
+			event: `files.upload`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: primaryKey,
+			action: 'upload',
+			payload,
+			schema: this.schema,
+			database: this.knex,
+		});
 
 		return primaryKey;
 	}
 
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = toArray(key);
-		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+	/**
+	 * Import a single file from an external URL
+	 */
+	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+		const fileCreatePermissions = this.schema.permissions.find(
+			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
+		);
+
+		if (this.accountability?.admin !== true && !fileCreatePermissions) {
+			throw new ForbiddenException();
+		}
+
+		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
+
+		try {
+			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+				responseType: 'stream',
+			});
+		} catch (err) {
+			logger.warn(`Couldn't fetch file from url "${importURL}"`);
+			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
+		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+		const filename = path.basename(parsedURL.pathname as string);
+
+		const payload = {
+			filename_download: filename,
+			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			type: fileResponse.headers['content-type'],
+			title: formatTitle(filename),
+			...(body || {}),
+		};
+
+		return await this.uploadOne(fileResponse.data, payload);
+	}
+
+	/**
+	 * Delete a file
+	 */
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.deleteMany([key], opts);
+		return key;
+	}
+
+	/**
+	 * Delete multiple files
+	 */
+	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenException();
 		}
 
-		await super.delete(keys);
-
-		files = toArray(files);
+		await super.deleteMany(keys);
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);
@@ -117,10 +216,43 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
-		return key;
+		return keys;
+	}
+
+	/**
+	 * @deprecated Use `uploadOne` instead
+	 */
+	async upload(
+		stream: NodeJS.ReadableStream,
+		data: Partial<File> & { filename_download: string; storage: string },
+		primaryKey?: PrimaryKey
+	): Promise<PrimaryKey> {
+		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
+
+		return await this.uploadOne(stream, data, primaryKey);
+	}
+
+	/**
+	 * @deprecated Use `importOne` instead
+	 */
+	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+		return await this.importOne(importURL, body);
+	}
+
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
+		);
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		return await this.deleteOne(key);
 	}
 }

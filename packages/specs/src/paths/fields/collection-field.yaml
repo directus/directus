@@ -3,7 +3,7 @@ get:
   description: Retrieves the details of a single field in a given collection.
   operationId: getCollectionField
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -11,11 +11,11 @@ get:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Fields"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Fields'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Fields
 
@@ -123,17 +123,13 @@ patch:
                   items:
                     type: string
                   nullable: true
-                interface:
-                  description:
-                    What interface is used in the admin app to edit the value for this
-                    field.
+                system-interface:
+                  description: What interface is used in the admin app to edit the value for this field.
                   example: primary-key
                   type: string
                   nullable: true
                 options:
-                  description:
-                    Options for the interface that's used. This format is based on the
-                    individual interface.
+                  description: Options for the interface that's used. This format is based on the individual interface.
                   example: null
                   type: object
                   nullable: true
@@ -149,8 +145,7 @@ patch:
                   nullable: true
                 locked:
                   description:
-                    If the field can be altered by the end user. Directus system fields
-                    have this value set to `true`.
+                    If the field can be altered by the end user. Directus system fields have this value set to `true`.
                   example: true
                   type: boolean
                 readonly:
@@ -179,20 +174,19 @@ patch:
                   nullable: true
                 translation:
                   description:
-                    "Key value pair of `<language>: <translation>` that allows the user
-                    to change the displayed name of the field in the admin app."
+                    'Key value pair of `<language>: <translation>` that allows the user to change the displayed name of
+                    the field in the admin app.'
                   example: null
                   type: object
                   nullable: true
                 note:
                   description:
-                    A user provided note for the field. Will be rendered alongside the
-                    interface on the edit page.
-                  example: ""
+                    A user provided note for the field. Will be rendered alongside the interface on the edit page.
+                  example: ''
                   type: string
                   nullable: true
   responses:
-    "200":
+    '200':
       description: Successful request
       content:
         application/json:
@@ -200,11 +194,11 @@ patch:
             type: object
             properties:
               data:
-                $ref: "../../openapi.yaml#/components/schemas/Fields"
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+                $ref: '../../openapi.yaml#/components/schemas/Fields'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Fields
 
@@ -213,12 +207,12 @@ delete:
   description: Delete an existing field.
   operationId: deleteField
   responses:
-    "200":
+    '200':
       description: Successful request
-    "401":
-      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
-    "404":
-      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Fields
 

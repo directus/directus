@@ -15,7 +15,7 @@ const profileMap: Record<string, string> = {};
  *
  * This is used in the SSO flow to extract the users
  */
-export default function getEmailFromProfile(provider: string, profile: Record<string, any>) {
+export default function getEmailFromProfile(provider: string, profile: Record<string, any>): string {
 	const path = profileMap[provider] || env[`OAUTH_${provider.toUpperCase()}_PROFILE_EMAIL`] || 'email';
 
 	const email = get(profile, path);

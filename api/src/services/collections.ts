@@ -1,54 +1,100 @@
-import database, { schemaInspector } from '../database';
-import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
-import Knex from 'knex';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { FieldsService } from '../services/fields';
-import { ItemsService } from '../services/items';
-import cache from '../cache';
-import { toArray } from '../utils/to-array';
+import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
+import { getCache } from '../cache';
+import { ALIAS_TYPES } from '../constants';
+import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import logger from '../logger';
+import { FieldsService, RawField } from '../services/fields';
+import { ItemsService, MutationOptions } from '../services/items';
+import Keyv from 'keyv';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	CollectionMeta,
+	FieldMeta,
+	SchemaOverview,
+} from '../types';
+
+export type RawCollection = {
+	collection: string;
+	fields?: RawField[];
+	meta?: Partial<CollectionMeta>;
+};
 
 export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
+	cache: Keyv<any> | null;
+	schemaCache: Keyv<any> | null;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
+
+		const { cache, schemaCache } = getCache();
+		this.cache = cache;
+		this.schemaCache = schemaCache;
 	}
 
-	create(data: Partial<Collection>[]): Promise<string[]>;
-	create(data: Partial<Collection>): Promise<string>;
-	async create(data: Partial<Collection> | Partial<Collection>[]): Promise<string | string[]> {
+	/**
+	 * Create a single new collection
+	 */
+	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
-		const payloads = toArray(data).map((collection) => {
-			if (!collection.fields) collection.fields = [];
+		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
 
-			collection.fields = collection.fields.map((field) => {
-				if (field.meta) {
-					field.meta = {
-						...field.meta,
-						field: field.field,
-						collection: collection.collection!,
-					};
-				}
+		// Directus heavily relies on the primary key of a collection, so we have to make sure that
+		// every collection that is created has a primary key. If no primary key field is created
+		// while making the collection, we default to an auto incremented id named `id`
+		if (!payload.fields)
+			payload.fields = [
+				{
+					field: 'id',
+					type: 'integer',
+					meta: {
+						hidden: true,
+						interface: 'numeric',
+						readonly: true,
+					},
+					schema: {
+						is_primary_key: true,
+						has_auto_increment: true,
+					},
+				},
+			];
 
-				return field;
-			});
+		// Ensure that every field meta has the field/collection fields filled correctly
+		payload.fields = payload.fields.map((field) => {
+			if (field.meta) {
+				field.meta = {
+					...field.meta,
+					field: field.field,
+					collection: payload.collection!,
+				};
+			}
 
-			return collection;
+			return field;
 		});
 
-		const createdCollections: string[] = [];
-
+		// Create the collection/fields in a transaction so it'll be reverted in case of errors or
+		// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
+		// transactions.
 		await this.knex.transaction(async (trx) => {
 			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
+			// This operation is locked to admin users only, so we don't have to worry about the order
+			// of operations here with regards to permissions checks
 
 			const collectionItemsService = new ItemsService('directus_collections', {
 				knex: trx,
@@ -62,113 +108,94 @@ export class CollectionsService {
 				schema: this.schema,
 			});
 
-			for (const payload of payloads) {
-				if (!payload.collection) {
-					throw new InvalidPayloadException(`The "collection" key is required.`);
-				}
+			if (payload.collection.startsWith('directus_')) {
+				throw new InvalidPayloadException(`Collections can't start with "directus_"`);
+			}
 
-				if (payload.collection.startsWith('directus_')) {
-					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
-				}
+			if (payload.collection in this.schema.collections) {
+				throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
+			}
 
-				if (payload.collection in this.schema) {
-					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
-				}
-
-				await trx.schema.createTable(payload.collection, (table) => {
-					for (const field of payload.fields!) {
+			await trx.schema.createTable(payload.collection, (table) => {
+				for (const field of payload.fields!) {
+					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 						fieldsService.addColumnToTable(table, field);
 					}
-				});
-
-				await collectionItemsService.create({
-					...(payload.meta || {}),
-					collection: payload.collection,
-				});
-
-				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta);
-
-				await fieldItemsService.create(fieldPayloads);
-
-				createdCollections.push(payload.collection);
-			}
-		});
-
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
-		}
-
-		return Array.isArray(data) ? createdCollections : createdCollections[0];
-	}
-
-	readByKey(collection: string[]): Promise<Collection[]>;
-	readByKey(collection: string): Promise<Collection>;
-	async readByKey(collection: string | string[]): Promise<Collection | Collection[]> {
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		const collectionKeys = toArray(collection);
-
-		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('collection')
-				.from('directus_permissions')
-				.where({ action: 'read' })
-				.where({ role: this.accountability.role })
-				.whereIn('collection', collectionKeys);
-
-			if (collectionKeys.length !== permissions.length) {
-				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
-
-				for (const collectionKey of collectionKeys) {
-					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenException(`You don't have access to the "${collectionKey}" collection.`);
-					}
 				}
-			}
+			});
+
+			await collectionItemsService.createOne({
+				...(payload.meta || {}),
+				collection: payload.collection,
+			});
+
+			const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+			await fieldItemsService.createMany(fieldPayloads);
+
+			return payload.collection;
+		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
-		const tablesInDatabase = await schemaInspector.tableInfo();
-		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const meta = (await collectionItemsService.readByQuery({
-			filter: { collection: { _in: collectionKeys } },
-		})) as CollectionMeta[];
-
-		meta.push(...systemCollectionRows);
-
-		const collections: Collection[] = [];
-
-		for (const table of tables) {
-			const collection: Collection = {
-				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
-				schema: table,
-			};
-
-			collections.push(collection);
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
 		}
 
-		return Array.isArray(collection) ? collections : collections[0];
+		return payload.collection;
 	}
 
-	/** @todo, read by query without query support is a bit ironic, isnt it */
+	/**
+	 * Create multiple new collections
+	 */
+	async createMany(payloads: RawCollection[], opts?: MutationOptions): Promise<string[]> {
+		const collections = await this.knex.transaction(async (trx) => {
+			const service = new CollectionsService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
+
+			const collectionNames: string[] = [];
+
+			for (const payload of payloads) {
+				const name = await service.createOne(payload, { autoPurgeCache: false });
+				collectionNames.push(name);
+			}
+
+			return collectionNames;
+		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
+		return collections;
+	}
+
+	/**
+	 * Read all collections. Currently doesn't support any query.
+	 */
 	async readByQuery(): Promise<Collection[]> {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
+			accountability: this.accountability,
 		});
-		let tablesInDatabase = await schemaInspector.tableInfo();
+
+		let tablesInDatabase = await this.schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = (
-				await this.knex.select('collection').from('directus_permissions').where({
-					role: this.accountability.role,
-					action: 'read',
+			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
+				.filter((permission) => {
+					return permission.action === 'read';
 				})
-			).map(({ collection }) => collection);
+				.map(({ collection }) => collection);
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
@@ -176,8 +203,10 @@ export class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
+
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
+			limit: -1,
 		})) as CollectionMeta[];
 
 		meta.push(...systemCollectionRows);
@@ -198,129 +227,304 @@ export class CollectionsService {
 	}
 
 	/**
-	 * @NOTE
-	 * We only suppport updating the content in directus_collections
+	 * Get a single collection by name
 	 */
-	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
-	update(data: Partial<Collection>, key: string): Promise<string>;
-	update(data: Partial<Collection>[]): Promise<string[]>;
-	async update(data: Partial<Collection> | Partial<Collection>[], key?: string | string[]): Promise<string | string[]> {
+	async readOne(collectionKey: string): Promise<Collection> {
+		const result = await this.readMany([collectionKey]);
+		return result[0];
+	}
+
+	/**
+	 * Read many collections by name
+	 */
+	async readMany(collectionKeys: string[]): Promise<Collection[]> {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			accountability: this.accountability,
 			schema: this.schema,
 		});
 
-		if (data && key) {
-			const payload = data as Partial<Collection>;
+		if (this.accountability && this.accountability.admin !== true) {
+			const permissions = this.schema.permissions.filter((permission) => {
+				return permission.action === 'read' && collectionKeys.includes(permission.collection);
+			});
 
-			if (!payload.meta) {
-				throw new InvalidPayloadException(`"meta" key is required`);
+			if (collectionKeys.length !== permissions.length) {
+				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
+
+				for (const collectionKey of collectionKeys) {
+					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
+						throw new ForbiddenException();
+					}
+				}
+			}
+		}
+
+		const tablesInDatabase = await this.schemaInspector.tableInfo();
+		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
+
+		const meta = (await collectionItemsService.readByQuery({
+			filter: { collection: { _in: collectionKeys } },
+			limit: -1,
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
+
+		const collections: Collection[] = [];
+
+		for (const table of tables) {
+			const collection: Collection = {
+				collection: table.name,
+				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
+				schema: table,
+			};
+
+			collections.push(collection);
+		}
+
+		return collections;
+	}
+
+	/**
+	 * Update a single collection by name
+	 *
+	 * Note: only supports updating `meta`
+	 */
+	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		const collectionItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const payload = data as Partial<Collection>;
+
+		if (!payload.meta) {
+			throw new InvalidPayloadException(`"meta" key is required`);
+		}
+
+		const exists = !!(await this.knex
+			.select('collection')
+			.from('directus_collections')
+			.where({ collection: collectionKey })
+			.first());
+
+		if (exists) {
+			await collectionItemsService.updateOne(collectionKey, payload.meta, opts);
+		} else {
+			await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
+		}
+
+		return collectionKey;
+	}
+
+	/**
+	 * Update multiple collections by name
+	 */
+	async updateMany(collectionKeys: string[], data: Partial<Collection>): Promise<string[]> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		await this.knex.transaction(async (trx) => {
+			const service = new CollectionsService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
+
+			for (const collectionKey of collectionKeys) {
+				await service.updateOne(collectionKey, data, { autoPurgeCache: false });
+			}
+		});
+
+		return collectionKeys;
+	}
+
+	/**
+	 * Delete a single collection This will delete the table and all records within. It'll also
+	 * delete any fields, presets, activity, revisions, and permissions relating to this collection
+	 */
+	async deleteOne(collectionKey: string, opts?: MutationOptions): Promise<string> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		const tablesInDatabase = Object.keys(this.schema.collections);
+
+		if (tablesInDatabase.includes(collectionKey) === false) {
+			throw new ForbiddenException();
+		}
+
+		await this.knex.transaction(async (trx) => {
+			const collectionItemsService = new ItemsService('directus_collections', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			const fieldsService = new FieldsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			await trx('directus_fields').delete().where('collection', '=', collectionKey);
+			await trx('directus_presets').delete().where('collection', '=', collectionKey);
+
+			const revisionsToDelete = await trx.select('id').from('directus_revisions').where({ collection: collectionKey });
+
+			if (revisionsToDelete.length > 0) {
+				const keys = revisionsToDelete.map((record) => record.id);
+				await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
 			}
 
-			const keys = toArray(key);
+			await trx('directus_revisions').delete().where('collection', '=', collectionKey);
 
-			for (const key of keys) {
-				const exists =
-					(await this.knex.select('collection').from('directus_collections').where({ collection: key }).first()) !==
-					undefined;
+			await trx('directus_activity').delete().where('collection', '=', collectionKey);
+			await trx('directus_permissions').delete().where('collection', '=', collectionKey);
+			await trx('directus_relations').delete().where({ many_collection: collectionKey });
 
-				if (exists) {
-					await collectionItemsService.update(payload.meta, key);
+			const relations = this.schema.relations.filter((relation) => {
+				return relation.collection === collectionKey || relation.related_collection === collectionKey;
+			});
+
+			for (const relation of relations) {
+				// Delete related o2m fields that point to current collection
+				if (relation.related_collection && relation.meta?.one_field) {
+					await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
+				}
+
+				// Delete related m2o fields that point to current collection
+				if (relation.related_collection === collectionKey) {
+					await fieldsService.deleteField(relation.collection, relation.field);
+				}
+
+				const isM2O = relation.collection === collectionKey;
+
+				// Delete any fields that have a relationship to/from the current collection
+				if (isM2O && relation.related_collection && relation.meta?.one_field) {
+					await fieldsService.deleteField(relation.related_collection!, relation.meta.one_field);
 				} else {
-					await collectionItemsService.create({ ...payload.meta, collection: key });
+					await fieldsService.deleteField(relation.collection, relation.field);
 				}
 			}
 
-			return key;
-		}
+			const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+				return relation.meta?.one_allowed_collections?.includes(collectionKey);
+			});
 
-		const payloads = toArray(data);
+			for (const relation of m2aRelationsThatIncludeThisCollection) {
+				const newAllowedCollections = relation
+					.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
+					.join(',');
+				await trx('directus_relations')
+					.update({ one_allowed_collections: newAllowedCollections })
+					.where({ id: relation.meta!.id });
+			}
 
-		const collectionUpdates = payloads.map((collection) => {
-			return {
-				...collection.meta,
-				collection: collection.collection,
-			};
+			await collectionItemsService.deleteOne(collectionKey);
+			await trx.schema.dropTable(collectionKey);
 		});
 
-		await collectionItemsService.update(collectionUpdates);
-
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
-		return key!;
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
+		return collectionKey;
 	}
 
+	/**
+	 * Delete multiple collections by key
+	 */
+	async deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		await this.knex.transaction(async (trx) => {
+			const service = new CollectionsService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
+
+			for (const collectionKey of collectionKeys) {
+				await service.deleteOne(collectionKey, { autoPurgeCache: false });
+			}
+		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
+		return collectionKeys;
+	}
+
+	/**
+	 * @deprecated Use `createOne` or `createMany` instead
+	 */
+	create(data: RawCollection[]): Promise<string[]>;
+	create(data: RawCollection): Promise<string>;
+	async create(data: RawCollection | RawCollection[]): Promise<string | string[]> {
+		logger.warn(
+			'CollectionsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
+		);
+
+		if (Array.isArray(data)) {
+			return await this.createMany(data);
+		} else {
+			return await this.createOne(data);
+		}
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(collection: string[]): Promise<Collection[]>;
+	readByKey(collection: string): Promise<Collection>;
+	async readByKey(collection: string | string[]): Promise<Collection | Collection[]> {
+		logger.warn(
+			'CollectionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(collection)) return await this.readMany(collection);
+		return await this.readOne(collection);
+	}
+
+	/**
+	 * @deprecated Use `updateOne` or `updateMany` instead
+	 */
+	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
+	update(data: Partial<Collection>, key: string): Promise<string>;
+	async update(data: Partial<Collection>, key: string | string[]): Promise<string | string[]> {
+		if (Array.isArray(key)) return await this.updateMany(key, data);
+		return await this.updateOne(key, data);
+	}
+
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
 	delete(collections: string[]): Promise<string[]>;
 	delete(collection: string): Promise<string>;
 	async delete(collection: string[] | string): Promise<string[] | string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
-		}
+		logger.warn(
+			'CollectionsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
+		);
 
-		const fieldsService = new FieldsService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		const tablesInDatabase = Object.keys(this.schema);
-
-		const collectionKeys = toArray(collection);
-
-		for (const collectionKey of collectionKeys) {
-			if (tablesInDatabase.includes(collectionKey) === false) {
-				throw new InvalidPayloadException(`Collection "${collectionKey}" doesn't exist.`);
-			}
-		}
-
-		await this.knex('directus_fields').delete().whereIn('collection', collectionKeys);
-		await this.knex('directus_presets').delete().whereIn('collection', collectionKeys);
-		await this.knex('directus_revisions').delete().whereIn('collection', collectionKeys);
-		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
-		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
-
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection })
-			.orWhere({ one_collection: collection });
-
-		for (const relation of relations) {
-			const isM2O = relation.many_collection === collection;
-
-			if (isM2O) {
-				await this.knex('directus_relations')
-					.delete()
-					.where({ many_collection: collection, many_field: relation.many_field });
-
-				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else if (!!relation.one_collection) {
-				await this.knex('directus_relations')
-					.update({ one_field: null })
-					.where({ one_collection: collection, one_field: relation.one_field });
-				await fieldsService.deleteField(relation.many_collection, relation.many_field);
-			}
-		}
-
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		await collectionItemsService.delete(collectionKeys);
-
-		for (const collectionKey of collectionKeys) {
-			await this.knex.schema.dropTable(collectionKey);
-		}
-
-		if (cache && env.CACHE_AUTO_PURGE) {
-			await cache.clear();
-		}
-
-		return collection;
+		if (Array.isArray(collection)) return await this.deleteMany(collection);
+		return await this.deleteOne(collection);
 	}
 }

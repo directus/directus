@@ -1,3 +1,0 @@
-# Data Model
-
-@TODO

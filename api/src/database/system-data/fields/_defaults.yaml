@@ -5,7 +5,6 @@ interface: null
 options: null
 display: null
 display_options: null
-locked: false
 readonly: false
 hidden: false
 sort: null

@@ -1,17 +1,16 @@
 import { Router } from 'express';
-import session from 'express-session';
-import asyncHandler from 'express-async-handler';
-import Joi from 'joi';
 import grant from 'grant';
-import getEmailFromProfile from '../utils/get-email-from-profile';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import Joi from 'joi';
 import ms from 'ms';
-import cookieParser from 'cookie-parser';
+import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { UsersService, AuthenticationService } from '../services';
+import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
-import { RouteNotFoundException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import { AuthenticationService, UsersService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '../utils/to-array';
 
 const router = Router();
@@ -21,7 +20,7 @@ const loginSchema = Joi.object({
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
-});
+}).unknown();
 
 router.post(
 	'/login',
@@ -40,19 +39,15 @@ router.post(
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const { email, password, otp } = req.body;
-
 		const mode = req.body.mode || 'json';
 
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			...req.body,
 			ip,
 			userAgent,
-			email,
-			password,
-			otp,
 		});
 
 		const payload = {
@@ -64,10 +59,11 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
@@ -80,7 +76,6 @@ router.post(
 
 router.post(
 	'/refresh',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,
@@ -93,13 +88,13 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
-		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
+		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
 
 		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 
@@ -112,10 +107,11 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
@@ -128,7 +124,6 @@ router.post(
 
 router.post(
 	'/logout',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,
@@ -141,13 +136,23 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
 		await authenticationService.logout(currentRefreshToken);
+
+		if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
+			res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, {
+				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+			});
+		}
+
 		return next();
 	}),
 	respond
@@ -156,7 +161,7 @@ router.post(
 router.post(
 	'/password/request',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.email) {
+		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
 
@@ -170,11 +175,13 @@ router.post(
 
 		try {
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
-		} catch {
-			// We don't want to give away what email addresses exist, so we'll always return a 200
-			// from this endpoint
-		} finally {
 			return next();
+		} catch (err) {
+			if (err instanceof InvalidPayloadException) {
+				throw err;
+			} else {
+				return next();
+			}
 		}
 	}),
 	respond
@@ -183,11 +190,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.token) {
+		if (req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (!req.body.password) {
+		if (req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
@@ -214,8 +221,6 @@ router.get(
 	respond
 );
 
-router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
-
 router.get(
 	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
@@ -231,6 +236,29 @@ router.get(
 		if (req.query?.redirect && req.session) {
 			req.session.redirect = req.query.redirect as string;
 		}
+
+		const hookPayload = {
+			provider: req.params.provider,
+			redirect: req.query?.redirect,
+		};
+
+		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
+			event: `oauth.${req.params.provider}.redirect`,
+			action: 'redirect',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: req.accountability,
+			user: null,
+		});
+
+		await emitter.emitAsync(`oauth.${req.params.provider}.redirect.before`, {
+			event: `oauth.${req.params.provider}.redirect.before`,
+			action: 'redirect',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: req.accountability,
+			user: null,
+		});
 
 		next();
 	})
@@ -254,19 +282,69 @@ router.get(
 			schema: req.schema,
 		});
 
-		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
+		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
-		req.session?.destroy(() => {});
+		const hookPayload = req.session.grant.response;
 
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			email,
+		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
+			event: `oauth.${req.params.provider}.login.before`,
+			action: 'oauth.login',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: accountability,
+			status: 'pending',
+			user: null,
 		});
 
+		const emitStatus = (status: 'fail' | 'success') => {
+			emitAsyncSafe(`oauth.${req.params.provider}.login`, hookPayload, {
+				event: `oauth.${req.params.provider}.login`,
+				action: 'oauth.login',
+				schema: req.schema,
+				payload: hookPayload,
+				accountability: accountability,
+				status,
+				user: null,
+			});
+		};
+
+		try {
+			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
+
+			req.session?.destroy(() => {
+				// Do nothing
+			});
+
+			authResponse = await authenticationService.authenticate({
+				email,
+			});
+		} catch (error) {
+			emitStatus('fail');
+			if (redirect) {
+				let reason = 'UNKNOWN_EXCEPTION';
+
+				if (error instanceof ServiceUnavailableException) {
+					reason = 'SERVICE_UNAVAILABLE';
+				} else if (error instanceof InvalidCredentialsException) {
+					reason = 'INVALID_USER';
+				}
+
+				return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
+			}
+
+			throw error;
+		}
+
+		const { accessToken, refreshToken, expires } = authResponse;
+
+		emitStatus('success');
+
 		if (redirect) {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 

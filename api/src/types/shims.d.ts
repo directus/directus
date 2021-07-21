@@ -12,3 +12,12 @@ declare module 'exif-reader' {
 	const exifReader: (buf: Buffer) => Record<string, any>;
 	export default exifReader;
 }
+
+declare module 'pino-http' {
+	import PinoHttp from '@types/pino-http';
+	const pinoHttp: PinoHttp;
+	export default pinoHttp;
+	export const stdSerializers: {
+		req: (req: any) => Record<string, any>;
+	};
+}

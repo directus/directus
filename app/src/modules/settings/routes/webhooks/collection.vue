@@ -1,6 +1,6 @@
 <template>
-	<private-view :title="$t('webhooks')">
-		<template #headline>{{ $t('settings') }}</template>
+	<private-view :title="t('webhooks')">
+		<template #headline>{{ t('settings') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -15,7 +15,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />
@@ -23,86 +23,74 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
+							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_webhook')">
+			<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
-		<component
-			class="layout"
-			ref="layoutRef"
-			:is="`layout-${layout}`"
-			collection="directus_webhooks"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters="filters"
-			:search-query="searchQuery"
-			@update:filters="filters = $event"
-		>
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
-				<v-info :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
 
 					<template #append>
-						<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="warning">
-					{{ $t('no_webhooks_copy') }}
+				<v-info :title="t('webhooks_count', 0)" icon="anchor" center type="info">
+					{{ t('no_webhooks_copy') }}
 
 					<template #append>
-						<v-button :to="{ path: '/settings/webhooks/+' }">{{ $t('create_webhook') }}</v-button>
+						<v-button :to="{ path: '/settings/webhooks/+' }">{{ t('create_webhook') }}</v-button>
 					</template>
 				</v-info>
 			</template>
 		</component>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
-			<portal-target name="sidebar" />
+			<component :is="`layout-sidebar-${layout}`" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import marked from 'marked';
-import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
-import { i18n } from '@/lang';
+import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
 
@@ -111,10 +99,10 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-collection',
+	name: 'WebhooksCollection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
-	setup(props) {
-		const layoutRef = ref<LayoutComponent | null>(null);
+	setup() {
+		const { t } = useI18n();
 
 		const selection = ref<Item[]>([]);
 
@@ -122,20 +110,33 @@ export default defineComponent({
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
+		const layoutState = useLayout(
+			layout,
+			reactive({
+				collection: 'directus_webhooks',
+				selection,
+				layoutOptions,
+				layoutQuery,
+				filters,
+				searchQuery,
+				selectMode: false,
+				readonly: false,
+			})
+		);
+
 		return {
+			t,
 			addNewLink,
 			batchDelete,
 			batchLink,
 			confirmDelete,
 			deleting,
 			filters,
-			layoutRef,
 			selection,
 			layoutOptions,
 			layoutQuery,
 			layout,
 			searchQuery,
-			marked,
 			clearFilters,
 		};
 
@@ -154,7 +155,7 @@ export default defineComponent({
 
 				await api.delete(`/webhooks/${batchPrimaryKeys}`);
 
-				await layoutRef.value?.refresh();
+				await layoutState.value.refresh();
 
 				selection.value = [];
 				deleting.value = false;
@@ -186,20 +187,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 

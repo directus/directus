@@ -23,11 +23,11 @@ Learn more at...
 
 - [Website](https://directus.io/)
 - [GitHub](https://github.com/directus/directus)
+- [Documentation](https://docs.directus.io/)
 - [Community](https://directus.chat/)
 - [Twitter](https://twitter.com/directus)
-- [Docs](https://docs.directus.io/)
+- [Cloud](https://directus.cloud/)
 - [Marketplace](https://directus.market/)
-- [Cloud](http://directus.cloud/)
 
 <p>&nbsp;</p>
 
@@ -64,9 +64,9 @@ npm update
 
 Please report any and all issues [on our GitHub](https://github.com/directus/directus/issues/new).
 
-Pull-requests are more than welcome, and always appreciated. Please read our
-[Contributors Guide](https://docs.directus.io/getting-started/contributing.html) before starting work on a new feature
-or bug, or reach out a member of the Core Team via [GitHub](https://github.com/directus/directus/discussions) or
+Pull-requests are more than welcome, and always appreciated. Please be sure to read our
+[Contributors Guide](https://docs.directus.io/contributing/introduction/) before starting work on a new feature/fix, or
+reach out a member of the Core Team via [GitHub](https://github.com/directus/directus/discussions) or
 [Discord](https://directus.chat) with any questions.
 
 <p>&nbsp;</p>
@@ -79,6 +79,7 @@ help ensure Directus stays free, please consider becoming a sponsor.
 
 - [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
 - [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
+- [Backing Directus](https://docs.directus.io/getting-started/backing-directus/)
 
 <p>&nbsp;</p>
 

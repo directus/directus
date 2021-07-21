@@ -19,16 +19,16 @@
 			<display-color
 				v-for="item in items"
 				:key="item.value"
+				v-tooltip="item.text"
 				:value="item.background"
 				:default-color="defaultBackground"
-				v-tooltip="item.text"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
 
 type Choice = {
@@ -66,6 +66,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
+			required: true,
 			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
 		},
 	},

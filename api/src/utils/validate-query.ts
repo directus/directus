@@ -1,7 +1,7 @@
-import { Query } from '../types';
 import Joi from 'joi';
-import { InvalidQueryException } from '../exceptions';
 import { isPlainObject } from 'lodash';
+import { InvalidQueryException } from '../exceptions';
+import { Query } from '../types';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -15,14 +15,13 @@ const querySchema = Joi.object({
 	limit: Joi.number(),
 	offset: Joi.number(),
 	page: Joi.number(),
-	single: Joi.boolean(),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('json', 'csv'),
-	deep: Joi.object().pattern(/\w+/, Joi.link('#query')),
+	export: Joi.string().valid('json', 'csv', 'xml'),
+	deep: Joi.object(),
 }).id('query');
 
-export function validateQuery(query: Query) {
+export function validateQuery(query: Query): Query {
 	const { error } = querySchema.validate(query);
 
 	if (query.filter && Object.keys(query.filter).length > 0) {
@@ -39,7 +38,7 @@ export function validateQuery(query: Query) {
 function validateFilter(filter: Query['filter']) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 
-	for (let [key, nested] of Object.entries(filter)) {
+	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
 		} else if (isPlainObject(nested)) {
@@ -52,6 +51,10 @@ function validateFilter(filter: Query['filter']) {
 				case '_neq':
 				case '_contains':
 				case '_ncontains':
+				case '_starts_with':
+				case '_nstarts_with':
+				case '_ends_with':
+				case '_nends_with':
 				case '_gt':
 				case '_gte':
 				case '_lt':
@@ -61,6 +64,8 @@ function validateFilter(filter: Query['filter']) {
 					break;
 				case '_in':
 				case '_nin':
+				case '_between':
+				case '_nbetween':
 					validateList(value, key);
 					break;
 				case '_null':
@@ -79,8 +84,13 @@ function validateFilter(filter: Query['filter']) {
 }
 
 function validateFilterPrimitive(value: any, key: string) {
-	if ((typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') === false) {
-		throw new InvalidQueryException(`The filter value for "${key}" has to be a string or a number`);
+	if (value === null) return true;
+
+	if (
+		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value instanceof Date) ===
+		false
+	) {
+		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
 	if (typeof value === 'number' && Number.isNaN(value)) {

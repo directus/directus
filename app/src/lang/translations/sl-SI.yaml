@@ -1,0 +1,65 @@
+---
+edit_field: Uredi polje
+item_revision: Revizija postavke
+duplicate_field: Podvajanje polja
+half_width: Polovična širina
+full_width: Polna širina
+group: Skupina
+fill_width: Zapolni širino
+field_name_translations: Prevodi imen polj
+enter_password_to_enable_tfa: Vnesite svoje geslo, da boste lahko omogočili dvonivojsko avtentikacijo
+add_field: Dodaj polje
+role_name: Ime vloge
+branch: Veja
+leaf: List
+indeterminate: Nedoločeno
+exclusive: Ekskluzivno
+children: Podrejeni
+db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
+show_archived_items: Prikaži arhivirane opombe
+edited: Urejena vrednost
+required: Zahtevano
+required_for_app_access: Zahtevano za dostop do aplikacije
+requires_value: Vnos je obvezen
+create_preset: Ustvari prednastavitev
+create_role: Ustvari vlogo
+create_user: Ustvari uporabnika
+create_webhook: Ustvari Webhook
+invite_users: Povabite uporabnike
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+invite: Povabi
+email_already_invited: Elektronski naslov {email} je že bil povabljen
+emails: E-pošte
+connection_excellent: Odlična povezava
+connection_good: Dobra povezava
+connection_fair: Zmerna povezava
+connection_poor: Slaba povezava
+primary: Glavni
+rename_folder: Preimenuj mapo
+delete_folder: Izbriši mapo
+prefix: Predpona
+suffix: Pripona
+reset_bookmark: Ponastavi zaznamek
+rename_bookmark: Preimenuj zaznamek
+update_bookmark: Posodobi zaznamek
+delete_bookmark: Izbriši zaznamek
+delete_bookmark_copy: >-
+  Ali ste prepričani, da želite trajno izbrisati zaznamek {bookmark}? Tega dejanja ne morete preklicati.
+logoutReason:
+  SIGN_OUT: Izpisani
+  SESSION_EXPIRED: Seja je potekla
+public: Javno
+public_description: Nadzoruje, kateri podatki API so na voljo brez avtentikacije.
+not_allowed: Ni dovoljeno
+field_validation: Validacija polja
+field_presets: Prednastavitve polja
+permissions_for_role: 'Postavke, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
+fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
+fields:
+  directus_fields:
+    translation: Prevodi imen polj
+  directus_roles:
+    name: Ime vloge
+interfaces:
+  presentation-links:
+    primary: Glavni

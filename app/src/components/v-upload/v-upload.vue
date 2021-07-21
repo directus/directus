@@ -9,8 +9,8 @@
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging">
-			<p class="type-label">{{ $t('drop_to_upload') }}</p>
-			<p class="type-text">{{ $t('upload_pending') }}</p>
+			<p class="type-label">{{ t('drop_to_upload') }}</p>
+			<p class="type-text">{{ t('upload_pending') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -18,35 +18,35 @@
 			<p class="type-text">
 				{{
 					multiple && numberOfFiles > 1
-						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: $t('upload_file_indeterminate')
+						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: t('upload_file_indeterminate')
 				}}
 			</p>
 			<v-progress-linear :value="progress" rounded />
 		</template>
 
 		<template v-else>
-			<p class="type-label">{{ $t('drag_file_here') }}</p>
-			<p class="type-text">{{ $t('click_to_browse') }}</p>
-			<input class="browse" type="file" @input="onBrowseSelect" />
+			<p class="type-label">{{ t('drag_file_here') }}</p>
+			<p class="type-text">{{ t('click_to_browse') }}</p>
+			<input class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<v-menu showArrow placement="bottom-end">
+				<v-menu show-arrow placement="bottom-end">
 					<template #activator="{ toggle }">
-						<v-icon @click="toggle" class="options" name="more_vert" />
+						<v-icon clickable class="options" name="more_vert" @click="toggle" />
 					</template>
 					<v-list>
-						<v-list-item @click="activeDialog = 'choose'" v-if="fromLibrary">
+						<v-list-item v-if="fromLibrary" clickable @click="activeDialog = 'choose'">
 							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('choose_from_library') }}
+								{{ t('choose_from_library') }}
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item @click="activeDialog = 'url'" v-if="fromUrl">
+						<v-list-item v-if="fromUrl" clickable @click="activeDialog = 'url'">
 							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 							<v-list-item-content>
-								{{ $t('import_from_url') }}
+								{{ t('import_from_url') }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -60,22 +60,22 @@
 				/>
 
 				<v-dialog
-					:active="activeDialog === 'url'"
-					@esc="activeDialog = null"
-					@toggle="activeDialog = null"
+					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
+					@esc="activeDialog = null"
+					@update:model-value="activeDialog = null"
 				>
 					<v-card>
-						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+						<v-card-title>{{ t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
+							<v-input v-model="url" :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
-							<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
-								{{ $t('cancel') }}
+							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+								{{ t('cancel') }}
 							</v-button>
-							<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-								{{ $t('import') }}
+							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+								{{ t('import') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -86,12 +86,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed } from 'vue';
 import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
-import useItem from '@/composables/use-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -117,8 +117,15 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
@@ -126,6 +133,7 @@ export default defineComponent({
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
 		return {
+			t,
 			uploading,
 			progress,
 			onDragEnter,
@@ -155,18 +163,25 @@ export default defineComponent({
 				uploading.value = true;
 				progress.value = 0;
 
+				const folderPreset: { folder?: string } = {};
+
+				if (props.folder) {
+					folderPreset.folder = props.folder;
+				}
+
 				try {
 					numberOfFiles.value = files.length;
 
 					if (props.multiple === true) {
 						const uploadedFiles = await uploadFiles(Array.from(files), {
 							onProgressChange: (percentage) => {
-								progress.value = Math.round(
-									percentage.reduce((acc, cur) => (acc += cur)) / files.length
-								);
+								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 								done.value = percentage.filter((p) => p === 100).length;
 							},
-							preset: props.preset,
+							preset: {
+								...props.preset,
+								...folderPreset,
+							},
 						});
 
 						uploadedFiles && emit('input', uploadedFiles);
@@ -177,7 +192,10 @@ export default defineComponent({
 								done.value = percentage === 100 ? 1 : 0;
 							},
 							fileId: props.fileId,
-							preset: props.preset,
+							preset: {
+								...props.preset,
+								...folderPreset,
+							},
 						});
 
 						uploadedFile && emit('input', uploadedFile);
@@ -270,9 +288,17 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
+						data: {
+							folder: props.folder,
+						},
 					});
 
-					emit('input', response.data.data);
+					if (props.multiple) {
+						emit('input', [response.data.data]);
+					} else {
+						emit('input', response.data.data);
+					}
+
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {

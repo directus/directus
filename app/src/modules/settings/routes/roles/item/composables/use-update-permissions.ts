@@ -1,13 +1,21 @@
-import { ref, inject, Ref } from '@vue/composition-api';
 import api from '@/api';
 import { Collection, Permission } from '@/types';
-import { unexpectedError } from '../../../../../../utils/unexpected-error';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { inject, ref, Ref } from 'vue';
+
+type UsableUpdatePermissions = {
+	getPermission: (action: string) => Permission | undefined;
+	setFullAccess: (action: 'create' | 'read' | 'update' | 'delete') => Promise<void>;
+	setNoAccess: (action: 'create' | 'read' | 'update' | 'delete') => Promise<void>;
+	setFullAccessAll: () => Promise<void>;
+	setNoAccessAll: () => Promise<void>;
+};
 
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
 	role: Ref<string>
-) {
+): UsableUpdatePermissions {
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
 
@@ -18,6 +26,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setFullAccess(action: 'create' | 'read' | 'update' | 'delete') {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -34,8 +44,8 @@ export default function useUpdatePermissions(
 			try {
 				await api.patch(`/permissions/${permission.id}`, {
 					fields: '*',
-					permissions: null,
-					validation: null,
+					permissions: {},
+					validation: {},
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -50,6 +60,8 @@ export default function useUpdatePermissions(
 					collection: collection.value.collection,
 					action: action,
 					fields: '*',
+					permissions: {},
+					validation: {},
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -61,6 +73,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setNoAccess(action: 'create' | 'read' | 'update' | 'delete') {
+		if (saving.value === true) return;
+
 		const permission = getPermission(action);
 
 		if (!permission) return;
@@ -78,6 +92,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setFullAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -97,8 +113,8 @@ export default function useUpdatePermissions(
 					try {
 						await api.patch(`/permissions/${permission.id}`, {
 							fields: '*',
-							permissions: null,
-							validation: null,
+							permissions: {},
+							validation: {},
 						});
 					} catch (err) {
 						unexpectedError(err);
@@ -110,6 +126,8 @@ export default function useUpdatePermissions(
 							collection: collection.value.collection,
 							action: action,
 							fields: '*',
+							permissions: {},
+							validation: {},
 						});
 					} catch (err) {
 						unexpectedError(err);
@@ -123,10 +141,12 @@ export default function useUpdatePermissions(
 	}
 
 	async function setNoAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		try {
-			await api.delete(`/permissions/${permissions.value.map((p) => p.id).join(',')}`);
+			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
 		} catch (err) {
 			unexpectedError(err);
 		} finally {

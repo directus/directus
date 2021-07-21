@@ -13,28 +13,28 @@ const IPTC_ENTRY_TYPES = new Map([
 
 const IPTC_ENTRY_MARKER = Buffer.from([0x1c, 0x02]);
 
-export default function parseIPTC(buffer: Buffer) {
+export default function parseIPTC(buffer: Buffer): Record<string, any> {
 	if (!Buffer.isBuffer(buffer)) return {};
 
-	let iptc: Record<string, any> = {};
+	const iptc: Record<string, any> = {};
 	let lastIptcEntryPos = buffer.indexOf(IPTC_ENTRY_MARKER);
 
 	while (lastIptcEntryPos !== -1) {
 		lastIptcEntryPos = buffer.indexOf(IPTC_ENTRY_MARKER, lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength);
 
-		let iptcBlockTypePos = lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength;
-		let iptcBlockSizePos = iptcBlockTypePos + 1;
-		let iptcBlockDataPos = iptcBlockSizePos + 2;
+		const iptcBlockTypePos = lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength;
+		const iptcBlockSizePos = iptcBlockTypePos + 1;
+		const iptcBlockDataPos = iptcBlockSizePos + 2;
 
-		let iptcBlockType = buffer.readUInt8(iptcBlockTypePos);
-		let iptcBlockSize = buffer.readUInt16BE(iptcBlockSizePos);
+		const iptcBlockType = buffer.readUInt8(iptcBlockTypePos);
+		const iptcBlockSize = buffer.readUInt16BE(iptcBlockSizePos);
 
 		if (!IPTC_ENTRY_TYPES.has(iptcBlockType)) {
 			continue;
 		}
 
-		let iptcBlockTypeId = IPTC_ENTRY_TYPES.get(iptcBlockType);
-		let iptcData = buffer.slice(iptcBlockDataPos, iptcBlockDataPos + iptcBlockSize).toString();
+		const iptcBlockTypeId = IPTC_ENTRY_TYPES.get(iptcBlockType);
+		const iptcData = buffer.slice(iptcBlockDataPos, iptcBlockDataPos + iptcBlockSize).toString();
 
 		if (iptcBlockTypeId) {
 			if (iptc[iptcBlockTypeId] == null) {
