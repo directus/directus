@@ -54,6 +54,3 @@ export type ApiExtensionContext = {
 	env: any;
 	getSchema: any;
 };
-
-export type HookRegisterFunction = (context: ApiExtensionContext) => Record<string, (...values: any[]) => void>;
-export type EndpointRegisterFunction = (router: any, context: ApiExtensionContext) => void;
