@@ -1,4 +1,5 @@
 import { Column } from 'knex-schema-inspector/dist/types/column';
+import { LOCAL_TYPES, TYPES } from '../constants';
 
 type Translations = {
 	language: string;
@@ -7,37 +8,9 @@ type Translations = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export type Type =
-	| 'alias'
-	| 'bigInteger'
-	| 'boolean'
-	| 'date'
-	| 'dateTime'
-	| 'decimal'
-	| 'float'
-	| 'integer'
-	| 'json'
-	| 'string'
-	| 'text'
-	| 'time'
-	| 'timestamp'
-	| 'binary'
-	| 'uuid'
-	| 'hash'
-	| 'csv'
-	| 'unknown';
+export type Type = typeof TYPES[number];
 
-export type LocalType =
-	| 'standard'
-	| 'file'
-	| 'files'
-	| 'm2o'
-	| 'o2m'
-	| 'm2m'
-	| 'm2a'
-	| 'presentation'
-	| 'translations'
-	| 'group';
+export type LocalType = typeof LOCAL_TYPES[number];
 
 export type FieldMeta = {
 	id: number;

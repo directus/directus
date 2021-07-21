@@ -1,6 +1,4 @@
-import { LocalType, Type } from '../types';
-
-export const TYPES: Type[] = [
+export const TYPES = [
 	'alias',
 	'bigInteger',
 	'boolean',
@@ -19,9 +17,9 @@ export const TYPES: Type[] = [
 	'hash',
 	'csv',
 	'unknown',
-];
+] as const;
 
-export const LOCAL_TYPES: LocalType[] = [
+export const LOCAL_TYPES = [
 	'standard',
 	'file',
 	'files',
@@ -32,4 +30,4 @@ export const LOCAL_TYPES: LocalType[] = [
 	'presentation',
 	'translations',
 	'group',
-];
+] as const;

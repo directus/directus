@@ -9,8 +9,8 @@ export interface InterfaceConfig {
 	description?: string;
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
-	types: Type[];
-	groups?: LocalType[];
+	types: readonly Type[];
+	groups?: readonly LocalType[];
 	relational?: boolean;
 	hideLabel?: boolean;
 	hideLoader?: boolean;

@@ -29,7 +29,7 @@ export interface DisplayConfig {
 
 	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;
-	types: Type[];
-	groups?: LocalType[];
+	types: readonly Type[];
+	groups?: readonly LocalType[];
 	fields?: string[] | DisplayFieldsFunction;
 }
