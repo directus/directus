@@ -45,7 +45,5 @@ columns:
     default: all
   storage_asset_presets:
     type: json
-  storage_default_folder:
-    type: uuid
   custom_css:
     type: text
