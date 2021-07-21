@@ -130,6 +130,7 @@ import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
 	setup() {

@@ -7,7 +7,7 @@ import env from './env';
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',
 	redact: {
-		paths: ['req.headers.authorization', 'req.cookies.directus_refresh_token'],
+		paths: ['req.headers.authorization', `req.cookies.${env.REFRESH_TOKEN_COOKIE_NAME}`],
 		censor: '--redact--',
 	},
 };
