@@ -124,7 +124,7 @@ fields:
             options:
               slug: true
               onlyOnCreate: false
-            width: half
+            width: full
         - field: fit
           name: Fit
           type: string
@@ -173,6 +173,7 @@ fields:
               step: 1
             width: half
         - field: withoutEnlargement
+          name: Upscaling
           type: boolean
           schema:
             default_value: false

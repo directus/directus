@@ -75,7 +75,7 @@ export type TransformationPreset = TransformationPresetFormat &
 	TransformationParams & { key: string };
 
 export type TransformationPresetFormat = {
-	format?: 'jpeg' | 'png' | 'webp' | 'tiff';
+	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff';
 	quality?: number;
 };
 
