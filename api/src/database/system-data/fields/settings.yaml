@@ -206,108 +206,25 @@ fields:
           type: json
           schema:
             is_nullable: false
+            default_value: []
           meta:
-            interface: list
+            note:
+              The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more
+              information.
+            interface: json
             options:
-              template: '{{method}}'
-              fields:
-                - field: method
-                  name: Method
-                  type: string
-                  schema:
-                    is_nullable: false
-                  meta:
-                    note:
-                      The Sharp method name. See https://sharp.pixelplumbing.com/api-constructor for more information.
-                    interface: select-dropdown
-                    options:
-                      choices:
-                        - value: toFormat
-                          text: toFormat
-                        - value: jpeg
-                          text: jpeg
-                        - value: png
-                          text: png
-                        - value: tiff
-                          text: tiff
-                        - value: webp
-                          text: webp
-                        - value: resize
-                          text: resize
-                        - value: extend
-                          text: extend
-                        - value: extract
-                          text: extract
-                        - value: trim
-                          text: trim
-                        - value: rotate
-                          text: rotate
-                        - value: flip
-                          text: flip
-                        - value: flop
-                          text: flop
-                        - value: sharpen
-                          text: sharpen
-                        - value: median
-                          text: median
-                        - value: blur
-                          text: blur
-                        - value: flatten
-                          text: flatten
-                        - value: gamma
-                          text: gamma
-                        - value: negate
-                          text: negate
-                        - value: normalize
-                          text: normalize
-                        - value: clahe
-                          text: clahe
-                        - value: convolve
-                          text: convolve
-                        - value: threshold
-                          text: threshold
-                        - value: linear
-                          text: linear
-                        - value: recomb
-                          text: recomb
-                        - value: modulate
-                          text: modulate
-                        - value: tint
-                          text: tint
-                        - value: greyscale
-                          text: greyscale
-                        - value: toColorspace
-                          text: toColorspace
-                        - value: removeAlpha
-                          text: removeAlpha
-                        - value: ensureAlpha
-                          text: ensureAlpha
-                        - value: extractChannel
-                          text: extractChannel
-                        - value: bandbool
-                          text: bandbool
-                  width: half
-                - field: arguments
-                  name: Arguments
-                  type: json
-                  meta:
-                    interface: list
-                    note: A list of arguments to pass to the Sharp method.
-                    options:
-                      template: '{{argument}}'
-                      fields:
-                        - field: argument
-                          name: Argument
-                          type: string
-                          schema:
-                            is_nullable: false
-                          meta:
-                            interface: input-code
-                            note: JSON representation of the argument
-                            options:
-                              language: json
-                              lineNumber: false
-                  width: half
+              template: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
+              placeholder: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
             width: full
       template: '{{key}}'
     special: json
