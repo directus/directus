@@ -2,7 +2,7 @@
 	<v-notice type="warning" v-if="!junction || !relation || !junction.junction_field">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<div class="many-to-many-references" v-else>
+	<div class="tags-m2m" v-else>
 		<v-menu
 			v-model="menuActive"
 			:close-on-click="true"
@@ -30,7 +30,7 @@
 			<v-list>
 				<v-list-item v-if="allowCustom && localInput" @click="addItemFromCurrentInput">
 					<v-list-item-content class="add-custom">
-						{{ $t('interfaces.many-to-many-references.new-item-with', { argument: localInput }) }}
+						{{ $t('interfaces.tags-m2m.new-item-with', { argument: localInput }) }}
 					</v-list-item-content>
 				</v-list-item>
 				<template v-if="suggestedItems.length">

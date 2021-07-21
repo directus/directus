@@ -52,7 +52,7 @@ export default defineComponent({
 		const options = [
 			{
 				field: 'referencingField',
-				name: i18n.t('interfaces.many-to-many-references.reference-field'),
+				name: i18n.t('interfaces.tags-m2m.reference-field'),
 				type: 'string',
 				collection: manyCollection,
 				required: true,
@@ -100,7 +100,7 @@ export default defineComponent({
 			},
 			{
 				field: 'closeOnSelect',
-				name: i18n.t('interfaces.many-to-many-references.close-on-select'),
+				name: i18n.t('interfaces.tags-m2m.close-on-select'),
 				type: 'boolean',
 				meta: {
 					width: 'half',

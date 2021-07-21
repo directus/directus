@@ -881,8 +881,8 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
-  many-to-many-references:
-    many-to-many-references: Many to Many Referencing
+  tags-m2m:
+    tags-m2m: Many to Many Referencing
     description: Select multiple related junction items like tags with autocomplete
     reference-field: Referencing Field
     close-on-select: Close on select
