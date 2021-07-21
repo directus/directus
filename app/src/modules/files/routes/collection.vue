@@ -603,11 +603,9 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, {
-					preset: props.folder
-						? {
-								folder: props.folder,
-						  }
-						: {},
+					preset: {
+						folder: props.folder,
+					},
 					onProgressChange: (progress) => {
 						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
