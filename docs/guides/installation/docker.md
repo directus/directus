@@ -22,7 +22,6 @@ Before 9.0.0-rc.84 the Docker tags were prefixed by a "v" - e.g. v9.0.0-rc.83.
 
 :::
 
-
 ### Create admin user using docker
 
 The published Docker image will automatically populate the database, and create a user. To configure the email/password

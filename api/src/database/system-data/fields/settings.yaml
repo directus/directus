@@ -243,6 +243,11 @@ fields:
           text: Presets Only
     width: half
 
+  - field: storage_default_folder
+    interface: system-folder
+    width: half
+    note: Default folder where new files are uploaded
+
   - field: overrides_divider
     interface: presentation-divider
     options:

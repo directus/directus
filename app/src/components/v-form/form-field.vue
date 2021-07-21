@@ -129,10 +129,10 @@ export default defineComponent({
 		});
 
 		const defaultValue = computed(() => {
-			const value = props.field.schema?.default_value;
+			const value = props.field?.schema?.default_value;
 
 			if (value !== undefined) return value;
-			return null;
+			return undefined;
 		});
 
 		const internalValue = computed(() => {

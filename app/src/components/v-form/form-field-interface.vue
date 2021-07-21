@@ -18,7 +18,7 @@
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
-			:value="modelValue === undefined ? field.schema.default_value : modelValue"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
 			:collection="field.collection"
@@ -62,7 +62,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
-			default: null,
+			default: undefined,
 		},
 		loading: {
 			type: Boolean,
