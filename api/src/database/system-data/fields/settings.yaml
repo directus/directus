@@ -244,9 +244,9 @@ fields:
     width: half
 
   - field: storage_default_folder
-    interface: folder
+    interface: system-folder
     width: half
-    note: Default folder to place files
+    note: Default folder where new files are uploaded
 
   - field: overrides_divider
     interface: presentation-divider
