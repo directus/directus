@@ -75,7 +75,7 @@ router.get(
 			// Try parse the JSON array
 			try {
 				transforms = JSON.parse(transformation['transforms'] as string);
-			} catch (_) {
+			} catch {
 				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
 			}
 
@@ -94,8 +94,9 @@ router.get(
 			// Check the transformations are valid
 			transforms.forEach((transform) => {
 				const name = transform[0];
+
 				if (!TransformationMethods.includes(name)) {
-					throw new InvalidQueryException(`"transforms" Parameter does not allow ${name} as a transformation.`);
+					throw new InvalidQueryException(`"transforms" Parameter does not allow "${name}" as a transformation.`);
 				}
 			});
 
@@ -118,9 +119,12 @@ router.get(
 		) {
 			return next();
 		}
+
 		if (assetSettings.storage_asset_transform === 'all') {
-			if (transformation.key && allKeys.includes(transformation.key as string) === false)
+			if (transformation.key && allKeys.includes(transformation.key as string) === false) {
 				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
+			}
+
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
 			if (allKeys.includes(transformation.key as string)) return next();

@@ -27,7 +27,16 @@ export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	},
 ];
 
-export const ASSET_TRANSFORM_QUERY_KEYS = ['key', 'transforms'];
+export const ASSET_TRANSFORM_QUERY_KEYS = [
+	'key',
+	'transforms',
+	'width',
+	'height',
+	'format',
+	'fit',
+	'quality',
+	'withoutEnlargement',
+];
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 

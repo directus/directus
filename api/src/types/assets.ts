@@ -57,10 +57,13 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 
 // Helper types
 type AllowedSharpMethods = Pick<Sharp, typeof TransformationMethods[number]>;
+
 export type TransformationMap = {
 	[M in keyof AllowedSharpMethods]: readonly [M, ...Parameters<AllowedSharpMethods[M]>];
 };
+
 export type Transformation = TransformationMap[keyof TransformationMap];
+
 export type TransformationParams = {
 	key?: string;
 	transforms?: Transformation[];
@@ -68,15 +71,8 @@ export type TransformationParams = {
 
 // Transformation preset is defined in the admin UI.
 export type TransformationPreset = TransformationPresetFormat &
-	TransformationPresetResize & {
-		key: string;
-
-		// "Additional Transformations"
-		transforms?: {
-			method: keyof AllowedSharpMethods;
-			arguments?: { argument: string }[];
-		}[];
-	};
+	TransformationPresetResize &
+	TransformationParams & { key: string };
 
 export type TransformationPresetFormat = {
 	format?: 'jpeg' | 'png' | 'webp' | 'tiff';
