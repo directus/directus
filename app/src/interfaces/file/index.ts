@@ -13,18 +13,15 @@ export default defineInterface({
 	options: [
 		{
 			field: 'folder',
-			name: '$t:interfaces.folder.folder',
+			name: '$t:interfaces.system-folder.folder',
 			type: 'uuid',
 			meta: {
 				width: 'full',
 				interface: 'system-folder',
 				note: '$t:interfaces.system-folder.field_hint',
-				options: {
-					defaultLabel: 'system',
-				},
 			},
 			schema: {
-				default_value: null,
+				default_value: undefined,
 			},
 		},
 	],

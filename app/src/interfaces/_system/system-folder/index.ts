@@ -3,8 +3,8 @@ import InterfaceSystemFolder from './folder.vue';
 
 export default defineInterface({
 	id: 'system-folder',
-	name: '$t:interfaces.folder.folder',
-	description: '$t:interfaces.folder.description',
+	name: '$t:interfaces.system-folder.folder',
+	description: '$t:interfaces.system-folder.description',
 	icon: 'folder',
 	component: InterfaceSystemFolder,
 	types: ['uuid'],

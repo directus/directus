@@ -12,7 +12,7 @@
 			<v-input
 				readonly
 				:active="active"
-				:value="folderPath"
+				:model-value="folderPath"
 				:placeholder="placeholder"
 				:disabled="disabled"
 				@click="toggle"
@@ -22,23 +22,22 @@
 			</v-input>
 		</template>
 		<v-list>
-			<v-list-item :active="!value" @click="() => emitValue(null)">
+			<v-list-item clickable :active="!value" @click="emitValue(null)">
 				<v-list-item-icon>
 					<v-icon name="folder_special" />
 				</v-list-item-icon>
-				<v-list-item-content>
-					{{ defaultLabel === 'system' ? t('interfaces.folder.system_default') : t('interfaces.folder.root_name') }}
-				</v-list-item-content>
+				<v-list-item-content>{{ t('interfaces.system-folder.root_name') }}</v-list-item-content>
 			</v-list-item>
 			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
 				v-for="folder in nestedFolders"
 				:key="folder.id"
+				clickbable
 				:folder="folder"
 				:current-folder="value"
-				:click-handler="emitValue"
 				:disabled="disabledFolders.includes(folder.id)"
 				:disabled-folders="disabledFolders"
+				@click="emitValue"
 			/>
 		</v-list>
 	</v-menu>
@@ -55,7 +54,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		disabledFolders: {
 			type: Array as PropType<string[]>,
@@ -69,11 +68,6 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		defaultLabel: {
-			type: String,
-			enum: ['root', 'system'],
-			default: 'root',
-		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -84,9 +78,7 @@ export default defineComponent({
 
 		const folderPath = computed(() => {
 			if (!props.value || !folders.value) {
-				return props.defaultLabel === 'system'
-					? t('interfaces.folder.system_default')
-					: t('interfaces.folder.root_name');
+				return t('interfaces.system-folder.root_name');
 			}
 			const folder = folders.value.find((folder) => folder.id === props.value);
 			return folder
@@ -112,8 +104,10 @@ export default defineComponent({
 
 		function folderParentPath(folder: Folder, folders: Folder[]) {
 			const folderMap = new Map(folders.map((folder) => [folder.id, folder]));
+
 			const folderParent = (target: Folder): Folder[] =>
 				(folderMap.has(target.parent) ? folderParent(folderMap.get(target.parent) as Folder) : []).concat(target);
+
 			return folderParent(folder);
 		}
 
@@ -121,6 +115,7 @@ export default defineComponent({
 			if (props.disabled) {
 				return;
 			}
+
 			emit('input', folderId);
 		}
 	},

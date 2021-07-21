@@ -3,14 +3,21 @@
 		v-if="!folder.children || folder.children.length === 0"
 		:active="currentFolder === folder.id"
 		:disabled="disabled"
-		@click="clickHandler(folder.id)"
+		clickable
+		@click="$emit('click', folder.id)"
 	>
 		<v-list-item-icon>
 			<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
 		</v-list-item-icon>
 		<v-list-item-content>{{ folder.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else :active="currentFolder === folder.id" :disabled="disabled" @click="clickHandler(folder.id)">
+	<v-list-group
+		v-else
+		clickable
+		:active="currentFolder === folder.id"
+		:disabled="disabled"
+		@click="$emit('click', folder.id)"
+	>
 		<template #activator>
 			<v-list-item-icon>
 				<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
@@ -22,9 +29,9 @@
 			:key="childFolder.id"
 			:folder="childFolder"
 			:current-folder="currentFolder"
-			:click-handler="clickHandler"
 			:disabled="disabledFolders.includes(childFolder.id)"
 			:disabled-folders="disabledFolders"
+			@click="$emit('click', $event)"
 		/>
 	</v-list-group>
 </template>
@@ -49,10 +56,6 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		clickHandler: {
-			type: Function,
-			default: () => undefined,
-		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -62,5 +65,6 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['click'],
 });
 </script>
