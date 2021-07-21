@@ -267,6 +267,7 @@ STORAGE_LOCAL_ROOT="./uploads"
 | `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`         |
 | `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | 4             |
 | `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | 6000          |
+| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)            | 5             |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
