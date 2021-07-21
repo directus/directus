@@ -838,6 +838,8 @@ interfaces:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la collezione
+  system-folder:
+    folder: Cartella
   list:
     repeater: Ripetitore
     edit_fields: Modifica Campi
