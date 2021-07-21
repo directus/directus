@@ -73,7 +73,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const toggle = ref<boolean>(false);
 		const { nestedFolders, folders, loading } = useFolders();
 
 		const folderPath = computed(() => {
@@ -91,7 +90,6 @@ export default defineComponent({
 		return {
 			emitValue,
 			loading,
-			toggle,
 			folderPath,
 			nestedFolders,
 			onFolderSelect,
