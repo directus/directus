@@ -15,12 +15,6 @@ export interface LayoutConfig<Options = any, Query = any> {
 	setup: (LayoutOptions: LayoutProps<Options, Query>) => any;
 }
 
-export type LayoutContext = Record<string, any>;
-
-export type LayoutDefineParam<Options = any, Query = any> =
-	| LayoutConfig<Options, Query>
-	| ((context: LayoutContext) => LayoutConfig<Options, Query>);
-
 export interface LayoutProps<Options = any, Query = any> {
 	collection: string | null;
 	selection: Item[];

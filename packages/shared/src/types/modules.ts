@@ -14,7 +14,3 @@ export interface ModuleConfig {
 	order?: number;
 	persistent?: boolean;
 }
-
-export type ModuleContext = Record<string, unknown>;
-
-export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);

@@ -33,5 +33,3 @@ export interface DisplayConfig {
 	groups?: LocalType[];
 	fields?: string[] | DisplayFieldsFunction;
 }
-
-export type DisplayDefineParam = DisplayConfig | (() => DisplayConfig);
