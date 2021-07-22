@@ -73,5 +73,9 @@
 		"*.{js,ts,vue}": "eslint --fix",
 		"*.{md,yaml}": "prettier --write",
 		"*.{css,scss,vue}": "stylelint --fix"
+	},
+	"volta": {
+		"node": "16.5.0",
+		"npm": "7.20.0"
 	}
 }
