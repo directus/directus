@@ -60,9 +60,8 @@ To start the initialization run the following command:
 # From within the root of the project
 npm run cli bootstrap
 
-# For SQLite you need to be in the 'api' folder to initialize the database
-cd api
-npm run cli bootstrap
+# For SQLite you need to run the command in the 'api' context (to ensure the database file is created in the right directory)
+npm run cli bootstrap --workspace=api
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
