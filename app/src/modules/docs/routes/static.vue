@@ -98,9 +98,10 @@ export default defineComponent({
 }
 
 .v-chip {
-	margin-left: 12px;
 	--v-chip-background-color: var(--v-chip-background-color-hover);
 	--v-chip-color: var(--v-chip-color-hover);
+
+	margin-left: 12px;
 	cursor: default !important;
 }
 </style>
