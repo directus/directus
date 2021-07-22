@@ -152,14 +152,16 @@ fields:
       relative: true
 
   - field: provider
+    readonly: true
     interface: select-dropdown
     width: half
 
-  - field: provider_key
+  - field: identifier
+    readonly: true
     width: half
     options:
       iconRight: account_circle
     interface: input
 
-  - field: provider_data
+  - field: auth_data
     hidden: true

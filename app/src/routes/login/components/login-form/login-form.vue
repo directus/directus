@@ -1,6 +1,14 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input autofocus autocomplete="username" type="email" v-model="email" :placeholder="t('email')" />
+		<v-input
+			v-if="provider"
+			autofocus
+			autocomplete="username"
+			type="text"
+			v-model="identifier"
+			:placeholder="t('identifier')"
+		/>
+		<v-input v-else autofocus autocomplete="username" type="email" v-model="identifier" :placeholder="t('email')" />
 		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="t('password')" />
 
 		<transition-expand>
@@ -12,18 +20,21 @@
 		</v-notice>
 		<div class="buttons">
 			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-			<router-link to="/reset-password" class="forgot-password">
+			<router-link v-if="provider" to="/login" class="auth-link">
+				{{ t('back') }}
+			</router-link>
+			<router-link v-else to="/reset-password" class="auth-link">
 				{{ t('forgot_password') }}
 			</router-link>
 		</div>
 
-		<sso-links />
+		<sso-links v-if="!provider" />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
@@ -32,19 +43,27 @@ import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
 
 type Credentials = {
-	email: string;
+	identifier: string;
 	password: string;
 	otp?: string;
 };
 
 export default defineComponent({
+	props: {
+		provider: {
+			type: String,
+			default: null,
+		},
+	},
 	components: { ssoLinks },
-	setup() {
+	setup(props) {
 		const { t } = useI18n();
+		const { provider } = toRefs(props);
 
 		const router = useRouter();
 
 		const loggingIn = ref(false);
+		const identifier = ref<string | null>(null);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
 		const error = ref<RequestError | string | null>(null);
@@ -52,12 +71,17 @@ export default defineComponent({
 		const requiresTFA = ref(false);
 		const userStore = useUserStore();
 
-		watch(email, () => {
+		watch(provider, () => {
+			identifier.value = null;
+			email.value = null;
+			password.value = null;
+		});
+
+		watch(identifier, () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
 
 		const errorFormatted = computed(() => {
-			// Show "Wrong username or password" for wrongly formatted emails as well
 			if (error.value === 'INVALID_PAYLOAD') {
 				return translateAPIError('INVALID_CREDENTIALS');
 			}
@@ -68,17 +92,18 @@ export default defineComponent({
 			return null;
 		});
 
-		return { t, errorFormatted, error, email, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
+		return { t, errorFormatted, error, identifier, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
 
 		async function onSubmit() {
-			if (email.value === null || password.value === null) return;
+			if (identifier.value === null || password.value === null) return;
 
 			try {
 				loggingIn.value = true;
 
 				const credentials: Credentials = {
-					email: email.value,
+					identifier: identifier.value,
 					password: password.value,
+					provider: provider.value,
 				};
 
 				if (otp.value) {
@@ -116,7 +141,7 @@ export default defineComponent({
 	justify-content: space-between;
 }
 
-.forgot-password {
+.auth-link {
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 

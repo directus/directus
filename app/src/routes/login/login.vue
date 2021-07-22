@@ -4,7 +4,7 @@
 
 		<continue-as v-if="authenticated" />
 
-		<login-form v-else :sso-error="ssoErrorCode" />
+		<login-form v-else :provider="provider" />
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
@@ -25,7 +25,6 @@ import { defineComponent, computed, PropType } from 'vue';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
 import { useAppStore } from '@/stores';
-
 import { LogoutReason } from '@/auth';
 
 export default defineComponent({
@@ -36,6 +35,10 @@ export default defineComponent({
 		},
 		logoutReason: {
 			type: String as PropType<LogoutReason>,
+			default: null,
+		},
+		provider: {
+			type: String,
 			default: null,
 		},
 	},

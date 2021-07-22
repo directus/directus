@@ -21,6 +21,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		props: (route) => ({
 			ssoErrorCode: route.query.error ? route.query.code : null,
 			logoutReason: route.query.reason,
+			provider: route.query.provider,
 		}),
 		meta: {
 			public: true,

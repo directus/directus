@@ -17,25 +17,21 @@ import { toArray } from '../utils/to-array';
 
 const router = Router();
 
-const loginSchema = Joi.alternatives().try(
-	Joi.object().keys({
-		email: Joi.string().email().required(),
-		password: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
-		otp: Joi.string(),
-	}),
-	Joi.object().keys({
-		identifier: Joi.string().email().required(),
-		secret: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
-		otp: Joi.string(),
-	})
-);
+const loginSchema = Joi.object().keys({
+	identifier: Joi.string().required(),
+	password: Joi.string().required(),
+	provider: Joi.string().allow(null),
+	mode: Joi.string().valid('cookie', 'json'),
+	otp: Joi.string(),
+});
 
 const loginHandler = async (req: any, res: any, next: any) => {
+	const ip = req.ip;
+	const userAgent = req.get('user-agent');
+
 	const accountability = {
-		ip: req.ip,
-		userAgent: req.get('user-agent'),
+		ip,
+		userAgent,
 		role: null,
 	};
 
@@ -49,13 +45,8 @@ const loginHandler = async (req: any, res: any, next: any) => {
 
 	const mode = req.body.mode || 'json';
 
-	const ip = req.ip;
-	const userAgent = req.get('user-agent');
-
 	const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 		...req.body,
-		identifier: req.body.email ?? req.body.identifier,
-		secret: req.body.password ?? req.body.secret,
 		ip,
 		userAgent,
 	});
@@ -224,6 +215,16 @@ router.post(
 );
 
 router.get(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const providers = toArray(env.AUTH_PROVIDERS);
+		res.locals.payload = { data: env.AUTH_PROVIDERS ? providers : null };
+		return next();
+	}),
+	respond
+);
+
+router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.OAUTH_PROVIDERS);
@@ -331,7 +332,7 @@ router.get(
 			const user = await database.select('provider').from('directus_users').where('email', email).first();
 
 			if (!user) {
-				throw new InvalidCredentialsException('Email does not match existing directus user');
+				throw new InvalidCredentialsException('Email does not match existing user');
 			}
 
 			authResponse = await authenticationService.authenticate({

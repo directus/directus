@@ -1,6 +1,8 @@
 import { BasicAuth, AuthManager, AuthManagerConfig, AuthConstructor } from '@directus/auth';
+import { UsernameAuth } from '@directus/auth-username';
 import getDatabase from './database';
 import env from './env';
+import logger from './logger';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from './utils/to-array';
@@ -18,6 +20,11 @@ const getAuthConfig = (): AuthManagerConfig => {
 
 	if (env.AUTH_PROVIDERS) {
 		const providers = toArray(env.AUTH_PROVIDERS);
+
+		if (providers.includes(DEFAULT_AUTH_PROVIDER)) {
+			logger.error(`Cannot override "${DEFAULT_AUTH_PROVIDER}" auth provider.`);
+			process.exit(1);
+		}
 
 		providers.forEach((provider: string) => {
 			provider = provider.trim();
@@ -57,6 +64,8 @@ const getAuthDriver = (driver: string): AuthConstructor | undefined => {
 	switch (driver) {
 		case 'basic':
 			return BasicAuth;
+		case 'username':
+			return UsernameAuth;
 	}
 };
 

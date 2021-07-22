@@ -19,21 +19,21 @@ export default abstract class Auth {
 	 *
 	 * @param identifier User unique identifier
 	 * @throws InvalidCredentialsException
-	 * @return User of the unique identifier
+	 * @return User id connected to the identifier
 	 */
 	abstract userID(identifier: string): Promise<string>;
 
 	/**
-	 * Verify user secret
+	 * Verify user password
 	 *
 	 * @param user User information
-	 * @param secret User secret
+	 * @param password User password
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, secret?: string): void;
+	abstract verify(user: User, password?: string): void;
 
 	/**
-	 * Refresh user session
+	 * Handle user session refresh
 	 *
 	 * @param user User information
 	 * @throws InvalidCredentialsException
@@ -43,7 +43,7 @@ export default abstract class Auth {
 	}
 
 	/**
-	 * Terminate user session
+	 * Handle user session termination
 	 *
 	 * @param user User information
 	 * @throws InvalidCredentialsException
@@ -53,23 +53,34 @@ export default abstract class Auth {
 	}
 
 	/**
-	 * Handle user secret reset request
+	 * Handle create user. Can be used to sync user data with external providers
 	 *
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidOperationException
 	 */
-	requestReset(_user: User): void {
+	createUser(_user: User): void {
 		/* Optional */
 	}
 
 	/**
-	 * Reset user secret
+	 * Handle update user. Can be used to sync user data with external providers
+	 *
+	 * Note: Only updated fields are provided
 	 *
 	 * @param user User information
-	 * @param secret New user secret
 	 * @throws InvalidCredentialsException, InvalidOperationException
 	 */
-	reset(_user: User, _secret?: string): void {
+	updateUser(_user: User): void {
+		/* Optional */
+	}
+
+	/**
+	 * Handle delete user. Can be used to sync user data with external providers
+	 *
+	 * @param user User information
+	 * @throws InvalidCredentialsException, InvalidOperationException
+	 */
+	deleteUser(_user: User): void {
 		/* Optional */
 	}
 }

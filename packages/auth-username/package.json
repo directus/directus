@@ -1,12 +1,11 @@
 {
-  "name": "@directus/auth",
+  "name": "@directus/auth-username",
   "version": "9.0.0-rc.84",
-  "description": "Directus auth driver",
+  "description": "Username based auth driver for Directus",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "contributors": [
-    "Rijk van Zanten <rijkvanzanten@me.com>",
     "Aiden Foxx <aiden@foxx.io>"
   ],
   "scripts": {
@@ -17,9 +16,6 @@
     "test:watch": "jest --coverage --watchAll",
     "test": "jest --coverage",
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
-  },
-  "dependencies": {
-    "argon2": "^0.28.1"
   },
   "devDependencies": {
     "jest": "27.0.6",

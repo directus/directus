@@ -4,6 +4,8 @@ import { Knex } from 'knex';
 import { clone, uniq } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
+import auth from '../auth';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import {
 	FailedValidationException,
 	ForbiddenException,
@@ -38,13 +40,6 @@ export class UsersService extends ItemsService {
 	 * the email is unique regardless of casing
 	 */
 	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey): Promise<void> {
-		if (emails.some((email) => email === null)) {
-			throw new ContainsNullValuesException('email', {
-				collection: 'directus_users',
-				field: 'email',
-			});
-		}
-
 		const query = this.knex
 			.select('email')
 			.from('directus_users')
@@ -122,6 +117,16 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
+		/**
+		 * Sync with auth provider
+		 */
+		await Promise.all(
+			data.map(async (user) => {
+				const provider = auth.getProvider(user.provider ?? DEFAULT_AUTH_PROVIDER);
+				await provider.createUser(user);
+			})
+		);
+
 		return await super.createMany(data, opts);
 	}
 
@@ -145,21 +150,36 @@ export class UsersService extends ItemsService {
 	 * Update many users by primary key
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if ('email' in data) {
+		if (data.email) {
 			await this.checkUniqueEmails([data.email]);
 		}
 
-		if ('password' in data) {
+		if (data.password) {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if ('tfa_secret' in data) {
+		if (data.tfa_secret !== undefined) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		if ('provider' in data || 'provider_key' in data || 'provider_data' in data) {
-			throw new InvalidPayloadException(`You can't change "provider" values manually.`);
+		if (data.provider !== undefined || data.identifier !== undefined || data.auth_data !== undefined) {
+			throw new InvalidPayloadException(`You can't change auth values manually.`);
 		}
+
+		/**
+		 * Sync with auth provider
+		 */
+		const users = await this.knex.select('id', 'provider').from('directus_users').whereIn('id', keys);
+
+		await Promise.all(
+			users.map(async (user) => {
+				const provider = auth.getProvider(user.provider);
+				await provider.updateUser({
+					...data,
+					...user,
+				});
+			})
+		);
 
 		return await super.updateMany(keys, data, opts);
 	}
@@ -191,6 +211,32 @@ export class UsersService extends ItemsService {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
 		}
 
+		/**
+		 * Sync with auth provider
+		 */
+		const users = await this.knex
+			.select(
+				'id',
+				'first_name',
+				'last_name',
+				'email',
+				'password',
+				'status',
+				'role',
+				'provider',
+				'identifier',
+				'auth_data'
+			)
+			.from('directus_users')
+			.whereIn('id', keys);
+
+		await Promise.all(
+			users.map(async (user) => {
+				const provider = auth.getProvider(user.provider);
+				await provider.deleteUser(user);
+			})
+		);
+
 		await super.deleteMany(keys, opts);
 
 		return keys;
@@ -217,7 +263,11 @@ export class UsersService extends ItemsService {
 			});
 
 			for (const email of emails) {
-				await service.createOne({ email, role, status: 'invited' });
+				await service.createOne({
+					email,
+					role,
+					status: 'invited',
+				});
 
 				const payload = { email, scope: 'invite' };
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
@@ -250,22 +300,19 @@ export class UsersService extends ItemsService {
 
 		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
-		if (!user || user.status !== 'invited') {
+		if (user?.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		const passwordHashed = await argon2.hash(password);
-
-		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
-
-		if (this.cache && env.CACHE_AUTO_PURGE) {
-			await this.cache.clear();
-		}
+		this.updateOne(user.id, { password, status: 'active' });
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
-		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
-		if (!user) throw new ForbiddenException();
+		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
+
+		if (user?.status !== 'active') {
+			throw new ForbiddenException();
+		}
 
 		const mailService = new MailService({
 			schema: this.schema,
@@ -306,17 +353,11 @@ export class UsersService extends ItemsService {
 
 		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
-		if (!user || user.status !== 'active') {
+		if (user?.status !== 'active') {
 			throw new ForbiddenException();
 		}
 
-		const passwordHashed = await argon2.hash(password);
-
-		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
-
-		if (this.cache && env.CACHE_AUTO_PURGE) {
-			await this.cache.clear();
-		}
+		this.updateOne(user.id, { password, status: 'active' });
 	}
 
 	/**

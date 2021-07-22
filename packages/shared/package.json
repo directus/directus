@@ -18,10 +18,6 @@
 		"./types": {
 			"import": "./dist/esm/types/index.js",
 			"require": "./dist/cjs/types/index.js"
-		},
-		"./exceptions": {
-			"import": "./dist/esm/exceptions/index.js",
-			"require": "./dist/cjs/exceptions/index.js"
 		}
 	},
 	"scripts": {

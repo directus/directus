@@ -7,7 +7,7 @@ import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import auth from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { InvalidCredentialsException, User } from '@directus/auth';
+import { InvalidCredentialsException } from '@directus/auth';
 import { InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
@@ -18,7 +18,7 @@ import { merge } from 'lodash';
 
 type AuthenticateOptions = {
 	identifier: string;
-	secret?: string;
+	password?: string;
 	provider?: string;
 	ip?: string | null;
 	userAgent?: string | null;
@@ -50,16 +50,28 @@ export class AuthenticationService {
 	async authenticate(
 		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
-		const { identifier, secret, ip, userAgent, otp } = options;
+		const { identifier, password, ip, userAgent, otp } = options;
 
-		const providerKey = options.provider ?? DEFAULT_AUTH_PROVIDER;
-		const provider = auth.getProvider(providerKey);
+		const providerName = options.provider ?? DEFAULT_AUTH_PROVIDER;
+		const provider = auth.getProvider(providerName);
 
 		let user = await this.knex
-			.select<User & { tfa_secret: string | null }>('id', 'password', 'role', 'tfa_secret', 'status')
+			.select(
+				'id',
+				'first_name',
+				'last_name',
+				'email',
+				'password',
+				'status',
+				'role',
+				'tfa_secret',
+				'provider',
+				'identifier',
+				'auth_data'
+			)
 			.from('directus_users')
 			.where('id', await provider.userID(identifier))
-			.andWhere('provider', providerKey)
+			.andWhere('provider', providerName)
 			.first();
 
 		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
@@ -90,7 +102,7 @@ export class AuthenticationService {
 			});
 		};
 
-		if (!user || user.status !== 'active') {
+		if (user?.status !== 'active') {
 			emitStatus('fail');
 
 			if (user?.status === 'suspended') {
@@ -124,9 +136,9 @@ export class AuthenticationService {
 			}
 		}
 
-		if (secret !== undefined) {
+		if (password !== undefined) {
 			try {
-				await provider.verify(user, secret);
+				await provider.verify(user, password);
 			} catch (e) {
 				emitStatus('fail');
 				throw e;
@@ -205,22 +217,33 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const session = await this.knex
-			.select<Session & User>('s.expires', 'u.id', 'u.password', 'u.role', 'u.status', 'u.provider')
+		const record = await this.knex
+			.select(
+				's.expires',
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'u.provider',
+				'u.identifier',
+				'u.auth_data'
+			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
-			.where('token', refreshToken)
+			.where('s.token', refreshToken)
 			.first();
 
-		if (!session || session.expires < new Date()) {
+		if (!record || record.expires < new Date()) {
 			throw new InvalidCredentialsException();
 		}
 
-		const provider = auth.getProvider(session.provider);
+		const provider = auth.getProvider(record.provider);
+		await provider.refresh(record);
 
-		await provider.refresh(session);
-
-		const accessToken = jwt.sign({ id: session.id }, env.SECRET as string, {
+		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 
@@ -231,35 +254,58 @@ export class AuthenticationService {
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
 
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: session.id });
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.id });
 
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: session.id,
+			id: record.id,
 		};
 	}
 
 	async logout(refreshToken: string): Promise<void> {
 		const user = await this.knex
-			.select<User>('u.id', 'u.password', 'u.role', 'u.status', 'u.provider')
+			.select(
+				'u.id',
+				'u.first_name',
+				'u.last_name',
+				'u.email',
+				'u.password',
+				'u.status',
+				'u.role',
+				'u.provider',
+				'u.identifier',
+				'u.auth_data'
+			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
-			.where('token', refreshToken)
+			.where('s.token', refreshToken)
 			.first();
 
 		if (user) {
 			const provider = auth.getProvider(user.provider);
-
 			await provider.logout(user);
+
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
 	}
 
-	async verifyPassword(userID: string, secret: string): Promise<void> {
+	async verifyPassword(userID: string, password: string): Promise<void> {
 		const user = await this.knex
-			.select<User>('id', 'password', 'role', 'status', 'provider')
+			.select(
+				'id',
+				'first_name',
+				'last_name',
+				'email',
+				'password',
+				'status',
+				'role',
+				'tfa_secret',
+				'provider',
+				'identifier',
+				'auth_data'
+			)
 			.from('directus_users')
 			.where('id', userID)
 			.first();
@@ -269,7 +315,6 @@ export class AuthenticationService {
 		}
 
 		const provider = auth.getProvider(user.provider);
-
-		await provider.verify(user, secret);
+		await provider.verify(user, password);
 	}
 }

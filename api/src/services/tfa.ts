@@ -36,7 +36,7 @@ export class TFAService {
 		}
 
 		if (!user?.email) {
-			throw new InvalidPayloadException('User must have a valid email to enable TFA.');
+			throw new InvalidPayloadException('User must have a valid email to enable TFA');
 		}
 
 		const secret = authenticator.generateSecret();

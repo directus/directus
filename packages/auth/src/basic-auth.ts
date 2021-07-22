@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import Auth from './auth';
 import { User } from './types';
-import { InvalidCredentialsException } from './exceptions';
+import { InvalidCredentialsException, InvalidPayloadException } from './exceptions';
 
 export default class BasicAuth extends Auth {
 	/**
@@ -25,8 +25,26 @@ export default class BasicAuth extends Auth {
 	 * Verify user password
 	 */
 	async verify(user: User, password?: string): Promise<void> {
-		if (!user?.password || !(await argon2.verify(user.password, password as string))) {
+		if (!user.password || !(await argon2.verify(user.password, password as string))) {
 			throw new InvalidCredentialsException();
+		}
+	}
+
+	/**
+	 * Handle create user. Can be used to sync user data with external providers
+	 */
+	createUser(user: User): void {
+		if (!user.email) {
+			throw new InvalidPayloadException('User requires a valid email.');
+		}
+	}
+
+	/**
+	 * Handle update user. Can be used to sync user data with external providers
+	 */
+	updateUser(user: User): void {
+		if (user.email !== undefined && !user.email) {
+			throw new InvalidPayloadException('User email cannot be null.');
 		}
 	}
 }

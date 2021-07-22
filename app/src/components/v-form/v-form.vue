@@ -9,9 +9,6 @@
 						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
 							{{ t('validationError.unique', validationError) }}
 						</template>
-						<template v-else-if="validationError.code === 'CONTAINS_NULL_VALUES'">
-							{{ t('validationError.nnull', validationError) }}
-						</template>
 						<template v-else>
 							{{ t(`validationError.${validationError.code}`, validationError) }}
 						</template>

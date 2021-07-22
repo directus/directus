@@ -1,9 +1,18 @@
 <template>
 	<div class="sso-links">
-		<template v-if="providers && providers.length > 0">
+		<template v-if="authProviders?.length > 0 || oauthProviders?.length > 0">
 			<v-divider />
 
-			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
+			<router-link
+				class="sso-link"
+				v-for="provider in authProviders"
+				:key="provider.name"
+				:to="'/login?provider=' + provider.name"
+			>
+				{{ t('log_in_with', { provider: provider.name }) }}
+			</router-link>
+
+			<a class="sso-link" v-for="provider in oauthProviders" :key="provider.name" :href="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</a>
 		</template>
@@ -21,25 +30,28 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const providers = ref([]);
+		const authProviders = ref([]);
+		const oauthProviders = ref([]);
 		const loading = ref(false);
 
 		onMounted(() => fetchProviders());
 
-		return { t, providers };
+		return { t, authProviders, oauthProviders };
 
 		async function fetchProviders() {
 			loading.value = true;
 
 			try {
-				const response = await api.get('/auth/oauth/');
+				const [authResponse, oauthResponse] = await Promise.all([api.get('/auth/'), api.get('/auth/oauth/')]);
 
-				providers.value = response.data.data?.map((providerName: string) => {
-					return {
-						name: providerName,
-						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
-					};
-				});
+				authProviders.value = authResponse.data.data?.map((providerName: string) => ({
+					name: providerName,
+				}));
+
+				oauthProviders.value = oauthResponse.data.data?.map((providerName: string) => ({
+					name: providerName,
+					link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
+				}));
 			} catch (err) {
 				unexpectedError(err);
 			} finally {

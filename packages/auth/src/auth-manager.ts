@@ -53,20 +53,6 @@ export default class AuthManager {
 	}
 
 	/**
-	 * Get the instantiated providers
-	 */
-	getProviders(): Map<string, Auth> {
-		return this._providers;
-	}
-
-	/**
-	 * Get the registered drivers
-	 */
-	getDrivers(): Map<string, AuthConstructor> {
-		return this._drivers;
-	}
-
-	/**
 	 * Register a custom driver
 	 */
 	registerDriver(name: string, driver: AuthConstructor): void {

@@ -5,8 +5,9 @@ import { useAppStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
 
 export type LoginCredentials = {
-	email: string;
+	identifier: string;
 	password: string;
+	provider?: string;
 };
 
 export async function login(credentials: LoginCredentials): Promise<void> {
