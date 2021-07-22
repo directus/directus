@@ -111,6 +111,7 @@ field_presets: Preset di Campo
 permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
 changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
 no_relational_data: Tieni presente che questo non include dati relazionali.
 hide_field_on_detail: Nascondi campo nel dettaglio
@@ -128,6 +129,7 @@ exposure: Esposizione
 shutter: Otturatore
 iso: ISO
 focal_length: Lunghezza Focale
+schema_setup_key: Nome della colonna nel database e chiave API di questo campo
 create_field: Crea campo
 creating_new_field: 'Nuovo Campo ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -157,6 +159,8 @@ create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
 refresh_interval: Intervallo di aggiornamento
 no_refresh: Non aggiornare
+refresh_interval_seconds: Aggiorna immediatamente | Ogni secondo | Ogni {seconds} secondi
+refresh_interval_minutes: Ogni minuto | Ogni {minutes} minuti
 auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
@@ -164,9 +168,14 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
+no_collections_found: Nessuna collezione trovata.
+new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
+search_collection: Cerca nella collezione...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Collezione'
 add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
+add_o2m_to_collection: 'Aggiungi Uno-a-Molti a "{collection}"'
+add_m2m_to_collection: 'Aggiungi Molti-a-Molti a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -186,6 +195,7 @@ note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
+precision_scale: Precisione & Scala
 readonly: Sola lettura
 unique: Unico
 updated_on: Aggiornato il
@@ -195,6 +205,7 @@ foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
+edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci un valore...
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
@@ -217,6 +228,7 @@ revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 private_user: Utenti privati
 revision_preview: Anteprima Revisione
+updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
 item_create_success: Elemento Creato | Elementi Creati
@@ -228,9 +240,11 @@ related_collections: Raccolte Correlate
 languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
+use_current_filters_settings: Usa i filtri e le impostazioni correnti
 export_collection: 'Esporta {collection}'
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
+fill_template: Riempi con il valore del modello
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
@@ -238,6 +252,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
+add_field_related: Aggiungi il campo alla collezione correlata
 interface: Interfaccia
 today: Oggi
 yesterday: Ieri
@@ -294,18 +309,24 @@ no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 collection_key: Chiave Di Raccolta
 name: Nome
+primary_key_field: Campo Chiave Primaria
 type: Tipo
 creating_new_collection: Creazione Nuova Collezione
 created_by: Creato da
 created_on: Creato il
 creating_collection_info: Nominare la collezione e impostare il suo campo unico “chiave”...
 creating_collection_system: Abilita e rinomina uno di questi campi opzionali.
+auto_increment_integer: Intero incrementato automaticamente
 generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
 save_and_stay: Salva e rimani
 save_as_copy: Salva come copia
 add_existing: Aggiungi esistente
+creating_items: Creazione Oggetti
+enable_create_button: Abilita il pulsante di creazione
+selecting_items: Selezione elementi
+enable_select_button: Abilita il pulsante di selezione
 comments: Commenti
 no_comments: Non ci sono ancora commenti
 click_to_expand: Fare clic per espandere
@@ -318,6 +339,8 @@ report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
+display_not_found: 'Display "{display}" non trovato.'
+reset_display: Ripristina il Display
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
@@ -333,6 +356,7 @@ create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
 no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
+display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
 active: Attivo
@@ -352,13 +376,16 @@ second: Secondi
 file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
+card_size: Dimensione della Card
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
 status: Stato
 remove: Rimuovere
+toggle_manual_sorting: Attiva/disattiva l'ordinamento manuale
 bookmark_doesnt_exist: Segnalibro Non Esiste
 bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
+bookmark_doesnt_exist_cta: Ritorna alla collezione
 select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
@@ -374,12 +401,18 @@ errors:
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
+  INVALID_OTP: One-time password errata
+  INVALID_PAYLOAD: Payload non valido
   INVALID_QUERY: Query non valida
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
+  RECORD_NOT_UNIQUE: Rilevato valore duplicato
+  USER_SUSPENDED: Utente sospeso
+  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
   UNKNOWN: Errore Imprevisto
   INTERNAL_SERVER_ERROR: Errore Imprevisto
+value_hashed: Valore cifrato in modo sicuro
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -405,6 +438,7 @@ delete_collection: Elimina Raccolta
 update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
+start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
@@ -412,11 +446,14 @@ delete_collection_are_you_sure: >-
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
+show_hidden_collections: Mostra le collezioni nascoste
+hide_hidden_collections: Nascondi le collezioni nascoste
 unmanaged_collections: Raccolte Non Configurate
 system_collections: Raccolte di Sistema
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
+count_other_revisions: '{count} altre revisioni'
 font: Tipo di carattere
 sans_serif: Sans Serif
 serif: Serif
@@ -442,6 +479,10 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  starts_with: Inizia con
+  nstarts_with: Non inizia con
+  ends_with: Finisce con
+  nends_with: Non finisce con
   between: È compresa tra
   nbetween: Non è compresa tra
   empty: È vuoto
@@ -498,6 +539,8 @@ select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
 toggle: Interrutore
+icon_on: Icona Acceso
+icon_off: Icona Spento
 label: Etichetta
 image_url: URL immagine
 alt_text: Testo alternativo
@@ -767,9 +810,24 @@ value: Valore
 view_project: Visualizza Progetto
 interfaces:
   presentation-links:
+    presentation-links: Collegamenti del pulsante
+    links: Collegamenti
+    description: Pulsanti configurabili per avviare URL dinamici
+    style: Stile
     primary: Principale
+    link: Collegamenti
+    button: Pulsanti
+    error: Non è possibile eseguire l'azione
   select-multiple-checkbox:
+    checkboxes: Caselle di selezione
+    description: Scegli tra più opzioni tramite caselle di selezione
+    allow_other: Consenti altro
+    show_more: 'Mostra altri {count}'
     items_shown: Elementi Visualizzati
+  select-multiple-checkbox-tree:
+    name: Caselle di selezione (Albero)
+    description: Scegli tra più opzioni tramite caselle di selezione annidate
+    value_combining_note: Controlla quale valore viene memorizzato quando vengono effettuate selezioni annidate.
   input-code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
@@ -785,21 +843,27 @@ interfaces:
     include_system_collections: Includi Raccolte di Sistema
   select-color:
     color: Colore
+    description: Inserisci o seleziona un valore di colore
     placeholder: Scegli un colore...
     preset_colors: Colori Predefiniti
     preset_colors_add_label: Aggiungi nuovo colore...
+    name_placeholder: Inserisci il nome del colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
     include_seconds: Includi Secondi
+    set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
   system-display-template:
     display-template: Display Template
+    description: Metti insieme testo statico e valori di campo dinamici
+    collection_field: Campo collezione
     collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
     select_a_collection: Seleziona una Raccolta
   presentation-divider:
     divider: Separatore
   select-dropdown:
+    allow_other: Consenti altro
     choices_value_placeholder: Inserisci un valore...
   file:
     file: File
@@ -879,6 +943,8 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Icona Acceso
+    icon_off: Icona Spento
     color_off: Colore Disattivato
   collection:
     collection: Raccolta
