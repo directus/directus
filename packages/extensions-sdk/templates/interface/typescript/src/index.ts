@@ -8,4 +8,5 @@ export default defineInterface({
 	icon: 'box',
 	component: InterfaceComponent,
 	types: ['string'],
+	options: null,
 });

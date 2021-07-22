@@ -8,4 +8,5 @@ export default defineDisplay({
 	icon: 'box',
 	handler: DisplayComponent,
 	types: ['string'],
+	options: null,
 });

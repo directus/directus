@@ -7,4 +7,5 @@ export default {
 	icon: 'box',
 	component: InterfaceComponent,
 	types: ['string'],
+	options: null,
 };
