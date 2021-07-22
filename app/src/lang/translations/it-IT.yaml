@@ -92,6 +92,7 @@ validationError:
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
+nullable: Può essere null
 allow_null_value: Consenti valore NULL
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
@@ -102,10 +103,12 @@ field_m2a: Relazione M2A
 field_o2m: Relazione O2M
 field_m2m: Relazione M2M
 field_translations: Traduzioni
+field_group: Gruppo di campi
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
