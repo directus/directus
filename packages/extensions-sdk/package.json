@@ -13,6 +13,7 @@
 			"require": "./dist/cjs/cli/index.js"
 		}
 	},
+	"types": "dist/esm/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
