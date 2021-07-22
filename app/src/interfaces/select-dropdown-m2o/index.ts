@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import Options from './options.vue';
 

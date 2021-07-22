@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceFileImage from './file-image.vue';
 
 export default defineInterface({

@@ -134,7 +134,7 @@ import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
-import { localTypes } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -160,7 +160,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof localTypes[number]>,
+			type: String as PropType<LocalType>,
 			default: null,
 		},
 	},

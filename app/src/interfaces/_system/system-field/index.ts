@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSystemField from './system-field.vue';
 
 export default defineInterface({

@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceInputAutocompleteAPI from './input-autocomplete-api.vue';
 
 export default defineInterface({
