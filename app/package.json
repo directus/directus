@@ -64,7 +64,7 @@
 		"codemirror": "5.62.2",
 		"copyfiles": "2.4.1",
 		"cropperjs": "1.5.12",
-		"date-fns": "2.22.1",
+		"date-fns": "2.23.0",
 		"dompurify": "2.3.0",
 		"escape-string-regexp": "5.0.0",
 		"front-matter": "4.0.2",
