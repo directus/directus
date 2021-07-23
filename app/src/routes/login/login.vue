@@ -28,6 +28,7 @@ import { useAppStore } from '@/stores';
 import { LogoutReason } from '@/auth';
 
 export default defineComponent({
+	components: { LoginForm, ContinueAs },
 	props: {
 		ssoErrorCode: {
 			type: String,
@@ -42,7 +43,6 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	components: { LoginForm, ContinueAs },
 	setup() {
 		const { t, te } = useI18n();
 

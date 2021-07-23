@@ -1,6 +1,6 @@
 {
   "name": "@directus/auth",
-  "version": "9.0.0-rc.84",
+  "version": "9.0.0-rc.85",
   "description": "Directus auth driver",
   "license": "MIT",
   "main": "dist/index.js",

@@ -26,7 +26,7 @@
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
 				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-					<v-progress-linear indeterminate v-if="loading" />
+					<v-progress-linear v-if="loading" indeterminate />
 				</th>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
@@ -40,9 +40,9 @@
 				</tr>
 			</tbody>
 			<draggable
-				:force-fallback="true"
 				v-else
 				v-model="internalItems"
+				:force-fallback="true"
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
@@ -103,15 +103,6 @@ const HeaderDefaults: Header = {
 };
 
 export default defineComponent({
-	emits: [
-		'click:row',
-		'update:sort',
-		'update:items',
-		'item-selected',
-		'update:modelValue',
-		'manual-sort',
-		'update:headers',
-	],
 	components: {
 		TableHeader,
 		TableRow,
@@ -199,6 +190,15 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: [
+		'click:row',
+		'update:sort',
+		'update:items',
+		'item-selected',
+		'update:modelValue',
+		'manual-sort',
+		'update:headers',
+	],
 	setup(props, { emit, slots }) {
 		const internalHeaders = computed({
 			get: () => {

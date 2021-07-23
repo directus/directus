@@ -1,6 +1,6 @@
 <template>
-	<div class="latency-indicator" v-tooltip.bottom.end="latencyTooltip">
-		<v-progress-circular indeterminate v-if="!lastLatency" />
+	<div v-tooltip.bottom.end="latencyTooltip" class="latency-indicator">
+		<v-progress-circular v-if="!lastLatency" indeterminate />
 		<v-icon v-else :name="icon" />
 	</div>
 </template>

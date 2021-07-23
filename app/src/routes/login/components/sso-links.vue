@@ -4,15 +4,15 @@
 			<v-divider />
 
 			<router-link
-				class="sso-link"
 				v-for="provider in authProviders"
 				:key="provider.name"
+				class="sso-link"
 				:to="'/login?provider=' + provider.name"
 			>
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</router-link>
 
-			<a class="sso-link" v-for="provider in oauthProviders" :key="provider.name" :href="provider.link">
+			<a v-for="provider in oauthProviders" :key="provider.name" class="sso-link" :href="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</a>
 		</template>

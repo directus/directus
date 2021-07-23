@@ -47,7 +47,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, toRefs } from 'vue';
-import { Collection, Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
+import { Collection } from '@/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
 

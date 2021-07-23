@@ -1,8 +1,8 @@
 <template>
 	<div class="field-select" :class="field.meta?.width || 'full'">
-		<v-input disabled v-if="disabled" class="field">
+		<v-input v-if="disabled" disabled class="field">
 			<template #prepend>
-				<v-icon name="lock" v-tooltip="t('system_fields_locked')" />
+				<v-icon v-tooltip="t('system_fields_locked')" name="lock" />
 			</template>
 
 			<template #input>
@@ -23,22 +23,22 @@
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
+				:fallback-on-body="true"
+				:invert-swap="true"
 				@update:model-value="onGroupSortChange"
-				:fallbackOnBody="true"
-				:invertSwap="true"
 			>
 				<template #header>
 					<div class="header full">
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 						<span class="name">{{ field.field }}</span>
-						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
+							:no-delete="nestedFields.length > 0"
 							@toggleVisibility="toggleVisibility"
 							@setWidth="setWidth($event)"
 							@duplicate="duplicateActive = true"
 							@delete="deleteActive = true"
-							:no-delete="nestedFields.length > 0"
 						/>
 					</div>
 				</template>
@@ -54,10 +54,10 @@
 				</template>
 
 				<template #input>
-					<div class="label" v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name">
+					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
 						<span class="name">
 							{{ field.field }}
-							<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
+							<v-icon v-if="field.schema && field.schema.is_nullable === false" name="star" class="required" sup />
 						</span>
 						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
@@ -68,18 +68,18 @@
 					<div class="icons">
 						<v-icon
 							v-if="field.schema && field.schema.is_primary_key"
+							v-tooltip="t('primary_key')"
 							name="vpn_key"
 							small
-							v-tooltip="t('primary_key')"
 						/>
 						<v-icon
 							v-if="!field.meta"
+							v-tooltip="t('db_only_click_to_configure')"
 							name="report_problem"
 							class="unmanaged"
 							small
-							v-tooltip="t('db_only_click_to_configure')"
 						/>
-						<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="t('hidden_field')" small />
+						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
 							@toggleVisibility="toggleVisibility"
@@ -98,12 +98,12 @@
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ t('collection', 0) }}</span>
-								<v-select class="monospace" :items="collections" v-model="duplicateTo" />
+								<v-select v-model="duplicateTo" class="monospace" :items="collections" />
 							</div>
 
 							<div class="field">
 								<span class="type-label">{{ t('field', 0) }}</span>
-								<v-input class="monospace" v-model="duplicateName" db-safe autofocus />
+								<v-input v-model="duplicateName" class="monospace" db-safe autofocus />
 							</div>
 						</div>
 					</v-card-text>
@@ -111,7 +111,7 @@
 						<v-button secondary @click="duplicateActive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="saveDuplicate" :disabled="duplicateName === null" :loading="duplicating">
+						<v-button :disabled="duplicateName === null" :loading="duplicating" @click="saveDuplicate">
 							{{ t('duplicate') }}
 						</v-button>
 					</v-card-actions>
@@ -122,8 +122,8 @@
 				<v-card>
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
-						<v-button @click="deleteActive = false" secondary>{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" @click="deleteField" class="delete">{{ t('delete') }}</v-button>
+						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -134,7 +134,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
-import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import { useRouter } from 'vue-router';
@@ -142,13 +141,13 @@ import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { InterfaceConfig } from '@/interfaces/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 
 export default defineComponent({
-	name: 'field-select',
+	name: 'FieldSelect',
 	components: { FieldSelectMenu, Draggable },
 	props: {
 		field: {
@@ -164,6 +163,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['setNestedSort'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

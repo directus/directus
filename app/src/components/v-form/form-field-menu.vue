@@ -41,10 +41,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['update:modelValue', 'unset', 'edit-raw'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -59,6 +58,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue', 'unset', 'edit-raw'],
 	setup(props) {
 		const { t } = useI18n();
 

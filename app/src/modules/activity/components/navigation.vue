@@ -1,6 +1,6 @@
 <template>
 	<v-list large>
-		<v-list-item clickable @click="clearNavFilter" :active="!activeFilter">
+		<v-list-item clickable :active="!activeFilter" @click="clearNavFilter">
 			<v-list-item-icon>
 				<v-icon name="access_time" />
 			</v-list-item-icon>
@@ -11,8 +11,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('user', currentUserID)"
 			:active="activeFilter && activeFilter.field === 'user' && activeFilter.value === currentUserID"
+			@click="setNavFilter('user', currentUserID)"
 		>
 			<v-list-item-icon>
 				<v-icon name="face" />
@@ -26,8 +26,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('action', 'create')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'create'"
+			@click="setNavFilter('action', 'create')"
 		>
 			<v-list-item-icon>
 				<v-icon name="add" />
@@ -39,8 +39,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('action', 'update')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'update'"
+			@click="setNavFilter('action', 'update')"
 		>
 			<v-list-item-icon>
 				<v-icon name="check" />
@@ -52,8 +52,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('action', 'delete')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'delete'"
+			@click="setNavFilter('action', 'delete')"
 		>
 			<v-list-item-icon>
 				<v-icon name="clear" />
@@ -65,8 +65,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('action', 'comment')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'comment'"
+			@click="setNavFilter('action', 'comment')"
 		>
 			<v-list-item-icon>
 				<v-icon name="chat_bubble_outline" />
@@ -78,8 +78,8 @@
 
 		<v-list-item
 			clickable
-			@click="setNavFilter('action', 'authenticate')"
 			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'authenticate'"
+			@click="setNavFilter('action', 'authenticate')"
 		>
 			<v-list-item-icon>
 				<v-icon name="login" />
@@ -99,13 +99,13 @@ import { nanoid } from 'nanoid';
 import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['update:filters'],
 	props: {
 		filters: {
 			type: Array as PropType<Filter[]>,
 			required: true,
 		},
 	},
+	emits: ['update:filters'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -2,13 +2,22 @@ ARG NODE_VERSION=16-alpine
 
 FROM node:${NODE_VERSION} as builder
 
+ARG TARGETPLATFORM
+
 WORKDIR /directus
 COPY /dist .
+RUN \
+  if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then \
+  apk --no-cache add \
+  python3 \
+  build-base \
+  && ln -sf /usr/bin/python3 /usr/bin/python \
+  ; fi
 RUN npm i --only=production --no-package-lock
 RUN rm *.tgz
 
 # Directus image
-FROM node:16-alpine
+FROM node:${NODE_VERSION}
 
 ARG VERSION
 ARG REPOSITORY=directus/directus

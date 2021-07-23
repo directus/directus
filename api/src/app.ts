@@ -47,6 +47,12 @@ import { session } from './middleware/session';
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
+	try {
+		new URL(env.PUBLIC_URL);
+	} catch {
+		logger.warn('PUBLIC_URL is not a valid URL');
+	}
+
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
@@ -99,7 +105,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 

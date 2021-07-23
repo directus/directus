@@ -1,1 +1,122 @@
 ---
+edit_field: Uredi polje
+item_revision: Revizija postavke
+duplicate_field: Podvajanje polja
+half_width: Polovična širina
+full_width: Polna širina
+group: Skupina
+fill_width: Zapolni širino
+field_name_translations: Prevodi imen polj
+enter_password_to_enable_tfa: Vnesite svoje geslo, da boste lahko omogočili dvonivojsko avtentikacijo
+add_field: Dodaj polje
+role_name: Ime vloge
+branch: Veja
+leaf: List
+indeterminate: Nedoločeno
+exclusive: Ekskluzivno
+children: Podrejeni
+db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
+show_archived_items: Prikaži arhivirane opombe
+edited: Urejena vrednost
+required: Zahtevano
+required_for_app_access: Zahtevano za dostop do aplikacije
+requires_value: Vnos je obvezen
+create_preset: Ustvari prednastavitev
+create_role: Ustvari vlogo
+create_user: Ustvari uporabnika
+create_webhook: Ustvari Webhook
+invite_users: Povabite uporabnike
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+invite: Povabi
+email_already_invited: Elektronski naslov {email} je že bil povabljen
+emails: E-pošte
+connection_excellent: Odlična povezava
+connection_good: Dobra povezava
+connection_fair: Zmerna povezava
+connection_poor: Slaba povezava
+primary: Glavni
+rename_folder: Preimenuj mapo
+delete_folder: Izbriši mapo
+prefix: Predpona
+suffix: Pripona
+reset_bookmark: Ponastavi zaznamek
+rename_bookmark: Preimenuj zaznamek
+update_bookmark: Posodobi zaznamek
+delete_bookmark: Izbriši zaznamek
+delete_bookmark_copy: >-
+  Ali ste prepričani, da želite trajno izbrisati zaznamek {bookmark}? Tega dejanja ne morete preklicati.
+logoutReason:
+  SIGN_OUT: Izpisani
+  SESSION_EXPIRED: Seja je potekla
+public: Javno
+public_description: Nadzoruje, kateri podatki API so na voljo brez avtentikacije.
+not_allowed: Ni dovoljeno
+directus_version: Directus verzija
+node_version: Node verzija
+node_uptime: Node deluje
+os_type: OS vrsta
+os_version: OS verzija
+os_uptime: OS deluje
+os_totalmem: OS spomin
+archive: Arhiviraj
+archive_confirm: Ste prepričani, da želite arhivirati ta zapis?
+archive_confirm_count: >-
+  Ni izbranih zapisov | Ste prepričani, da želite arhivirati ta zapis? | Ste prepričani, da želite arhivirati {count} zapisov?
+reset_system_permissions_to: 'Ponastavi sistemska dovoljenja na:'
+reset_system_permissions_copy: To dejanje bo prepisalo dovoljenja na sistemski zbirki. Ste prepričani?
+app_access_minimum: Minimum za aplikacijski dostop
+recommended_defaults: Priporočene privzete vrednosti
+unarchive: Dearhiviraj
+unarchive_confirm: Ste prepričani, da želite dearhivirati ta zapis?
+nested_files_folders_will_be_moved: Vsebovane datoteke in mape bodo prestavljene en nivo višje.
+unknown_validation_errors: 'Vsebinske napake na naslednjih skritih poljih:'
+validationError:
+  eq: Vrednost mora biti {valid}
+  neq: Vrednost ne more biti {invalid}
+  in: Vrednost mora biti iz {valid}
+  nin: Vrednost ne sme biti nekaj od {invalid}
+  contains: Vrednost mora vsebovati {substring}
+  ncontains: Vrednost ne sme vsebovati {substring}
+  gt: Vrednost mora biti večja od {valid}
+  gte: Vrednost mora biti večja ali enaka {valid}
+  lt: Vrednost mora biti manjša od {valid}
+  lte: Vrednost mora biti manjša ali enaka {valid}
+  empty: Vrednost mora biti prazna
+  nempty: Vrednost ne sme biti prazna
+  null: Vrednost mora biti nična
+  nnull: Vrednost ne sme biti nična
+  required: Vrednost je obvezna
+  unique: Vrednost mora biti edinstvena
+  regex: Vrednost ni v pravilni obliki
+all_access: Poln dostop
+no_access: Ni dostopa
+use_custom: Uporabi po meri
+nullable: Nično
+allow_null_value: Dovoli nično vrednost
+enter_value_to_replace_nulls: Prosimo vnesite novo vrednost, ki bo nadomestila nično v tem polju.
+field_standard: Običajno
+field_m2o: M2O razmerje - več na ena
+field_m2a: M2A razmerje - več na karkoli
+field_o2m: O2M razmerje - ena na več
+field_m2m: M2M razmerje - več na več
+field_group: Skupina polj
+item_permissions: Dovoljenja zapisa
+field_permissions: Dovoljenja polja
+field_validation: Validacija polja
+field_presets: Prednastavitve polja
+permissions_for_role: 'Postavke, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
+fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
+refresh_interval: Interval osveževanja
+no_refresh: Brez osveževanja
+refresh_interval_seconds: Osveži takoj | Vsako sekundo | Vsakih {seconds} sekund
+refresh_interval_minutes: Vsako minuto | Vsakih {minutes} minut
+auto_generate: Avtomatsko generiraj
+value_unique: Vrednost mora biti edinstvena
+fields:
+  directus_fields:
+    translation: Prevodi imen polj
+  directus_roles:
+    name: Ime vloge
+interfaces:
+  presentation-links:
+    primary: Glavni

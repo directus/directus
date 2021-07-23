@@ -968,6 +968,8 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
+  system-folder:
+    folder: Carpeta
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador

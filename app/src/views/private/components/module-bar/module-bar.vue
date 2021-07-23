@@ -4,8 +4,8 @@
 		<div class="modules">
 			<v-button
 				v-for="module in internalModules"
-				v-tooltip.right="module.name"
 				:key="module.id"
+				v-tooltip.right="module.name"
 				icon
 				x-large
 				:to="module.to"
@@ -34,7 +34,7 @@ import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
-import { ModuleConfig } from '@/modules/types';
+import { ModuleConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: {

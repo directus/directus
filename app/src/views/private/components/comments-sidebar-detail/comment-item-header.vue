@@ -47,10 +47,10 @@
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
-					<v-button @click="confirmDelete = false" secondary>
+					<v-button secondary @click="confirmDelete = false">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button @click="remove" class="action-delete" :loading="deleting">
+					<v-button class="action-delete" :loading="deleting" @click="remove">
 						{{ t('delete') }}
 					</v-button>
 				</v-card-actions>
@@ -71,7 +71,6 @@ import api, { addTokenToURL } from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	emits: ['edit'],
 	props: {
 		activity: {
 			type: Object as PropType<Activity>,
@@ -82,6 +81,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['edit'],
 	setup(props) {
 		const { t } = useI18n();
 

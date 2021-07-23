@@ -459,6 +459,8 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interface
+  system-folder:
+    folder: Pasta
   tags:
     tags: Etiquetas
 displays:

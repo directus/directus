@@ -1,9 +1,15 @@
-import { EXTENSION_PKG_KEY } from '../constants';
+import {
+	API_EXTENSION_TYPES,
+	APP_EXTENSION_TYPES,
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+} from '../constants';
 
-export type ApiExtensionType = 'endpoint' | 'hook';
-export type AppExtensionType = 'interface' | 'display' | 'layout' | 'module';
-export type ExtensionType = ApiExtensionType | AppExtensionType;
-export type ExtensionPackageType = ExtensionType | 'pack';
+export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
+export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
+export type ExtensionType = typeof EXTENSION_TYPES[number];
+export type ExtensionPackageType = typeof EXTENSION_PACKAGE_TYPES[number];
 
 export type Extension = {
 	path: string;
@@ -19,7 +25,7 @@ export type Extension = {
 	root: boolean;
 };
 
-export type ExtensionManifest = {
+export type ExtensionManifestRaw = {
 	name?: string;
 	version?: string;
 	dependencies?: Record<string, string>;
@@ -31,4 +37,26 @@ export type ExtensionManifest = {
 		host?: string;
 		hidden?: boolean;
 	};
+};
+
+export type ExtensionManifest = {
+	name: string;
+	version: string;
+	dependencies?: Record<string, string>;
+
+	[EXTENSION_PKG_KEY]: {
+		type: ExtensionPackageType;
+		path: string;
+		source: string;
+		host: string;
+		hidden: boolean;
+	};
+};
+
+export type ApiExtensionContext = {
+	services: any;
+	exceptions: any;
+	database: any;
+	env: any;
+	getSchema: any;
 };

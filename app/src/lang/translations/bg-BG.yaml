@@ -4,6 +4,7 @@ item_revision: Ревизии на запис
 duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
+group: Групиране
 fill_width: Изпълване по ширина
 field_name_translations: Превод за името на полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
@@ -103,6 +104,7 @@ field_m2a: M2A релация
 field_o2m: O2M релация
 field_m2m: M2M релация
 field_translations: Преводи
+field_group: Групиране на полета
 item_permissions: Позволения по запис
 field_permissions: Позволения по поле
 field_validation: Валидация по поле
@@ -988,6 +990,8 @@ interfaces:
     one-to-many: Един към много
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
+  system-folder:
+    folder: Папка
   select-radio:
     radio-buttons: Радио бутони
     description: Един или няколко избора
@@ -1065,6 +1069,8 @@ interfaces:
     value_path: Път до стойността
     trigger: Задействане
     rate: Оценка
+  group-raw:
+    description: Нормално показване на полетата.
 displays:
   boolean:
     boolean: Булев

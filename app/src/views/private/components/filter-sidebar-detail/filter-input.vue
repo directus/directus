@@ -1,6 +1,6 @@
 <template>
 	<div class="filter-input">
-		<div class="between" v-if="['between', 'nbetween'].includes(operator)">
+		<div v-if="['between', 'nbetween'].includes(operator)" class="between">
 			<div class="field">
 				<component
 					:is="interfaceComponent"
@@ -22,8 +22,8 @@
 				/>
 			</div>
 		</div>
-		<div class="list" v-else-if="['in', 'nin'].includes(operator)">
-			<div class="field" v-for="(val, index) in csvValue" :key="index">
+		<div v-else-if="['in', 'nin'].includes(operator)" class="list">
+			<div v-for="(val, index) in csvValue" :key="index" class="field">
 				<component
 					:is="interfaceComponent"
 					:type="type"
@@ -33,12 +33,12 @@
 					autofocus
 					@input="setCSV(index, $event)"
 				/>
-				<small @click="removeCSV(val)" class="remove">
+				<small class="remove" @click="removeCSV(val)">
 					{{ t('remove') }}
 				</small>
 			</div>
 
-			<v-button outlined full-width dashed @click="addCSV" :disabled="disabled">
+			<v-button outlined full-width dashed :disabled="disabled" @click="addCSV">
 				<v-icon name="add" />
 				{{ t('add_new') }}
 			</v-button>
@@ -60,19 +60,17 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator } from '@directus/shared/types';
-import { types } from '@/types';
+import { FilterOperator, Type } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: [String, Number, Boolean],
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof types[number]>,
+			type: String as PropType<Type>,
 			required: true,
 		},
 		operator: {
@@ -84,6 +82,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

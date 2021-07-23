@@ -3,15 +3,15 @@
 		<v-drawer
 			v-model="internalActive"
 			:title="t('item_revision')"
-			@cancel="internalActive = false"
 			:sidebar-label="t(currentTab[0])"
+			@cancel="internalActive = false"
 		>
 			<template #subtitle>
-				<revisions-drawer-picker :revisions="revisions" v-model:current="internalCurrent" />
+				<revisions-drawer-picker v-model:current="internalCurrent" :revisions="revisions" />
 			</template>
 
 			<template #sidebar>
-				<v-tabs vertical v-model="currentTab">
+				<v-tabs v-model="currentTab" vertical>
 					<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 						{{ tab.text }}
 					</v-tab>
@@ -28,10 +28,10 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="t('revert')">
+				<v-button v-tooltip.bottom="t('revert')" class="revert" icon rounded @click="revert">
 					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="internalActive = false" icon rounded v-tooltip.bottom="t('done')">
+				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -50,7 +50,6 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
-	emits: ['revert', 'update:active', 'update:current'],
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
 	props: {
 		revisions: {
@@ -66,6 +65,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['revert', 'update:active', 'update:current'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

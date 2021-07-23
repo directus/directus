@@ -972,6 +972,8 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
+  system-folder:
+    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija

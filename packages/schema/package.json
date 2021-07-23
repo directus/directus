@@ -1,14 +1,12 @@
 {
 	"name": "@directus/schema",
-	"version": "9.0.0-rc.84",
+	"version": "9.0.0-rc.85",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
-		"prepare": "npm run build",
-		"dev": "npm-watch build",
-		"prepublishOnly": "npm run build"
+		"dev": "npm-watch build"
 	},
 	"watch": {
 		"build": {

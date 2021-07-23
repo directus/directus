@@ -971,6 +971,8 @@ interfaces:
     one-to-many: Üks-mitmele
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
+  system-folder:
+    folder: Kaust
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust

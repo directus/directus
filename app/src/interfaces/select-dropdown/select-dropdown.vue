@@ -5,14 +5,14 @@
 	<v-select
 		v-else
 		:model-value="value"
-		@update:model-value="$emit('input', $event)"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
+		@update:model-value="$emit('input', $event)"
 	>
-		<template #prepend v-if="icon">
+		<template v-if="icon" #prepend>
 			<v-icon :name="icon" />
 		</template>
 	</v-select>
@@ -29,7 +29,6 @@ type Option = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -60,6 +59,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup() {
 		const { t } = useI18n();
 		return { t };

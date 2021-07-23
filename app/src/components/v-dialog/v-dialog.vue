@@ -20,7 +20,6 @@ import useShortcut from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 
 export default defineComponent({
-	emits: ['esc', 'update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -36,6 +35,7 @@ export default defineComponent({
 			validator: (val: string) => ['center', 'right'].includes(val),
 		},
 	},
+	emits: ['esc', 'update:modelValue'],
 	setup(props, { emit }) {
 		useShortcut('escape', (event, cancelNext) => {
 			if (internalActive.value) {

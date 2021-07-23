@@ -30,10 +30,15 @@ let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
 
 export async function initializeExtensions(): Promise<void> {
-	await ensureExtensionDirs(env.EXTENSIONS_PATH);
-	extensions = await getExtensions();
+	try {
+		await ensureExtensionDirs(env.EXTENSIONS_PATH);
+		extensions = await getExtensions();
+	} catch (err) {
+		logger.warn(`Couldn't load extensions`);
+		logger.warn(err);
+	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
 		extensionBundles = await generateExtensionBundles();
 	}
 

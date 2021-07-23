@@ -10,7 +10,7 @@
 			:icon="!link.label"
 			:href="link.url"
 		>
-			<v-icon left v-if="link.icon" :name="link.icon" />
+			<v-icon v-if="link.icon" left :name="link.icon" />
 			<span v-if="link.label">{{ link.label }}</span>
 		</v-button>
 	</div>
