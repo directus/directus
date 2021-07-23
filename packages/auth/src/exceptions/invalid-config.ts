@@ -1,10 +1,7 @@
-import { RuntimeException } from 'node-exceptions';
+import { BaseException } from '@directus/shared/exceptions';
 
-export class InvalidConfigException extends RuntimeException {
-	provider?: string;
-
+export class InvalidConfigException extends BaseException {
 	constructor(message = 'Invalid config', provider?: string) {
-		super(message, 500, 'INVALID_CONFIG');
-		this.provider = provider;
+		super(message, 500, 'INVALID_CONFIG', { provider });
 	}
 }

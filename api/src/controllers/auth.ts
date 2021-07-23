@@ -5,9 +5,10 @@ import ms from 'ms';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import getDatabase from '../database';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { InvalidCredentialsException } from '@directus/auth';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
 import { RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
@@ -28,7 +29,6 @@ const loginSchema = Joi.object().keys({
 const loginHandler = async (req: any, res: any, next: any) => {
 	const ip = req.ip;
 	const userAgent = req.get('user-agent');
-
 	const accountability = {
 		ip,
 		userAgent,
@@ -193,11 +193,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (req.body.token !== 'string') {
+		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (req.body.password !== 'string') {
+		if (typeof req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
@@ -335,9 +335,13 @@ router.get(
 				throw new InvalidCredentialsException('Email does not match existing user');
 			}
 
+			/**
+			 * The default auth provider should allow auth by email. If that ever
+			 * changes, this will need to be addressed
+			 */
 			authResponse = await authenticationService.authenticate({
 				identifier: email,
-				provider: user.provider,
+				provider: DEFAULT_AUTH_PROVIDER,
 			});
 		} catch (error) {
 			emitStatus('fail');

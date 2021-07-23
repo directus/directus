@@ -1,17 +1,13 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone, uniq } from 'lodash';
+import { clone } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import auth from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import {
-	FailedValidationException,
-	ForbiddenException,
-	InvalidPayloadException,
-	UnprocessableEntityException,
-} from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { FailedValidationException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
 import logger from '../logger';
@@ -40,10 +36,20 @@ export class UsersService extends ItemsService {
 	 * the email is unique regardless of casing
 	 */
 	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey): Promise<void> {
+		const duplicates = emails.filter((value, index, array) => array.indexOf(value) !== index);
+
+		if (duplicates.length) {
+			throw new RecordNotUniqueException('email', {
+				collection: 'directus_users',
+				field: 'email',
+				invalid: duplicates[0],
+			});
+		}
+
 		const query = this.knex
 			.select('email')
 			.from('directus_users')
-			.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails.map((email) => email.toLowerCase())]);
+			.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
 
 		if (excludeKey) {
 			query.whereNot('id', excludeKey);
@@ -76,7 +82,6 @@ export class UsersService extends ItemsService {
 
 		if (policyRegExString) {
 			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
-
 			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
 
 			for (const password of passwords) {
@@ -106,8 +111,8 @@ export class UsersService extends ItemsService {
 	 * Create multiple new users
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = uniq(data.map((payload) => payload.email).filter((e) => e));
-		const passwords = data.map((payload) => payload.password).filter((pw) => pw);
+		const emails = data.map((payload) => payload.email).filter((email) => email);
+		const passwords = data.map((payload) => payload.password).filter((password) => password);
 
 		if (emails.length) {
 			await this.checkUniqueEmails(emails);
@@ -243,51 +248,43 @@ export class UsersService extends ItemsService {
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
-		const emails = toArray(email);
-
 		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
-		await this.knex.transaction(async (trx) => {
-			const service = new ItemsService('directus_users', {
-				schema: this.schema,
-				accountability: this.accountability,
-				knex: trx,
-			});
+		const emails = toArray(email);
+		const users = emails.map((email) => ({
+			email,
+			role,
+			status: 'invited',
+		}));
 
-			const mailService = new MailService({
-				schema: this.schema,
-				accountability: this.accountability,
-				knex: trx,
-			});
+		await this.createMany(users);
 
-			for (const email of emails) {
-				await service.createOne({
-					email,
-					role,
-					status: 'invited',
-				});
-
-				const payload = { email, scope: 'invite' };
-				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
-				const acceptURL = inviteURL + '?token=' + token;
-				const subjectLine = subject ? subject : "You've been invited";
-
-				await mailService.send({
-					to: email,
-					subject: subjectLine,
-					template: {
-						name: 'user-invitation',
-						data: {
-							url: acceptURL,
-							email,
-						},
-					},
-				});
-			}
+		const mailService = new MailService({
+			schema: this.schema,
+			accountability: this.accountability,
 		});
+
+		for (const email of emails) {
+			const payload = { email, scope: 'invite' };
+			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+			const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
+			const acceptURL = inviteURL + '?token=' + token;
+			const subjectLine = subject ? subject : "You've been invited";
+
+			await mailService.send({
+				to: email,
+				subject: subjectLine,
+				template: {
+					name: 'user-invitation',
+					data: {
+						url: acceptURL,
+						email,
+					},
+				},
+			});
+		}
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
@@ -304,10 +301,19 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		this.updateOne(user.id, { password, status: 'active' });
+		const service = new UsersService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		service.updateOne(user.id, { password, status: 'active' });
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
+		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
+			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+		}
+
 		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
@@ -322,11 +328,6 @@ export class UsersService extends ItemsService {
 
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
-
-		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
-		}
-
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
@@ -357,7 +358,12 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		this.updateOne(user.id, { password, status: 'active' });
+		const service = new UsersService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		service.updateOne(user.id, { password, status: 'active' });
 	}
 
 	/**

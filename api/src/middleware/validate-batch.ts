@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import Joi from 'joi';
-import { FailedValidationException, InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { FailedValidationException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 import { sanitizeQuery } from '../utils/sanitize-query';
 

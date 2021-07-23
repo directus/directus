@@ -6,7 +6,8 @@ import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import logger from '../logger';
 import {

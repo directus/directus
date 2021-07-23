@@ -4,7 +4,7 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 import getDatabase from '../../database';
 import env from '../../env';
-import { InvalidPayloadException } from '../../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
 import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
 import getMailer from '../../mailer';

@@ -1,5 +1,6 @@
 import express from 'express';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { RelationsService } from '../services';

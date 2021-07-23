@@ -152,12 +152,10 @@ fields:
       relative: true
 
   - field: provider
-    readonly: true
     interface: select-dropdown
     width: half
 
   - field: identifier
-    readonly: true
     width: half
     options:
       iconRight: account_circle

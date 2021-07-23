@@ -46,7 +46,8 @@ import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
 import getDatabase from '../database';
 import env from '../env';
-import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { BaseException, InvalidPayloadException } from '@directus/shared/exceptions';
+import { GraphQLValidationException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -1356,12 +1357,17 @@ export class GraphQLService {
 			auth_login: {
 				type: AuthTokens,
 				args: {
-					email: GraphQLNonNull(GraphQLString),
+					email: GraphQLString,
+					identifier: GraphQLString,
 					password: GraphQLNonNull(GraphQLString),
+					provider: GraphQLString,
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
-				resolve: async (_, args, { req, res }) => {
+				resolve: async (_, { identifier, email, ...args }, { req, res }) => {
+					if (!identifier && !email) {
+						throw new InvalidPayloadException(`"email" or "identifier" is required`);
+					}
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
@@ -1373,6 +1379,7 @@ export class GraphQLService {
 					});
 					const result = await authenticationService.authenticate({
 						...args,
+						identifier: identifier ?? email,
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
 					});

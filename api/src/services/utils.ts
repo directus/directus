@@ -1,7 +1,8 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 
 export class UtilsService {

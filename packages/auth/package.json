@@ -19,7 +19,8 @@
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
   },
   "dependencies": {
-    "argon2": "^0.28.1"
+    "argon2": "^0.28.1",
+    "@directus/shared": "9.0.0-rc.84"
   },
   "devDependencies": {
     "jest": "27.0.6",

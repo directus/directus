@@ -1,4 +1,5 @@
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, PrimaryKey } from '../types';
 import { ItemsService } from './items';
 

@@ -1,7 +1,8 @@
 import argon2 from 'argon2';
 import Auth from './auth';
 import { User } from './types';
-import { InvalidCredentialsException, InvalidPayloadException } from './exceptions';
+import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { InvalidCredentialsException } from './exceptions';
 
 export default class BasicAuth extends Auth {
 	/**
