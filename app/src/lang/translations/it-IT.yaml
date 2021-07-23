@@ -39,7 +39,7 @@ rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
-reset_bookmark: Ripristina Segnalibro
+reset_bookmark: Reimposta Segnalibro
 rename_bookmark: Rinomina Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -209,7 +209,7 @@ finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
 edit_raw_value: Modifica il valore grezzo
-enter_raw_value: Inserisci un valore...
+enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
