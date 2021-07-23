@@ -96,6 +96,7 @@ nullable: Può essere null
 allow_null_value: Consenti valore NULL
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
+field_presentation: Presentazione e Alias
 field_file: File Singolo
 field_files: File Multipli
 field_m2o: Relazione M2O
@@ -112,6 +113,7 @@ permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+presentation_and_aliases: Presentazione e Alias
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
 changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
 no_relational_data: Tieni presente che questo non include dati relazionali.
@@ -175,8 +177,8 @@ search_collection: Cerca nella collezione...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Collezione'
 add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
-add_o2m_to_collection: 'Aggiungi Uno-a-Molti a "{collection}"'
-add_m2m_to_collection: 'Aggiungi Molti-a-Molti a "{collection}"'
+add_o2m_to_collection: 'Aggiungi One-to-Many a "{collection}"'
+add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -238,6 +240,7 @@ item_delete_success: Elemento Eliminato| Elementi Eliminati
 this_collection: Questa Raccolta
 related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
+translations_collection: Raccolta di traduzioni
 languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
@@ -342,6 +345,7 @@ interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
+list-m2a: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
@@ -607,22 +611,30 @@ wysiwyg_options:
   directionality: Direzionalità
 dropdown: Menu a tendina
 choices: Scelta multipla
+choices_option_configured_incorrectly: Scelte configurate in modo errato
 deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 other: Altro...
 adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
+creating_in: 'Creazione elemento in {collection}'
+editing_in: 'Modifica elemento in {collection}'
+creating_unit: 'Creazione {unit}'
+editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
+settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
+scope: Ambito
 select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
+preset_name_placeholder: Serve come predefinito quando vuoto...
 preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
@@ -631,16 +643,35 @@ unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
+page_help_collections_overview: '**Panoramica delle collezioni** — Elenco di tutte le collezioni a cui hai accesso.'
+page_help_collections_collection: >-
+  **Sfoglia gli elementi** — Elenca tutti gli elementi di {collection} a cui hai accesso. Personalizza il layout, i filtri e l'ordinamento per personalizzare la tua vista e salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_collections_item: >-
   **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
+page_help_activity_collection: >-
+  **Consulta Attività** — Un elenco completo di tutte le attività di sistema e sui contenuti del tuo utente.
+page_help_docs_global: >-
+  **Panoramica della documentazione** — Documenti personalizzati specificamente per la versione e lo schema di questo progetto.
 page_help_files_collection: >-
   **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
+page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_datamodel_collections: >-
+  **Modello dei dati: Collezioni** — Elenca tutte le collezioni disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
+page_help_settings_datamodel_fields: >-
+  **Modello dei dati: Collezione** — Un modulo per la gestione di questa collezione e dei suoi campi.
+page_help_settings_roles_collection: '**Consulta i Ruoli** — Elenca i ruoli amministratore, pubblico e personalizzati.'
+page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
 page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
 page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
+page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
+page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
+page_help_users_item: >-
+  **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -652,6 +683,7 @@ batch_delete_confirm: >-
 cancel: Annulla
 collection: Raccolta
 collections: Raccolte
+singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
@@ -671,6 +703,10 @@ fields:
     note: Nota
     display_template: Display Template
     hidden: Nascosto
+    singleton: Singleton
+    archive_app_filter: Filtro archiviati in app
+    archive_value: Valore archiviazione
+    unarchive_value: Valore ripristino
     sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
   directus_files:
@@ -725,12 +761,14 @@ fields:
     public_note: Nota Pubblica
     auth_password_policy: Criteri Password di accesso
     auth_login_attempts: Tentativi di accesso
+    storage_asset_presets: Preimpostazioni salvataggio risorse
     custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
     icon: Icona Collezione
     note: Nota
     hidden: Nascosto
+    singleton: Singleton
     translation: Traduzioni nome del campo
     display_template: Template
   directus_roles:
