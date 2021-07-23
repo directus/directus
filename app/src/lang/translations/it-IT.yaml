@@ -16,7 +16,7 @@ indeterminate: Indeterminato
 exclusive: Esclusivo
 children: Bambini
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
-show_archived_items: Mostra le elementi archiviati
+show_archived_items: Mostra gli elementi archiviati
 edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
@@ -31,15 +31,15 @@ invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
 connection_excellent: Connessione Eccellente
-connection_good: Buona connessione
+connection_good: Connessione Buona
 connection_fair: Connessione adeguata
-connection_poor: Scarca connessione
+connection_poor: Connessione Scarsa
 primary: Principale
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
-reset_bookmark: Reinizializza Segnalibro
+reset_bookmark: Ripristina Segnalibro
 rename_bookmark: Rinomina Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -54,8 +54,8 @@ not_allowed: Non consentito
 directus_version: Versione di Directus
 node_version: Versione Node
 node_uptime: Uptime Node
-os_type: Typo di sistema operativo
-os_version: Verione sistema operativo
+os_type: Tipo sistema operativo
+os_version: Versione sistema operativo
 os_uptime: Uptime sistema operativo
 os_totalmem: Memoria sistema operativo
 archive: Archivio
@@ -783,7 +783,7 @@ fields:
     enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
-    collection_list: Navigazione Raccolta
+    collection_list: Navigazione Raccolte
 field_options:
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
