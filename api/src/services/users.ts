@@ -167,10 +167,6 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		if (data.provider !== undefined || data.identifier !== undefined || data.auth_data !== undefined) {
-			throw new InvalidPayloadException(`You can't change auth values manually.`);
-		}
-
 		/**
 		 * Sync with auth provider
 		 */

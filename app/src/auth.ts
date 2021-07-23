@@ -5,7 +5,8 @@ import { useAppStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
 
 export type LoginCredentials = {
-	identifier: string;
+	identifier?: string;
+	email?: string;
 	password: string;
 	provider?: string;
 };

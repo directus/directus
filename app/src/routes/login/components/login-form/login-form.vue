@@ -8,7 +8,7 @@
 			v-model="identifier"
 			:placeholder="t('identifier')"
 		/>
-		<v-input v-else autofocus autocomplete="username" type="email" v-model="identifier" :placeholder="t('email')" />
+		<v-input v-else autofocus autocomplete="username" type="email" v-model="email" :placeholder="t('email')" />
 		<v-input type="password" autocomplete="current-password" v-model="password" :placeholder="t('password')" />
 
 		<transition-expand>
@@ -43,7 +43,8 @@ import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
 
 type Credentials = {
-	identifier: string;
+	identifier?: string;
+	email?: string;
 	password: string;
 	otp?: string;
 };
@@ -75,9 +76,12 @@ export default defineComponent({
 			identifier.value = null;
 			email.value = null;
 			password.value = null;
+			error.value = null;
+			otp.value = null;
+			requiresTFA.value = false;
 		});
 
-		watch(identifier, () => {
+		watch([identifier, email], () => {
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
 
@@ -92,19 +96,39 @@ export default defineComponent({
 			return null;
 		});
 
-		return { t, errorFormatted, error, identifier, password, onSubmit, loggingIn, translateAPIError, otp, requiresTFA };
+		return {
+			t,
+			errorFormatted,
+			error,
+			identifier,
+			email,
+			password,
+			onSubmit,
+			loggingIn,
+			translateAPIError,
+			otp,
+			requiresTFA,
+		};
 
 		async function onSubmit() {
-			if (identifier.value === null || password.value === null) return;
+			if ((!identifier.value && !email.value) || !password.value) return;
 
 			try {
 				loggingIn.value = true;
 
 				const credentials: Credentials = {
-					identifier: identifier.value,
 					password: password.value,
-					provider: provider.value,
 				};
+
+				if (email.value) {
+					credentials.email = email.value;
+				} else {
+					credentials.identifier = identifier.value;
+				}
+
+				if (provider.value) {
+					credentials.provider = provider.value;
+				}
 
 				if (otp.value) {
 					credentials.otp = otp.value;

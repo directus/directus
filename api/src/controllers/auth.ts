@@ -19,9 +19,10 @@ import { toArray } from '../utils/to-array';
 const router = Router();
 
 const loginSchema = Joi.object().keys({
-	identifier: Joi.string().required(),
+	identifier: Joi.string(),
+	email: Joi.string().email(),
 	password: Joi.string().required(),
-	provider: Joi.string().allow(null),
+	provider: Joi.string(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
 });
@@ -43,10 +44,12 @@ const loginHandler = async (req: any, res: any, next: any) => {
 	const { error } = loginSchema.validate(req.body);
 	if (error) throw new InvalidPayloadException(error.message);
 
-	const mode = req.body.mode || 'json';
+	const { identifier, email } = req.body;
+	if (!identifier && !email) throw new InvalidPayloadException(`"email" or "identifier" is required`);
 
 	const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 		...req.body,
+		identifier: identifier ?? email,
 		ip,
 		userAgent,
 	});
@@ -54,6 +57,8 @@ const loginHandler = async (req: any, res: any, next: any) => {
 	const payload = {
 		data: { access_token: accessToken, expires },
 	} as Record<string, Record<string, any>>;
+
+	const mode = req.body.mode || 'json';
 
 	if (mode === 'json') {
 		payload.data.refresh_token = refreshToken;

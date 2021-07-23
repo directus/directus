@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance, onMounted } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
@@ -188,6 +188,7 @@ import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
+import { capitalizeFirst } from '@/utils/capitalize-first';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import useCollection from '@/composables/use-collection';
@@ -303,9 +304,40 @@ export default defineComponent({
 			'last_access',
 		];
 
-		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
-		});
+		const fieldsFiltered = ref([]);
+
+		// Populate providers list
+		const providers = ref([]);
+		const providersLoading = ref(true);
+
+		watch(
+			[item, providers, providersLoading],
+			() => {
+				fieldsFiltered.value = fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+
+				const field = fieldsFiltered.value.find((field) => field.field === 'provider');
+				const provider = item.value?.provider;
+
+				if (field) {
+					if (providers.value.length || provider === 'default') {
+						const defaultValue = { text: t('default'), value: 'default' };
+						const values = providers.value.map((provider) => ({ text: capitalizeFirst(provider), value: provider }));
+
+						field.meta.readonly = false;
+						field.meta.options.choices = [defaultValue, ...values];
+					} else if (providersLoading.value) {
+						field.meta.readonly = true;
+						field.meta.options.choices = [{ text: t('loading'), value: provider }];
+					} else {
+						field.meta.readonly = false;
+						field.meta.options.choices = [{ text: t('no_results'), value: provider }];
+					}
+				}
+			},
+			{ immediate: true }
+		);
+
+		onMounted(() => fetchProviders());
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
@@ -360,6 +392,19 @@ export default defineComponent({
 			revisionsAllowed,
 			validationErrors,
 		};
+
+		async function fetchProviders() {
+			providersLoading.value = true;
+
+			try {
+				const response = await api.get('/auth/');
+				providers.value = response.data.data?.map((name: string) => name);
+			} catch (err) {
+				unexpectedError(err);
+			} finally {
+				providersLoading.value = false;
+			}
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
