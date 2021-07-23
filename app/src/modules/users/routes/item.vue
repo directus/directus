@@ -319,6 +319,8 @@ export default defineComponent({
 				const provider = item.value?.provider;
 
 				if (field) {
+					field.meta.options = {};
+
 					if (providers.value.length || provider === 'default') {
 						const defaultValue = { text: t('default'), value: 'default' };
 						const values = providers.value.map((provider) => ({ text: capitalizeFirst(provider), value: provider }));
