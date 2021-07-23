@@ -14,7 +14,7 @@ branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
 exclusive: Esclusivo
-children: Bambini
+children: Figli
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra gli elementi archiviati
 edited: Valore Modificato
