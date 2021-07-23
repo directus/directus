@@ -781,6 +781,7 @@ fields:
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
+    module_list: Navigazione del modulo
     collection_list: Navigazione Raccolta
 field_options:
   directus_collections:
@@ -931,7 +932,14 @@ interfaces:
     description: Seleziona un valore da un menu a discesa
     choices_placeholder: Aggiungi una nuova scelta
     allow_other: Consenti altro
+    allow_other_label: Consenti altri valori
+    allow_none: Consenti nessuna
+    allow_none_label: Consenti nessuna selezione
+    choices_name_placeholder: Inserisci un nome...
     choices_value_placeholder: Inserisci un valore...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Menu a discesa (Multipla)
+    description: Seleziona più valori da un menu a discesa
   file:
     file: File
     description: Seleziona o carica un file
@@ -940,6 +948,9 @@ interfaces:
     description: Seleziona o carica più file
   input-hash:
     hash: Hash
+    description: Inserisci un valore da cifrare
+    masked: Nascosto
+    masked_label: Nascondi il valore reale
   select-icon:
     icon: Icon
     description: Seleziona un'icona dal menu a discesa
@@ -953,17 +964,23 @@ interfaces:
     placeholder: Seleziona un'interfaccia...
   system-interface-options:
     interface-options: Opzioni interfaccia
+    description: Una modale per selezionare le opzioni di un'interfaccia
   list-m2m:
     many-to-many: Molti a Molti
+    description: Seleziona più elementi di giunzione correlati
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
     display_template: Display Template
   input-rich-text-md:
     markdown: Markdown
+    description: Inserisci e visualizza in anteprima markdown
     customSyntax: Blocchi Personalizzati
+    customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
+    box: Blocco / In linea
     imageToken: Token Immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti dell'immagine
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -974,40 +991,74 @@ interfaces:
     no_collection: Impossibile trovare la collezione
   system-folder:
     folder: Cartella
+    description: Seleziona una cartella
+    field_hint: Mette i file appena caricati nella cartella selezionata. Non influisce sui file esistenti selezionati.
+    root_name: Radice libreria file
+    system_default: Predefiniti di sistema
+  select-radio:
+    description: Seleziona una tra più scelte
   list:
     repeater: Ripetitore
+    description: Crea più elementi della stessa struttura
     edit_fields: Modifica Campi
+    add_label: 'Etichetta "Crea nuovo"'
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
   slider:
     slider: Cursore
+    description: Seleziona un numero usando un cursore
     always_show_value: Mostra sempre il valore
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag
+    whitespace: Spazio
+    hyphen: Sostituisci con trattino
+    underscore: Sostituisci con trattino basso
+    remove: Rimuovi gli spazi
     capitalization: Capitalizzazione
     uppercase: Converti Maiuscole
     lowercase: Converti Minuscole
+    auto_formatter: Usa la formattazione automatica del titolo
+    alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
   input:
     input: Input
     description: Inserisci manualmente un valore
+    trim: Rifila
+    trim_label: Elimina gli spazi a inizio e fine
+    mask: Nascosto
     mask_label: Nascondi il valore reale
+    clear: Valore vuoto
     clear_label: Salva come stringa vuota
+    minimum_value: Valore minimo
+    maximum_value: Valore massimo
+    step_interval: Intervallo
+    slug_label: Rendi il valore inserito a prova di URL
+  input-multiline:
+    textarea: Area di testo
+    description: Inserisci testo su più righe
   boolean:
     toggle: Interrutore
+    description: Cambia tra acceso e spento
+    label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+  list-o2m-tree-view:
+    description: Vista ad albero per oggetti ricorsivi annidati one-to-many
+    recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
   user:
     user: Utente
     description: Seleziona un utente di directus esistente
+    select_mode: Seleziona la modalità
     modes:
+      auto: Automatica
       dropdown: Menu a tendina
       modal: Modale
   input-rich-text-html:
+    description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
     options_override: Ridefinizione delle impostazioni
@@ -1081,6 +1132,7 @@ displays:
     default_foreground: Primo Piano Predefinito
     default_background: Sfondo Predefinito
     format_label: Formatta ogni etichetta
+    show_as_dot: Mostra come pallino
     choices_value_placeholder: Inserisci un valore...
     choices_text_placeholder: Inserisci un testo...
   mime-type:
@@ -1090,12 +1142,17 @@ displays:
     extension_only_label: Mostra solo l'estensione del file
   rating:
     rating: Valutazione
+    description: Visualizza un numero come stelle rispetto al valore massimo
     simple: Semplice
+    simple_label: Mostra le stelle in formato semplice
+  raw:
+    raw: Valore grezzo
   related-values:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
   user:
     user: Utente
+    description: Mostra un utente directus
     avatar: Avatar
     name: Nome
     both: Tutti e due
@@ -1106,6 +1163,7 @@ layouts:
     image_source: Origine immagine
     image_fit: Adatta immagini
     crop: Ritaglia
+    contain: Contiene
     title: Titolo
     subtitle: Sottotitolo
   tabular:
