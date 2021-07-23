@@ -96,10 +96,21 @@ allow_null_value: Dovoli nično vrednost
 enter_value_to_replace_nulls: Prosimo vnesite novo vrednost, ki bo nadomestila nično v tem polju.
 field_standard: Običajno
 field_m2o: M2O razmerje - več na ena
+field_m2a: M2A razmerje - več na karkoli
+field_o2m: O2M razmerje - ena na več
+field_m2m: M2M razmerje - več na več
+field_group: Skupina polj
+item_permissions: Dovoljenja zapisa
+field_permissions: Dovoljenja polja
 field_validation: Validacija polja
 field_presets: Prednastavitve polja
 permissions_for_role: 'Postavke, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
 fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action}.'
+refresh_interval: Interval osveževanja
+no_refresh: Brez osveževanja
+refresh_interval_seconds: Osveži takoj | Vsako sekundo | Vsakih {seconds} sekund
+refresh_interval_minutes: Vsako minuto | Vsakih {minutes} minut
+auto_generate: Avtomatsko generiraj
 value_unique: Vrednost mora biti edinstvena
 fields:
   directus_fields:
