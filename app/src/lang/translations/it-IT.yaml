@@ -14,9 +14,9 @@ branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
 exclusive: Esclusivo
-children: Bambini
+children: Figli
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
-show_archived_items: Mostra le elementi archiviati
+show_archived_items: Mostra gli elementi archiviati
 edited: Valore Modificato
 required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
@@ -31,15 +31,15 @@ invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
 connection_excellent: Connessione Eccellente
-connection_good: Buona connessione
+connection_good: Connessione Buona
 connection_fair: Connessione adeguata
-connection_poor: Scarca connessione
+connection_poor: Connessione Scarsa
 primary: Principale
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
-reset_bookmark: Reinizializza Segnalibro
+reset_bookmark: Reimposta Segnalibro
 rename_bookmark: Rinomina Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -54,8 +54,8 @@ not_allowed: Non consentito
 directus_version: Versione di Directus
 node_version: Versione Node
 node_uptime: Uptime Node
-os_type: Typo di sistema operativo
-os_version: Verione sistema operativo
+os_type: Tipo sistema operativo
+os_version: Versione sistema operativo
 os_uptime: Uptime sistema operativo
 os_totalmem: Memoria sistema operativo
 archive: Archivio
@@ -92,9 +92,11 @@ validationError:
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
+nullable: Può essere null
 allow_null_value: Consenti valore NULL
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
+field_presentation: Presentazione e Alias
 field_file: File Singolo
 field_files: File Multipli
 field_m2o: Relazione M2O
@@ -102,12 +104,17 @@ field_m2a: Relazione M2A
 field_o2m: Relazione O2M
 field_m2m: Relazione M2M
 field_translations: Traduzioni
+field_group: Gruppo di campi
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
+validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+presentation_and_aliases: Presentazione e Alias
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
 changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
 no_relational_data: Tieni presente che questo non include dati relazionali.
 hide_field_on_detail: Nascondi campo nel dettaglio
@@ -125,6 +132,7 @@ exposure: Esposizione
 shutter: Otturatore
 iso: ISO
 focal_length: Lunghezza Focale
+schema_setup_key: Nome della colonna nel database e chiave API di questo campo
 create_field: Crea campo
 creating_new_field: 'Nuovo Campo ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -154,6 +162,8 @@ create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
 refresh_interval: Intervallo di aggiornamento
 no_refresh: Non aggiornare
+refresh_interval_seconds: Aggiorna immediatamente | Ogni secondo | Ogni {seconds} secondi
+refresh_interval_minutes: Ogni minuto | Ogni {minutes} minuti
 auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
@@ -161,9 +171,14 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
+no_collections_found: Nessuna raccolta trovata.
+new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
+search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
-new_collection: 'Nuova Collezione'
+new_collection: 'Nuova Raccolta'
 add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
+add_o2m_to_collection: 'Aggiungi One-to-Many a "{collection}"'
+add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -183,6 +198,7 @@ note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
+precision_scale: Precisione & Scala
 readonly: Sola lettura
 unique: Unico
 updated_on: Aggiornato il
@@ -192,7 +208,8 @@ foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
-enter_raw_value: Inserisci un valore...
+edit_raw_value: Modifica il valore grezzo
+enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
@@ -214,6 +231,7 @@ revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 private_user: Utenti privati
 revision_preview: Anteprima Revisione
+updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
 item_create_success: Elemento Creato | Elementi Creati
@@ -222,12 +240,15 @@ item_delete_success: Elemento Eliminato| Elementi Eliminati
 this_collection: Questa Raccolta
 related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
+translations_collection: Raccolta di traduzioni
 languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
+use_current_filters_settings: Usa i filtri e le impostazioni correnti
 export_collection: 'Esporta {collection}'
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
+fill_template: Riempi con il valore del modello
 a_unique_table_name: Un nome di tabella unico...
 a_unique_column_name: Un nome di colonna unico...
 enable_custom_values: Abilita valori personalizzati
@@ -235,6 +256,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
+add_field_related: Aggiungi il campo alla raccolta correlata
 interface: Interfaccia
 today: Oggi
 yesterday: Ieri
@@ -291,18 +313,24 @@ no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 collection_key: Chiave Di Raccolta
 name: Nome
+primary_key_field: Campo Chiave Primaria
 type: Tipo
-creating_new_collection: Creazione Nuova Collezione
+creating_new_collection: Creazione Nuova Raccolta
 created_by: Creato da
 created_on: Creato il
-creating_collection_info: Nominare la collezione e impostare il suo campo unico “chiave”...
+creating_collection_info: Dare un nome alla raccolta e impostare il suo campo unico “chiave”...
 creating_collection_system: Abilita e rinomina uno di questi campi opzionali.
+auto_increment_integer: Intero incrementato automaticamente
 generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
 save_and_stay: Salva e rimani
 save_as_copy: Salva come copia
 add_existing: Aggiungi esistente
+creating_items: Creazione Oggetti
+enable_create_button: Abilita il pulsante di creazione
+selecting_items: Selezione elementi
+enable_select_button: Abilita il pulsante di selezione
 comments: Commenti
 no_comments: Non ci sono ancora commenti
 click_to_expand: Fare clic per espandere
@@ -315,6 +343,9 @@ report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
+display_not_found: 'Display "{display}" non trovato.'
+reset_display: Ripristina il Display
+list-m2a: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
@@ -330,6 +361,7 @@ create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
 no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
+display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
 active: Attivo
@@ -349,13 +381,16 @@ second: Secondi
 file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
+card_size: Dimensione della Card
 sort_field: Ordina per
 add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
 status: Stato
 remove: Rimuovere
+toggle_manual_sorting: Attiva/disattiva l'ordinamento manuale
 bookmark_doesnt_exist: Segnalibro Non Esiste
 bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
+bookmark_doesnt_exist_cta: Ritorna alla raccolta
 select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
@@ -371,12 +406,18 @@ errors:
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
+  INVALID_OTP: One-time password errata
+  INVALID_PAYLOAD: Payload non valido
   INVALID_QUERY: Query non valida
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
+  RECORD_NOT_UNIQUE: Rilevato valore duplicato
+  USER_SUSPENDED: Utente sospeso
+  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
   UNKNOWN: Errore Imprevisto
   INTERNAL_SERVER_ERROR: Errore Imprevisto
+value_hashed: Valore cifrato in modo sicuro
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -402,6 +443,7 @@ delete_collection: Elimina Raccolta
 update_collection_success: Raccolta Aggiornata
 delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
+start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
@@ -409,11 +451,14 @@ delete_collection_are_you_sure: >-
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
+show_hidden_collections: Mostra le collezioni nascoste
+hide_hidden_collections: Nascondi le collezioni nascoste
 unmanaged_collections: Raccolte Non Configurate
 system_collections: Raccolte di Sistema
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
+count_other_revisions: '{count} altre revisioni'
 font: Tipo di carattere
 sans_serif: Sans Serif
 serif: Serif
@@ -439,6 +484,10 @@ operators:
   nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  starts_with: Inizia con
+  nstarts_with: Non inizia con
+  ends_with: Finisce con
+  nends_with: Non finisce con
   between: È compresa tra
   nbetween: Non è compresa tra
   empty: È vuoto
@@ -495,6 +544,8 @@ select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
 toggle: Interrutore
+icon_on: Icona Acceso
+icon_off: Icona Spento
 label: Etichetta
 image_url: URL immagine
 alt_text: Testo alternativo
@@ -504,7 +555,11 @@ height: Altezza
 source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
+display_text_placeholder: Inserisci un testo di visualizzazione...
+tooltip: Suggerimento
+tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
+open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
 wysiwyg_options:
@@ -541,6 +596,9 @@ wysiwyg_options:
   h5: Intestazione 5
   h6: Intestazione 6
   fontselect: Seleziona il tipo di carattere
+  fontsizeselect: Seleziona la dimensione del carattere
+  indent: Aumenta indentazione
+  outdent: Riduci indentazione
   undo: Annulla
   redo: Ripristina
   remove: Rimuovere
@@ -553,22 +611,30 @@ wysiwyg_options:
   directionality: Direzionalità
 dropdown: Menu a tendina
 choices: Scelta multipla
+choices_option_configured_incorrectly: Scelte configurate in modo errato
 deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 other: Altro...
 adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
+creating_in: 'Creazione elemento in {collection}'
+editing_in: 'Modifica elemento in {collection}'
+creating_unit: 'Creazione {unit}'
+editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
+settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
+scope: Ambito
 select: Seleziona...
 layout: Layout
 tree_view: Struttura ad albero
 changes_are_permanent: Modifiche sono permanenti
+preset_name_placeholder: Serve come predefinito quando vuoto...
 preset_search_placeholder: Chiave di ricerca...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
@@ -577,16 +643,35 @@ unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
+page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
+page_help_collections_collection: >-
+  **Sfoglia gli elementi** — Elenca tutti gli elementi di {collection} a cui hai accesso. Personalizza il layout, i filtri e l'ordinamento per personalizzare la tua vista e salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_collections_item: >-
   **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
+page_help_activity_collection: >-
+  **Consulta Attività** — Un elenco completo di tutte le attività di sistema e sui contenuti del tuo utente.
+page_help_docs_global: >-
+  **Panoramica della documentazione** — Documenti personalizzati specificamente per la versione e lo schema di questo progetto.
 page_help_files_collection: >-
   **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
+page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_datamodel_collections: >-
+  **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
+page_help_settings_datamodel_fields: >-
+  **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
+page_help_settings_roles_collection: '**Consulta i Ruoli** — Elenca i ruoli amministratore, pubblico e personalizzati.'
+page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
 page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
 page_help_settings_presets_item: >-
   **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
+page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
+page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
+page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
+page_help_users_item: >-
+  **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -598,6 +683,7 @@ batch_delete_confirm: >-
 cancel: Annulla
 collection: Raccolta
 collections: Raccolte
+singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
@@ -613,10 +699,15 @@ fields:
     revisions: Revisioni
   directus_collections:
     collection: Raccolta
-    icon: Icon
+    icon: Icona
     note: Nota
     display_template: Display Template
     hidden: Nascosto
+    singleton: Singleton
+    translations: Traduzioni del nome della raccolta
+    archive_app_filter: Filtro archiviati in app
+    archive_value: Valore archiviazione
+    unarchive_value: Valore ripristino
     sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
   directus_files:
@@ -671,12 +762,15 @@ fields:
     public_note: Nota Pubblica
     auth_password_policy: Criteri Password di accesso
     auth_login_attempts: Tentativi di accesso
+    storage_asset_presets: Preimpostazioni salvataggio risorse
+    storage_asset_transform: Trasformazione salvataggio risorse
     custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
-    icon: Icona Collezione
+    icon: Icona Raccolta
     note: Nota
     hidden: Nascosto
+    singleton: Singleton
     translation: Traduzioni nome del campo
     display_template: Template
   directus_roles:
@@ -688,7 +782,8 @@ fields:
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
-    collection_list: Navigazione Raccolta
+    module_list: Navigazione del modulo
+    collection_list: Navigazione Raccolte
 field_options:
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
@@ -701,12 +796,21 @@ save_current_user_id: Salva l'Id Utente Attuale
 save_current_user_role: Salva Ruolo Utente Attuale
 save_current_datetime: Salva Data/Ora Attuale
 block: Blocco
+inline: In linea
 comment: Commento
+relational_triggers: Trigger Relazionali
 referential_action_field_label_m2o: Alla cancellazione di {collection}...
+referential_action_field_label_o2m: Alla deselezione di {collection}...
+referential_action_no_action: Impedisci l'eliminazione
+referential_action_cascade: Elimina l'elemento in {collection} (cascata)
+referential_action_set_null: Imposta il campo {field} a null
 referential_action_set_default: Imposta {field} al suo valore predefinito
 choose_action: Scegli azione
 continue: Continua
+continue_as: >-
+  {name} è attualmente autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
+creating_webhook: Creazione Webhook
 default: Predefinito
 delete: Elimina
 delete_are_you_sure: >-
@@ -718,12 +822,13 @@ done: Fatto
 duplicate: Duplicare
 email: E-mail
 embed: Embed
+fallback_icon: Icona di default
 field: Campo | Campi
 file: File
 file_library: Libreria File
 forgot_password: Ha dimenticato la password
 hidden: Nascosto
-icon: Icon
+icon: Icona
 info: Informazioni
 normal: Normale
 success: Successo
@@ -762,11 +867,29 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
+report_error: Segnala l'errore
 interfaces:
   presentation-links:
+    presentation-links: Collegamenti del pulsante
+    links: Collegamenti
+    description: Pulsanti configurabili per avviare URL dinamici
+    style: Stile
     primary: Principale
+    link: Collegamenti
+    button: Pulsanti
+    error: Non è possibile eseguire l'azione
   select-multiple-checkbox:
+    checkboxes: Caselle di selezione
+    description: Scegli tra più opzioni tramite caselle di selezione
+    allow_other: Consenti altro
+    show_more: 'Mostra altri {count}'
     items_shown: Elementi Visualizzati
+  select-multiple-checkbox-tree:
+    name: Caselle di selezione (Albero)
+    description: Scegli tra più opzioni tramite caselle di selezione annidate
+    value_combining: Combinazione dei valori
+    value_combining_note: Controlla quale valore viene memorizzato quando vengono effettuate selezioni annidate.
   input-code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
@@ -782,22 +905,43 @@ interfaces:
     include_system_collections: Includi Raccolte di Sistema
   select-color:
     color: Colore
+    description: Inserisci o seleziona un valore di colore
     placeholder: Scegli un colore...
     preset_colors: Colori Predefiniti
     preset_colors_add_label: Aggiungi nuovo colore...
+    name_placeholder: Inserisci il nome del colore...
   datetime:
     datetime: Data e ora
     description: Inserisci date e orari
     include_seconds: Includi Secondi
+    set_to_now: Imposta ad adesso
     use_24: Usa Formato 24 Ore
   system-display-template:
     display-template: Display Template
+    description: Metti insieme testo statico e valori di campo dinamici
+    collection_field: Campo della raccolta
     collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
     select_a_collection: Seleziona una Raccolta
   presentation-divider:
     divider: Separatore
+    description: Etichetta e divide i campi in sezioni
+    title_placeholder: Inserisci un titolo...
+    inline_title: Titolo incorporato
+    inline_title_label: Mostra titolo all'interno della riga
+    margin_top: Margine superiore
+    margin_top_label: Aumenta il margine superiore
   select-dropdown:
+    description: Seleziona un valore da un menu a discesa
+    choices_placeholder: Aggiungi una nuova scelta
+    allow_other: Consenti altro
+    allow_other_label: Consenti altri valori
+    allow_none: Consenti nessuna
+    allow_none_label: Consenti nessuna selezione
+    choices_name_placeholder: Inserisci un nome...
     choices_value_placeholder: Inserisci un valore...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Menu a discesa (Multipla)
+    description: Seleziona più valori da un menu a discesa
   file:
     file: File
     description: Seleziona o carica un file
@@ -806,8 +950,11 @@ interfaces:
     description: Seleziona o carica più file
   input-hash:
     hash: Hash
+    description: Inserisci un valore da cifrare
+    masked: Nascosto
+    masked_label: Nascondi il valore reale
   select-icon:
-    icon: Icon
+    icon: Icona
     description: Seleziona un'icona dal menu a discesa
     search_for_icon: Cerca un'icona...
   file-image:
@@ -819,17 +966,23 @@ interfaces:
     placeholder: Seleziona un'interfaccia...
   system-interface-options:
     interface-options: Opzioni interfaccia
+    description: Una modale per selezionare le opzioni di un'interfaccia
   list-m2m:
     many-to-many: Molti a Molti
+    description: Seleziona più elementi di giunzione correlati
   select-dropdown-m2o:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
     display_template: Display Template
   input-rich-text-md:
     markdown: Markdown
+    description: Inserisci e visualizza in anteprima markdown
     customSyntax: Blocchi Personalizzati
+    customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata
+    box: Blocco / In linea
     imageToken: Token Immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti dell'immagine
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -837,45 +990,104 @@ interfaces:
   list-o2m:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
-    no_collection: Impossibile trovare la collezione
+    no_collection: Impossibile trovare la raccolta
   system-folder:
     folder: Cartella
+    description: Seleziona una cartella
+    field_hint: Mette i file appena caricati nella cartella selezionata. Non influisce sui file esistenti selezionati.
+    root_name: Radice libreria file
+    system_default: Predefiniti di sistema
+  select-radio:
+    radio-buttons: Radio button
+    description: Seleziona una tra più scelte
   list:
     repeater: Ripetitore
+    description: Crea più elementi della stessa struttura
     edit_fields: Modifica Campi
+    add_label: 'Etichetta "Crea nuovo"'
     field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
   slider:
     slider: Cursore
+    description: Seleziona un numero usando un cursore
     always_show_value: Mostra sempre il valore
   tags:
     tags: Tags
     description: Seleziona o aggiungi tag
+    whitespace: Spazio
+    hyphen: Sostituisci con trattino
+    underscore: Sostituisci con trattino basso
+    remove: Rimuovi gli spazi
     capitalization: Capitalizzazione
     uppercase: Converti Maiuscole
     lowercase: Converti Minuscole
+    auto_formatter: Usa la formattazione automatica del titolo
+    alphabetize: Ordine alfabetico
     alphabetize_label: Forza Ordine Alfabetico
     add_tags: Aggiungi tag...
   input:
     input: Input
     description: Inserisci manualmente un valore
+    trim: Rifila
+    trim_label: Elimina gli spazi a inizio e fine
+    mask: Nascosto
     mask_label: Nascondi il valore reale
+    clear: Valore vuoto
     clear_label: Salva come stringa vuota
+    minimum_value: Valore minimo
+    maximum_value: Valore massimo
+    step_interval: Intervallo
+    slug: Slugify
+    slug_label: Rendi il valore inserito a prova di URL
+  input-multiline:
+    textarea: Area di testo
+    description: Inserisci testo su più righe
   boolean:
     toggle: Interrutore
+    description: Cambia tra acceso e spento
+    label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+  list-o2m-tree-view:
+    description: Vista ad albero per oggetti ricorsivi annidati one-to-many
+    recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
   user:
     user: Utente
     description: Seleziona un utente di directus esistente
+    select_mode: Seleziona la modalità
     modes:
+      auto: Automatica
       dropdown: Menu a tendina
       modal: Modale
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Un editor di testo formattato per scrivere contenuto HTML
+    toolbar: Barra degli strumenti
+    custom_formats: Formati personalizzati
+    options_override: Ridefinizione delle impostazioni
+  input-autocomplete-api:
+    input-autocomplete-api: Input di completamento automatico (API)
+    description: Una ricerca durante la digitazione per valori API esterni.
+    results_path: Percorso dei risultati
+    value_path: Percorso del valore
+    trigger: Attivazione
+    rate: Intervallo
+  group-raw:
+    name: Campi grezzi
+    description: Mostra i valori grezzi dei campi.
 displays:
   boolean:
     boolean: Boolean
+    description: Mostra gli stati acceso e spento
+    label_on: Etichetta acceso
+    label_on_placeholder: Inserisci l'etichetta acceso...
+    label_off: Etichetta spento
+    label_off_placeholder: Inserisci l'etichetta spento...
+    icon_on: Icona Acceso
+    icon_off: Icona Spento
+    color_on: Colore acceso
     color_off: Colore Disattivato
   collection:
     collection: Raccolta
@@ -889,6 +1101,8 @@ displays:
     datetime: Data e ora
     description: Visualizza valori relativi al tempo
     format: Formato
+    format_note: >-
+      Il formato personalizzato accetta la __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lungo
     short: Breve
     relative: Relativo
@@ -902,13 +1116,17 @@ displays:
   formatted-value:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
+    format_title: Formatta il titolo
+    format_title_label: Formattazione automatica maiuscole/minuscole
+    bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
   icon:
-    icon: Icon
+    icon: Icona
     description: Visualizza un'icona
-    filled: Riempito
+    filled: Piena
+    filled_label: Usa la versione piena
   image:
     image: Immagine
     description: Visualizza una piccola anteprima dell'immagine
@@ -916,9 +1134,11 @@ displays:
     circle_label: Visualizza come un cerchio
   labels:
     labels: Etichette
+    description: Mostra un'etichetta o una lista di etichette
     default_foreground: Primo Piano Predefinito
     default_background: Sfondo Predefinito
     format_label: Formatta ogni etichetta
+    show_as_dot: Mostra come pallino
     choices_value_placeholder: Inserisci un valore...
     choices_text_placeholder: Inserisci un testo...
   mime-type:
@@ -928,12 +1148,17 @@ displays:
     extension_only_label: Mostra solo l'estensione del file
   rating:
     rating: Valutazione
+    description: Visualizza un numero come stelle rispetto al valore massimo
     simple: Semplice
+    simple_label: Mostra le stelle in formato semplice
+  raw:
+    raw: Valore grezzo
   related-values:
     related-values: Valori Correlati
     description: Visualizza i valori relativi
   user:
     user: Utente
+    description: Mostra un utente directus
     avatar: Avatar
     name: Nome
     both: Tutti e due
@@ -944,6 +1169,7 @@ layouts:
     image_source: Origine immagine
     image_fit: Adatta immagini
     crop: Ritaglia
+    contain: Contiene
     title: Titolo
     subtitle: Sottotitolo
   tabular:
