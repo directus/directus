@@ -110,6 +110,7 @@ field_validation: Convalida di Campo
 field_presets: Preset di Campo
 permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
+validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
 changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
@@ -550,7 +551,11 @@ height: Altezza
 source: Sorgente
 url_placeholder: Inserisci url...
 display_text: Visualizza testo
+display_text_placeholder: Inserisci un testo di visualizzazione...
+tooltip: Suggerimento
+tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
+open_link_in: Apri collegamento in
 new_tab: Nuova scheda
 current_tab: Scheda corrente
 wysiwyg_options:
@@ -587,6 +592,9 @@ wysiwyg_options:
   h5: Intestazione 5
   h6: Intestazione 6
   fontselect: Seleziona il tipo di carattere
+  fontsizeselect: Seleziona la dimensione del carattere
+  indent: Aumenta indentazione
+  outdent: Riduci indentazione
   undo: Annulla
   redo: Ripristina
   remove: Rimuovere
