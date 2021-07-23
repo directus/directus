@@ -885,6 +885,7 @@ interfaces:
   select-multiple-checkbox-tree:
     name: Caselle di selezione (Albero)
     description: Scegli tra più opzioni tramite caselle di selezione annidate
+    value_combining: Combinazione dei valori
     value_combining_note: Controlla quale valore viene memorizzato quando vengono effettuate selezioni annidate.
   input-code:
     code: Codice
@@ -920,7 +921,15 @@ interfaces:
     select_a_collection: Seleziona una Raccolta
   presentation-divider:
     divider: Separatore
+    description: Etichetta e divide i campi in sezioni
+    title_placeholder: Inserisci un titolo...
+    inline_title: Titolo incorporato
+    inline_title_label: Mostra titolo all'interno della riga
+    margin_top: Margine superiore
+    margin_top_label: Aumenta il margine superiore
   select-dropdown:
+    description: Seleziona un valore da un menu a discesa
+    choices_placeholder: Aggiungi una nuova scelta
     allow_other: Consenti altro
     choices_value_placeholder: Inserisci un valore...
   file:
@@ -998,6 +1007,12 @@ interfaces:
     modes:
       dropdown: Menu a tendina
       modal: Modale
+  input-rich-text-html:
+    toolbar: Barra degli strumenti
+    custom_formats: Formati personalizzati
+    options_override: Ridefinizione delle impostazioni
+  input-autocomplete-api:
+    input-autocomplete-api: Input di completamento automatico (API)
 displays:
   boolean:
     boolean: Boolean
