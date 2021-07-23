@@ -1013,11 +1013,24 @@ interfaces:
     options_override: Ridefinizione delle impostazioni
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
+    description: Una ricerca durante la digitazione per valori API esterni.
+    results_path: Percorso dei risultati
+    value_path: Percorso del valore
+    trigger: Attivazione
+    rate: Intervallo
+  group-raw:
+    name: Campi grezzi
 displays:
   boolean:
     boolean: Boolean
+    description: Mostra gli stati acceso e spento
+    label_on: Etichetta acceso
+    label_on_placeholder: Inserisci l'etichetta acceso...
+    label_off: Etichetta spento
+    label_off_placeholder: Inserisci l'etichetta spento...
     icon_on: Icona Acceso
     icon_off: Icona Spento
+    color_on: Colore acceso
     color_off: Colore Disattivato
   collection:
     collection: Raccolta
@@ -1031,6 +1044,8 @@ displays:
     datetime: Data e ora
     description: Visualizza valori relativi al tempo
     format: Formato
+    format_note: >-
+      Il formato personalizzato accetta la __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lungo
     short: Breve
     relative: Relativo
@@ -1044,6 +1059,9 @@ displays:
   formatted-value:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
+    format_title: Formatta il titolo
+    format_title_label: Formattazione automatica maiuscole/minuscole
+    bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
@@ -1051,6 +1069,7 @@ displays:
     icon: Icon
     description: Visualizza un'icona
     filled: Riempito
+    filled_label: Usa la versione piena
   image:
     image: Immagine
     description: Visualizza una piccola anteprima dell'immagine
@@ -1058,6 +1077,7 @@ displays:
     circle_label: Visualizza come un cerchio
   labels:
     labels: Etichette
+    description: Mostra un'etichetta o una lista di etichette
     default_foreground: Primo Piano Predefinito
     default_background: Sfondo Predefinito
     format_label: Formatta ogni etichetta
