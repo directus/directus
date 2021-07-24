@@ -24,7 +24,7 @@ export default class AuthManager {
 	 * Get auth provider
 	 */
 	getProvider(name?: string): Auth {
-		name = name || this.defaultProvider;
+		name = name ?? this.defaultProvider;
 
 		if (!name) {
 			throw new InvalidConfigException('Missing auth provider name');
@@ -47,7 +47,7 @@ export default class AuthManager {
 			throw new DriverNotSupportedException('Driver not supported', providerConfig.driver);
 		}
 
-		const provider = new Driver(this.knex, providerConfig.config);
+		const provider = new Driver(this.knex, name, providerConfig.config);
 		this._providers.set(name, provider);
 		return provider;
 	}

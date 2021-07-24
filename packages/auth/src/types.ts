@@ -1,14 +1,14 @@
 export interface User {
 	id?: string;
-	first_name?: string;
-	last_name?: string;
-	email?: string;
-	password?: string;
+	first_name?: string | null;
+	last_name?: string | null;
+	email?: string | null;
+	password?: string | null;
 	status?: 'active' | 'suspended' | 'invited';
-	role?: string;
+	role?: string | null;
 	provider?: string;
-	identifier?: string;
-	auth_data?: string;
+	identifier?: string | null;
+	auth_data?: string | null;
 }
 
 export interface AuthProviderConfig {

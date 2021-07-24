@@ -2,7 +2,7 @@
   "name": "@directus/auth-username",
   "version": "9.0.0-rc.85",
   "description": "Username based auth driver for Directus",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "contributors": [

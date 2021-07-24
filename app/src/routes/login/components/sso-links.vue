@@ -1,6 +1,6 @@
 <template>
 	<div class="sso-links">
-		<template v-if="authProviders?.length > 0 || oauthProviders?.length > 0">
+		<template v-if="authProviders?.length || oauthProviders?.length">
 			<v-divider />
 
 			<router-link

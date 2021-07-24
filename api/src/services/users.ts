@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone } from 'lodash';
@@ -7,9 +6,9 @@ import env from '../env';
 import auth from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { User } from '@directus/auth';
 import { FailedValidationException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { ContainsNullValuesException } from '../exceptions/database/contains-null-values';
 import logger from '../logger';
 import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
@@ -36,6 +35,8 @@ export class UsersService extends ItemsService {
 	 * the email is unique regardless of casing
 	 */
 	private async checkUniqueEmails(emails: string[], excludeKey?: PrimaryKey): Promise<void> {
+		emails = emails.map((email) => email.toLowerCase());
+
 		const duplicates = emails.filter((value, index, array) => array.indexOf(value) !== index);
 
 		if (duplicates.length) {
@@ -57,7 +58,7 @@ export class UsersService extends ItemsService {
 
 		const results = await query;
 
-		if (results.length > 0) {
+		if (results.length) {
 			throw new RecordNotUniqueException('email', {
 				collection: 'directus_users',
 				field: 'email',
@@ -167,6 +168,10 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
+		if (data.provider !== undefined) {
+			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+		}
+
 		/**
 		 * Sync with auth provider
 		 */
@@ -216,7 +221,7 @@ export class UsersService extends ItemsService {
 		 * Sync with auth provider
 		 */
 		const users = await this.knex
-			.select(
+			.select<User[]>(
 				'id',
 				'first_name',
 				'last_name',
@@ -232,7 +237,7 @@ export class UsersService extends ItemsService {
 			.whereIn('id', keys);
 
 		await Promise.all(
-			users.map(async (user) => {
+			users.map(async (user: User) => {
 				const provider = auth.getProvider(user.provider);
 				await provider.deleteUser(user);
 			})

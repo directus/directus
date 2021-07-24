@@ -15,17 +15,17 @@ export class TFAService {
 	}
 
 	async verifyOTP(key: PrimaryKey, otp: string, secret?: string): Promise<boolean> {
-		if (!secret) {
-			const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: key }).first();
-
-			if (!user?.tfa_secret) {
-				throw new InvalidPayloadException(`User "${key}" doesn't have TFA enabled.`);
-			}
-
-			return authenticator.check(otp, user.tfa_secret);
+		if (secret) {
+			return authenticator.check(otp, secret);
 		}
 
-		return authenticator.check(otp, secret);
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: key }).first();
+
+		if (!user?.tfa_secret) {
+			throw new InvalidPayloadException(`User "${key}" doesn't have TFA enabled.`);
+		}
+
+		return authenticator.check(otp, user.tfa_secret);
 	}
 
 	async generateTFA(key: PrimaryKey): Promise<Record<string, string>> {

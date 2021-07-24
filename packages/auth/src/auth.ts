@@ -4,14 +4,23 @@ import { Knex } from 'knex';
 import { User } from './types';
 
 export interface AuthConstructor {
-	new (knex: Knex, ...args: any[]): Auth;
+	/**
+	 * Auth constructor
+	 *
+	 * @param knex Database driver
+	 * @param provider Auth provider name
+	 * @param args Optional config args
+	 */
+	new (knex: Knex, provider: string, ...args: any[]): Auth;
 }
 
 export default abstract class Auth {
 	knex: Knex;
+	provider: string;
 
-	constructor(knex: Knex) {
+	constructor(knex: Knex, provider: string) {
 		this.knex = knex;
+		this.provider = provider;
 	}
 
 	/**
@@ -56,7 +65,7 @@ export default abstract class Auth {
 	 * Handle create user. Can be used to sync user data with external providers
 	 *
 	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidOperationException
+	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
 	createUser(_user: User): void {
 		/* Optional */
@@ -68,7 +77,7 @@ export default abstract class Auth {
 	 * Note: Only updated fields are provided
 	 *
 	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidOperationException
+	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
 	updateUser(_user: User): void {
 		/* Optional */
@@ -78,7 +87,7 @@ export default abstract class Auth {
 	 * Handle delete user. Can be used to sync user data with external providers
 	 *
 	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidOperationException
+	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
 	deleteUser(_user: User): void {
 		/* Optional */

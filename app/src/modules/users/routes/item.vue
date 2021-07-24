@@ -102,7 +102,7 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="Avatar" />
+					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -325,13 +325,13 @@ export default defineComponent({
 						const defaultValue = { text: t('default'), value: 'default' };
 						const values = providers.value.map((provider) => ({ text: capitalizeFirst(provider), value: provider }));
 
-						field.meta.readonly = false;
+						field.meta.readonly = !isNew.value;
 						field.meta.options.choices = [defaultValue, ...values];
 					} else if (providersLoading.value) {
 						field.meta.readonly = true;
 						field.meta.options.choices = [{ text: t('loading'), value: provider }];
 					} else {
-						field.meta.readonly = false;
+						field.meta.readonly = true;
 						field.meta.options.choices = [{ text: t('no_results'), value: provider }];
 					}
 				}

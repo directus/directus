@@ -7,7 +7,7 @@ import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import auth from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { InvalidCredentialsException } from '@directus/auth';
+import { InvalidCredentialsException, User } from '@directus/auth';
 import { InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
@@ -56,7 +56,7 @@ export class AuthenticationService {
 		const provider = auth.getProvider(providerName);
 
 		let user = await this.knex
-			.select(
+			.select<User & { tfa_secret: string | null }>(
 				'id',
 				'first_name',
 				'last_name',
@@ -86,7 +86,7 @@ export class AuthenticationService {
 		});
 
 		if (updatedUser) {
-			user = updatedUser.length > 0 ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
+			user = updatedUser.length ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -126,13 +126,13 @@ export class AuthenticationService {
 			loginAttemptsLimiter.points = allowedAttempts;
 
 			try {
-				await loginAttemptsLimiter.consume(user.id);
+				await loginAttemptsLimiter.consume(user.id as string);
 			} catch (err) {
 				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 
 				// This means that new attempts after the user has been re-activated will be accepted
-				await loginAttemptsLimiter.set(user.id, 0, 0);
+				await loginAttemptsLimiter.set(user.id as string, 0, 0);
 			}
 		}
 
@@ -152,7 +152,7 @@ export class AuthenticationService {
 
 		if (user.tfa_secret && otp) {
 			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
-			const otpValid = await tfaService.verifyOTP(user.id, otp);
+			const otpValid = await tfaService.verifyOTP(user.id as string, otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
@@ -160,16 +160,12 @@ export class AuthenticationService {
 			}
 		}
 
-		const payload = {
-			id: user.id,
-		};
-
 		/**
 		 * @TODO
 		 * Sign token with combination of server secret + user password hash
 		 * That way, old tokens are immediately invalidated whenever the user changes their password
 		 */
-		const accessToken = jwt.sign(payload, env.SECRET as string, {
+		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 		const refreshToken = nanoid(64);
@@ -201,7 +197,7 @@ export class AuthenticationService {
 		emitStatus('success');
 
 		if (allowedAttempts !== null) {
-			await loginAttemptsLimiter.set(user.id, 0, 0);
+			await loginAttemptsLimiter.set(user.id as string, 0, 0);
 		}
 
 		return {
@@ -218,7 +214,7 @@ export class AuthenticationService {
 		}
 
 		const record = await this.knex
-			.select(
+			.select<Session & User>(
 				's.expires',
 				'u.id',
 				'u.first_name',
@@ -266,7 +262,7 @@ export class AuthenticationService {
 
 	async logout(refreshToken: string): Promise<void> {
 		const user = await this.knex
-			.select(
+			.select<User>(
 				'u.id',
 				'u.first_name',
 				'u.last_name',
@@ -293,7 +289,7 @@ export class AuthenticationService {
 
 	async verifyPassword(userID: string, password: string): Promise<void> {
 		const user = await this.knex
-			.select(
+			.select<User>(
 				'id',
 				'first_name',
 				'last_name',
