@@ -314,6 +314,8 @@ export default defineComponent({
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
 
+		const writableFilters = computed(() => [...(filters.value ?? [])]);
+
 		const layoutState = useLayout(
 			layout,
 			reactive({
@@ -321,7 +323,8 @@ export default defineComponent({
 				selection,
 				layoutOptions,
 				layoutQuery,
-				filters,
+				filter: null,
+				filters: writableFilters,
 				searchQuery,
 				resetPreset,
 				selectMode: false,

@@ -107,7 +107,7 @@ export default defineComponent({
 				selection: layoutSelection,
 				layoutOptions: localOptions,
 				layoutQuery: localQuery,
-				filter: filter,
+				filter,
 				filters: layoutFilters,
 				searchQuery,
 				selectMode: true,

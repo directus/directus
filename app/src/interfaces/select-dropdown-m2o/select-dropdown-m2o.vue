@@ -80,7 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
-			:filter="filter"
+			:filter="sanitizedFilter"
 			@input="stageSelection"
 		/>
 	</div>
@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch, PropType, inject, Ref } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -97,6 +97,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { parseFilter } from '@/utils/parse-filter';
 
 /**
  * @NOTE
@@ -134,7 +135,7 @@ export default defineComponent({
 			default: false,
 		},
 		filter: {
-			type: Object as PropType<any>,
+			type: Object,
 			default: null,
 		},
 	},
@@ -143,6 +144,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const { collection, filter } = toRefs(props);
+		const values = inject<Ref<Record<string, unknown>>>('values');
 
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
@@ -159,6 +161,10 @@ export default defineComponent({
 		const { edits, stageEdits } = useEdits();
 
 		const editModalActive = ref(false);
+
+		const sanitizedFilter = computed(() =>
+			filter.value ? parseFilter(filter.value, values && values.value ? values.value : null) : null
+		);
 
 		return {
 			t,
@@ -183,6 +189,7 @@ export default defineComponent({
 			stageEdits,
 			editModalActive,
 			relatedPrimaryKeyField,
+			sanitizedFilter,
 		};
 
 		function useCurrent() {

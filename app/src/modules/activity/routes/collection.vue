@@ -57,6 +57,8 @@ export default defineComponent({
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
+		const writableFilters = computed(() => [...(filters.value ?? [])]);
+
 		useLayout(
 			layout,
 			reactive({
@@ -64,7 +66,8 @@ export default defineComponent({
 				selection: [],
 				layoutOptions,
 				layoutQuery,
-				filters,
+				filter: null,
+				filters: writableFilters,
 				searchQuery,
 				selectMode: false,
 				readonly: false,

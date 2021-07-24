@@ -75,10 +75,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
-			fields: fields,
+			fields,
 			filter,
-			filters: filters,
-			searchQuery: searchQuery,
+			filters,
+			searchQuery,
 		});
 
 		const newLink = computed(() => {

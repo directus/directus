@@ -110,6 +110,8 @@ export default defineComponent({
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
+		const writableFilters = computed(() => [...(filters.value ?? [])]);
+
 		const layoutState = useLayout(
 			layout,
 			reactive({
@@ -117,7 +119,8 @@ export default defineComponent({
 				selection,
 				layoutOptions,
 				layoutQuery,
-				filters,
+				filter: null,
+				filters: writableFilters,
 				searchQuery,
 				selectMode: false,
 				readonly: false,

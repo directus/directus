@@ -64,9 +64,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				limit,
 				page,
 				fields: fieldsWithRelational,
-				filter: filter,
-				filters: filters,
-				searchQuery: searchQuery,
+				filter,
+				filters,
+				searchQuery,
 			}
 		);
 

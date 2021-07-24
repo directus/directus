@@ -109,7 +109,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		}
 	});
 
-	watch([filters, limit], async (after, before) => {
+	watch([filter, filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -191,7 +191,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 					page: page.value,
 					search: searchQuery.value,
 					filter: {
-						...(filter?.value ?? {}),
+						...(filter.value ?? {}),
 						...query.filter,
 					},
 				},

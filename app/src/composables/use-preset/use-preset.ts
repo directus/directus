@@ -6,7 +6,7 @@ import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
-	layout: Ref<string | null>;
+	layout: Ref<string>;
 	layoutOptions: Ref<Record<string, any>>;
 	layoutQuery: Ref<Record<string, any>>;
 	filters: Ref<readonly Filter[]>;
@@ -125,7 +125,7 @@ export function usePreset(
 		},
 	});
 
-	const layout = computed<string | null>({
+	const layout = computed<string>({
 		get() {
 			return localPreset.value.layout || 'tabular';
 		},

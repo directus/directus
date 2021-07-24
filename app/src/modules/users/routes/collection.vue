@@ -140,7 +140,7 @@ import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Role } from '@directus/shared/types';
+import { Filter, Role } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
@@ -172,10 +172,11 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const layoutFilters = computed<any[]>({
+		const layoutFilters = computed<Filter[]>({
 			get() {
 				if (props.role !== null) {
-					const roleFilter = {
+					const roleFilter: Filter = {
+						key: `role_rq_${props.role}`,
 						locked: true,
 						operator: 'eq',
 						field: 'role',
@@ -185,7 +186,7 @@ export default defineComponent({
 					return [roleFilter, ...filters.value];
 				}
 
-				return filters.value;
+				return [...filters.value];
 			},
 			set(newFilters) {
 				filters.value = newFilters;
@@ -214,6 +215,7 @@ export default defineComponent({
 				selection,
 				layoutOptions,
 				layoutQuery,
+				filter: null,
 				filters: layoutFilters,
 				searchQuery,
 				resetPreset,
