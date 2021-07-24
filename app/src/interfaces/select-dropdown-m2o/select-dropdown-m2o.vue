@@ -76,7 +76,7 @@
 		/>
 
 		<drawer-collection
-			v-if="!disabled"
+			v-if="!disabled && !loadingCurrent"
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
