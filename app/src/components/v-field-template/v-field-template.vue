@@ -1,22 +1,29 @@
 <template>
-	<v-menu attached v-model="menuActive">
+	<v-menu v-model="menuActive" attached>
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
+					<span
+						ref="contentEl"
+						class="content"
+						:contenteditable="!disabled"
+						@keydown="onKeyDown"
+						@input="onInput"
+						@click="onClick"
+					>
 						<span class="text" />
 					</span>
-					<span class="placeholder" v-if="placeholder && !modelValue">{{ placeholder }}</span>
+					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline clickable @click="toggle" :disabled="disabled" />
+					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
 			</v-input>
 		</template>
 
 		<v-list v-if="!disabled" :mandatory="false">
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
+			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>
@@ -26,10 +33,10 @@ import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType }
 import FieldListItem from './field-list-item.vue';
 import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	components: { FieldListItem },
 	props: {
 		disabled: {
@@ -61,6 +68,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const contentEl = ref<HTMLElement | null>(null);
 

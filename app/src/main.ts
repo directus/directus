@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import { version } from '../package.json';
@@ -47,7 +49,11 @@ async function init() {
 	console.timeEnd('🕓 Application Loaded');
 
 	console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
-	console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
+
+	if (import.meta.env.DEV) {
+		console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
+	}
+
 	console.info(`%cEnvironment: ${import.meta.env.MODE}`, 'color:DodgerBlue');
 	console.groupEnd();
 

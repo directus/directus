@@ -2,11 +2,11 @@
 
 import { FormField } from '@/components/v-form/types';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
-import { Field } from '@/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { clone, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
+import { translate } from '@/utils/translate-object-values';
 
 export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const { interfaces } = getInterfaces();
@@ -45,7 +45,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			}
 
 			if (field.meta?.sort && field.meta?.system !== true) {
-				field.meta.sort = field.meta.sort + systemFieldsCount.value;
+				field.meta.sort = Number(field.meta.sort) + Number(systemFieldsCount.value);
 			}
 
 			return field;
@@ -59,6 +59,8 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 		});
 
 		formFields = orderBy(formFields, 'meta.sort');
+
+		formFields = translate(formFields);
 
 		return formFields;
 	});

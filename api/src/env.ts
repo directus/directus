@@ -16,7 +16,7 @@ const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
 	PORT: 8055,
-	PUBLIC_URL: 'http://localhost:8055',
+	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	STORAGE_LOCATIONS: 'local',
@@ -34,6 +34,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	ROOT_REDIRECT: './admin',
 
@@ -47,9 +48,11 @@ const defaults: Record<string, any> = {
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
-	CACHE_TTL: '10m',
+	CACHE_TTL: '5m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
+	CACHE_CONTROL_S_MAXAGE: '0',
+	CACHE_SCHEMA: true,
 
 	OAUTH_PROVIDERS: '',
 
@@ -62,9 +65,10 @@ const defaults: Record<string, any> = {
 
 	TELEMETRY: true,
 
-	ASSETS_CACHE_TTL: '30m',
-	ASSETS_TRANSFORM_MAX_CONCURRENT: 4,
+	ASSETS_CACHE_TTL: '30d',
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
+	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -179,14 +183,14 @@ function processValues(env: Record<string, any>) {
 		// and store it in the variable with the same name but without '_FILE' at the end
 		let newKey;
 		if (key.length > 5 && key.endsWith('_FILE')) {
+			newKey = key.slice(0, -5);
+			if (newKey in env) {
+				throw new Error(
+					`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
+				);
+			}
 			try {
 				value = fs.readFileSync(value, { encoding: 'utf8' });
-				newKey = key.slice(0, -5);
-				if (newKey in env) {
-					throw new Error(
-						`Duplicate environment variable encountered: you can't use "${key}" and "${newKey}" simultaneously.`
-					);
-				}
 				key = newKey;
 			} catch {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);

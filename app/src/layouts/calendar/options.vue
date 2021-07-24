@@ -1,17 +1,17 @@
 <template>
 	<div class="field">
 		<div class="type-label">{{ t('display_template') }}</div>
-		<v-field-template :collection="props.collection" v-model="template" />
+		<v-field-template v-model="template" :collection="props.collection" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.calendar.start_date_field') }}</div>
-		<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="startDateField" />
+		<v-select v-model="startDateField" show-deselect :items="dateFields" item-text="name" item-value="field" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.calendar.end_date_field') }}</div>
-		<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="endDateField" />
+		<v-select v-model="endDateField" show-deselect :items="dateFields" item-text="name" item-value="field" />
 	</div>
 </template>
 
@@ -19,7 +19,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

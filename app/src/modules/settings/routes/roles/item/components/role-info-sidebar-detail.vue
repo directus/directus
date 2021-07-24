@@ -9,14 +9,13 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="md(t('page_help_settings_roles_item'))" />
+		<div v-md="t('page_help_settings_roles_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
-import { md } from '@/utils/md';
 
 export default defineComponent({
 	props: {
@@ -32,7 +31,7 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		return { t, md };
+		return { t };
 	},
 });
 </script>

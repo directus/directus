@@ -1,5 +1,6 @@
 <template>
-	<div class="md" :class="pageClass" v-html="html" @click="onClick" />
+	<!-- eslint-disable-next-line vue/no-v-html -->
+	<div class="md" :class="pageClass" @click="onClick" v-html="html" />
 </template>
 
 <script lang="ts">
@@ -26,8 +27,11 @@ const md = new MarkdownIt({
 		if (lang && hljs.getLanguage(lang)) {
 			try {
 				return hljs.highlight(str, { language: lang }).value;
-			} catch {
+			} catch (err) {
+				// eslint-disable-next-line no-console
 				console.warn('There was an error highlighting in Markdown');
+				// eslint-disable-next-line no-console
+				console.error(err);
 			}
 		}
 

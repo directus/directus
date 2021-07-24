@@ -1,18 +1,18 @@
 <template>
 	<relationship-m2o
-		:collection="collection"
-		:is-existing="isExisting"
-		:type="type"
 		v-if="type === 'm2o' || type === 'file'"
-	/>
-	<relationship-o2m :collection="collection" :is-existing="isExisting" :type="type" v-else-if="type === 'o2m'" />
-	<relationship-m2m
 		:collection="collection"
 		:is-existing="isExisting"
 		:type="type"
-		v-else-if="type === 'm2m' || type === 'files'"
 	/>
-	<relationship-m2a :collection="collection" :is-existing="isExisting" :type="type" v-else-if="type === 'm2a'" />
+	<relationship-o2m v-else-if="type === 'o2m'" :collection="collection" :is-existing="isExisting" :type="type" />
+	<relationship-m2m
+		v-else-if="type === 'm2m' || type === 'files'"
+		:collection="collection"
+		:is-existing="isExisting"
+		:type="type"
+	/>
+	<relationship-m2a v-else-if="type === 'm2a'" :collection="collection" :is-existing="isExisting" :type="type" />
 </template>
 
 <script lang="ts">

@@ -55,6 +55,7 @@ for more info on what can go into this object.
 
 <script>
 export default {
+	emits: ['input'],
 	props: {
 		value: String,
 	},
@@ -76,7 +77,7 @@ export default {
 - `field` — The key of the field.
 - `primaryKey` — The current item's primary key.
 
-## 2. Install Dependencies and Configure the Buildchain
+## 2. Install Dependencies
 
 Set up a package.json file by running:
 
@@ -85,36 +86,13 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom interface's Vue component must first be bundled into a single `index.js` file.
-We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+We recommend bundling your code using the directus-extension CLI from our `@directus/extension-sdk` package. The CLI
+internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
+SDK, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
+npm i -D @directus/extension-sdk
 ```
-
-You can then use the following Rollup configuration within `rollup.config.js`:
-
-```js
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
-import vue from 'rollup-plugin-vue';
-
-export default {
-	input: 'src/index.js',
-	output: {
-		format: 'es',
-		file: 'dist/index.js',
-	},
-	plugins: [vue(), nodeResolve(), commonjs(), terser()],
-};
-```
-
-::: tip Building multiple extensions
-
-You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
-See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
-
-:::
 
 ## 3. Develop your Custom Interface
 
@@ -125,7 +103,7 @@ The interface itself is simply a Vue component, which provides an blank canvas f
 To build the interface for use within Directus, run:
 
 ```bash
-npx rollup -c
+npx directus-extension build
 ```
 
 Finally, move the output from your interface's `dist` folder into your project's

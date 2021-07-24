@@ -416,6 +416,18 @@ export class GraphQLService {
 					_ncontains: {
 						type: GraphQLString,
 					},
+					_starts_with: {
+						type: GraphQLString,
+					},
+					_nstarts_with: {
+						type: GraphQLString,
+					},
+					_ends_with: {
+						type: GraphQLString,
+					},
+					_nends_with: {
+						type: GraphQLString,
+					},
 					_in: {
 						type: new GraphQLList(GraphQLString),
 					},
@@ -1265,10 +1277,10 @@ export class GraphQLService {
 					},
 				}),
 				resolve: async () => ({
-					interfaces: await listExtensions('interfaces'),
-					displays: await listExtensions('displays'),
-					layouts: await listExtensions('layouts'),
-					modules: await listExtensions('modules'),
+					interfaces: listExtensions('interface'),
+					displays: listExtensions('display'),
+					layouts: listExtensions('layout'),
+					modules: listExtensions('module'),
 				}),
 			},
 			server_specs_oas: {
@@ -1364,7 +1376,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 					});
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1395,13 +1407,13 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
 					const result = await authenticationService.refresh(currentRefreshToken);
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1431,7 +1443,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}

@@ -68,6 +68,29 @@ The storage implementation. See [Storage](#storage) for more information.
 
 Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
 
+**NOTE:**
+
+If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
+unpredictable behaviors. This scenario might be a case while writing tests.
+
+For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
+Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
+scenario by granting false access rights to your previous logged-in users.
+
+Adding prefixes to your Storage instances would solve this error:
+
+```js
+import { Directus, MemoryStorage } from '@directus/sdk';
+import { randomBytes } from 'crypto';
+
+// ...
+
+const prefix = randomBytes(8).toString('hex');
+const storage = new MemoryStorage(prefix);
+const url = `http://${host}:${port}`;
+const directus = new Directus(url, { storage });
+```
+
 #### `options.transport`
 
 The transport implementation. See [Transport](#transport) for more information.
@@ -127,6 +150,30 @@ directus.transport.url = 'https://api2.example.com';
 
 You can tap into the transport through `directus.transport`. If you are using the (default) `AxiosTransport`, you can
 access axios through `directus.transport.axios`.
+
+#### Intercepting requests and responses
+
+Axios transport offers a wrapper around Axios interceptors to make it easy for you to inject/eject interceptors.
+
+```ts
+const requestInterceptor = directus.transport.requests.intercept((config) => {
+	config.headers['My-Custom-Header'] = 'Header value';
+	return config;
+});
+
+// If you don't want the interceptor anymore, remove it
+requestInterceptor.eject();
+```
+
+```ts
+const responseInterceptor = directus.transport.responses.intercept((response) => {
+	console.log('Response received', { response });
+	return response;
+});
+
+// If you don't want the interceptor anymore, remove it
+responseInterceptor.eject();
+```
 
 ## Items
 

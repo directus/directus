@@ -12,23 +12,22 @@
 		>
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
+			<v-list-item-icon v-if="$slots.default" class="activator-icon" :class="{ active: groupActive }">
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-if="groupActive">
+		<div v-if="groupActive" class="items">
 			<slot />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		multiple: {
 			type: Boolean,
@@ -36,7 +35,7 @@ export default defineComponent({
 		},
 		to: {
 			type: String,
-			default: null,
+			default: '',
 		},
 		active: {
 			type: Boolean,
@@ -66,12 +65,19 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		open: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['click'],
 	setup(props, { emit }) {
-		const { active: groupActive, toggle } = useGroupable({
+		const { active, toggle } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});
+
+		const groupActive = computed(() => active.value || props.open);
 
 		return { groupActive, toggle, onClick };
 

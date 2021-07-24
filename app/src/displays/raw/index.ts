@@ -1,5 +1,5 @@
-import { defineDisplay } from '@/displays/define';
-import { types } from '@/types';
+import { defineDisplay } from '@directus/shared/utils/browser';
+import { TYPES } from '@directus/shared/constants';
 
 export default defineDisplay({
 	id: 'raw',
@@ -7,5 +7,5 @@ export default defineDisplay({
 	icon: 'code',
 	handler: (value) => value,
 	options: [],
-	types: types,
+	types: TYPES,
 });

@@ -4,6 +4,7 @@
 			<div class="field full">
 				<p class="type-label">{{ t('format') }}</p>
 				<v-select
+					v-model="format"
 					:items="[
 						{
 							text: t('csv'),
@@ -18,7 +19,6 @@
 							value: 'xml',
 						},
 					]"
-					v-model="format"
 				/>
 				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
@@ -35,7 +35,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, PropType } from 'vue';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import filtersToQuery from '@/utils/filters-to-query';

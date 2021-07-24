@@ -3,11 +3,11 @@
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
 		:role="clickable ? 'button' : null"
-		@click="emitClick"
 		:tabindex="clickable ? 0 : null"
 		:style="{ '--v-icon-color': color }"
+		@click="emitClick"
 	>
-		<component v-if="customIconName" :is="customIconName" />
+		<component :is="customIconName" v-if="customIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
 	</span>
 </template>
@@ -55,7 +55,6 @@ const customIcons: string[] = [
 ];
 
 export default defineComponent({
-	emits: ['click'],
 	components: {
 		CustomIconDirectus,
 		CustomIconBookmarkSave,
@@ -110,6 +109,7 @@ export default defineComponent({
 		},
 		...sizeProps,
 	},
+	emits: ['click'],
 
 	setup(props, { emit }) {
 		const sizeClass = computed<string | null>(() => {
@@ -214,7 +214,6 @@ body {
 
 	&.left {
 		margin-right: 8px;
-		margin-left: -4px;
 
 		&.small {
 			margin-right: 4px;
@@ -223,7 +222,6 @@ body {
 	}
 
 	&.right {
-		margin-right: -6px;
 		margin-left: 6px;
 
 		&.small {

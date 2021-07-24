@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceFileImage from './file-image.vue';
 
 export default defineInterface({
@@ -10,6 +10,20 @@ export default defineInterface({
 	types: ['uuid'],
 	groups: ['file'],
 	relational: true,
-	options: [],
+	options: [
+		{
+			field: 'folder',
+			name: '$t:interfaces.system-folder.folder',
+			type: 'uuid',
+			meta: {
+				width: 'full',
+				interface: 'system-folder',
+				note: '$t:interfaces.system-folder.field_hint',
+			},
+			schema: {
+				default_value: undefined,
+			},
+		},
+	],
 	recommendedDisplays: ['image'],
 });

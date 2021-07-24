@@ -9,23 +9,23 @@
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
 				<template v-else>
 					<img
+						v-if="imageSource"
 						class="image"
 						loading="lazy"
-						v-if="imageSource"
 						:src="imageSource"
 						alt=""
 						role="presentation"
 						@error="imgError = true"
 					/>
-					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
+					<img v-else-if="svgSource" class="svg" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
 					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
 		<v-skeleton-loader v-if="loading" type="text" />
 		<template v-else>
-			<div class="title" v-if="$slots.title"><slot name="title" /></div>
-			<div class="subtitle" v-if="$slots.subtitle"><slot name="subtitle" /></div>
+			<div v-if="$slots.title" class="title"><slot name="title" /></div>
+			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
 		</template>
 	</div>
 </template>
@@ -45,7 +45,6 @@ type File = {
 };
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		icon: {
 			type: String,
@@ -88,6 +87,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const router = useRouter();
 

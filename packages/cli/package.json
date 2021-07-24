@@ -1,6 +1,6 @@
 {
 	"name": "@directus/cli",
-	"version": "9.0.0-rc.75",
+	"version": "9.0.0-rc.85",
 	"description": "The official Directus CLI",
 	"repository": {
 		"type": "git",
@@ -18,7 +18,6 @@
 		"dist"
 	],
 	"scripts": {
-		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",
@@ -41,8 +40,8 @@
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/format-title": "9.0.0-rc.75",
-		"@directus/sdk": "9.0.0-rc.75",
+		"@directus/format-title": "9.0.0-rc.85",
+		"@directus/sdk": "9.0.0-rc.85",
 		"@types/yargs": "^17.0.0",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
@@ -76,19 +75,19 @@
 		"yargs-parser": "^20.2.7"
 	},
 	"devDependencies": {
-		"@types/figlet": "^1.5.0",
-		"@types/fs-extra": "^9.0.11",
-		"@types/jest": "^26.0.23",
-		"@types/js-yaml": "^4.0.0",
-		"@types/marked-terminal": "^3.1.1",
-		"jest": "^27.0.4",
-		"nock": "^13.0.10",
-		"npm-run-all": "^4.1.5",
-		"prettier": "^2.3.1",
-		"rimraf": "^3.0.2",
-		"ts-jest": "^27.0.2",
-		"ts-node": "^10.0.0",
-		"typescript": "^4.3.2"
+		"@types/figlet": "1.5.4",
+		"@types/fs-extra": "9.0.12",
+		"@types/jest": "26.0.24",
+		"@types/js-yaml": "4.0.2",
+		"@types/marked-terminal": "3.1.2",
+		"jest": "27.0.6",
+		"nock": "13.1.1",
+		"npm-run-all": "4.1.5",
+		"prettier": "2.3.2",
+		"rimraf": "3.0.2",
+		"ts-jest": "27.0.4",
+		"ts-node": "10.1.0",
+		"typescript": "4.3.5"
 	},
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
 }

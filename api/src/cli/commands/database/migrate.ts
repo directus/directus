@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import run from '../../../database/migrations/run';
 import getDatabase from '../../../database';
 

@@ -1,9 +1,9 @@
 <template>
 	<v-dialog
+		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 		persistent
 		:model-value="isOpen"
 		@esc="cancelField"
-		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
 		<v-card class="auto-translations">
 			<v-card-title>{{ t('create_translations') }}</v-card-title>
@@ -30,12 +30,12 @@
 	<v-drawer
 		v-else
 		:model-value="isOpen"
-		@update:model-value="cancelField"
-		@cancel="cancelField"
 		:title="title"
 		:subtitle="localType ? t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
+		@update:model-value="cancelField"
+		@cancel="cancelField"
 	>
 		<template #sidebar>
 			<setup-tabs v-model:current="currentTab" :tabs="tabs" :type="localType" />
@@ -87,9 +87,9 @@
 
 		<template #actions>
 			<setup-actions
+				v-model:current="currentTab"
 				:saving="saving"
 				:collection="collection"
-				v-model:current="currentTab"
 				:tabs="tabs"
 				:is-existing="field !== '+'"
 				@save="saveField"
@@ -101,11 +101,11 @@
 			<v-card>
 				<v-card-title>{{ t('enter_value_to_replace_nulls') }}</v-card-title>
 				<v-card-text>
-					<v-input placeholder="NULL" v-model="nullValueOverride" />
+					<v-input v-model="nullValueOverride" placeholder="NULL" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="nullValuesDialog = false">{{ t('cancel') }}</v-button>
-					<v-button :disabled="nullValueOverride === null" @click="saveNullOverride" :loading="nullOverrideSaving">
+					<v-button :disabled="nullValueOverride === null" :loading="nullOverrideSaving" @click="saveNullOverride">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -134,6 +134,7 @@ import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
+import { LocalType } from '@directus/shared/types';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -159,9 +160,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<
-				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'm2a' | 'presentation' | 'translations'
-			>,
+			type: String as PropType<LocalType>,
 			default: null,
 		},
 	},
@@ -193,9 +192,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2a' | 'm2o' | 'presentation' | 'translations' =
-				'standard';
-			type = getLocalTypeForField(props.collection, props.field);
+			const type = getLocalTypeForField(props.collection, props.field) || 'standard';
 
 			return type;
 		});
@@ -257,7 +254,7 @@ export default defineComponent({
 					},
 				];
 
-				if (props.type !== 'presentation') {
+				if (props.type !== 'presentation' && props.type !== 'group') {
 					tabs.push({
 						text: t('display'),
 						value: 'display',
@@ -392,7 +389,7 @@ export default defineComponent({
 
 				await Promise.all(
 					state.relations.map((relation) => {
-						const relationExists = !!relationsStore.getRelationForField(relation.collection, relation.field);
+						const relationExists = !!relationsStore.getRelationForField(relation.collection!, relation.field!);
 
 						if (relationExists) {
 							return api.patch(`/relations/${relation.collection}/${relation.field}`, relation);

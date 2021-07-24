@@ -6,12 +6,12 @@
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.title') }}</div>
-		<v-field-template :collection="props.collection" v-model="title" />
+		<v-field-template v-model="title" :collection="props.collection" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.subtitle') }}</div>
-		<v-field-template :collection="props.collection" v-model="subtitle" />
+		<v-field-template v-model="subtitle" :collection="props.collection" />
 	</div>
 
 	<v-detail class="field">
@@ -48,7 +48,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs } from 'vue';
 
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

@@ -9,9 +9,9 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="t('delete')">
+					<v-button v-tooltip.bottom="t('delete')" rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -20,17 +20,17 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteSelection" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="deleteSelection">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_preset')">
+			<v-button v-tooltip.bottom="t('create_preset')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -40,7 +40,7 @@
 		</template>
 
 		<div class="presets-collection">
-			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="t('no_presets')" icon="bookmark">
+			<v-info v-if="!loading && presets.length === 0" center type="warning" :title="t('no_presets')" icon="bookmark">
 				{{ t('no_presets_copy') }}
 
 				<template #append>
@@ -50,14 +50,14 @@
 				</template>
 			</v-info>
 			<v-table
+				v-else
+				v-model="selection"
 				:headers="headers"
 				fixed-header
 				:items="presets"
 				:loading="loading"
-				@click:row="onRowClick"
-				v-model="selection"
 				show-select
-				v-else
+				@click:row="onRowClick"
 			>
 				<template #[`item.scope`]="{ item }">
 					<span :class="{ all: item.scope === 'all' }">

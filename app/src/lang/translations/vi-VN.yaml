@@ -4,11 +4,13 @@ item_revision: Xem Phiên bản
 duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
+group: Chọn nhóm
 fill_width: Rộng toàn bộ
 field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
 add_field: Thêm trường
 role_name: Tên Quyền
+branch: Chọn nhánh
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
 show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc
@@ -19,7 +21,6 @@ create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
-email_examples: 'admin@example.com, user@example.com...'
 invite: Mời
 emails: Email
 connection_excellent: Kết nối Tuyệt vời
@@ -302,6 +303,7 @@ sort_field: Sắp xếp theo trường
 add_sort_field: Sắp xếp theo trường
 sort: Sắp xếp
 status: Trạng thái
+remove: Xoá
 toggle_manual_sorting: Kích hoạt sắp xếp thủ công
 bookmark_doesnt_exist: Bookmark Không Tồn Tại
 bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.
@@ -604,6 +606,8 @@ interfaces:
     interface: Giao diện
   select-dropdown-m2o:
     display_template: Mẫu hiển thị
+  system-folder:
+    folder: Thư mục
   slider:
     slider: Thanh trượt
   tags:

@@ -59,7 +59,7 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -88,7 +88,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -107,7 +107,7 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -136,7 +136,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -144,8 +144,8 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies.directus_refresh_token) {
-			res.clearCookie('directus_refresh_token', {
+		if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
+			res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
@@ -161,7 +161,7 @@ router.post(
 router.post(
 	'/password/request',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.email) {
+		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
 
@@ -190,11 +190,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.token) {
+		if (req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (!req.body.password) {
+		if (req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
@@ -340,7 +340,7 @@ router.get(
 		emitStatus('success');
 
 		if (redirect) {
-			res.cookie('directus_refresh_token', refreshToken, {
+			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 				httpOnly: true,
 				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),

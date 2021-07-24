@@ -6,11 +6,11 @@
  */
 
 import { getDisplays } from '@/displays';
-import { DisplayConfig } from '@/displays/types';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
+import { DeepPartial, DisplayConfig, Field, InterfaceConfig, Item, LocalType } from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Collection, Field, localTypes, Relation, Item } from '@/types';
+import { Collection, Relation } from '@/types';
+
 import { clone, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
@@ -35,7 +35,7 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
+function initLocalStore(collection: string, field: string, type: LocalType): void {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
@@ -151,6 +151,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
 	else if (type === 'o2m') useO2M();
 	else if (type === 'presentation') usePresentation();
+	else if (type === 'group') useGroup();
 	else if (type === 'm2a') useM2A();
 	else useStandard();
 
@@ -698,7 +699,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		if (type === 'files') {
 			nextTick(() => {
-				state.relations[1].related_collection = 'directus_files';
+				state.relations[1].related_collection = state.relations[1].related_collection || 'directus_files';
 			});
 		}
 
@@ -1037,6 +1038,15 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		state.fieldData.meta = {
 			...(state.fieldData.meta || {}),
 			special: ['alias', 'no-data'],
+		};
+	}
+
+	function useGroup() {
+		delete state.fieldData.schema;
+		state.fieldData.type = 'alias';
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data', 'group'],
 		};
 	}
 

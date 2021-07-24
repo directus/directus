@@ -47,6 +47,10 @@ properties:
     description: Authentication password policy.
     type: string
     nullable: true
+  storage_default_folder:
+    description: Default folder to place files
+    type: uuid
+    width: full
   storage_asset_transform:
     description: What transformations are allowed in the assets endpoint.
     type: string
@@ -54,7 +58,7 @@ properties:
       - all
       - none
       - presets
-    example: "all"
+    example: 'all'
     nullable: true
   storage_asset_presets:
     description: Array of allowed
@@ -85,5 +89,34 @@ properties:
         quality:
           description: Quality of the compression used.
           type: integer
+        format:
+          description: Reformat output image
+          type: string
+          enum:
+            - ''
+            - jpeg
+            - png
+            - webp
+            - tiff
+        transforms:
+          description: Additional transformations to apply
+          type: list
+          nullable: true
+          items:
+            type: object
+            properties:
+              method:
+                description: The Sharp method name
+                type: string
+              arguments:
+                description: A list of arguments to pass to the Sharp method
+                type: array
+                nullable: true
+                items:
+                  type: object
+                  properties:
+                    argument:
+                      description: A JSON representation of the argument value
+                      type: string
     example: null
     nullable: true

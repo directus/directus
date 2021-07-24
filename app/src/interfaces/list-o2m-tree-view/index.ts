@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import Options from './options.vue';
 import InterfaceListO2MTreeView from './list-o2m-tree-view.vue';
 

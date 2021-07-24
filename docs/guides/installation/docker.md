@@ -2,7 +2,7 @@
 
 Directus is published to both [DockerHub](https://hub.docker.com/r/directus/directus) and
 [GitHub Packages](https://github.com/orgs/directus/packages/container/package/directus) under `directus/directus`. To
-run Directus straight from DockerHub, run:
+use the Directus image from DockerHub, run:
 
 ```bash
 docker run -p 8055:8055 directus/directus
@@ -10,16 +10,17 @@ docker run -p 8055:8055 directus/directus
 
 ### Installing Specific Versions
 
-For every version we release, we update/publish three tags. This allows you to use the latest released version, the
-latest minor (eg v9.1) or a specific version (eg v9.1.2). To run Directus on a specific version, run:
+Each released version is available under its own tag (e.g. 9.0.0-rc.85). To use a specific version of Directus, run:
 
 ```bash
-docker run -p 8055:8055 directus/directus:v9
-# OR
-docker run -p 8055:8055 directus/directus:v9.1
-# OR
-docker run -p 8055:8055 directus/directus:v9.1.2
+docker run -p 8055:8055 directus/directus:9.0.0-rc.85
 ```
+
+::: warning Change In Naming of Docker Tags
+
+Before 9.0.0-rc.84 the Docker tags were prefixed by a "v" - e.g. v9.0.0-rc.83.
+
+:::
 
 ### Create admin user using docker
 
@@ -46,10 +47,11 @@ for data persistence (note that these can be changed through environment variabl
 
 ## Docker Compose
 
-When using Docker compose, you can use the following setup to get you started:
+When using Docker compose, you can use the following setup to get you started - make sure to change all sensitive values
+(`SECRET`, `DB_PASSWORD`, ...) in production:
 
 ```yaml
-version: '3.2'
+version: '3'
 services:
   database:
     container_name: database
@@ -75,11 +77,11 @@ services:
     ports:
       - 8055:8055
     volumes:
-      # By default, Directus images writes uploads to /directus/uploads
+      # By default, uploads are stored in /directus/uploads
       # Always make sure your volumes matches the storage root when using
       # local driver
       - ./uploads:/directus/uploads
-      # Make sure to also mount the volume When using SQLite
+      # Make sure to also mount the volume when using SQLite
       # - ./database:/directus/database
       # If you want to load extensions from the host
       # - ./extensions:/directus/extensions
@@ -109,3 +111,17 @@ services:
 networks:
   directus:
 ```
+
+## Supported Databases
+
+The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
+used with most of the supported databases and storage adapters without having to create a custom image.
+
+::: warning OracleDB
+
+OracleDB's Node client (`node-oracledb`) requires a couple more native dependencies, and specific configurations in
+order to run. The official Directus Docker image does not include these dependencies. See
+[https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple](https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple)
+for more information on what to include for OracleDB.
+
+:::

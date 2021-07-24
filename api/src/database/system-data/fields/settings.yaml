@@ -124,7 +124,7 @@ fields:
             options:
               slug: true
               onlyOnCreate: false
-            width: half
+            width: full
         - field: fit
           name: Fit
           type: string
@@ -173,6 +173,7 @@ fields:
               step: 1
             width: half
         - field: withoutEnlargement
+          name: Upscaling
           type: boolean
           schema:
             default_value: false
@@ -181,6 +182,51 @@ fields:
             width: half
             options:
               label: Don't upscale images
+        - field: format
+          name: Format
+          type: string
+          schema:
+            is_nullable: false
+            default_value: ''
+          meta:
+            interface: select-dropdown
+            options:
+              allowNone: true
+              choices:
+                - value: jpeg
+                  text: JPEG
+                - value: png
+                  text: PNG
+                - value: webp
+                  text: WebP
+                - value: tiff
+                  text: Tiff
+            width: half
+        - field: transforms
+          name: Additional Transformations
+          type: json
+          schema:
+            is_nullable: false
+            default_value: []
+          meta:
+            note:
+              The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more
+              information.
+            interface: json
+            options:
+              template: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
+              placeholder: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
+            width: full
       template: '{{key}}'
     special: json
     width: full
@@ -196,6 +242,11 @@ fields:
         - value: presets
           text: Presets Only
     width: half
+
+  - field: storage_default_folder
+    interface: system-folder
+    width: half
+    note: Default folder where new files are uploaded
 
   - field: overrides_divider
     interface: presentation-divider

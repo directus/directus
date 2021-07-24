@@ -9,6 +9,7 @@ import logger from '../../logger';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
+import prettier from 'prettier';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -61,12 +62,12 @@ export class MailService {
 			html = await this.renderTemplate(template.name, templateData);
 		}
 
-		try {
-			await this.mailer.sendMail({ ...emailOptions, from, html });
-		} catch (error) {
-			logger.warn('[Email] Unexpected error while sending an email:');
-			logger.warn(error);
+		if (typeof html === 'string') {
+			// Some email clients start acting funky when line length exceeds 75 characters. See #6074
+			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
 		}
+
+		await this.mailer.sendMail({ ...emailOptions, from, html });
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {

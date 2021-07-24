@@ -1,13 +1,13 @@
 <template>
 	<transition name="fade">
-		<span class="item-count" v-if="itemCount">{{ showingCount }}</span>
+		<span v-if="itemCount" class="item-count">{{ showingCount }}</span>
 	</transition>
 </template>
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
 
-import { useLayoutState } from '@/composables/use-layout';
+import { useLayoutState } from '@directus/shared/composables';
 
 export default defineComponent({
 	setup() {

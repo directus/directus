@@ -20,7 +20,6 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
-email_examples: 'admin@example.com, user@example.com...'
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
@@ -169,6 +168,7 @@ documentation: Dokumentace
 duration: Trvání
 modified_on: Upraveno
 status: Stav
+remove: Odebrat
 bookmarks: Záložky
 back: Zpět
 all_users: Všichni uživatelé
@@ -355,6 +355,8 @@ interfaces:
     description: Vyberte nebo nahrajte soubory
   select-icon:
     icon: Ikona
+  system-folder:
+    folder: Složka
   tags:
     tags: Štítky
   user:

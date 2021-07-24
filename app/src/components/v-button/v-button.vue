@@ -2,8 +2,9 @@
 	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
-			v-focus="autofocus"
 			:is="component"
+			:ref="component === 'a' ? 'noopener noreferer' : null"
+			v-focus="autofocus"
 			:download="download"
 			class="button"
 			:class="[
@@ -25,7 +26,6 @@
 			:to="to"
 			:href="href"
 			:target="component === 'a' ? '_blank' : null"
-			:ref="component === 'a' ? 'noopener noreferer' : null"
 			@click="onClick"
 		>
 			<span class="content" :class="{ invisible: loading }">
@@ -50,7 +50,6 @@ import { notEmpty } from '@/utils/is-empty';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		autofocus: {
 			type: Boolean,
@@ -86,7 +85,7 @@ export default defineComponent({
 		},
 		to: {
 			type: [String, Object] as PropType<string | RouteLocation>,
-			default: null,
+			default: '',
 		},
 		href: {
 			type: String,
@@ -131,6 +130,7 @@ export default defineComponent({
 		},
 		...sizeProps,
 	},
+	emits: ['click'],
 	setup(props, { emit }) {
 		const route = useRoute();
 
@@ -140,7 +140,7 @@ export default defineComponent({
 		const component = computed<'a' | 'router-link' | 'button'>(() => {
 			if (props.disabled) return 'button';
 			if (notEmpty(props.href)) return 'a';
-			if (notEmpty(props.to)) return 'router-link';
+			if (props.to) return 'router-link';
 			return 'button';
 		});
 

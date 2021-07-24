@@ -25,7 +25,7 @@ export default {
 	icon: 'box',
 	routes: [
 		{
-			path: '/',
+			path: '',
 			component: ModuleComponent,
 		},
 	],
@@ -35,7 +35,8 @@ export default {
 - `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this module.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
-- `routes` — Details the routes in your module per the Vue router.
+- `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
+  serving as the base path.
 
 ::: tip TypeScript
 
@@ -118,7 +119,7 @@ instance of the `collectionsStore` using `system.useCollectionsStore()`, but tha
 
 If you setup a route with a parameter, you can pass it in as a prop.
 
-## 2. Install Dependencies and Configure the Buildchain
+## 2. Install Dependencies
 
 Set up a package.json file by running:
 
@@ -127,36 +128,13 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom module's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+recommend bundling your code using the directus-extension CLI from our `@directus/extension-sdk` package. The CLI
+internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
+SDK, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
+npm i -D @directus/extension-sdk
 ```
-
-You can then use the following Rollup configuration within `rollup.config.js`:
-
-```js
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
-import vue from 'rollup-plugin-vue';
-
-export default {
-	input: 'src/index.js',
-	output: {
-		format: 'es',
-		file: 'dist/index.js',
-	},
-	plugins: [vue(), nodeResolve(), commonjs(), terser()],
-};
-```
-
-::: tip Building multiple extensions
-
-You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
-See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
-
-:::
 
 ## 3. Develop Your Custom Module
 
@@ -167,7 +145,7 @@ The module itself is simply a Vue component, which provides an blank canvas for 
 To build the module for use within Directus, run:
 
 ```bash
-npx rollup -c
+npx directus-extension build
 ```
 
 Finally, move the output from your module's `dist` folder into your project's `/extensions/modules/my-custom-module`

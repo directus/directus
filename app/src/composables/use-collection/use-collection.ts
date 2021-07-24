@@ -1,5 +1,6 @@
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Collection, Field } from '@/types';
+import { Collection } from '@/types';
+import { Field } from '@directus/shared/types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
 type UsableCollection = {

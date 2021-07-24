@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title">
-		<template #headline v-if="breadcrumb">
+		<template v-if="breadcrumb" #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
 
@@ -17,15 +17,15 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
 						class="action-delete"
 						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -35,10 +35,10 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
 							{{ t('delete') }}
 						</v-button>
 					</v-card-actions>
@@ -46,33 +46,33 @@
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				class="action-batch"
 				:disabled="batchEditAllowed === false"
 				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
 			<v-button
 				v-if="canInviteUsers"
+				v-tooltip.bottom="t('invite_users')"
 				rounded
 				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="t('invite_users')"
 				class="invite-user"
+				@click="userInviteModalActive = true"
 			>
 				<v-icon name="person_add" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				rounded
 				icon
 				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
@@ -85,7 +85,7 @@
 
 		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
-		<component class="layout" :is="`layout-${layout}`">
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -110,15 +110,15 @@
 		</component>
 
 		<drawer-batch
-			:primary-keys="selection"
 			v-model:active="batchEditActive"
+			:primary-keys="selection"
 			collection="directus_users"
 			@refresh="refresh"
 		/>
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_users_collection'))" />
+				<div v-md="t('page_help_users_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail v-model="layout" />
 			<component :is="`layout-sidebar-${layout}`" />
@@ -137,18 +137,17 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '@/stores';
-import { md } from '@/utils/md';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Role } from '@/types';
+import { Role } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
 };
 
 export default defineComponent({
-	name: 'users-collection',
+	name: 'UsersCollection',
 	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
 		role: {
@@ -237,7 +236,6 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			md,
 			clearFilters,
 			userInviteModalActive,
 			refresh,

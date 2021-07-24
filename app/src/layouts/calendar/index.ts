@@ -1,4 +1,4 @@
-import { defineLayout } from '@/layouts/define';
+import { defineLayout } from '@directus/shared/utils/browser';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import CalendarSidebar from './sidebar.vue';
@@ -12,7 +12,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { ref, watch, toRefs, computed, Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
-import { Item, Filter, Field } from '@/types';
+import { Field, Item, Filter } from '@directus/shared/types';
 import useItems from '@/composables/use-items';
 import useCollection from '@/composables/use-collection';
 import { formatISO } from 'date-fns';
@@ -21,6 +21,7 @@ import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 
 type LayoutOptions = {
 	template?: string;
@@ -43,7 +44,7 @@ export default defineLayout<LayoutOptions>({
 		actions: CalendarActions,
 	},
 	setup(props) {
-		const { t } = useI18n();
+		const { t, locale } = useI18n();
 
 		const calendarEl = ref<HTMLElement>();
 		const calendar = ref<Calendar>();
@@ -240,6 +241,17 @@ export default defineLayout<LayoutOptions>({
 				}
 			},
 			{ deep: true, immediate: true }
+		);
+
+		watch(
+			[calendar, locale],
+			async () => {
+				if (calendar.value) {
+					const calendarLocale = await getFullcalendarLocale(locale.value);
+					calendar.value.setOption('locale', calendarLocale);
+				}
+			},
+			{ immediate: true }
 		);
 
 		const showingCount = computed(() => {

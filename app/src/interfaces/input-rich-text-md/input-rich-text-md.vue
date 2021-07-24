@@ -1,9 +1,9 @@
 <template>
-	<div class="interface-input-rich-text-md" :class="view[0]" ref="markdownInterface">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.heading')">
+					<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
 						<v-icon name="title" />
 					</v-button>
 				</template>
@@ -16,63 +16,63 @@
 			</v-menu>
 
 			<v-button
+				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 				small
 				icon
 				@click="edit('bold')"
-				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 			>
 				<v-icon name="format_bold" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 				small
 				icon
 				@click="edit('italic')"
-				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 			>
 				<v-icon name="format_italic" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 				small
 				icon
 				@click="edit('strikethrough')"
-				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
-			<v-button small icon @click="edit('listBulleted')" v-tooltip="t('wysiwyg_options.bullist')">
+			<v-button v-tooltip="t('wysiwyg_options.bullist')" small icon @click="edit('listBulleted')">
 				<v-icon name="format_list_bulleted" />
 			</v-button>
-			<v-button small icon @click="edit('listNumbered')" v-tooltip="t('wysiwyg_options.numlist')">
+			<v-button v-tooltip="t('wysiwyg_options.numlist')" small icon @click="edit('listNumbered')">
 				<v-icon name="format_list_numbered" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 				small
 				icon
 				@click="edit('blockquote')"
-				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 			>
 				<v-icon name="format_quote" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 				small
 				icon
 				@click="edit('code')"
-				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 			>
 				<v-icon name="code" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 				small
 				icon
 				@click="edit('link')"
-				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 			>
 				<v-icon name="insert_link" />
 			</v-button>
 
 			<v-menu show-arrow :close-on-content-click="false">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="t('wysiwyg_options.table')">
+					<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
 						<v-icon name="table_chart" />
 					</v-button>
 				</template>
@@ -81,11 +81,11 @@
 					<div class="table-options">
 						<div class="field half">
 							<p class="type-label">{{ t('rows') }}</p>
-							<v-input :min="1" type="number" v-model="table.rows" />
+							<v-input v-model="table.rows" :min="1" type="number" />
 						</div>
 						<div class="field half">
 							<p class="type-label">{{ t('columns') }}</p>
-							<v-input :min="1" type="number" v-model="table.columns" />
+							<v-input v-model="table.columns" :min="1" type="number" />
 						</div>
 						<div class="field full">
 							<v-button
@@ -104,24 +104,24 @@
 				</template>
 			</v-menu>
 
-			<v-button @click="imageDialogOpen = true" small icon v-tooltip="t('wysiwyg_options.image')">
+			<v-button v-tooltip="t('wysiwyg_options.image')" small icon @click="imageDialogOpen = true">
 				<v-icon name="insert_photo" />
 			</v-button>
 
 			<v-button
 				v-for="custom in customSyntax"
+				:key="custom.name"
+				v-tooltip="custom.name"
 				small
 				icon
-				:key="custom.name"
 				@click="edit('custom', custom)"
-				v-tooltip="custom.name"
 			>
 				<v-icon :name="custom.icon" />
 			</v-button>
 
 			<div class="spacer"></div>
 
-			<v-item-group class="view" mandatory v-model="view" rounded>
+			<v-item-group v-model="view" class="view" mandatory rounded>
 				<v-button x-small value="editor">Editor</v-button>
 				<v-button x-small value="preview">Preview</v-button>
 			</v-item-group>
@@ -129,16 +129,16 @@
 
 		<div ref="codemirrorEl"></div>
 
-		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
 
 		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onImageUpload" from-url from-library />
+					<v-upload from-url from-library @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="imageDialogOpen = null" secondary>{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -153,16 +153,14 @@ import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
-import { edit, CustomSyntax } from './edits';
+import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
-import { md } from '@/utils/md';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -185,6 +183,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -206,8 +205,11 @@ export default defineComponent({
 					value: props.value || '',
 				});
 
-				codemirror.on('change', (cm) => {
+				codemirror.on('change', (cm, { origin }) => {
+					if (origin === 'setValue') return;
+
 					const content = cm.getValue();
+
 					emit('input', content);
 				});
 			}
@@ -223,13 +225,13 @@ export default defineComponent({
 				if (existingValue !== newValue) {
 					codemirror.setValue('');
 					codemirror.clearHistory();
-					codemirror.setValue(newValue);
+					codemirror.setValue(newValue ?? '');
 					codemirror.refresh();
 				}
 			}
 		);
 
-		const html = computed(() => {
+		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
 			if (!props.imageToken) {
@@ -243,9 +245,7 @@ export default defineComponent({
 				}
 			}
 
-			const html = md(mdString);
-
-			return html;
+			return mdString;
 		});
 
 		const table = reactive({
@@ -253,25 +253,25 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		useShortcut('meta+b', () => edit(codemirror, 'bold'), markdownInterface);
-		useShortcut('meta+i', () => edit(codemirror, 'italic'), markdownInterface);
-		useShortcut('meta+k', () => edit(codemirror, 'link'), markdownInterface);
-		useShortcut('meta+alt+d', () => edit(codemirror, 'strikethrough'), markdownInterface);
-		useShortcut('meta+alt+q', () => edit(codemirror, 'blockquote'), markdownInterface);
-		useShortcut('meta+alt+c', () => edit(codemirror, 'code'), markdownInterface);
-		useShortcut('meta+alt+1', () => edit(codemirror, 'heading', { level: 1 }), markdownInterface);
-		useShortcut('meta+alt+2', () => edit(codemirror, 'heading', { level: 2 }), markdownInterface);
-		useShortcut('meta+alt+3', () => edit(codemirror, 'heading', { level: 3 }), markdownInterface);
-		useShortcut('meta+alt+4', () => edit(codemirror, 'heading', { level: 4 }), markdownInterface);
-		useShortcut('meta+alt+5', () => edit(codemirror, 'heading', { level: 5 }), markdownInterface);
-		useShortcut('meta+alt+6', () => edit(codemirror, 'heading', { level: 6 }), markdownInterface);
+		useShortcut('meta+b', () => edit('bold'), markdownInterface);
+		useShortcut('meta+i', () => edit('italic'), markdownInterface);
+		useShortcut('meta+k', () => edit('link'), markdownInterface);
+		useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
+		useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
+		useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
+		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
+		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
+		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
+		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
+		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
+		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
 		return {
 			t,
 			codemirrorEl,
 			edit,
 			view,
-			html,
+			markdownString,
 			table,
 			onImageUpload,
 			imageDialogOpen,
@@ -292,6 +292,12 @@ export default defineComponent({
 			codemirror.replaceSelection(`![](${url})`);
 
 			imageDialogOpen.value = false;
+		}
+
+		function edit(type: Alteration, options?: Record<string, any>) {
+			if (codemirror) {
+				applyEdit(codemirror, type, options);
+			}
 		}
 	},
 });
