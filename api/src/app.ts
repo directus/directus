@@ -105,7 +105,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 

@@ -953,6 +953,8 @@ interfaces:
     imageToken: Ключ изображения
   list-o2m:
     one-to-many: Один ко многим
+  system-folder:
+    folder: Папка
   select-radio:
     radio-buttons: Радиокнопки
     description: Выбор одного из нескольких вариантов

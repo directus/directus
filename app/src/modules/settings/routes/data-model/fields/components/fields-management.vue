@@ -61,7 +61,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs } from 'vue';
 import useCollection from '@/composables/use-collection/';
 import Draggable from 'vuedraggable';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';

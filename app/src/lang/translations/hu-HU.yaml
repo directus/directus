@@ -664,6 +664,8 @@ interfaces:
     interface: Kezelőfelület
   select-dropdown-m2o:
     display_template: Megjelenítési sablon
+  system-folder:
+    folder: Könyvtár
   slider:
     slider: Csúszka
   tags:

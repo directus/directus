@@ -165,7 +165,7 @@ import emitter, { Events } from '@/events';
 import { useRouter } from 'vue-router';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
 import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
@@ -603,11 +603,9 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, {
-					preset: props.folder
-						? {
-								folder: props.folder,
-						  }
-						: {},
+					preset: {
+						folder: props.folder,
+					},
 					onProgressChange: (progress) => {
 						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 

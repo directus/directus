@@ -62,7 +62,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
-import { Field, FieldRaw } from '@/types';
+import { Field, FieldRaw } from '@directus/shared/types';
 import { clone, cloneDeep, isNil, merge, omit } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from '@/types';

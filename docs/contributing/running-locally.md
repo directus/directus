@@ -9,6 +9,9 @@
 You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development
 version of Directus.
 
+You can use the JavaScript tool manager [volta](https://volta.sh/) to automatically install the current node and npm
+versions.
+
 :::
 
 ## 1. Fork the Directus repository
@@ -57,9 +60,8 @@ To start the initialization run the following command:
 # From within the root of the project
 npm run cli bootstrap
 
-# For SQLite you need to be in the 'api' folder to initialize the database
-cd api
-npm run cli bootstrap
+# For SQLite you need to run the command in the 'api' context (to ensure the database file is created in the right directory)
+npm run cli bootstrap --workspace=api
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.

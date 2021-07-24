@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
-import { defineModule } from '@/modules/define';
+import { defineModule } from '@directus/shared/utils/browser';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
 import { ref } from 'vue';

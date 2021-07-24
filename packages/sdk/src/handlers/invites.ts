@@ -17,7 +17,7 @@ export class InvitesHandler {
 	}
 
 	async accept(token: ID, password: string): Promise<void> {
-		await this.transport.patch(`/users/invite/accept`, {
+		await this.transport.post(`/users/invite/accept`, {
 			token,
 			password,
 		});

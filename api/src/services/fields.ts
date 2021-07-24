@@ -19,6 +19,7 @@ import { toArray } from '../utils/to-array';
 import { isEqual } from 'lodash';
 import { RelationsService } from './relations';
 import Keyv from 'keyv';
+import { DeepPartial } from '@directus/shared/types';
 
 export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 

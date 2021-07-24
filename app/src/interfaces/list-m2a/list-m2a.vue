@@ -140,7 +140,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
-import { Relation, Collection } from '@/types/';
+import { Relation, Collection } from '@/types';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';

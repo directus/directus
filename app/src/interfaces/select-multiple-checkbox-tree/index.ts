@@ -1,5 +1,5 @@
-import { defineInterface } from '@/interfaces/define';
-import { Field } from '@/types';
+import { defineInterface } from '@directus/shared/utils/browser';
+import { DeepPartial, Field } from '@directus/shared/types';
 import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
 
 const repeaterFields: DeepPartial<Field>[] = [

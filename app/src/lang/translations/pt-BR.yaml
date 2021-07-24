@@ -971,6 +971,8 @@ interfaces:
     one-to-many: Um para muitos
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
+  system-folder:
+    folder: Pasta
   select-radio:
     radio-buttons: Botão de seleção única
     description: Selecione uma das múltiplas escolhas

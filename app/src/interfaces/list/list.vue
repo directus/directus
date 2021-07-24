@@ -55,7 +55,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import Draggable from 'vuedraggable';
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';

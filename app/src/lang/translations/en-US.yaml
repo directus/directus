@@ -1002,6 +1002,12 @@ interfaces:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
+  system-folder:
+    folder: Folder
+    description:  Select a folder
+    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    root_name: File Library Root
+    system_default: System Defaults
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices

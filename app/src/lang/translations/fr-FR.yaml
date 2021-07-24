@@ -867,7 +867,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
@@ -991,6 +990,8 @@ interfaces:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
+  system-folder:
+    folder: Dossier
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés

@@ -65,7 +65,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Field } from '@/types/';
+import { Field } from '@directus/shared/types';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
@@ -129,10 +129,10 @@ export default defineComponent({
 		});
 
 		const defaultValue = computed(() => {
-			const value = props.field.schema?.default_value;
+			const value = props.field?.schema?.default_value;
 
 			if (value !== undefined) return value;
-			return null;
+			return undefined;
 		});
 
 		const internalValue = computed(() => {

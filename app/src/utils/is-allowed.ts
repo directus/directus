@@ -1,5 +1,5 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import generateJoi from '@/utils/generate-joi';
 
 export function isAllowed(
