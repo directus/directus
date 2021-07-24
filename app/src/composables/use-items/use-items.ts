@@ -235,14 +235,17 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	async function getItemCount() {
 		if (!primaryKeyField.value || !endpoint.value) return;
-
+		const query = filtersToQuery(filters.value);
 		const response = await api.get(endpoint.value, {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
 				meta: ['filter_count', 'total_count'],
 				search: searchQuery.value,
-				...filtersToQuery(filters.value),
+				filter: {
+					...(filter.value ?? {}),
+					...query.filter,
+				},
 			},
 		});
 
