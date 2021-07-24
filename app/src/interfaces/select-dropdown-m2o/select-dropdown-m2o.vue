@@ -98,6 +98,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
+import generateJoi from '@/utils/generate-joi';
 
 /**
  * @NOTE
@@ -146,6 +147,10 @@ export default defineComponent({
 		const { collection, filter } = toRefs(props);
 		const values = inject<Ref<Record<string, unknown>>>('values');
 
+		const sanitizedFilter = computed(() =>
+			filter.value ? parseFilter(filter.value, values && values.value ? values.value : null) : null
+		);
+
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 
@@ -155,16 +160,12 @@ export default defineComponent({
 		const { selection, stageSelection, selectModalActive } = useSelection();
 		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
 		const { totalCount, loading: itemsLoading, fetchItems, items } = useItems();
-
 		const { setCurrent, currentItem, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
-
 		const { edits, stageEdits } = useEdits();
 
 		const editModalActive = ref(false);
 
-		const sanitizedFilter = computed(() =>
-			filter.value ? parseFilter(filter.value, values && values.value ? values.value : null) : null
-		);
+		watch([currentItem, sanitizedFilter], checkIfCurrentItemIsValidOption);
 
 		return {
 			t,
@@ -191,6 +192,19 @@ export default defineComponent({
 			relatedPrimaryKeyField,
 			sanitizedFilter,
 		};
+
+		function checkIfCurrentItemIsValidOption() {
+			if (!currentItem.value || !sanitizedFilter.value) {
+				return;
+			}
+
+			const joi = generateJoi(sanitizedFilter.value);
+			const validation = joi.validate(currentItem.value);
+
+			if (validation.error) {
+				emit('input', null);
+			}
+		}
 
 		function useCurrent() {
 			const currentItem = ref<Record<string, any> | null>(null);
@@ -249,6 +263,12 @@ export default defineComponent({
 
 				if (fields.includes(relatedPrimaryKeyField.value.field) === false) {
 					fields.push(relatedPrimaryKeyField.value.field);
+				}
+
+				if (sanitizedFilter.value) {
+					for (const field in sanitizedFilter.value) {
+						fields.push(field);
+					}
 				}
 
 				try {
