@@ -17,6 +17,9 @@
     "test": "jest --coverage",
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
   },
+  "dependencies": {
+    "@directus/auth": "9.0.0-rc.85"
+  },
   "devDependencies": {
     "jest": "27.0.6",
     "npm-run-all": "4.1.5",
