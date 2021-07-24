@@ -24,9 +24,11 @@ export default {
 .theme-code-block {
 	display: none;
 }
+
 .theme-code-block__active {
 	display: block;
 }
+
 .theme-code-block > pre {
 	background-color: orange;
 }

@@ -124,12 +124,14 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, reactive } from 'vue';
 import api from '@/api';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
 	setup() {

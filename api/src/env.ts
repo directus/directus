@@ -34,6 +34,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	ROOT_REDIRECT: './admin',
 
@@ -67,6 +68,7 @@ const defaults: Record<string, any> = {
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
+	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

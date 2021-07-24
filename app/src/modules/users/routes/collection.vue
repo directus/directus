@@ -140,7 +140,7 @@ import { useUserStore, usePermissionsStore } from '@/stores';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Role } from '@/types';
+import { Role } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;

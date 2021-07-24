@@ -1,4 +1,4 @@
-import { defineLayout } from '@/layouts/define';
+import { defineLayout } from '@directus/shared/utils/browser';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import CalendarSidebar from './sidebar.vue';
@@ -12,8 +12,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { ref, watch, toRefs, computed, Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
-import { Field } from '@/types';
-import { Item, Filter } from '@directus/shared/types';
+import { Field, Item, Filter } from '@directus/shared/types';
 import useItems from '@/composables/use-items';
 import useCollection from '@/composables/use-collection';
 import { formatISO } from 'date-fns';

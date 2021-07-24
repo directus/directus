@@ -1,5 +1,5 @@
 import useCollection from '@/composables/use-collection';
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils/browser';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import getRelatedCollection from '@/utils/get-related-collection';
@@ -11,7 +11,7 @@ type Options = {
 	template: string;
 };
 
-export default defineDisplay(() => ({
+export default defineDisplay({
 	id: 'related-values',
 	name: '$t:displays.related-values.related-values',
 	description: '$t:displays.related-values.description',
@@ -36,4 +36,4 @@ export default defineDisplay(() => ({
 
 		return fields;
 	},
-}));
+});

@@ -185,7 +185,7 @@ import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FolderPicker from '../components/folder-picker.vue';
 import api, { addTokenToURL } from '@/api';

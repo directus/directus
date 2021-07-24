@@ -867,7 +867,6 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
@@ -991,6 +990,8 @@ interfaces:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
+  system-folder:
+    folder: Folder
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów

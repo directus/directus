@@ -589,6 +589,8 @@ interfaces:
     interface: Antarmuka
   select-dropdown-m2o:
     display_template: Tampilan Template
+  system-folder:
+    folder: Direktori
   boolean:
     label_default: Diaktifkan
   translations:

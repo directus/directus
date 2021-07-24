@@ -38,7 +38,7 @@ export async function initializeExtensions(): Promise<void> {
 		logger.warn(err);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
 		extensionBundles = await generateExtensionBundles();
 	}
 

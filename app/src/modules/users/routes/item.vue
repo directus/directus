@@ -186,7 +186,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
 import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
