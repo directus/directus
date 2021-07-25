@@ -23,13 +23,20 @@ export default function getMailer(): Transporter {
 			};
 		}
 
+		const tls: Record<string, unknown> = {};
+
+		if (env.EMAIL_SMTP_TLS_CIPHERS) {
+			tls.ciphers = env.EMAIL_SMTP_TLS_CIPHERS;
+		}
+
 		transporter = nodemailer.createTransport({
 			pool: env.EMAIL_SMTP_POOL,
 			host: env.EMAIL_SMTP_HOST,
 			port: env.EMAIL_SMTP_PORT,
 			secure: env.EMAIL_SMTP_SECURE,
 			ignoreTLS: env.EMAIL_SMTP_IGNORE_TLS,
-			auth: auth,
+			auth,
+			tls,
 		} as Record<string, unknown>);
 	} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {
 		const mg = require('nodemailer-mailgun-transport');
