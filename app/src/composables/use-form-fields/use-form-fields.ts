@@ -45,7 +45,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 			}
 
 			if (field.meta?.sort && field.meta?.system !== true) {
-				field.meta.sort = field.meta.sort + systemFieldsCount.value;
+				field.meta.sort = Number(field.meta.sort) + Number(systemFieldsCount.value);
 			}
 
 			return field;
