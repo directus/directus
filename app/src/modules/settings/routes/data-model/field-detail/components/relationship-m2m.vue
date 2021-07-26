@@ -397,7 +397,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 import { state, generationInfo } from '../store';
 import formatTitle from '@directus/format-title';

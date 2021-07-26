@@ -855,6 +855,8 @@ interfaces:
     description: أدخل و معاينة markdown
   list-o2m:
     description: حدد عدة عناصر ذات صلة
+  system-folder:
+    folder: مجلد
   select-radio:
     description: حدد اختيار واحد من خيارات متعددة
   list:

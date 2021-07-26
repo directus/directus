@@ -355,6 +355,8 @@ interfaces:
     description: Vyberte nebo nahrajte soubory
   select-icon:
     icon: Ikona
+  system-folder:
+    folder: Složka
   tags:
     tags: Štítky
   user:

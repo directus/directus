@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getDisplays } from './index';
-import { DisplayConfig } from './types';
+import { DisplayConfig } from '@directus/shared/types';
 
 const { displaysRaw } = getDisplays();
 

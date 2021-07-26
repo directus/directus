@@ -14,7 +14,7 @@
 
 		<v-checkbox-tree
 			:model-value="value"
-			:search="search"
+			:search="searchDebounced"
 			:disabled="disabled"
 			:choices="choices"
 			:value-combining="valueCombining"
@@ -24,7 +24,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { debounce } from 'lodash';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -57,7 +58,15 @@ export default defineComponent({
 		const { t } = useI18n();
 		const search = ref('');
 
-		return { search, t };
+		const setSearchDebounced = debounce((val: string) => {
+			searchDebounced.value = val;
+		}, 250);
+
+		watch(search, setSearchDebounced);
+
+		const searchDebounced = ref('');
+
+		return { search, t, searchDebounced };
 	},
 });
 </script>

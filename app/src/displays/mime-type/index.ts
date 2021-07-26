@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils/browser';
 import readableMimeType from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
 

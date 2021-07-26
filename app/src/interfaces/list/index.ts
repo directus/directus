@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import RepeaterOptions from './options.vue';
 import InterfaceList from './list.vue';
 

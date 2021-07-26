@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceInputMultiline from './input-multiline.vue';
 
 export default defineInterface({
