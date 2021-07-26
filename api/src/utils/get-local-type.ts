@@ -1,12 +1,11 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FieldMeta } from '@directus/shared/types';
-import { types } from '@directus/shared/constants';
+import { FieldMeta, Type } from '@directus/shared/types';
 
 /**
  * Typemap graciously provided by @gpetrov
  */
-const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: boolean }> = {
+const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	// Shared
 	boolean: { type: 'boolean' },
 	tinyint: { type: 'boolean' },
@@ -91,7 +90,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
-): typeof types[number] | 'unknown' {
+): Type | 'unknown' {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;

@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils/browser';
 import InterfaceSystemFilterSetup from './system-filter-setup.vue';
 
 export default defineInterface({

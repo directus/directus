@@ -3,13 +3,13 @@ import yaml from 'js-yaml';
 import { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
-import { types } from '@directus/shared/constants';
+import { Type } from '@directus/shared/types';
 
 type TableSeed = {
 	table: string;
 	columns: {
 		[column: string]: {
-			type?: typeof types[number];
+			type?: Type;
 			primary?: boolean;
 			nullable?: boolean;
 			default?: any;

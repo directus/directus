@@ -1,7 +1,6 @@
-import { types } from '../constants';
-import { ClientFilterOperator } from '../types';
+import { ClientFilterOperator, Type } from '../types';
 
-export function getFilterOperatorsForType(type: typeof types[number]): ClientFilterOperator[] {
+export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 	switch (type) {
 		// Text
 		case 'binary':
