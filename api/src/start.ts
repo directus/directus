@@ -19,7 +19,7 @@ export default async function start(): Promise<void> {
 	const port = env.PORT;
 
 	server
-		.listen(port, async () => {
+		.listen(port, () => {
 			checkForUpdate(pkg)
 				.then((update) => {
 					if (update) {
