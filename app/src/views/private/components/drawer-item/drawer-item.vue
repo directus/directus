@@ -63,7 +63,8 @@ import FilePreview from '@/views/private/components/file-preview';
 
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Relation, Field } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';

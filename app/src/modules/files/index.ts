@@ -1,4 +1,4 @@
-import { defineModule } from '@/modules/define';
+import { defineModule } from '@directus/shared/utils/browser';
 import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';

@@ -97,7 +97,7 @@ channels:
 
 - [Discord](https://directus.chat) (Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions/category_choices) (Questions, Feature Requests)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Questions, Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

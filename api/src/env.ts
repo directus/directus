@@ -68,6 +68,7 @@ const defaults: Record<string, any> = {
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
+	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

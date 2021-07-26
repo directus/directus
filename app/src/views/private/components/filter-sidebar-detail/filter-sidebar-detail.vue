@@ -43,8 +43,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
-import { Field } from '@/types';
-import { Filter } from '@directus/shared/types';
+import { Field, Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';

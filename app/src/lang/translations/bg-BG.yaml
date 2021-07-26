@@ -990,6 +990,8 @@ interfaces:
     one-to-many: Един към много
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
+  system-folder:
+    folder: Папка
   select-radio:
     radio-buttons: Радио бутони
     description: Един или няколко избора

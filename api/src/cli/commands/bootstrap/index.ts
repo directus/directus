@@ -5,18 +5,15 @@ import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
-import getDatabase, { isInstalled, hasDatabaseConnection } from '../../../database';
+import getDatabase, { isInstalled, hasDatabaseConnection, validateDBConnection } from '../../../database';
 import { SchemaOverview } from '../../../types';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
-	if ((await isDatabaseAvailable()) === false) {
-		logger.error(`Can't connect to the database`);
-		process.exit(1);
-	}
-
 	const database = getDatabase();
+
+	await validateDBConnection(database);
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
@@ -46,21 +43,6 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	logger.info('Done');
 	process.exit(0);
-}
-
-async function isDatabaseAvailable() {
-	const tries = 5;
-	const secondsBetweenTries = 5;
-
-	for (let i = 0; i < tries; i++) {
-		if (await hasDatabaseConnection()) {
-			return true;
-		}
-
-		await new Promise((resolve) => setTimeout(resolve, secondsBetweenTries * 1000));
-	}
-
-	return false;
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {

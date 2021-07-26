@@ -906,6 +906,8 @@ interfaces:
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
+  system-folder:
+    folder: Map
   select-radio:
     radio-buttons: Keuzerondjes
   list:

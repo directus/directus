@@ -18,7 +18,7 @@
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
-			:value="modelValue === undefined ? field.schema.default_value : modelValue"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
 			:collection="field.collection"
@@ -37,10 +37,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -62,7 +61,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: [String, Number, Object, Array, Boolean],
-			default: null,
+			default: undefined,
 		},
 		loading: {
 			type: Boolean,
