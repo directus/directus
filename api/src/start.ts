@@ -30,7 +30,7 @@ export default async function start(): Promise<void> {
 			}
 
 			if (update) {
-				logger.warn(`New Version Available (${update.latest})\nYou can update by running: npx ${pkg.name}@latest [command]
+				logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
 				`);
 			}
 
