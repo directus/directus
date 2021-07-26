@@ -46,7 +46,7 @@
 		"axios": "^0.21.1"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "19.0.1",
+		"@rollup/plugin-commonjs": "19.0.2",
 		"@rollup/plugin-json": "4.1.0",
 		"@rollup/plugin-node-resolve": "13.0.2",
 		"@types/jest": "26.0.24",
