@@ -5,15 +5,15 @@ import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
-import getDatabase, { isInstalled, hasDatabaseConnection } from '../../../database';
+import getDatabase, { isInstalled, hasDatabaseConnection, validateDBConnection } from '../../../database';
 import { SchemaOverview } from '../../../types';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
 	if ((await isDatabaseAvailable()) === false) {
-		logger.error(`Can't connect to the database`);
-		process.exit(1);
+		// Try one last time, throwing the full error and exiting the process if the connection isn't available
+		await validateDBConnection();
 	}
 
 	const database = getDatabase();
