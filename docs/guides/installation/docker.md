@@ -108,6 +108,10 @@ services:
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
 
+      # Make sure to set this in production
+      # (see https://docs.directus.io/reference/environment-variables/#general)
+      # PUBLIC_URL: 'https://directus.example.com'
+
 networks:
   directus:
 ```
