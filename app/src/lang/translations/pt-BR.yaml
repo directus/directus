@@ -1,7 +1,7 @@
 ---
 edit_field: Editar campo
 item_revision: Revisão do item
-duplicate_field: Campo duplicado
+duplicate_field: Duplicar campo
 half_width: Meia largura
 full_width: Largura total
 fill_width: Preencher
@@ -820,7 +820,7 @@ normal: Normal
 success: Sucesso
 warning: Atenção
 danger: Perigo
-junction_collection: Jução da coleção
+junction_collection: Junção da coleção
 latency: Latência
 login: Entrar
 my_activity: Minha Atividade

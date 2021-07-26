@@ -867,6 +867,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   presentation-links:
@@ -992,6 +993,10 @@ interfaces:
     no_collection: Колекцията не може да бъде намерена
   system-folder:
     folder: Папка
+    description: Избор на папка
+    field_hint: Добавяне на новодобавените файлове в избраната папка. Не се отнася за съществуващите вече файлове.
+    root_name: Коренова папка
+    system_default: По подразбиране
   select-radio:
     radio-buttons: Радио бутони
     description: Един или няколко избора
@@ -1070,6 +1075,7 @@ interfaces:
     trigger: Задействане
     rate: Оценка
   group-raw:
+    name: Обикновени полета
     description: Нормално показване на полетата.
 displays:
   boolean:
