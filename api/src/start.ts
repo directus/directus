@@ -20,19 +20,15 @@ export default async function start(): Promise<void> {
 
 	server
 		.listen(port, async () => {
-			let update = null;
-
-			try {
-				update = await checkForUpdate(pkg);
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.log(err);
-			}
-
-			if (update) {
-				logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
-				`);
-			}
+			checkForUpdate(pkg)
+				.then((update) => {
+					if (update) {
+						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+					}
+				})
+				.catch(() => {
+					// No need to log/warn here. The update message is only an informative nice-to-have
+				});
 
 			logger.info(`Server started at port ${port}`);
 			emitAsyncSafe('server.start');
