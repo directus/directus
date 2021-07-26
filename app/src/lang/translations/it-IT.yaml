@@ -506,6 +506,7 @@ upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
+interface_options: Opzioni interfaccia
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
@@ -867,7 +868,6 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 interfaces:
   presentation-links:
