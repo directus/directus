@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { Field, Condition } from '@directus/shared/types';
+import { Field, Condition, DeepPartial } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { state } from '../store';
 import { get, set } from 'lodash';
@@ -52,9 +52,9 @@ export default defineComponent({
 				name: t('rule'),
 				type: 'json',
 				meta: {
-					interface: 'system-filter-setup',
+					interface: 'input-code',
 					options: {
-						collectionKey: props.collection,
+						language: 'json',
 					},
 				},
 			},

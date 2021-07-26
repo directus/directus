@@ -20,7 +20,6 @@
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else
 			:value="value"
-			:field-data="fieldData"
 			@input="$emit('input', $event)"
 		/>
 	</div>
