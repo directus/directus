@@ -80,7 +80,7 @@
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
-			:filter="sanitizedFilter"
+			:filters="sanitizedFilters"
 			@input="stageSelection"
 		/>
 	</div>
@@ -91,14 +91,17 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType, inject, Ref } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
+import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { sanitizeFilters } from '@/utils/sanitize-filters';
 import { parseFilter } from '@/utils/parse-filter';
 import generateJoi from '@/utils/generate-joi';
+import filtersToQuery from '@/utils/filters-to-query';
 
 /**
  * @NOTE
@@ -135,21 +138,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		filter: {
-			type: Object,
-			default: null,
+		filters: {
+			type: Array as PropType<Filter[]>,
+			default: () => [],
 		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { collection, filter } = toRefs(props);
+		const { collection, filters } = toRefs(props);
 		const values = inject<Ref<Record<string, unknown>>>('values');
-
-		const sanitizedFilter = computed(() =>
-			filter.value ? parseFilter(filter.value, values && values.value ? values.value : null) : null
-		);
+		const sanitizedFilters = computed(() => sanitizeFilters(filters.value, values?.value ?? null));
 
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
@@ -165,7 +165,7 @@ export default defineComponent({
 
 		const editModalActive = ref(false);
 
-		watch([currentItem, sanitizedFilter], checkIfCurrentItemIsValidOption);
+		watch([currentItem, sanitizedFilters], checkIfCurrentItemIsValidOption);
 
 		return {
 			t,
@@ -190,15 +190,16 @@ export default defineComponent({
 			stageEdits,
 			editModalActive,
 			relatedPrimaryKeyField,
-			sanitizedFilter,
+			sanitizedFilters,
 		};
 
 		function checkIfCurrentItemIsValidOption() {
-			if (!currentItem.value || !sanitizedFilter.value) {
+			if (!currentItem.value || !sanitizedFilters.value) {
 				return;
 			}
 
-			const joi = generateJoi(sanitizedFilter.value);
+			const { filter } = filtersToQuery(sanitizedFilters.value);
+			const joi = generateJoi(filter);
 			const validation = joi.validate(currentItem.value);
 
 			if (validation.error) {
@@ -265,10 +266,8 @@ export default defineComponent({
 					fields.push(relatedPrimaryKeyField.value.field);
 				}
 
-				if (sanitizedFilter.value) {
-					for (const field in sanitizedFilter.value) {
-						fields.push(field);
-					}
+				for (const filter of filters.value) {
+					fields.push(filter.field);
 				}
 
 				try {

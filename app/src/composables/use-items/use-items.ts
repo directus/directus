@@ -11,7 +11,6 @@ type Query = {
 	fields: Ref<readonly string[]>;
 	sort: Ref<string>;
 	page: Ref<number>;
-	filter: Ref<Record<string, unknown> | null>;
 	filters: Ref<readonly Filter[]>;
 	searchQuery: Ref<string | null>;
 };
@@ -37,7 +36,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	let loadingTimeout: number | null = null;
 
-	const { limit, fields, sort, page, filter, filters, searchQuery } = query;
+	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -109,7 +108,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		}
 	});
 
-	watch([filter, filters, limit], async (after, before) => {
+	watch([filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -182,7 +181,6 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			const query = filtersToQuery(filters.value);
 			const response = await api.get(endpoint.value, {
 				params: {
 					limit: limit.value,
@@ -190,10 +188,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 					sort: sort.value,
 					page: page.value,
 					search: searchQuery.value,
-					filter: {
-						...(filter.value ?? {}),
-						...query.filter,
-					},
+					...filtersToQuery(filters.value),
 				},
 			});
 
@@ -235,17 +230,14 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 	async function getItemCount() {
 		if (!primaryKeyField.value || !endpoint.value) return;
-		const query = filtersToQuery(filters.value);
+
 		const response = await api.get(endpoint.value, {
 			params: {
 				limit: 0,
 				fields: primaryKeyField.value.field,
 				meta: ['filter_count', 'total_count'],
 				search: searchQuery.value,
-				filter: {
-					...(filter.value ?? {}),
-					...query.filter,
-				},
+				...filtersToQuery(filters.value),
 			},
 		});
 

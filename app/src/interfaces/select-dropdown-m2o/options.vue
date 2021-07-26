@@ -8,8 +8,8 @@
 			<v-field-template v-model="template" :collection="relatedCollection" :depth="2"></v-field-template>
 		</div>
 		<div class="field full">
-			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.filter') }}</p>
-			<interface-input-code :value="filter" @input="filter = $event" language="json" type="json" />
+			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.filters') }}</p>
+			<interface-input-code :value="filters" language="json" type="json" @input="filters = $event" />
 		</div>
 	</div>
 </template>
@@ -17,7 +17,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Filter } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
@@ -55,14 +55,14 @@ export default defineComponent({
 			},
 		});
 
-		const filter = computed({
+		const filters = computed({
 			get() {
-				return props.value?.filter;
+				return props.value?.filters;
 			},
-			set(newFilter: string) {
+			set(newFilters: Filter[]) {
 				emit('input', {
 					...(props.value || {}),
-					filter: newFilter,
+					filters: newFilters,
 				});
 			},
 		});
@@ -76,7 +76,7 @@ export default defineComponent({
 			return relation?.related_collection || null;
 		});
 
-		return { t, template, relatedCollection, filter };
+		return { t, template, relatedCollection, filters };
 	},
 });
 </script>

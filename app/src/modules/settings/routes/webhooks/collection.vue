@@ -119,7 +119,6 @@ export default defineComponent({
 				selection,
 				layoutOptions,
 				layoutQuery,
-				filter: null,
 				filters: writableFilters,
 				searchQuery,
 				selectMode: false,

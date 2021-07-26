@@ -168,7 +168,6 @@ export default defineComponent({
 				selection: [],
 				layoutOptions,
 				layoutQuery,
-				filter: null,
 				filters: layoutFilters,
 				searchQuery,
 				selectMode: false,

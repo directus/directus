@@ -51,7 +51,7 @@ export default defineLayout<LayoutOptions>({
 
 		const appStore = useAppStore();
 
-		const { collection, searchQuery, layoutOptions, filter, filters } = toRefs(props);
+		const { collection, searchQuery, layoutOptions, filters } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -154,7 +154,6 @@ export default defineLayout<LayoutOptions>({
 					if (endDateField.value) fields.push(endDateField.value);
 					return fields;
 				}),
-				filter,
 				filters: filtersWithCalendarView,
 				searchQuery: searchQuery,
 			},
