@@ -1,3 +1,4 @@
+import { Knex } from 'knex';
 import { nanoid } from 'nanoid';
 import runMigrations from '../../../database/migrations/run';
 import installDatabase from '../../../database/seeds/run';
@@ -5,7 +6,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
-import getDatabase, { isInstalled, validateDBConnection } from '../../../database';
+import getDatabase, { isInstalled, validateDBConnection, hasDatabaseConnection } from '../../../database';
 import { SchemaOverview } from '../../../types';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
@@ -13,7 +14,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	const database = getDatabase();
 
-	await validateDBConnection(database);
+	await waitForDatabase(database);
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
@@ -43,6 +44,22 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	logger.info('Done');
 	process.exit(0);
+}
+
+async function waitForDatabase(database: Knex) {
+	const tries = 5;
+	const secondsBetweenTries = 5;
+
+	for (let i = 0; i < tries; i++) {
+		if (await hasDatabaseConnection(database)) {
+			return true;
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, secondsBetweenTries * 1000));
+	}
+
+	// This will throw and exit the process if the database is not available
+	await validateDBConnection(database);
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
