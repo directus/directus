@@ -188,7 +188,6 @@ import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { capitalizeFirst } from '@/utils/capitalize-first';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import useCollection from '@/composables/use-collection';
@@ -198,6 +197,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
 import unsavedChanges from '@/composables/unsaved-changes';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -316,23 +316,20 @@ export default defineComponent({
 				fieldsFiltered.value = fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 
 				const field = fieldsFiltered.value.find((field) => field.field === 'provider');
-				const provider = item.value?.provider;
+				const provider = item.value?.provider ?? 'default';
 
 				if (field) {
 					field.meta.options = {};
 
-					if (providers.value.length || provider === 'default') {
+					if (!providersLoading.value) {
 						const defaultValue = { text: t('default'), value: 'default' };
-						const values = providers.value.map((provider) => ({ text: capitalizeFirst(provider), value: provider }));
+						const values = providers.value.map((provider) => ({ text: formatTitle(provider), value: provider }));
 
 						field.meta.readonly = !isNew.value;
 						field.meta.options.choices = [defaultValue, ...values];
-					} else if (providersLoading.value) {
-						field.meta.readonly = true;
-						field.meta.options.choices = [{ text: t('loading'), value: provider }];
 					} else {
 						field.meta.readonly = true;
-						field.meta.options.choices = [{ text: t('no_results'), value: provider }];
+						field.meta.options.choices = [{ text: t('loading'), value: provider }];
 					}
 				}
 			},

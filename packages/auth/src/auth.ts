@@ -26,9 +26,9 @@ export default abstract class Auth {
 	/**
 	 * Get user id by unique identifier
 	 *
-	 * @param identifier User unique identifier
+	 * @param identifier Unique user identifier
 	 * @throws InvalidCredentialsException
-	 * @return User id connected to the identifier
+	 * @return User id of the identifier
 	 */
 	abstract userID(identifier: string): Promise<string>;
 

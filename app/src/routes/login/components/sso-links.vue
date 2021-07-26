@@ -5,9 +5,9 @@
 
 			<router-link
 				v-for="provider in authProviders"
-				:key="provider.name"
+				:key="provider.value"
 				class="sso-link"
-				:to="'/login?provider=' + provider.name"
+				:to="'/login?provider=' + provider.value"
 			>
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</router-link>
@@ -25,6 +25,7 @@ import { defineComponent, ref, onMounted } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	setup() {
@@ -45,11 +46,12 @@ export default defineComponent({
 				const [authResponse, oauthResponse] = await Promise.all([api.get('/auth/'), api.get('/auth/oauth/')]);
 
 				authProviders.value = authResponse.data.data?.map((providerName: string) => ({
-					name: providerName,
+					name: formatTitle(providerName),
+					value: providerName,
 				}));
 
 				oauthProviders.value = oauthResponse.data.data?.map((providerName: string) => ({
-					name: providerName,
+					name: formatTitle(providerName),
 					link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
 				}));
 			} catch (err) {
