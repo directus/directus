@@ -506,6 +506,7 @@ upload_files_success: 'Przesłano {count} plików'
 upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
+interface_options: Opcje interfejsu
 layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny

@@ -506,6 +506,7 @@ upload_files_success: '{count} 个文件已上传'
 upload_pending: 上传等待中
 drag_file_here: 拖放文件到这里
 click_to_browse: 点击浏览
+interface_options: 接口选项
 layout_options: 布局选项
 rows: 行
 columns: 列

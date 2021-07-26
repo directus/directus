@@ -506,6 +506,7 @@ upload_files_success: '{count} arquivos enviados'
 upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
+interface_options: Opções de Interface
 layout_options: Opções de Layout
 rows: Linhas
 columns: Colunas
@@ -867,7 +868,6 @@ template: Template
 translation: Tradução
 value: Valor
 view_project: Visualizar projeto
-weeks: { }
 report_error: Relatar erro
 interfaces:
   presentation-links:
