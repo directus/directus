@@ -1,6 +1,7 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import env from './env';
 import logger from './logger';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 let transporter: Transporter;
 
@@ -23,11 +24,7 @@ export default function getMailer(): Transporter {
 			};
 		}
 
-		const tls: Record<string, unknown> = {};
-
-		if (env.EMAIL_SMTP_TLS_CIPHERS) {
-			tls.ciphers = env.EMAIL_SMTP_TLS_CIPHERS;
-		}
+		const tls: Record<string, unknown> = getConfigFromEnv('EMAIL_SMTP_TLS_');
 
 		transporter = nodemailer.createTransport({
 			pool: env.EMAIL_SMTP_POOL,
