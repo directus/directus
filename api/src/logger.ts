@@ -19,16 +19,20 @@ if (env.LOG_STYLE !== 'raw') {
 
 const logger = pino(pinoOptions);
 
-export const expressLogger = pinoHTTP({
-	logger,
-	serializers: {
-		req(request: Request) {
-			const output = stdSerializers.req(request);
-			output.url = redactQuery(output.url);
-			return output;
-		},
+export const expressLogger = pinoHTTP(
+	{
+		logger,
 	},
-}) as RequestHandler;
+	{
+		serializers: {
+			req(request: Request) {
+				const output = stdSerializers.req(request);
+				output.url = redactQuery(output.url);
+				return output;
+			},
+		},
+	}
+) as RequestHandler;
 
 export default logger;
 
