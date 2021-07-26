@@ -252,6 +252,20 @@ fill_template: Izpolni z vrednostjo obrazca
 a_unique_table_name: Edinstveno ime tabele ...
 a_unique_column_name: Edinstveno ime stolpca ...
 enable_custom_values: Omogoči vrednosti po meri
+submit: Pošlji
+move_to_folder: Premakni v mapo
+move: Premakni
+system: Sistem
+add_field_related: Dodaj polje v povezano zbirko
+interface: Vmesnik
+today: Danes
+yesterday: Včeraj
+delete_comment: Izbriši komentar
+date-fns_date: PPP
+date-fns_time: 'hh:mm:ss'
+date-fns_time_no_seconds: 'hh:mm'
+date-fns_date_short: 'd. M. YY'
+date-fns_time_short: 'hh:mm'
 date-fns_date_short_no_year: MMM d
 month: Mesec
 year: Leto
@@ -304,19 +318,149 @@ type: Tip
 creating_new_collection: Kreiranje nove zbirke
 created_by: Ustvaril
 created_on: Ustvarjeno
+field_width: Širina polja
+add_filter: Dodaj filter
+upper_limit: Zgornja meja ...
+lower_limit: Spodnja meja ...
+user_directory: Imenik uporabnikov
+documentation: Dokumentacija
+sidebar: Stranska vrstica
+duration: Trajanje
+charset: Nabor znakov
+second: Sekunda
+file_moved: Datoteka premaknjena
+collection_created: Zbirka ustvarjena
+modified_on: Spremenjeno dne
+card_size: Velikost kartice
+sort_field: Polje za razvrščanje
+add_sort_field: Dodaj polje za razvrščanje
+sort: Razvrsti
+remove: Odstrani
+toggle_manual_sorting: Preklopi ročno razvrščanje
+bookmark_doesnt_exist: Zaznamek ne obstaja
+bookmark_doesnt_exist_copy: Zaznamek ne obstaja.
+bookmark_doesnt_exist_cta: Nazaj na zbirko
+select_an_item: Izberite zapis ...
+edit: Uredi
+enabled: Omogočeno
+disable_tfa: Onemogoči 2FA
+tfa_scan_code: Skenirajte kodo v vaši avtentikacijski aplikaciji za dokončanje nastavitev 2FA
+enter_otp_to_disable_tfa: Vnesite enkratno geslo, da onemogočite 2FA
+create_account: Ustvari račun
+account_created_successfully: Račun uspešno ustvarjen
+auto_fill: Samodejno zapolni
+corresponding_field: Ustrezno polje
+errors:
+  COLLECTION_NOT_FOUND: "Zbirka ne obstaja"
+  FIELD_NOT_FOUND: Polje ne obstaja
+  FORBIDDEN: Prepovedano
+  INVALID_CREDENTIALS: Napačno uporabniško ime ali geslo
+  INVALID_OTP: Napačno geslo za enkratno uporabo
+  INVALID_PAYLOAD: Napačen tovor
+  INVALID_QUERY: Neveljavna poizvedba
+  ITEM_LIMIT_REACHED: Meja zapisa dosežena
+  ITEM_NOT_FOUND: Zapis ne obstaja
+  ROUTE_NOT_FOUND: Ne obstaja
+  RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
+  USER_SUSPENDED: Uporabnik suspendiran
+  CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
+  UNKNOWN: Nepričakovana napaka
+  INTERNAL_SERVER_ERROR: Nepričakovana napaka
+value_hashed: Vrednost varno zgoščena
+bookmark_name: Ime zaznamka ...
+create_bookmark: Ustvari zaznamek
+edit_bookmark: Uredi zaznamek
+bookmarks: Zaznamki
+unexpected_error: Nepričakovana napaka
+operators:
+  gt: Večje kot
+  lte: Manjše ali enako
+  gte: Večje ali enako
+  in: Je med
+  nin: Ni med
+  null: Je nična
+  nnull: Ni nično
+  contains: Vsebuje
+  ncontains: Ne vsebuje
+  starts_with: Začne se z
+  nstarts_with: Ne začne se z
+  ends_with: Se konča z
+  nends_with: Se ne konča z
+  between: Je med
+  nbetween: Ni med
+  empty: Je prazno
+  nempty: Ni prazno
+  all: Vsebuje naslednje ključe
+  has: Vsebuje nekatere ključe
+loading: Nalaganje ...
+drop_to_upload: Spustite za prenos
+item: Zapis
+items: Zapisi
+upload_file: Naloži datoteko
+upload_file_indeterminate: Nalaganje datoteke ...
+upload_file_success: Datoteka naložena
+upload_files_indeterminate: 'Nalaganje datotek {done}/{total}'
+upload_files_success: '{count} datotek naloženih'
+upload_pending: Nalaganje v teku
+drag_file_here: Povleci & spusti datoteko sem
+click_to_browse: Klikni za brskanje
+layout_options: Možnosti postavitve
+rows: Vrstice
+columns: Stolpci
+collection_setup: Nastavitve zbirke
+optional_system_fields: Neobvezna sistemska polja
 value_unique: Vrednost mora biti edinstvena
+all_activity: Vse aktivnosti
+create_item: Ustvari zapis
+display_template: Prikaži predlogo
+language_display_template: Predloga prikaza jezika
+translations_display_template: Predloga prikaza prevodov
+n_items_selected: 'Noben zapis ni izbran | 1 zaois je izbran | {n} zapisov izbranih'
+per_page: Na stran
+all_files: Vse datoteke
+my_files: Moje datoteke
+recent_files: Nedavne datoteke
+create_folder: Ustvari mapo
+folder_name: Ime mape ...
+add_file: Dodaj datoteko
+replace_file: Zamenjaj datoteko
 wysiwyg_options:
   forecolor: Barva vsebine
   backcolor: Barva ozadja
+  unlink: Odstrani povezavo
+  media: Ustvari/uredi medijsko datoteko
+  image: Ustvari/uredi sliko
+  copy: Kopiraj
+  cut: Izreži
+  paste: Prilepi
+  heading: Naslov
+  h1: Naslov 1
+  h2: Naslov 2
+  h3: Naslov 3
+  h4: Naslov 4
+  h5: Naslov 5
+  h6: Naslov 6
+  fontselect: Izberi pisavo
+  fontsizeselect: Izberi velikost pisave
+  indent: Zamik
+  outdent: Alineja
+  undo: Razveljavi
+  redo: Uveljavi
+  remove: Odstrani
   selectall: Izberi vse
 fields:
   directus_collections:
     note: Opomba
+    display_template: Prikaži predlogo
+    sort_field: Polje za razvrščanje
   directus_files:
     title: Naslov
+    modified_on: Spremenjeno dne
     created_on: Ustvarjeno
     created_by: Ustvaril
     folder: Mapa
+    charset: Nabor znakov
+    duration: Trajanje
   directus_users:
     title: Naslov
     language: Jezik
@@ -330,12 +474,22 @@ fields:
 interfaces:
   presentation-links:
     primary: Glavni
+  system-display-template:
+    display-template: Prikaži predlogo
   select-dropdown:
     choices_value_placeholder: Vnesite vrednost ...
   input-hash:
     hash: Hash
+  system-interface:
+    interface: Vmesnik
+  select-dropdown-m2o:
+    display_template: Prikaži predlogo
   system-folder:
     folder: Mapa
+  boolean:
+    label_default: Omogočeno
+  translations:
+    display_template: Prikaži predlogo
 displays:
   boolean:
     boolean: Boolean
