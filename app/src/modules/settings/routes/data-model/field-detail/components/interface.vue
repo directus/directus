@@ -42,7 +42,7 @@ import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state, availableInterfaces } from '../store';
-import { InterfaceConfig } from '@/interfaces/types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {

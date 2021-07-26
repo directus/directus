@@ -26,25 +26,25 @@ declare module 'jsonlint-mod' {
 }
 
 declare module '@directus-extensions-interface' {
-	import { InterfaceConfig } from '@/interfaces/types';
+	import { InterfaceConfig } from '@directus/shared/types';
 	const interfaces: InterfaceConfig[];
 	export default interfaces;
 }
 
 declare module '@directus-extensions-display' {
-	import { DisplayConfig } from '@/displays/types';
+	import { DisplayConfig } from '@directus/shared/types';
 	const displays: DisplayConfig[];
 	export default displays;
 }
 
 declare module '@directus-extensions-layout' {
-	import { LayoutConfig } from '@/layouts/types';
+	import { LayoutConfig } from '@directus/shared/types';
 	const layouts: LayoutConfig[];
 	export default layouts;
 }
 
 declare module '@directus-extensions-module' {
-	import { ModuleConfig } from '@/modules/types';
+	import { ModuleConfig } from '@directus/shared/types';
 	const modules: ModuleConfig[];
 	export default modules;
 }

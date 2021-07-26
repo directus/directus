@@ -494,6 +494,7 @@ upload_files_success: '{count} faili üles laetud'
 upload_pending: Laadimine on ootel
 drag_file_here: Lohista failid siia
 click_to_browse: Kliki otsimiseks
+interface_options: Kasutajaliidese valikud
 layout_options: Paiguse valikud
 rows: Read
 columns: Veerud
@@ -971,6 +972,8 @@ interfaces:
     one-to-many: Üks-mitmele
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
+  system-folder:
+    folder: Kaust
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust

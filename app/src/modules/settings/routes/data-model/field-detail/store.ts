@@ -6,12 +6,11 @@
  */
 
 import { getDisplays } from '@/displays';
-import { DisplayConfig } from '@/displays/types';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
+import { DeepPartial, DisplayConfig, Field, InterfaceConfig, Item, LocalType } from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Collection, Field, localTypes, Relation } from '@/types';
-import { DeepPartial, Item } from '@directus/shared/types';
+import { Collection, Relation } from '@/types';
+
 import { clone, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
@@ -36,7 +35,7 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
+function initLocalStore(collection: string, field: string, type: LocalType): void {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();

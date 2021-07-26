@@ -1,7 +1,8 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useRelationsStore } from '@/stores/';
-import { Field, FieldRaw, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field, FieldRaw } from '@directus/shared/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';

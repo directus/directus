@@ -26,7 +26,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './list.vue';
-import { Field, FieldMeta } from '@/types';
+import { Field, FieldMeta } from '@directus/shared/types';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
 import { DeepPartial } from '@directus/shared/types';
 

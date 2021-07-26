@@ -60,8 +60,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator } from '@directus/shared/types';
-import { types } from '@/types';
+import { FilterOperator, Type } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
@@ -71,7 +70,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof types[number]>,
+			type: String as PropType<Type>,
 			required: true,
 		},
 		operator: {

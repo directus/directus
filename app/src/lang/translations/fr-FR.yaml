@@ -506,6 +506,7 @@ upload_files_success: '{count} fichiers envoyés'
 upload_pending: Envoi en attente
 drag_file_here: Glisser-déposer un fichier ici
 click_to_browse: Cliquer pour rechercher
+interface_options: Options d'interface
 layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
@@ -867,7 +868,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   presentation-links:
@@ -991,6 +991,8 @@ interfaces:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
+  system-folder:
+    folder: Dossier
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés

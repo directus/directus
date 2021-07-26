@@ -1,6 +1,6 @@
 {
 	"name": "@directus/format-title",
-	"version": "9.0.0-rc.85",
+	"version": "9.0.0-rc.86",
 	"description": "Custom string formatter that converts any string into [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)",
 	"keywords": [
 		"title-case",
@@ -32,11 +32,11 @@
 		"start": "rollup -c rollup.config.js -w"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "19.0.1",
+		"@rollup/plugin-commonjs": "19.0.2",
 		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "13.0.2",
+		"@rollup/plugin-node-resolve": "13.0.4",
 		"rimraf": "3.0.2",
-		"rollup": "2.53.3",
+		"rollup": "2.54.0",
 		"rollup-plugin-sourcemaps": "0.6.3",
 		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.30.0",

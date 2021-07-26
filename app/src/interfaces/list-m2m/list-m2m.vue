@@ -104,7 +104,7 @@ import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { DisplayConfig } from '@/displays/types';
+import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
