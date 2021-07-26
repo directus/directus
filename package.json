@@ -42,7 +42,7 @@
 		"eslint-plugin-vue": "7.14.0",
 		"globby": "11.0.4",
 		"jest": "27.0.6",
-		"knex": "0.95.7",
+		"knex": "0.95.8",
 		"lerna": "4.0.0",
 		"lint-staged": "11.1.1",
 		"listr": "0.14.3",
