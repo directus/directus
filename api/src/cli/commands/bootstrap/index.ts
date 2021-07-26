@@ -11,12 +11,9 @@ import { SchemaOverview } from '../../../types';
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
-	if ((await isDatabaseAvailable()) === false) {
-		// Try one last time, throwing the full error and exiting the process if the connection isn't available
-		await validateDBConnection();
-	}
-
 	const database = getDatabase();
+
+	await validateDBConnection(database);
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
@@ -46,21 +43,6 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	logger.info('Done');
 	process.exit(0);
-}
-
-async function isDatabaseAvailable() {
-	const tries = 5;
-	const secondsBetweenTries = 5;
-
-	for (let i = 0; i < tries; i++) {
-		if (await hasDatabaseConnection()) {
-			return true;
-		}
-
-		await new Promise((resolve) => setTimeout(resolve, secondsBetweenTries * 1000));
-	}
-
-	return false;
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
