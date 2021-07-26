@@ -2,6 +2,7 @@ import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
+import { stripQuotes } from '../utils/strip-quotes';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
@@ -87,7 +88,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
 				is_nullable: column.is_nullable === 'Y',
-				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : column.default_value,
+				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : stripQuotes(column.default_value),
 			};
 		}
 
