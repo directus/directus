@@ -97,10 +97,13 @@ allow_null_value: Dovoli nično vrednost
 enter_value_to_replace_nulls: Prosimo vnesite novo vrednost, ki bo nadomestila nično v tem polju.
 field_standard: Običajno
 field_presentation: Predstavitev in aliasi
+field_file: Ena datoteka
+field_files: Več datotek
 field_m2o: M2O razmerje - več na ena
 field_m2a: M2A razmerje - več na karkoli
 field_o2m: O2M razmerje - ena na več
 field_m2m: M2M razmerje - več na več
+field_translations: Prevodi
 field_group: Skupina polj
 item_permissions: Dovoljenja zapisa
 field_permissions: Dovoljenja polja
@@ -169,19 +172,179 @@ click_to_manage_translated_fields: >-
   Prevodi polj še ne obstajajo. Kliknite tukaj, da jih generirate. | Eno polje je prevedeno. Kliknite tukaj za urejaje. | {count} polj je prevedenih. Klijknite tukaj za urejanje.
 fields_group: Skupina polj
 no_collections_found: Ni zbirk.
+new_data_alert: 'Naslednje bo generirano v podatkovnem modelu:'
+search_collection: Iskalna zbirka ...
+new_field: 'Novo polje'
+new_collection: 'Nova zbirka'
+add_m2o_to_collection: 'Dodaj več-na-ena v "{collection}"'
+add_o2m_to_collection: 'Dodaj ena-na-več v "{collection}"'
+add_m2m_to_collection: 'Dodaj več-na-več v "{collection}"'
+choose_a_type: Izberite tip ...
+determined_by_relationship: Določeno s povezavo
+add_note: Dodaj opombo za uporabnike ...
+default_value: Privzeta vrednost
+standard_field: Standardno polje
+single_file: Ena datoteka
+multiple_files: Več datotek
+m2o_relationship: Več-na-ena povezava
+o2m_relationship: Ena-na-več povezava
+m2m_relationship: Več-na-več povezava
+m2a_relationship: Več-na-karkoli povezava
+invalid_item: Neveljaven zapis
+next: Naslednje
+field_name: Ime polja
+translations: Prevodi
+note: Opomba
+enter_a_value: Vnesite vrednost ...
+enter_a_placeholder: Vnesite nadomestni tekst ...
+length: Dolžina
+precision_scale: Točnost in razpon
+readonly: Samo za branje
+unique: Edinstveno
+updated_on: Posodobljeno
+updated_by: Posodobil
+primary_key: Primarni ključ
+foreign_key: Povezan ključ
+finish_setup: Zaključi nastavitev
+dismiss: Opusti
+raw_value: Vnešena vrednost
+edit_raw_value: Uredi vrednost
+enter_raw_value: Vnesite vrednost ...
+clear_value: Počisti vrednost
+reset_to_default: Ponastavi na privzeto
+undo_changes: Razveljavi spremembe
+notifications: Obvestila
+show_all_activity: Pokaži vse dejavnosti
+page_not_found: Strani ni mogoče najti
+page_not_found_body: Stran, ki jo iščete, ne obstaja.
+confirm_revert: Potrdi vračanje
+confirm_revert_body: To bo vrnilo zapis na izbrano stanje.
+display: Prikaz
+settings_update_success: Nastavitve posodobljene
+title: Naslov
+revision_delta_created: Ustvarjeno
+revision_delta_created_externally: Ustvarjeno eksterno
+revision_delta_updated: 'Eno polje urejeno | {count} polj urejenih'
+revision_delta_deleted: Izbrisano
+revision_delta_reverted: Povrnjeno
+revision_delta_other: Revizija
+revision_delta_by: '{date}, uporabnik {user}'
+private_user: Zasebni uporabnik
+revision_preview: Predogled revizije
+updates_made: Narejeni popravki
+leave_comment: Dodajte komentar ...
+post_comment_success: Komentar oddan
+item_create_success: Zapis ustvarjen | Zapisi ustvarjeni
+item_update_success: Zapis urejen | Zapisi urejeni
+item_delete_success: Zapis izbrisan | Zapisi izbrisani
+this_collection: Ta zbirka
+related_collection: Povezana zbirka
+related_collections: Povezane zbirke
+translations_collection: Zbirka prevodov
+languages_collection: Zbirka jezikov
+export_data: Izvozi podatke
+format: Oblika
+use_current_filters_settings: Uporabi trenutne filtre in nastavitve
+export_collection: 'Izvozi "{collection}"'
+last_page: Zadnja stran
+last_access: Zadnji dostop
+fill_template: Izpolni z vrednostjo obrazca
+a_unique_table_name: Edinstveno ime tabele ...
+a_unique_column_name: Edinstveno ime stolpca ...
+enable_custom_values: Omogoči vrednosti po meri
+date-fns_date_short_no_year: MMM d
+month: Mesec
+year: Leto
+select_all: Izberi vse
+months:
+  january: Januar
+  february: Februar
+  march: Marec
+  april: April
+  may: Maj
+  june: Junij
+  july: Julij
+  august: Avgust
+  september: September
+  october: Oktober
+  november: November
+  december: December
+drag_mode: Vlečni način
+cancel_crop: Prekini obrezovanje
+original: Izvirnik
+url: URL
+import: Uvozi
+file_details: Podatki o datoteki
+dimensions: Mere
+size: Velikost
+created: Ustvarjeno
+modified: Spremenjeno
+checksum: Kontrolna vsota
+owner: Lastnik
+edited_by: Uredil/a
+folder: Mapa
+zoom: Povečaj
+download: Prenesi
+open: Odpri
+open_in_new_window: Odpri v novem oknu
+foreground_color: Barva vsebine
+background_color: Barva ozadja
+upload_from_device: Naloži iz naprave
+choose_from_library: Naloži iz knjižnice
+import_from_url: Naloži iz spletnega naslova
+replace_from_device: Zamenjaj datoteko iz naprave
+replace_from_library: Zamenjaj datoteko iz knjižnice
+replace_from_url: Zamenjaj datoteko iz spletnega naslova
+no_file_selected: Nobena datoteka ni izbrana
+download_file: Prenesi datoteko
+collection_key: Ključ zbirke
+name: Ime
+primary_key_field: Polje za primarni ključ
+type: Tip
+creating_new_collection: Kreiranje nove zbirke
+created_by: Ustvaril
+created_on: Ustvarjeno
 value_unique: Vrednost mora biti edinstvena
+wysiwyg_options:
+  forecolor: Barva vsebine
+  backcolor: Barva ozadja
+  selectall: Izberi vse
 fields:
+  directus_collections:
+    note: Opomba
+  directus_files:
+    title: Naslov
+    created_on: Ustvarjeno
+    created_by: Ustvaril
+    folder: Mapa
   directus_users:
+    title: Naslov
     language: Jezik
+    last_page: Zadnja stran
+    last_access: Zadnji dostop
   directus_fields:
+    note: Opomba
     translation: Prevodi imen polj
   directus_roles:
     name: Ime vloge
 interfaces:
   presentation-links:
     primary: Glavni
+  select-dropdown:
+    choices_value_placeholder: Vnesite vrednost ...
   input-hash:
     hash: Hash
+  system-folder:
+    folder: Mapa
 displays:
   boolean:
     boolean: Boolean
+  datetime:
+    format: Oblika
+  labels:
+    choices_value_placeholder: Vnesite vrednost ...
+  user:
+    name: Ime
+layouts:
+  cards:
+    title: Naslov
