@@ -5,7 +5,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
-import getDatabase, { isInstalled, hasDatabaseConnection, validateDBConnection } from '../../../database';
+import getDatabase, { isInstalled, validateDBConnection } from '../../../database';
 import { SchemaOverview } from '../../../types';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {

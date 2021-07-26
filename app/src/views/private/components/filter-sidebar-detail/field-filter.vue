@@ -45,7 +45,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import FilterInput from './filter-input.vue';
 
 export default defineComponent({
@@ -94,7 +94,7 @@ export default defineComponent({
 
 		const parsedField = computed(() => {
 			const field = getFieldForKey(props.filter.field);
-			return getAvailableOperatorsForType(field.type);
+			return getFilterOperatorsForType(field.type);
 		});
 
 		return { t, activeOperator, value, name, parsedField };

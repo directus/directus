@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputHash from './input-hash.vue';
 
 export default defineInterface({

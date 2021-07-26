@@ -5,5 +5,5 @@ export {
 	defineModule,
 	defineHook,
 	defineEndpoint,
-} from '@directus/shared/utils/browser';
+} from '@directus/shared/utils';
 export { useLayoutState } from '@directus/shared/composables';

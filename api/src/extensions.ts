@@ -7,7 +7,7 @@ import {
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackage,
-} from '@directus/shared/utils';
+} from '@directus/shared/utils/node';
 import { APP_EXTENSION_TYPES, APP_SHARED_DEPS } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter from './emitter';

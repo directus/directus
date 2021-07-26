@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationLinks from './presentation-links.vue';
 
 export default defineInterface({

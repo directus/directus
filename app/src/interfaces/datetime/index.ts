@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceDateTime from './datetime.vue';
 
 export default defineInterface({
