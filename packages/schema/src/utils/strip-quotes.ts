@@ -1,7 +1,7 @@
 /**
  * Strip leading/trailing quotes from a string
  */
-export function stripQuotes(value?: string | null): string | null {
+export function stripQuotes(value: string | null): string | null {
 	if (value == null) {
 		return null;
 	}
