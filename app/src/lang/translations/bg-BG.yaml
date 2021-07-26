@@ -506,6 +506,7 @@ upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
 drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
+interface_options: Опции за интерфейса
 layout_options: Опции за оформление
 rows: Редове
 columns: Колони
@@ -867,7 +868,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   presentation-links:

@@ -498,6 +498,7 @@ upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
+interface_options: Schnittstellenoptionen
 layout_options: Layout-Optionen
 rows: Reihen
 columns: Spalten

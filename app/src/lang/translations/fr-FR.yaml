@@ -506,6 +506,7 @@ upload_files_success: '{count} fichiers envoyés'
 upload_pending: Envoi en attente
 drag_file_here: Glisser-déposer un fichier ici
 click_to_browse: Cliquer pour rechercher
+interface_options: Options d'interface
 layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
