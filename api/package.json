@@ -137,6 +137,7 @@
 		"rollup": "^2.52.1",
 		"sharp": "^0.28.3",
 		"stream-json": "^1.7.1",
+		"update-check": "^1.5.4",
 		"uuid": "^8.3.2",
 		"uuid-validate": "0.0.3"
 	},
