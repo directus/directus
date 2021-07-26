@@ -1,5 +1,5 @@
-import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } from '../../constants';
-import { ApiExtensionType, AppExtensionType, ExtensionPackageType, ExtensionType } from '../../types';
+import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } from '../constants';
+import { ApiExtensionType, AppExtensionType, ExtensionPackageType, ExtensionType } from '../types';
 
 export function isExtension(type: string): type is ExtensionType {
 	return (EXTENSION_TYPES as readonly string[]).includes(type);

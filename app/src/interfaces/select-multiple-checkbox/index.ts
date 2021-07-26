@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
 
 export default defineInterface({

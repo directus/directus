@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { Field, Condition, DeepPartial } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { state } from '../store';
@@ -22,7 +22,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { t } = useI18n();
 
 		const value = computed({
