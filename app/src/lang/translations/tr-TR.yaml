@@ -701,6 +701,8 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  system-folder:
+    folder: Klasör
   slider:
     slider: Kaydırıcı
   tags:

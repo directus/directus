@@ -8,6 +8,7 @@
 
 		<template #title>
 			<h1 class="type-title">{{ title }}</h1>
+			<v-chip v-if="modularExtension" disabled small>Modular Extension</v-chip>
 		</template>
 
 		<template #navigation>
@@ -52,14 +53,17 @@ export default defineComponent({
 		const markdown = ref('');
 		const title = computed(() => {
 			const lines = markdown.value.split('\n');
+			const line = lines.find((line) => line.startsWith('# '));
 
-			for (let i = 0; i < lines.length; i++) {
-				if (lines[i].startsWith('# ')) {
-					return lines[i].substring(2).trim();
-				}
-			}
+			if (line === undefined) return null;
 
-			return null;
+			return line.substring(2).replaceAll('<small></small>', '').trim();
+		});
+
+		const modularExtension = computed(() => {
+			const lines = markdown.value.split('\n');
+			const line = lines.find((line) => line.startsWith('# '));
+			return line?.includes('<small></small>') || false;
 		});
 
 		const markdownWithoutTitle = computed(() => {
@@ -83,7 +87,7 @@ export default defineComponent({
 			{ immediate: true, flush: 'post' }
 		);
 
-		return { t, route, markdown, title, markdownWithoutTitle };
+		return { t, route, markdown, title, markdownWithoutTitle, modularExtension };
 	},
 });
 </script>
@@ -91,5 +95,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .docs-content {
 	padding: 0 var(--content-padding) var(--content-padding-bottom);
+}
+
+.v-chip {
+	--v-chip-background-color: var(--v-chip-background-color-hover);
+	--v-chip-color: var(--v-chip-color-hover);
+
+	margin-left: 12px;
+	cursor: default !important;
 }
 </style>

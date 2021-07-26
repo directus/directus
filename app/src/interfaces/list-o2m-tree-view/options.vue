@@ -22,7 +22,8 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 export default defineComponent({
 	props: {

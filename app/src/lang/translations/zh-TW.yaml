@@ -617,6 +617,8 @@ interfaces:
     interface: 介面
   select-dropdown-m2o:
     display_template: 顯示模板
+  system-folder:
+    folder: 資料夾
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字

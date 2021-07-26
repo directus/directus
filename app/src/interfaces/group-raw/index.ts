@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupRaw from './group-raw.vue';
 
 export default defineInterface({

@@ -1,4 +1,4 @@
-import { types } from './field';
+import { Type } from '@directus/shared/types';
 import { Permission } from './permissions';
 import { Relation } from './relation';
 
@@ -15,7 +15,7 @@ type CollectionsOverview = {
 				field: string;
 				defaultValue: any;
 				nullable: boolean;
-				type: typeof types[number] | 'unknown' | 'alias';
+				type: Type | 'unknown' | 'alias';
 				dbType: string | null;
 				precision: number | null;
 				scale: number | null;

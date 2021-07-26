@@ -13,6 +13,7 @@
 					ref="input"
 					v-focus="autofocus"
 					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
@@ -83,6 +84,10 @@ export default defineComponent({
 		fullWidth: {
 			type: Boolean,
 			default: true,
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		modelValue: {
 			type: [String, Number],

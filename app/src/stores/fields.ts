@@ -1,13 +1,15 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useRelationsStore } from '@/stores/';
-import { Field, FieldRaw, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field, FieldRaw } from '@directus/shared/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+import { DeepPartial } from '@directus/shared/types';
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need

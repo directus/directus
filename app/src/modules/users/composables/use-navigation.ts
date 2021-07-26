@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Role } from '@/types';
+import { Role } from '@directus/shared/types';
 import { ref, Ref } from 'vue';
 
 let roles: Ref<Role[] | null> | null = null;

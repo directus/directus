@@ -94,8 +94,8 @@ export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
 	return inspector;
 }
 
-export async function hasDatabaseConnection(): Promise<boolean> {
-	const database = getDatabase();
+export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
+	database = database ?? getDatabase();
 
 	try {
 		if (env.DB_CLIENT === 'oracledb') {
@@ -103,15 +103,22 @@ export async function hasDatabaseConnection(): Promise<boolean> {
 		} else {
 			await database.raw('SELECT 1');
 		}
+
 		return true;
 	} catch {
 		return false;
 	}
 }
 
-export async function validateDBConnection(): Promise<void> {
+export async function validateDBConnection(database?: Knex): Promise<void> {
+	database = database ?? getDatabase();
+
 	try {
-		await hasDatabaseConnection();
+		if (env.DB_CLIENT === 'oracledb') {
+			await database.raw('select 1 from DUAL');
+		} else {
+			await database.raw('SELECT 1');
+		}
 	} catch (error) {
 		logger.error(`Can't connect to the database.`);
 		logger.error(error);

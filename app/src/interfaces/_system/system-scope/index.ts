@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceSystemScope from './system-scope.vue';
 
 export default defineInterface({

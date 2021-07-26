@@ -7,16 +7,8 @@ import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	Field,
-	Permission,
-	Relation,
-	SchemaOverview,
-	types,
-} from '../types';
+import { AbstractServiceOptions, Accountability, Collection, Permission, Relation, SchemaOverview } from '../types';
+import { Field, Type } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
@@ -459,19 +451,32 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private fieldTypes: Record<
-		typeof types[number],
+		Type,
 		{
 			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
 	> = {
+		alias: {
+			type: 'string',
+		},
 		bigInteger: {
 			type: 'integer',
 			format: 'int64',
 		},
+		binary: {
+			type: 'string',
+			format: 'binary',
+		},
 		boolean: {
 			type: 'boolean',
+		},
+		csv: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
 		},
 		date: {
 			type: 'string',
@@ -487,6 +492,9 @@ class OASSpecsService implements SpecificationSubService {
 		float: {
 			type: 'number',
 			format: 'float',
+		},
+		hash: {
+			type: 'string',
 		},
 		integer: {
 			type: 'integer',
@@ -511,22 +519,12 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		binary: {
-			type: 'string',
-			format: 'binary',
+		unknown: {
+			type: undefined,
 		},
 		uuid: {
 			type: 'string',
 			format: 'uuid',
-		},
-		csv: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
-		hash: {
-			type: 'string',
 		},
 	};
 }

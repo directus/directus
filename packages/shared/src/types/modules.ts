@@ -1,6 +1,6 @@
-import { Permission, User } from '@/types';
 import { Ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
+import { Permission, User } from '../types';
 
 export interface ModuleConfig {
 	id: string;
@@ -14,7 +14,3 @@ export interface ModuleConfig {
 	order?: number;
 	persistent?: boolean;
 }
-
-export type ModuleContext = Record<string, unknown>;
-
-export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);
