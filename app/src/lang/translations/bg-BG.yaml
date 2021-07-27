@@ -62,7 +62,7 @@ os_version: Версия на ОС
 os_uptime: Време от старт на ОС
 os_totalmem: Памет на ОС
 archive: Архивиране
-archive_confirm: Сигурни ли сте, че искате да изтриете записа?
+archive_confirm: Сигурни ли сте, че искате да архивирате записа?
 archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате записа? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions_to: 'Нулиране на системните позволения към:'
@@ -616,7 +616,7 @@ wysiwyg_options:
   directionality: Подравняване
 dropdown: Падащо меню
 choices: Избори
-choices_option_configured_incorrectly: Изборите не са конфигурирани правилно
+choices_option_configured_incorrectly: Възможностите са настроени неправилно
 deselect: Отмяна на избора
 deselect_all: Премахване на избора
 other: Друго...
@@ -872,7 +872,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   presentation-links:
