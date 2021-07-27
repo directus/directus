@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.85",
+	"version": "9.0.0-rc.86",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -36,11 +36,16 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"author": "Nicola Krumschmidt",
+	"maintainers": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"express": "4.17.1",
 		"fs-extra": "10.0.0",
-		"knex-schema-inspector": "1.5.11",
+		"joi": "17.4.1",
+		"knex-schema-inspector": "1.5.12",
+		"lodash": "4.17.21",
 		"vue": "3.1.5",
 		"vue-router": "4.0.10"
 	},

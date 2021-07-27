@@ -1,22 +1,6 @@
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'lt'
-	| 'lte'
-	| 'gt'
-	| 'gte'
-	| 'in'
-	| 'nin'
-	| 'null'
-	| 'nnull'
-	| 'contains'
-	| 'ncontains'
-	| 'between'
-	| 'nbetween'
-	| 'empty'
-	| 'nempty';
+import { FilterOperator } from './filter';
 
-export type Filter = {
+export type AppFilter = {
 	key: string;
 	field: string;
 	operator: FilterOperator;
@@ -31,7 +15,7 @@ export type Preset = {
 	role: string | null;
 	collection: string;
 	search: string | null;
-	filters: readonly Filter[] | null;
+	filters: readonly AppFilter[] | null;
 	layout: string | null;
 	layout_query: { [layout: string]: any } | null;
 	layout_options: { [layout: string]: any } | null;

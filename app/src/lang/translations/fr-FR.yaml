@@ -1,10 +1,13 @@
 ---
 edit_field: Modifier le champ
+conditions: Conditions
 item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
 group: Groupe
+and: Et
+or: Ou
 fill_width: Pleine largeur
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
@@ -506,6 +509,7 @@ upload_files_success: '{count} fichiers envoyés'
 upload_pending: Envoi en attente
 drag_file_here: Glisser-déposer un fichier ici
 click_to_browse: Cliquer pour rechercher
+interface_options: Options d'interface
 layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
@@ -531,6 +535,7 @@ no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résu
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
+rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
 no_presets_copy: Aucun préréglage ou favori n'a encore été enregistré.
@@ -992,6 +997,9 @@ interfaces:
     no_collection: La collection est introuvable
   system-folder:
     folder: Dossier
+    description: Sélectionner un dossier
+    root_name: Bibliothèque de fichiers racine
+    system_default: Paramètres par défaut du système
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés

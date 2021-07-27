@@ -1,3 +1,4 @@
+import { FilterOperator } from './filter';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { LOCAL_TYPES, TYPES } from '../constants';
 
@@ -28,6 +29,7 @@ export type FieldMeta = {
 	translations: Translations[] | null;
 	width: Width | null;
 	note: string | null;
+	conditions: Condition[] | null;
 	system?: true;
 };
 
@@ -43,3 +45,21 @@ export interface Field extends FieldRaw {
 	name: string;
 	children?: Field[] | null;
 }
+
+export type ValidationError = {
+	code: string;
+	field: string;
+	type: FilterOperator;
+	valid?: number | string | (number | string)[];
+	invalid?: number | string | (number | string)[];
+	substring?: string;
+};
+
+export type Condition = {
+	name: string;
+	rule: Record<string, any>;
+
+	readonly?: boolean;
+	hidden?: boolean;
+	options?: Record<string, any>;
+};
