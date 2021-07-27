@@ -143,7 +143,7 @@ export default defineComponent({
 
 		function addFilterForField(fieldKey: string) {
 			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
-			const defaultOperator = getFilterOperatorsForType(field.type).operators[0];
+			const defaultOperator = getFilterOperatorsForType(field.type)[0];
 
 			emit('update:modelValue', [
 				...props.modelValue,
