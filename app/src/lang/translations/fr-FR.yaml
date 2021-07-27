@@ -1,5 +1,6 @@
 ---
 edit_field: Modifier le champ
+conditions: Conditions
 item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
@@ -997,6 +998,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
+    root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
     radio-buttons: Boutons radio
