@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "argon2": "^0.28.1",
-    "@directus/shared": "9.0.0-rc.85"
+    "@directus/shared": "9.0.0-rc.86"
   },
   "devDependencies": {
     "jest": "27.0.6",
