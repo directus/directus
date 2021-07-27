@@ -6,7 +6,7 @@ import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 
@@ -19,16 +19,6 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 	}) => Promise<any>;
-};
-
-type Alterations = {
-	create: {
-		[key: string]: any;
-	}[];
-	update: {
-		[key: string]: any;
-	}[];
-	delete: (number | string)[];
 };
 
 /**
