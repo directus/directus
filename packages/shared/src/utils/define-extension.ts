@@ -5,7 +5,7 @@ import {
 	ModuleConfig,
 	HookRegisterFunction,
 	EndpointRegisterFunction,
-} from '../../types';
+} from '../types';
 
 export function defineInterface(config: InterfaceConfig): InterfaceConfig {
 	return config;

@@ -10,7 +10,8 @@
 		"strict": true,
 		"lib": ["es2019"],
 		"skipLibCheck": true,
-		"declaration": true
+		"declaration": true,
+		"resolveJsonModule": true
 	},
 	"exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
 import useCollection from '@/composables/use-collection';
-import { defineDisplay } from '@directus/shared/utils/browser';
+import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import getRelatedCollection from '@/utils/get-related-collection';

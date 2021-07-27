@@ -1,4 +1,4 @@
-import { defineLayout } from '@directus/shared/utils/browser';
+import { defineLayout } from '@directus/shared/utils';
 import TabularLayout from './tabular.vue';
 import TabularOptions from './options.vue';
 import TabularSidebar from './sidebar.vue';

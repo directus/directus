@@ -2,6 +2,7 @@ export * from './displays';
 export * from './endpoints';
 export * from './extensions';
 export * from './fields';
+export * from './filter';
 export * from './hooks';
 export * from './interfaces';
 export * from './items';

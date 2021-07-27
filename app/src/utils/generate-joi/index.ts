@@ -1,5 +1,5 @@
 import BaseJoi, { AnySchema } from 'joi';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp, merge } from 'lodash';
 
 /**
  * @TODO
@@ -58,20 +58,19 @@ const Joi = BaseJoi.extend({
 });
 
 type JoiOptions = {
-	allowUnknown: boolean;
+	allowUnknown?: boolean;
+	requireAll?: boolean;
 };
 
 const defaults: JoiOptions = {
 	allowUnknown: true,
+	requireAll: false,
 };
 
 export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions): AnySchema {
 	filter = filter || {};
 
-	options = {
-		...defaults,
-		...(options || {}),
-	};
+	options = merge({}, defaults, options);
 
 	const schema: Record<string, AnySchema> = {};
 
@@ -79,10 +78,6 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 		const isField = key.startsWith('_') === false;
 
 		if (isField) {
-			if (typeof value !== 'object') {
-				schema[key] = Joi.any().equal(value);
-				continue;
-			}
 			const operator = Object.keys(value)[0];
 
 			if (typeof Object.values(value)[0] === 'undefined') {
@@ -161,6 +156,10 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 				default:
 					schema[key] = Joi.any().equal(Object.values(value)[0]);
 					break;
+			}
+
+			if (options.requireAll) {
+				schema[key] = schema[key].required();
 			}
 		}
 	}
