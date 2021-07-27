@@ -319,7 +319,7 @@ name: Име
 primary_key_field: Първичен ключ
 type: Тип
 creating_new_collection: Създаване на колекция
-created_by: Създадено от
+created_by: Създаден от
 created_on: Създаден на
 creating_collection_info: Именуване на колекцията и настройка на уникално ключово поле...
 creating_collection_system: Включване и преименуване на някои от следните незадължителни полета.
@@ -730,7 +730,7 @@ fields:
     modified_by: Променен от
     modified_on: Променен на
     created_on: Създаден на
-    created_by: Създадено от
+    created_by: Създаден от
     embed: Вграждане
     uploaded_by: Качено от
     folder: Папка
@@ -762,12 +762,12 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
-    public_foreground: Основно изображение
-    public_background: Фоново изображение
+    public_foreground: Публично изображение
+    public_background: Публичен фон
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
     auth_login_attempts: Брой за опити за вход
-    storage_asset_presets: Съхранение и настройки за файл
+    storage_asset_presets: Заготовки за съхранените файлове
     storage_asset_transform: Трансформации на съхранените файлове
     custom_css: Потребителски CSS
   directus_fields:
@@ -1043,7 +1043,7 @@ interfaces:
     maximum_value: Максимална стойност
     step_interval: Интервал на стъпка
     slug: Превръщане в Slug
-    slug_label: Превръщане на стойностите безопасни за URL
+    slug_label: Обезапасяване за използване в URL
   input-multiline:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
