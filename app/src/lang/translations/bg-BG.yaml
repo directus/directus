@@ -616,7 +616,7 @@ wysiwyg_options:
   directionality: Подравняване
 dropdown: Падащо меню
 choices: Избори
-choices_option_configured_incorrectly: Изборите не са конфигурирани правилно
+choices_option_configured_incorrectly: Възможностите са настроени неправилно
 deselect: Отмяна на избора
 deselect_all: Премахване на избора
 other: Друго...
