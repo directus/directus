@@ -506,6 +506,7 @@ upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
 drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
+interface_options: Опции за интерфейса
 layout_options: Опции за оформление
 rows: Редове
 columns: Колони
@@ -992,6 +993,10 @@ interfaces:
     no_collection: Колекцията не може да бъде намерена
   system-folder:
     folder: Папка
+    description: Избор на папка
+    field_hint: Добавяне на новодобавените файлове в избраната папка. Не се отнася за съществуващите вече файлове.
+    root_name: Коренова папка
+    system_default: По подразбиране
   select-radio:
     radio-buttons: Радио бутони
     description: Един или няколко избора
@@ -1070,6 +1075,7 @@ interfaces:
     trigger: Задействане
     rate: Оценка
   group-raw:
+    name: Обикновени полета
     description: Нормално показване на полетата.
 displays:
   boolean:

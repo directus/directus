@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils/browser';
+import { defineDisplay } from '@directus/shared/utils';
 import { TYPES } from '@directus/shared/constants';
 
 export default defineDisplay({

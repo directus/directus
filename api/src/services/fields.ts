@@ -12,8 +12,8 @@ import { ForbiddenException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
-import { Field } from '../types/field';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { Field, FieldMeta, Type } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
@@ -22,7 +22,7 @@ import { RelationsService } from './relations';
 import Keyv from 'keyv';
 import { DeepPartial } from '@directus/shared/types';
 
-export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
+export type RawField = DeepPartial<Field> & { field: string; type: Type };
 
 export class FieldsService {
 	knex: Knex;
@@ -215,7 +215,7 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] | null },
+		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -435,6 +435,9 @@ export class FieldsService {
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
 		let column: Knex.ColumnBuilder;
+
+		// Don't attempt to add a DB column for alias / corrupt fields
+		if (field.type === 'alias' || field.type === 'unknown') return;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
