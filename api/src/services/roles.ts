@@ -10,7 +10,7 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
-	private async checkForOtherAdminRoles(excludeKeys: PrimaryKey[]) {
+	private async checkForOtherAdminRoles(excludeKeys: PrimaryKey[]): Promise<void> {
 		// Make sure there's at least one admin role left after this deletion is done
 		const otherAdminRoles = await this.knex
 			.count('*', { as: 'count' })
@@ -23,7 +23,7 @@ export class RolesService extends ItemsService {
 		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
 	}
 
-	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]) {
+	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
 		if (!role) throw new ForbiddenException();
@@ -62,6 +62,8 @@ export class RolesService extends ItemsService {
 		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't remove the last admin user from the admin role.`);
 		}
+
+		return;
 	}
 
 	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions) {
