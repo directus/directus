@@ -1103,7 +1103,7 @@ export class GraphQLService {
 	 * Select the correct service for the given collection. This allows the individual services to run
 	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
 	 */
-	getService(collection: string): RolesService {
+	getService(collection: string): ItemsService {
 		const opts = {
 			knex: this.knex,
 			accountability: this.accountability,
