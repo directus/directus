@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Edytuj pole
 item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
@@ -48,7 +68,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
-public: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
@@ -257,7 +276,7 @@ move_to_folder: Przenieś do folderu
 move: Przenieś
 system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
-interface: Interfejs
+interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
@@ -287,7 +306,6 @@ drag_mode: Tryb przeciągania
 cancel_crop: Anuluj przycinanie
 original: Oryginalny
 url: Adres URL
-import: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
@@ -807,13 +825,10 @@ referential_action_cascade: Usuń {collection} element (kaskada)
 referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
-continue: Kontynuuj
 continue_as: >-
   {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
-default: Domyślnie
-delete: Usuń
 delete_are_you_sure: >-
   Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
 delete_field_are_you_sure: >-
