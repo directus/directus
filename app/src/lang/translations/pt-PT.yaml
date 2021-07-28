@@ -1,9 +1,13 @@
 ---
 edit_field: Editar campo
+conditions: Condições
 item_revision: Revisão do documento
 duplicate_field: Duplicar este campo
 half_width: Metade da largura
 full_width: Largura total
+group: Grupo
+and: E
+or: Ou
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
