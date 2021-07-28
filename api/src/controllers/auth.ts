@@ -190,11 +190,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (req.body.token !== 'string') {
+		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (req.body.password !== 'string') {
+		if (typeof req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
