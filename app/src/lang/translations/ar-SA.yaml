@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: تعديل الحقل
 item_revision: التعديلات على العنصر
 duplicate_field: حقل مكرر
@@ -46,7 +66,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: تسجيل الخروج
   SESSION_EXPIRED: انتهت الجلسة
-public: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
 not_allowed: غير مسموح
 directus_version: إصدار Directus
@@ -254,7 +273,7 @@ move_to_folder: أنقل إلى مجلد
 move: نقل
 system: نظام
 add_field_related: إضافة حقل إلى مجموعة ذات صلة
-interface: الواجهة
+interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
@@ -279,7 +298,6 @@ months:
 drag_mode: وضع السحب
 original: أصلي
 url: الرابط
-import: إستيراد
 file_details: تفاصيل الملف
 dimensions: الأبعاد
 size: حجم
@@ -718,11 +736,8 @@ referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
-continue: واصل
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
-default: الإفتراضي
-delete: حذف
 delete_are_you_sure: >-
   هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-

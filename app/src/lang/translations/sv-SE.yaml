@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Redigera fält
 item_revision: Revision objekt
 duplicate_field: Duplicera fält
@@ -41,7 +61,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utloggad
   SESSION_EXPIRED: Sessionen har upphört
-public: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
 not_allowed: Inte tillåtet
 directus_version: Directus Version
@@ -243,7 +262,7 @@ move_to_folder: Flytta till mapp
 move: Flytta
 system: System
 add_field_related: Lägg till fält i relaterad kollektion
-interface: Gränssnitt
+interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
@@ -273,7 +292,6 @@ drag_mode: Dra läge
 cancel_crop: Avbryt beskärning
 original: Ursprunglig
 url: URL
-import: Importera
 file_details: Fildetaljer
 dimensions: Dimensioner
 size: Storlek
@@ -759,11 +777,8 @@ save_current_datetime: Spara aktuellt datum/tid
 block: Blockera
 inline: Infogad
 comment: Kommentera
-continue: Fortsätt
 editing_role: '{role} roll'
 creating_webhook: Skapar Webhook
-default: Standard
-delete: Radera
 delete_are_you_sure: >-
   Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
 delete_field_are_you_sure: >-

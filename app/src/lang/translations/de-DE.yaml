@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Feld bearbeiten
 item_revision: Element Revision
 duplicate_field: Feld duplizieren
@@ -42,7 +62,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
-public: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
@@ -250,7 +269,7 @@ move_to_folder: In Ordner verschieben
 move: Verschieben
 system: System
 add_field_related: Feld zur abhängigen Sammlung hinzufügen
-interface: Benutzeroberfläche
+interface_label: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -280,7 +299,6 @@ drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
-import: Importieren
 file_details: Dateiinformationen
 dimensions: Dimensionen
 size: Größe
@@ -799,13 +817,10 @@ referential_action_cascade: Lösche das {collection} Element (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
-continue: Weiter
 continue_as: >-
   {name} ist derzeit authentifiziert. Wenn du dieses Konto erkennst, drücke fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
-default: Standard
-delete: Löschen
 delete_are_you_sure: >-
   Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
