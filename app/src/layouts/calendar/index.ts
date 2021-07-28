@@ -1,6 +1,6 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { formatISO, parse } from 'date-fns';
+import { formatISO, parse, format } from 'date-fns';
 import useItems from '@/composables/use-items';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
@@ -326,7 +326,7 @@ export default defineLayout<LayoutOptions>({
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar
 					date.setDate(date.getDate() + 1);
-					endDate = formatISO(date);
+					endDate = format(date, 'yyyy-MM-dd');
 				} else {
 					endDate = item[endDateField.value];
 				}
