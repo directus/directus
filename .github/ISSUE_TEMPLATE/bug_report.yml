@@ -8,19 +8,12 @@ body:
   - type: checkboxes
     id: troubleshooting
     attributes:
+      label: Preflight Checklist
       options:
         - label: I have completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
           required: true
-  - type: checkboxes
-    id: version
-    attributes:
-      options:
         - label: I'm on [the latest version of Directus](https://github.com/directus/directus/releases).
           required: true
-  - type: checkboxes
-    id: duplicate
-    attributes:
-      options:
         - label: There's [no other issue](https://github.com/directus/directus/issues) that already describes my problem.
           required: true
   - type: markdown
