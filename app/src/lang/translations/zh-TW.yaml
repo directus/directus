@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: 編輯欄位
 item_revision: 項目修改
 duplicate_field: 複製欄位
@@ -37,7 +57,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
-public: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -180,7 +199,7 @@ move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
-interface: 介面
+interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -202,7 +221,6 @@ months:
 cancel_crop: 取消裁切
 original: 原始
 url: URL
-import: 匯入
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
@@ -529,11 +547,8 @@ save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
 comment: 評論
-continue: 繼續
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
-default: 預設
-delete: 刪除
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-

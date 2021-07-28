@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Modifica campo
 conditions: Condizioni
 item_revision: Revisione elemento
@@ -51,7 +71,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
-public: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
 not_allowed: Non consentito
 directus_version: Versione di Directus
@@ -260,7 +279,7 @@ move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
 add_field_related: Aggiungi il campo alla raccolta correlata
-interface: Interfaccia
+interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
@@ -290,7 +309,6 @@ drag_mode: Modalità Di Trascinamento
 cancel_crop: Annulla Ritaglio
 original: Originale
 url: URL
-import: Importa
 file_details: Dettagli File
 dimensions: Dimensioni
 size: Dimensione
@@ -812,13 +830,10 @@ referential_action_cascade: Elimina l'elemento in {collection} (cascata)
 referential_action_set_null: Imposta il campo {field} a null
 referential_action_set_default: Imposta {field} al suo valore predefinito
 choose_action: Scegli azione
-continue: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
-default: Predefinito
-delete: Elimina
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
@@ -873,7 +888,6 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 interfaces:
   presentation-links:

@@ -120,8 +120,12 @@ export class UsersService extends ItemsService {
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
+		const email = data.email?.toLowerCase();
+
+		if (email) {
+			await this.checkUniqueEmails([email]);
+		}
+
 		return await this.service.createOne(data, opts);
 	}
 

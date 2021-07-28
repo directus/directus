@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Muuda välja
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
@@ -41,7 +61,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
-public: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
@@ -249,7 +268,7 @@ move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
-interface: Kasutajaliides
+interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -279,7 +298,6 @@ drag_mode: Lohistusrežiim
 cancel_crop: Tühista lõikamine
 original: Originaal
 url: URL
-import: Impordi
 file_details: Faili Üksikasjad
 dimensions: Mõõtmed
 size: Suurus
@@ -795,11 +813,8 @@ referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
 referential_action_set_null: Nulli {field} väli
 referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
-continue: Continue
 editing_role: '{role} roll'
 creating_webhook: Loo veebikonks
-default: Vaikimisi
-delete: Kustuta
 delete_are_you_sure: >-
   See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-

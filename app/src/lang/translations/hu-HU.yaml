@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Mező szerkesztése
 duplicate_field: Mező másolása
 half_width: Fél szélesség
@@ -35,7 +55,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
-public: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
@@ -170,7 +189,7 @@ move_to_folder: Áthelyezés mappába
 move: Áthelyezés
 system: Rendszer
 add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
-interface: Kezelőfelület
+interface_label: Kezelőfelület
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
@@ -195,7 +214,6 @@ drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
-import: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
 size: Méret
@@ -572,10 +590,7 @@ no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
 block: Blokk
 comment: Hozzászólás
-continue: Tovább
 creating_webhook: Webhook létrehozása
-default: Alapértelmezett
-delete: Törlés
 delete_field_are_you_sure: >-
   Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
 description: Leírás

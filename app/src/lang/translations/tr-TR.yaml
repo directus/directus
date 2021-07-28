@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Alanı Düzenle
 item_revision: Revizyonları Göster
 duplicate_field: Yinelenen Alan
@@ -41,7 +61,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
-public: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
@@ -249,7 +268,7 @@ move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
 add_field_related: Alakalı Koleksiyona Alan Ekle
-interface: Arayüz
+interface_label: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
@@ -279,7 +298,6 @@ drag_mode: Sürükleme Modu
 cancel_crop: Kırpmayı İptal Et
 original: Orijinal
 url: URL
-import: İçe aktar
 file_details: Dosya Ayrıntıları
 dimensions: Boyutlar
 size: Boyut
@@ -611,11 +629,8 @@ fields:
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
-continue: Devam
 editing_role: '{role} Rolü'
 creating_webhook: Webhook Oluştur
-default: Öntanımlı
-delete: Sil
 delete_field_are_you_sure: >-
   "{field}" alanını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 description: Açıklama
