@@ -314,7 +314,6 @@ export class FieldsService {
 		return field.field;
 	}
 
-	/** @todo save accountability */
 	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();

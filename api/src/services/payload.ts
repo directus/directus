@@ -40,13 +40,6 @@ export class PayloadService {
 		return this;
 	}
 
-	/**
-	 * @todo allow this to be extended
-	 *
-	 * @todo allow these extended special types to have "field dependencies"?
-	 * f.e. the file-links transformer needs the id and filename_download to be fetched from the DB
-	 * in order to work
-	 */
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
