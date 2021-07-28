@@ -4,11 +4,24 @@
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend><component :is="`layout-actions-${localLayout}`" /></template>
+		<template #actions:prepend>
+			<component :is="`layout-actions-${localLayout}`" />
+		</template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />
-
+			<v-menu show-arrow placement="bottom" :close-on-content-click="false">
+				<template #activator="{ toggle }">
+					<v-badge bordered :value="advancedFilters.length" :disabled="advancedFilters.length === 0">
+						<v-button v-tooltip.bottom="t('advanced_filter')" icon rounded secondary @click="toggle">
+							<v-icon name="filter_list" />
+						</v-button>
+					</v-badge>
+				</template>
+				<div class="advanced-filter-in-menu">
+					<advanced-filter v-model="advancedFilters" :collection="collection" />
+				</div>
+			</v-menu>
 			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
@@ -28,15 +41,16 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, reactive, computed, toRefs, watch } from 'vue';
+import { computed, defineComponent, PropType, reactive, ref, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
 import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
+import { AdvancedFilter } from '@/views/private/components/advanced-filter';
 
 export default defineComponent({
-	components: { SearchInput },
+	components: { SearchInput, AdvancedFilter },
 	props: {
 		active: {
 			type: Boolean,
@@ -70,7 +84,13 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection, ref(null), true);
+		const {
+			layout,
+			layoutOptions,
+			layoutQuery,
+			searchQuery,
+			filters: advancedFilters,
+		} = usePreset(collection, ref(null), true);
 
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
@@ -96,6 +116,8 @@ export default defineComponent({
 			},
 		});
 
+		const allFilters = computed<Filter[]>(() => [...layoutFilters.value, ...advancedFilters.value]);
+
 		useLayout(
 			localLayout,
 			reactive({
@@ -103,7 +125,7 @@ export default defineComponent({
 				selection: layoutSelection,
 				layoutOptions: localOptions,
 				layoutQuery: localQuery,
-				filters: layoutFilters,
+				filters: allFilters,
 				searchQuery,
 				selectMode: true,
 				readonly: false,
@@ -122,6 +144,7 @@ export default defineComponent({
 			localOptions,
 			collectionInfo,
 			searchQuery,
+			advancedFilters,
 		};
 
 		function useActiveState() {
@@ -198,5 +221,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .layout {
 	--layout-offset-top: 0px;
+}
+
+.advanced-filter-in-menu {
+	min-width: 220px;
+	margin: 20px;
 }
 </style>
