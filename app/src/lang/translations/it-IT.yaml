@@ -71,6 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
+public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
 not_allowed: Non consentito
 directus_version: Versione di Directus
@@ -309,6 +310,7 @@ drag_mode: Modalità Di Trascinamento
 cancel_crop: Annulla Ritaglio
 original: Originale
 url: URL
+import_label: Importa
 file_details: Dettagli File
 dimensions: Dimensioni
 size: Dimensione
@@ -830,10 +832,13 @@ referential_action_cascade: Elimina l'elemento in {collection} (cascata)
 referential_action_set_null: Imposta il campo {field} a null
 referential_action_set_default: Imposta {field} al suo valore predefinito
 choose_action: Scegli azione
+continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
+default_label: Predefinito
+delete_label: Elimina
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
@@ -888,6 +893,7 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 interfaces:
   presentation-links:
