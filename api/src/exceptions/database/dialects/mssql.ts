@@ -46,7 +46,7 @@ async function uniqueViolation(error: MSSQLError) {
 	 * information_schema when this happens
 	 */
 
-	const betweenQuotes = /'([^']+)'/;
+	const betweenQuotes = /'([^']+)'/g;
 	const betweenParens = /\(([^)]+)\)/g;
 
 	const quoteMatches = error.message.match(betweenQuotes);
@@ -54,21 +54,35 @@ async function uniqueViolation(error: MSSQLError) {
 
 	if (!quoteMatches || !parenMatches) return error;
 
-	const keyName = quoteMatches[1];
+	const keyName = quoteMatches[1]?.slice(1, -1);
 
-	const database = getDatabase();
+	let collection = quoteMatches[0]?.slice(1, -1);
+	let field: string | null = null;
 
-	const constraintUsage = await database
-		.select('*')
-		.from('INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE')
-		.where({
-			CONSTRAINT_NAME: keyName,
-		})
-		.first();
+	if (keyName) {
+		const database = getDatabase();
 
-	const collection = constraintUsage.TABLE_NAME;
-	const field = constraintUsage.COLUMN_NAME;
-	const invalid = parenMatches[parenMatches.length - 1].slice(1, -1);
+		const constraintUsage = await database
+			.select('sys.columns.name as field', database.raw('OBJECT_NAME(??) as collection', ['sys.columns.object_id']))
+			.from('sys.indexes')
+			.innerJoin('sys.index_columns', (join) => {
+				join
+					.on('sys.indexes.object_id', '=', 'sys.index_columns.object_id')
+					.andOn('sys.indexes.index_id', '=', 'sys.index_columns.index_id');
+			})
+			.innerJoin('sys.columns', (join) => {
+				join
+					.on('sys.index_columns.object_id', '=', 'sys.columns.object_id')
+					.andOn('sys.index_columns.column_id', '=', 'sys.columns.column_id');
+			})
+			.where('sys.indexes.name', '=', keyName)
+			.first();
+
+		collection = constraintUsage?.collection;
+		field = constraintUsage?.field;
+	}
+
+	const invalid = parenMatches[parenMatches.length - 1]?.slice(1, -1);
 
 	return new RecordNotUniqueException(field, {
 		collection,

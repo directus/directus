@@ -2,12 +2,12 @@ import { Knex } from 'knex';
 import Auth, { AuthConstructor } from './auth';
 import BasicAuth from './basic-auth';
 import { InvalidConfigException, DriverNotSupportedException } from './exceptions';
-import { AuthManagerConfig, AuthManagerProviderConfig, AuthProviderConfig } from './types';
+import { AuthManagerConfig, AuthProviderConfig } from './types';
 
 export default class AuthManager {
 	private knex: Knex;
 	private defaultProvider?: string;
-	private providerConfigs: AuthManagerProviderConfig;
+	private providerConfigs: Record<string, AuthProviderConfig>;
 	private _providers: Map<string, Auth> = new Map();
 	private _drivers: Map<string, AuthConstructor> = new Map();
 

@@ -1,10 +1,13 @@
 ---
 edit_field: Modifica campo
+conditions: Condizioni
 item_revision: Revisione elemento
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
+and: E
+or: O
 fill_width: Riempi larghezza
 field_name_translations: Traduzioni nome del campo
 enter_password_to_enable_tfa: Inserisci la tua password per abilitare l'autenticazione a due fattori
@@ -532,6 +535,7 @@ no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risult
 clear_filters: Pulisci filtri
 saves_automatically: Salva Automaticamente
 role: Ruolo
+rule: Regola
 user: Utente
 no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
@@ -545,8 +549,8 @@ select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
 toggle: Interrutore
-icon_on: Icona Acceso
-icon_off: Icona Spento
+icon_on: Icona attivato
+icon_off: Icona disattivato
 label: Etichetta
 image_url: URL immagine
 alt_text: Testo alternativo
@@ -1044,7 +1048,7 @@ interfaces:
     description: Inserisci testo su più righe
   boolean:
     toggle: Interrutore
-    description: Cambia tra acceso e spento
+    description: Cambia tra attivato e disattivato
     label_placeholder: Inserisci un'etichetta...
     label_default: Abilitato
   translations:
@@ -1080,14 +1084,14 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
-    description: Mostra gli stati acceso e spento
-    label_on: Etichetta acceso
-    label_on_placeholder: Inserisci l'etichetta acceso...
-    label_off: Etichetta spento
-    label_off_placeholder: Inserisci l'etichetta spento...
-    icon_on: Icona Acceso
-    icon_off: Icona Spento
-    color_on: Colore acceso
+    description: Mostra gli stati attivato e disattivato
+    label_on: Etichetta attivato
+    label_on_placeholder: Inserisci l'etichetta attivato...
+    label_off: Etichetta disattivato
+    label_off_placeholder: Inserisci l'etichetta disattivato...
+    icon_on: Icona attivato
+    icon_off: Icona disattivato
+    color_on: Colore attivato
     color_off: Colore Disattivato
   collection:
     collection: Raccolta

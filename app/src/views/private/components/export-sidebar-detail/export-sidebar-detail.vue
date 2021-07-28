@@ -43,6 +43,7 @@ import filtersToQuery from '@/utils/filters-to-query';
 type LayoutQuery = {
 	fields?: string[];
 	sort?: string;
+	limit?: number;
 };
 
 export default defineComponent({
@@ -81,8 +82,10 @@ export default defineComponent({
 			};
 
 			if (useFilters.value === true) {
-				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
-				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
+
 				if (props.searchQuery) params.search = props.searchQuery;
 
 				if (props.filters?.length) {

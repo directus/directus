@@ -67,19 +67,17 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	createUser(_user: User): void {
+	createUser(_user: Partial<User>): void {
 		/* Optional */
 	}
 
 	/**
 	 * Handle update user. Can be used to sync user data with external providers
 	 *
-	 * Note: Only updated fields are provided
-	 *
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	updateUser(_user: User): void {
+	updateUser(_user: Partial<User>): void {
 		/* Optional */
 	}
 

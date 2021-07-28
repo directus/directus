@@ -113,4 +113,8 @@
 		font-size: inherit !important;
 		@include type-label;
 	}
+
+	.fc-event.selected {
+		color: var(--primary);
+	}
 }

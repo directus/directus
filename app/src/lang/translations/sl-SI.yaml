@@ -1,10 +1,13 @@
 ---
 edit_field: Uredi polje
+conditions: Pogoji
 item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
 group: Skupina
+and: in
+or: ali
 fill_width: Zapolni širino
 field_name_translations: Prevodi imen polj
 enter_password_to_enable_tfa: Vnesite svoje geslo, da boste lahko omogočili dvonivojsko avtentikacijo
@@ -318,6 +321,40 @@ type: Tip
 creating_new_collection: Kreiranje nove zbirke
 created_by: Ustvaril
 created_on: Ustvarjeno
+creating_collection_info: Poimenujte zbirko in določite edinstveno ključno polje ...
+creating_collection_system: Omogočite in preimenujte katerokoli od teh neobveznih polj.
+auto_increment_integer: Števec
+generated_uuid: Generiran UUID
+manual_string: Ročno vnešen tekst
+save_and_create_new: Shrani in ustvari novo
+save_and_stay: Shrani in ostani
+save_as_copy: Shrani kot kopijo
+add_existing: Dodaj obstoječe
+creating_items: Ustvarjanje zapisov
+enable_create_button: Omogoči gumb za ustvarjanje
+selecting_items: Izbiranje zapisov
+enable_select_button: Omogoči gumb za izbor
+comments: Komentarji
+no_comments: Trenutno še ni komentarjev
+click_to_expand: Pritisni za razširitev
+select_item: Izberi zapis
+no_items: Ni zapisov
+search_items: Iskanje zapisov ...
+disabled: Onemogočeno
+information: Informacija
+report_bug: Prijavi napako
+request_feature: Prošnja za funkcijo
+interface_not_found: 'Vmesnik "{interface}" ne obstaja.'
+reset_interface: Ponastavi vmesnik
+display_not_found: "Prikaz \"{display}\" ne obstaja.\n"
+reset_display: Ponastavi prikaz
+list-m2a: Gradnik (več-na-karkoli)
+item_count: 'Ni zapisov | En zapis | Dva zapisa | Trije zapisi | Štirje zapisi | {count} zapisov'
+no_items_copy: Ta zbirka še nima zapisov.
+file_count: 'Ni datotek | Ena datoteka | Dve datoteki | Tri datoteke | Štiri datoteke | {count} datotek'
+no_files_copy: Ni datotek.
+user_count: 'Ni uporabnikov | En uporabnik | Dva uporabnika | Trije uporabniki | Štirje uporabniki | {count} uporabnikov'
+no_users_copy: Ta vloga še nima uporabnikov.
 field_width: Širina polja
 add_filter: Dodaj filter
 upper_limit: Zgornja meja ...

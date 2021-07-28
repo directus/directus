@@ -1,14 +1,14 @@
 export interface User {
-	id?: string;
-	first_name?: string | null;
-	last_name?: string | null;
-	email?: string | null;
-	password?: string | null;
-	status?: 'active' | 'suspended' | 'invited';
-	role?: string | null;
-	provider?: string;
-	identifier?: string | null;
-	auth_data?: string | null;
+	id: string;
+	first_name: string | null;
+	last_name: string | null;
+	email: string | null;
+	password: string | null;
+	status: 'active' | 'suspended' | 'invited';
+	role: string | null;
+	provider: string;
+	identifier: string | null;
+	auth_data: string | null;
 }
 
 export interface AuthProviderConfig {
@@ -16,11 +16,7 @@ export interface AuthProviderConfig {
 	config: any;
 }
 
-export interface AuthManagerProviderConfig {
-	[key: string]: AuthProviderConfig;
-}
-
 export interface AuthManagerConfig {
 	default?: string;
-	providers?: AuthManagerProviderConfig;
+	providers?: Record<string, AuthProviderConfig>;
 }

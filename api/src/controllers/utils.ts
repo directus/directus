@@ -3,12 +3,13 @@ import { Router } from 'express';
 import Joi from 'joi';
 import { nanoid } from 'nanoid';
 import { InvalidPayloadException } from '@directus/shared/exceptions';
-import { InvalidQueryException } from '../exceptions';
+import { InvalidQueryException, ForbiddenException } from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import { RevisionsService, UtilsService, ImportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
+import { getCache } from '../cache';
 
 const router = Router();
 
@@ -113,6 +114,22 @@ router.post(
 		busboy.on('error', (err: Error) => next(err));
 
 		req.pipe(busboy);
+	})
+);
+
+router.post(
+	'/cache/clear',
+	asyncHandler(async (req, res) => {
+		if (req.accountability?.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		const { cache, schemaCache } = getCache();
+
+		await cache?.clear();
+		await schemaCache?.clear();
+
+		res.status(200).end();
 	})
 );
 

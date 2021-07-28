@@ -105,21 +105,21 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
+	app.get('/', (req, res, next) => {
+		if (env.ROOT_REDIRECT) {
+			res.redirect(env.ROOT_REDIRECT);
+		} else {
+			next();
+		}
+	});
+
+	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 
 		// Set the App's base path according to the APIs public URL
 		let html = fse.readFileSync(adminPath, 'utf-8');
 		html = html.replace(/<meta charset="utf-8" \/>/, `<meta charset="utf-8" />\n\t\t<base href="${publicUrl}admin/">`);
-
-		app.get('/', (req, res, next) => {
-			if (env.ROOT_REDIRECT) {
-				res.redirect(env.ROOT_REDIRECT);
-			} else {
-				next();
-			}
-		});
 
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));

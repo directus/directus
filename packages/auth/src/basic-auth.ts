@@ -43,8 +43,8 @@ export default class BasicAuth extends Auth {
 	/**
 	 * Handle update user. Can be used to sync user data with external providers
 	 */
-	updateUser(user: User): void {
-		if (user.email !== undefined && !user.email) {
+	updateUser(user: Partial<User>): void {
+		if (user.email === null) {
 			throw new InvalidPayloadException('User email cannot be null.');
 		}
 	}
