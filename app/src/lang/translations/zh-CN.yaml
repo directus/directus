@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: 编辑字段
 item_revision: 项目修订
 duplicate_field: 复制字段
@@ -48,7 +68,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
-public: 公共
 public_description: 控制哪些API数据没有认证时可用
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -257,7 +276,7 @@ move_to_folder: 移动到文件夹
 move: 移动
 system: 系统
 add_field_related: 将字段添加到关联集合
-interface: 接口
+interface_label: 接口
 today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
@@ -287,7 +306,6 @@ drag_mode: 拖动模式
 cancel_crop: 取消裁剪。
 original: 原始
 url: URl
-import: Import
 file_details: 文件信息
 dimensions: 尺寸
 size: 大小
@@ -807,13 +825,10 @@ referential_action_cascade: 删除 {collection} 项 (分类)
 referential_action_set_null: 伪装 {field} 字段
 referential_action_set_default: 设置 {field} 为默认值
 choose_action: 选择操作
-continue: 继续
 continue_as: >-
   {name} 目前已被身份验证。如果您确认此帐户，请按继续。
 editing_role: '{role} 角色'
 creating_webhook: 正在创建 Webhook
-default: 默认
-delete: 删除
 delete_are_you_sure: >-
   此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-

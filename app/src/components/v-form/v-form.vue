@@ -65,7 +65,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field, FieldRaw, ValidationError } from '@directus/shared/types';
-import { clone, cloneDeep, isNil, merge, omit } from 'lodash';
+import { clone, cloneDeep, isNil, merge, omit, pick } from 'lodash';
 import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
@@ -291,7 +291,7 @@ export default defineComponent({
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			emit('update:modelValue', merge({}, props.modelValue, updates));
+			emit('update:modelValue', pick(merge({}, props.modelValue, updates), Object.keys(updates)));
 		}
 
 		function unsetValue(field: Field) {

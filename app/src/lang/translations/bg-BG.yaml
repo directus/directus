@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Редактиране на поле
 conditions: Условия
 item_revision: Ревизии на запис
@@ -51,7 +71,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Отписан
   SESSION_EXPIRED: Сесията е изтекла
-public: Публичен
 public_description: Контрол на позволенията към API, без нужда от оторизиране.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
@@ -260,7 +279,7 @@ move_to_folder: Преместване в папка
 move: Преместване
 system: Система
 add_field_related: Добавяне на поле към релативната колекция
-interface: Интерфейс
+interface_label: Интерфейс
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
@@ -290,7 +309,6 @@ drag_mode: Режим при дърпане
 cancel_crop: Отказване на изрязването
 original: Оригинал
 url: URL
-import: Импорт
 file_details: Детайли за файл
 dimensions: Размери
 size: Големина
@@ -811,13 +829,10 @@ referential_action_cascade: Каскадно изтриване на {collection
 referential_action_set_null: Зануляване на {field}
 referential_action_set_default: Задаване на {field} към стойността по подразбиране
 choose_action: Изберете действие
-continue: Продължение
 continue_as: >-
   {name} в момента е оторизиран. Ако разпознавате профила, изберете бутона за продължение.
 editing_role: 'Роля - {role}'
 creating_webhook: Създаване на уеб-кука
-default: По подразбиране
-delete: Изтриване
 delete_are_you_sure: >-
   Действието е постоянно и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
 delete_field_are_you_sure: >-
