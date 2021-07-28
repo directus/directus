@@ -13,6 +13,11 @@ field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
 add_field: Adicionar Campo
 role_name: Nome do cargo
+branch: Filial
+leaf: Folha
+indeterminate: Indeterminado
+exclusive: Exclusivo
+children: Crianças
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar documentos arquivados
 edited: Valor alterado
@@ -24,6 +29,7 @@ create_role: Criar estatuto
 create_user: Criar utilizador
 create_webhook: Criar webhook
 invite_users: Convidar utlizadores
+email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
 emails: Emails
@@ -102,6 +108,7 @@ field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
 field_m2m: Relação Muitos para Muitos
 field_translations: Traduções
+field_group: Grupo de Campos
 item_permissions: Permissões do documento
 field_permissions: Permisões do campo
 field_validation: Validação do Campo
@@ -304,12 +311,30 @@ upload_from_device: Carregar ficheiro a partir do dispositivo
 choose_from_library: Escolher Ficheiro da Biblioteca
 import_from_url: Importar ficheiro a partir do URL
 replace_from_device: Substituir Ficheiro do Dispositivo
+replace_from_library: Substituir Ficheiro da Biblioteca
+replace_from_url: Substituir Ficheiro de URL
+no_file_selected: Nenhum ficheiro selecionado
+download_file: Descarregar Ficheiro
+collection_key: Chave da coleção
+name: Nome
+primary_key_field: Campo de chave primária
+type: Tipo
+creating_new_collection: Criar uma nova coleção
 created_by: Criado por
 created_on: Criada em
+creating_collection_info: Nome da coleção e configuração é unico "chave" do campo...
+creating_collection_system: Ativar e renomear qualquer um desses campos opcionais.
+auto_increment_integer: Inteiro auto-incrementado
+generated_uuid: UUID gerado
+manual_string: String inserida manualmente
 save_and_create_new: Guardar e criar novo
 save_and_stay: Guardar e permanecer
 save_as_copy: Guardar como cópia
 add_existing: Adicionar existente
+creating_items: Criando Itens
+enable_create_button: Ativar o botão Criar
+selecting_items: Selecionar itens
+enable_select_button: Ativar o botão Selecionar
 comments: Comentários
 no_comments: Ainda não há comentários
 click_to_expand: Clique para expandir
@@ -324,6 +349,7 @@ interface_not_found: 'Interface "{interface}" não encontrada.'
 reset_interface: Restaurar interface
 display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
+list-m2a: Construtor (M2A)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
 no_items_copy: Aind não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
@@ -358,6 +384,8 @@ charset: Codificação
 second: Segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
+modified_on: Modificado em
+card_size: Tamanho do cartão
 errors:
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Proibido
@@ -425,6 +453,7 @@ fields:
     description: Descrição
     tags: Etiquetas
     location: Localização
+    modified_on: Modificado em
     created_on: Criada em
     created_by: Criado por
     folder: Pasta
@@ -477,6 +506,7 @@ displays:
   labels:
     choices_value_placeholder: Insira um valor...
   user:
+    name: Nome
     both: Ambos
 layouts:
   cards:
