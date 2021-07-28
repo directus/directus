@@ -33,7 +33,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: S'ha desconnectat
   SESSION_EXPIRED: Sessió caducada
-public: Públic
 public_description: Controla quines dades API estan disponibles sense autenticar.
 not_allowed: No permès
 directus_version: Versió de Directus
@@ -158,9 +157,6 @@ fields:
     name: Nom del Rol
     description: Descripció
 comment: Comentari
-continue: Continua
-default: Predeterminat
-delete: Elimina
 description: Descripció
 done: Fet
 duplicate: Duplicat
