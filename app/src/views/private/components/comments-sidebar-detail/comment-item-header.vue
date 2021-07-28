@@ -35,7 +35,7 @@
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -51,7 +51,7 @@
 						{{ t('cancel') }}
 					</v-button>
 					<v-button class="action-delete" :loading="deleting" @click="remove">
-						{{ t('delete') }}
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

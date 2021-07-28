@@ -4,7 +4,7 @@
 		<v-icon v-tooltip="t('create')" name="add" />
 		<v-icon v-tooltip="t('read')" name="visibility" />
 		<v-icon v-tooltip="t('update')" name="edit" outline />
-		<v-icon v-tooltip="t('delete')" name="delete" outline />
+		<v-icon v-tooltip="t('delete_label')" name="delete" outline />
 	</div>
 </template>
 

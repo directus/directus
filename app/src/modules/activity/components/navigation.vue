@@ -59,7 +59,7 @@
 				<v-icon name="clear" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('delete')" />
+				<v-text-overflow :text="t('delete_label')" />
 			</v-list-item-content>
 		</v-list-item>
 

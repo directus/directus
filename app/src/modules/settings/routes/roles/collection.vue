@@ -136,7 +136,7 @@ export default defineComponent({
 				roles.value = [
 					{
 						public: true,
-						name: t('public'),
+						name: t('public_label'),
 						icon: 'public',
 						description: t('public_description'),
 						id: 'public',
