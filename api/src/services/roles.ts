@@ -66,7 +66,7 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
-	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions) {
+	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if ('admin_access' in data && data.admin_access === false) {
 			await this.checkForOtherAdminRoles([key]);
 		}
@@ -78,7 +78,7 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions) {
+	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if ('admin_access' in data && data.admin_access === false) {
 			await this.checkForOtherAdminRoles(keys);
 		}

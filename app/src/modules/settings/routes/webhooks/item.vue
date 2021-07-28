@@ -24,7 +24,7 @@
 							{{ t('cancel') }}
 						</v-button>
 						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>

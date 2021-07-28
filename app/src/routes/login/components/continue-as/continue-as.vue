@@ -9,7 +9,7 @@
 			</i18n-t>
 			<div class="actions">
 				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
-				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue') }}</v-button>
+				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue_label') }}</v-button>
 			</div>
 		</template>
 	</div>

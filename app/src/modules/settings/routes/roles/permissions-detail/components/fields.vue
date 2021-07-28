@@ -3,7 +3,7 @@
 		<v-notice type="info">
 			{{
 				t('fields_for_role', {
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 					action: t(permission.action).toLowerCase(),
 				})
 			}}
