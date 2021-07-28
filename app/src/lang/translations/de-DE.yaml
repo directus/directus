@@ -477,6 +477,9 @@ operators:
   nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  nstarts_with: Beginnt nicht mit
+  ends_with: Endet mit
+  nends_with: Endet nicht mit
   between: Ist zwischen
   nbetween: Ist nicht zwischen
   empty: Ist leer
@@ -495,6 +498,7 @@ upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
+interface_options: Schnittstellenoptionen
 layout_options: Layout-Optionen
 rows: Reihen
 columns: Spalten
@@ -796,6 +800,8 @@ referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue: Weiter
+continue_as: >-
+  {name} ist derzeit authentifiziert. Wenn du dieses Konto erkennst, drücke fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default: Standard

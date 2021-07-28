@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils/browser';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayJsonValue from './formatted-json-value.vue';
 
 export default defineDisplay({

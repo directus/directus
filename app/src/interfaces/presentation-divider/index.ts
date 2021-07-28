@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationDivider from './presentation-divider.vue';
 
 export default defineInterface({

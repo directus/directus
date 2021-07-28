@@ -494,6 +494,7 @@ upload_files_success: '{count} tiedostoa ladattu'
 upload_pending: Lähetys odottaa
 drag_file_here: Vedä ja pudota tiedosto tähän
 click_to_browse: Klikkaa selataksesi
+interface_options: Liittymän asetukset
 layout_options: Asetteluasetukset
 rows: Rivit
 columns: Sarakkeita

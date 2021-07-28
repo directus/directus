@@ -495,6 +495,7 @@ upload_files_success: '{count} Fajlova Otpremljeno'
 upload_pending: Otpremanje na Čekanju
 drag_file_here: Prevuci Fajl ovdje
 click_to_browse: Klikni za Pretraživanje
+interface_options: Opcije Interfejsa
 layout_options: Opcije Izgleda
 rows: Redova
 columns: Kolona

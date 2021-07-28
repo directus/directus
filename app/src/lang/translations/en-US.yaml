@@ -1,9 +1,12 @@
 edit_field: Edit Field
+conditions: Conditions
 item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+and: And
+or: Or
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -420,6 +423,7 @@ errors:
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
+  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -511,6 +515,7 @@ upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
+interface_options: Interface Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -536,6 +541,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+rule: Rule
 user: User
 no_presets: No Presets
 no_presets_copy: No presets or bookmarks have been saved yet.
