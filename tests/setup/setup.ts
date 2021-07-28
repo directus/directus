@@ -46,7 +46,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 				await new Promise((resolve, reject) => {
 					docker.modem.followProgress(
 						stream,
-						(err: Error, res: any) => {
+						(err, res) => {
 							if (err) {
 								reject(err);
 							} else {
@@ -82,7 +82,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 									await new Promise((resolve, reject) => {
 										docker.modem.followProgress(
 											stream,
-											(err: Error, res: any) => {
+											(err, res) => {
 												if (err) {
 													reject(err);
 												} else {
