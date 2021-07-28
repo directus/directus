@@ -33,11 +33,11 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-		const filters = computed({
+		const filters = computed<Filter[]>({
 			get() {
 				return props.modelValue || [];
 			},
-			set(newVal: string[]) {
+			set(newVal: Filter[]) {
 				emit('update:modelValue', newVal);
 			},
 		});
