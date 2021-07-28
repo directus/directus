@@ -297,7 +297,6 @@ export class AuthenticationService {
 				'password',
 				'status',
 				'role',
-				'tfa_secret',
 				'provider',
 				'identifier',
 				'auth_data'
