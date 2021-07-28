@@ -16,9 +16,6 @@ body:
           required: true
         - label: There's [no other issue](https://github.com/directus/directus/issues) that already describes my problem.
           required: true
-  - type: markdown
-    attributes:
-      value: Please confirm that an issue describing this problem doesn't exist already.
   - type: textarea
     attributes:
       label: Describe the Bug
