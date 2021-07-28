@@ -101,7 +101,7 @@ export default defineComponent({
 				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 			}
 
-			return t('public') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+			return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });

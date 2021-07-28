@@ -5,12 +5,17 @@ body:
   - type: markdown
     attributes:
       value: Hi, thank you for taking the time to create an issue!
-  - type: markdown
+  - type: checkboxes
+    id: troubleshooting
     attributes:
-      value: 'Before continuing, you must first have completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps)'
-  - type: markdown
-    attributes:
-      value: Please confirm that an issue describing this problem doesn't exist already.
+      label: Preflight Checklist
+      options:
+        - label: I have completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
+          required: true
+        - label: I'm on [the latest version of Directus](https://github.com/directus/directus/releases).
+          required: true
+        - label: There's [no other issue](https://github.com/directus/directus/issues) that already describes my problem.
+          required: true
   - type: textarea
     attributes:
       label: Describe the Bug

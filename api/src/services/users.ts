@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import { clone } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
 import {
@@ -99,6 +99,23 @@ export class UsersService extends ItemsService {
 		return true;
 	}
 
+	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
+		// Make sure there's at least one admin user left after this deletion is done
+		const otherAdminUsers = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_users')
+			.whereNotIn('directus_users.id', excludeKeys)
+			.andWhere({ 'directus_roles.admin_access': true })
+			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.first();
+
+		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+		if (otherAdminUsersCount === 0) {
+			throw new UnprocessableEntityException(`You can't remove the last admin user from the role.`);
+		}
+	}
+
 	/**
 	 * Create a new user
 	 */
@@ -129,6 +146,14 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (data.role) {
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+
+			if (newRole && !newRole.admin_access) {
+				await this.checkRemainingAdminExistence([key]);
+			}
+		}
+
 		const email = data.email?.toLowerCase();
 
 		if (email) {
@@ -147,6 +172,14 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (data.role) {
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+
+			if (newRole && !newRole.admin_access) {
+				await this.checkRemainingAdminExistence(keys);
+			}
+		}
+
 		const email = data.email?.toLowerCase();
 
 		if (email) {
@@ -165,6 +198,29 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (data.role) {
+			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', data.role).first();
+
+			if (newRole && !newRole.admin_access) {
+				// This is duplicated a touch, but we need to know the keys first
+				// Not authenticated:
+				const itemsService = new ItemsService('directus_users', {
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				const readQuery = cloneDeep(query);
+				readQuery.fields = ['id'];
+
+				// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
+				// permissions check for the keys, so we don't have to make this an authenticated read
+				const itemsToUpdate = await itemsService.readByQuery(readQuery);
+				const keys = itemsToUpdate.map((item) => item.id);
+
+				await this.checkRemainingAdminExistence(keys);
+			}
+		}
+
 		const email = data.email?.toLowerCase();
 
 		if (email) {
@@ -183,20 +239,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNot('directus_users.id', key)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
-		}
+		await this.checkRemainingAdminExistence([key]);
 
 		await this.service.deleteOne(key, opts);
 
@@ -204,24 +247,30 @@ export class UsersService extends ItemsService {
 	}
 
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', keys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
-		}
+		await this.checkRemainingAdminExistence(keys);
 
 		await this.service.deleteMany(keys, opts);
 
 		return keys;
+	}
+
+	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Not authenticated:
+		const itemsService = new ItemsService(this.collection, {
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const itemsToDelete = await itemsService.readByQuery(readQuery);
+		const keys: PrimaryKey[] = itemsToDelete.map((item: Item) => item[primaryKeyField]);
+
+		if (keys.length === 0) return [];
+
+		return await this.deleteMany(keys, opts);
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {

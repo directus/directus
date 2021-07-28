@@ -22,6 +22,7 @@ export default defineComponent({
 			const create = createCalendar.value;
 			create();
 		});
+
 		onUnmounted(() => {
 			const destroy = destroyCalendar.value;
 			destroy();
