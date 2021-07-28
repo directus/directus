@@ -932,6 +932,8 @@ interfaces:
     inline_title_label: Titel in Zeile anzeigen
     margin_top: Oberer Rand
     margin_top_label: Oberen Rand erhöhen
+    default_active: Standardmäßig Offen
+    default_active_label: Der Divider ist standardmäßig offen
   select-dropdown:
     description: Wert aus einer Dropdown-Liste auswählen
     choices_placeholder: Neue Auswahl hinzufügen
