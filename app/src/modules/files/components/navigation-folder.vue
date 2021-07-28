@@ -106,7 +106,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete') }}</v-button>
+					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

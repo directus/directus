@@ -252,7 +252,7 @@ export default defineComponent({
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: t('interface'),
+						text: t('interface_label'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},

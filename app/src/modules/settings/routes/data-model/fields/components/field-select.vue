@@ -123,7 +123,7 @@
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete') }}</v-button>
+						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
