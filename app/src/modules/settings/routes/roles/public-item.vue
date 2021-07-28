@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="t('public')">
+	<private-view :title="t('public_label')">
 		<template #headline>{{ t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">

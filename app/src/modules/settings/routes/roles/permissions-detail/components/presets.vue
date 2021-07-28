@@ -4,7 +4,7 @@
 			{{
 				t('presets_for_role', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
