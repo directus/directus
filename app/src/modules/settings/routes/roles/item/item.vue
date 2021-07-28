@@ -10,7 +10,7 @@
 			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete')"
+						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -29,7 +29,7 @@
 							{{ t('cancel') }}
 						</v-button>
 						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>

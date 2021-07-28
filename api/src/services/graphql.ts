@@ -44,9 +44,10 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
+import { getCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
-import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { BaseException, ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -1103,7 +1104,7 @@ export class GraphQLService {
 	 * Select the correct service for the given collection. This allows the individual services to run
 	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
 	 */
-	getService(collection: string): RolesService {
+	getService(collection: string): ItemsService {
 		const opts = {
 			knex: this.knex,
 			accountability: this.accountability,
@@ -1607,6 +1608,21 @@ export class GraphQLService {
 					});
 					await service.revert(args.revision);
 					return true;
+				},
+			},
+			utils_cache_clear: {
+				type: GraphQLVoid,
+				resolve: async () => {
+					if (this.accountability?.admin !== true) {
+						throw new ForbiddenException();
+					}
+
+					const { cache, schemaCache } = getCache();
+
+					await cache?.clear();
+					await schemaCache?.clear();
+
+					return;
 				},
 			},
 			users_invite_accept: {

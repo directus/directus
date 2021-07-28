@@ -1,16 +1,17 @@
 import { Request } from 'express';
 import url from 'url';
+import hash from 'object-hash';
 
 export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;
 
-	let key: string;
+	const info = {
+		user: req.accountability?.user || null,
+		path,
+		query: path?.includes('/graphql') ? req.sanitizedQuery : req.params.query,
+	};
 
-	if (path?.includes('/graphql')) {
-		key = `${req.accountability?.user || 'null'}-${path}-${JSON.stringify(req.params.query)}`;
-	} else {
-		key = `${req.accountability?.user || 'null'}-${path}-${JSON.stringify(req.sanitizedQuery)}`;
-	}
+	const key = hash(info);
 
 	return key;
 }

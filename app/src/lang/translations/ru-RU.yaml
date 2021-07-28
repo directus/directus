@@ -492,6 +492,7 @@ upload_files_success: '{count} Файлов Загружено'
 upload_pending: Ожидание Загрузки
 drag_file_here: Перетащите Файлы Сюда
 click_to_browse: Нажмите для Просмотра
+interface_options: Настройки интерфейса
 layout_options: Параметры Макета
 rows: Записи
 columns: Колонки

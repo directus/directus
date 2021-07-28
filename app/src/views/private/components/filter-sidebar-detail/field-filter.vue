@@ -15,7 +15,7 @@
 
 				<v-list>
 					<v-list-item
-						v-for="operator in parsedField.operators"
+						v-for="operator in filterOperators"
 						:key="operator"
 						:active="operator === activeOperator"
 						clickable
@@ -35,7 +35,7 @@
 			/>
 		</div>
 		<div class="field">
-			<filter-input v-model="value" :type="parsedField.type" :operator="activeOperator" :disabled="disabled" />
+			<filter-input v-model="value" :type="field.type" :operator="activeOperator" :disabled="disabled" />
 		</div>
 	</div>
 </template>
@@ -45,7 +45,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import FilterInput from './filter-input.vue';
 
 export default defineComponent({
@@ -92,12 +92,13 @@ export default defineComponent({
 			return getNameForFieldKey(props.filter.field);
 		});
 
-		const parsedField = computed(() => {
-			const field = getFieldForKey(props.filter.field);
-			return getAvailableOperatorsForType(field.type);
+		const field = computed(() => getFieldForKey(props.filter.field));
+
+		const filterOperators = computed(() => {
+			return getFilterOperatorsForType(field.value.type);
 		});
 
-		return { t, activeOperator, value, name, parsedField };
+		return { t, activeOperator, value, name, field, filterOperators };
 
 		function getFieldForKey(fieldKey: string) {
 			return fieldsStore.getField(props.collection, fieldKey);

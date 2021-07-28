@@ -494,6 +494,7 @@ upload_files_success: '{count} bestanden geüpload'
 upload_pending: Uploaden in afwachting
 drag_file_here: Sleep een bestand hierheen
 click_to_browse: Klik om te bladeren
+interface_options: Interface-opties
 layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
@@ -779,7 +780,7 @@ continue: Doorgaan
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
 default: Standaard
-delete: Verwijder
+delete_label: Verwijder
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-

@@ -232,7 +232,7 @@ revision_delta_by: '由 {user} 于 {date}'
 private_user: 私人用户
 revision_preview: 修订预览
 updates_made: 更新完成
-leave_comment: 留下注释...
+leave_comment: 发表评论...
 post_comment_success: 评论已发布
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
@@ -506,6 +506,7 @@ upload_files_success: '{count} 个文件已上传'
 upload_pending: 上传等待中
 drag_file_here: 拖放文件到这里
 click_to_browse: 点击浏览
+interface_options: 接口选项
 layout_options: 布局选项
 rows: 行
 columns: 列
@@ -888,9 +889,12 @@ interfaces:
     name: 复选框 (树状)
     description: 通过复选框选择多个选项
     value_combining: 组合值
+    value_combining_note: 控制嵌套选择时存储的值。
   input-code:
     code: 代码
     description: 编辑或分享代码片段
+    line_number: 行号
+    placeholder: 在此输入
   system-collection:
     collection: 集合
     description: 在现有集合之间选择
@@ -901,17 +905,43 @@ interfaces:
     include_system_collections: 包含系统集合
   select-color:
     color: 颜色
+    description: 输入或选择颜色
+    placeholder: 选择颜色
+    preset_colors: 预设颜色
+    preset_colors_add_label: 添加新颜色...
+    name_placeholder: 输入颜色名称...
   datetime:
     datetime: 日期时间
+    description: 输入日期时间
+    include_seconds: 包括秒数
+    set_to_now: 设置为现在
+    use_24: 使用24小时格式
   system-display-template:
     display-template: 显示模板
+    description: 混合静态文本和动态字段值
+    collection_field: 收藏字段
     collection_field_not_setup: 集合的字段选项配置错误
     select_a_collection: 选择一个集合
   presentation-divider:
     divider: 分隔线
+    description: 标记字段并分成多个部分
+    title_placeholder: 输入标题...
+    inline_title: 行内标题
+    inline_title_label: 在行内显示标题
+    margin_top: 上边距
+    margin_top_label: 增加上边距
   select-dropdown:
+    description: 请选择
+    choices_placeholder: 添加选项
     allow_other: 允许其他
+    allow_other_label: 允许其他值
+    allow_none: 不允许
+    allow_none_label: 不允许选择
+    choices_name_placeholder: 输入名称...
     choices_value_placeholder: 输入值...
+  select-multiple-dropdown:
+    select-multiple-dropdown: 下拉(多选)
+    description: 从下拉列表中选择多个值
   file:
     file: 文件
     description: 选择或上传文件
@@ -920,15 +950,33 @@ interfaces:
     description: 选择或上传多个文件
   input-hash:
     hash: Hash
+    description: 输入一个hash值
+    masked: Masked
+    masked_label: Hide the true values
   select-icon:
     icon: 图标
+    description: 从下拉列表中选择一个图标
+    search_for_icon: 搜索图标...
   file-image:
     image: 图片
+    description: 选择或上传图片
   system-interface:
     interface: 接口
+    description: 选择一个现有接口
+    placeholder: 选择接口...
+  system-interface-options:
+    interface-options: 接口选项
+    description: 选择接口选项的模式
+  list-m2m:
+    many-to-many: 多对多
+    description: 选择多个相关项目
   select-dropdown-m2o:
+    many-to-one: 多对一
+    description: 选择一个条目
     display_template: 显示模板
   input-rich-text-md:
+    markdown: Markdown
+    description: 输入并预览Markdown
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
@@ -945,6 +993,10 @@ interfaces:
     no_collection: 找不到collection
   system-folder:
     folder: 文件夹
+    description: 选择文件夹
+    field_hint: 将新上传的文件放入选中的文件夹。不影响已选中的现有文件。
+    root_name: 文件管理
+    system_default: 系统默认
   select-radio:
     radio-buttons: 单选按钮
     description: 选择多项选择
@@ -978,6 +1030,7 @@ interfaces:
     description: 手动输入一个值
     trim: Trim
     trim_label: 修剪开始和结束
+    mask: Masked
     mask_label: 隐藏真实值
     clear: 已清除的值
     clear_label: 保存为空字符串
@@ -996,6 +1049,7 @@ interfaces:
     label_default: 已启用
   translations:
     display_template: 显示模板
+    no_collection: 暂无集合
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1077,7 +1131,9 @@ displays:
     image: 图片
     description: 显示一个小的图像预览
     circle: 圆圈
+    circle_label: 显示为圆形
   labels:
+    labels: 标签
     choices_value_placeholder: 输入值...
   rating:
     rating: 评分

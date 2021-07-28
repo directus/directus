@@ -4,11 +4,17 @@ item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
+group: Grupos
 fill_width: Preencher
 field_name_translations: Traduções Dos Nomes Dos Campos
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do cargo
+branch: Branch
+leaf: Folha
+indeterminate: Indeterminado
+exclusive: Exclusivo
+children: Filhos
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
@@ -98,6 +104,7 @@ field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
+field_group: Grupo de Campos
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
@@ -477,6 +484,10 @@ operators:
   nnull: Não é nulo
   contains: Contém
   ncontains: Não contém
+  starts_with: Começa com
+  nstarts_with: Não começa com
+  ends_with: Termina com
+  nends_with: Não termina com
   between: Está entre
   nbetween: Não está entre
   empty: Está vazio
@@ -495,6 +506,7 @@ upload_files_success: '{count} arquivos enviados'
 upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
+interface_options: Opções de Interface
 layout_options: Opções de Layout
 rows: Linhas
 columns: Colunas
@@ -792,9 +804,12 @@ referential_action_field_label_m2o: Ao Excluir de {collection}...
 referential_action_field_label_o2m: Em Desmarcar {collection}...
 referential_action_no_action: Evitar a exclusão
 referential_action_cascade: Excluir o item {collection} (cascade)
+referential_action_set_null: Anular o campo {field}
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolha uma ação
 continue: Continuar
+continue_as: >-
+  {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
 creating_webhook: Criando Webhook
 default: Padrão
@@ -870,6 +885,11 @@ interfaces:
     allow_other: Permitir outros
     show_more: 'Exibir {count} mais'
     items_shown: Itens mostrados
+  select-multiple-checkbox-tree:
+    name: Caixas de seleção (árvore)
+    description: Escolha entre várias opções via caixas de seleção aninhadas
+    value_combining: Combinação de Valor
+    value_combining_note: Controla qual valor é armazenado quando seleções aninhadas são feitas.
   input-code:
     code: Código
     description: Escrever ou compartilhar trechos de código
@@ -973,6 +993,10 @@ interfaces:
     no_collection: A coleção não pôde ser encontrada
   system-folder:
     folder: Pasta
+    description: Selecionar uma pasta
+    field_hint: Coloca arquivos recém-enviados na pasta selecionada. Não afeta os arquivos existentes que estão selecionados.
+    root_name: Raiz da biblioteca de arquivos
+    system_default: Padrões do sistema
   select-radio:
     radio-buttons: Botão de seleção única
     description: Selecione uma das múltiplas escolhas
@@ -1050,6 +1074,9 @@ interfaces:
     value_path: Caminho do Valor
     trigger: Acionar
     rate: Avaliar
+  group-raw:
+    name: Campos Raw
+    description: Mostrar os campos como normal.
 displays:
   boolean:
     boolean: Boolean
