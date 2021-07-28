@@ -1,5 +1,6 @@
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
+import { formatISO, parse, format } from 'date-fns';
 import useItems from '@/composables/use-items';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
@@ -14,7 +15,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { formatISO } from 'date-fns';
 import { computed, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
@@ -314,11 +314,30 @@ export default defineLayout<LayoutOptions>({
 		function parseEvent(item: Item): EventInput | null {
 			if (!startDateField.value || !primaryKeyField.value) return null;
 
+			let endDate: string | undefined = undefined;
+
+			// If the end date is a date-field (so no time), we can safely assume the item is meant to
+			// last all day
+			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
+
+			if (endDateField.value) {
+				if (allDay) {
+					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
+					// expected result in the calendar
+					date.setDate(date.getDate() + 1);
+					endDate = format(date, 'yyyy-MM-dd');
+				} else {
+					endDate = item[endDateField.value];
+				}
+			}
+
 			return {
 				id: item[primaryKeyField.value.field],
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
-				end: endDateField.value ? item[endDateField.value] : null,
+				end: endDate,
+				allDay,
 				className: selection.value.includes(item) ? 'selected' : undefined,
 			};
 		}
