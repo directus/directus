@@ -1,5 +1,9 @@
 <template>
-	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="t('advanced_filter')">
+	<sidebar-detail
+		:badge="advancedFilterCount > 0 ? advancedFilterCount : null"
+		icon="filter_list"
+		:title="t('advanced_filter')"
+	>
 		<advanced-filter v-model="filters" :collection="collection" :loading="loading" />
 	</sidebar-detail>
 </template>
@@ -37,7 +41,8 @@ export default defineComponent({
 				emit('update:modelValue', newVal);
 			},
 		});
-		return { filters, t };
+		const advancedFilterCount = computed(() => filters.value.filter((filter) => !filter.locked).length);
+		return { filters, t, advancedFilterCount };
 	},
 });
 </script>
