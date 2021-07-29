@@ -170,6 +170,13 @@ properties:
 - `schema` - The current API schema in use
 - `database` - Current database transaction
 
+::: tip Input
+
+The `items.*.before` hooks get the raw input payload as the first parameter, with the context parameter as the second
+parameter.
+
+:::
+
 #### Items read
 
 In contrast to the other `items` events (`items.create`, `items.update`, `items.delete`) the `items.read` doesn't
