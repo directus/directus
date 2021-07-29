@@ -893,6 +893,7 @@ template: Predloga
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
+weeks: { }
 report_error: Sporoči napako
 interfaces:
   presentation-links:
@@ -983,6 +984,7 @@ interfaces:
     description: Izberi ikono iz izbornika
     search_for_icon: Iskanje ikone ...
   file-image:
+    image: Slika
     description: Izberi ali naloži sliko
   system-interface:
     interface: Vmesnik
@@ -1137,11 +1139,30 @@ displays:
   filesize:
     filesize: Velikost datoteke
     description: Prikaži velikost datoteke
+  formatted-value:
+    formatted-value: Oblikovana vrednost
+    description: Prikaži oblikovano verzijo teksta
+    format_title: Oblikuj naslov
+    format_title_label: Avtomatska velikost črk
+    bold_label: Uporabi krepke črke
+  formatted-json-value:
+    formatted-json-value: Oblikovana JSON vrednost
+    description: Prikaži oblikovano verzijo objekta
   icon:
     icon: Ikona
+    description: Prikaži ikono
+    filled: Zapolnjeno
+    filled_label: Uporabi zapolnjeno varianto
   image:
+    image: Slika
+    description: Pokaži majhen predogled
     circle: Krog
+    circle_label: Prikaži v krogu
   labels:
+    labels: Oznake
+    description: Prikaži eno ali spisek oznak
+    default_foreground: Privzeta barva vsebine/teksta
+    default_background: Privzeta barva ozadja
     format_label: Oblikuj vse oznake
     show_as_dot: Prikaži kot piko
     choices_value_placeholder: Vnesite vrednost ...
