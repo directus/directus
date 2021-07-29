@@ -479,7 +479,26 @@ show_hidden_collections: Pokaži skrite zbirke
 hide_hidden_collections: Skrij skrite zbirke
 unmanaged_collections: Nenastavljene zbirke
 system_collections: Sistemske zbirke
+placeholder: Opis pred vnosom
+icon_left: Ikona levo
+icon_right: Imona desno
+count_other_revisions: 'Še {count} revizij'
+font: Pisava
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Ločilo
+color: Barva
+circle: Krog
+empty_item: Prazen element
+log_in_with: 'Prijava z {provider}'
+advanced_filter: Napredni filter
+delete_advanced_filter: Izbriši filter
+change_advanced_filter_operator: Spremeni operacijo
 operators:
+  eq: Enako
+  neq: Ni enako
+  lt: Manj kot
   gt: Večje kot
   lte: Manjše ali enako
   gte: Večje ali enako
@@ -531,8 +550,39 @@ create_folder: Ustvari mapo
 folder_name: Ime mape ...
 add_file: Dodaj datoteko
 replace_file: Zamenjaj datoteko
+no_results: Ni rezultatov
+no_results_copy: Ni rezultatov, spremenite ali počistite filtre.
+clear_filters: Počisti filtre
+saves_automatically: Avtomatsko shranjevanje
+role: Vloga
+rule: Pravilo
+user: Uporabnik
+no_presets: Ni prednastavitev
+no_presets_copy: Nimate nobenih prednastavitev ali zaznamkov.
+no_presets_cta: Dodaj prednastavitev
+create: Ustvari
+on_create: Pri ustvarjanju
+on_update: Pri urejanju
+read: Beri
+update: Posodobi
+select_fields: Izberite polja
+format_text: Oblikuj tekst
+bold: Krepko
+toggle: Preklopi
+icon_on: Prikaži ikono
+icon_off: Skrij ikono
+label: Oznaka
+image_url: URL naslov slike
+alt_text: Nadomestno besedilo
+media: Medijska datoteka
 width: Širina
 height: Višina
+source: Vir
+url_placeholder: Vnesite URL ...
+display_text: Prikaži besedilo
+display_text_placeholder: Vnesite prikazno besedilo ...
+tooltip: Namig
+tooltip_placeholder: Vnesite namig ...
 unlimited: Neomejeno
 open_link_in: Odpri povezavo v
 new_tab: Nov zavihek
@@ -545,6 +595,7 @@ wysiwyg_options:
   alignright: Poravnaj desno
   forecolor: Barva vsebine
   backcolor: Barva ozadja
+  bold: Krepko
   italic: Ležeče
   underline: Podčrtano
   strikethrough: Prečrtano
@@ -608,6 +659,39 @@ select: Izberite ...
 layout: Postavitev
 tree_view: Drevesni pogled
 changes_are_permanent: Popravki so trajni
+preset_name_placeholder: Služi kot privzeto, ko je prazno ...
+preset_search_placeholder: Iskalna poizvedba ...
+editing_preset: Urejanje prednastavitve
+layout_preview: Predogled postavitve
+layout_setup: Urejanje postavitve
+unsaved_changes: Neshranjene spremembe
+unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
+discard_changes: Zavrzi spremembe
+keep_editing: Nadaljuj urejanje
+page_help_collections_overview: '**Pregled zbirk** - Spisek vseh zbirk, do katerih imate dostop.'
+page_help_collections_collection: >-
+  **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
+page_help_collections_item: >-
+  **Podrobnosti zapisa** - Obrazec ta pregled in urejanje tega zapisa. Ta izbor tudi vsebuje zgodovino revizij in komentarje.
+page_help_activity_collection: >-
+  **Brskanje po aktivnostih* - Spisek dejavnosti vseh uporabnikov.
+page_help_docs_global: >-
+  **Pregled dokumentacije** - Dokumentacija, prilagojena temu projektu glede na trenutno verzijo.
+page_help_files_collection: >-
+  **Knjižnjica datotek**  - Prikaz vseh naloženih datotek . Uredite postavitev, filtre in razvrščanje za prilagojen pogled in shranite kot zaznamek za hiter dostop.
+page_help_files_item: >-
+  **Podrobnosti datoteke** - Obrazec za urejanje datoteke in njenih meta podatkov ter dostopa.
+page_help_settings_project: "**Nastavitve projekta** - Globalne nastavitve projekta."
+page_help_settings_datamodel_collections: >-
+  **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
+page_help_settings_datamodel_fields: >-
+  **Podatkovni model: zbirka** - Obrazec za urejanje te zbirke in njenih polj.
+page_help_settings_roles_collection: '**Brskanje vlog** - Spisek administracijskih, javnih in prilagojenih uporabniških vlog.'
+page_help_settings_roles_item: "**Podrobnosti vloge** - Urejanje pravic vlog in drugih nastavitev."
+page_help_settings_presets_collection: >-
+  **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
+page_help_settings_presets_item: >-
+  **Podrobnosti prednastavitev** - Obrazec za urejanje zaznamkov in prednastavitev zbirk.
 fields:
   directus_activity:
     revisions: Revizija
@@ -655,6 +739,7 @@ fields:
     theme: Tema
     tfa_secret: Dvojno preverjanja pristnosti
     status: Stanje
+    role: Vloga
     token: Žeton
     last_page: Zadnja stran
     last_access: Zadnji dostop
@@ -750,6 +835,7 @@ interfaces:
     description: Izberite med obstoječimi zbirkami
     include_system_collections: Vključi sistemske zbirke
   select-color:
+    color: Barva
     description: Vnesi ali izberi barvo
     placeholder: Izberite barvo ...
     preset_colors: Prednastavljene barve
@@ -762,6 +848,8 @@ interfaces:
     display-template: Prikaži predlogo
     collection_field_not_setup: Polje zbirke ni nastavljeno
     select_a_collection: Izberite zbirko
+  presentation-divider:
+    divider: Ločilo
   select-dropdown:
     allow_other: Dovoli drugo
     choices_value_placeholder: Vnesite vrednost ...
@@ -822,6 +910,7 @@ interfaces:
     textarea: Besedilo
     description: Vnesite več vrstic teksta
   boolean:
+    toggle: Preklopi
     description: Preklopi
     label_placeholder: Vnesite oznako ...
     label_default: Omogočeno
@@ -832,6 +921,7 @@ interfaces:
     description: Drevesni pogled za rekurzivne ena-na-več zapise
     recursive_only: Drevesni pogled deluje samo na rekurzivnih povezavah.
   user:
+    user: Uporabnik
     description: Izberite obstoječega uporabnika
     select_mode: Izberi način
     modes:
@@ -841,9 +931,15 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Prikaži ikono
+    icon_off: Skrij ikono
+  color:
+    color: Barva
   datetime:
     datetime: Datum in ura
     format: Oblika
+  image:
+    circle: Krog
   labels:
     format_label: Oblikuj vse oznake
     show_as_dot: Prikaži kot piko
@@ -851,11 +947,43 @@ displays:
     choices_text_placeholder: Vnesite tekst ...
   mime-type:
     mime-type: Vrsta MIME
+    description: Pokaži MIME tip datoteke
+    extension_only: Samo vrsta
+    extension_only_label: Pokaži samo končnico
+  rating:
+    rating: Ocena
+    description: Prikaži število kot zvezdice relativno glede na največjo vrednost
+    simple: Preprosto
+    simple_label: Pokaži zvezdice v enostavni obliki
+  raw:
+    raw: Vnešena vrednost
+  related-values:
+    related-values: Povezane vrednosti
+    description: Pokaži povezane vrednosti
   user:
+    user: Uporabnik
+    description: Prikaži uporabnika
     avatar: Avatar
     name: Ime
+    both: Oboje
+    circle_label: Pokaži uporabnika v krogu
 layouts:
   cards:
+    cards: Kartice
+    image_source: Vir slike
+    image_fit: Prileganje slike
+    crop: Obrezovanje
+    contain: Vsebuje
     title: Naslov
+    subtitle: Podnaslov
   tabular:
     tabular: Tabela
+    fields: Polja
+    spacing: Razmik
+    comfortable: Udobno
+    compact: Zgoščeno
+    cozy: Udobno
+  calendar:
+    calendar: Koledar
+    start_date_field: Polje začetnega datuma
+    end_date_field: Polje končnega datuma
