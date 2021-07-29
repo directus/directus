@@ -1,14 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Editar campo
+conditions: Condições
 item_revision: Revisão do documento
 duplicate_field: Duplicar este campo
 half_width: Metade da largura
 full_width: Largura total
+group: Grupo
+and: E
+or: Ou
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
 add_field: Adicionar Campo
 role_name: Nome do cargo
+branch: Filial
+leaf: Folha
+indeterminate: Indeterminado
+exclusive: Exclusivo
+children: Crianças
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar documentos arquivados
 edited: Valor alterado
@@ -20,6 +49,7 @@ create_role: Criar estatuto
 create_user: Criar utilizador
 create_webhook: Criar webhook
 invite_users: Convidar utlizadores
+email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
 emails: Emails
@@ -42,7 +72,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Sessão terminada
   SESSION_EXPIRED: Sessão expirada
-public: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
 directus_version: Versão do Directus
@@ -98,6 +127,7 @@ field_m2a: Relação Muitos para Alguns
 field_o2m: Relação Um para Muitos
 field_m2m: Relação Muitos para Muitos
 field_translations: Traduções
+field_group: Grupo de Campos
 item_permissions: Permissões do documento
 field_permissions: Permisões do campo
 field_validation: Validação do Campo
@@ -250,7 +280,7 @@ move_to_folder: Mover para pasta
 move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
-interface: Interface
+interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
@@ -280,7 +310,6 @@ drag_mode: Modo de Arrasto
 cancel_crop: Cancelar Recorte
 original: Original
 url: URL
-import: Importar
 file_details: Detalhes do ficheiro
 dimensions: Dimensões
 size: Tamanho
@@ -300,12 +329,30 @@ upload_from_device: Carregar ficheiro a partir do dispositivo
 choose_from_library: Escolher Ficheiro da Biblioteca
 import_from_url: Importar ficheiro a partir do URL
 replace_from_device: Substituir Ficheiro do Dispositivo
+replace_from_library: Substituir Ficheiro da Biblioteca
+replace_from_url: Substituir Ficheiro de URL
+no_file_selected: Nenhum ficheiro selecionado
+download_file: Descarregar Ficheiro
+collection_key: Chave da coleção
+name: Nome
+primary_key_field: Campo de chave primária
+type: Tipo
+creating_new_collection: Criar uma nova coleção
 created_by: Criado por
 created_on: Criada em
+creating_collection_info: Nome da coleção e configuração é unico "chave" do campo...
+creating_collection_system: Ativar e renomear qualquer um desses campos opcionais.
+auto_increment_integer: Inteiro auto-incrementado
+generated_uuid: UUID gerado
+manual_string: String inserida manualmente
 save_and_create_new: Guardar e criar novo
 save_and_stay: Guardar e permanecer
 save_as_copy: Guardar como cópia
 add_existing: Adicionar existente
+creating_items: Criando Itens
+enable_create_button: Ativar o botão Criar
+selecting_items: Selecionar itens
+enable_select_button: Ativar o botão Selecionar
 comments: Comentários
 no_comments: Ainda não há comentários
 click_to_expand: Clique para expandir
@@ -320,6 +367,7 @@ interface_not_found: 'Interface "{interface}" não encontrada.'
 reset_interface: Restaurar interface
 display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
+list-m2a: Construtor (M2A)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
 no_items_copy: Aind não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
@@ -354,7 +402,29 @@ charset: Codificação
 second: Segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
+modified_on: Modificado em
+card_size: Tamanho do cartão
+sort_field: Campo de ordenação
+add_sort_field: Adicionar Campo de Ordenação
+sort: Ordenar
+status: Estado
+remove: Remover
+toggle_manual_sorting: Alternar classificação manual
+bookmark_doesnt_exist: Marcador Não Existe
+bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
+bookmark_doesnt_exist_cta: Voltar à coleção
+select_an_item: Selecione um item...
+edit: Editar
+enabled: Activo
+disable_tfa: Desactivar 2FA
+tfa_scan_code: Digitalize o código no seu aplicativo de autenticação para terminar de configurar o 2FA
+enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
+create_account: Criar Conta
+account_created_successfully: Conta criada com sucesso
+auto_fill: Preenchimento automático
+corresponding_field: Campo correspondente
 errors:
+  COLLECTION_NOT_FOUND: "A coleção não existe"
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Proibido
   INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
@@ -385,18 +455,115 @@ show_hidden_collections: Mostrar coleções ocultas
 hide_hidden_collections: Esconder coleções ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
+operators:
+  nstarts_with: Não começa com
+  ends_with: Termina com
+  nends_with: Não termina com
+  between: Está entre
+  nbetween: Não está entre
+  empty: Está vazio
+  nempty: Não está vazio
+  all: Contém estas chaves
+  has: Contém algumas destas chaves
+loading: A carregar...
+drop_to_upload: Solta para carregar
+item: Item
+items: Items
+upload_file: Carregar Ficheiro
+upload_file_indeterminate: A enviar Ficheiro...
+upload_file_success: Ficheiro enviado
+upload_files_indeterminate: 'A enviar ficheiros {done}/{total}'
+upload_files_success: '{count} Ficheiros Enviados'
+upload_pending: Envio pendente
+drag_file_here: Arraste e solte um ficheiro aqui
+click_to_browse: Clique para navegar
+layout_options: Opções de layout
+rows: Linhas
+columns: Colunas
+collection_setup: Configuração da coleção
+optional_system_fields: Campos de Sistema Opcionais
 value_unique: O valor tem de ser único
+all_activity: Toda a atividade
+create_item: Criar item
+display_template: Templates de Exibição
+language_display_template: Modelo de Exibição do Idioma
+translations_display_template: Modelo de exibição de traduções
+n_items_selected: 'Não há itens selecionados |1 item selecionado, {n} itens selecionados'
+per_page: Por página
+all_files: Todos os ficheiros
+my_files: Meus ficheiros
+recent_files: Ficheiros recentes
+create_folder: Criar pasta
+folder_name: Nome da pasta...
+add_file: Adicionar ficheiro
+replace_file: Substituir ficheiro
+no_results: Nenhum resultado
+no_results_copy: Ajustar ou limpar filtros de pesquisa para ver resultados.
+clear_filters: Limpar filtros
+saves_automatically: Guardar automaticamente
+role: Perfil
+rule: Regra
+user: Utilizador
+no_presets: Sem predefinições
+no_presets_copy: Nenhuma predefinição ou marcador foi guardado ainda.
+no_presets_cta: Adicionar predefinição
 wysiwyg_options:
   forecolor: Cor principal
   backcolor: Cor de Fundo
+  h3: Título 3
+  h4: Título 4
+  h5: Título 5
+  h6: Título 6
+  fontselect: Selecionar fonte
+  fontsizeselect: Selecionar Tamanho da Fonte
+  undo: Reverter
+  redo: Refazer
+  remove: Remover
+  removeformat: Remover Formato
   selectall: Selecionar Tudo
   table: Tabela
+  visualaid: Ver elementos invisíveis
+  source_code: Editar o código-fonte
+  fullscreen: Ecrã completo
+  directionality: Direcionalidade
 choices: Opções
+choices_option_configured_incorrectly: Opções configuradas incorretamente
+deselect: Desselecionar
+deselect_all: Desselecionar tudo
+other: Outros...
+adding_user: Adicionando utilizador
+unknown_user: Utilizador desconhecido
+creating_in: 'Criando item em {collection}'
+editing_in: 'Editando item em {collection}'
+creating_unit: 'Criando {unit}'
+editing_unit: 'Editando {unit}'
+editing_in_batch: 'Editando Lote {count} Itens'
+no_options_available: Nenhuma opção disponível
+settings_data_model: Modelo de dados
+settings_permissions: Perfis & Permissões
+settings_project: Definições do projeto
 settings_webhooks: Webhooks
+settings_presets: Predefinições & Marcadores
+one_or_more_options_are_missing: Uma ou mais opções estão em falta
+select: Selecionar...
+changes_are_permanent: As alterações são permanentes
+preset_name_placeholder: Serve como padrão quando vazio...
+editing_preset: Editando predefinição
+layout_preview: Pré-visualização do Layout
+layout_setup: Configuração de Layout
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
+discard_changes: Cancelar alterações
+keep_editing: Continuar a editar
+page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+page_help_collections_item: >-
+  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
+page_help_activity_collection: >-
+  **Atividade** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
+page_help_docs_global: >-
+  **Visão geral de documentação** — Documentação feita especificamente para versão e esquema deste projeto.
 add_new: Adicionar novo
 all: Todos
 batch_delete_confirm: >-
@@ -416,11 +583,14 @@ fields:
   directus_collections:
     collection: Coleção
     note: Nota
+    display_template: Templates de Exibição
+    sort_field: Campo de ordenação
   directus_files:
     title: Título
     description: Descrição
     tags: Etiquetas
     location: Localização
+    modified_on: Modificado em
     created_on: Criada em
     created_by: Criado por
     folder: Pasta
@@ -432,16 +602,60 @@ fields:
     description: Descrição
     tags: Etiquetas
     language: Idioma
+    theme: Tema
+    tfa_secret: Autenticação em dois passos
+    status: Estado
+    role: Perfil
+    token: Token
     last_page: Última página
     last_access: Último Acesso
+  directus_settings:
+    project_name: Nome do projeto
+    project_url: URL do projeto
+    project_color: Cor do Projeto
+    project_logo: Logótipo do projeto
+    public_background: Fundo Público
+    public_note: Nota Pública
+    custom_css: CSS Personalizado
   directus_fields:
+    collection: Nome da coleção
+    icon: Ícone da coleção
     note: Nota
     translation: Nome do campo para as traduções
   directus_roles:
     name: Nome do cargo
     description: Descrição
+    app_access: Acesso da aplicação
+    admin_access: Acesso de administrador
+    ip_access: Acesso IP
+    enforce_tfa: Exigir 2FA
+    users: Utilizadores na função
+    module_list: Navegação do Modulo
+    collection_list: Navegação da coleção
+field_options:
+  directus_collections:
+    track_activity_revisions: Rastrear Atividades e Revisões
+    only_track_activity: Apenas rastrear Atividade
+    do_not_track_anything: Não rastrear nada
+no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
+do_nothing: Não fazer nada
+generate_and_save_uuid: Gerar e guardar UUID
+save_current_user_id: Salvar ID de usuário atual
+save_current_user_role: Salvar a função de usuário atual
+save_current_datetime: Guardar data/hora atual
+block: Bloquear
+inline: Em linha
 comment: Comentário
-continue: Continuar
+relational_triggers: Gatilhos Relacionais
+referential_action_field_label_m2o: Ao Eliminar de {collection}...
+referential_action_field_label_o2m: Ao desseleccionar de {collection}...
+referential_action_no_action: Prevenir que elimine
+referential_action_cascade: Eliminar o {collection} item (cascade)
+referential_action_set_default: Definir {field} para o seu valor padrão
+choose_action: Escolher ação
+continue_as: >-
+  {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
+creating_webhook: Criando Webhook
 description: Descrição
 interfaces:
   presentation-links:
@@ -449,6 +663,7 @@ interfaces:
   system-collection:
     collection: Coleção
   system-display-template:
+    display-template: Templates de Exibição
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
     select_a_collection: Selecione uma coleção
   select-dropdown:
@@ -459,10 +674,18 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interface
+  select-dropdown-m2o:
+    display_template: Templates de Exibição
   system-folder:
     folder: Pasta
   tags:
     tags: Etiquetas
+  boolean:
+    label_default: Activo
+  translations:
+    display_template: Templates de Exibição
+  user:
+    user: Utilizador
 displays:
   boolean:
     boolean: Boleano
@@ -473,6 +696,8 @@ displays:
   labels:
     choices_value_placeholder: Insira um valor...
   user:
+    user: Utilizador
+    name: Nome
     both: Ambos
 layouts:
   cards:

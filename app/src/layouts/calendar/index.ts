@@ -1,27 +1,26 @@
-import { defineLayout } from '@directus/shared/utils/browser';
+import api from '@/api';
+import useCollection from '@/composables/use-collection';
+import { formatISO, parse, format } from 'date-fns';
+import useItems from '@/composables/use-items';
+import { router } from '@/router';
+import { useAppStore } from '@/stores/app';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Field, Filter, Item } from '@directus/shared/types';
+import { defineLayout } from '@directus/shared/utils';
+import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { computed, ref, Ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import CalendarSidebar from './sidebar.vue';
-import CalendarActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
-import interactionPlugin from '@fullcalendar/interaction';
-import { ref, watch, toRefs, computed, Ref } from 'vue';
-import { useAppStore } from '@/stores/app';
-import { Field, Item, Filter } from '@directus/shared/types';
-import useItems from '@/composables/use-items';
-import useCollection from '@/composables/use-collection';
-import { formatISO } from 'date-fns';
-import { router } from '@/router';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 
 type LayoutOptions = {
 	template?: string;
@@ -51,7 +50,7 @@ export default defineLayout<LayoutOptions>({
 
 		const appStore = useAppStore();
 
-		const { collection, searchQuery, layoutOptions, filters } = toRefs(props);
+		const { selection, collection, searchQuery, layoutOptions, filters } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -185,11 +184,27 @@ export default defineLayout<LayoutOptions>({
 				eventClick(info) {
 					if (!collection.value) return;
 
-					const primaryKey = info.event.id;
-					const endpoint = collection.value.startsWith('directus')
-						? collection.value.substring(9)
-						: `/collections/${collection.value}`;
-					router.push(`${endpoint}/${primaryKey}`);
+					if (props.selectMode || selection.value?.length > 0) {
+						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
+
+						if (item) {
+							if (selection.value.includes(item)) {
+								selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
+							} else {
+								selection.value = [...selection.value, item];
+							}
+
+							updateCalendar();
+						}
+					} else {
+						const primaryKey = info.event.id;
+
+						const endpoint = collection.value.startsWith('directus')
+							? collection.value.substring(9)
+							: `/collections/${collection.value}`;
+
+						router.push(`${endpoint}/${primaryKey}`);
+					}
 				},
 				async eventChange(info) {
 					if (!collection.value || !startDateField.value || !startDateFieldInfo.value) return;
@@ -231,17 +246,7 @@ export default defineLayout<LayoutOptions>({
 			() => setTimeout(() => calendar.value?.updateSize(), 300)
 		);
 
-		watch(
-			fullFullCalendarOptions,
-			() => {
-				if (calendar.value) {
-					calendar.value.pauseRendering();
-					calendar.value.resetOptions(fullFullCalendarOptions.value);
-					calendar.value.resumeRendering();
-				}
-			},
-			{ deep: true, immediate: true }
-		);
+		watch(fullFullCalendarOptions, () => updateCalendar(), { deep: true, immediate: true });
 
 		watch(
 			[calendar, locale],
@@ -280,6 +285,15 @@ export default defineLayout<LayoutOptions>({
 			destroyCalendar,
 		};
 
+		function updateCalendar() {
+			if (calendar.value) {
+				calendar.value.pauseRendering();
+				calendar.value.resetOptions(fullFullCalendarOptions.value);
+				calendar.value.resumeRendering();
+				calendar.value.render();
+			}
+		}
+
 		function createCalendar() {
 			calendar.value = new Calendar(calendarEl.value!, fullFullCalendarOptions.value);
 
@@ -300,11 +314,31 @@ export default defineLayout<LayoutOptions>({
 		function parseEvent(item: Item): EventInput | null {
 			if (!startDateField.value || !primaryKeyField.value) return null;
 
+			let endDate: string | undefined = undefined;
+
+			// If the end date is a date-field (so no time), we can safely assume the item is meant to
+			// last all day
+			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
+
+			if (endDateField.value) {
+				if (allDay) {
+					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
+					// expected result in the calendar
+					date.setDate(date.getDate() + 1);
+					endDate = format(date, 'yyyy-MM-dd');
+				} else {
+					endDate = item[endDateField.value];
+				}
+			}
+
 			return {
 				id: item[primaryKeyField.value.field],
 				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
 				start: item[startDateField.value],
-				end: endDateField.value ? item[endDateField.value] : null,
+				end: endDate,
+				allDay,
+				className: selection.value.includes(item) ? 'selected' : undefined,
 			};
 		}
 

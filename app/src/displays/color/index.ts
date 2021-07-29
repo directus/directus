@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils/browser';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayColor from './color.vue';
 
 export default defineDisplay({

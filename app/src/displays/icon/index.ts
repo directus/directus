@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils/browser';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayIcon from './icon.vue';
 
 export default defineDisplay({

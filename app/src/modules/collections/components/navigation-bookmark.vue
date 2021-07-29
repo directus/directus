@@ -50,7 +50,7 @@
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
 					<v-button :loading="deleteSaving" class="action-delete" @click="deleteSave">
-						{{ t('delete') }}
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

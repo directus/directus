@@ -1,6 +1,6 @@
 import path from 'path';
 import fse from 'fs-extra';
-import { pluralize } from '../browser';
+import { pluralize } from '../pluralize';
 import { EXTENSION_TYPES } from '../../constants';
 
 export async function ensureExtensionDirs(extensionsPath: string): Promise<void> {
