@@ -893,7 +893,6 @@ template: Predloga
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
-weeks: { }
 report_error: Sporoči napako
 interfaces:
   presentation-links:

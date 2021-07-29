@@ -831,8 +831,6 @@ referential_action_no_action: Voorkom de verwijdering
 referential_action_cascade: Verwijder het {collection} item (cascade)
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
-default: Standaard
-delete_label: Verwijder
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
