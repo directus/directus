@@ -72,5 +72,19 @@ export default defineInterface({
 				default_value: false,
 			},
 		},
+		{
+			field: 'defaultActive',
+			name: '$t:interfaces.presentation-divider.default_active',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.presentation-divider.default_active_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
 });
