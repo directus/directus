@@ -530,6 +530,7 @@ upload_files_success: '{count} datotek naloženih'
 upload_pending: Nalaganje v teku
 drag_file_here: Povleci & spusti datoteko sem
 click_to_browse: Klikni za brskanje
+interface_options: Možnosti vmesnika
 layout_options: Možnosti postavitve
 rows: Vrstice
 columns: Stolpci
@@ -692,13 +693,46 @@ page_help_settings_presets_collection: >-
   **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
 page_help_settings_presets_item: >-
   **Podrobnosti prednastavitev** - Obrazec za urejanje zaznamkov in prednastavitev zbirk.
+page_help_settings_webhooks_collection: '**Brskanje prožilcev** - Prikaz vseh prožilcev (webhooks) projekta.'
+page_help_settings_webhooks_item: '**Podrobnosti prožilca** - Obrazec za ustvarjanje in urejanje projektnih prožilcev.'
+page_help_users_collection: '**Uporabniški imenik** - Spisek vseh uporabnikov projekta.'
+page_help_users_item: >-
+  ** Podrobnosti uporabnika ** - Urejanje podatkov o uporabnikih
+activity_feed: Dnevnik dejavnosti
+add_new: Dodaj novo
+create_new: Ustvari novo
+all: Vse
+none: Nobeno
+no_layout_collection_selected_yet: Nobena postavitev ali zbirka ni izbrana
+batch_delete_confirm: >-
+  Noben zapis ni izbran | Ste prepričani, da želite izbrisati ta zapis? | Ste prepričani, da želite izbrisati {count} zapisov?
+cancel: Prekliči
+collection: Zbirka
+collections: Zbirke
+singleton: En zapis
+singleton_label: Obravnavaj kot en objekt
+system_fields_locked: Sistemska polja so zaklenjena in se ne urejajo
 fields:
   directus_activity:
+    item: Primarni ključ zapisa
+    action: Dejanje
+    collection: Zbirka
+    timestamp: Dejanje ob
+    user: uporabnik
+    comment: Komentar
+    user_agent: Brskalnik
+    ip: IP naslov
     revisions: Revizija
   directus_collections:
+    collection: Zbirka
+    icon: Ikona
     note: Opomba
     display_template: Prikaži predlogo
     hidden: Skrito
+    singleton: En zapis
+    translations: Prevodi imen zbirk
+    archive_app_filter: Arhiviraj aplikacijski filter
+    archive_value: Arhiviraj vrednost
     unarchive_value: Odarhiviraj vrednost
     sort_field: Polje za razvrščanje
     accountability: Sledenje aktivnosti in revizij
@@ -718,6 +752,7 @@ fields:
     modified_on: Spremenjeno dne
     created_on: Ustvarjeno
     created_by: Ustvaril
+    embed: Vstavi
     uploaded_by: Naložil(a)
     folder: Mapa
     width: Širina
@@ -761,6 +796,7 @@ fields:
     icon: Ikona zbirke
     note: Opomba
     hidden: Skrito
+    singleton: En zapis
     translation: Prevodi imen polj
     display_template: Predloga
   directus_roles:
@@ -774,10 +810,66 @@ fields:
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
     collection_list: Krmarjenje po zbirki
+field_options:
+  directus_collections:
+    track_activity_revisions: Sledi aktivnosti in revizije
+    only_track_activity: Sledi samo aktivnosti
+    do_not_track_anything: Ne sledi ničesar
+no_fields_in_collection: 'Zbirka {collection} še nima polj'
+do_nothing: Ne stori ničesar
+generate_and_save_uuid: Ustvari in shrani UUID
+save_current_user_id: Shrani ID uporabnika
+save_current_user_role: Shrani vlogo uporabnika
+save_current_datetime: Shrani datum in uro
+block: Blokiraj
+inline: V vrstici
+comment: Komentar
+relational_triggers: Povezani prožilci
+referential_action_field_label_m2o: Ob brisanju v {collection} ...
+referential_action_field_label_o2m: Pri deselektiranju iz {collection} ...
+referential_action_no_action: Onemogoči brisanje
+referential_action_cascade: Briši zapis v {collection} (kaskadno)
+referential_action_set_null: Nuliraj polje {field}
+referential_action_set_default: Nastavi {field} na privzeto vrednosti
+choose_action: Izberi dejanje
+continue_label: Nadaljuj
+continue_as: >-
+  {name} je trenutno prijavljen. Če prepoznate ta račun, pritisnite nadaljuj.
+editing_role: 'Vloga {role}'
+creating_webhook: Reiranje sprožilca
+default_label: Privzeto
+delete_label: Izbriši
+delete_are_you_sure: >-
+  Ta aktivnost je permanetna in se ne da povrniti. Ste prepričani, da želite nadaljevati?
+delete_field_are_you_sure: >-
+  Ste prepričani, da želite izbrisati polje "{field}"? To se ne da povrniti.
 description: Opis
+done: Opravljeno
+duplicate: Dvojnik
 email: E-pošta
+embed: Vstavi
+fallback_icon: Nadomestna ikona
+field: Polje | Polja
+file: Datoteka
+file_library: Knjižnjica datotek
+forgot_password: Pozabljeno geslo
 hidden: Skrito
+icon: Ikona
+info: Informacije
+normal: Običajno
+success: Uspeh
+warning: Opozorilo
+danger: Nevarnost
+junction_collection: Povezovalna zbirka
+latency: Zakasnitev
+login: Prijava
+my_activity: Moja dejavnost
+not_authenticated: Neprijavljeno
+authenticated: Preverjena pristnost
+options: Možnosti
+otp: Enkratno geslo
 password: Geslo
+permissions: Dovoljenja
 relationship: Povezava
 reset: Ponastavi
 reset_password: Ponastavi geslo
@@ -829,9 +921,11 @@ interfaces:
     line_number: Vrstica številka
     placeholder: Tukaj vnesite kodo ...
   system-collection:
+    collection: Zbirka
     description: Izberite med obstoječimi zbirkami
     include_system_collections: Vključi sistemske zbirke
   system-collections:
+    collections: Zbirke
     description: Izberite med obstoječimi zbirkami
     include_system_collections: Vključi sistemske zbirke
   select-color:
@@ -844,21 +938,83 @@ interfaces:
   datetime:
     datetime: Datum in ura
     description: Vnesi datume in ure
+    include_seconds: Vključi sekunde
+    set_to_now: Nastavi na trenutni čas
+    use_24: Uporabi 24-urno obliko
   system-display-template:
     display-template: Prikaži predlogo
+    description: Mešano statični tekst in dinamične vrednosti polja
+    collection_field: Polje zbirke
     collection_field_not_setup: Polje zbirke ni nastavljeno
     select_a_collection: Izberite zbirko
   presentation-divider:
     divider: Ločilo
+    description: Oznaka in delilnik polj v odseke
+    title_placeholder: Vnesite naslov ...
+    inline_title: Naslov v vrstici
+    inline_title_label: Pokaži naslov v vrsti
+    margin_top: Zgornji rob
+    margin_top_label: Povečaj zgornji rob
   select-dropdown:
+    description: Izberi vrednost iz možnosti
+    choices_placeholder: Dodaj novo opcijo
     allow_other: Dovoli drugo
+    allow_other_label: Dovoli druge vrednosti
+    allow_none: Ne dovoli nič
+    allow_none_label: Ne dovoli izbora
+    choices_name_placeholder: Vnesi ime ...
     choices_value_placeholder: Vnesite vrednost ...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Izbornik (večkratni)
+    description: Izberite več vrednosti iz izbornika
+  file:
+    file: Datoteka
+    description: Izberi ali naloži datoteko
+  files:
+    files: Datoteke
+    description: Izberi ali naloži več datotek
   input-hash:
     hash: Hash
+    description: Vnesi vrednost za hashiranje
+    masked: Maskirano
+    masked_label: Skrij dejanske vrednosti
+  select-icon:
+    icon: Ikona
+    description: Izberi ikono iz izbornika
+    search_for_icon: Iskanje ikone ...
+  file-image:
+    description: Izberi ali naloži sliko
   system-interface:
     interface: Vmesnik
+    description: Izberi obstoječ vmesnik
+    placeholder: Izberi vmesnik ...
+  system-interface-options:
+    interface-options: Možnosti vmesnika
+    description: Modalno okno za izbor opcij vmesnika
+  list-m2m:
+    many-to-many: Mnogo na mnogo
+    description: Izberi več povezanih zapisov
   select-dropdown-m2o:
+    many-to-one: Mnogo na ena
+    description: Izberi en povezan zapis
     display_template: Prikaži predlogo
+  input-rich-text-md:
+    markdown: Markdown
+    description: Vnos in predogled markdown-a
+    customSyntax: Bloki po meri
+    customSyntax_label: Dodaj posebno vrsto sintakse
+    customSyntax_add: Dodaj prilagojeno sintakso
+    box: Blok / v vrstici
+    imageToken: Žeton slike
+    imageToken_label: Kateri statični žeton se naj doda k sliki
+  presentation-notice:
+    notice: Obvestilo
+    description: Pokaži kratko obvestilo
+    text: Tukaj vnesite vsebino obvestila ...
+  list-o2m:
+    one-to-many: En na mnogo
+    description: Izberite več povezanih zapisov
+    no_collection: Zbirke ni mogoče najti
   system-folder:
     folder: Mapa
     description: Izberi mapo
@@ -898,6 +1054,7 @@ interfaces:
     description: Ročno vnesite vrednost
     trim: Obreži
     trim_label: Obreži začetek in konec
+    mask: Maskirano
     mask_label: Skrij dejansko vrednost
     clear: Počiščena vrednost
     clear_label: Shrani kot prazen tekst
@@ -928,16 +1085,60 @@ interfaces:
       auto: Samodejno
       dropdown: Izbornik
       modal: Modalno
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Bogat tekstualni urejevalnik za HTML vsebino
+    toolbar: Orodna vrstica
+    custom_formats: Prilagojene oblike
+    options_override: Preglasitev opcij
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: Iskalnik za zunanje API vrednosti.
+    results_path: Rezultati
+    value_path: Vrednosti
+    trigger: Sprožilec
+    rate: Oceni
+  group-raw:
+    name: Dejanske vrednosti
+    description: Pokaži polja kot običajna.
 displays:
   boolean:
     boolean: Boolean
+    description: Pokaži prižgano / ugasnjeno stanje
+    label_on: Oznaka prikazana
+    label_on_placeholder: Vnesite tekst za oznako prižgano/1/da ...
+    label_off: Oznaka ugasnjeno
+    label_off_placeholder: Vnesite tekst za oznako ugasnjeno/0/ne ...
     icon_on: Prikaži ikono
     icon_off: Skrij ikono
+    color_on: Barva da
+    color_off: Barva ne
+  collection:
+    collection: Zbirka
+    description: Prikaži zbirko
+    icon_label: Prikaži ikono zbirke
   color:
     color: Barva
+    description: Prikaži barvno piko
+    default_color: Privzeta barva
   datetime:
     datetime: Datum in ura
+    description: Prikaži relativni čas
     format: Oblika
+    format_note: >-
+      Prilagojena oblika sprejema __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dolgo
+    short: Kratko
+    relative: Relativno
+    relative_label: 'Pokaži relativni čas, recimo pred 5 minutami'
+  file:
+    file: Datoteka
+    description: Prikaži datoteke
+  filesize:
+    filesize: Velikost datoteke
+    description: Prikaži velikost datoteke
+  icon:
+    icon: Ikona
   image:
     circle: Krog
   labels:
