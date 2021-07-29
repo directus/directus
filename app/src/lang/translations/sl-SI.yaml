@@ -408,6 +408,7 @@ card_size: Velikost kartice
 sort_field: Polje za razvrščanje
 add_sort_field: Dodaj polje za razvrščanje
 sort: Razvrsti
+status: Stanje
 remove: Odstrani
 toggle_manual_sorting: Preklopi ročno razvrščanje
 bookmark_doesnt_exist: Zaznamek ne obstaja
@@ -471,6 +472,13 @@ one_item: '1 zapis'
 one_filtered_item: '1 filtriran zapis'
 delete_collection_are_you_sure: >-
   Ste prepričani, da želit brisati to zbirko? Obrisana bo zbirka in vsi zapisni v njej. Vračanje podatkov ne bo mogoče.
+collections_shown: zbirk prikazanih
+visible_collections: Vidne zbirke
+hidden_collections: Skrite zbirke
+show_hidden_collections: Pokaži skrite zbirke
+hide_hidden_collections: Skrij skrite zbirke
+unmanaged_collections: Nenastavljene zbirke
+system_collections: Sistemske zbirke
 operators:
   gt: Večje kot
   lte: Manjše ali enako
@@ -523,9 +531,31 @@ create_folder: Ustvari mapo
 folder_name: Ime mape ...
 add_file: Dodaj datoteko
 replace_file: Zamenjaj datoteko
+width: Širina
+height: Višina
+unlimited: Neomejeno
+open_link_in: Odpri povezavo v
+new_tab: Nov zavihek
+current_tab: Trenutni zavihek
 wysiwyg_options:
+  aligncenter: Poravnaj na sredino
+  alignjustify: Poravnaj robove
+  alignleft: Poravnaj levo
+  alignnone: Brez poravnave
+  alignright: Poravnaj desno
   forecolor: Barva vsebine
   backcolor: Barva ozadja
+  italic: Ležeče
+  underline: Podčrtano
+  strikethrough: Prečrtano
+  subscript: Podpisano
+  superscript: Nadpisano
+  codeblock: Koda
+  blockquote: Navedek
+  bullist: Seznam
+  numlist: Oštevilčen seznam
+  hr: Vodoravna črta
+  link: Dodaj/uredi povezavo
   unlink: Odstrani povezavo
   media: Ustvari/uredi medijsko datoteko
   image: Ustvari/uredi sliko
@@ -546,39 +576,194 @@ wysiwyg_options:
   undo: Razveljavi
   redo: Uveljavi
   remove: Odstrani
+  removeformat: Odstrani oblikovanje
   selectall: Izberi vse
+  table: Tabela
+  visualaid: Pokaži nevidne elemente
+  source_code: Uredi izvorno kodo
+  fullscreen: Celozaslonski način
+  directionality: Smer
+dropdown: Izbornik
+choices: Možnosti
+choices_option_configured_incorrectly: Možnosti nepravilno konfigurirane
+deselect: Odstrani izbor
+deselect_all: Odstrani vse izbire
+other: Drugo ...
+adding_user: Dodajanje uporabnika
+unknown_user: Neznan uporabnik
+creating_in: 'Ustvarjanje zapisa v {collection}'
+editing_in: 'Urejanje zapisa v {collection}'
+creating_unit: 'Ustvarjanje {unit}'
+editing_unit: 'Urejanje {unit}'
+editing_in_batch: 'Masovno urejanje {count} zapisov'
+no_options_available: Ni opcij
+settings_data_model: Podatkovni model
+settings_permissions: Vloge in dovoljenja
+settings_project: Nastavitve projekta
 settings_webhooks: Prožilci
+settings_presets: Prednastavitve in zaznamki
+one_or_more_options_are_missing: Manjka ena ali več opcij
+scope: Obseg
+select: Izberite ...
+layout: Postavitev
+tree_view: Drevesni pogled
+changes_are_permanent: Popravki so trajni
 fields:
+  directus_activity:
+    revisions: Revizija
   directus_collections:
     note: Opomba
     display_template: Prikaži predlogo
+    hidden: Skrito
+    unarchive_value: Odarhiviraj vrednost
     sort_field: Polje za razvrščanje
+    accountability: Sledenje aktivnosti in revizij
   directus_files:
+    $thumbnail: Predogledna slika
     title: Naslov
+    description: Opis
+    tags: Značke
+    location: Lokacija
+    storage: Shramba
+    filename_disk: Ime datoteke (disk)
+    filename_download: Ime datoteke (prenos)
+    metadata: Meta podatki
+    type: Vrsta MIME
+    filesize: Velikost datoteke
+    modified_by: Spremenil(a)
     modified_on: Spremenjeno dne
     created_on: Ustvarjeno
     created_by: Ustvaril
+    uploaded_by: Naložil(a)
     folder: Mapa
+    width: Širina
+    uploaded_on: Naloženo
+    height: Višina
     charset: Nabor znakov
     duration: Trajanje
   directus_users:
+    first_name: Ime
+    last_name: Priimek
+    email: E-pošta
+    password: Geslo
+    avatar: Avatar
+    location: Lokacija
     title: Naslov
+    description: Opis
+    tags: Značke
     language: Jezik
+    theme: Tema
+    tfa_secret: Dvojno preverjanja pristnosti
+    status: Stanje
+    token: Žeton
     last_page: Zadnja stran
     last_access: Zadnji dostop
+  directus_settings:
+    project_name: Ime projekta
+    project_url: Spletni naslov (URL) projekta
+    project_color: Barva projekta
+    project_logo: Logo projekta
+    public_foreground: Barva teksta v javnem delu
+    public_background: Barva ozadja v javnem delu
+    public_note: Sporočilo v javnem delu
+    auth_password_policy: Pravila gesel
+    auth_login_attempts: Število poskusov prijave
+    storage_asset_presets: Prednastavitve shrambe
+    storage_asset_transform: Pretvorba elementa
+    custom_css: CSS po meri
   directus_fields:
+    collection: Ime zbirke
+    icon: Ikona zbirke
     note: Opomba
+    hidden: Skrito
     translation: Prevodi imen polj
+    display_template: Predloga
   directus_roles:
     name: Ime vloge
+    icon: Ikona vloge
+    description: Opis
+    app_access: Aplikacijski dostop
+    admin_access: Administracijski dostop
+    ip_access: IP dostop
+    enforce_tfa: Obvezno 2FA
+    users: Uporabniki v vlogi
+    module_list: Krmarjenje po modulu
+    collection_list: Krmarjenje po zbirki
+description: Opis
+email: E-pošta
+hidden: Skrito
+password: Geslo
+relationship: Povezava
+reset: Ponastavi
+reset_password: Ponastavi geslo
+revisions: Revizija
+revert: Povrni
+save: Shrani
+schema: Shema
+search: Iskanje
+select_existing: Izberi obstoječe
+select_field_type: Izberi vrsto polja
+select_interface: Izberi vmesnik
+settings: Nastavitve
+sign_in: Prijava
+sign_out: Odjava
+sign_out_confirm: Ste prepričani, da se želite izpisati?
+something_went_wrong: Nekaj je šlo narobe.
+sort_direction: Smer razvrščanja
+sort_asc: Razvrsti naraščajoče
+sort_desc: Razvrsti padajoče
+template: Predloga
+translation: Prevod
+value: Vrednost
+view_project: Poglej projekt
+report_error: Sporoči napako
 interfaces:
   presentation-links:
+    presentation-links: Povezave
+    links: Povezave
+    description: Konfigurabilni navigacijski gumbi za dinamične povezave
+    style: Slog
     primary: Glavni
+    link: Povezave
+    button: Gumbi
+    error: Dejanja ni mogoče izvesti
+  select-multiple-checkbox:
+    checkboxes: Potrditvena polja
+    description: Izberite med več opcijami s potrditvenimi polji
+    allow_other: Dovoli drugo
+    show_more: 'Pokaži še {count}'
+    items_shown: zapisov prikazanih
+  select-multiple-checkbox-tree:
+    name: Potrditvena polja (drevo)
+    description: Izberite med več opcijami s potrditvenimi polji
+    value_combining: Kombinirana vrednost
+    value_combining_note: Nadzira, kater vrednost se shrani pri podizborih.
+  input-code:
+    code: Koda
+    description: Piši ali deli košček kode
+    line_number: Vrstica številka
+    placeholder: Tukaj vnesite kodo ...
+  system-collection:
+    description: Izberite med obstoječimi zbirkami
+    include_system_collections: Vključi sistemske zbirke
+  system-collections:
+    description: Izberite med obstoječimi zbirkami
+    include_system_collections: Vključi sistemske zbirke
+  select-color:
+    description: Vnesi ali izberi barvo
+    placeholder: Izberite barvo ...
+    preset_colors: Prednastavljene barve
+    preset_colors_add_label: Dodaj novo barvo ...
+    name_placeholder: Vnesi naziv barve ...
+  datetime:
+    datetime: Datum in ura
+    description: Vnesi datume in ure
   system-display-template:
     display-template: Prikaži predlogo
     collection_field_not_setup: Polje zbirke ni nastavljeno
     select_a_collection: Izberite zbirko
   select-dropdown:
+    allow_other: Dovoli drugo
     choices_value_placeholder: Vnesite vrednost ...
   input-hash:
     hash: Hash
@@ -588,19 +773,89 @@ interfaces:
     display_template: Prikaži predlogo
   system-folder:
     folder: Mapa
+    description: Izberi mapo
+    field_hint: Naloži novo datoteko v izbrano mapo. Ne vpliva na obstoječe izbrane datoteke.
+    root_name: Korenska mapa knjižnjice
+    system_default: Sistemske privzete vrednosti
+  select-radio:
+    radio-buttons: Radijski gumbi
+    description: Izberite eno od opcij
+  list:
+    repeater: Ponavljalnik
+    description: Ustvarite več zapisov enake strukture
+    edit_fields: Uredi polja
+    add_label: 'Oznaka za "Ustvari novo"'
+    field_name_placeholder: Vnesite ime polja ...
+    field_note_placeholder: Vnesite opis polja ...
+  slider:
+    slider: Drsnik
+    description: Z drsnikom izberite vrednost
+    always_show_value: Vedno pokaži vrednost
+  tags:
+    tags: Značke
+    description: Izberi ali dodaj značke
+    whitespace: Presledek
+    hyphen: Zamenjaj z vezajem
+    underscore: Zamenjaj s podčrtajem
+    remove: Odstrani razmak
+    capitalization: Velike začetnice
+    uppercase: Zamenjaj v velike črke
+    lowercase: Zamenje v majhne črke
+    auto_formatter: Uporabi avtomatsko oblikovanje naslova
+    alphabetize: Po abecedi
+    alphabetize_label: Vedno uredi po abecedi
+    add_tags: Dodaj značke ...
+  input:
+    input: Vnos
+    description: Ročno vnesite vrednost
+    trim: Obreži
+    trim_label: Obreži začetek in konec
+    mask_label: Skrij dejansko vrednost
+    clear: Počiščena vrednost
+    clear_label: Shrani kot prazen tekst
+    minimum_value: Najmanjša vrednost
+    maximum_value: Največja vrednost
+    step_interval: Korak
+    slug: Primerno-za-url
+    slug_label: Pretvori vrednost v uporabno za URL
+  input-multiline:
+    textarea: Besedilo
+    description: Vnesite več vrstic teksta
   boolean:
+    description: Preklopi
+    label_placeholder: Vnesite oznako ...
     label_default: Omogočeno
   translations:
     display_template: Prikaži predlogo
+    no_collection: Ni zbirke
+  list-o2m-tree-view:
+    description: Drevesni pogled za rekurzivne ena-na-več zapise
+    recursive_only: Drevesni pogled deluje samo na rekurzivnih povezavah.
+  user:
+    description: Izberite obstoječega uporabnika
+    select_mode: Izberi način
+    modes:
+      auto: Samodejno
+      dropdown: Izbornik
+      modal: Modalno
 displays:
   boolean:
     boolean: Boolean
   datetime:
+    datetime: Datum in ura
     format: Oblika
   labels:
+    format_label: Oblikuj vse oznake
+    show_as_dot: Prikaži kot piko
     choices_value_placeholder: Vnesite vrednost ...
+    choices_text_placeholder: Vnesite tekst ...
+  mime-type:
+    mime-type: Vrsta MIME
   user:
+    avatar: Avatar
     name: Ime
 layouts:
   cards:
     title: Naslov
+  tabular:
+    tabular: Tabela
