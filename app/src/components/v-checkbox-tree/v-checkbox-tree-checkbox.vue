@@ -446,6 +446,6 @@ export default defineComponent({
 
 <style scoped>
 .item {
-	padding-left: 28px;
+	padding-left: 32px;
 }
 </style>
