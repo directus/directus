@@ -18,7 +18,7 @@
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
   },
   "dependencies": {
-    "@directus/auth": "9.0.0-rc.86"
+    "@directus/auth": "9.0.0-rc.87"
   },
   "devDependencies": {
     "jest": "27.0.6",
