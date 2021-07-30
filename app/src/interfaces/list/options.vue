@@ -116,7 +116,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: t('interface'),
+				name: t('interface_label'),
 				field: 'interface',
 				type: 'string',
 				meta: {

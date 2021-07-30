@@ -1,5 +1,5 @@
 <template>
-	<v-detail>
+	<v-detail :start-open="defaultActive">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:class="{ margin: icon || title, active }"
@@ -53,6 +53,10 @@ export default defineComponent({
 			default: null,
 		},
 		inlineTitle: {
+			type: Boolean,
+			default: false,
+		},
+		defaultActive: {
 			type: Boolean,
 			default: false,
 		},

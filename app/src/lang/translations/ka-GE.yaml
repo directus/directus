@@ -55,7 +55,6 @@ fields:
   directus_roles:
     description: აღწერა
 comment: კომენტარი
-continue: გაგრძელება
 description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი

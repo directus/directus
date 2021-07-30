@@ -126,7 +126,7 @@
 						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-						{{ t('import') }}
+						{{ t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

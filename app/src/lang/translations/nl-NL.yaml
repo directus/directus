@@ -1,14 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Veld Bewerken
+conditions: Voorwaarden
 item_revision: Item revisie
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
+group: Groep
+and: En
+or: Of
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
 add_field: Voeg Veld Toe
 role_name: Rol Naam
+branch: Tak
+leaf: Blad
+indeterminate: Onbepaald
+exclusive: Exclusief
+children: Onderliggende
 db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
 edited: Waarde bewerkt
@@ -42,7 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
-public: Openbaar
+public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
@@ -86,6 +115,7 @@ validationError:
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
+nullable: Mag NULL zijn
 allow_null_value: NULL waarde toestaan
 enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
@@ -97,6 +127,7 @@ field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
 field_translations: Vertalingen
+field_group: Veld-Groep
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
 field_validation: Veld Validatie
@@ -249,7 +280,7 @@ move_to_folder: Verplaats naar map
 move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
-interface: Interface
+interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -279,7 +310,7 @@ drag_mode: Sleep modus
 cancel_crop: Annuleer bijsnijden
 original: Origineel
 url: URL
-import: Importeren
+import_label: Importeren
 file_details: Bestand Details
 dimensions: Afmetingen
 size: Grootte
@@ -408,6 +439,7 @@ errors:
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
   UNKNOWN: Onverwachte fout
+  UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
@@ -476,6 +508,10 @@ operators:
   nnull: Is niet null
   contains: Bevat
   ncontains: Bevat niet
+  starts_with: Begint met
+  nstarts_with: Begint niet met
+  ends_with: Eindigt met
+  nends_with: Eindigt niet met
   between: Is tussen
   nbetween: Ligt niet tussen
   empty: Is leeg
@@ -520,6 +556,7 @@ no_results_copy: Pas de zoekfilters aan om resultaten te zien.
 clear_filters: Filters wissen
 saves_automatically: Slaat automatisch op
 role: Rol
+rule: Regel
 user: Gebruiker
 no_presets: Geen Voorkeuren
 no_presets_copy: Geen voorkeuren of bladwijzers.
@@ -545,6 +582,8 @@ source: Bron
 url_placeholder: Voer een URL in...
 display_text: Weergegeven tekst
 display_text_placeholder: Enter weergegeven tekst...
+tooltip: Tooltip
+tooltip_placeholder: Voer een tooltip in...
 unlimited: Onbeperkt
 open_link_in: Open link in
 new_tab: Nieuw tabblad
@@ -621,6 +660,7 @@ select: Selecteer...
 layout: Lay-out
 tree_view: Boomstructuurweergave
 changes_are_permanent: Wijzigingen zijn permanent
+preset_name_placeholder: Standaardwaarde...
 preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
@@ -690,11 +730,14 @@ fields:
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton
+    translations: Collectie-naam vertalingen
     archive_app_filter: Archiveer App Filter
     archive_value: Archiveer waarde
     unarchive_value: Dearchiveer waarde
     sort_field: Sorteerveld
+    accountability: Activiteit & Revisie Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Titel
     description: Beschrijving
     tags: Tags
@@ -767,6 +810,11 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activiteiten & Revisies
+    only_track_activity: Track alleen activiteiten
+    do_not_track_anything: Niets tracken
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
@@ -776,11 +824,13 @@ save_current_datetime: Huidige datum/tijd opslaan
 block: Blok
 inline: Doorlopend
 comment: Reactie
-continue: Doorgaan
+relational_triggers: Relationele triggers
+referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
+referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
+referential_action_no_action: Voorkom de verwijdering
+referential_action_cascade: Verwijder het {collection} item (cascade)
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
-default: Standaard
-delete: Verwijder
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-

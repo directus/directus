@@ -304,8 +304,8 @@ function initLocalStore(collection: string, field: string, type: LocalType): voi
 					$type: 'manyRelated',
 					collection: collectionName,
 					field: fieldName,
-					type: collectionExists(collectionName)
-						? fieldsStore.getPrimaryKeyFieldForCollection(collectionName)?.type
+					type: collectionExists(collection)
+						? fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type
 						: 'integer',
 					schema: {},
 				});

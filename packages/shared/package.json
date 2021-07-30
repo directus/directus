@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.86",
+	"version": "9.0.0-rc.87",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -44,7 +44,7 @@
 		"express": "4.17.1",
 		"fs-extra": "10.0.0",
 		"joi": "17.4.1",
-		"knex-schema-inspector": "1.5.12",
+		"knex-schema-inspector": "1.5.13",
 		"lodash": "4.17.21",
 		"vue": "3.1.5",
 		"vue-router": "4.0.10"

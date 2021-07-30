@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
@@ -42,7 +62,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Sesija je istekla
-public: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
@@ -250,7 +269,7 @@ move_to_folder: Prebaci u fasciklu
 move: Premjesti
 system: Sistem
 add_field_related: Dodaj Polje u Povezanu Kolekciju
-interface: Interfejs
+interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -280,7 +299,6 @@ drag_mode: Režim Prevlačenja
 cancel_crop: Poništi Isjecanje
 original: Originalno
 url: URL adresa
-import: Uvezi
 file_details: Detalji Fajla
 dimensions: Dimenzije
 size: Veličina
@@ -796,11 +814,8 @@ referential_action_cascade: Obriši {collection} stavku (kaskadno)
 referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
-continue: Nastavi
 editing_role: '{role} Uloga'
 creating_webhook: Kreiranje Webhook-a
-default: Podrazumijevano
-delete: Obriši
 delete_are_you_sure: >-
   Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 delete_field_are_you_sure: >-

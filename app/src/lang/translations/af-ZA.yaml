@@ -81,9 +81,6 @@ fields:
   directus_roles:
     description: Beskrywing
 comment: Kommentaar
-continue: Gaan Voort
-default: Standaardwaarde
-delete: Verwyder
 description: Beskrywing
 email: E-pos
 password: Wagwoord
