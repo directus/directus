@@ -24,7 +24,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"@directus/shared": "9.0.0-rc.87",
-		"@rollup/plugin-commonjs": "^19.0.0",
+		"@rollup/plugin-commonjs": "^20.0.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
 		"@vue/compiler-sfc": "^3.1.1",
 		"chalk": "^4.1.1",

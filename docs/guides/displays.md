@@ -103,6 +103,19 @@ SDK, run this command:
 npm i -D @directus/extension-sdk
 ```
 
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
+
+```json
+"directus:extension": {
+	"type": "display",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+}
+```
+
 ## 3. Develop Your Custom Display
 
 The display itself is simply a function or a Vue component, providing a blank canvas for creating anything you need.

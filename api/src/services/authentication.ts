@@ -15,6 +15,8 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
 import { SettingsService } from './settings';
 import { merge } from 'lodash';
+import { performance } from 'perf_hooks';
+import { stall } from '../utils/stall';
 
 type AuthenticateOptions = {
 	identifier: string;
@@ -51,6 +53,9 @@ export class AuthenticationService {
 		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
 		const { identifier, password, ip, userAgent, otp } = options;
+
+		const STALL_TIME = 100;
+		const timeStart = performance.now();
 
 		const providerName = options.provider ?? DEFAULT_AUTH_PROVIDER;
 		const provider = auth.getProvider(providerName);
@@ -106,8 +111,10 @@ export class AuthenticationService {
 			emitStatus('fail');
 
 			if (user?.status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
 				throw new UserSuspendedException();
 			} else {
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 		}
@@ -141,12 +148,14 @@ export class AuthenticationService {
 				await provider.verify(user, password);
 			} catch (e) {
 				emitStatus('fail');
+        await stall(STALL_TIME, timeStart);
 				throw e;
-			}
+      }
 		}
 
 		if (user.tfa_secret && !otp) {
 			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
 			throw new InvalidOTPException(`"otp" is required`);
 		}
 
@@ -156,6 +165,7 @@ export class AuthenticationService {
 
 			if (otpValid === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
@@ -199,6 +209,8 @@ export class AuthenticationService {
 		if (allowedAttempts !== null) {
 			await loginAttemptsLimiter.set(user.id as string, 0, 0);
 		}
+
+		await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,

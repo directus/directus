@@ -4,6 +4,7 @@
 		v-show="visibleChildrenValues.length > 0"
 		:value="value"
 		:open="typeof search === 'string' && search.length > 0"
+		arrow-placement="before"
 	>
 		<template #activator>
 			<v-checkbox
@@ -34,7 +35,7 @@
 		/>
 	</v-list-group>
 
-	<v-list-item v-else-if="!children && !hidden">
+	<v-list-item v-else-if="!children && !hidden" class="item">
 		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value" />
 	</v-list-item>
 </template>
@@ -442,3 +443,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+.item {
+	padding-left: 32px;
+}
+</style>

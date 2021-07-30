@@ -16,6 +16,7 @@ import { toArray } from '../utils/to-array';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
+import { stall } from '../utils/stall';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -346,9 +347,13 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
 		}
 
+		const STALL_TIME = 500;
+		const timeStart = performance.now();
+
 		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
+      await stall(STALL_TIME, timeStart);
 			throw new ForbiddenException();
 		}
 
@@ -374,6 +379,8 @@ export class UsersService extends ItemsService {
 				},
 			},
 		});
+
+		await stall(STALL_TIME, timeStart);
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
