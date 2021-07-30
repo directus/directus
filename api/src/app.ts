@@ -3,6 +3,7 @@ import express, { RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+import Provider from 'oidc-provider';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -14,6 +15,7 @@ import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
+import createOidcRouter from './controllers/oidc';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -24,6 +26,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
+import oidcConfig from './oidc';
 import { isInstalled, validateDBConnection } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
@@ -71,6 +74,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+	// TODO: (Aun) Improve UI & template
+	app.set('views', path.join(__dirname, 'views'));
+	app.set('view engine', 'ejs');
+
+	app.use(express.urlencoded());
 
 	await emitAsyncSafe('init.before', { app });
 
@@ -137,6 +145,12 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(session);
 
 	app.use(authenticate);
+
+	const oidc = new Provider(env.APP_NAME, oidcConfig);
+
+	app.use(createOidcRouter(oidc));
+
+	app.use('/oidc', oidc.callback());
 
 	app.use(checkIP);
 
