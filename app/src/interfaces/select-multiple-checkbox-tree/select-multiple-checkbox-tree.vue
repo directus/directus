@@ -73,12 +73,21 @@ export default defineComponent({
 
 <style scoped>
 .select-multiple-checkbox-tree {
+	max-height: var(--input-height-max);
+	overflow: auto;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
 
 .search {
+	position: sticky;
+	top: 0;
+	z-index: 2;
 	padding: 10px;
 	padding-bottom: 0;
+}
+
+.search .v-input {
+	box-shadow: 0 0 4px 4px var(--background-page);
 }
 </style>
