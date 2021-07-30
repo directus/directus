@@ -353,7 +353,7 @@ export class UsersService extends ItemsService {
 		const user = await this.knex.select('status').from('directus_users').where({ email }).first();
 
 		if (user?.status !== 'active') {
-      await stall(STALL_TIME, timeStart);
+			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenException();
 		}
 

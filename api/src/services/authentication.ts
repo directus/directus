@@ -133,13 +133,13 @@ export class AuthenticationService {
 			loginAttemptsLimiter.points = allowedAttempts;
 
 			try {
-				await loginAttemptsLimiter.consume(user.id as string);
+				await loginAttemptsLimiter.consume(user.id);
 			} catch (err) {
 				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 
 				// This means that new attempts after the user has been re-activated will be accepted
-				await loginAttemptsLimiter.set(user.id as string, 0, 0);
+				await loginAttemptsLimiter.set(user.id, 0, 0);
 			}
 		}
 
@@ -148,9 +148,9 @@ export class AuthenticationService {
 				await provider.verify(user, password);
 			} catch (e) {
 				emitStatus('fail');
-        await stall(STALL_TIME, timeStart);
+				await stall(STALL_TIME, timeStart);
 				throw e;
-      }
+			}
 		}
 
 		if (user.tfa_secret && !otp) {
@@ -161,7 +161,7 @@ export class AuthenticationService {
 
 		if (user.tfa_secret && otp) {
 			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
-			const otpValid = await tfaService.verifyOTP(user.id as string, otp);
+			const otpValid = await tfaService.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
@@ -207,7 +207,7 @@ export class AuthenticationService {
 		emitStatus('success');
 
 		if (allowedAttempts !== null) {
-			await loginAttemptsLimiter.set(user.id as string, 0, 0);
+			await loginAttemptsLimiter.set(user.id, 0, 0);
 		}
 
 		await stall(STALL_TIME, timeStart);
