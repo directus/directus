@@ -35,7 +35,7 @@
 			/>
 		</div>
 		<div class="field">
-			<filter-input v-model="value" :type="field.type" :operator="activeOperator" :disabled="disabled" />
+			<filter-input v-model="value" :field="field" :type="field.type" :operator="activeOperator" :disabled="disabled" />
 		</div>
 	</div>
 </template>
