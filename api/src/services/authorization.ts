@@ -89,25 +89,27 @@ export class AuthorizationService {
 		}
 
 		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
-			if (ast.type !== 'field' && ast.type !== 'm2a') {
-				/** @TODO remove m2a check */
-				const collection = ast.name;
+			if (ast.type !== 'field') {
+				if (ast.type === 'm2a') {
+					for (const [collection, children] of Object.entries(ast.children)) {
+						checkChildren(collection, children);
+					}
+				} else {
+					checkChildren(ast.name, ast.children);
+				}
+			}
 
+			function checkChildren(collection: string, children: (NestedCollectionNode | FieldNode)[]) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
-
 				const allowedFields = permissions.fields || [];
-
-				for (const childNode of ast.children) {
+				for (const childNode of children) {
 					if (childNode.type !== 'field') {
 						validateFields(childNode);
 						continue;
 					}
-
 					if (allowedFields.includes('*')) continue;
-
 					const fieldKey = childNode.name;
-
 					if (allowedFields.includes(fieldKey) === false) {
 						throw new ForbiddenException();
 					}
@@ -119,43 +121,61 @@ export class AuthorizationService {
 			ast: AST | NestedCollectionNode | FieldNode,
 			accountability: Accountability | null
 		): AST | NestedCollectionNode | FieldNode {
-			if (ast.type !== 'field' && ast.type !== 'm2a') {
-				/** @TODO remove m2a check */
-				const collection = ast.name;
+			if (ast.type !== 'field') {
+				if (ast.type === 'm2a') {
+					const collections = Object.keys(ast.children);
 
+					for (const collection of collections) {
+						updateFilterQuery(collection, ast.query[collection]);
+					}
+
+					for (const [collection, children] of Object.entries(ast.children)) {
+						ast.children[collection] = children.map((child) => applyFilters(child, accountability)) as (
+							| NestedCollectionNode
+							| FieldNode
+						)[];
+					}
+				} else {
+					const collection = ast.name;
+
+					updateFilterQuery(collection, ast.query);
+
+					ast.children = ast.children.map((child) => applyFilters(child, accountability)) as (
+						| NestedCollectionNode
+						| FieldNode
+					)[];
+				}
+			}
+
+			return ast;
+
+			function updateFilterQuery(collection: string, query: Query) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 
 				const parsedPermissions = parseFilter(permissions.permissions, accountability);
 
-				if (!ast.query.filter || Object.keys(ast.query.filter).length === 0) {
-					ast.query.filter = { _and: [] };
+				if (!query.filter || Object.keys(query.filter).length === 0) {
+					query.filter = { _and: [] };
 				} else {
-					ast.query.filter = { _and: [ast.query.filter] };
+					query.filter = { _and: [query.filter] };
 				}
 
 				if (parsedPermissions && Object.keys(parsedPermissions).length > 0) {
-					ast.query.filter._and.push(parsedPermissions);
+					query.filter._and.push(parsedPermissions);
 				}
 
-				if (ast.query.filter._and.length === 0) delete ast.query.filter._and;
+				if (query.filter._and.length === 0) delete query.filter._and;
 
-				if (permissions.limit && ast.query.limit && ast.query.limit > permissions.limit) {
+				if (permissions.limit && query.limit && query.limit > permissions.limit) {
 					throw new ForbiddenException();
 				}
 
 				// Default to the permissions limit if limit hasn't been set
-				if (permissions.limit && !ast.query.limit) {
-					ast.query.limit = permissions.limit;
+				if (permissions.limit && !query.limit) {
+					query.limit = permissions.limit;
 				}
-
-				ast.children = ast.children.map((child) => applyFilters(child, accountability)) as (
-					| NestedCollectionNode
-					| FieldNode
-				)[];
 			}
-
-			return ast;
 		}
 	}
 

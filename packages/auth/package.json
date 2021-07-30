@@ -1,6 +1,6 @@
 {
   "name": "@directus/auth",
-  "version": "9.0.0-rc.86",
+  "version": "9.0.0-rc.87",
   "description": "Directus auth driver",
   "license": "GPL-3.0",
   "main": "dist/index.js",

@@ -41,13 +41,6 @@ export class PayloadService {
 		return this;
 	}
 
-	/**
-	 * @todo allow this to be extended
-	 *
-	 * @todo allow these extended special types to have "field dependencies"?
-	 * f.e. the file-links transformer needs the id and filename_download to be fetched from the DB
-	 * in order to work
-	 */
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
@@ -231,7 +224,9 @@ export class PayloadService {
 				if (!value) continue;
 
 				if (action === 'read') {
-					if (typeof value === 'string') value = new Date(value);
+					if (typeof value === 'string') {
+						value = new Date(value);
+					}
 
 					if (dateColumn.type === 'timestamp') {
 						const newValue = formatISO(value);
@@ -245,8 +240,10 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'date') {
+						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+
 						// Strip off the time / timezone information from a date-only value
-						const newValue = format(value, 'yyyy-MM-dd');
+						const newValue = `${year}-${month}-${day}`;
 						payload[name] = newValue;
 					}
 				} else {

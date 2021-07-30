@@ -1,6 +1,6 @@
 {
   "name": "@directus/auth-username",
-  "version": "9.0.0-rc.86",
+  "version": "9.0.0-rc.87",
   "description": "Username based auth driver for Directus",
   "license": "GPL-3.0",
   "main": "dist/index.js",
