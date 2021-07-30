@@ -909,6 +909,9 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
+  group-accordion:
+    name: Accordion
+    description: Display fields or groups as accordion sections
   presentation-links:
     presentation-links: Button Links
     links: Links

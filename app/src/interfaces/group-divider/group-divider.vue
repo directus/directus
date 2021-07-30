@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { ValidationError } from '@/types';
+import { ValidationError } from '@directus/shared/types';
 import { Field } from '@directus/shared/types';
 
 export default defineComponent({

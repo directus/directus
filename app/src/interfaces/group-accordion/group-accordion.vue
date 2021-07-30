@@ -1,26 +1,33 @@
 <template>
-	<div class="group-raw">
-		<v-form
-			:initial-values="initialValues"
+	<v-item-group class="group-accordion">
+		<accordion-section
+			v-for="accordionField in rootFields"
+			:key="accordionField.field"
+			:field="accordionField"
 			:fields="fields"
-			:model-value="values"
-			:primary-key="primaryKey"
-			:group="field.meta.id"
-			:validation-errors="validationErrors"
-			:loading="loading"
+			:values="values"
+			:initial-values="initialValues"
+			:disabled="disabled"
 			:batch-mode="batchMode"
-			@update:model-value="$emit('apply', $event)"
+			:batch-active-fields="batchActiveFields"
+			:primary-key="primaryKey"
+			:loading="loading"
+			:validation-errors="validationErrors"
+			:group="field.meta.id"
+			@apply="$emit('apply', $event)"
 		/>
-	</div>
+	</v-item-group>
 </template>
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { ValidationError } from '@directus/shared/types';
+import AccordionSection from './accordion-section.vue';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'InterfaceGroupAccordion',
+	components: { AccordionSection },
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -64,5 +71,12 @@ export default defineComponent({
 		},
 	},
 	emits: ['apply'],
+	setup(props) {
+		const rootFields = computed(() => {
+			return props.fields.filter((field) => field.meta?.group === props.field.meta?.id);
+		});
+
+		return { rootFields };
+	},
 });
 </script>

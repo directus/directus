@@ -1,26 +1,28 @@
 <template>
-	<div class="group-raw">
+	<v-item>
+		<div class="label">{{ field.field }}</div>
 		<v-form
 			:initial-values="initialValues"
-			:fields="fields"
+			:fields="fieldsInSection"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.id"
+			:group="group"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
 			@update:model-value="$emit('apply', $event)"
 		/>
-	</div>
+	</v-item>
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType, computed } from 'vue';
+import { merge } from 'lodash';
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'AccordionSection',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -62,7 +64,39 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		group: {
+			type: Number,
+			required: true,
+		},
 	},
 	emits: ['apply'],
+	setup(props) {
+		const fieldsInSection = computed(() => {
+			return props.fields
+				.filter((field) => {
+					if (field.meta?.group === props.group && field.meta?.id !== props.field.meta?.id) return false;
+					return true;
+				})
+				.map((field) => {
+					if (field.meta?.id === props.field.meta?.id) {
+						return merge({}, field, {
+							hideLabel: true,
+						});
+					}
+
+					return field;
+				});
+		});
+
+		return { fieldsInSection };
+	},
 });
 </script>
+
+<style scoped>
+.label {
+	margin-top: 40px;
+	margin-bottom: 8px;
+	font-size: 40px;
+}
+</style>
