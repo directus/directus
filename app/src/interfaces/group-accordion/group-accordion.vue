@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="group-accordion">
+	<v-item-group scope="group-accordion" class="group-accordion">
 		<accordion-section
 			v-for="accordionField in rootFields"
 			:key="accordionField.field"

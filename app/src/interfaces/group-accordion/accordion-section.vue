@@ -1,17 +1,24 @@
 <template>
-	<v-item>
-		<div class="label">{{ field.field }}</div>
-		<v-form
-			:initial-values="initialValues"
-			:fields="fieldsInSection"
-			:model-value="values"
-			:primary-key="primaryKey"
-			:group="group"
-			:validation-errors="validationErrors"
-			:loading="loading"
-			:batch-mode="batchMode"
-			@update:model-value="$emit('apply', $event)"
-		/>
+	<v-item scope="group-accordion" class="accordion-section">
+		<template #default="{ active, toggle }">
+			<div class="label type-title" @click="toggle">{{ field.name }}</div>
+
+			<transition-expand>
+				<div v-show="active" class="fields">
+					<v-form
+						:initial-values="initialValues"
+						:fields="fieldsInSection"
+						:model-value="values"
+						:primary-key="primaryKey"
+						:group="group"
+						:validation-errors="validationErrors"
+						:loading="loading"
+						:batch-mode="batchMode"
+						@update:model-value="$emit('apply', $event)"
+					/>
+				</div>
+			</transition-expand>
+		</template>
 	</v-item>
 </template>
 
@@ -94,9 +101,20 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.accordion-section {
+	border-top: var(--border-width) solid var(--border-normal);
+}
+
+.accordion-section:last-child {
+	border-bottom: var(--border-width) solid var(--border-normal);
+}
+
 .label {
-	margin-top: 40px;
-	margin-bottom: 8px;
-	font-size: 40px;
+	margin: 16px 0;
+	cursor: pointer;
+}
+
+.fields {
+	margin: 16px 0;
 }
 </style>
