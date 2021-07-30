@@ -20,6 +20,7 @@ import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
+import { stall } from '../utils/stall';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -345,8 +346,14 @@ export class UsersService extends ItemsService {
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
+		const STALL_TIME = 500;
+		const timeStart = performance.now();
+
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
-		if (!user) throw new ForbiddenException();
+		if (!user) {
+			await stall(STALL_TIME, timeStart);
+			throw new ForbiddenException();
+		}
 
 		const mailService = new MailService({
 			schema: this.schema,
@@ -375,6 +382,8 @@ export class UsersService extends ItemsService {
 				},
 			},
 		});
+
+		await stall(STALL_TIME, timeStart);
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {

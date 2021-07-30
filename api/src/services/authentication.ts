@@ -18,6 +18,8 @@ import { ActivityService } from '../services/activity';
 import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
 import { SettingsService } from './settings';
 import { merge } from 'lodash';
+import { performance } from 'perf_hooks';
+import { stall } from '../utils/stall';
 
 type AuthenticateOptions = {
 	email: string;
@@ -52,6 +54,9 @@ export class AuthenticationService {
 	async authenticate(
 		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+		const STALL_TIME = 100;
+		const timeStart = performance.now();
+
 		const settingsService = new SettingsService({
 			knex: this.knex,
 			schema: this.schema,
@@ -97,8 +102,10 @@ export class AuthenticationService {
 			emitStatus('fail');
 
 			if (user?.status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
 				throw new UserSuspendedException();
 			} else {
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 		}
@@ -125,17 +132,20 @@ export class AuthenticationService {
 		if (password !== undefined) {
 			if (!user.password) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 
 			if ((await argon2.verify(user.password, password)) === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 		}
 
 		if (user.tfa_secret && !otp) {
 			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
 			throw new InvalidOTPException(`"otp" is required`);
 		}
 
@@ -144,6 +154,7 @@ export class AuthenticationService {
 
 			if (otpValid === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
@@ -192,6 +203,8 @@ export class AuthenticationService {
 		if (allowedAttempts !== null) {
 			await loginAttemptsLimiter.set(user.id, 0, 0);
 		}
+
+		await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,
