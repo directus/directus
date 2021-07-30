@@ -1013,6 +1013,7 @@ interfaces:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template
+    filter: Filter
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
