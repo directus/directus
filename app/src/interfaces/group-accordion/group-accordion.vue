@@ -14,6 +14,7 @@
 			:loading="loading"
 			:validation-errors="validationErrors"
 			:group="field.meta.id"
+			:multiple="multiple"
 			@apply="$emit('apply', $event)"
 			@toggleAll="toggleAll"
 		/>
@@ -87,6 +88,8 @@ export default defineComponent({
 		return { rootFields, selection, toggleAll };
 
 		function toggleAll() {
+			if (props.multiple === false) return;
+
 			if (selection.value.length === rootFields.value.length) {
 				selection.value = [];
 			} else {

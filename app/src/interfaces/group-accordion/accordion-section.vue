@@ -78,6 +78,11 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
+
+		multiple: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['apply', 'toggleAll'],
 	setup(props, { emit }) {
@@ -101,6 +106,11 @@ export default defineComponent({
 		return { fieldsInSection, handleModifier };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
+			if (props.multiple === false) {
+				toggle();
+				return;
+			}
+
 			if (event.shiftKey) {
 				emit('toggleAll');
 			} else {
