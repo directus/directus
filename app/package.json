@@ -80,7 +80,7 @@
 		"pretty-ms": "7.0.1",
 		"qrcode": "1.4.4",
 		"rimraf": "3.0.2",
-		"sass": "1.36.0",
+		"sass": "1.37.0",
 		"tinymce": "5.8.2",
 		"typescript": "4.3.5",
 		"vite": "2.4.4",
