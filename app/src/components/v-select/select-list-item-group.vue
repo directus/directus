@@ -10,10 +10,10 @@
 			/>
 		</template>
 
-		<template v-for="(item, index) in item.children" :key="index">
+		<template v-for="(childItem, index) in item.children" :key="index">
 			<select-list-item-group
-				v-if="item.children"
-				:item="item"
+				v-if="childItem.children"
+				:item="childItem"
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
@@ -22,7 +22,7 @@
 			<select-list-item
 				v-else
 				:model-value="modelValue"
-				:item="item"
+				:item="childItem"
 				:multiple="multiple"
 				:allow-other="allowOther"
 				@update:model-value="$emit('update:modelValue', $event)"
@@ -57,5 +57,6 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:modelValue'],
 });
 </script>
