@@ -11,5 +11,20 @@ export default defineInterface({
 	hideLoader: true,
 	types: ['alias'],
 	groups: ['group'],
-	options: [],
+	options: [
+		{
+			field: 'multiple',
+			type: 'boolean',
+			name: '$t:allow_multiple',
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: '$t:allow_multiple_to_be_open',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+	],
 });

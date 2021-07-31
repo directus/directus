@@ -1,7 +1,10 @@
 <template>
-	<v-item scope="group-accordion" class="accordion-section">
+	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<div class="label type-title" @click="toggle">{{ field.name }}</div>
+			<div class="label type-title" @click="handleModifier($event, toggle)">
+				<v-icon class="icon" :class="{ active }" name="expand_more" />
+				{{ field.name }}
+			</div>
 
 			<transition-expand>
 				<div v-show="active" class="fields">
@@ -76,8 +79,8 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['apply'],
-	setup(props) {
+	emits: ['apply', 'toggleAll'],
+	setup(props, { emit }) {
 		const fieldsInSection = computed(() => {
 			return props.fields
 				.filter((field) => {
@@ -95,7 +98,15 @@ export default defineComponent({
 				});
 		});
 
-		return { fieldsInSection };
+		return { fieldsInSection, handleModifier };
+
+		function handleModifier(event: MouseEvent, toggle: () => void) {
+			if (event.shiftKey) {
+				emit('toggleAll');
+			} else {
+				toggle();
+			}
+		}
 	},
 });
 </script>
@@ -110,8 +121,18 @@ export default defineComponent({
 }
 
 .label {
-	margin: 16px 0;
+	margin: 8px 0;
+	color: var(--foreground-subdued);
 	cursor: pointer;
+}
+
+.icon {
+	transform: rotate(-90deg);
+	transition: transform var(--fast) var(--transition);
+}
+
+.icon.active {
+	transform: rotate(0);
 }
 
 .fields {

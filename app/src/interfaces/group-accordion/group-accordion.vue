@@ -1,5 +1,5 @@
 <template>
-	<v-item-group scope="group-accordion" class="group-accordion">
+	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="multiple">
 		<accordion-section
 			v-for="accordionField in rootFields"
 			:key="accordionField.field"
@@ -15,13 +15,14 @@
 			:validation-errors="validationErrors"
 			:group="field.meta.id"
 			@apply="$emit('apply', $event)"
+			@toggleAll="toggleAll"
 		/>
 	</v-item-group>
 </template>
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
 
@@ -69,6 +70,11 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+
+		multiple: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['apply'],
 	setup(props) {
@@ -76,7 +82,17 @@ export default defineComponent({
 			return props.fields.filter((field) => field.meta?.group === props.field.meta?.id);
 		});
 
-		return { rootFields };
+		const selection = ref<string[]>([]);
+
+		return { rootFields, selection, toggleAll };
+
+		function toggleAll() {
+			if (selection.value.length === rootFields.value.length) {
+				selection.value = [];
+			} else {
+				selection.value = rootFields.value.map((field) => field.field);
+			}
+		}
 	},
 });
 </script>
