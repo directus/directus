@@ -29,7 +29,7 @@ the database, and it will automatically appear within Directus. The first time y
    - [Field Setup](#field-setup)
    - [Interface Options](#interface-options)
    - [Display Options](#display-options)
-   - [Conditional Fields](#conditional-fields)
+   - [Conditions](#conditions)
 
 ### Schema Setup
 
@@ -157,7 +157,7 @@ This pane includes any customization options that may be defined by the Display.
 
 ### Conditions
 
-Conditional Fields allow you to alter the current field's setup based on the values of other fields in the form. This
+Conditions allow you to alter the current field's setup based on the values of other fields in the form. This
 allows you to show/hide the field, make it readonly, or change the interface options.
 
 Each field can have one or more _rules_. Each rule has the following configuration options:
