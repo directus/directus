@@ -20,11 +20,14 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: 编辑字段
+conditions: 条件
 item_revision: 项目修订
 duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
 group: 群组
+and: 和
+or: 或
 fill_width: 填充宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用两步验证
@@ -434,6 +437,7 @@ errors:
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
   UNKNOWN: 未知错误
+  UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
 value_hashed: 哈希值
 bookmark_name: 书签名称
@@ -550,6 +554,7 @@ no_results_copy: 调整或清除搜索过滤器以查看结果。
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
+rule: 规则
 user: 用户
 no_presets: 无预设
 no_presets_copy: 尚未保存预设或书签。
@@ -825,10 +830,13 @@ referential_action_cascade: 删除 {collection} 项 (分类)
 referential_action_set_null: 伪装 {field} 字段
 referential_action_set_default: 设置 {field} 为默认值
 choose_action: 选择操作
+continue_label: 继续
 continue_as: >-
   {name} 目前已被身份验证。如果您确认此帐户，请按继续。
 editing_role: '{role} 角色'
 creating_webhook: 正在创建 Webhook
+default_label: 默认值
+delete_label: 删除
 delete_are_you_sure: >-
   此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
@@ -1149,18 +1157,41 @@ displays:
     circle_label: 显示为圆形
   labels:
     labels: 标签
+    description: 显示单个标签或标签列表
+    default_foreground: 默认文字颜色
+    default_background: 默认背景颜色
+    format_label: 格式化每个标签
+    show_as_dot: 显示小圆点
     choices_value_placeholder: 输入值...
+    choices_text_placeholder: 请输入文本…
+  mime-type:
+    mime-type: MIME 类型
+    description: 显示文件的 MIME 类型
+    extension_only: 仅限扩展
+    extension_only_label: 只显示文件扩展名
   rating:
     rating: 评分
+    description: 显示为星星（基于最大值）
+    simple: 基础
+    simple_label: 显示基础星星
+  raw:
+    raw: 原始值
+  related-values:
+    related-values: 应用值
+    description: 显示相对值
   user:
     user: 用户
+    description: 显示一个系统用户
     avatar: 头像
     name: 名称
     both: 两个
+    circle_label: 以圆形头像显示用户
 layouts:
   cards:
     cards: 卡片
     image_source: 图像来源
+    image_fit: 适合图像
+    crop: 裁剪
     title: 标题
     subtitle: 副标题
   tabular:
