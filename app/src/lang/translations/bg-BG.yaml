@@ -893,6 +893,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   presentation-links:
@@ -1099,7 +1100,7 @@ interfaces:
     value_path: Път до стойността
     trigger: Задействане
     rate: Оценка
-  group-raw:
+  group-standard:
     name: Обикновени полета
     description: Нормално показване на полетата.
 displays:

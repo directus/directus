@@ -19,7 +19,7 @@
 
 		<template v-for="(field, index) in formFields">
 			<component
-				:is="`interface-${field.meta?.interface || 'group-raw'}`"
+				:is="`interface-${field.meta?.interface || 'group-standard'}`"
 				v-if="field.meta?.special?.includes('group')"
 				v-show="!field.meta?.hidden"
 				:key="field.field"

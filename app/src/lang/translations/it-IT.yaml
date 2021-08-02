@@ -893,6 +893,7 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 interfaces:
   presentation-links:
@@ -1099,7 +1100,7 @@ interfaces:
     value_path: Percorso del valore
     trigger: Attivazione
     rate: Intervallo
-  group-raw:
+  group-standard:
     name: Campi grezzi
     description: Mostra i valori grezzi dei campi.
 displays:

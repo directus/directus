@@ -19,12 +19,15 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-edit_field: 编辑字段
-item_revision: 项目修订
-duplicate_field: 复制字段
+edit_field: 编辑
+conditions: 条件
+item_revision: 项目调整
+duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
 group: 群组
+and: 和
+or: 或
 fill_width: 填充宽度
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用两步验证
@@ -68,33 +71,33 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
-public_description: 控制哪些API数据没有认证时可用
+public_description: 设置哪些API无需身份验证。
 not_allowed: 不允许
 directus_version: Directus 版本
-node_version: 节点版本
-node_uptime: 节点运行时间
+node_version: Node 版本
+node_uptime: Node 运行时间
 os_type: 系统类型
 os_version: 系统版本
 os_uptime: 系统运行时间
 os_totalmem: 系统内存
 archive: 存档
-archive_confirm: 您确定要存档此项目吗？
+archive_confirm: 您确定要归档所选吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
-reset_system_permissions_to: '重置系统权限为：'
-reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
+reset_system_permissions_to: '重置系统权限：'
+reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的自定义权限。确定吗？
 the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
-app_access_minimum: 应用访问最小值
-recommended_defaults: 推荐的默认值
+app_access_minimum: 最小权限
+recommended_defaults: 推荐设置
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
-nested_files_folders_will_be_moved: 嵌套的文件和文件夹将被上移一级。
+nested_files_folders_will_be_moved: 文件和文件夹将被上移一级。
 unknown_validation_errors: '以下隐藏字段的验证错误：'
 validationError:
   eq: 值必须是 {valid}
   neq: 值不能为 {invalid}
-  in: 值必须是 {valid} 的一个
-  nin: 值不能是 {invalid} 的一个
+  in: 值必须是其中之一 {valid}
+  nin: 值不能是 {invalid} 之一
   contains: 值必须包含 {substring}
   ncontains: 值不能包含 {substring}
   gt: 值必须大于 {valid}
@@ -108,18 +111,18 @@ validationError:
   required: 值是必需的
   unique: 值必须唯一
   regex: 值格式不正确
-all_access: 订购全部功能
-no_access: 无访问权限
+all_access: 允许所有
+no_access: 禁止访问
 use_custom: 自定义
 nullable: 允许为空
-allow_null_value: 允许空值
+allow_null_value: 允许NULL值
 enter_value_to_replace_nulls: 请输入一个新的值来替换当前在此字段内的任何NULL。
-field_standard: 标准
-field_presentation: 展示字段
+field_standard: 基本设置
+field_presentation: 别名
 field_file: 单个文件
 field_files: 多个文件
 field_m2o: M2O 关系
-field_m2a: M2A Relationship
+field_m2a: M2A 关系
 field_o2m: O2M 关系
 field_m2m: M2M 关系
 field_translations: 翻译
@@ -128,17 +131,17 @@ item_permissions: 项目权限
 field_permissions: 字段权限
 field_validation: 字段验证
 field_presets: 字段预设
-permissions_for_role: '项目 {role} 角色能够 {action}。'
-fields_for_role: '字段 {role} 角色能够 {action}。'
-validation_for_role: '字段 {action} 规定了 {role} 角色必须遵守。'
-presets_for_role: '{role} 角色的字段值默认值。'
-presentation_and_aliases: 展示字段
+permissions_for_role: '{role} 角色能够 {action}。'
+fields_for_role: '{role} 角色能够 {action} 字段。'
+validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
+presets_for_role: '{role} 角色的默认值。'
+presentation_and_aliases: 别名
 revision_post_update: 这是更新这个项目后的样式...
 changes_made: 这些是所做的具体更改...
 no_relational_data: 请记住，这不包括关系数据。
 hide_field_on_detail: 在详情中隐藏该字段
-show_field_on_detail: 在详情中显示该字段
-delete_field: 删除字段
+show_field_on_detail: 在详情中显示
+delete_field: 删除
 fields_and_layout: 字段和布局
 field_create_success: '创建字段: "{field}"'
 field_update_success: '更新字段: "{field}"'
@@ -147,33 +150,33 @@ language: 语言
 global: 全局
 admins_have_all_permissions: 管理员拥有所有权限
 camera: 摄像头
-exposure: 过期：
+exposure: 过期
 shutter: 快门
 iso: ISO
 focal_length: 焦距
-schema_setup_key: 此字段的数据库列名称和 API 密钥
+schema_setup_key: 数据库列的名称和 API 密钥
 create_field: 创建字段
 creating_new_field: '新字段 ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
-hidden_on_detail: 隐藏于详情
-disabled_editing_value: 禁用编辑值
+hidden_on_detail: 在详情中隐藏
+disabled_editing_value: 禁用编辑
 key: 关键字
 alias: 别名
-bigInteger: 大整数
-boolean: 布尔值
-date: 日期
-datetime: 日期时间
-decimal: 十进制
-float: 浮点数
-integer: 整数
+bigInteger: Big Integer
+boolean: Boolean
+date: Date
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
 json: JSON
 xml: XML
-string: 字符串
-text: 文字
+string: String
+text: 文本
 time: 时间
-timestamp: 时间戳
+timestamp: Timestamp
 uuid: UUID
 hash: Hash
 not_available_for_type: 此类型不可用
@@ -181,20 +184,20 @@ create_translations: 创建翻译
 auto_refresh: 自动刷新
 refresh_interval: 刷新间隔
 no_refresh: 不刷新
-refresh_interval_seconds: 即时刷新 | 每秒 | 每 {seconds} 秒
+refresh_interval_seconds: 立即刷新 | 每秒 | 每 {seconds} 秒
 refresh_interval_minutes: 每分钟 | 每 {minutes} 分钟
 auto_generate: 自动生成
 this_will_auto_setup_fields_relations: 这将自动设置所有必填字段和关系。
-click_here: 点击此处
+click_here: 点击
 to_manually_setup_translations: 手动设置翻译。
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
 no_collections_found: 未找到任何集合
 new_data_alert: '以下将在您的数据模型中创建：'
-search_collection: Search Collection...
+search_collection: 搜索数据模型...
 new_field: '新建字段'
-new_collection: 'New Collection'
+new_collection: '新建数据模型'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
 add_m2m_to_collection: '添加多对多到"{collection}"'
@@ -210,18 +213,18 @@ o2m_relationship: 一对多关系
 m2m_relationship: 多对多关系
 m2a_relationship: 多对任何关系
 invalid_item: 无效条目
-next: 下一条
+next: 下一步
 field_name: 字段名
 translations: 翻译
-note: 注解
-enter_a_value: 输入值...
+note: 注释
+enter_a_value: 请输入值...
 enter_a_placeholder: 输入占位符...
 length: 长度
 precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
 updated_on: 更新于
-updated_by: 更新者
+updated_by: 更新，由
 primary_key: 主键
 foreign_key: 外键
 finish_setup: 完成安装
@@ -229,7 +232,7 @@ dismiss: 关闭
 raw_value: 原始值
 edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
-clear_value: 清除值
+clear_value: 清除
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
@@ -434,6 +437,7 @@ errors:
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
   UNKNOWN: 未知错误
+  UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
 value_hashed: 哈希值
 bookmark_name: 书签名称
@@ -550,6 +554,7 @@ no_results_copy: 调整或清除搜索过滤器以查看结果。
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
+rule: 规则
 user: 用户
 no_presets: 无预设
 no_presets_copy: 尚未保存预设或书签。
@@ -719,7 +724,7 @@ fields:
   directus_collections:
     collection: 集合
     icon: 图标
-    note: 注解
+    note: 注释
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
@@ -787,7 +792,7 @@ fields:
   directus_fields:
     collection: 集合名称
     icon: 集合 Icon
-    note: 注解
+    note: 注释
     hidden: 隐藏
     singleton: 单一
     translation: 字段名称翻译
@@ -825,10 +830,13 @@ referential_action_cascade: 删除 {collection} 项 (分类)
 referential_action_set_null: 伪装 {field} 字段
 referential_action_set_default: 设置 {field} 为默认值
 choose_action: 选择操作
+continue_label: 继续
 continue_as: >-
   {name} 目前已被身份验证。如果您确认此帐户，请按继续。
 editing_role: '{role} 角色'
 creating_webhook: 正在创建 Webhook
+default_label: 默认值
+delete_label: 删除
 delete_are_you_sure: >-
   此操作是永久性的，无法撤销。您确定要继续吗？
 delete_field_are_you_sure: >-
@@ -953,7 +961,7 @@ interfaces:
     allow_none: 不允许
     allow_none_label: 不允许选择
     choices_name_placeholder: 输入名称...
-    choices_value_placeholder: 输入值...
+    choices_value_placeholder: 请输入值...
   select-multiple-dropdown:
     select-multiple-dropdown: 下拉(多选)
     description: 从下拉列表中选择多个值
@@ -1089,12 +1097,12 @@ interfaces:
     value_path: 值路径
     trigger: 触发器
     rate: Rate
-  group-raw:
+  group-standard:
     name: 原始字段
     description: 以正常方式显示字段。
 displays:
   boolean:
-    boolean: 布尔值
+    boolean: Boolean
     description: 显示开启或关闭状态
     label_on: 标签开启
     label_on_placeholder: 在标签上输入...
@@ -1149,18 +1157,42 @@ displays:
     circle_label: 显示为圆形
   labels:
     labels: 标签
-    choices_value_placeholder: 输入值...
+    description: 显示单个标签或标签列表
+    default_foreground: 默认文字颜色
+    default_background: 默认背景颜色
+    format_label: 格式化每个标签
+    show_as_dot: 显示小圆点
+    choices_value_placeholder: 请输入值...
+    choices_text_placeholder: 请输入文本…
+  mime-type:
+    mime-type: MIME 类型
+    description: 显示文件的 MIME 类型
+    extension_only: 仅限扩展
+    extension_only_label: 只显示文件扩展名
   rating:
     rating: 评分
+    description: 显示为星星（基于最大值）
+    simple: 基础
+    simple_label: 显示基础星星
+  raw:
+    raw: 原始值
+  related-values:
+    related-values: 应用值
+    description: 显示相对值
   user:
     user: 用户
+    description: 显示一个系统用户
     avatar: 头像
     name: 名称
     both: 两个
+    circle_label: 以圆形头像显示用户
 layouts:
   cards:
     cards: 卡片
     image_source: 图像来源
+    image_fit: 适合图像
+    crop: 裁剪
+    contain: 包含
     title: 标题
     subtitle: 副标题
   tabular:
@@ -1170,3 +1202,7 @@ layouts:
     comfortable: 宽松
     compact: 紧凑
     cozy: 适中
+  calendar:
+    calendar: 日历
+    start_date_field: 开始日期
+    end_date_field: 结束日期
