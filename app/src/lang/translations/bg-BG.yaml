@@ -895,6 +895,8 @@ value: Стойност
 view_project: Преглед на проект
 report_error: Докладване на грешка
 interfaces:
+  group-accordion:
+    name: Акордеон
   presentation-links:
     presentation-links: Бутони с връзки
     links: Връзки
