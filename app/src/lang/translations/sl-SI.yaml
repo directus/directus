@@ -117,6 +117,8 @@ no_access: Ni dostopa
 use_custom: Uporabi po meri
 nullable: Nično
 allow_null_value: Dovoli nično vrednost
+allow_multiple: Dovoli več elementov
+allow_multiple_to_be_open: Dovoli odpiranje večih
 enter_value_to_replace_nulls: Prosimo vnesite novo vrednost, ki bo nadomestila nično v tem polju.
 field_standard: Običajno
 field_presentation: Predstavitev in aliasi
@@ -481,7 +483,7 @@ unmanaged_collections: Nenastavljene zbirke
 system_collections: Sistemske zbirke
 placeholder: Opis pred vnosom
 icon_left: Ikona levo
-icon_right: Imona desno
+icon_right: Ikona desno
 count_other_revisions: 'Še {count} revizij'
 font: Pisava
 sans_serif: Sans Serif
@@ -635,7 +637,7 @@ wysiwyg_options:
   source_code: Uredi izvorno kodo
   fullscreen: Celozaslonski način
   directionality: Smer
-dropdown: Izbornik
+dropdown: Izbirnik
 choices: Možnosti
 choices_option_configured_incorrectly: Možnosti nepravilno konfigurirane
 deselect: Odstrani izbor
@@ -893,8 +895,16 @@ template: Predloga
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
+weeks: { }
 report_error: Sporoči napako
 interfaces:
+  group-accordion:
+    name: Harmonika
+    description: Prikaži polja ali skupine kot segmente harmonike
+    start: Začetek
+    all_closed: Vse zaprto
+    first_opened: Prvo odprto
+    all_opened: Vse odprto
   presentation-links:
     presentation-links: Povezave
     links: Povezave
@@ -965,8 +975,8 @@ interfaces:
     choices_name_placeholder: Vnesi ime ...
     choices_value_placeholder: Vnesite vrednost ...
   select-multiple-dropdown:
-    select-multiple-dropdown: Izbornik (večkratni)
-    description: Izberite več vrednosti iz izbornika
+    select-multiple-dropdown: Izbirnik (večkratni)
+    description: Izberite več vrednosti iz izbirnika
   file:
     file: Datoteka
     description: Izberi ali naloži datoteko
@@ -980,7 +990,7 @@ interfaces:
     masked_label: Skrij dejanske vrednosti
   select-icon:
     icon: Ikona
-    description: Izberi ikono iz izbornika
+    description: Izberi ikono iz izbirnika
     search_for_icon: Iskanje ikone ...
   file-image:
     image: Slika
@@ -1084,7 +1094,7 @@ interfaces:
     select_mode: Izberi način
     modes:
       auto: Samodejno
-      dropdown: Izbornik
+      dropdown: Izbirnik
       modal: Modalno
   input-rich-text-html:
     wysiwyg: WYSIWYG
@@ -1099,6 +1109,12 @@ interfaces:
     value_path: Vrednosti
     trigger: Sprožilec
     rate: Oceni
+  group-standard:
+    name: Standardna skupina
+    description: Pokaži polja kot običajna z opcijskim skupinskim naslovom.
+    show_header: Pokaži naslov skupine
+    header_icon: Ikona glave
+    header_color: Barva glave
 displays:
   boolean:
     boolean: Boolean
