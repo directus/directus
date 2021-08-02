@@ -1097,9 +1097,6 @@ interfaces:
     value_path: 值路径
     trigger: 触发器
     rate: Rate
-  group-standard:
-    name: 原始字段
-    description: 以正常方式显示字段。
 displays:
   boolean:
     boolean: Boolean

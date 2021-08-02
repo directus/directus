@@ -1092,9 +1092,6 @@ interfaces:
     value_path: Chemin de la valeur
     trigger: Déclencheur
     rate: Débit
-  group-standard:
-    name: Champs bruts
-    description: Afficher les champs comme normal.
 displays:
   boolean:
     boolean: Booléen
