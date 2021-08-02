@@ -195,6 +195,35 @@ export default defineComponent({
 	--v-button-min-width: 140px;
 }
 
+.info {
+	--v-button-color: var(--primary);
+	--v-button-background-color: var(--background-normal);
+	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color-active: var(--primary);
+}
+
+.success {
+	--v-button-color: var(--success);
+	--v-button-background-color: var(--success-alt);
+	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color-active: var(--primary);
+}
+
+.warning {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-125);
+	--v-button-background-color-active: var(--warning);
+}
+
+.danger {
+	--v-button-color: var(--danger);
+	--v-button-background-color: var(--danger-alt);
+	--v-button-background-color-hover: var(--danger-125);
+	--v-button-background-color-active: var(--danger);
+}
+
 .v-button {
 	display: inline-flex;
 	align-items: center;
