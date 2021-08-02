@@ -1085,7 +1085,7 @@ interfaces:
     value_path: Ścieżka bazowa
     trigger: Wyzwalacz
     rate: Oceń
-  group-raw:
+  group-standard:
     name: Surowe pola
     description: Pokaż pola jako normalne.
 displays:
