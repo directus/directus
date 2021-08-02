@@ -196,17 +196,19 @@ export default defineComponent({
 }
 
 .info {
-	--v-button-color: var(--primary);
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-active: var(--primary);
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--blue);
+	--v-button-background-color-hover: var(--blue-125);
+	--v-button-background-color-active: var(--blue);
 }
 
 .success {
-	--v-button-color: var(--success);
-	--v-button-background-color: var(--success-alt);
-	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-active: var(--primary);
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--success);
+	--v-button-background-color-hover: var(--success-125);
+	--v-button-background-color-active: var(--success);
 }
 
 .warning {
@@ -218,8 +220,9 @@ export default defineComponent({
 }
 
 .danger {
-	--v-button-color: var(--danger);
-	--v-button-background-color: var(--danger-alt);
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-125);
 	--v-button-background-color-active: var(--danger);
 }
