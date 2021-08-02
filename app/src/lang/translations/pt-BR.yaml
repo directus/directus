@@ -1089,9 +1089,6 @@ interfaces:
     value_path: Caminho do Valor
     trigger: Acionar
     rate: Avaliar
-  group-standard:
-    name: Campos Raw
-    description: Mostrar os campos como normal.
 displays:
   boolean:
     boolean: Boolean
