@@ -5,6 +5,8 @@ import env from '../env';
 import logger from '../logger';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
+import fse from 'fs-extra';
+import path from 'path';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -133,4 +135,36 @@ export async function isInstalled(): Promise<boolean> {
 	// is installed correctly of course, but it's safe enough to assume that this collection only
 	// exists when using the installer CLI.
 	return await inspector.hasTable('directus_collections');
+}
+
+export async function validateMigrations(): Promise<boolean> {
+	const database = getDatabase();
+
+	try {
+		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
+
+		const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+
+		let customMigrationFiles =
+			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+
+		migrationFiles = migrationFiles.filter(
+			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
+		);
+
+		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+
+		migrationFiles.push(...customMigrationFiles);
+
+		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
+		const completedVersions = (await database.select('version').from('directus_migrations')).map(
+			({ version }) => version
+		);
+
+		return requiredVersions.every((version) => completedVersions.includes(version));
+	} catch (error) {
+		logger.error(`Database migrations cannot be found`);
+		logger.error(error);
+		throw process.exit(1);
+	}
 }

@@ -16,7 +16,7 @@ import { Field, FieldMeta, Type } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { toArray } from '../utils/to-array';
-import { isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import Keyv from 'keyv';
 import { DeepPartial } from '@directus/shared/types';
@@ -221,8 +221,13 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const exists =
+			field.field in this.schema.collections[collection].fields ||
+			isNil(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()) ===
+				false;
+
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema.collections[collection].fields) {
+		if (exists) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
