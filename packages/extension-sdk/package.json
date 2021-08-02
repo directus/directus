@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extension-sdk",
-	"version": "9.0.0-rc.87",
+	"version": "9.0.0-rc.88",
 	"description": "A toolkit to develop extensions to extend Directus.",
 	"main": "dist/cjs/index.js",
 	"exports": {
@@ -23,7 +23,7 @@
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"@directus/shared": "9.0.0-rc.87",
+		"@directus/shared": "9.0.0-rc.88",
 		"@rollup/plugin-commonjs": "^20.0.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
 		"@vue/compiler-sfc": "^3.1.1",

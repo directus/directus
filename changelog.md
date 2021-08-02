@@ -2,6 +2,57 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.88 (August 2, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#7130](https://github.com/directus/directus/pull/7130) Add accordion group ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7101](https://github.com/directus/directus/pull/7101) Surface dropdown choices in advanced sidebar filter ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :rocket: Improvements
+
+- **App**
+  - [#7141](https://github.com/directus/directus/pull/7141) Title format repeater names ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7132](https://github.com/directus/directus/pull/7132) Add missing keys to translations ([@nickrum](https://github.com/nickrum))
+  - [#7103](https://github.com/directus/directus/pull/7103) Add a standardized max-height to tree select interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7102](https://github.com/directus/directus/pull/7102) Render list group arrows on the left of the group checkbox in the tree select interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7059](https://github.com/directus/directus/pull/7059) Added "Default Open" Checkbox to Field Group Dividers ([@m0rtis0](https://github.com/m0rtis0))
+- **API**
+  - [#7105](https://github.com/directus/directus/pull/7105) Stall login/pw reset to prevent email leaking ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6580](https://github.com/directus/directus/pull/6580) Warn on Missing Migrations ([@jaycammarano](https://github.com/jaycammarano))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#7142](https://github.com/directus/directus/pull/7142) Prevent duplicate alias fields from being created ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7135](https://github.com/directus/directus/pull/7135) Fix nested fields check in validate-payload handler ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7131](https://github.com/directus/directus/pull/7131) Fix default value of select-icon interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#7139](https://github.com/directus/directus/pull/7139) Fix cache-key generation for query params ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7104](https://github.com/directus/directus/pull/7104) Fix users accountability tracking ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#7106](https://github.com/directus/directus/pull/7106) Add note on conditional fields ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#7099](https://github.com/directus/directus/pull/7099) Add note regarding required directus:extension field to extension docs ([@nickrum](https://github.com/nickrum))
+- [#7079](https://github.com/directus/directus/pull/7079) Add note on npm run dev restart ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#7077](https://github.com/directus/directus/pull/7077) Add note on hook params ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#7136](https://github.com/directus/directus/pull/7136) update typescript-eslint monorepo to v4.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7117](https://github.com/directus/directus/pull/7117) update dependency joi to v17.4.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7115](https://github.com/directus/directus/pull/7115) update dependency knex to v0.95.9 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7110](https://github.com/directus/directus/pull/7110) update dependency sass to v1.37.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7109](https://github.com/directus/directus/pull/7109) update dependency eslint to v7.32.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7094](https://github.com/directus/directus/pull/7094) update dependency @rollup/plugin-commonjs to v20 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7093](https://github.com/directus/directus/pull/7093) update dependency chalk to v4.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7090](https://github.com/directus/directus/pull/7090) update dependency npm-watch to v0.11.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7089](https://github.com/directus/directus/pull/7089) update dependency eslint-plugin-vue to v7.15.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7087](https://github.com/directus/directus/pull/7087) update styfle/cancel-workflow-action action to v0.9.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7085](https://github.com/directus/directus/pull/7085) update dependency rollup to v2.55.1 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.87 (July 28, 2021)
 
 ### :sparkles: New Features
