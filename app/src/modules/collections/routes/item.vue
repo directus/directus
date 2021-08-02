@@ -113,7 +113,7 @@
 						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
+						<v-button class="action-archive warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
