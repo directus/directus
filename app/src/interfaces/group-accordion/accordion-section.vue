@@ -131,12 +131,20 @@ export default defineComponent({
 }
 
 .label {
+	display: flex;
+	align-items: center;
 	margin: 8px 0;
 	color: var(--foreground-subdued);
 	cursor: pointer;
+	transition: color var(--fast) var(--transition);
+}
+
+.label:hover {
+	color: var(--foreground-normal);
 }
 
 .icon {
+	margin-right: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 }
