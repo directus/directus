@@ -145,7 +145,11 @@ export async function validateMigrations(): Promise<boolean> {
 		const completedMigrationFiles = completedMigrations.map((migration) => {
 			return `${migration.version}-${migration.name.toLowerCase()}.js`.replace(/ /g, '-');
 		});
-		const migrationFiles = await fse.readdir(path.resolve(__dirname, '/migrations'));
+		let migrationFiles = await fse.readdir(path.resolve(__dirname, '/migrations'));
+		if (process.env['EXTENSIONS_PATH']) {
+			const extensionMigrationFiles = await fse.readdir(path.resolve(process.env['EXTENSIONS_PATH'], '/migrations'));
+			migrationFiles = migrationFiles.concat(extensionMigrationFiles);
+		}
 		return completedMigrationFiles.every((migration) => migrationFiles.includes(migration));
 	} catch (error) {
 		logger.warn(`Database migrations cannot be found`);
