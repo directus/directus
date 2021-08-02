@@ -1,7 +1,7 @@
 <template>
 	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<div class="label type-title" @click="handleModifier($event, toggle)">
+			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
 			</div>
@@ -139,7 +139,8 @@ export default defineComponent({
 	transition: color var(--fast) var(--transition);
 }
 
-.label:hover {
+.label:hover,
+.label.active {
 	color: var(--foreground-normal);
 }
 
@@ -154,6 +155,6 @@ export default defineComponent({
 }
 
 .fields {
-	margin: 16px 0;
+	margin: var(--form-vertical-gap) 0;
 }
 </style>
