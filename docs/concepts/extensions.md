@@ -18,6 +18,36 @@ Out-of-the-box components are configurable, or altogether new components can be 
 - [Endpoints](/guides/api-endpoints)
 - [Hooks](/guides/api-hooks)
 
+
+## Usefull tips and tricks
+
+Nodemon
+
+Nodemon can be used for automatic reloading.
+Basicly whenever you change a hook or another extension, your directus instance will automaticly restart.
+
+Setup
+
+	1. install nodemon: npm i -g nodemon kill-port
+	2. go to the package.json of your directus project.
+	3. Add the following configuration:
+	
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*"
+    ],
+    "watch": [
+      "extensions/"
+    ],
+    "events": {
+      "restart": "kill-port 8055",
+      "crash": "kill-port 8055"
+    },
+    "delay": 1500
+  }
+	
+	4. run nodemon --exec npx directus start and use this in development
+
 <!-- ## CLI Extensions
 
 TBD
