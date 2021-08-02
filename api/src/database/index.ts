@@ -6,7 +6,6 @@ import logger from '../logger';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
 import fse from 'fs-extra';
-import { Migration } from '../types';
 import path from 'path';
 
 let database: Knex | null = null;
@@ -140,19 +139,32 @@ export async function isInstalled(): Promise<boolean> {
 
 export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
+
 	try {
-		const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
-		const completedMigrationFiles = completedMigrations.map((migration) => {
-			return `${migration.version}-${migration.name.toLowerCase()}.js`.replace(/ /g, '-');
-		});
-		let migrationFiles = await fse.readdir(path.resolve(__dirname, '/migrations'));
-		if (process.env['EXTENSIONS_PATH']) {
-			const extensionMigrationFiles = await fse.readdir(path.resolve(process.env['EXTENSIONS_PATH'], '/migrations'));
-			migrationFiles = migrationFiles.concat(extensionMigrationFiles);
-		}
-		return completedMigrationFiles.every((migration) => migrationFiles.includes(migration));
+		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
+
+		const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+
+		let customMigrationFiles =
+			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+
+		migrationFiles = migrationFiles.filter(
+			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
+		);
+
+		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+
+		migrationFiles.push(...customMigrationFiles);
+
+		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
+		const completedVersions = (await database.select('version').from('directus_migrations')).map(
+			({ version }) => version
+		);
+
+		return requiredVersions.every((version) => completedVersions.includes(version));
 	} catch (error) {
-		logger.warn(`Database migrations cannot be found`);
+		logger.error(`Database migrations cannot be found`);
+		logger.error(error);
 		throw process.exit(1);
 	}
 }
