@@ -1122,9 +1122,12 @@ interfaces:
     value_path: Value Path
     trigger: Trigger
     rate: Rate
-  group-raw:
-    name: Raw Fields
-    description: Show the fields as normal.
+  group-standard:
+    name: Standard Group
+    description: Show the fields as normal with an optional group header.
+    show_header: Show Group Header
+    header_icon: Header Icon
+    header_color: Header Color
 displays:
   boolean:
     boolean: Boolean

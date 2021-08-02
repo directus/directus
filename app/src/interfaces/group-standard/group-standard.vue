@@ -1,5 +1,19 @@
 <template>
-	<div class="group-raw">
+	<div class="group-standard">
+		<v-divider
+			v-if="showHeader"
+			:style="{
+				'--v-divider-label-color': headerColor,
+			}"
+			:inline-title="false"
+			large
+		>
+			<template v-if="headerIcon" #icon><v-icon :name="headerIcon" /></template>
+			<template v-if="field.name">
+				<span class="title">{{ field.name }}</span>
+			</template>
+		</v-divider>
+
 		<v-form
 			:initial-values="initialValues"
 			:fields="fields"
@@ -62,7 +76,26 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+
+		showHeader: {
+			type: Boolean,
+			default: false,
+		},
+		headerIcon: {
+			type: String,
+			default: null,
+		},
+		headerColor: {
+			type: String,
+			default: null,
+		},
 	},
 	emits: ['apply'],
 });
 </script>
+
+<style scoped>
+.v-divider {
+	margin-bottom: calc(var(--form-vertical-gap) / 2);
+}
+</style>
