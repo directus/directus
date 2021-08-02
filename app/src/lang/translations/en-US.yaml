@@ -122,6 +122,8 @@ no_access: No Access
 use_custom: Use Custom
 nullable: Nullable
 allow_null_value: Allow NULL value
+allow_multiple: Allow Multiple
+allow_multiple_to_be_open: Allow Multiple to be Opened
 enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
 field_standard: Standard
 field_presentation: Presentation & Aliases
@@ -909,6 +911,13 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
+  group-accordion:
+    name: Accordion
+    description: Display fields or groups as accordion sections
+    start: Start
+    all_closed: All Closed
+    first_opened: First Opened
+    all_opened: All Opened
   presentation-links:
     presentation-links: Button Links
     links: Links
@@ -1113,9 +1122,12 @@ interfaces:
     value_path: Value Path
     trigger: Trigger
     rate: Rate
-  group-raw:
-    name: Raw Fields
-    description: Show the fields as normal.
+  group-standard:
+    name: Standard Group
+    description: Show the fields as normal with an optional group header.
+    show_header: Show Group Header
+    header_icon: Header Icon
+    header_color: Header Color
 displays:
   boolean:
     boolean: Boolean
