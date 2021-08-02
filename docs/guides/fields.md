@@ -157,8 +157,8 @@ This pane includes any customization options that may be defined by the Display.
 
 ### Conditions
 
-Conditions allow you to alter the current field's setup based on the values of other fields in the form. This
-allows you to show/hide the field, make it readonly, or change the interface options.
+Conditions allow you to alter the current field's setup based on the values of other fields in the form. This allows you
+to show/hide the field, make it readonly, or change the interface options.
 
 Each field can have one or more _rules_. Each rule has the following configuration options:
 
