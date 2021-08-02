@@ -117,6 +117,8 @@ no_access: Без достъп
 use_custom: Персонализиран
 nullable: Може да е null
 allow_null_value: Може да е NULL
+allow_multiple: Множествен избор
+allow_multiple_to_be_open: Отваряне на множество
 enter_value_to_replace_nulls: Въвеждане на нова стойност, която да замени NULL в полето.
 field_standard: Стандартно
 field_presentation: Презентационни и псевдоними
@@ -893,10 +895,16 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   group-accordion:
     name: Акордеон
+    description: Показване на полетата или групите по секции, като акордеон
+    start: Начало
+    all_closed: Всички са затворени
+    first_opened: Първият е отворен
+    all_opened: Всички са отворени
   presentation-links:
     presentation-links: Бутони с връзки
     links: Връзки
@@ -1101,6 +1109,12 @@ interfaces:
     value_path: Път до стойността
     trigger: Задействане
     rate: Оценка
+  group-standard:
+    name: Обикновена група
+    description: Показване на полетата както обикновено, с опция за заглавие.
+    show_header: Заглавие на групата
+    header_icon: Икона на заглавието
+    header_color: Цвят на заглавието
 displays:
   boolean:
     boolean: Булев
