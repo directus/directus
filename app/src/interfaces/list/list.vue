@@ -42,7 +42,7 @@
 			<div class="drawer-item-content">
 				<v-form
 					:disabled="disabled"
-					:fields="fields"
+					:fields="fieldsWithNames"
 					:model-value="activeItem"
 					primary-key="+"
 					@update:model-value="updateValues(active, $event)"
@@ -60,6 +60,7 @@ import Draggable from 'vuedraggable';
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
+import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	components: { Draggable },
@@ -119,6 +120,15 @@ export default defineComponent({
 
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
+		const fieldsWithNames = computed(() =>
+			props.fields?.map((field) => {
+				return {
+					...field,
+					name: formatTitle(field.field!),
+				};
+			})
+		);
+
 		return {
 			t,
 			updateValues,
@@ -133,6 +143,7 @@ export default defineComponent({
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
+			fieldsWithNames,
 		};
 
 		function updateValues(index: number, updatedValues: any) {
