@@ -20,6 +20,7 @@
 					tile,
 					'full-width': fullWidth,
 				},
+				kind,
 			]"
 			:type="type"
 			:disabled="disabled"
@@ -54,6 +55,10 @@ export default defineComponent({
 		autofocus: {
 			type: Boolean,
 			default: false,
+		},
+		kind: {
+			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
+			default: 'normal',
 		},
 		fullWidth: {
 			type: Boolean,
@@ -165,7 +170,24 @@ export default defineComponent({
 			return false;
 		});
 
-		return { sizeClass, onClick, component, isActiveRoute, toggle };
+		const isKind = computed(() => {
+			if (!props.kind) {
+				return 'normal';
+			}
+			if (props.type === 'info') {
+				return 'info';
+			} else if (props.type === 'success') {
+				return 'success';
+			} else if (props.type === 'warning') {
+				return 'warning';
+			} else if (props.type === 'danger') {
+				return 'danger';
+			} else {
+				return 'info';
+			}
+		});
+
+		return { sizeClass, onClick, component, isActiveRoute, isKind, toggle };
 
 		function onClick(event: MouseEvent) {
 			if (props.loading === true) return;

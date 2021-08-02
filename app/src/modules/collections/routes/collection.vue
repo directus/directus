@@ -130,6 +130,7 @@
 							rounded
 							icon
 							class="action-archive"
+							kind="warning"
 							@click="on"
 						>
 							<v-icon name="archive" outline />
