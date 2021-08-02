@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
 
@@ -76,6 +76,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		start: {
+			type: String,
+			enum: ['opened', 'closed', 'first'],
+			default: 'closed',
+		},
 	},
 	emits: ['apply'],
 	setup(props) {
@@ -84,6 +89,20 @@ export default defineComponent({
 		});
 
 		const selection = ref<string[]>([]);
+
+		watch(
+			() => props.start,
+			(start) => {
+				if (start === 'opened') {
+					selection.value = rootFields.value.map((field) => field.field);
+				}
+
+				if (start === 'first') {
+					selection.value = [rootFields.value[0].field];
+				}
+			},
+			{ immediate: true }
+		);
 
 		return { rootFields, selection, toggleAll };
 

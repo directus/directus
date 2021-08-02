@@ -914,6 +914,10 @@ interfaces:
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
+    start: Start
+    all_closed: All Closed
+    first_opened: First Opened
+    all_opened: All Opened
   presentation-links:
     presentation-links: Button Links
     links: Links

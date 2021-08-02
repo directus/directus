@@ -21,9 +21,59 @@ export default defineInterface({
 				options: {
 					label: '$t:allow_multiple_to_be_open',
 				},
+				width: 'half',
 			},
 			schema: {
 				default_value: false,
+			},
+		},
+		{
+			field: 'start',
+			type: 'string',
+			name: '$t:interfaces.group-accordion.start',
+			schema: {
+				default_value: 'closed',
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{
+							text: '$t:interfaces.group-accordion.all_closed',
+							value: 'closed',
+						},
+						{
+							text: '$t:interfaces.group-accordion.first_opened',
+							value: 'first',
+						},
+					],
+				},
+				conditions: [
+					{
+						rule: {
+							multiple: {
+								_eq: true,
+							},
+						},
+						options: {
+							choices: [
+								{
+									text: '$t:interfaces.group-accordion.all_closed',
+									value: 'closed',
+								},
+								{
+									text: '$t:interfaces.group-accordion.first_opened',
+									value: 'first',
+								},
+								{
+									text: '$t:interfaces.group-accordion.all_opened',
+									value: 'opened',
+								},
+							],
+						},
+					},
+				],
 			},
 		},
 	],
