@@ -87,9 +87,11 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		throw new Error(`[generateJoi] Filter doesn't contain filter rule. Passed filter: ${JSON.stringify(filter)}`);
 	}
 
-	const isField = key.startsWith('_') === false;
-
-	if (isField) {
+	if (Object.keys(value)[0]?.startsWith('_') === false) {
+		schema[key] = Joi.object({
+			[key]: generateJoi(value as FieldFilter, options),
+		});
+	} else {
 		const operator = Object.keys(value)[0];
 
 		if (operator === '_eq') {
@@ -183,10 +185,6 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 			const values = Object.values(value)[0] as number[];
 			schema[key] = Joi.number().less(values[0]).greater(values[1]);
 		}
-	} else {
-		schema[key] = Joi.object({
-			[key]: generateJoi(value as FieldFilter, options),
-		});
 	}
 
 	schema[key] = schema[key] ?? Joi.any();
