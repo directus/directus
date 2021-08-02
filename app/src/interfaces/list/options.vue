@@ -2,21 +2,21 @@
 	<div class="grid">
 		<div class="grid-element half">
 			<p class="type-label">{{ t('template') }}</p>
-			<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
+			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
 			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="t('create_new')" />
+			<v-input v-model="addLabel" class="input" :placeholder="t('create_new')" />
 		</div>
 
 		<div class="grid-element full">
 			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
 			<repeater
 				:value="repeaterValue"
-				@input="repeaterValue = $event"
 				:template="`{{ field }} — {{ interface }}`"
 				:fields="repeaterFields"
+				@input="repeaterValue = $event"
 			/>
 		</div>
 	</div>
@@ -26,11 +26,11 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './list.vue';
-import { Field, FieldMeta } from '@/types';
+import { Field, FieldMeta } from '@directus/shared/types';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
+import { DeepPartial } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { Repeater },
 	props: {
 		value: {
@@ -38,6 +38,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -115,7 +116,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: t('interface'),
+				name: t('interface_label'),
 				field: 'interface',
 				type: 'string',
 				meta: {

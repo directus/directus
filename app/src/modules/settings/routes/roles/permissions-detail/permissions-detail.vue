@@ -7,11 +7,11 @@
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
 		@cancel="close"
 	>
-		<template #sidebar v-if="!loading">
+		<template v-if="!loading" #sidebar>
 			<tabs v-model:current-tab="currentTab" :tabs="tabs" />
 		</template>
 
-		<div class="content" v-if="!loading">
+		<div v-if="!loading" class="content">
 			<permissions
 				v-if="currentTab[0] === 'permissions'"
 				v-model:permission="permission"
@@ -38,7 +38,7 @@
 			/>
 		</div>
 
-		<template #actions v-if="!loading">
+		<template v-if="!loading" #actions>
 			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
 		</template>
 	</v-drawer>
@@ -48,7 +48,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
-import { Permission, Role } from '@/types';
+import { Permission, Role } from '@directus/shared/types';
 import { useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
@@ -63,7 +63,6 @@ import { appMinimalPermissions } from '../app-permissions';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 
 export default defineComponent({
-	emits: ['refresh'],
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
 	props: {
 		roleKey: {
@@ -75,6 +74,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['refresh'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -101,7 +101,7 @@ export default defineComponent({
 				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 			}
 
-			return t('public') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+			return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });

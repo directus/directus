@@ -1,9 +1,34 @@
+## Be aware:
+#  Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+# "void", etc are stripped out. See
+# https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+# and
+# https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#
+# Illegal words:
+# 'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+# 'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+# 'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+# 'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+# 'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+# 'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+# 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+# 'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+# 'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+# 'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+# 'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+# 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+# 'Proxy', 'Intl'
+
 edit_field: Edit Field
+conditions: Conditions
 item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+and: And
+or: Or
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -47,7 +72,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
-public: Public
+public_label: Public
 public_description: Controls what API data is available without authenticating.
 not_allowed: Not Allowed
 directus_version: Directus Version
@@ -261,7 +286,7 @@ move_to_folder: Move to Folder
 move: Move
 system: System
 add_field_related: Add Field to Related Collection
-interface: Interface
+interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -291,7 +316,7 @@ drag_mode: Drag Mode
 cancel_crop: Cancel Crop
 original: Original
 url: URL
-import: Import
+import_label: Import
 file_details: File Details
 dimensions: Dimensions
 size: Size
@@ -420,6 +445,7 @@ errors:
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
+  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -511,6 +537,7 @@ upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
+interface_options: Interface Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -536,6 +563,7 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+rule: Rule
 user: User
 no_presets: No Presets
 no_presets_copy: No presets or bookmarks have been saved yet.
@@ -817,13 +845,13 @@ referential_action_cascade: Delete the {collection} item (cascade)
 referential_action_set_null: Nullify the {field} field
 referential_action_set_default: Set {field} to its default value
 choose_action: Choose Action
-continue: Continue
+continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 creating_webhook: Creating Webhook
-default: Default
-delete: Delete
+default_label: Default
+delete_label: Delete
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
@@ -1002,6 +1030,12 @@ interfaces:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
+  system-folder:
+    folder: Folder
+    description:  Select a folder
+    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    root_name: File Library Root
+    system_default: System Defaults
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices

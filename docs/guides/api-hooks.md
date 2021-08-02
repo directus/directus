@@ -170,6 +170,27 @@ properties:
 - `schema` - The current API schema in use
 - `database` - Current database transaction
 
+::: tip Input
+
+The `items.*.before` hooks get the raw input payload as the first parameter, with the context parameter as the second
+parameter.
+
+:::
+
+#### Items read
+
+In contrast to the other `items` events (`items.create`, `items.update`, `items.delete`) the `items.read` doesn't
+receive the primary key(s) of the items but the query used:
+
+- `event` — Full event string
+- `accountability` — Information about the current user
+- `collection` — Collection that is being modified
+- `query` — The query used to get the data
+- `action` — Action that is performed
+- `payload` — Payload of the request
+- `schema` - The current API schema in use
+- `database` - Current database transaction
+
 #### Auth
 
 The `auth` and `oauth` hooks have the following context properties:

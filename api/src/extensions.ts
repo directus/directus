@@ -7,8 +7,8 @@ import {
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackage,
-} from '@directus/shared/utils';
-import { APP_EXTENSION_TYPES, SHARED_DEPS } from '@directus/shared/constants';
+} from '@directus/shared/utils/node';
+import { APP_EXTENSION_TYPES, APP_SHARED_DEPS } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
@@ -30,10 +30,15 @@ let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
 
 export async function initializeExtensions(): Promise<void> {
-	await ensureExtensionDirs(env.EXTENSIONS_PATH);
-	extensions = await getExtensions();
+	try {
+		await ensureExtensionDirs(env.EXTENSIONS_PATH);
+		extensions = await getExtensions();
+	} catch (err) {
+		logger.warn(`Couldn't load extensions`);
+		logger.warn(err);
+	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP ?? env.NODE_ENV !== 'development') {
 		extensionBundles = await generateExtensionBundles();
 	}
 
@@ -73,7 +78,7 @@ async function getExtensions(): Promise<Extension[]> {
 }
 
 async function generateExtensionBundles() {
-	const sharedDepsMapping = await getSharedDepsMapping(SHARED_DEPS);
+	const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 	const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 		find: name,
 		replacement: path,

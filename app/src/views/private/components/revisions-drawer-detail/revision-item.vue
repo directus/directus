@@ -1,5 +1,5 @@
 <template>
-	<div class="revision-item" @click="$emit('click')" :class="{ last }">
+	<div class="revision-item" :class="{ last }" @click="$emit('click')">
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -24,7 +24,6 @@ import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		revision: {
 			type: Object as PropType<Revision>,
@@ -35,6 +34,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props) {
 		const { t } = useI18n();
 

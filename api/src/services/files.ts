@@ -32,6 +32,14 @@ export class FilesService extends ItemsService {
 	): Promise<PrimaryKey> {
 		const payload = clone(data);
 
+		if ('folder' in payload === false) {
+			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
+
+			if (settings?.storage_default_folder) {
+				payload.folder = settings.storage_default_folder;
+			}
+		}
+
 		if (primaryKey !== undefined) {
 			await this.updateOne(primaryKey, payload, { emitEvents: false });
 
@@ -46,9 +54,10 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type));
+		const fileExtension =
+			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
-		payload.filename_disk = primaryKey + fileExtension;
+		payload.filename_disk = primaryKey + (fileExtension || '');
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';

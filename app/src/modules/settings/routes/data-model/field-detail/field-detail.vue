@@ -1,9 +1,9 @@
 <template>
 	<v-dialog
+		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 		persistent
 		:model-value="isOpen"
 		@esc="cancelField"
-		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
 		<v-card class="auto-translations">
 			<v-card-title>{{ t('create_translations') }}</v-card-title>
@@ -30,12 +30,12 @@
 	<v-drawer
 		v-else
 		:model-value="isOpen"
-		@update:model-value="cancelField"
-		@cancel="cancelField"
 		:title="title"
 		:subtitle="localType ? t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
+		@update:model-value="cancelField"
+		@cancel="cancelField"
 	>
 		<template #sidebar>
 			<setup-tabs v-model:current="currentTab" :tabs="tabs" :type="localType" />
@@ -83,13 +83,15 @@
 				:collection="collection"
 				:type="localType"
 			/>
+
+			<setup-conditions v-if="currentTab[0] === 'conditions'" :collection="collection" :type="localType" />
 		</div>
 
 		<template #actions>
 			<setup-actions
+				v-model:current="currentTab"
 				:saving="saving"
 				:collection="collection"
-				v-model:current="currentTab"
 				:tabs="tabs"
 				:is-existing="field !== '+'"
 				@save="saveField"
@@ -101,11 +103,11 @@
 			<v-card>
 				<v-card-title>{{ t('enter_value_to_replace_nulls') }}</v-card-title>
 				<v-card-text>
-					<v-input placeholder="NULL" v-model="nullValueOverride" />
+					<v-input v-model="nullValueOverride" placeholder="NULL" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="nullValuesDialog = false">{{ t('cancel') }}</v-button>
-					<v-button :disabled="nullValueOverride === null" @click="saveNullOverride" :loading="nullOverrideSaving">
+					<v-button :disabled="nullValueOverride === null" :loading="nullOverrideSaving" @click="saveNullOverride">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -125,6 +127,7 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
+import SetupConditions from './components/conditions.vue';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
@@ -134,7 +137,7 @@ import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
-import { localTypes } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -149,6 +152,7 @@ export default defineComponent({
 		SetupTranslations,
 		SetupInterface,
 		SetupDisplay,
+		SetupConditions,
 	},
 	props: {
 		collection: {
@@ -160,7 +164,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof localTypes[number]>,
+			type: String as PropType<LocalType>,
 			default: null,
 		},
 	},
@@ -192,8 +196,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: typeof localTypes[number];
-			type = getLocalTypeForField(props.collection, props.field);
+			const type = getLocalTypeForField(props.collection, props.field) || 'standard';
 
 			return type;
 		});
@@ -249,7 +252,7 @@ export default defineComponent({
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: t('interface'),
+						text: t('interface_label'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
@@ -284,6 +287,12 @@ export default defineComponent({
 						]
 					);
 				}
+
+				tabs.push({
+					text: t('conditions'),
+					value: 'conditions',
+					disabled: interfaceDisplayDisabled(),
+				});
 
 				return tabs;
 			});

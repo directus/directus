@@ -19,7 +19,6 @@ import { defineComponent, computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -38,7 +37,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const localActive = ref(props.startOpen);
 

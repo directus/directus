@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceListM2A from './list-m2a.vue';
 
 export default defineInterface({

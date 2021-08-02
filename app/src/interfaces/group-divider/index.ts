@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceGroupDivider from './group-divider.vue';
 
 export default defineInterface({
@@ -66,6 +66,20 @@ export default defineInterface({
 				interface: 'boolean',
 				options: {
 					label: '$t:interfaces.presentation-divider.inline_title_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'defaultActive',
+			name: '$t:interfaces.presentation-divider.default_active',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.presentation-divider.default_active_label',
 				},
 			},
 			schema: {

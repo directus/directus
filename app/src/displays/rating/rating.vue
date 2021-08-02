@@ -3,7 +3,7 @@
 		<v-icon small name="star" />
 		{{ value }}
 	</span>
-	<div v-else class="rating detailed" v-tooltip.bottom.start="value">
+	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
 		</div>

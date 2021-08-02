@@ -19,7 +19,6 @@ import { defineComponent, ref, computed } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
-	emits: ['update:active', 'click', 'close'],
 	props: {
 		active: {
 			type: Boolean,
@@ -47,6 +46,7 @@ export default defineComponent({
 		},
 		...sizeProps,
 	},
+	emits: ['update:active', 'click', 'close'],
 	setup(props, { emit }) {
 		const internalLocalActive = ref(true);
 

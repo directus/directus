@@ -13,7 +13,6 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -40,6 +39,7 @@ export default defineComponent({
 			default: 'sans-serif',
 		},
 	},
+	emits: ['input'],
 });
 </script>
 

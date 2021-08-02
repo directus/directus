@@ -7,7 +7,7 @@
 		</template>
 
 		<div class="folders">
-			<v-item-group scope="files-navigation" multiple v-model="openFolders">
+			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group to="/files" value="root" scope="files-navigation" exact disable-groupable-parent>
 					<template #activator>
 						<v-list-item-icon>
@@ -56,7 +56,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, watch } from 'vue';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 

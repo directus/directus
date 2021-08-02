@@ -4,7 +4,6 @@ export * from './assets';
 export * from './ast';
 export * from './collection';
 export * from './extensions';
-export * from './field';
 export * from './files';
 export * from './graphql';
 export * from './items';

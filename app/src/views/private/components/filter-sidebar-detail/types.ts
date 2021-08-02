@@ -3,8 +3,3 @@ export type FieldTree = {
 	name: string;
 	children?: FieldTree[];
 };
-
-export type OperatorType = {
-	type: string;
-	operators: string[];
-};

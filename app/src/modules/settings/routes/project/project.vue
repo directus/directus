@@ -8,7 +8,7 @@
 		</template>
 
 		<template #actions>
-			<v-button icon rounded :disabled="noEdits" :loading="saving" @click="save" v-tooltip.bottom="t('save')">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="noEdits" :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -18,7 +18,7 @@
 		</template>
 
 		<div class="settings">
-			<v-form :initial-values="initialValues" v-model="edits" :fields="fields" :primary-key="1" />
+			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
 
 		<template #sidebar>

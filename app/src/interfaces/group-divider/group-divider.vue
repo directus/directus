@@ -1,5 +1,5 @@
 <template>
-	<v-detail>
+	<v-detail :start-open="defaultActive">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:class="{ margin: icon || title, active }"
@@ -35,7 +35,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { Field, ValidationError } from '@/types';
+import { ValidationError } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -52,6 +53,10 @@ export default defineComponent({
 			default: null,
 		},
 		inlineTitle: {
+			type: Boolean,
+			default: false,
+		},
+		defaultActive: {
 			type: Boolean,
 			default: false,
 		},
@@ -97,6 +102,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['apply'],
 });
 </script>
 

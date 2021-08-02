@@ -9,7 +9,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		active: {
 			type: Boolean,
@@ -24,6 +23,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['click'],
 	setup(props, { emit }) {
 		return { onClick };
 

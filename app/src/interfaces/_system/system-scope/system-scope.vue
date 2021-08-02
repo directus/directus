@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :model-value="value" @update:model-value="onSelect" :items="options" />
+		<v-select v-else :model-value="value" :items="options" @update:model-value="onSelect" />
 		<drawer-collection
 			v-if="collection !== null"
 			:active="collection !== null"
+			:collection="collection"
 			@update:active="collection = null"
 			@input="onSelectItem"
-			:collection="collection"
 		/>
 	</div>
 </template>
@@ -20,7 +20,6 @@ import api from '@/api';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
-	emits: ['input'],
 	components: {
 		DrawerCollection,
 	},
@@ -30,6 +29,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

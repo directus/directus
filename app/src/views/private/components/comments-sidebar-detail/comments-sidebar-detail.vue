@@ -2,13 +2,13 @@
 	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
-		<v-progress-linear indeterminate v-if="loading" />
+		<v-progress-linear v-if="loading" indeterminate />
 
 		<div v-else-if="!activity || activity.length === 0" class="empty">
 			<div class="content">{{ t('no_comments') }}</div>
 		</div>
 
-		<template v-else v-for="group in activity" :key="group.date.toString()">
+		<template v-for="group in activity" v-else :key="group.date.toString()">
 			<v-divider>{{ group.dateFormatted }}</v-divider>
 
 			<template v-for="item in group.activity" :key="item.id">

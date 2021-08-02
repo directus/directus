@@ -1,5 +1,5 @@
 <template>
-	<div class="v-text-overflow" ref="el" v-tooltip="hasEllipsis && text">
+	<div ref="el" v-tooltip="hasEllipsis && text" class="v-text-overflow">
 		{{ text }}
 	</div>
 </template>

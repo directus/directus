@@ -76,7 +76,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
+					<v-button :disabled="renameValue === null" :loading="renameSaving" @click="renameSave">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -91,7 +91,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="moveSave" :loading="moveSaving">{{ t('save') }}</v-button>
+					<v-button :loading="moveSaving" @click="moveSave">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -106,7 +106,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="deleteSave" :loading="deleteSaving">{{ t('delete') }}</v-button>
+					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -116,14 +116,14 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	name: 'navigation-folder',
+	name: 'NavigationFolder',
 	components: { FolderPicker },
 	props: {
 		folder: {
