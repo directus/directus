@@ -40,12 +40,10 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _storage: IStorage;
 	private _activity?: ActivityHandler<TypeOf<T, 'directus_activity'>>;
 	private _collections?: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
-	private _fields?: FieldsHandler<TypeOf<T, 'directus_fields'>>;
 	private _files?: FilesHandler<TypeOf<T, 'directus_files'>>;
 	private _folders?: FoldersHandler<TypeOf<T, 'directus_folders'>>;
 	private _permissions?: PermissionsHandler<TypeOf<T, 'directus_permissions'>>;
 	private _presets?: PresetsHandler<TypeOf<T, 'directus_presets'>>;
-	private _relations?: RelationsHandler<TypeOf<T, 'directus_relations'>>;
 	private _revisions?: RevisionsHandler<TypeOf<T, 'directus_revisions'>>;
 	private _roles?: RolesHandler<TypeOf<T, 'directus_roles'>>;
 	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
@@ -54,10 +52,17 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _utils?: UtilsHandler;
 	private _graphql?: GraphQLHandler;
 
+	private _fields: {
+		[collection: string]: FieldsHandler<any>;
+	};
+
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
 	};
 
+	private _relations: {
+		[collection: string]: RelationsHandler<any>;
+	};
 	private _singletons: {
 		[collection: string]: SingletonHandler<any>;
 	};
@@ -72,6 +77,8 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
 		this._singletons = {};
+		this._relations = {};
+		this._fields = {};
 	}
 
 	get auth(): IAuth {
@@ -97,10 +104,6 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		);
 	}
 
-	get fields(): FieldsHandler<TypeOf<T, 'directus_fields'>> {
-		return this._fields || (this._fields = new FieldsHandler<TypeOf<T, 'directus_fields'>>(this.transport));
-	}
-
 	get files(): FilesHandler<TypeOf<T, 'directus_files'>> {
 		return this._files || (this._files = new FilesHandler<TypeOf<T, 'directus_files'>>(this.transport));
 	}
@@ -118,10 +121,6 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 
 	get presets(): PresetsHandler<TypeOf<T, 'directus_presets'>> {
 		return this._presets || (this._presets = new PresetsHandler<TypeOf<T, 'directus_presets'>>(this.transport));
-	}
-
-	get relations(): RelationsHandler<TypeOf<T, 'directus_relations'>> {
-		return this._relations || (this._relations = new RelationsHandler<TypeOf<T, 'directus_relations'>>(this.transport));
 	}
 
 	get revisions(): RevisionsHandler<TypeOf<T, 'directus_revisions'>> {
@@ -159,7 +158,17 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		);
 	}
 
+	fields<C extends string, I = TypeOf<T, C>>(collection: C): FieldsHandler<I> {
+		return this._fields[collection] || (this._fields[collection] = new FieldsHandler<T>(collection, this.transport));
+	}
+
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
+	}
+
+	relations<C extends string, I = TypeOf<T, C>>(collection: string): RelationsHandler<I> {
+		return (
+			this._relations[collection] || (this._relations[collection] = new RelationsHandler<T>(collection, this.transport))
+		);
 	}
 }

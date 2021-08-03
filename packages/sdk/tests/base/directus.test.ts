@@ -114,6 +114,9 @@ describe('sdk', function () {
 	it('has items', async function () {
 		expect(sdk.items('collection')).toBeInstanceOf(ItemsHandler);
 	});
+	it('has items', async function () {
+		expect(sdk.relations('collection')).toBeInstanceOf(RelationsHandler);
+	});
 
 	test('can run graphql', async function (url, nock) {
 		const scope = nock()
