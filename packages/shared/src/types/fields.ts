@@ -63,4 +63,5 @@ export type Condition = {
 	readonly?: boolean;
 	hidden?: boolean;
 	options?: Record<string, any>;
+	required?: boolean;
 };

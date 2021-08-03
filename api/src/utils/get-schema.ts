@@ -119,7 +119,6 @@ async function getDatabaseSchema(
 				field: column.column_name,
 				defaultValue: getDefaultValue(column) ?? null,
 				nullable: column.is_nullable ?? true,
-				required: false,
 				type: getLocalType(column) || 'alias',
 				dbType: column.data_type,
 				precision: column.numeric_precision || null,
@@ -149,7 +148,6 @@ async function getDatabaseSchema(
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
-			required: field.required ?? false,
 			type: existing
 				? getLocalType(schemaOverview[field.collection].columns[field.field], {
 						special: field.special ? toArray(field.special) : [],

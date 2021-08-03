@@ -1,7 +1,8 @@
 import { Knex } from 'knex';
 import { cloneDeep, merge, uniq, uniqWith, flatten } from 'lodash';
 import getDatabase from '../database';
-import { FailedValidationException, ForbiddenException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
+import { FailedValidationException } from '@directus/shared/exceptions';
 import { validatePayload } from '@directus/shared/utils';
 import {
 	AbstractServiceOptions,
@@ -235,9 +236,8 @@ export class AuthorizationService {
 			);
 
 			const notNullable = field.nullable === false && hasGenerateSpecial === false;
-			const isRequired = field.required === true && hasGenerateSpecial === false;
 
-			if (notNullable || isRequired) {
+			if (notNullable) {
 				requiredColumns.push(field);
 			}
 		}

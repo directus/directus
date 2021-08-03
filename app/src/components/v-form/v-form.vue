@@ -154,7 +154,7 @@ export default defineComponent({
 
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
-				if (formFields.value[i].meta && !formFields.value[i].meta.readonly) {
+				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly) {
 					return i;
 				}
 			}
@@ -237,6 +237,7 @@ export default defineComponent({
 									readonly: matchingCondition.readonly,
 									options: matchingCondition.options,
 									hidden: matchingCondition.hidden,
+									required: matchingCondition.required,
 								}),
 							};
 						}
