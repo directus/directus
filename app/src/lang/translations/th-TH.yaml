@@ -20,15 +20,24 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: แก้ไขฟิลด์
+conditions: เงื่อนไข
 item_revision: ประวัติรายการ
 duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
+group: กลุ่ม
+and: และ
+or: หรือ
 fill_width: กว้างเติมเต็ม
 field_name_translations: คำแปลชื่อฟิลด์
 enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
 add_field: เพิ่มฟิลด์
 role_name: ชื่อบทบาท
+branch: สาขา
+leaf: ใบ
+indeterminate: คลุมเครือ
+exclusive: เฉพาะ
+children: ลูก
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
 edited: ค่าที่ถูกแก้ไข
@@ -62,6 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: ออกจากระบบ
   SESSION_EXPIRED: เซสชั่นหมดอายุแล้ว
+public_label: สาธารณะ
 public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
 not_allowed: ไม่อนุญาต
 directus_version: เวอร์ชั่น Directus
@@ -107,6 +117,8 @@ no_access: ไม่ให้เข้าถึงได้ทั้งหมด
 use_custom: ใช้ค่ากำหนดเอง
 nullable: สามารถเป็นค่าว่างได้
 allow_null_value: อนุญาตเป็นค่าว่างได้
+allow_multiple: ยอมให้มีหลากหลาย
+allow_multiple_to_be_open: ยอมให้เปิดได้หลากหลาย
 enter_value_to_replace_nulls: โปรดป้อนค่าใหม่ที่ไม่ใช่ค่าว่างในฟิลด์นี้
 field_standard: มาตรฐาน
 field_presentation: การแสดงผลและนาวแผง
@@ -117,6 +129,7 @@ field_m2a: ความสัมพันธ์แบบ M2A
 field_o2m: ความสัมพันธ์แบบ O2M
 field_m2m: ความสัมพันธ์แบบ M2M
 field_translations: การแปลภาษา
+field_group: กลุ่มของฟิลด์
 item_permissions: สิทธิ์การเข้าถึงไอเท็ม
 field_permissions: สิทธิ์การเข้าถึงฟิลด์
 field_validation: การตรวจสอบฟิลด์
@@ -299,6 +312,7 @@ drag_mode: โหลดคลิ๊กแล้วลาก
 cancel_crop: ยกเลิกการครอบตัด
 original: ต้นฉบับ
 url: URL
+import_label: นำ​เข้า
 file_details: รายละเอียดไฟล์
 dimensions: ขนาด
 size: ขนาด
@@ -427,6 +441,7 @@ errors:
   USER_SUSPENDED: ผู้ใช้ถูกระงับ
   CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
   UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+  UNPROCESSABLE_ENTITY: เอ็นติตี้ที่ประมวลผลไม่ได้
   INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
 value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
 bookmark_name: ชื่อบุ๊กมาร์ก...
@@ -495,6 +510,10 @@ operators:
   nnull: ไม่ใช่ค่าว่าง
   contains: ประกอบด้วย
   ncontains: ไม่ประกอบด้วย
+  starts_with: เริ่มต้นด้วย
+  nstarts_with: ไม่ได้เริ่มด้วย
+  ends_with: ลงท้ายด้วย
+  nends_with: ไม่ได้ลงท้ายด้วย
   between: อยู่ระหว่าง
   nbetween: ไม่อยู่ระหว่าง
   empty: เป็นค่าว่างเปล่า
@@ -539,6 +558,7 @@ no_results_copy: ปรับแต่งหรือล้างตัวกร
 clear_filters: ล้างตัวกรอง
 saves_automatically: บันทึกอัตโนมัติ
 role: บทบาท
+rule: กฎ
 user: ผู้ใช้
 no_presets: ไม่มีค่าที่ตั้งไว้ล่วงหน้า
 no_presets_copy: ยังไม่มีค่าที่ตั้งไว้ล่วงหน้าหรือบุ๊กมาร์กที่ถูกบันทึกไว้
@@ -814,6 +834,7 @@ referential_action_cascade: ลบ {collection} รายการ (เรีย
 referential_action_set_null: "ทำให้ฟิลด์ {field} เป็นโมฆะ\n"
 referential_action_set_default: ตั้งค่า {field} เป็นค่าเริ่มต้น
 choose_action: เลือกการกระทำ
+continue_label: ดำเนินการต่อ
 editing_role: 'บทบาท {role}'
 creating_webhook: สร้าง webhook
 delete_are_you_sure: >-
@@ -1067,6 +1088,9 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  group-standard:
+    header_icon: ไอคอนส่วนหัว
+    header_color: สีส่วนหัว
 displays:
   boolean:
     boolean: ค่าบูลีน
