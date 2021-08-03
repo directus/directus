@@ -154,7 +154,7 @@ export default defineComponent({
 
 		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
-				if (formFields.value[i].meta && !formFields.value[i].meta.readonly) {
+				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly) {
 					return i;
 				}
 			}
@@ -167,8 +167,18 @@ export default defineComponent({
 		 * admin can be made aware
 		 */
 		const unknownValidationErrors = computed(() => {
+			const fieldsInGroup = getFieldsForGroup(props.group);
+			const fieldsInGroupKeys = fieldsInGroup.map((field) => field.field);
 			const fieldKeys = formFields.value.map((field: FieldRaw) => field.field);
-			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
+			return props.validationErrors.filter((error) => {
+				let included = fieldKeys.includes(error.field) === false && fieldsInGroupKeys.includes(error.field);
+
+				if (props.group === null) {
+					included = included && fieldsInGroup.find((field) => field.field === error.field)?.meta?.group === null;
+				}
+
+				return included;
+			});
 		});
 
 		provide('values', values);
@@ -237,6 +247,7 @@ export default defineComponent({
 									readonly: matchingCondition.readonly,
 									options: matchingCondition.options,
 									hidden: matchingCondition.hidden,
+									required: matchingCondition.required,
 								}),
 							};
 						}

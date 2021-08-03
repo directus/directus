@@ -93,97 +93,107 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		});
 	} else {
 		const operator = Object.keys(value)[0];
+		const compareValue = Object.values(value)[0];
 
 		if (operator === '_eq') {
-			schema[key] = Joi.any().equal(Object.values(value)[0]);
+			schema[key] = (schema[key] ?? Joi.any()).equal(compareValue);
 		}
 
 		if (operator === '_neq') {
-			schema[key] = Joi.any().not(Object.values(value)[0]);
+			schema[key] = (schema[key] ?? Joi.any()).not(compareValue);
 		}
 
 		if (operator === '_contains') {
-			schema[key] = Joi.string().contains(Object.values(value)[0]);
+			schema[key] = (schema[key] ?? Joi.string()).contains(compareValue);
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = Joi.string().ncontains(Object.values(value)[0]);
+			schema[key] = (schema[key] ?? Joi.string()).ncontains(compareValue);
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 			});
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 			});
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_in') {
-			schema[key] = Joi.any().equal(...(Object.values(value)[0] as (string | number)[]));
+			schema[key] = (schema[key] ?? Joi.any()).equal(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_nin') {
-			schema[key] = Joi.any().not(...(Object.values(value)[0] as (string | number)[]));
+			schema[key] = (schema[key] ?? Joi.any()).not(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Joi.number().greater(Number(Object.values(value)[0]));
+			schema[key] = (schema[key] ?? Joi.number()).greater(Number(compareValue));
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Joi.number().min(Number(Object.values(value)[0]));
+			schema[key] = (schema[key] ?? Joi.number()).min(Number(compareValue));
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Joi.number().less(Number(Object.values(value)[0]));
+			schema[key] = (schema[key] ?? Joi.number()).less(Number(compareValue));
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Joi.number().max(Number(Object.values(value)[0]));
+			schema[key] = (schema[key] ?? Joi.number()).max(Number(compareValue));
 		}
 
 		if (operator === '_null') {
-			schema[key] = Joi.any().valid(null);
+			schema[key] = (schema[key] ?? Joi.any()).valid(null);
 		}
 
 		if (operator === '_nnull') {
-			schema[key] = Joi.any().invalid(null);
+			schema[key] = (schema[key] ?? Joi.any()).invalid(null);
 		}
 
 		if (operator === '_empty') {
-			schema[key] = Joi.any().valid('');
+			schema[key] = (schema[key] ?? Joi.any()).valid('');
 		}
 
 		if (operator === '_nempty') {
-			schema[key] = Joi.any().invalid('');
+			schema[key] = (schema[key] ?? Joi.any()).invalid('');
 		}
 
 		if (operator === '_between') {
-			const values = Object.values(value)[0] as number[];
-			schema[key] = Joi.number().greater(values[0]).less(values[1]);
+			const values = compareValue as number[];
+			schema[key] = (schema[key] ?? Joi.number()).greater(values[0]).less(values[1]);
 		}
 
 		if (operator === '_nbetween') {
-			const values = Object.values(value)[0] as number[];
-			schema[key] = Joi.number().less(values[0]).greater(values[1]);
+			const values = compareValue as number[];
+			schema[key] = (schema[key] ?? Joi.number()).less(values[0]).greater(values[1]);
+		}
+
+		if (operator === '_submitted') {
+			schema[key] = (schema[key] ?? Joi.any()).required();
+		}
+
+		if (operator === '_regex') {
+			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
+			schema[key] = (schema[key] ?? Joi.string()).regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
 		}
 	}
 

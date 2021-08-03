@@ -1,10 +1,10 @@
 import { ValidationErrorItem } from 'joi';
-import { FilterOperator, ValidationOperator } from '../types';
+import { FilterOperator } from '../types';
 import { BaseException } from './base';
 
 type FailedValidationExtensions = {
 	field: string;
-	type: FilterOperator | ValidationOperator;
+	type: FilterOperator | 'required' | 'regex';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
