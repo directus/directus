@@ -1017,7 +1017,7 @@ interfaces:
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
     imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti dell'immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1073,7 +1073,7 @@ interfaces:
     maximum_value: Valore massimo
     step_interval: Intervallo
     slug: Slugify
-    slug_label: Rendi il valore inserito a prova di URL
+    slug_label: Rendi il valore a prova di URL
   input-multiline:
     textarea: Area di testo
     description: Inserisci testo su più righe
@@ -1155,7 +1155,7 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format_title: Formatta il titolo
-    format_title_label: Formattazione automatica maiuscole/minuscole
+    format_title_label: Maiuscole/minuscole automatiche
     bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
