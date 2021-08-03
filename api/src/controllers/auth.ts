@@ -323,7 +323,6 @@ router.get(
 			emitStatus('fail');
 
 			logger.warn(error);
-			logger.warn(req.session.grant.response);
 
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
