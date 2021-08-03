@@ -132,9 +132,13 @@ async function getDatabaseSchema(
 
 	const fields = [
 		...(await database
-			.select<
-				{ id: number; collection: string; field: string; required: boolean; special: string; note: string | null }[]
-			>('id', 'collection', 'field', 'required', 'special', 'note')
+			.select<{ id: number; collection: string; field: string; special: string; note: string | null }[]>(
+				'id',
+				'collection',
+				'field',
+				'special',
+				'note'
+			)
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
