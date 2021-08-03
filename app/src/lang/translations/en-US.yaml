@@ -938,6 +938,8 @@ interfaces:
     description: Choose between multiple options via nested checkboxes
     value_combining: Value Combining
     value_combining_note: Controls what value is stored when nested selections are made.
+    show_all: Show All
+    show_selected: Show Selected
   input-code:
     code: Code
     description: Write or share code snippets
