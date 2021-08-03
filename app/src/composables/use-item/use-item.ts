@@ -8,8 +8,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { validatePayload } from '@directus/shared/utils';
-import { Filter, Item } from '@directus/shared/types';
-import { isNil, flatten } from 'lodash';
+import { Filter, Item, Field } from '@directus/shared/types';
+import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
 
 type UsableItem = {
@@ -317,7 +317,36 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			_and: [] as Filter['_and'],
 		} as Filter;
 
-		const requiredFields = fields.value.filter((field) => field.meta?.required === true);
+		const applyConditions = (field: Field) => {
+			if (field.meta && Array.isArray(field.meta?.conditions)) {
+				const conditions = [...field.meta.conditions].reverse();
+
+				const matchingCondition = conditions.find((condition) => {
+					const errors = validatePayload(condition.rule, item, { requireAll: true });
+					return errors.length === 0;
+				});
+
+				if (matchingCondition) {
+					return {
+						...field,
+						meta: merge({}, field.meta || {}, {
+							readonly: matchingCondition.readonly,
+							options: matchingCondition.options,
+							hidden: matchingCondition.hidden,
+							required: matchingCondition.required,
+						}),
+					};
+				}
+
+				return field;
+			} else {
+				return field;
+			}
+		};
+
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(field));
+
+		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
 		for (const field of requiredFields) {
 			if (isNew.value === true && isNil(field.schema?.default_value)) {

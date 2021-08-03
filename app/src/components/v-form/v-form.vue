@@ -167,8 +167,18 @@ export default defineComponent({
 		 * admin can be made aware
 		 */
 		const unknownValidationErrors = computed(() => {
+			const fieldsInGroup = getFieldsForGroup(props.group);
+			const fieldsInGroupKeys = fieldsInGroup.map((field) => field.field);
 			const fieldKeys = formFields.value.map((field: FieldRaw) => field.field);
-			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
+			return props.validationErrors.filter((error) => {
+				let included = fieldKeys.includes(error.field) === false && fieldsInGroupKeys.includes(error.field);
+
+				if (props.group === null) {
+					included = included && fieldsInGroup.find((field) => field.field === error.field)?.meta?.group === null;
+				}
+
+				return included;
+			});
 		});
 
 		provide('values', values);
