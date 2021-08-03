@@ -15,6 +15,7 @@ type CollectionsOverview = {
 				field: string;
 				defaultValue: any;
 				nullable: boolean;
+				required: boolean;
 				type: Type | 'unknown' | 'alias';
 				dbType: string | null;
 				precision: number | null;

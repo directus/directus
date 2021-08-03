@@ -449,6 +449,7 @@ errors:
   UNKNOWN: Unexpected Error
   UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
+  NOT_NULL_VIOLATION: Value can't be null
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
@@ -905,6 +906,7 @@ sort_direction: Sort Direction
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
+require_value_to_be_set: Require value to be set
 translation: Translation
 value: Value
 view_project: View Project

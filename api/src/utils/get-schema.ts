@@ -119,6 +119,7 @@ async function getDatabaseSchema(
 				field: column.column_name,
 				defaultValue: getDefaultValue(column) ?? null,
 				nullable: column.is_nullable ?? true,
+				required: false,
 				type: getLocalType(column) || 'alias',
 				dbType: column.data_type,
 				precision: column.numeric_precision || null,
@@ -132,13 +133,9 @@ async function getDatabaseSchema(
 
 	const fields = [
 		...(await database
-			.select<{ id: number; collection: string; field: string; special: string; note: string | null }[]>(
-				'id',
-				'collection',
-				'field',
-				'special',
-				'note'
-			)
+			.select<
+				{ id: number; collection: string; field: string; required: boolean; special: string; note: string | null }[]
+			>('id', 'collection', 'field', 'required', 'special', 'note')
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
@@ -152,6 +149,7 @@ async function getDatabaseSchema(
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
+			required: field.required ?? false,
 			type: existing
 				? getLocalType(schemaOverview[field.collection].columns[field.field], {
 						special: field.special ? toArray(field.special) : [],
