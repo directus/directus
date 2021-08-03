@@ -443,6 +443,7 @@ errors:
   UNKNOWN: Errore Imprevisto
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
+  NOT_NULL_VIOLATION: Il valore non può essere nullo
 value_hashed: Valore cifrato in modo sicuro
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro

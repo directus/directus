@@ -217,6 +217,8 @@ duration: Varighed
 modified_on: Ændringsdato
 status: Status
 remove: Fjern
+errors:
+  NOT_NULL_VIOLATION: Værdien kan ikke være null
 bookmarks: Foretrukne
 back: Tilbage
 placeholder: Placeholder

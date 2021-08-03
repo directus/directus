@@ -137,6 +137,8 @@ field_width: Πλάτος πεδίου
 duration: Διάρκεια
 status: Κατάσταση
 remove: Διαγραφή
+errors:
+  NOT_NULL_VIOLATION: Η τιμή δεν μπορεί να είναι μηδενική
 bookmarks: Σελιδοδείκτες
 back: Πίσω
 operators:

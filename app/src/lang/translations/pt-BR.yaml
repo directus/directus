@@ -435,6 +435,7 @@ errors:
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNKNOWN: Erro inesperado
   INTERNAL_SERVER_ERROR: Erro inesperado
+  NOT_NULL_VIOLATION: Valor não pode ser nulo
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador

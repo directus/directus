@@ -443,6 +443,7 @@ errors:
   UNKNOWN: Неочаквана грешка
   UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
+  NOT_NULL_VIOLATION: Стойността не трябва да е null
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
