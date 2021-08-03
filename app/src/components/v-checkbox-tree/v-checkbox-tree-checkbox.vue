@@ -258,15 +258,20 @@ export default defineComponent({
 		function emitBranch(rawValue: (string | number)[], { added, removed }: Delta) {
 			const allChildrenRecursive = getRecursiveChildrenValues('all');
 
+			// Note: Added/removed is a tad confusing here, as an item that gets added to the array of
+			// selected items can immediately be negated by the logic below, as it's potentially
+			// replaced by the parent item's value
+
 			// When clicking on an individual item in the enabled group
 			if (
 				(props.modelValue.includes(props.value) || props.checked === true) &&
 				added &&
-				childrenValues.value.includes(added?.[0])
+				added.length === 1 &&
+				childrenValues.value.includes(added[0])
 			) {
 				const newValue = [
-					...rawValue.filter((val) => val !== props.value && val !== added?.[0]),
-					...childrenValues.value.filter((childVal) => childVal !== added?.[0]),
+					...rawValue.filter((val) => val !== props.value && val !== added[0]),
+					...childrenValues.value.filter((childVal) => childVal !== added[0]),
 				];
 
 				return emitValue(newValue);
@@ -446,6 +451,6 @@ export default defineComponent({
 
 <style scoped>
 .item {
-	padding-left: 32px;
+	padding-left: 32px !important;
 }
 </style>

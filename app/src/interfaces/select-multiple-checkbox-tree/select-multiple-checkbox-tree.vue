@@ -1,25 +1,28 @@
 <template>
-	<div class="select-multiple-checkbox-tree">
-		<div class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
-				<template #prepend>
-					<v-icon name="search" />
-				</template>
+	<div>
+		<div class="select-multiple-checkbox-tree">
+			<div class="search">
+				<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+					<template #prepend>
+						<v-icon name="search" />
+					</template>
 
-				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
-				</template>
-			</v-input>
+					<template v-if="search" #append>
+						<v-icon name="clear" clickable @click="search = ''" />
+					</template>
+				</v-input>
+			</div>
+
+			<v-checkbox-tree
+				:model-value="value"
+				:search="searchDebounced"
+				:disabled="disabled"
+				:choices="choices"
+				:value-combining="valueCombining"
+				@update:model-value="$emit('input', $event)"
+			/>
 		</div>
-
-		<v-checkbox-tree
-			:model-value="value"
-			:search="searchDebounced"
-			:disabled="disabled"
-			:choices="choices"
-			:value-combining="valueCombining"
-			@update:model-value="$emit('input', $event)"
-		/>
+		<pre>{{ value }}</pre>
 	</div>
 </template>
 
