@@ -251,6 +251,10 @@ function processValues(env: Record<string, any>) {
 			continue;
 		}
 
+		if (String(value).includes(',')) {
+			env[key] = toArray(value);
+		}
+
 		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
 		if (newKey) {
 			env[key] = value;
