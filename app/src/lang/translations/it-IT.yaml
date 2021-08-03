@@ -117,6 +117,7 @@ no_access: Nessun Accesso
 use_custom: Usa Personalizzato
 nullable: Può essere null
 allow_null_value: Consenti valore NULL
+allow_multiple: Consenti selezione multipla
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
 field_presentation: Presentazione e Alias
