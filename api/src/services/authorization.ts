@@ -71,7 +71,13 @@ export class AuthorizationService {
 			if (ast.type === 'm2a') {
 				collections.push(...ast.names.map((name) => ({ collection: name, field: ast.fieldKey })));
 
-				/** @TODO add nestedNode */
+				for (const children of Object.values(ast.children)) {
+					for (const nestedNode of children) {
+						if (nestedNode.type !== 'field') {
+							collections.push(...getCollectionsFromAST(nestedNode));
+						}
+					}
+				}
 			} else {
 				collections.push({
 					collection: ast.name,
