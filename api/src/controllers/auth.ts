@@ -12,6 +12,7 @@ import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '../utils/to-array';
+import logger from '../logger';
 
 const router = Router();
 
@@ -320,6 +321,9 @@ router.get(
 			});
 		} catch (error) {
 			emitStatus('fail');
+
+			logger.warn(error);
+
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
 
