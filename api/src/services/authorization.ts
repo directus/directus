@@ -250,30 +250,20 @@ export class AuthorizationService {
 					  }
 					: { _and: [] };
 
-			if (action === 'create') {
-				for (const field of requiredColumns) {
-					if (field.defaultValue === null) {
-						permission.validation._and.push({
-							[field.field]: {
-								_submitted: true,
-							},
-						});
-					}
+			for (const field of requiredColumns) {
+				if (action === 'create' && field.defaultValue === null) {
+					permission.validation._and.push({
+						[field.field]: {
+							_submitted: true,
+						},
+					});
+				}
 
-					permission.validation._and.push({
-						[field.field]: {
-							_nnull: true,
-						},
-					});
-				}
-			} else {
-				for (const field of requiredColumns) {
-					permission.validation._and.push({
-						[field.field]: {
-							_nnull: true,
-						},
-					});
-				}
+				permission.validation._and.push({
+					[field.field]: {
+						_nnull: true,
+					},
+				});
 			}
 		}
 

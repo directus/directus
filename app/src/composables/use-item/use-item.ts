@@ -7,6 +7,10 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { validatePayload } from '@directus/shared/utils';
+import { Filter, Item } from '@directus/shared/types';
+import { isNil, flatten } from 'lodash';
+import { FailedValidationException } from '@directus/shared/exceptions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -29,8 +33,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-
+	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -107,6 +110,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
+		const errors = validate(edits.value);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
 			let response;
 
@@ -170,6 +181,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		// Make sure to delete the primary key
 		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			delete newItem[primaryKeyField.value.field];
+		}
+
+		const errors = validate(newItem);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
 		}
 
 		try {
@@ -291,5 +310,35 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
+	}
+
+	function validate(item: Item) {
+		const validationRules = {
+			_and: [] as Filter['_and'],
+		} as Filter;
+
+		const requiredFields = fields.value.filter((field) => field.meta?.required === true);
+
+		for (const field of requiredFields) {
+			if (isNew.value === true && isNil(field.schema?.default_value)) {
+				validationRules._and!.push({
+					[field.field]: {
+						_submitted: true,
+					},
+				});
+			}
+
+			validationRules._and!.push({
+				[field.field]: {
+					_nnull: true,
+				},
+			});
+		}
+
+		return flatten(
+			validatePayload(validationRules, item).map((error) =>
+				error.details.map((details) => new FailedValidationException(details).extensions)
+			)
+		);
 	}
 }
