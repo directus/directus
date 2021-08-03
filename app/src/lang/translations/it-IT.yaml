@@ -117,6 +117,8 @@ no_access: Nessun Accesso
 use_custom: Usa Personalizzato
 nullable: Può essere null
 allow_null_value: Consenti valore NULL
+allow_multiple: Consenti apertura multipla
+allow_multiple_to_be_open: Consenti l'apertura di più sezioni
 enter_value_to_replace_nulls: Inserisci un nuovo valore per sostituire qualsiasi NULL all'interno di questo campo.
 field_standard: Standard
 field_presentation: Presentazione e Alias
@@ -893,8 +895,16 @@ template: Template
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 interfaces:
+  group-accordion:
+    name: Accordion
+    description: Mostra i campi o i gruppi come sezioni in un accordion
+    start: Inizio
+    all_closed: Tutto chiuso
+    first_opened: Apri la prima sezione
+    all_opened: Tutto aperto
   presentation-links:
     presentation-links: Collegamenti del pulsante
     links: Collegamenti
@@ -1007,7 +1017,7 @@ interfaces:
     customSyntax_add: Aggiungi sintassi personalizzata
     box: Blocco / In linea
     imageToken: Token Immagine
-    imageToken_label: Token (statico) da aggiungere alle sorgenti dell'immagine
+    imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1063,7 +1073,7 @@ interfaces:
     maximum_value: Valore massimo
     step_interval: Intervallo
     slug: Slugify
-    slug_label: Rendi il valore inserito a prova di URL
+    slug_label: Rendi il valore a prova di URL
   input-multiline:
     textarea: Area di testo
     description: Inserisci testo su più righe
@@ -1099,6 +1109,12 @@ interfaces:
     value_path: Percorso del valore
     trigger: Attivazione
     rate: Intervallo
+  group-standard:
+    name: Gruppo standard
+    description: Mostra i campi con una intestazione di gruppo opzionale.
+    show_header: Mostra intestazione di gruppo
+    header_icon: Icona intestazione
+    header_color: Colore intestazione
 displays:
   boolean:
     boolean: Boolean
@@ -1139,7 +1155,7 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format_title: Formatta il titolo
-    format_title_label: Formattazione automatica maiuscole/minuscole
+    format_title_label: Maiuscole/minuscole automatiche
     bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
