@@ -443,6 +443,7 @@ errors:
   UNKNOWN: Nepričakovana napaka
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
+  NOT_NULL_VIOLATION: Vrednost ne sme biti nična
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
 create_bookmark: Ustvari zaznamek
