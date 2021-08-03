@@ -49,8 +49,8 @@ properties:
     nullable: true
   storage_default_folder:
     description: Default folder to place files
-    type: uuid
-    width: full
+    type: string
+    format: uuid
   storage_asset_transform:
     description: What transformations are allowed in the assets endpoint.
     type: string
