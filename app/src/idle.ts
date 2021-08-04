@@ -10,7 +10,7 @@ let idle = false;
 
 export const idleTracker = mitt();
 
-export function startIdleTracking() {
+export function startIdleTracking(): void {
 	document.addEventListener('visibilitychange', onVisibilityChange);
 
 	for (const event of events) {
@@ -20,7 +20,7 @@ export function startIdleTracking() {
 	resetTimeout();
 }
 
-export function stopIdleTracking() {
+export function stopIdleTracking(): void {
 	document.removeEventListener('visibilitychange', onVisibilityChange);
 
 	for (const event of events) {

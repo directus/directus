@@ -26,7 +26,7 @@ import { defineComponent, toRefs, watch, computed, provide, onMounted, onUnmount
 import * as stores from '@/stores';
 import api, { addTokenToURL } from '@/api';
 import axios from 'axios';
-import { startIdleTracking, stopIdleTracking, idleTracker } from './idle';
+import { startIdleTracking, stopIdleTracking } from './idle';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
