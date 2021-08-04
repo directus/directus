@@ -6,7 +6,8 @@ import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 

@@ -4,9 +4,9 @@ import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { validatePayload } from '@directus/shared/utils';
+import { Accountability } from '@directus/shared/types';
 import {
 	AbstractServiceOptions,
-	Accountability,
 	AST,
 	FieldNode,
 	Item,

@@ -1,4 +1,5 @@
-import { Accountability, Filter } from '../types';
+import { Filter } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { toArray } from '../utils/to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';

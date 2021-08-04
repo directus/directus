@@ -9,10 +9,10 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import logger from '../logger';
+import { Accountability } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
-	Accountability,
 	Action,
 	Item as AnyItem,
 	PermissionsAction,
