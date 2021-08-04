@@ -39,6 +39,7 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _transport: ITransport;
 	private _storage: IStorage;
 	private _activity?: ActivityHandler<TypeOf<T, 'directus_activity'>>;
+	private _collections?: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
 	private _fields?: FieldsHandler<TypeOf<T, 'directus_fields'>>;
 	private _files?: FilesHandler<TypeOf<T, 'directus_files'>>;
 	private _folders?: FoldersHandler<TypeOf<T, 'directus_folders'>>;
@@ -51,17 +52,10 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
 	private _graphql?: GraphQLHandler;
-
-	private _collections: {
-		[collection: string]: CollectionsHandler<any>;
-	};
+	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
-	};
-
-	private _settings: {
-		[collection: string]: SettingsHandler<any>;
 	};
 
 	private _singletons: {
@@ -78,8 +72,6 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
 		this._singletons = {};
-		this._collections = {};
-		this._settings = {};
 	}
 
 	get auth(): IAuth {
@@ -96,6 +88,13 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 
 	get activity(): ActivityHandler<TypeOf<T, 'directus_activity'>> {
 		return this._activity || (this._activity = new ActivityHandler<TypeOf<T, 'directus_activity'>>(this.transport));
+	}
+
+	get collections(): CollectionsHandler<TypeOf<T, 'directus_collections'>> {
+		return (
+			this._collections ||
+			(this._collections = new CollectionsHandler<TypeOf<T, 'directus_collections'>>(this.transport))
+		);
 	}
 
 	get fields(): FieldsHandler<TypeOf<T, 'directus_fields'>> {
@@ -136,7 +135,9 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	get users(): UsersHandler<TypeOf<T, 'directus_users'>> {
 		return this._users || (this._users = new UsersHandler<TypeOf<T, 'directus_users'>>(this.transport));
 	}
-
+	get settings(): SettingsHandler<TypeOf<T, 'directus_settings'>> {
+		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'directus_settings'>>(this.transport));
+	}
 	get server(): ServerHandler {
 		return this._server || (this._server = new ServerHandler(this.transport));
 	}
@@ -156,18 +157,7 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		);
 	}
 
-	collections<C extends string, I = TypeOf<T, C>>(collection: C): CollectionsHandler<I> {
-		return (
-			this._collections[collection] ||
-			(this._collections[collection] = new CollectionsHandler<T>(collection, this.transport))
-		);
-	}
-
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
-	}
-
-	settings<C extends string, I = TypeOf<T, C>>(collection: string): SettingsHandler<I> {
-		return this._settings[collection] || (this._settings[collection] = new SettingsHandler<T>(this.transport));
 	}
 }

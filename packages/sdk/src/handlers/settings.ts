@@ -1,29 +1,14 @@
 /**
  * Settings handler
  */
-import { OneItem, PartialItem, QueryOne } from '../items';
 import { ITransport } from '../transport';
 import { SettingType, DefaultType } from '../types';
+import { SingletonHandler } from './singleton';
 
 export type SettingItem<T = DefaultType> = SettingType & T;
 
-export class SettingsHandler<T = DefaultType> {
-	transport: ITransport;
+export class SettingsHandler<T = SettingItem> extends SingletonHandler<T> {
 	constructor(transport: ITransport) {
-		this.transport = transport;
-	}
-
-	async read(query?: QueryOne<T>): Promise<OneItem<T>> {
-		const item = await this.transport.get<T>(`/settings`, {
-			params: query,
-		});
-		return item.data;
-	}
-
-	async update(data: PartialItem<T>, _query?: QueryOne<T>): Promise<OneItem<T>> {
-		const item = await this.transport.patch<T>(`/settings`, data, {
-			params: _query,
-		});
-		return item.data;
+		super('directus_settings', transport);
 	}
 }

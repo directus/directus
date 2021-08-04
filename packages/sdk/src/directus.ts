@@ -44,6 +44,7 @@ export interface IDirectus<T extends TypeMap> {
 	readonly transport: ITransport;
 
 	readonly activity: ActivityHandler<TypeOf<T, 'directus_activity'>>;
+	readonly collections: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
 	readonly files: FilesHandler<TypeOf<T, 'directus_files'>>;
 	readonly fields: FieldsHandler<TypeOf<T, 'directus_fields'>>;
 	readonly folders: FoldersHandler<TypeOf<T, 'directus_folders'>>;
@@ -53,12 +54,11 @@ export interface IDirectus<T extends TypeMap> {
 	readonly relations: RelationsHandler<TypeOf<T, 'directus_relations'>>;
 	readonly roles: RolesHandler<TypeOf<T, 'directus_roles'>>;
 	readonly users: UsersHandler<TypeOf<T, 'directus_users'>>;
+	readonly settings: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
 	readonly graphql: GraphQLHandler;
 
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I>;
-	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I>;
-	collections<C extends string, I = TypeOf<T, C>>(collection: C): CollectionsHandler<I>;
-	settings<C extends string, I = TypeOf<T, C>>(collection: C): SettingsHandler<I>;
+	singleton<C extends string, I = TypeOf<T, C>>(collection: C, endpoint: string): ISingleton<I>;
 }
