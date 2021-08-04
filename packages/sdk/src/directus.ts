@@ -60,5 +60,5 @@ export interface IDirectus<T extends TypeMap> {
 	readonly graphql: GraphQLHandler;
 
 	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I>;
-	singleton<C extends string, I = TypeOf<T, C>>(collection: C, endpoint: string): ISingleton<I>;
+	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I>;
 }
