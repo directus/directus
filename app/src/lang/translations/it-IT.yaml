@@ -893,9 +893,11 @@ sort_direction: Direzione ordine
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
+require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 interfaces:
   group-accordion:
@@ -925,6 +927,8 @@ interfaces:
     description: Scegli tra più opzioni tramite caselle di selezione annidate
     value_combining: Combinazione dei valori
     value_combining_note: Controlla quale valore viene memorizzato quando vengono effettuate selezioni annidate.
+    show_all: Mostra tutte
+    show_selected: Mostra selezionate
   input-code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
