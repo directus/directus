@@ -453,6 +453,10 @@ export class FieldsService {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
+		} else if (field.type === 'dateTime') {
+			column = table.dateTime(field.field, { useTz: false });
+		} else if (field.type === 'timestamp') {
+			column = table.timestamp(field.field, { useTz: true });
 		} else {
 			column = table[field.type](field.field);
 		}
