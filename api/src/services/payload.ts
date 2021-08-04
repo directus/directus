@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { format, parse, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
