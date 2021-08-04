@@ -20,15 +20,24 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Editar Campo
+conditions: Condiciones
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
 half_width: Mitad del ancho
 full_width: Ancho completo
+group: Grupo
+and: "Y"
+or: O
 fill_width: Rellenar ancho
 field_name_translations: Traducción de campos
 enter_password_to_enable_tfa: Escribe tu contraseña para habilitar el doble factor de autenticación
 add_field: Añadir campo
 role_name: Nombre de rol
+branch: Rama
+leaf: Hoja
+indeterminate: Indeterminado
+exclusive: Exclusivo
+children: Niños
 db_only_click_to_configure: 'Sólo para base de datos: Haz clic para configurar '
 show_archived_items: Mostrar ítems archivados
 edited: Campo editado
@@ -40,6 +49,7 @@ create_role: Crear Rol
 create_user: Crear usuario
 create_webhook: Crear un webhook(conección)
 invite_users: Invitar usuarios
+email_examples: "admin{'@'}ejemplo.com, usuario{'@'}ejemplo.com..."
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 emails: Correos electrónicos
@@ -61,6 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Tu sesión ha sido cerrada
   SESSION_EXPIRED: Tu sesión ha expirado
+public_label: Público
 public_description: Controlar qué datos de la API están disponibles sin autenticación.
 not_allowed: No permitido
 directus_version: Versión Directus
@@ -80,8 +91,8 @@ the_following_are_minimum_permissions: Estos son los permisos mínimos requerido
 app_access_minimum: Acceso mínimo a la app
 recommended_defaults: Valores recomendados
 unarchive: Desarchivar
-unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
-nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
+nested_files_folders_will_be_moved: Los archivos anidados y las carpetas se moverán un nivel superior.
 unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
   eq: El valor tiene que ser {valid}

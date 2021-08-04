@@ -431,7 +431,7 @@ errors:
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
-  INVALID_OTP: One-time password errata
+  INVALID_OTP: Password monouso errata
   INVALID_PAYLOAD: Payload non valido
   INVALID_QUERY: Query non valida
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
@@ -444,7 +444,7 @@ errors:
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
-value_hashed: Valore cifrato in modo sicuro
+value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -767,7 +767,7 @@ fields:
     first_name: Nome
     last_name: Cognome
     email: E-mail
-    password: Parola d'ordine
+    password: Password
     avatar: Avatar
     location: Percorso
     title: Titolo
@@ -871,7 +871,7 @@ not_authenticated: Non autenticato
 authenticated: Autenticato
 options: Opzioni
 otp: Password monouso
-password: Parola d'ordine
+password: Password
 permissions: permessi
 relationship: Relazione
 reset: Resetta
@@ -893,9 +893,11 @@ sort_direction: Direzione ordine
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
 template: Template
+require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 interfaces:
   group-accordion:
@@ -925,6 +927,8 @@ interfaces:
     description: Scegli tra più opzioni tramite caselle di selezione annidate
     value_combining: Combinazione dei valori
     value_combining_note: Controlla quale valore viene memorizzato quando vengono effettuate selezioni annidate.
+    show_all: Mostra tutte
+    show_selected: Mostra selezionate
   input-code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
