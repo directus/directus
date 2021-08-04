@@ -16,7 +16,7 @@ import logger from '../logger';
 import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview } from '../types';
 import { Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';

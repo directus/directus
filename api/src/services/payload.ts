@@ -8,7 +8,7 @@ import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
 import { Accountability } from '@directus/shared/types';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 
 type Action = 'create' | 'read' | 'update';

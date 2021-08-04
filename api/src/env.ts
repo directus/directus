@@ -8,7 +8,7 @@ import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
 

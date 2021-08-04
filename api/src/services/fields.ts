@@ -16,7 +16,7 @@ import { Accountability } from '@directus/shared/types';
 import { Field, FieldMeta, Type } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import Keyv from 'keyv';

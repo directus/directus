@@ -21,7 +21,7 @@ import {
 	SchemaOverview,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 

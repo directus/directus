@@ -8,7 +8,7 @@ import logger from '../logger';
 import { RelationsService } from '../services';
 import { Permission, SchemaOverview } from '../types';
 import { Accountability } from '@directus/shared/types';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { mergePermissions } from './merge-permissions';
