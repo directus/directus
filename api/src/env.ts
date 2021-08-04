@@ -174,6 +174,8 @@ function getEnvironmentValueByType(envVariableString: string) {
 			return new RegExp(envVariableValue);
 		case 'string':
 			return envVariableValue;
+		case 'json':
+			return tryJSON(envVariableValue);
 	}
 }
 
@@ -218,6 +220,9 @@ function processValues(env: Record<string, any>) {
 				case 'array':
 					env[key] = toArray(value);
 					break;
+				case 'json':
+					env[key] = tryJSON(value);
+					break;
 			}
 			continue;
 		}
@@ -255,6 +260,10 @@ function processValues(env: Record<string, any>) {
 			env[key] = toArray(value);
 		}
 
+		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
+		// config flags, or custom param names (that aren't camelCased)
+		env[key] = tryJSON(value);
+
 		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
 		if (newKey) {
 			env[key] = value;
@@ -262,4 +271,12 @@ function processValues(env: Record<string, any>) {
 	}
 
 	return env;
+}
+
+function tryJSON(value: any) {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
 }
