@@ -418,6 +418,7 @@ errors:
   ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
   INTERNAL_SERVER_ERROR: Nenumatyta klaida
+  NOT_NULL_VIOLATION: Reikšmė negali būti null
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę

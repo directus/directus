@@ -427,6 +427,7 @@ errors:
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
+  NOT_NULL_VIOLATION: Väärtus ei saa olla null
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja

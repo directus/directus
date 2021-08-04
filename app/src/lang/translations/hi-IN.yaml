@@ -192,6 +192,8 @@ card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: सॉर्ट
+errors:
+  NOT_NULL_VIOLATION: मान null नहीं हो सकता
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट

@@ -1,7 +1,6 @@
 <template>
 	<component
 		:is="component"
-		v-bind="disabled === false && $attrs"
 		class="v-list-item"
 		:to="to"
 		:class="{
@@ -16,6 +15,7 @@
 		:href="href"
 		:download="download"
 		:target="component === 'a' ? '_blank' : null"
+		@click="onClick"
 	>
 		<slot />
 	</component>
@@ -82,7 +82,8 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	emits: ['click'],
+	setup(props, { emit }) {
 		const route = useRoute();
 
 		const { route: linkRoute, isActive, isExactActive } = useLink(props);
@@ -115,7 +116,12 @@ export default defineComponent({
 			return false;
 		});
 
-		return { component, isLink, isActiveRoute };
+		return { component, isLink, isActiveRoute, onClick };
+
+		function onClick(event: PointerEvent) {
+			if (props.disabled === true) return;
+			emit('click', event);
+		}
 	},
 });
 </script>

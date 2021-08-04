@@ -465,7 +465,8 @@ export class PayloadService {
 				schema: this.schema,
 			});
 
-			const relatedRecords: Partial<Item>[] = [];
+			const recordsToUpsert: Partial<Item>[] = [];
+			const savedPrimaryKeys: PrimaryKey[] = [];
 
 			// Nested array of individual items
 			if (Array.isArray(payload[relation.meta!.one_field!])) {
@@ -475,14 +476,28 @@ export class PayloadService {
 					let record = cloneDeep(relatedRecord);
 
 					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
-						const exists = !!(await this.knex
-							.select(relatedPrimaryKeyField)
+						const existingRecord = await this.knex
+							.select(relatedPrimaryKeyField, relation.field)
 							.from(relation.collection)
 							.where({ [relatedPrimaryKeyField]: record })
-							.first());
+							.first();
 
-						if (exists === false) {
+						if (!!existingRecord === false) {
 							throw new ForbiddenException();
+						}
+
+						// If the related item is already associated to the current item, and there's no
+						// other updates (which is indicated by the fact that this is just the PK, we can
+						// ignore updating this item. This makes sure we don't trigger any update logic
+						// for items that aren't actually being updated. NOTE: We use == here, as the
+						// primary key might be reported as a string instead of number, coming from the
+						// http route, and or a bigInteger in the DB
+						if (
+							existingRecord[relation.field] == parent ||
+							existingRecord[relation.field] == payload[currentPrimaryKeyField]
+						) {
+							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
+							continue;
 						}
 
 						record = {
@@ -490,15 +505,17 @@ export class PayloadService {
 						};
 					}
 
-					relatedRecords.push({
+					recordsToUpsert.push({
 						...record,
 						[relation.field]: parent || payload[currentPrimaryKeyField],
 					});
 				}
 
-				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords, {
-					onRevisionCreate: (id) => revisions.push(id),
-				});
+				savedPrimaryKeys.push(
+					...(await itemsService.upsertMany(recordsToUpsert, {
+						onRevisionCreate: (id) => revisions.push(id),
+					}))
+				);
 
 				const query: Query = {
 					filter: {

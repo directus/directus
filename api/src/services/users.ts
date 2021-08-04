@@ -4,8 +4,8 @@ import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
+import { FailedValidationException } from '@directus/shared/exceptions';
 import {
-	FailedValidationException,
 	ForbiddenException,
 	InvalidPayloadException,
 	UnprocessableEntityException,
