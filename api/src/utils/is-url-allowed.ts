@@ -1,4 +1,4 @@
-import { toArray } from './to-array';
+import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
 
 /**

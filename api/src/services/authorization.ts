@@ -3,10 +3,10 @@ import { cloneDeep, merge, uniq, uniqWith, flatten } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload, parseFilter } from '@directus/shared/utils';
+import { Accountability } from '@directus/shared/types';
 import {
 	AbstractServiceOptions,
-	Accountability,
 	AST,
 	FieldNode,
 	Item,
@@ -17,7 +17,6 @@ import {
 	Query,
 	SchemaOverview,
 } from '../types';
-import { parseFilter } from '../utils/parse-filter';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 
