@@ -8,24 +8,21 @@ import { FieldType, DefaultType, ID } from '../types';
 
 export type FieldItem<T = DefaultType> = FieldType & T;
 
-export class FieldsHandler<T = DefaultType> {
+export class FieldsHandler<T = FieldItem> {
 	transport: ITransport;
-	collection: string;
-
-	constructor(collection: string, transport: ITransport) {
+	constructor(transport: ITransport) {
 		this.transport = transport;
-		this.collection = collection;
 	}
 
-	async readOne(id: ID, query?: QueryOne<T>): Promise<ManyItems<T>> {
-		const response = await this.transport.get(`/fields/${this.collection}/${id}`, {
+	async readOne(collection: string, id: ID, query?: QueryOne<T>): Promise<OneItem<T>> {
+		const response = await this.transport.get(`/fields/${collection}/${id}`, {
 			params: query,
 		});
 		return response.data as T;
 	}
 
-	async readMany(query?: QueryMany<T>): Promise<ManyItems<T>> {
-		const { data, meta } = await this.transport.get(`/fields/${this.collection}`, {
+	async readMany(collection: string, query?: QueryMany<T>): Promise<ManyItems<T>> {
+		const { data, meta } = await this.transport.get(`/fields/${collection}`, {
 			params: query,
 		});
 		return {
@@ -34,9 +31,9 @@ export class FieldsHandler<T = DefaultType> {
 		};
 	}
 
-	async createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+	async createOne(collection: string, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
 		return (
-			await this.transport.post<T>(`fields/${this.collection}`, item, {
+			await this.transport.post<T>(`fields/${collection}`, item, {
 				params: query,
 			})
 		).data;
@@ -63,11 +60,11 @@ export class FieldsHandler<T = DefaultType> {
 		);
 	}
 
-	async deleteOne(id: ID): Promise<void> {
-		await this.transport.delete(`/relations/${this.collection}/${id}`);
+	async deleteOne(collection: string, id: ID): Promise<void> {
+		await this.transport.delete(`/relations/${collection}/${id}`);
 	}
 
-	async deleteMany(ids: ID[]): Promise<void> {
-		await this.transport.delete(`/relations/${this.collection}`, ids);
+	async deleteMany(collection: string, ids: ID[]): Promise<void> {
+		await this.transport.delete(`/relations/${collection}`, ids);
 	}
 }

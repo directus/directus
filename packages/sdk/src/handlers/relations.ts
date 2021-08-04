@@ -1,29 +1,27 @@
 /**
  * Relations handler
  */
-import { IItems, ManyItems, OneItem, PartialItem, QueryMany, QueryOne } from '../items';
+import { ManyItems, OneItem, PartialItem, QueryMany, QueryOne } from '../items';
 import { ITransport } from '../transport';
 import { RelationType, DefaultType, ID } from '../types';
 
 export type RelationItem<T = DefaultType> = RelationType & T;
-export class RelationsHandler<T extends RelationItem> implements IItems<T> {
+export class RelationsHandler<T = RelationItem> {
 	transport: ITransport;
-	collection: string;
 
-	constructor(collection: string, transport: ITransport) {
+	constructor(transport: ITransport) {
 		this.transport = transport;
-		this.collection = collection;
 	}
 
-	async readOne(id: ID, query?: QueryOne<T>): Promise<ManyItems<T>> {
-		const response = await this.transport.get(`/relations/${this.collection}/${id}`, {
+	async readOne(collection: string, id: ID, query?: QueryOne<T>): Promise<OneItem<T>> {
+		const response = await this.transport.get(`/relations/${collection}/${id}`, {
 			params: query,
 		});
 		return response.data as T;
 	}
 
-	async readMany(query?: QueryMany<T>): Promise<ManyItems<T>> {
-		const { data, meta } = await this.transport.get(`/relations/${this.collection}`, {
+	async readMany(collection: string, query?: QueryMany<T>): Promise<ManyItems<T>> {
+		const { data, meta } = await this.transport.get(`/relations/${collection}`, {
 			params: query,
 		});
 		return {
@@ -33,7 +31,7 @@ export class RelationsHandler<T extends RelationItem> implements IItems<T> {
 	}
 	async createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
 		return (
-			await this.transport.post<T>(`/relations/${this.collection}`, item, {
+			await this.transport.post<T>(`/relations/`, item, {
 				params: query,
 			})
 		).data;
@@ -66,12 +64,12 @@ export class RelationsHandler<T extends RelationItem> implements IItems<T> {
 		);
 	}
 
-	async deleteOne(id: ID): Promise<void> {
-		await this.transport.delete(`/relations/${this.collection}/${id}`);
+	async deleteOne(collection: string, id: ID): Promise<void> {
+		await this.transport.delete(`/relations/${collection}/${id}`);
 	}
 
-	async deleteMany(ids: ID[]): Promise<void> {
-		await this.transport.delete(`/relations/${this.collection}`, ids);
+	async deleteMany(collection: string, ids: ID[]): Promise<void> {
+		await this.transport.delete(`/relations/${collection}`, ids);
 	}
 }
 

@@ -20,17 +20,10 @@ export class CollectionsHandler<T = CollectionItem> {
 		const response = await this.transport.get(`/collections`, {
 			params: this.collection,
 		});
-		return response.data as T;
-	}
 
-	async readMany(keys: string[] | number[]): Promise<ManyItems<T>> {
-		const { data, meta } = await this.transport.get(`/collections/`, {
-			params: keys,
-		});
-		return {
-			data,
-			meta,
-		};
+		// eslint-disable-next-line no-console
+		console.log(response.data);
+		return response.data as T;
 	}
 
 	async createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
