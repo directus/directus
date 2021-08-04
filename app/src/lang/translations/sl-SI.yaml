@@ -893,9 +893,11 @@ sort_direction: Smer razvrščanja
 sort_asc: Razvrsti naraščajoče
 sort_desc: Razvrsti padajoče
 template: Predloga
+require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
+weeks: { }
 report_error: Sporoči napako
 interfaces:
   group-accordion:
@@ -925,6 +927,8 @@ interfaces:
     description: Izberite med več opcijami s potrditvenimi polji
     value_combining: Kombinirana vrednost
     value_combining_note: Nadzira, kater vrednost se shrani pri podizborih.
+    show_all: Pokaži vse
+    show_selected: Pokaži izbrano
   input-code:
     code: Koda
     description: Piši ali deli košček kode
