@@ -441,6 +441,7 @@ errors:
   UNKNOWN: Onverwachte fout
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
+  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken

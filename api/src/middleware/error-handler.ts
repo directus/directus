@@ -1,7 +1,8 @@
 import { ErrorRequestHandler } from 'express';
 import { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { BaseException, MethodNotAllowedException } from '../exceptions';
+import { MethodNotAllowedException } from '../exceptions';
+import { BaseException } from '@directus/shared/exceptions';
 import logger from '../logger';
 import { toArray } from '../utils/to-array';
 

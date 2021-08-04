@@ -355,6 +355,7 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
 back: Tilbake
 operators:

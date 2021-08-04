@@ -26,6 +26,10 @@
 		"./utils/node": {
 			"import": "./dist/esm/utils/node/index.js",
 			"require": "./dist/cjs/utils/node/index.js"
+		},
+		"./exceptions": {
+			"import": "./dist/esm/exceptions/index.js",
+			"require": "./dist/cjs/exceptions/index.js"
 		}
 	},
 	"scripts": {

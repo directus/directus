@@ -435,6 +435,7 @@ errors:
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
   UNKNOWN: Nieoczekiwany błąd
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
+  NOT_NULL_VIOLATION: Wartość nie może być pusta
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę

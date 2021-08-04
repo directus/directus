@@ -24,6 +24,7 @@ export type FieldMeta = {
 	options: Record<string, any> | null;
 	display_options: Record<string, any> | null;
 	readonly: boolean;
+	required: boolean;
 	sort: number | null;
 	special: string[] | null;
 	translations: Translations[] | null;
@@ -62,4 +63,5 @@ export type Condition = {
 	readonly?: boolean;
 	hidden?: boolean;
 	options?: Record<string, any>;
+	required?: boolean;
 };

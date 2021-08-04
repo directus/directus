@@ -438,6 +438,7 @@ errors:
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   UNKNOWN: Erreur inconnue
   INTERNAL_SERVER_ERROR: Erreur inconnue
+  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori

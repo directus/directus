@@ -11,6 +11,11 @@
 				<v-checkbox v-model="fieldData.meta.hidden" :label="t('hidden_on_detail')" block />
 			</div>
 
+			<div v-if="fieldData.meta" class="field half-left">
+				<div class="label type-label">{{ t('required') }}</div>
+				<v-checkbox v-model="fieldData.meta.required" :label="t('require_value_to_be_set')" block />
+			</div>
+
 			<div v-if="type !== 'group'" class="field full">
 				<div class="label type-label">{{ t('note') }}</div>
 				<v-input v-model="fieldData.meta.note" :placeholder="t('add_note')" />

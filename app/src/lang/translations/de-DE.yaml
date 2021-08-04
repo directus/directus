@@ -428,6 +428,7 @@ errors:
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   UNKNOWN: Unerwarteter Fehler
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
+  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen

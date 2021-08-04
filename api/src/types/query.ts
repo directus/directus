@@ -37,5 +37,3 @@ export type FilterOperator =
 	| 'nnull'
 	| 'empty'
 	| 'nempty';
-
-export type ValidationOperator = 'required' | 'regex';
