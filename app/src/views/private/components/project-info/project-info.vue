@@ -22,10 +22,9 @@ export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
 		const serverStore = useServerStore();
-		const settingsStore = useSettingsStore();
 
 		const name = computed(() => serverStore.info?.project?.project_name);
-		const saas = computed(() => settingsStore.settings?.saas === true);
+		const saas = computed(() => serverStore.info?.project?.saas_mode === true);
 
 		return { name, saas };
 	},

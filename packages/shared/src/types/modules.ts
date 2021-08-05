@@ -1,6 +1,7 @@
 import { Ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import { Permission, User } from '../types';
+import { ServerInfo } from './server-info';
 
 export interface ModuleConfig {
 	id: string;
@@ -10,11 +11,7 @@ export interface ModuleConfig {
 	routes?: RouteRecordRaw[];
 	link?: string;
 	color?: string;
-	preRegisterCheck?: (
-		user: User,
-		permissions: Permission[],
-		settings: Record<string, any> | null
-	) => Promise<boolean> | boolean;
+	preRegisterCheck?: (user: User, permissions: Permission[], settings: ServerInfo | null) => Promise<boolean> | boolean;
 	order?: number;
 	persistent?: boolean;
 }

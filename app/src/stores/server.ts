@@ -1,35 +1,11 @@
 import api from '@/api';
 import { defineStore } from 'pinia';
-
-type Info = {
-	project: null | {
-		project_name: string | null;
-		project_logo: string | null;
-		project_color: string | null;
-		public_foreground: string | null;
-		public_background: string | null;
-		public_note: string | null;
-		custom_css: string | null;
-	};
-	directus?: {
-		version: string;
-	};
-	node?: {
-		version: string;
-		uptime: number;
-	};
-	os?: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
-	};
-};
+import { ServerInfo } from '@directus/shared/types';
 
 export const useServerStore = defineStore({
 	id: 'serverStore',
 	state: () => ({
-		info: null as null | Info,
+		info: null as null | ServerInfo,
 	}),
 	actions: {
 		async hydrate() {

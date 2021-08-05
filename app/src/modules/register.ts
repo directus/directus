@@ -1,5 +1,5 @@
 import { router } from '@/router';
-import { usePermissionsStore, useSettingsStore, useUserStore } from '@/stores';
+import { usePermissionsStore, useServerStore, useSettingsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
 import { getModules } from './index';
@@ -31,7 +31,7 @@ export async function loadModules(): Promise<void> {
 export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
-	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 
 	const registeredModules = [];
 
@@ -39,11 +39,7 @@ export async function register(): Promise<void> {
 		if (!userStore.currentUser) continue;
 
 		if (mod.preRegisterCheck) {
-			const allowed = await mod.preRegisterCheck(
-				userStore.currentUser,
-				permissionsStore.permissions,
-				settingsStore.settings
-			);
+			const allowed = await mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions, serverStore.info);
 			if (allowed) registeredModules.push(mod);
 		} else {
 			registeredModules.push(mod);
