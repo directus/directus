@@ -897,13 +897,11 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 interfaces:
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
-    start: Inizio
     all_closed: Tutto chiuso
     first_opened: Apri la prima sezione
     all_opened: Tutto aperto
@@ -1113,12 +1111,6 @@ interfaces:
     value_path: Percorso del valore
     trigger: Attivazione
     rate: Intervallo
-  group-standard:
-    name: Gruppo standard
-    description: Mostra i campi con una intestazione di gruppo opzionale.
-    show_header: Mostra intestazione di gruppo
-    header_icon: Icona intestazione
-    header_color: Colore intestazione
 displays:
   boolean:
     boolean: Boolean
