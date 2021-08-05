@@ -3,6 +3,7 @@ import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
+import { idleTracker } from './idle';
 
 export type LoginCredentials = {
 	email: string;
@@ -37,11 +38,41 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 }
 
 let refreshTimeout: any;
+let idle = false;
+
+// Prevent the auto-refresh when the app isn't in use
+idleTracker.on('idle', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+idleTracker.on('hide', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+// Restart the autorefresh process when the app is used (again)
+idleTracker.on('active', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
+
+idleTracker.on('show', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	const appStore = useAppStore();
 
 	try {
+		// Delete the token header if it still exists
+		delete api.defaults.headers.Authorization;
+
 		const response = await api.post('/auth/refresh');
 
 		const accessToken = response.data.data.access_token;

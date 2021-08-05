@@ -74,7 +74,10 @@ export default defineComponent({
 		return { t, format, useFilters, exportData };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection}`;
+			const endpoint = props.collection.startsWith('directus_')
+				? `${props.collection.substring(9)}`
+				: `items/${props.collection}`;
+			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
 				access_token: api.defaults.headers.Authorization.substring(7),

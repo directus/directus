@@ -1,10 +1,11 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { Query } from '../types/query';
 import { applyFilter, applySearch } from '../utils/apply-query';
-import { parseFilter } from '../utils/parse-filter';
+import { parseFilter } from '@directus/shared/utils';
 
 export class MetaService {
 	knex: Knex;

@@ -44,30 +44,22 @@
 			</template>
 
 			<template v-for="(item, index) in internalItems" :key="index">
-				<v-divider v-if="item.divider === true" />
-
-				<v-list-item
+				<select-list-item-group
+					v-if="item.children"
+					:item="item"
+					:model-value="modelValue"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+				<select-list-item
 					v-else
-					:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
-					:disabled="item.disabled"
-					clickable
-					@click="multiple ? null : $emit('update:modelValue', item.value)"
-				>
-					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
-						<v-icon :name="item.icon" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
-						<v-checkbox
-							v-else
-							:model-value="modelValue || []"
-							:label="item.text"
-							:value="item.value"
-							:disabled="item.disabled"
-							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-content>
-				</v-list-item>
+					:model-value="modelValue"
+					:item="item"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
 			</template>
 
 			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
@@ -124,11 +116,15 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 import { get } from 'lodash';
+import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItem from './select-list-item.vue';
+import { Option } from './types';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
+	components: { SelectListItemGroup, SelectListItem },
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,
@@ -149,6 +145,10 @@ export default defineComponent({
 		itemDisabled: {
 			type: String,
 			default: 'disabled',
+		},
+		itemChildren: {
+			type: String,
+			default: 'children',
 		},
 		modelValue: {
 			type: [Array, String, Number, Boolean] as PropType<InputValue>,
@@ -211,7 +211,7 @@ export default defineComponent({
 
 		function useItems() {
 			const internalItems = computed(() => {
-				const items = props.items.map((item) => {
+				const parseItem = (item: Record<string, any>): Option => {
 					if (typeof item === 'string') {
 						return {
 							text: item,
@@ -219,15 +219,20 @@ export default defineComponent({
 						};
 					}
 
-					if (item.divider === true) return { divider: true };
+					if (item.divider === true) return { value: null, divider: true };
+
+					const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 
 					return {
 						text: get(item, props.itemText),
 						value: get(item, props.itemValue),
 						icon: get(item, props.itemIcon),
 						disabled: get(item, props.itemDisabled),
+						children,
 					};
-				});
+				};
+
+				const items = props.items.map(parseItem);
 
 				return items;
 			});

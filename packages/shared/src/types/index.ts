@@ -1,3 +1,4 @@
+export * from './accountability';
 export * from './displays';
 export * from './endpoints';
 export * from './extensions';
