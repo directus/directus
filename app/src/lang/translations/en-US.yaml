@@ -912,14 +912,16 @@ value: Value
 view_project: View Project
 weeks: {}
 report_error: Report Error
+start: Start
 interfaces:
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
-    start: Start
     all_closed: All Closed
     first_opened: First Opened
     all_opened: All Opened
+    accordion_mode: Accordion Mode
+    max_one_section_open: Max 1 Section Open
   presentation-links:
     presentation-links: Button Links
     links: Links
@@ -1126,12 +1128,17 @@ interfaces:
     value_path: Value Path
     trigger: Trigger
     rate: Rate
-  group-standard:
-    name: Standard Group
-    description: Show the fields as normal with an optional group header.
+  group-raw:
+    name: Raw Group
+    description: Render the fields as-is
+  group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
     show_header: Show Group Header
     header_icon: Header Icon
     header_color: Header Color
+    start_open: Start Open
+    start_closed: Start Closed
 displays:
   boolean:
     boolean: Boolean
