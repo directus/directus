@@ -97,7 +97,9 @@ router.post(
 
 		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
+		const organism = env.SAAS_MODE ? req.body.organism ?? null : null;
+
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, organism);
 
 		const payload = {
 			data: { access_token: accessToken, expires },

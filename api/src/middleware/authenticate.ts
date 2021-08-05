@@ -24,7 +24,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	const database = getDatabase();
 
 	if (isJWT(req.token)) {
-		let payload: { id: string };
+		let payload: { id: string; organism?: string | null };
 
 		try {
 			payload = jwt.verify(req.token, env.SECRET as string) as { id: string };
@@ -53,6 +53,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		req.accountability.user = payload.id;
+		req.accountability.organism = payload.organism;
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;

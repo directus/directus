@@ -18,9 +18,10 @@ import { ActivityService } from '../services/activity';
 import { AbstractServiceOptions, Action, SchemaOverview, Session } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge } from 'lodash';
+import _, { merge } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
+import { OrganismsService } from './organisms';
 
 type AuthenticateOptions = {
 	email: string;
@@ -57,6 +58,7 @@ export class AuthenticationService {
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
+		const isSaaS = env.SAAS_MODE === true;
 
 		const settingsService = new SettingsService({
 			knex: this.knex,
@@ -65,11 +67,11 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		let user = await this.knex
-			.select('id', 'password', 'role', 'tfa_secret', 'status')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
-			.first();
+		const userQuery = this.knex.select('id', 'password', 'role', 'tfa_secret', 'status');
+
+		if (isSaaS) userQuery.select('last_organism_selected');
+
+		let user = await userQuery.from('directus_users').whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()]).first();
 
 		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
@@ -160,9 +162,37 @@ export class AuthenticationService {
 			}
 		}
 
-		const payload = {
+		const payload: Record<string, unknown> = {
 			id: user.id,
 		};
+
+		if (isSaaS) {
+			const organismsService = new OrganismsService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			const organisms = await organismsService.readByQuery({
+				filter: {
+					users: {
+						user: user.id,
+					},
+				},
+			});
+
+			let organismSelected = user.last_organism_selected
+				? organisms.find((x) => x.id === user.last_organism_selected) ?? null
+				: null;
+			if (!organismSelected && organisms.length > 0) {
+				organismSelected = organisms[0];
+			}
+
+			payload.organism = organismSelected?.id ?? null;
+
+			if (user.last_organism_selected !== organismSelected?.id) {
+				this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: user.id });
+			}
+		}
 
 		/**
 		 * @TODO
@@ -215,17 +245,22 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string): Promise<Record<string, any>> {
+	async refresh(refreshToken: string, organism: string | null = null): Promise<Record<string, any>> {
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}
 
-		const record = await this.knex
-			.select<Session & { email: string; id: string }>(
-				'directus_sessions.*',
-				'directus_users.email',
-				'directus_users.id'
-			)
+		const recordQuery = this.knex.select<Session & { email: string; id: string; last_organism_selected?: string }>(
+			'directus_sessions.*',
+			'directus_users.email',
+			'directus_users.id'
+		);
+
+		if (env.SAAS_MODE) {
+			recordQuery.select('directus_users.last_organism_selected');
+		}
+
+		const record = await recordQuery
 			.from('directus_sessions')
 			.where({ 'directus_sessions.token': refreshToken })
 			.leftJoin('directus_users', 'directus_sessions.user', 'directus_users.id')
@@ -235,7 +270,44 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
+		const payload: Record<string, unknown> = {
+			id: record.id,
+		};
+
+		if (env.SAAS_MODE) {
+			const organismsService = new OrganismsService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			const organisms = await organismsService.readByQuery({
+				filter: {
+					users: {
+						user: record.id,
+					},
+				},
+			});
+
+			let organismSelected = organism ? organisms.find((x) => x.id === organism) ?? null : null;
+
+			if (!organismSelected) {
+				organismSelected = record.last_organism_selected
+					? organisms.find((x) => x.id === record.last_organism_selected) ?? null
+					: null;
+			}
+
+			if (!organismSelected && organisms.length > 0) {
+				organismSelected = organisms[0];
+			}
+
+			payload.organism = organismSelected?.id ?? null;
+
+			if (record.last_organism_selected !== organismSelected?.id) {
+				this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: record.id });
+			}
+		}
+
+		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 		});
 
