@@ -28,13 +28,28 @@ export async function getSchema(options?: {
 	let result: SchemaOverview;
 
 	if (env.CACHE_SCHEMA !== false && schemaCache) {
-		const cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+		let cachedSchema;
+
+		try {
+			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+		} catch (err) {
+			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
+		}
 
 		if (cachedSchema) {
 			result = cachedSchema;
 		} else {
 			result = await getDatabaseSchema(database, schemaInspector);
-			await schemaCache.set('schema', result, typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+
+			try {
+				await schemaCache.set(
+					'schema',
+					result,
+					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
+				);
+			} catch (err) {
+				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
+			}
 		}
 	} else {
 		result = await getDatabaseSchema(database, schemaInspector);
