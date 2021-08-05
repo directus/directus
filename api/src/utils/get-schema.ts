@@ -106,6 +106,11 @@ async function getDatabaseSchema(
 			continue;
 		}
 
+		if (collection.includes(' ')) {
+			logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
+			continue;
+		}
+
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
 
 		result.collections[collection] = {
