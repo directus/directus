@@ -1089,9 +1089,6 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
-  group-standard:
-    header_icon: ไอคอนส่วนหัว
-    header_color: สีส่วนหัว
 displays:
   boolean:
     boolean: ค่าบูลีน
