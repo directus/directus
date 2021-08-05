@@ -80,7 +80,16 @@
 				</dd>
 			</div>
 
-			<template v-if="file.metadata">
+			<template
+				v-if="
+					file.metadata.ifd0?.Make ||
+					file.metadata.ifd0?.Model ||
+					file.metadata.exif?.FNumber ||
+					file.metadata.exif?.ExposureTime ||
+					file.metadata.exif?.FocalLength ||
+					file.metadata.exif?.ISO
+				"
+			>
 				<v-divider />
 
 				<div v-if="file.metadata.ifd0?.Make && file.metadata.ifd0?.Model">
