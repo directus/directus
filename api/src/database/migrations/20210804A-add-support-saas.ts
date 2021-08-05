@@ -19,10 +19,9 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_organisms_users', (table) => {
 		table.uuid('id').primary();
 
-		table.unique(
-			['organism', 'user', 'role'],
-			getDefaultIndexName('unique', 'directus_organisms', ['organism', 'user', 'role'])
-		);
+		table.unique(['organism', 'user', 'role'], {
+			indexName: getDefaultIndexName('unique', 'directus_organisms', ['organism', 'user', 'role']),
+		});
 
 		table
 			.uuid('organism')
