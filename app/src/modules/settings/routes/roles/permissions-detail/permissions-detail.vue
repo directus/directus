@@ -48,7 +48,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
-import { Permission, Role } from '@/types';
+import { Permission, Role } from '@directus/shared/types';
 import { useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
@@ -101,7 +101,7 @@ export default defineComponent({
 				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 			}
 
-			return t('public') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+			return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });

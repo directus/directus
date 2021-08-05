@@ -269,3 +269,38 @@ n/a
 </div>
 
 ---
+
+## Clear the Internal Cache
+
+Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
+
+<div class="two-up">
+<div class="left">
+
+### Request Body
+
+n/a
+
+### Returns
+
+Empty body
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /utils/cache/clear
+```
+
+### GraphQL
+
+```graphql
+mutation {
+	utils_cache_clear
+}
+```
+
+</div>
+</div>

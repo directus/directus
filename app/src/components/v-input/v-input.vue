@@ -13,6 +13,7 @@
 					ref="input"
 					v-focus="autofocus"
 					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
@@ -83,6 +84,10 @@ export default defineComponent({
 		fullWidth: {
 			type: Boolean,
 			default: true,
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		modelValue: {
 			type: [String, Number],
@@ -210,7 +215,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}

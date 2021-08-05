@@ -1,5 +1,5 @@
 import { Accountability, Filter } from '../types';
-import { toArray } from '../utils/to-array';
+import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
 
@@ -23,6 +23,7 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 
 			return new Date();
 		}
+
 		if (val === '$CURRENT_USER') return accountability?.user || null;
 		if (val === '$CURRENT_ROLE') return accountability?.role || null;
 

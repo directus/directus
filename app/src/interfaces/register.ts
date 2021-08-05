@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getInterfaces } from './index';
-import { InterfaceConfig } from './types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 const { interfacesRaw } = getInterfaces();
 
@@ -26,7 +26,7 @@ export async function registerInterfaces(app: App): Promise<void> {
 	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
 		app.component('interface-' + inter.id, inter.component);
 
-		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
+		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
 			app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});

@@ -1,22 +1,21 @@
 <template>
-	<v-detail>
+	<v-detail class="group-detail">
 		<template #activator="{ toggle, active }">
 			<v-divider
-				:class="{ margin: icon || title, active }"
 				:style="{
-					'--v-divider-label-color': color,
+					'--v-divider-label-color': headerColor,
 				}"
+				:class="{ active }"
+				:inline-title="false"
+				:start-open="start === 'open'"
 				large
-				:inline-title="inlineTitle"
 				@click="toggle"
 			>
-				<template v-if="icon" #icon><v-icon :name="icon" /></template>
-				<template v-if="title">
-					<div class="title">
-						<span class="name">{{ title }}</span>
-						<v-icon :name="active ? 'unfold_less' : 'unfold_more'" />
-					</div>
+				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+				<template v-if="field.name">
+					<span class="title">{{ field.name }}</span>
 				</template>
+				<v-icon class="expand-icon" name="expand_more" />
 			</v-divider>
 		</template>
 
@@ -28,34 +27,20 @@
 			:group="field.meta.id"
 			:validation-errors="validationErrors"
 			:loading="loading"
+			:batch-mode="batchMode"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
 </template>
 
 <script lang="ts">
+import { Field } from '@directus/shared/types';
 import { defineComponent, PropType } from 'vue';
-import { Field, ValidationError } from '@/types';
+import { ValidationError } from '@directus/shared/types';
 
 export default defineComponent({
+	name: 'InterfaceGroupRaw',
 	props: {
-		color: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		title: {
-			type: String,
-			default: null,
-		},
-		inlineTitle: {
-			type: Boolean,
-			default: false,
-		},
-
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
@@ -96,30 +81,45 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+
+		start: {
+			type: String,
+			enum: ['open', 'closed'],
+			default: 'open',
+		},
+		headerIcon: {
+			type: String,
+			default: null,
+		},
+		headerColor: {
+			type: String,
+			default: null,
+		},
 	},
 	emits: ['apply'],
 });
 </script>
 
 <style scoped>
-.margin {
-	margin-top: 20px;
-}
-
-.title {
-	display: flex;
-	align-items: center;
-}
-
-.name {
-	flex-grow: 1;
+.v-form {
+	padding-top: calc(var(--form-vertical-gap) / 2);
 }
 
 .v-divider {
 	cursor: pointer;
 }
 
-.v-form {
-	padding-top: var(--form-vertical-gap);
+.v-divider .expand-icon {
+	float: right;
+	transform: rotate(90deg) !important;
+	transition: transform var(--fast) var(--transition);
+}
+
+.v-divider.active .expand-icon {
+	transform: rotate(0) !important;
+}
+
+.header-icon {
+	margin-right: 12px !important;
 }
 </style>

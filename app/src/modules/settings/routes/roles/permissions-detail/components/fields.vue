@@ -3,7 +3,7 @@
 		<v-notice type="info">
 			{{
 				t('fields_for_role', {
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 					action: t(permission.action).toLowerCase(),
 				})
 			}}
@@ -28,7 +28,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Field, Role } from '@/types';
+import { Permission, Role } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import useSync from '@/composables/use-sync';
 import { useFieldsStore } from '@/stores';
 

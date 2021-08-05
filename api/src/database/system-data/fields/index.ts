@@ -1,7 +1,7 @@
 import fse from 'fs-extra';
 import { merge } from 'lodash';
 import path from 'path';
-import { FieldMeta } from '../../../types';
+import { FieldMeta } from '@directus/shared/types';
 import { requireYAML } from '../../../utils/require-yaml';
 
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));

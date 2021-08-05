@@ -1,4 +1,4 @@
-import { defineLayout } from '@/layouts/define';
+import { defineLayout } from '@directus/shared/utils';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
 import CardsSidebar from './sidebar.vue';

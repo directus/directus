@@ -8,6 +8,7 @@ defaults:
   note: null
   translations: null
   display_template: null
+  accountability: 'all'
 
 data:
   - collection: directus_activity

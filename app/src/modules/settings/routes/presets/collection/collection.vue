@@ -11,7 +11,7 @@
 		<template #actions>
 			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('delete')" rounded icon class="action-delete" @click="on">
+					<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -24,7 +24,7 @@
 							{{ t('cancel') }}
 						</v-button>
 						<v-button class="action-delete" :loading="deleting" @click="deleteSelection">
-							{{ t('delete') }}
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -72,7 +72,7 @@
 
 				<template #[`item.name`]="{ item }">
 					<span :class="{ default: item.name === null }">
-						{{ item.name === null ? t('default') : item.name }}
+						{{ item.name === null ? t('default_label') : item.name }}
 					</span>
 				</template>
 			</v-table>

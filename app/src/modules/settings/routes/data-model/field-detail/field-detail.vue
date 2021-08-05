@@ -83,6 +83,8 @@
 				:collection="collection"
 				:type="localType"
 			/>
+
+			<setup-conditions v-if="currentTab[0] === 'conditions'" :collection="collection" :type="localType" />
 		</div>
 
 		<template #actions>
@@ -125,6 +127,7 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
+import SetupConditions from './components/conditions.vue';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
@@ -134,7 +137,7 @@ import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
-import { localTypes } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -149,6 +152,7 @@ export default defineComponent({
 		SetupTranslations,
 		SetupInterface,
 		SetupDisplay,
+		SetupConditions,
 	},
 	props: {
 		collection: {
@@ -160,7 +164,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof localTypes[number]>,
+			type: String as PropType<LocalType>,
 			default: null,
 		},
 	},
@@ -248,7 +252,7 @@ export default defineComponent({
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: t('interface'),
+						text: t('interface_label'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
@@ -283,6 +287,12 @@ export default defineComponent({
 						]
 					);
 				}
+
+				tabs.push({
+					text: t('conditions'),
+					value: 'conditions',
+					disabled: interfaceDisplayDisabled(),
+				});
 
 				return tabs;
 			});

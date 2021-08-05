@@ -1,5 +1,6 @@
+import { FilterOperator } from './filter';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FilterOperator } from '@directus/shared/types';
+import { LOCAL_TYPES, TYPES } from '../constants';
 
 type Translations = {
 	language: string;
@@ -8,39 +9,9 @@ type Translations = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export const types = [
-	'alias',
-	'bigInteger',
-	'boolean',
-	'date',
-	'dateTime',
-	'decimal',
-	'float',
-	'integer',
-	'json',
-	'string',
-	'text',
-	'time',
-	'timestamp',
-	'binary',
-	'uuid',
-	'hash',
-	'csv',
-	'unknown',
-] as const;
+export type Type = typeof TYPES[number];
 
-export const localTypes = [
-	'standard',
-	'file',
-	'files',
-	'm2o',
-	'o2m',
-	'm2m',
-	'm2a',
-	'presentation',
-	'translations',
-	'group',
-] as const;
+export type LocalType = typeof LOCAL_TYPES[number];
 
 export type FieldMeta = {
 	id: number;
@@ -50,21 +21,23 @@ export type FieldMeta = {
 	hidden: boolean;
 	interface: string | null;
 	display: string | null;
-	options: null | Record<string, any>;
-	display_options: null | Record<string, any>;
+	options: Record<string, any> | null;
+	display_options: Record<string, any> | null;
 	readonly: boolean;
+	required: boolean;
 	sort: number | null;
 	special: string[] | null;
-	translations: null | Translations[];
+	translations: Translations[] | null;
 	width: Width | null;
 	note: string | null;
+	conditions: Condition[] | null;
 	system?: true;
 };
 
 export interface FieldRaw {
 	collection: string;
 	field: string;
-	type: typeof types[number];
+	type: Type;
 	schema: Column | null;
 	meta: FieldMeta | null;
 }
@@ -81,4 +54,14 @@ export type ValidationError = {
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
+};
+
+export type Condition = {
+	name: string;
+	rule: Record<string, any>;
+
+	readonly?: boolean;
+	hidden?: boolean;
+	options?: Record<string, any>;
+	required?: boolean;
 };
