@@ -13,24 +13,24 @@ export default defineInterface({
 	groups: ['group'],
 	options: [
 		{
-			field: 'multiple',
+			field: 'accordionMode',
 			type: 'boolean',
-			name: '$t:allow_multiple',
+			name: '$t:interfaces.group-accordion.accordion_mode',
 			meta: {
 				interface: 'boolean',
 				options: {
-					label: '$t:allow_multiple_to_be_open',
+					label: '$t:interfaces.group-accordion.max_one_section_open',
 				},
 				width: 'half',
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 		{
 			field: 'start',
 			type: 'string',
-			name: '$t:interfaces.group-accordion.start',
+			name: '$t:start',
 			schema: {
 				default_value: 'closed',
 			},
@@ -52,8 +52,8 @@ export default defineInterface({
 				conditions: [
 					{
 						rule: {
-							multiple: {
-								_eq: true,
+							accordionMode: {
+								_eq: false,
 							},
 						},
 						options: {
