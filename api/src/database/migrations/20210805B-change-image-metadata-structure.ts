@@ -5,11 +5,16 @@ export async function up(knex: Knex): Promise<void> {
 	const files = await knex
 		.select<{ id: number; metadata: string }[]>('id', 'metadata')
 		.from('directus_files')
-		.whereNotNull('metadata')
-		.whereNot('metadata', '{}');
+		.whereNotNull('metadata');
 
 	for (const { id, metadata } of files) {
-		const prevMetadata = JSON.parse(metadata);
+		let prevMetadata;
+
+		try {
+			prevMetadata = JSON.parse(metadata);
+		} catch {
+			continue;
+		}
 
 		// Update only required if metadata has 'exif' data
 		if (prevMetadata.exif) {
