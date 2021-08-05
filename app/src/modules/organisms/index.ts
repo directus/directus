@@ -20,7 +20,9 @@ export default defineModule({
 		},
 	],
 	order: 11,
-	preRegisterCheck(user, permissions) {
+	preRegisterCheck(user, permissions, settings) {
+		if (!settings || !settings.saas) return false;
+
 		const admin = user.role.admin_access;
 		if (admin) return true;
 

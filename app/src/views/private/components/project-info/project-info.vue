@@ -3,7 +3,7 @@
 		<latency-indicator />
 		<div class="project-selector">
 			<span class="project-name">{{ name }}</span>
-			<span v-if="true" class="project-organism">
+			<span v-if="saas" class="project-organism">
 				<span class="project-organism__label">Inmobiliaria Alemany</span>
 				<div class="project-organism__icon">
 					<v-icon :small="true" name="expand_more" />
@@ -16,16 +16,18 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import LatencyIndicator from '../latency-indicator';
-import { useServerStore } from '@/stores/';
+import { useServerStore, useSettingsStore } from '@/stores/';
 
 export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
 		const serverStore = useServerStore();
+		const settingsStore = useSettingsStore();
 
 		const name = computed(() => serverStore.info?.project?.project_name);
+		const saas = computed(() => settingsStore.settings?.saas === true);
 
-		return { name };
+		return { name, saas };
 	},
 });
 </script>

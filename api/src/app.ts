@@ -23,6 +23,7 @@ import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import organismsRouter from './controllers/organisms';
+import organismsUsersRouter from './controllers/organisms_users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDBConnection, validateMigrations } from './database';
@@ -176,6 +177,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/organisms', organismsRouter);
+	app.use('/organisms_users', organismsUsersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);

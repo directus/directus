@@ -2,11 +2,35 @@ table: directus_organisms_users
 
 fields:
   - field: organism
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special: m2o
     width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
   - field: user
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special: m2o
     width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
   - field: role
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special: m2o
     width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
   - field: status
     interface: select-dropdown
     options:
@@ -18,3 +42,10 @@ fields:
         - text: Archived
           value: archived
     width: half
+
+  - field: id
+    special: uuid
+    interface: input
+    options:
+      iconRight: vpn_key
+    width: full

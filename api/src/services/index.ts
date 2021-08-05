@@ -21,5 +21,6 @@ export * from './settings';
 export * from './specifications';
 export * from './users';
 export * from './organisms';
+export * from './organisms_users';
 export * from './utils';
 export * from './webhooks';

@@ -60,9 +60,13 @@ data:
   - many_collection: directus_organisms_users
     many_field: organism
     one_collection: directus_organisms
+    one_field: users
   - many_collection: directus_organisms_users
     many_field: role
     one_collection: directus_roles
   - many_collection: directus_organisms
     many_field: logo
     one_collection: directus_files
+  - many_collection: directus_users
+    many_field: last_organism_selected
+    one_collection: directus_organisms

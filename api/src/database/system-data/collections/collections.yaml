@@ -70,4 +70,4 @@ data:
     unarchive_value: active
     icon: people_alt
     note: Users linked to an organisms for the platform
-    display_template: '[{{role.name}}] {{ organism.name }} > {{ user.firstname }}'
+    display_template: '[{{role}}] {{ organism }} > {{ user }}'

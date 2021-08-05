@@ -247,8 +247,8 @@ export default defineComponent({
 			if (loading.value === true) return t('loading');
 
 			if (isNew.value === false && item.value) {
-				const user = item.value as any;
-				return user.name;
+				const organism = item.value as any;
+				return organism.name;
 			}
 
 			return t('adding_organism');

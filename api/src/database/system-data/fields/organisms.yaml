@@ -53,3 +53,12 @@ fields:
     options:
       iconRight: vpn_key
     width: full
+
+  - field: users
+    interface: list-o2m
+    special: o2m
+    options:
+      fields:
+        - first_name
+        - last_name
+    width: full

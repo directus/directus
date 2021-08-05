@@ -150,3 +150,13 @@ fields:
     display: datetime
     display_options:
       relative: true
+
+  - field: last_organism_selected
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special: m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
