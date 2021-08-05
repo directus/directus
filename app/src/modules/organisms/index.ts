@@ -16,6 +16,7 @@ export default defineModule({
 			name: 'organisms-item',
 			path: ':primaryKey',
 			component: Item,
+			props: true,
 		},
 	],
 	order: 11,

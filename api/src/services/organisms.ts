@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { ItemsService } from './items';
 
 export class OrganismsService extends ItemsService {
