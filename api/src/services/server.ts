@@ -46,7 +46,7 @@ export class ServerService {
 			],
 		});
 
-		info.project = projectInfo;
+		info.project = { ...projectInfo, saas_mode: env.SAAS_MODE };
 
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();

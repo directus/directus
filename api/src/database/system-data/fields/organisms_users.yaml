@@ -14,7 +14,7 @@ fields:
   - field: user
     interface: select-dropdown-m2o
     options:
-      template: '{{ name }}'
+      template: '{{ first_name }} {{ last_name }}'
     special: m2o
     width: half
     display: related-values

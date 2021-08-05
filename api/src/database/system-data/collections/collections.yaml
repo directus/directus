@@ -68,6 +68,6 @@ data:
     archive_field: status
     archive_value: archived
     unarchive_value: active
-    icon: people_alt
+    icon: business_center
     note: Users linked to an organisms for the platform
-    display_template: '[{{role}}] {{ organism }} > {{ user }}'
+    display_template: '{{ id }}'

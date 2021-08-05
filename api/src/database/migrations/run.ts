@@ -5,7 +5,13 @@ import fse from 'fs-extra';
 import { Knex } from 'knex';
 import path from 'path';
 import env from '../../env';
-import { Migration } from '../../types';
+import { Migration, MigrationOptions } from '../../types';
+
+const canExecuteMigration = (options?: MigrationOptions) => {
+	if (!options) return true;
+	if (options.constraint === 'saas' && !env.SAAS_MODE) return false;
+	return true;
+};
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
@@ -60,7 +66,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw Error('Nothing to upgrade');
 		}
 
-		const { up } = require(nextVersion.file);
+		const { up, options } = require(nextVersion.file);
+
+		if (!canExecuteMigration(options)) {
+			return;
+		}
 
 		console.log(`✨ Applying ${nextVersion.name}...`);
 
@@ -81,7 +91,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw new Error("Couldn't find migration");
 		}
 
-		const { down } = require(migration.file);
+		const { down, options } = require(migration.file);
+
+		if (!canExecuteMigration(options)) {
+			return;
+		}
 
 		console.log(`✨ Undoing ${migration.name}...`);
 
@@ -92,7 +106,11 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	async function latest() {
 		for (const migration of migrations) {
 			if (migration.completed === false) {
-				const { up } = require(migration.file);
+				const { up, options } = require(migration.file);
+
+				if (!canExecuteMigration(options)) {
+					return;
+				}
 
 				console.log(`✨ Applying ${migration.name}...`);
 

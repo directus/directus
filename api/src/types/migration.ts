@@ -3,3 +3,7 @@ export type Migration = {
 	name: string;
 	timestamp: Date;
 };
+
+export type MigrationOptions = {
+	constraint?: 'always' | 'saas';
+};
