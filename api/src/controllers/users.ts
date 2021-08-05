@@ -88,20 +88,29 @@ router.get(
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
 
-			if (
-				env.SAAS_MODE &&
-				(req.sanitizedQuery.fields?.includes('organism') || req.sanitizedQuery.fields?.includes('*')) &&
-				res.locals.payload.data
-			) {
+			if (env.SAAS_MODE && res.locals.payload.data) {
+				const fetchActiveOrganism =
+					req.sanitizedQuery.fields?.includes('active_organism') || req.sanitizedQuery.fields?.includes('*');
+				const fetchAvailableOrganisms =
+					req.sanitizedQuery.fields?.includes('available_organisms') || req.sanitizedQuery.fields?.includes('*');
+
 				const organismsService = new OrganismsService({
 					accountability: req.accountability,
 					schema: req.schema,
 				});
-				if (req.accountability?.organism) {
-					const organism = await organismsService.readOne(req.accountability?.organism, {
-						fields: ['id', 'name'],
-					});
-					res.locals.payload.data.organism = organism;
+
+				const availableOrganisms = await organismsService.readByQuery({
+					fields: ['id', 'name'],
+				});
+
+				if (fetchActiveOrganism) {
+					if (req.accountability?.organism) {
+						const activeOrganism = availableOrganisms.filter((x) => x.id === req.accountability?.organism);
+						res.locals.payload.data.active_organism = activeOrganism;
+					}
+				}
+				if (fetchAvailableOrganisms) {
+					res.locals.payload.data.available_organisms = availableOrganisms;
 				}
 			}
 		} catch (error) {
