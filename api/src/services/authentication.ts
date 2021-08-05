@@ -190,7 +190,7 @@ export class AuthenticationService {
 			payload.organism = organismSelected?.id ?? null;
 
 			if (user.last_organism_selected !== organismSelected?.id) {
-				this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: user.id });
+				await this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: user.id });
 			}
 		}
 
@@ -303,7 +303,7 @@ export class AuthenticationService {
 			payload.organism = organismSelected?.id ?? null;
 
 			if (record.last_organism_selected !== organismSelected?.id) {
-				this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: record.id });
+				await this.knex('directus_users').update({ last_organism_selected: payload.organism }).where({ id: record.id });
 			}
 		}
 
