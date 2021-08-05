@@ -1,7 +1,6 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
-import parseEXIF from 'exif-reader';
-import { parse as parseICC } from 'icc';
+import exifr from 'exifr';
 import { clone } from 'lodash';
 import { extension } from 'mime-types';
 import path from 'path';
@@ -13,7 +12,6 @@ import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
-import parseIPTC from '../utils/parse-iptc';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService, MutationOptions } from './items';
 
@@ -86,37 +84,30 @@ export class FilesService extends ItemsService {
 				payload.height = meta.height;
 			}
 
-			payload.filesize = meta.size;
 			payload.metadata = {};
 
-			if (meta.icc) {
-				try {
-					payload.metadata.icc = parseICC(meta.icc);
-				} catch (err) {
-					logger.warn(`Couldn't extract ICC information from file`);
-					logger.warn(err);
+			try {
+				payload.metadata = await exifr.parse(buffer.content, {
+					icc: true,
+					iptc: true,
+					ifd1: true,
+					interop: true,
+					translateValues: true,
+					reviveValues: true,
+					mergeOutput: false,
+				});
+				if (payload.metadata?.iptc?.Headline) {
+					payload.title = payload.metadata.iptc.Headline;
 				}
-			}
-
-			if (meta.exif) {
-				try {
-					payload.metadata.exif = parseEXIF(meta.exif);
-				} catch (err) {
-					logger.warn(`Couldn't extract EXIF information from file`);
-					logger.warn(err);
+				if (!payload.description && payload.metadata?.iptc?.Caption) {
+					payload.description = payload.metadata.iptc.Caption;
 				}
-			}
-
-			if (meta.iptc) {
-				try {
-					payload.metadata.iptc = parseIPTC(meta.iptc);
-					payload.title = payload.metadata.iptc.headline || payload.title;
-					payload.description = payload.description || payload.metadata.iptc.caption;
-					payload.tags = payload.metadata.iptc.keywords;
-				} catch (err) {
-					logger.warn(`Couldn't extract IPTC information from file`);
-					logger.warn(err);
+				if (payload.metadata?.iptc?.Keywords) {
+					payload.tags = payload.metadata.iptc.Keywords;
 				}
+			} catch (err) {
+				logger.warn(`Couldn't extract metadata from file`);
+				logger.warn(err);
 			}
 		}
 
