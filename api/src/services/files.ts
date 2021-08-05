@@ -14,7 +14,7 @@ import logger from '../logger';
 import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import parseIPTC from '../utils/parse-iptc';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService, MutationOptions } from './items';
 
 export class FilesService extends ItemsService {

@@ -1,5 +1,5 @@
 <template>
-	<div class="v-list-group">
+	<li class="v-list-group">
 		<v-list-item
 			class="activator"
 			:active="active"
@@ -29,10 +29,10 @@
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div v-if="groupActive" class="items">
+		<ul v-if="groupActive" class="items">
 			<slot />
-		</div>
-	</div>
+		</ul>
+	</li>
 </template>
 
 <script lang="ts">
@@ -134,6 +134,7 @@ export default defineComponent({
 
 	.items {
 		padding-left: 16px;
+		list-style: none;
 	}
 }
 </style>

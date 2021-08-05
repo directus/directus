@@ -3,7 +3,8 @@ import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { InvalidPayloadException } from '@directus/shared/exceptions';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
+import { AbstractServiceOptions, PrimaryKey, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 
 export class UtilsService {
 	knex: Knex;

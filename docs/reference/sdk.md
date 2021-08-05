@@ -103,39 +103,6 @@ Defaults to an instance of `AxiosTransport`.
 const directus = new Directus('http://api.example.com/');
 ```
 
-### Advanced Example
-
-```js
-//
-// WARNING: OK, not exactly a warning, but this isn't needed at all.
-// It's just to illustrate how the SDK is instantiated by default when
-// passing only the URL as the first parameter.
-//
-
-const url = 'http://api.example.com/';
-
-const isBrowser = typeof window !== 'undefined';
-
-// Storage adapter where authentication state (token & expiration) is stored.
-const storage = isBrowser ? new LocalStorage() : new MemoryStorage();
-
-// Transport used to communicate with the server.
-const transport = new AxiosTransport(url, storage, async () => {
-	await auth.refresh(); // This is how axios checks for refresh
-});
-
-// Auth is how authentication is handled, stored, and refreshed.
-const auth = new Auth(transport, storage, {
-	mode: isBrowser ? 'cookie' : 'json',
-});
-
-const directus = new Directus(url, {
-	auth,
-	storage,
-	transport,
-});
-```
-
 ### Get / Set API URL
 
 ```js

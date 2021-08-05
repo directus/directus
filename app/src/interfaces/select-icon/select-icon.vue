@@ -55,7 +55,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: 'search',
+			default: null,
 		},
 		disabled: {
 			type: Boolean,

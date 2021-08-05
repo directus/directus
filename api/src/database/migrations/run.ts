@@ -5,12 +5,7 @@ import fse from 'fs-extra';
 import { Knex } from 'knex';
 import path from 'path';
 import env from '../../env';
-
-type Migration = {
-	version: string;
-	name: string;
-	timestamp: Date;
-};
+import { Migration } from '../../types';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);

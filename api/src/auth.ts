@@ -5,7 +5,7 @@ import env from './env';
 import logger from './logger';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 const getAuthConfig = (): AuthManagerConfig => {
 	const config: AuthManagerConfig = {

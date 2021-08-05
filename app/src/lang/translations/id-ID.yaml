@@ -418,6 +418,7 @@ errors:
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
   UNKNOWN: Kesalahan Tidak Terduga
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
+  NOT_NULL_VIOLATION: Nilai tidak boleh kosong
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
