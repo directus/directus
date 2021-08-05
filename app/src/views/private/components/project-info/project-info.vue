@@ -1,7 +1,15 @@
 <template>
 	<div class="project-info">
 		<latency-indicator />
-		<span class="name">{{ name }}</span>
+		<div class="project-selector">
+			<span class="project-name">{{ name }}</span>
+			<span v-if="true" class="project-organism">
+				<span class="project-organism__label">Inmobiliaria Alemany</span>
+				<div class="project-organism__icon">
+					<v-icon :small="true" name="expand_more" />
+				</div>
+			</span>
+		</div>
 	</div>
 </template>
 
@@ -34,9 +42,24 @@ export default defineComponent({
 	text-align: left;
 	background-color: var(--background-normal-alt);
 
-	.name {
+	.project-selector {
 		flex-grow: 1;
 		margin-left: 12px;
+
+		& .project-organism {
+			display: flex;
+			align-items: center;
+			font-size: 0.8rem;
+			transition: 0.2s linear color;
+
+			&:hover {
+				color: var(--sidebar-detail-color-active);
+			}
+
+			&__label {
+				padding-right: 0.1rem;
+			}
+		}
 	}
 }
 </style>

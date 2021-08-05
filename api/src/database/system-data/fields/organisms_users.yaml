@@ -1,0 +1,20 @@
+table: directus_organisms_users
+
+fields:
+  - field: organism
+    width: half
+  - field: user
+    width: half
+  - field: role
+    width: half
+  - field: status
+    interface: select-dropdown
+    options:
+      choices:
+        - text: Invited
+          value: invited
+        - text: Active
+          value: active
+        - text: Archived
+          value: archived
+    width: half

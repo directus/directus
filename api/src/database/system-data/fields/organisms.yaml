@@ -1,0 +1,55 @@
+table: directus_organisms
+
+fields:
+  - field: name
+    interface: input
+    options:
+      iconRight: business_center
+    width: half
+
+  - field: status
+    interface: select-dropdown
+    options:
+      choices:
+        - text: Draft
+          value: draft
+        - text: Active
+          value: active
+        - text: Suspended
+          value: suspended
+        - text: Archived
+          value: archived
+    width: half
+
+  - field: website_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    translations:
+      language: en-US
+      translations: Website
+    width: half
+
+  - field: color
+    interface: select-color
+    note: Login & Logo Background
+    translations:
+      language: en-US
+      translations: Brand Color
+    width: half
+
+  - field: logo
+    interface: file
+    note: White 40x40 SVG/PNG
+    translations:
+      language: en-US
+      translations: Brand Logo
+    width: half
+
+  - field: id
+    special: uuid
+    interface: input
+    options:
+      iconRight: vpn_key
+    width: full

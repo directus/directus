@@ -22,6 +22,7 @@ import rolesRouter from './controllers/roles';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
+import organismsRouter from './controllers/organisms';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDBConnection } from './database';
@@ -170,6 +171,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/server/', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
+	app.use('/organisms', organismsRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);

@@ -18,6 +18,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_organisms') {
+		if (to.params.primaryKey) {
+			return `/organisms/${to.params.primaryKey}`;
+		} else {
+			return '/organisms';
+		}
+	}
+
 	if (to.params.collection === 'directus_files') {
 		if (to.params.primaryKey) {
 			return `/files/${to.params.primaryKey}`;
