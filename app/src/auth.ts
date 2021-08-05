@@ -1,7 +1,7 @@
 import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
-import { useAppStore } from '@/stores';
+import { useAppStore, useServerStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 
@@ -66,14 +66,22 @@ idleTracker.on('show', () => {
 	}
 });
 
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+export async function refresh(
+	{ navigate, organism }: RefreshOptions = { navigate: true }
+): Promise<string | undefined> {
 	const appStore = useAppStore();
+	const serverStore = useServerStore();
 
 	try {
 		// Delete the token header if it still exists
 		delete api.defaults.headers.Authorization;
 
-		const response = await api.post('/auth/refresh');
+		const payload: { organism?: string } = {};
+		if (serverStore.info?.project?.saas_mode) {
+			payload.organism = organism;
+		}
+
+		const response = await api.post('/auth/refresh', payload);
 
 		const accessToken = response.data.data.access_token;
 
@@ -105,6 +113,11 @@ export enum LogoutReason {
 export type LogoutOptions = {
 	navigate?: boolean;
 	reason?: LogoutReason;
+};
+
+export type RefreshOptions = {
+	navigate?: boolean;
+	organism?: string;
 };
 
 /**

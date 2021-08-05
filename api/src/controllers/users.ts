@@ -105,7 +105,7 @@ router.get(
 
 				if (fetchActiveOrganism) {
 					if (req.accountability?.organism) {
-						const activeOrganism = availableOrganisms.filter((x) => x.id === req.accountability?.organism);
+						const activeOrganism = availableOrganisms.find((x) => x.id === req.accountability?.organism) ?? null;
 						res.locals.payload.data.active_organism = activeOrganism;
 					}
 				}

@@ -1,32 +1,78 @@
 <template>
 	<div class="project-info">
 		<latency-indicator />
-		<div class="project-selector">
+		<div class="project-selector" @click="handleOpenOrganismsDialog">
 			<span class="project-name">{{ name }}</span>
 			<span v-if="saas" class="project-organism">
-				<span class="project-organism__label">Inmobiliaria Alemany</span>
+				<span class="project-organism__label">
+					{{ activeOrganism ? activeOrganism.name : 'Select an organism' }}
+				</span>
 				<div class="project-organism__icon">
 					<v-icon :small="true" name="expand_more" />
 				</div>
 			</span>
 		</div>
 	</div>
+	<v-dialog v-if="saas" v-model="openOrganismsDialog" @esc="openOrganismsDialog = false">
+		<v-sheet>
+			<h2>Do you want to change organism?</h2>
+
+			<v-list>
+				<template v-for="organism of availableOrganisms" :key="organism.id">
+					<v-list-item
+						:disabled="updatingSelectedOrganism"
+						:active="activeOrganism && organism.id === activeOrganism.id"
+						:clickable="true"
+						@click="handleSelectOrganism(organism.id)"
+					>
+						{{ organism.name }}
+					</v-list-item>
+				</template>
+			</v-list>
+			<v-progress-linear v-if="updatingSelectedOrganism" indeterminate />
+		</v-sheet>
+	</v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import LatencyIndicator from '../latency-indicator';
-import { useServerStore, useSettingsStore } from '@/stores/';
+import { useServerStore, useUserStore } from '@/stores/';
+import { refresh } from '@/auth';
 
 export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
 		const serverStore = useServerStore();
+		const userStore = useUserStore();
+
+		const openOrganismsDialog = ref(false);
+		const updatingSelectedOrganism = ref(false);
 
 		const name = computed(() => serverStore.info?.project?.project_name);
 		const saas = computed(() => serverStore.info?.project?.saas_mode === true);
 
-		return { name, saas };
+		const activeOrganism = computed(() => (saas.value ? userStore.currentUser?.active_organism ?? null : null));
+		const availableOrganisms = computed(() => (saas.value ? userStore.currentUser?.available_organisms ?? [] : null));
+
+		return { name, saas, activeOrganism, availableOrganisms, openOrganismsDialog, updatingSelectedOrganism };
+	},
+	methods: {
+		handleOpenOrganismsDialog() {
+			this.openOrganismsDialog = true;
+		},
+		async handleSelectOrganism(organism: string) {
+			const userStore = useUserStore();
+
+			this.updatingSelectedOrganism = true;
+			try {
+				await refresh({ organism });
+				await userStore.hydrate();
+				this.openOrganismsDialog = false;
+			} finally {
+				this.updatingSelectedOrganism = false;
+			}
+		},
 	},
 });
 </script>

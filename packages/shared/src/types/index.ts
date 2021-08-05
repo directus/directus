@@ -14,3 +14,4 @@ export * from './permissions';
 export * from './presets';
 export * from './users';
 export * from './server-info';
+export * from './organisms';

@@ -1,13 +1,13 @@
 import api from '@/api';
 import { useLatencyStore } from '@/stores';
-import { User } from '@directus/shared/types';
+import { User, Organism } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
 import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
-		currentUser: null as User | null,
+		currentUser: null as (User & { active_organism?: Organism; available_organisms: Organism[] }) | null,
 		loading: false,
 		error: null,
 	}),
