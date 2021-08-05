@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.0.0-rc.87",
+	"version": "9.0.0-rc.88",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -38,7 +38,7 @@
 	},
 	"homepage": "https://github.com/directus/directus#readme",
 	"devDependencies": {
-		"npm-watch": "0.10.0",
+		"npm-watch": "0.11.0",
 		"typescript": "4.3.5"
 	},
 	"dependencies": {

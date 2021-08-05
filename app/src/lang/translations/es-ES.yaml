@@ -20,15 +20,22 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Editar Campo
+conditions: Condiciones
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
 half_width: Anchura 50%
 full_width: Ancho Completo
+group: Grupo
+and: "Y"
+or: O
 fill_width: Llenar Ancho
 field_name_translations: 'Nombre de Campo: Traducciones'
 enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
 add_field: Agregar Campo
 role_name: Nombre del Rol
+branch: Rama
+leaf: Hoja
+indeterminate: Indeterminado
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 edited: Valor Editado
@@ -427,6 +434,7 @@ errors:
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNKNOWN: Error Inesperado
   INTERNAL_SERVER_ERROR: Error Inesperado
+  NOT_NULL_VIOLATION: El valor no puede ser nulo
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador

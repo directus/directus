@@ -7,6 +7,8 @@
 					:type="type"
 					:value="csvValue[0]"
 					:placeholder="t('lower_limit')"
+					:allow-other="true"
+					:choices="choices"
 					autofocus
 					@input="setCSV(0, $event)"
 				/>
@@ -17,6 +19,8 @@
 					:type="type"
 					:value="csvValue[1]"
 					:placeholder="t('upper_limit')"
+					:allow-other="true"
+					:choices="choices"
 					autofocus
 					@input="setCSV(1, $event)"
 				/>
@@ -30,6 +34,8 @@
 					:value="val"
 					:placeholder="t('enter_a_value')"
 					:disabled="disabled"
+					:allow-other="true"
+					:choices="choices"
 					autofocus
 					@input="setCSV(index, $event)"
 				/>
@@ -50,6 +56,8 @@
 				:value="internalValue"
 				:placeholder="t('enter_a_value')"
 				:disabled="disabled"
+				:choices="choices"
+				:allow-other="true"
 				autofocus
 				@input="internalValue = $event"
 			/>
@@ -60,7 +68,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { FilterOperator, Type } from '@directus/shared/types';
+import { FilterOperator, Type, Field } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
@@ -80,6 +88,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		field: {
+			type: Object as PropType<Field>,
+			default: null,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -104,9 +116,20 @@ export default defineComponent({
 			},
 		});
 
-		const interfaceComponent = computed(() => `interface-${getDefaultInterfaceForType(props.type)}`);
+		const choices = computed(() => {
+			if (!props.field) return null;
+			return props.field?.meta?.options?.choices || null;
+		});
 
-		return { t, internalValue, csvValue, setCSV, removeCSV, addCSV, interfaceComponent };
+		const interfaceComponent = computed(() => {
+			if (choices.value) {
+				return 'interface-select-dropdown';
+			}
+
+			return `interface-${getDefaultInterfaceForType(props.type)}`;
+		});
+
+		return { t, internalValue, csvValue, setCSV, removeCSV, addCSV, interfaceComponent, choices };
 
 		function setCSV(index: number, value: string) {
 			const newValue = Object.assign([], csvValue.value, { [index]: value });

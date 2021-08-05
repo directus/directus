@@ -423,6 +423,7 @@ errors:
   USER_SUSPENDED: Пользователь заблокирован
   UNKNOWN: Неожиданная Ошибка
   INTERNAL_SERVER_ERROR: Неожиданная Ошибка
+  NOT_NULL_VIOLATION: Значение не может быть null
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...
 create_bookmark: Создать Закладку

@@ -8,4 +8,5 @@ export default defineInterface({
 	component: InterfaceSystemScope,
 	types: ['string'],
 	options: [],
+	system: true,
 });

@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores';
-import { deepMap } from './deep-map';
+import { Accountability } from '@directus/shared/types';
+import { parseFilter as parseFilterShared } from '@directus/shared/utils';
 
 export function parseFilter(
 	filter: Record<string, any>,
@@ -7,30 +8,12 @@ export function parseFilter(
 ): Record<string, any> {
 	const userStore = useUserStore();
 
-	return deepMap(filter, (val: any, key: string) => {
-		if (val === 'true') return true;
-		if (val === 'false') return false;
+	if (!userStore.currentUser) return filter;
 
-		if (key === '_in' || key === '_nin') {
-			if (typeof val === 'string' && val.includes(',')) return val.split(',');
-			else return Array.isArray(val) ? val : [val];
-		}
+	const accountability: Accountability = {
+		role: userStore.currentUser.role.id,
+		user: userStore.currentUser.id,
+	};
 
-		if (val === '$NOW') return new Date();
-		if (val === '$CURRENT_USER') return userStore?.currentUser?.id || null;
-		if (val === '$CURRENT_ROLE') return userStore?.currentUser?.role?.id || null;
-
-		const match = typeof val === 'string' ? /^\$VALUE\((.+?)\)$/.exec(val) : null;
-		if (match !== null) {
-			const field = match[1];
-			if (!values) {
-				// eslint-disable-next-line no-console
-				console.warn('⚠️ It is not possible to apply the dynamic filter becouse the current item is not defined.');
-			} else {
-				return values[field];
-			}
-		}
-
-		return val;
-	});
+	return parseFilterShared(filter, accountability, values);
 }

@@ -1,4 +1,4 @@
-import { BaseException } from './base';
+import { BaseException } from '@directus/shared/exceptions';
 
 export class UserSuspendedException extends BaseException {
 	constructor(message = 'User suspended.') {

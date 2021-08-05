@@ -27,7 +27,7 @@ export function validatePayload(
 
 		const nestedErrors = flatten<Joi.ValidationError>(
 			subValidation.map((subObj: Record<string, any>) => {
-				return validatePayload(subObj, payload);
+				return validatePayload(subObj, payload, options);
 			})
 		).filter((err?: Joi.ValidationError) => err);
 
@@ -36,7 +36,7 @@ export function validatePayload(
 		const subValidation = Object.values(filter)[0] as FieldFilter[];
 
 		const nestedErrors = flatten<Joi.ValidationError>(
-			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload))
+			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options))
 		);
 
 		const allErrored = subValidation.length === nestedErrors.length;

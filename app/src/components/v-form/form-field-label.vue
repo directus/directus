@@ -8,7 +8,7 @@
 		/>
 		<span v-tooltip="edited ? t('edited') : null" @click="toggle">
 			{{ field.name }}
-			<v-icon v-if="field.schema && field.schema.is_nullable === false" class="required" sup name="star" />
+			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
 	</div>
