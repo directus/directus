@@ -1,10 +1,11 @@
 import express from 'express';
 import Joi from 'joi';
+import env from '../env';
 import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService } from '../services';
+import { AuthenticationService, MetaService, OrganismsService, UsersService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
@@ -86,6 +87,23 @@ router.get(
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
+
+			if (
+				env.SAAS_MODE &&
+				(req.sanitizedQuery.fields?.includes('organism') || req.sanitizedQuery.fields?.includes('*')) &&
+				res.locals.payload.data
+			) {
+				const organismsService = new OrganismsService({
+					accountability: req.accountability,
+					schema: req.schema,
+				});
+				if (req.accountability?.organism) {
+					const organism = await organismsService.readOne(req.accountability?.organism, {
+						fields: ['id', 'name'],
+					});
+					res.locals.payload.data.organism = organism;
+				}
+			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				res.locals.payload = { data: { id: req.accountability.user } };
