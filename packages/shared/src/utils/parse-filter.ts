@@ -3,7 +3,11 @@ import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
 
-export function parseFilter(filter: Filter, accountability: Accountability | null): any {
+export function parseFilter(
+	filter: Filter,
+	accountability: Accountability | null,
+	values: Record<string, unknown> | null = null
+): any {
 	return deepMap(filter, (val, key) => {
 		if (val === 'true') return true;
 		if (val === 'false') return false;
@@ -26,6 +30,17 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 
 		if (val === '$CURRENT_USER') return accountability?.user || null;
 		if (val === '$CURRENT_ROLE') return accountability?.role || null;
+
+		const match = typeof val === 'string' ? /^\$VALUE\((.+?)\)$/.exec(val) : null;
+		if (match !== null && match[1]) {
+			const field = match[1];
+			if (!values) {
+				// eslint-disable-next-line no-console
+				console.warn('⚠️ It is not possible to apply the dynamic filter becouse the current item is not defined.');
+			} else {
+				return values[field];
+			}
+		}
 
 		return val;
 	});
