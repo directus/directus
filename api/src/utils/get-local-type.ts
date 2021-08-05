@@ -1,10 +1,8 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
+import getDatabase from '../database';
 
-/**
- * Typemap graciously provided by @gpetrov
- */
 const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	// Shared
 	boolean: { type: 'boolean' },
@@ -51,7 +49,7 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'dateTime', useTimezone: true },
+	datetimeoffset: { type: 'timestamp', useTimezone: true },
 	datetime2: { type: 'dateTime' },
 	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
@@ -91,14 +89,30 @@ export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): Type | 'unknown' {
+	const database = getDatabase();
+
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;
+
 	if (special) {
 		if (special.includes('json')) return 'json';
 		if (special.includes('hash')) return 'hash';
 		if (special.includes('csv')) return 'csv';
 		if (special.includes('uuid')) return 'uuid';
+	}
+
+	/** Handle OracleDB timestamp with time zone */
+	if (database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle') {
+		const type = column.data_type.toLowerCase();
+
+		if (type.startsWith('timestamp')) {
+			if (type.endsWith('with local time zone')) {
+				return 'timestamp';
+			} else {
+				return 'dateTime';
+			}
+		}
 	}
 
 	/** Handle Postgres numeric decimals */

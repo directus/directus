@@ -1,5 +1,5 @@
 <template>
-	<div class="v-list-group">
+	<li class="v-list-group">
 		<v-list-item
 			class="activator"
 			:active="active"
@@ -10,17 +10,29 @@
 			clickable
 			@click="onClick"
 		>
+			<v-list-item-icon
+				v-if="$slots.default && arrowPlacement === 'before'"
+				class="activator-icon"
+				:class="{ active: groupActive }"
+			>
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
+			</v-list-item-icon>
+
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon v-if="$slots.default" class="activator-icon" :class="{ active: groupActive }">
+			<v-list-item-icon
+				v-if="$slots.default && arrowPlacement === 'after'"
+				class="activator-icon"
+				:class="{ active: groupActive }"
+			>
 				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div v-if="groupActive" class="items">
+		<ul v-if="groupActive" class="items">
 			<slot />
-		</div>
-	</div>
+		</ul>
+	</li>
 </template>
 
 <script lang="ts">
@@ -69,6 +81,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		arrowPlacement: {
+			type: String,
+			default: 'after',
+			validator: (val: string) => ['before', 'after'].includes(val),
+		},
 	},
 	emits: ['click'],
 	setup(props, { emit }) {
@@ -101,6 +118,7 @@ export default defineComponent({
 	}
 
 	.activator-icon {
+		margin-right: 0 !important;
 		color: var(--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
@@ -116,6 +134,7 @@ export default defineComponent({
 
 	.items {
 		padding-left: 16px;
+		list-style: none;
 	}
 }
 </style>

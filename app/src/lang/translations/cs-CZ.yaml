@@ -188,6 +188,8 @@ duration: Trvání
 modified_on: Upraveno
 status: Stav
 remove: Odebrat
+errors:
+  NOT_NULL_VIOLATION: Hodnota nesmí být null
 bookmarks: Záložky
 back: Zpět
 all_users: Všichni uživatelé

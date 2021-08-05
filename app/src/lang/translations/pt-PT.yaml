@@ -437,6 +437,7 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
 bookmarks: Favoritos
 back: Voltar
 delete_collection: Remover coleção

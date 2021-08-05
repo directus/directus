@@ -24,7 +24,7 @@ export type Filter = FieldFilter & {
 };
 
 export type FieldFilter = {
-	[field: string]: FieldFilterOperator | FieldFilter;
+	[field: string]: FieldFilterOperator | FieldValidationOperator | FieldFilter;
 };
 
 export type FieldFilterOperator = {
@@ -44,4 +44,9 @@ export type FieldFilterOperator = {
 	_nbetween?: (string | number)[];
 	_empty?: boolean;
 	_nempty?: boolean;
+};
+
+export type FieldValidationOperator = {
+	_submitted?: boolean;
+	_regex?: string;
 };

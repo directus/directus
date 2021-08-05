@@ -169,7 +169,7 @@ exports.sourceNodes = async (gatsby, options) => {
 exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, options) => {
 	const { createNode } = actions;
 
-	const { url } = options;
+	const { url, auth } = options;
 
 	let endpoints = normalizeEndpoint(url);
 
@@ -187,6 +187,7 @@ exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers
 						cache,
 						createNode,
 						createNodeId,
+						httpHeaders: { Authorization: `Bearer ${auth.token}` },
 						reporter,
 					});
 				},

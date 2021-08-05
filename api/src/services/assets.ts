@@ -9,14 +9,8 @@ import getDatabase from '../database';
 import env from '../env';
 import { IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
 import storage from '../storage';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	File,
-	Transformation,
-	TransformationParams,
-	TransformationPreset,
-} from '../types';
+import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { AuthorizationService } from './authorization';
 import * as TransformationUtils from '../utils/transformations';
 

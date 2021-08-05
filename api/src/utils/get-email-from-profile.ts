@@ -21,10 +21,15 @@ export default function getEmailFromProfile(provider: string, profile: Record<st
 	const email = get(profile, path);
 
 	if (!email) {
-		throw new ServiceUnavailableException("Couldn't extract email address from SSO provider response", {
-			service: 'oauth',
-			provider,
-		});
+		throw new ServiceUnavailableException(
+			`Email address not found. Profile "${JSON.stringify(profile)}", path: "${path}"`,
+			{
+				service: 'oauth',
+				provider,
+				profile,
+				path,
+			}
+		);
 	}
 
 	return email;
