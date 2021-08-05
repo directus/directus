@@ -38,6 +38,6 @@ export const ASSET_TRANSFORM_QUERY_KEYS = [
 	'withoutEnlargement',
 ];
 
-export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
+export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE', '$CURRENT_ORGANISM'];
 
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];

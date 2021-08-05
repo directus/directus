@@ -2,6 +2,7 @@ import { Accountability, Filter } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
+import { env } from 'process';
 
 export function parseFilter(filter: Filter, accountability: Accountability | null): any {
 	return deepMap(filter, (val, key) => {
@@ -26,6 +27,7 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 
 		if (val === '$CURRENT_USER') return accountability?.user || null;
 		if (val === '$CURRENT_ROLE') return accountability?.role || null;
+		if (env.SAAS_MODE && val === '$CURRENT_ORGANISM') return accountability?.organism || null;
 
 		return val;
 	});
