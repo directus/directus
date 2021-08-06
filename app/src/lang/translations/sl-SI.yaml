@@ -402,7 +402,6 @@ documentation: Dokumentacija
 sidebar: Stranska vrstica
 duration: Trajanje
 charset: Nabor znakov
-second: Sekunda
 file_moved: Datoteka premaknjena
 collection_created: Zbirka ustvarjena
 modified_on: Spremenjeno dne
@@ -897,13 +896,11 @@ require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
-weeks: { }
 report_error: Sporoči napako
 interfaces:
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
-    start: Začetek
     all_closed: Vse zaprto
     first_opened: Prvo odprto
     all_opened: Vse odprto
@@ -1113,12 +1110,6 @@ interfaces:
     value_path: Vrednosti
     trigger: Sprožilec
     rate: Oceni
-  group-standard:
-    name: Standardna skupina
-    description: Pokaži polja kot običajna z opcijskim skupinskim naslovom.
-    show_header: Pokaži naslov skupine
-    header_icon: Ikona glave
-    header_color: Barva glave
 displays:
   boolean:
     boolean: Boolean
