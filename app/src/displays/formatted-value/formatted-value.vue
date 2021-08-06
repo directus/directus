@@ -69,7 +69,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-formatted-text {
-	display: inline-block;
 	overflow: hidden;
 	line-height: 26px;
 	white-space: nowrap;
