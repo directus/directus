@@ -402,6 +402,7 @@ documentation: Documentazione
 sidebar: Barra Laterale
 duration: Durata
 charset: Set di caratteri
+second: secondo
 file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
@@ -897,6 +898,7 @@ translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
 report_error: Segnala l'errore
+start: Inizio
 interfaces:
   group-accordion:
     name: Accordion
