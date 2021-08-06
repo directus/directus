@@ -21,7 +21,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs } from 'vue';
-import { useSettingsStore, useRequestsStore } from '@/stores/';
+import { useSettingsStore, useRequestsStore, useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
@@ -31,8 +31,12 @@ export default defineComponent({
 
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
+		const usersStore = useUserStore();
 
 		const customLogoPath = computed<string | null>(() => {
+			if (usersStore.currentUser?.active_organism?.logo)
+				return addTokenToURL(getRootPath() + `assets/${usersStore.currentUser?.active_organism?.logo}`);
+
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
 			return addTokenToURL(getRootPath() + `assets/${settingsStore.settings.project_logo}`);

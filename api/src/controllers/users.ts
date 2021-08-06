@@ -101,7 +101,7 @@ router.get(
 
 				try {
 					const availableOrganisms = await organismsService.readByQuery({
-						fields: ['id', 'name'],
+						fields: ['id', 'name', 'logo', 'color'],
 					});
 
 					if (fetchActiveOrganism) {

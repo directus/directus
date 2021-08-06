@@ -99,26 +99,6 @@
 		</template>
 
 		<div class="organism-item">
-			<div v-if="isNew === false" class="organism-box">
-				<div class="avatar">
-					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
-					<v-icon v-else name="account_circle" outline x-large />
-				</div>
-				<div class="organism-box-content">
-					<template v-if="loading">
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
-					</template>
-					<template v-else-if="isNew === false && item">
-						<div class="name type-label">
-							{{ item.name }}
-						</div>
-					</template>
-				</div>
-			</div>
-
 			<v-form
 				ref="form"
 				v-model="edits"
@@ -146,7 +126,6 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<organism-info-sidebar-detail :is-new="isNew" :organism="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetail"
@@ -177,7 +156,6 @@ import api from '@/api';
 import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@directus/shared/types';
-import OrganismInfoSidebarDetail from '../components/organism-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import useCollection from '@/composables/use-collection';
@@ -194,7 +172,6 @@ export default defineComponent({
 		RevisionsDrawerDetail,
 		SaveOptions,
 		CommentsSidebarDetail,
-		OrganismInfoSidebarDetail,
 	},
 	props: {
 		primaryKey: {
