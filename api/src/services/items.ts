@@ -139,16 +139,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				throw await translateDatabaseError(err);
 			}
 
-			// When relying on a database auto-incremented ID, we'll have to fetch it from the DB in
-			// order to know what the PK is of the just-inserted item
-			// if (!primaryKey) {
-			// 	// Fetching it with max should be safe, as we're in the context of the current transaction
-			// 	const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
-			// 	primaryKey = result.id;
-			// 	// Set the primary key on the input item, in order for the "after" event hook to be able
-			// 	// to read from it
-			// 	payload[primaryKeyField] = primaryKey;
-			// }
+			// Most database support returning, those who don't tend to return the PK anyways
+			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+			// fetching it based on the last inserted row
+			if (!primaryKey) {
+				// Fetching it with max should be safe, as we're in the context of the current transaction
+				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
+				primaryKey = result.id;
+				// Set the primary key on the input item, in order for the "after" event hook to be able
+				// to read from it
+				payload[primaryKeyField] = primaryKey;
+			}
 
 			const { revisions: revisionsO2M } = await payloadService.processO2M(payload, primaryKey);
 
