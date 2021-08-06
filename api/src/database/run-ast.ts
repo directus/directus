@@ -7,7 +7,7 @@ import { applyFunctionToColumnName } from '../utils/apply-function-to-column-nam
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import getDatabase from './index';
 
 type RunASTOptions = {

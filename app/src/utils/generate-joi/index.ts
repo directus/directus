@@ -1,5 +1,5 @@
 import BaseJoi, { AnySchema } from 'joi';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp, merge } from 'lodash';
 
 /**
  * @TODO
@@ -58,20 +58,19 @@ const Joi = BaseJoi.extend({
 });
 
 type JoiOptions = {
-	allowUnknown: boolean;
+	allowUnknown?: boolean;
+	requireAll?: boolean;
 };
 
 const defaults: JoiOptions = {
 	allowUnknown: true,
+	requireAll: false,
 };
 
 export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions): AnySchema {
 	filter = filter || {};
 
-	options = {
-		...defaults,
-		...(options || {}),
-	};
+	options = merge({}, defaults, options);
 
 	const schema: Record<string, AnySchema> = {};
 
@@ -98,26 +97,26 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 			}
 
 			if (operator === '_starts_with') {
-				return Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
 					name: 'starts_with',
 				});
 			}
 
 			if (operator === '_nstarts_with') {
-				return Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+				schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
 					name: 'starts_with',
 					invert: true,
 				});
 			}
 
 			if (operator === '_ends_with') {
-				return Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
 					name: 'ends_with',
 				});
 			}
 
 			if (operator === '_nends_with') {
-				return Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+				schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
 					name: 'ends_with',
 					invert: true,
 				});
@@ -171,6 +170,10 @@ export default function generateJoi(filter: Record<string, any> | null, options?
 			if (operator === '_nbetween') {
 				const values = Object.values(value)[0] as number[];
 				schema[key] = Joi.number().less(values[0]).greater(values[1]);
+			}
+
+			if (options.requireAll) {
+				schema[key] = schema[key].required();
 			}
 		}
 	}

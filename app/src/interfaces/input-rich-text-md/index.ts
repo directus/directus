@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import InterfaceInputRichTextMD from './input-rich-text-md.vue';
 
 export default defineInterface({

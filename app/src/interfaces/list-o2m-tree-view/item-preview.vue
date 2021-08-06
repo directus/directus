@@ -2,7 +2,7 @@
 	<div class="preview">
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
-		<div class="actions" v-if="!disabled">
+		<div v-if="!disabled" class="actions">
 			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
 			<v-icon v-tooltip="t('deselect')" name="clear" clickable @click="$emit('deselect')" />
 		</div>
@@ -24,7 +24,6 @@ import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
-	emits: ['deselect', 'input'],
 	components: { DrawerItem },
 	props: {
 		collection: {
@@ -52,6 +51,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['deselect', 'input'],
 	setup() {
 		const { t } = useI18n();
 

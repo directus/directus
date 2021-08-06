@@ -1,14 +1,14 @@
 <template>
 	<v-drawer :model-value="isOpen" title="Activity Item" @update:model-value="close" @cancel="close">
-		<v-progress-circular indeterminate v-if="loading" />
+		<v-progress-circular v-if="loading" indeterminate />
 
-		<div class="content" v-else-if="error">
+		<div v-else-if="error" class="content">
 			<v-notice type="danger">
 				{{ error }}
 			</v-notice>
 		</div>
 
-		<div class="content" v-else>
+		<div v-else class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">User:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
@@ -35,11 +35,11 @@
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="t('open')">
+			<v-button v-if="openItemLink" v-tooltip.bottom="t('open')" :to="openItemLink" icon rounded>
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity" icon rounded v-tooltip.bottom="t('done')">
+			<v-button v-tooltip.bottom="t('done')" to="/activity" icon rounded>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -69,7 +69,7 @@ type ActivityRecord = {
 };
 
 export default defineComponent({
-	name: 'activity-detail',
+	name: 'ActivityDetail',
 	props: {
 		primaryKey: {
 			type: String,

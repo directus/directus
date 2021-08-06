@@ -1,17 +1,22 @@
 <template>
 	<div>
 		<div class="form">
-			<div class="field half-left" v-if="fieldData.meta">
+			<div v-if="fieldData.meta" class="field half-left">
 				<div class="label type-label">{{ t('readonly') }}</div>
 				<v-checkbox v-model="fieldData.meta.readonly" :label="t('disabled_editing_value')" block />
 			</div>
 
-			<div class="field half-right" v-if="fieldData.meta">
+			<div v-if="fieldData.meta" class="field half-right">
 				<div class="label type-label">{{ t('hidden') }}</div>
 				<v-checkbox v-model="fieldData.meta.hidden" :label="t('hidden_on_detail')" block />
 			</div>
 
-			<div class="field full" v-if="localType !== 'group'">
+			<div v-if="fieldData.meta" class="field half-left">
+				<div class="label type-label">{{ t('required') }}</div>
+				<v-checkbox v-model="fieldData.meta.required" :label="t('require_value_to_be_set')" block />
+			</div>
+
+			<div v-if="type !== 'group'" class="field full">
 				<div class="label type-label">{{ t('note') }}</div>
 				<v-input v-model="fieldData.meta.note" :placeholder="t('add_note')" />
 			</div>
@@ -20,7 +25,6 @@
 				<div class="label type-label">{{ t('field_name_translations') }}</div>
 				<interface-list
 					:value="fieldData.meta.translations"
-					@input="fieldData.meta.translations = $event"
 					:template="'[{{ language }}] {{ translation }}'"
 					:fields="[
 						{
@@ -53,6 +57,7 @@
 							},
 						},
 					]"
+					@input="fieldData.meta.translations = $event"
 				/>
 			</div>
 		</div>

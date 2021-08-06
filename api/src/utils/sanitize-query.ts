@@ -1,7 +1,8 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Accountability, Aggregate, Filter, Meta, Query, Sort } from '../types';
-import { parseFilter } from '../utils/parse-filter';
+import { Aggregate, Filter, Meta, Query, Sort } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { parseFilter } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};

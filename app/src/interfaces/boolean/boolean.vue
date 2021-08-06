@@ -7,10 +7,10 @@
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@update:model-value="$emit('input', $event)"
 		:style="{
 			'--v-checkbox-color': color,
 		}"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
@@ -19,7 +19,6 @@ import { defineComponent } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Boolean,
@@ -46,5 +45,6 @@ export default defineComponent({
 			default: '#00C897',
 		},
 	},
+	emits: ['input'],
 });
 </script>

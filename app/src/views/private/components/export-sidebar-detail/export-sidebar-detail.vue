@@ -4,6 +4,7 @@
 			<div class="field full">
 				<p class="type-label">{{ t('format') }}</p>
 				<v-select
+					v-model="format"
 					:items="[
 						{
 							text: t('csv'),
@@ -18,7 +19,6 @@
 							value: 'xml',
 						},
 					]"
-					v-model="format"
 				/>
 				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
@@ -43,6 +43,7 @@ import filtersToQuery from '@/utils/filters-to-query';
 type LayoutQuery = {
 	fields?: string[];
 	sort?: string;
+	limit?: number;
 };
 
 export default defineComponent({
@@ -73,7 +74,10 @@ export default defineComponent({
 		return { t, format, useFilters, exportData };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection}`;
+			const endpoint = props.collection.startsWith('directus_')
+				? `${props.collection.substring(9)}`
+				: `items/${props.collection}`;
+			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
@@ -81,8 +85,10 @@ export default defineComponent({
 			};
 
 			if (useFilters.value === true) {
-				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
-				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
+
 				if (props.searchQuery) params.search = props.searchQuery;
 
 				if (props.filters?.length) {

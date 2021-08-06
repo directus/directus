@@ -1,9 +1,10 @@
 import { ErrorRequestHandler } from 'express';
 import { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { BaseException, MethodNotAllowedException } from '../exceptions';
+import { MethodNotAllowedException } from '../exceptions';
+import { BaseException } from '@directus/shared/exceptions';
 import logger from '../logger';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next

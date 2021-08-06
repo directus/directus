@@ -1,7 +1,8 @@
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { localTypes, Relation } from '@/types';
+import { Relation } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
-export function getLocalTypeForField(collection: string, field: string): typeof localTypes[number] | null {
+export function getLocalTypeForField(collection: string, field: string): LocalType | null {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 

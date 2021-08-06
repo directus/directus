@@ -1,5 +1,6 @@
 <template>
-	<div class="md" :class="pageClass" v-html="html" @click="onClick" />
+	<!-- eslint-disable-next-line vue/no-v-html -->
+	<div class="md" :class="pageClass" @click="onClick" v-html="html" />
 </template>
 
 <script lang="ts">

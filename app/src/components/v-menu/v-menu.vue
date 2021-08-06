@@ -22,18 +22,18 @@
 			<transition-bounce>
 				<div
 					v-if="isActive"
-					class="v-menu-popper"
-					:key="id"
 					:id="id"
-					:class="{ active: isActive, attached }"
-					:data-placement="popperPlacement"
-					:style="styles"
+					:key="id"
 					v-click-outside="{
 						handler: deactivate,
 						middleware: onClickOutsideMiddleware,
 						disabled: isActive === false || closeOnClick === false,
 						events: ['click'],
 					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
 				>
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div class="v-menu-content" @click.stop="onContentClick">
@@ -59,7 +59,6 @@ import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		placement: {
 			type: String as PropType<Placement>,
@@ -99,6 +98,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement | null>(null);
 		const reference = ref<HTMLElement | null>(null);

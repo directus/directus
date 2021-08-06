@@ -19,9 +19,9 @@
 			<display-color
 				v-for="item in items"
 				:key="item.value"
+				v-tooltip="item.text"
 				:value="item.background"
 				:default-color="defaultBackground"
-				v-tooltip="item.text"
 			/>
 		</template>
 	</div>
@@ -66,6 +66,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
+			required: true,
 			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
 		},
 	},

@@ -5,15 +5,15 @@
 	<v-notice v-else-if="!chosenCollection" type="warning">
 		{{ t('select_a_collection') }}
 	</v-notice>
-	<div class="system-field-tree" v-else>
+	<div v-else class="system-field-tree">
 		<v-checkbox-tree
-			@update:model-value="$emit('input', $event)"
 			:model-value="value"
 			:disabled="disabled"
 			:choices="tree"
 			item-text="name"
 			item-value="key"
 			value-combining="exclusive"
+			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
 </template>
@@ -24,7 +24,6 @@ import { defineComponent, computed, inject, ref, PropType } from 'vue';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		collectionField: {
 			type: String,
@@ -51,6 +50,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const { t } = useI18n();
 

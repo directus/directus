@@ -3,7 +3,7 @@
 		<div class="layout-options">
 			<div class="field">
 				<div class="type-label">{{ t('layout') }}</div>
-				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
+				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
 					<template v-if="currentLayout.icon" #prepend>
 						<v-icon :name="currentLayout.icon" />
 					</template>
@@ -21,13 +21,13 @@ import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: String,
 			default: 'tabular',
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

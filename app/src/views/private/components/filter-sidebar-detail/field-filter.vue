@@ -1,13 +1,13 @@
 <template>
 	<div class="field-filter">
 		<div class="header">
-			<div class="name" v-tooltip="filter.field.split('.').join(' → ')">
+			<div v-tooltip="filter.field.split('.').join(' → ')" class="name">
 				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
 			<v-menu show-arrow :disabled="disabled">
 				<template #activator="{ toggle }">
-					<div class="operator" @click="toggle" v-tooltip.top="t('change_advanced_filter_operator')">
+					<div v-tooltip.top="t('change_advanced_filter_operator')" class="operator" @click="toggle">
 						<span>{{ t(`operators.${activeOperator}`) }}</span>
 						<v-icon name="expand_more" />
 					</div>
@@ -15,9 +15,9 @@
 
 				<v-list>
 					<v-list-item
-						:active="operator === activeOperator"
-						v-for="operator in parsedField.operators"
+						v-for="operator in filterOperators"
 						:key="operator"
+						:active="operator === activeOperator"
 						clickable
 						@click="activeOperator = operator"
 					>
@@ -27,15 +27,15 @@
 			</v-menu>
 			<div class="spacer" />
 			<v-icon
+				v-tooltip.left="t('delete_advanced_filter')"
 				class="remove"
 				name="close"
 				clickable
 				@click="$emit('remove')"
-				v-tooltip.left="t('delete_advanced_filter')"
 			/>
 		</div>
 		<div class="field">
-			<filter-input v-model="value" :type="parsedField.type" :operator="activeOperator" :disabled="disabled" />
+			<filter-input v-model="value" :field="field" :type="field.type" :operator="activeOperator" :disabled="disabled" />
 		</div>
 	</div>
 </template>
@@ -45,11 +45,10 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import FilterInput from './filter-input.vue';
 
 export default defineComponent({
-	emits: ['remove', 'update'],
 	components: { FilterInput },
 	props: {
 		filter: {
@@ -65,6 +64,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['remove', 'update'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -92,12 +92,13 @@ export default defineComponent({
 			return getNameForFieldKey(props.filter.field);
 		});
 
-		const parsedField = computed(() => {
-			const field = getFieldForKey(props.filter.field);
-			return getAvailableOperatorsForType(field.type);
+		const field = computed(() => getFieldForKey(props.filter.field));
+
+		const filterOperators = computed(() => {
+			return getFilterOperatorsForType(field.value.type);
 		});
 
-		return { t, activeOperator, value, name, parsedField };
+		return { t, activeOperator, value, name, field, filterOperators };
 
 		function getFieldForKey(fieldKey: string) {
 			return fieldsStore.getField(props.collection, fieldKey);

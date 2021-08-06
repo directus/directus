@@ -28,8 +28,8 @@
 				{{ charsRemaining }}
 			</span>
 			<v-icon
-				:class="{ hide: percentageRemaining !== false && percentageRemaining <= 20 }"
 				v-if="iconRight"
+				:class="{ hide: percentageRemaining !== false && percentageRemaining <= 20 }"
 				:name="iconRight"
 			/>
 		</template>
@@ -40,7 +40,6 @@
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: [String, Number],
@@ -112,6 +111,7 @@ export default defineComponent({
 			default: 1,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const charsRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;

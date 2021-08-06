@@ -22,7 +22,7 @@
 					</div>
 
 					<v-icon v-if="modelValue === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
-					<v-icon class="icon-right" v-else-if="item.iconRight" :name="item.iconRight" />
+					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
 				</div>
 			</template>
 		</transition-group>
@@ -34,7 +34,6 @@ import { defineComponent, PropType, computed } from 'vue';
 import { FancySelectItem } from './types';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		items: {
 			type: Array as PropType<FancySelectItem[]>,
@@ -49,6 +48,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const visibleItems = computed(() => {
 			if (props.modelValue === null) return props.items;

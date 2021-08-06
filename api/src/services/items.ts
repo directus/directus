@@ -9,10 +9,10 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import logger from '../logger';
+import { Accountability } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
-	Accountability,
 	Action,
 	Item as AnyItem,
 	PermissionsAction,
@@ -21,7 +21,7 @@ import {
 	SchemaOverview,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 
@@ -279,6 +279,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
+		emitAsyncSafe(`${this.eventScope}.read`, {
+			event: `${this.eventScope}.read`,
+			accountability: this.accountability,
+			collection: this.collection,
+			query,
+			action: 'read',
+			payload: records,
+			schema: this.schema,
+			database: getDatabase(),
+		});
+
 		return records as Item[];
 	}
 
@@ -306,17 +317,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
-		emitAsyncSafe(`${this.eventScope}.read`, {
-			event: `${this.eventScope}.read`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: key,
-			action: 'read',
-			payload: results,
-			schema: this.schema,
-			database: getDatabase(),
-		});
-
 		return results[0];
 	}
 
@@ -343,17 +343,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		};
 
 		const results = await this.readByQuery(queryWithKeys, opts);
-
-		emitAsyncSafe(`${this.eventScope}.read`, {
-			event: `${this.eventScope}.read`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'read',
-			payload: results,
-			schema: this.schema,
-			database: getDatabase(),
-		});
 
 		return results;
 	}

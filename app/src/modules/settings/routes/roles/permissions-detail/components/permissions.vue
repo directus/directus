@@ -4,12 +4,12 @@
 			{{
 				t('permissions_for_role', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
 
-		<interface-input-code :value="permissions" @input="permissions = $event" language="json" type="json" />
+		<interface-input-code :value="permissions" language="json" type="json" @input="permissions = $event" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />
@@ -22,11 +22,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@/types';
+import { Permission, Role } from '@directus/shared/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,
@@ -41,6 +40,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['update:permission'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

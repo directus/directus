@@ -1,7 +1,7 @@
 <template>
 	<div id="directus" :style="brandStyle">
 		<transition name="fade">
-			<div class="hydrating" v-if="hydrating">
+			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
 			</div>
 		</transition>
@@ -22,10 +22,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs, watch, computed, provide } from 'vue';
+import { defineComponent, toRefs, watch, computed, provide, onMounted, onUnmounted } from 'vue';
 import * as stores from '@/stores';
 import api, { addTokenToURL } from '@/api';
 import axios from 'axios';
+import { startIdleTracking, stopIdleTracking } from './idle';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
@@ -47,6 +48,9 @@ export default defineComponent({
 				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
+
+		onMounted(() => startIdleTracking());
+		onUnmounted(() => stopIdleTracking());
 
 		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
 			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
