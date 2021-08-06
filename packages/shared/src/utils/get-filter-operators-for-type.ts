@@ -7,6 +7,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'json':
 		case 'hash':
 		case 'string':
+		case 'csv':
 			return [
 				'contains',
 				'ncontains',
