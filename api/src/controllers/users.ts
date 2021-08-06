@@ -99,18 +99,24 @@ router.get(
 					schema: req.schema,
 				});
 
-				const availableOrganisms = await organismsService.readByQuery({
-					fields: ['id', 'name'],
-				});
+				try {
+					const availableOrganisms = await organismsService.readByQuery({
+						fields: ['id', 'name'],
+					});
 
-				if (fetchActiveOrganism) {
-					if (req.accountability?.organism) {
-						const activeOrganism = availableOrganisms.find((x) => x.id === req.accountability?.organism) ?? null;
-						res.locals.payload.data.active_organism = activeOrganism;
+					if (fetchActiveOrganism) {
+						if (req.accountability?.organism) {
+							const activeOrganism = availableOrganisms.find((x) => x.id === req.accountability?.organism) ?? null;
+							res.locals.payload.data.active_organism = activeOrganism;
+						}
 					}
-				}
-				if (fetchAvailableOrganisms) {
-					res.locals.payload.data.available_organisms = availableOrganisms;
+					if (fetchAvailableOrganisms) {
+						res.locals.payload.data.available_organisms = availableOrganisms;
+					}
+				} catch (error) {
+					if (!(error instanceof ForbiddenException)) {
+						throw error;
+					}
 				}
 			}
 		} catch (error) {

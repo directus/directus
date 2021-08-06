@@ -95,3 +95,31 @@
     - tfa_secret
     - status
     - role
+
+- collection: directus_organisms
+  action: read
+  permissions:
+    users:
+      user: $CURRENT_USER
+  fields:
+    - id
+    - name
+    - status
+    - website_url
+    - color
+    - logo
+    - id
+    - users
+
+- collection: directus_organisms_users
+  action: read
+  permissions:
+    organism:
+      users:
+        user: $CURRENT_USER
+  fields:
+    - id
+    - organism
+    - user
+    - role
+    - status
