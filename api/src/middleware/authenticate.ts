@@ -65,9 +65,32 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 			throw new InvalidCredentialsException();
 		}
 
+		if (env.SAAS_MODE) {
+			req.accountability.organism = payload.organism;
+
+			if (payload.organism) {
+				const userOrganism = await database
+					.select('role')
+					.from('directus_organisms_users')
+					.leftJoin('directus_roles', 'directus_organisms_users.role', 'directus_roles.id')
+					.where({
+						'directus_organisms_users.user': payload.id,
+						'directus_organisms_users.organism': payload.organism,
+						status: 'active',
+					})
+					.first();
+
+				if (!userOrganism) {
+					throw new InvalidCredentialsException();
+				}
+
+				req.accountability.role = userOrganism.role;
+			}
+		} else {
+			req.accountability.role = user.role;
+		}
+
 		req.accountability.user = payload.id;
-		req.accountability.organism = payload.organism;
-		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
 	} else {

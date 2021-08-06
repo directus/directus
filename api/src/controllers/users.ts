@@ -5,7 +5,7 @@ import { ForbiddenException, InvalidCredentialsException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, OrganismsService, UsersService } from '../services';
+import { AuthenticationService, MetaService, OrganismsService, RolesService, UsersService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
@@ -84,11 +84,20 @@ router.get(
 			schema: req.schema,
 		});
 
+		const rolesService = new RolesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
 
 			if (env.SAAS_MODE && res.locals.payload.data) {
+				if (req.accountability?.role) {
+					res.locals.payload.data.role = await rolesService.readOne(req.accountability.role);
+				}
+
 				const fetchActiveOrganism =
 					req.sanitizedQuery.fields?.includes('active_organism') || req.sanitizedQuery.fields?.includes('*');
 				const fetchAvailableOrganisms =
