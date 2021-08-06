@@ -95,7 +95,7 @@
 		</template>
 
 		<template #navigation>
-			<organisms-navigation :current-role="(item && item.role) || role" />
+			<organisms-navigation />
 		</template>
 
 		<div class="organism-item">

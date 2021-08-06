@@ -1246,3 +1246,7 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+project_info:
+  select_organism: Select an organism
+organism_directory: Organism Directory
+all_organisms: All organisms

@@ -15,7 +15,7 @@
 	</div>
 	<v-dialog v-if="saas" v-model="openOrganismsDialog" @esc="openOrganismsDialog = false">
 		<v-sheet>
-			<h2 :text="t('project_info.select_organism')"></h2>
+			<h2>{{ t('project_info.select_organism') }}</h2>
 
 			<v-list>
 				<template v-for="organism of availableOrganisms" :key="organism.id">

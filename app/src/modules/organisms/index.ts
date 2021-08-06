@@ -4,7 +4,7 @@ import Item from './routes/item.vue';
 
 export default defineModule({
 	id: 'organisms',
-	name: '$t:organisms_directory',
+	name: '$t:organism_directory',
 	icon: 'business',
 	routes: [
 		{
