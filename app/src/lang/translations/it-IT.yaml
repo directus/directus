@@ -897,6 +897,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -906,6 +907,8 @@ interfaces:
     all_closed: Tutto chiuso
     first_opened: Apri la prima sezione
     all_opened: Tutto aperto
+    accordion_mode: Modalità dell'accordion
+    max_one_section_open: Massimo una sezione aperta
   presentation-links:
     presentation-links: Collegamenti del pulsante
     links: Collegamenti
@@ -1112,6 +1115,17 @@ interfaces:
     value_path: Percorso del valore
     trigger: Attivazione
     rate: Intervallo
+  group-raw:
+    name: Gruppo grezzo
+    description: Mostra i campi così come sono
+  group-detail:
+    name: Gruppo di dettaglio
+    description: Mostra i campi come una sezione richiudibile
+    show_header: Mostra l'intestazione del gruppo
+    header_icon: Icona dell'intestazione
+    header_color: Colore dell'intestazione
+    start_open: Inizia aperto
+    start_closed: Inizia chiuso
 displays:
   boolean:
     boolean: Boolean
