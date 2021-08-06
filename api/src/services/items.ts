@@ -133,13 +133,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			try {
-				await trx.insert(payloadWithoutAliases).into(this.collection);
+				const result = await trx.insert(payloadWithoutAliases).into(this.collection).returning(primaryKeyField);
+				primaryKey = result[0];
 			} catch (err) {
 				throw await translateDatabaseError(err);
 			}
 
-			// When relying on a database auto-incremented ID, we'll have to fetch it from the DB in
-			// order to know what the PK is of the just-inserted item
+			// Most database support returning, those who don't tend to return the PK anyways
+			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+			// fetching it based on the last inserted row
 			if (!primaryKey) {
 				// Fetching it with max should be safe, as we're in the context of the current transaction
 				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
@@ -162,9 +164,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: primaryKey,
 				};
 
-				await trx.insert(activityRecord).into('directus_activity');
-
-				const { id: activityID } = await trx.max('id', { as: 'id ' }).from('directus_activity').first();
+				const activityID = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
 
 				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
@@ -176,9 +176,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						delta: JSON.stringify(payload),
 					};
 
-					await trx.insert(revisionRecord).into('directus_revisions');
-
-					const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+					const revisionID = (await trx.insert(revisionRecord).into('directus_revisions').returning('id'))[0] as number;
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
@@ -470,10 +468,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityPrimaryKeys: PrimaryKey[] = [];
 
 				for (const activityRecord of activityRecords) {
-					await trx.insert(activityRecord).into('directus_activity');
-					const result = await trx.max('id', { as: 'id' }).from('directus_activity').first();
-					const primaryKey = result.id;
-
+					const primaryKey = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
 					activityPrimaryKeys.push(primaryKey);
 				}
 
@@ -495,8 +490,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					}));
 
 					for (let i = 0; i < revisionRecords.length; i++) {
-						await trx.insert(revisionRecords[i]).into('directus_revisions');
-						const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+						const revisionID = (
+							await trx.insert(revisionRecords[i]).into('directus_revisions').returning('id')
+						)[0] as number;
 
 						if (opts?.onRevisionCreate) {
 							opts.onRevisionCreate(revisionID);
