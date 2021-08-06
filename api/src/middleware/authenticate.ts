@@ -15,10 +15,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	const headers: Record<string, unknown> = {};
 
 	for (const header of allowedHeaders) {
-		let value = req.get('x-' + header);
-		if (typeof value === 'undefined') {
-			value = req.query[header] as string;
-		}
+		const value = req.get('x-directus-' + header);
 		if (value) {
 			const normalizedHeaderName = header.toUpperCase().replace(/-/gm, '_');
 			headers[normalizedHeaderName] = value;
