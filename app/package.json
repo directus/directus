@@ -88,5 +88,8 @@
 		"vue-i18n": "9.1.7",
 		"vue-router": "4.0.10",
 		"vuedraggable": "4.0.3"
+	},
+	"dependencies": {
+		"p-queue": "^6.6.2"
 	}
 }
