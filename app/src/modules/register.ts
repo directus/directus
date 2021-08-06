@@ -3,7 +3,6 @@ import { usePermissionsStore, useServerStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import RouterPass from '@/utils/router-passthrough';
 import { getModules } from './index';
-º;
 import { ModuleConfig } from '@directus/shared/types';
 
 const { modulesRaw } = getModules();
