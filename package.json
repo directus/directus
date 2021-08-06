@@ -39,12 +39,12 @@
 		"eslint": "7.32.0",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "3.4.0",
-		"eslint-plugin-vue": "7.15.0",
+		"eslint-plugin-vue": "7.15.1",
 		"globby": "11.0.4",
 		"jest": "27.0.6",
 		"knex": "0.95.9",
 		"lerna": "4.0.0",
-		"lint-staged": "11.1.1",
+		"lint-staged": "11.1.2",
 		"listr": "0.14.3",
 		"mysql": "2.18.1",
 		"nanoid": "3.1.23",
@@ -75,6 +75,6 @@
 	},
 	"volta": {
 		"node": "16.5.0",
-		"npm": "7.20.0"
+		"npm": "7.20.5"
 	}
 }

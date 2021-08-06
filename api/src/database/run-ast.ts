@@ -4,7 +4,7 @@ import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import getDatabase from './index';
 
 type RunASTOptions = {

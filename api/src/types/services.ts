@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { SchemaOverview } from '../types';
-import { Accountability } from './accountability';
+import { Accountability } from '@directus/shared/types';
 import { Item, PrimaryKey } from './items';
 import { PermissionsAction } from './permissions';
 import { Query } from './query';

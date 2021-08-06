@@ -6,8 +6,9 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import logger from '../logger';
 import { RelationsService } from '../services';
-import { Accountability, Permission, SchemaOverview } from '../types';
-import { toArray } from '../utils/to-array';
+import { Permission, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { mergePermissions } from './merge-permissions';
@@ -27,13 +28,28 @@ export async function getSchema(options?: {
 	let result: SchemaOverview;
 
 	if (env.CACHE_SCHEMA !== false && schemaCache) {
-		const cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+		let cachedSchema;
+
+		try {
+			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+		} catch (err) {
+			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
+		}
 
 		if (cachedSchema) {
 			result = cachedSchema;
 		} else {
 			result = await getDatabaseSchema(database, schemaInspector);
-			await schemaCache.set('schema', result, typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+
+			try {
+				await schemaCache.set(
+					'schema',
+					result,
+					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
+				);
+			} catch (err) {
+				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
+			}
 		}
 	} else {
 		result = await getDatabaseSchema(database, schemaInspector);
@@ -102,6 +118,11 @@ async function getDatabaseSchema(
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (!info.primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
+			continue;
+		}
+
+		if (collection.includes(' ')) {
+			logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
 			continue;
 		}
 

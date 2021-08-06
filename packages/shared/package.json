@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.0.0-rc.87",
+	"version": "9.0.0-rc.88",
 	"description": "Code shared between all directus packages.",
 	"exports": {
 		"./composables": {
@@ -26,6 +26,10 @@
 		"./utils/node": {
 			"import": "./dist/esm/utils/node/index.js",
 			"require": "./dist/cjs/utils/node/index.js"
+		},
+		"./exceptions": {
+			"import": "./dist/esm/exceptions/index.js",
+			"require": "./dist/cjs/exceptions/index.js"
 		}
 	},
 	"scripts": {
@@ -41,6 +45,7 @@
 	],
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
+		"date-fns": "^2.21.1",
 		"express": "4.17.1",
 		"fs-extra": "10.0.0",
 		"joi": "17.4.2",

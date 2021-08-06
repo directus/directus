@@ -11,7 +11,7 @@ import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 const router = express.Router();
 

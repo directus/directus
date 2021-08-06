@@ -38,7 +38,7 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 			adjustment
 		);
 
-	if (!match) {
+	if (!match || !match[1]) {
 		return;
 	}
 

@@ -126,6 +126,10 @@ export default defineComponent({
 				return 'interface-select-dropdown';
 			}
 
+			if (props.field.type === 'csv') {
+				return 'interface-input';
+			}
+
 			return `interface-${getDefaultInterfaceForType(props.type)}`;
 		});
 

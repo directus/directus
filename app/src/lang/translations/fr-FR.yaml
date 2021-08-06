@@ -398,7 +398,6 @@ documentation: Documentation
 sidebar: Barre latérale
 duration: Durée
 charset: Jeu de caractères
-second: Seconde
 file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
@@ -438,6 +437,7 @@ errors:
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   UNKNOWN: Erreur inconnue
   INTERNAL_SERVER_ERROR: Erreur inconnue
+  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori

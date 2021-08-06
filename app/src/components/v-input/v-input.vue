@@ -215,7 +215,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}

@@ -399,7 +399,6 @@ documentation: Documentação
 sidebar: Barra lateral
 duration: Duração
 charset: Codificação
-second: Segundo
 file_moved: Ficheiro movido
 collection_created: Coleção criada
 modified_on: Modificado em
@@ -437,6 +436,7 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
 bookmarks: Favoritos
 back: Voltar
 delete_collection: Remover coleção
