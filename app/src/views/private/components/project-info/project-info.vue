@@ -5,7 +5,7 @@
 			<span class="project-name">{{ name }}</span>
 			<span v-if="saas" class="project-organism">
 				<span class="project-organism__label">
-					{{ activeOrganism ? activeOrganism.name : 'Select an organism' }}
+					{{ activeOrganism ? activeOrganism.name : t('project_info.select_organism') }}
 				</span>
 				<div class="project-organism__icon">
 					<v-icon :small="true" name="expand_more" />
@@ -15,7 +15,7 @@
 	</div>
 	<v-dialog v-if="saas" v-model="openOrganismsDialog" @esc="openOrganismsDialog = false">
 		<v-sheet>
-			<h2>Do you want to change organism?</h2>
+			<h2 :text="t('project_info.select_organism')"></h2>
 
 			<v-list>
 				<template v-for="organism of availableOrganisms" :key="organism.id">
@@ -39,10 +39,13 @@ import { defineComponent, computed, ref } from 'vue';
 import LatencyIndicator from '../latency-indicator';
 import { useServerStore, useUserStore } from '@/stores/';
 import { refresh } from '@/auth';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
+		const { t } = useI18n();
+
 		const serverStore = useServerStore();
 		const userStore = useUserStore();
 
@@ -55,7 +58,7 @@ export default defineComponent({
 		const activeOrganism = computed(() => (saas.value ? userStore.currentUser?.active_organism ?? null : null));
 		const availableOrganisms = computed(() => (saas.value ? userStore.currentUser?.available_organisms ?? [] : null));
 
-		return { name, saas, activeOrganism, availableOrganisms, openOrganismsDialog, updatingSelectedOrganism };
+		return { name, saas, activeOrganism, availableOrganisms, openOrganismsDialog, updatingSelectedOrganism, t };
 	},
 	methods: {
 		handleOpenOrganismsDialog() {
