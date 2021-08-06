@@ -181,6 +181,7 @@ router.post(
 			if (err instanceof InvalidPayloadException) {
 				throw err;
 			} else {
+				logger.warn(err, `[email] ${err}`);
 				return next();
 			}
 		}
