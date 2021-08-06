@@ -22,6 +22,7 @@ import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
+import { performance } from 'perf_hooks';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
