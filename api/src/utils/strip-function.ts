@@ -1,4 +1,4 @@
-import { REGEX_BETWEEN_PARENS } from '../constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 /**
  * Strip the function declarations from a list of fields

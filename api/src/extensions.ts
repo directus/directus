@@ -20,7 +20,7 @@ import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, validate } from 'node-cron';
-import { REGEX_BETWEEN_PARENS } from './constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
