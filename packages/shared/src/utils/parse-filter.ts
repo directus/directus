@@ -28,6 +28,12 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 		if (val === '$CURRENT_ROLE') return accountability?.role || null;
 		if (val === '$CURRENT_ORGANISM') return accountability?.organism || null;
 
+		if (typeof val === 'string' && val.indexOf('$HEADER_') === 0) {
+			const headerName = val.replace('$HEADER_', '');
+			if (accountability?.headers) return accountability.headers[headerName];
+			return null;
+		}
+
 		return val;
 	});
 }

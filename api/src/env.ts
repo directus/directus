@@ -20,6 +20,7 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	SAAS_MODE: false,
+	HEADERS_DYNAMIC_VARIABLES: '',
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',

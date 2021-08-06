@@ -7,4 +7,5 @@ export type Accountability = {
 
 	ip?: string;
 	userAgent?: string;
+	headers?: Record<string, unknown>;
 };

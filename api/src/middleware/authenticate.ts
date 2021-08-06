@@ -10,6 +10,21 @@ import isJWT from '../utils/is-jwt';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
+	const allowedHeaders = ((env.HEADERS_DYNAMIC_VARIABLES as string) ?? '').toLowerCase().split(',');
+
+	const headers: Record<string, unknown> = {};
+
+	for (const header of allowedHeaders) {
+		let value = req.get('x-' + header);
+		if (typeof value === 'undefined') {
+			value = req.query[header] as string;
+		}
+		if (value) {
+			const normalizedHeaderName = header.toUpperCase().replace(/-/gm, '_');
+			headers[normalizedHeaderName] = value;
+		}
+	}
+
 	req.accountability = {
 		user: null,
 		role: null,
@@ -17,6 +32,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		app: false,
 		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
 		userAgent: req.get('user-agent'),
+		headers,
 	};
 
 	if (!req.token) return next();
