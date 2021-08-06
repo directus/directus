@@ -45,7 +45,8 @@ export default defineComponent({
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
+				'--brand':
+					userStore.currentUser?.active_organism?.color || serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
