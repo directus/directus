@@ -247,14 +247,14 @@ export class AuthorizationService {
 			}
 		}
 
-		if (requiredColumns.length > 0) {
-			permission.validation =
-				permission.validation && Object.keys(permission.validation).length > 0
-					? {
-							_and: [permission.validation],
-					  }
-					: { _and: [] };
+		permission.validation =
+			permission.validation && Object.keys(permission.validation).length > 0
+				? {
+						_and: [permission.validation],
+				  }
+				: { _and: [] };
 
+		if (requiredColumns.length > 0) {
 			for (const field of requiredColumns) {
 				if (action === 'create' && field.defaultValue === null) {
 					permission.validation._and.push({
