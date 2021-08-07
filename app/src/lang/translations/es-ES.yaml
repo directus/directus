@@ -889,6 +889,7 @@ sort_direction: Dirección de Ordenamiento
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
+require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
@@ -1007,8 +1008,18 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
+  presentation-notice:
+    notice: Aviso
+  list-o2m:
+    one-to-many: Uno a Muchos
+    no_collection: No se encontró la colección
   system-folder:
     folder: Directorio
+    description: Seleccione una carpeta
+    root_name: Raíz de la Biblioteca de Archivos
+    system_default: Valores por defecto del sistema
+  list:
+    repeater: Repetidor
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1029,12 +1040,18 @@ interfaces:
     add_tags: Agregar etiquetas...
   input:
     mask: Enmascarado
+    mask_label: Ocultar el valor real
+    clear: Valor Limpiado
+    clear_label: Guardar como cadena vacía
     minimum_value: Valor Mínimo
     maximum_value: Valor Máximo
+    step_interval: Intervalo de Pasos
+    slug: Slugify
   input-multiline:
     textarea: Área de Texto
   boolean:
     toggle: Alternar
+    description: Alternar entre Activado y Desactivado
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
@@ -1047,6 +1064,13 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    toolbar: Barra de Herramientas
+    custom_formats: Formatos Personalizados
+    options_override: Sobrescribir Opciones
+  input-autocomplete-api:
+    results_path: Ruta de Resultados
 displays:
   boolean:
     boolean: Booleano
@@ -1149,3 +1173,7 @@ layouts:
     comfortable: Cómoda
     compact: Compacto
     cozy: Cómoda
+  calendar:
+    calendar: Calendario
+    start_date_field: Campo Fecha de Inicio
+    end_date_field: Campo Fecha de Fin
