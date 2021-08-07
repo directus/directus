@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { cloneDeep, merge, uniq, uniqWith, flatten } from 'lodash';
+import { cloneDeep, merge, uniq, uniqWith, flatten, isNil } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
@@ -188,8 +188,6 @@ export class AuthorizationService {
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
 	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
-		const validationErrors: FailedValidationException[] = [];
-
 		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
@@ -231,6 +229,9 @@ export class AuthorizationService {
 
 		const payloadWithPresets = merge({}, preset, payload);
 
+		const hasValidationRules =
+			isNil(permission.validation) === false && Object.keys(permission.validation ?? {}).length > 0;
+
 		const requiredColumns: SchemaOverview['collections'][string]['fields'][string][] = [];
 
 		for (const field of Object.values(this.schema.collections[collection].fields)) {
@@ -247,13 +248,12 @@ export class AuthorizationService {
 			}
 		}
 
+		if (hasValidationRules === false && requiredColumns.length === 0) {
+			return payloadWithPresets;
+		}
+
 		if (requiredColumns.length > 0) {
-			permission.validation =
-				permission.validation && Object.keys(permission.validation).length > 0
-					? {
-							_and: [permission.validation],
-					  }
-					: { _and: [] };
+			permission.validation = hasValidationRules ? { _and: [permission.validation] } : { _and: [] };
 
 			for (const field of requiredColumns) {
 				if (action === 'create' && field.defaultValue === null) {
@@ -272,10 +272,12 @@ export class AuthorizationService {
 			}
 		}
 
+		const validationErrors: FailedValidationException[] = [];
+
 		validationErrors.push(
 			...flatten(
-				validatePayload(parseFilter(permission.validation || {}, this.accountability), payloadWithPresets).map(
-					(error) => error.details.map((details) => new FailedValidationException(details))
+				validatePayload(parseFilter(permission.validation!, this.accountability), payloadWithPresets).map((error) =>
+					error.details.map((details) => new FailedValidationException(details))
 				)
 			)
 		);

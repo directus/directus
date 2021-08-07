@@ -20,17 +20,21 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Editar Campo
+conditions: Condiciones
 item_revision: Revisión de Elemento
 duplicate_field: Campo duplicado
 half_width: Ancho a la Mitad
 full_width: Ancho completo
 group: Grupo
+and: "Y"
+or: O
 fill_width: Ajustar ancho
 field_name_translations: Traducciónes del nombre de campo
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar "Two-Factor Authentication"
 add_field: Añade un campo
 role_name: Nombra un rol
 branch: Marca
+leaf: Hoja
 indeterminate: Indeterminado
 exclusive: Exclusivo
 children: Hijo
@@ -393,7 +397,6 @@ documentation: Documentación
 sidebar: Barra Lateral
 duration: Duración
 charset: Codificación
-second: Segundo
 file_moved: Archivo Movido
 collection_created: Colección Creada
 modified_on: Modificado en

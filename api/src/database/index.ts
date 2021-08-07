@@ -53,7 +53,10 @@ export default function getDatabase(): Knex {
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
-			warn: (msg) => logger.warn(msg),
+			warn: (msg) => {
+				if (msg.startsWith('.returning()')) return;
+				return logger.warn(msg);
+			},
 			error: (msg) => logger.error(msg),
 			deprecate: (msg) => logger.info(msg),
 			debug: (msg) => logger.debug(msg),
