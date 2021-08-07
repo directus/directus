@@ -83,6 +83,9 @@ const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 
 	// Oracle
 	number: { type: 'integer' },
+
+	// SQLite
+	integerfirst: { type: 'integer' },
 };
 
 export default function getLocalType(

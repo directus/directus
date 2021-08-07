@@ -1,6 +1,7 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import env from './env';
 import logger from './logger';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 let transporter: Transporter;
 
@@ -23,13 +24,16 @@ export default function getMailer(): Transporter {
 			};
 		}
 
+		const tls: Record<string, unknown> = getConfigFromEnv('EMAIL_SMTP_TLS_');
+
 		transporter = nodemailer.createTransport({
 			pool: env.EMAIL_SMTP_POOL,
 			host: env.EMAIL_SMTP_HOST,
 			port: env.EMAIL_SMTP_PORT,
 			secure: env.EMAIL_SMTP_SECURE,
 			ignoreTLS: env.EMAIL_SMTP_IGNORE_TLS,
-			auth: auth,
+			auth,
+			tls,
 		} as Record<string, unknown>);
 	} else if (env.EMAIL_TRANSPORT.toLowerCase() === 'mailgun') {
 		const mg = require('nodemailer-mailgun-transport');

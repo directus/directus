@@ -402,7 +402,6 @@ documentation: Документация
 sidebar: Страничен панел
 duration: Продължителност
 charset: Набор символи
-second: Секунди
 file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
@@ -901,7 +900,6 @@ interfaces:
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
-    start: Начало
     all_closed: Всички са затворени
     first_opened: Първият е отворен
     all_opened: Всички са отворени
@@ -1109,12 +1107,6 @@ interfaces:
     value_path: Път до стойността
     trigger: Задействане
     rate: Оценка
-  group-standard:
-    name: Обикновена група
-    description: Показване на полетата както обикновено, с опция за заглавие.
-    show_header: Заглавие на групата
-    header_icon: Икона на заглавието
-    header_color: Цвят на заглавието
 displays:
   boolean:
     boolean: Булев
