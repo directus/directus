@@ -866,6 +866,7 @@ interfaces:
   presentation-links:
     presentation-links: Ссылки кнопок
     links: Ссылки
+    description: Настраиваемые кнопки-ссылки для динамических URL-адресов
     style: Стиль
     primary: Первичный
     link: Ссылки
@@ -967,6 +968,8 @@ interfaces:
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
+  presentation-notice:
+    description: Показать короткое уведомление
   list-o2m:
     one-to-many: Один ко многим
   system-folder:
