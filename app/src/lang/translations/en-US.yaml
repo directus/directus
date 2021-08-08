@@ -1220,7 +1220,6 @@ layouts:
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    fit_view: Fit view to data bounds
     fit_data: Fit data to view bounds
     field: Geometry
     invalid_geometry: Invalid geometry

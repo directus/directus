@@ -30,10 +30,6 @@
 	</div>
 
 	<div class="field">
-		<v-checkbox v-model="fitViewToData" :label="t('layouts.map.fit_view')" />
-	</div>
-
-	<div class="field">
 		<v-checkbox
 			v-model="clusterData"
 			:label="t('layouts.map.cluster')"
@@ -87,7 +83,6 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitViewToData,
 			fitDataToView,
 			geometryOptions,
 			clusterData,
@@ -102,7 +97,6 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitViewToData,
 			fitDataToView,
 			geometryOptions,
 			clusterData,

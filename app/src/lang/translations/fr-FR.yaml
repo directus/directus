@@ -1177,7 +1177,6 @@ layouts:
     cluster_radius: Rayon de partitionnement
     cluster_minpoints: Taille minimum de partitionnement
     cluster_maxzoom: Zoom maximum du partitionnement
-    fit_view: Ajuster la vue aux données
     fit_data: Filter les données selon la position
     field: Geometrie
     invalid_geometry: Geometrie invalide

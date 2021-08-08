@@ -31,7 +31,6 @@ type LayoutOptions = {
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	fitViewToData?: boolean;
 	fitDataToView?: boolean;
 	clusterData?: boolean;
 	animateOptions?: any;
@@ -64,7 +63,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
-		const fitViewToData = syncOption(layoutOptions, 'fitViewToData', true);
 		const fitDataToView = syncOption(layoutOptions, 'fitDataToView', true);
 		const clusterData = syncOption(layoutOptions, 'clusterData', false);
 		const geometryField = syncOption(layoutOptions, 'geometryField', undefined);
@@ -212,7 +210,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojsonError.value = null;
 					geojson.value = toGeoJSON(items.value, geometryOptions.value, template.value);
 					geojsonLoading.value = false;
-					if (!cameraOptions.value || (shouldUpdateCamera.value && fitViewToData.value)) {
+					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
 					shouldUpdateCamera.value = true;
@@ -317,7 +315,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryFormat,
 			geometryField,
 			cameraOptions,
-			fitViewToData,
 			fitDataToView,
 			clusterData,
 			updateSelection,
