@@ -1,5 +1,5 @@
 <template>
-	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="multiple">
+	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
 		<accordion-section
 			v-for="accordionField in rootFields"
 			:key="accordionField.field"
@@ -14,7 +14,7 @@
 			:loading="loading"
 			:validation-errors="validationErrors"
 			:group="field.meta.id"
-			:multiple="multiple"
+			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
 			@toggleAll="toggleAll"
 		/>
@@ -72,9 +72,9 @@ export default defineComponent({
 			default: () => [],
 		},
 
-		multiple: {
+		accordionMode: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		start: {
 			type: String,
@@ -107,7 +107,7 @@ export default defineComponent({
 		return { rootFields, selection, toggleAll };
 
 		function toggleAll() {
-			if (props.multiple === false) return;
+			if (props.accordionMode === true) return;
 
 			if (selection.value.length === rootFields.value.length) {
 				selection.value = [];

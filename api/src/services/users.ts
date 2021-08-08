@@ -13,14 +13,16 @@ import {
 } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
+import { performance } from 'perf_hooks';
 
 export class UsersService extends ItemsService {
 	knex: Knex;

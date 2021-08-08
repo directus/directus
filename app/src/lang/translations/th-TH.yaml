@@ -402,7 +402,6 @@ documentation: เอกสาร
 sidebar: แถบด้านข้าง
 duration: ระยะเวลา
 charset: 'ชุดอักขระ:'
-second: วินาที
 file_moved: ย้ายไฟล์เสร็จสิ้น
 collection_created: คอลเลกชันถูกสร้างแล้ว
 modified_on: ถูกแก้ไขเมื่อ
@@ -1089,9 +1088,6 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
-  group-standard:
-    header_icon: ไอคอนส่วนหัว
-    header_color: สีส่วนหัว
 displays:
   boolean:
     boolean: ค่าบูลีน
