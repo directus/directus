@@ -5,15 +5,13 @@
 		</div>
 	</template>
 	<template v-else>
-		<template>
-			<div class="field">
-				<div class="type-label">{{ t('layouts.map.field') }}</div>
-				<v-select
-					v-model="geometryField"
-					:items="geometryFields.map(({ name, field }) => ({ text: name, value: field }))"
-				/>
-			</div>
-		</template>
+		<div class="field">
+			<div class="type-label">{{ t('layouts.map.field') }}</div>
+			<v-select
+				v-model="geometryField"
+				:items="geometryFields.map(({ name, field }) => ({ text: name, value: field }))"
+			/>
+		</div>
 	</template>
 
 	<div class="field">
@@ -48,15 +46,15 @@
 			</template>
 
 			<template #actions>
-				<v-button icon rounded class="delete-action" @click="resetLayers" v-tooltip.bottom="t('reset')">
+				<v-button v-tooltip.bottom="t('reset')" icon rounded class="delete-action" @click="resetLayers">
 					<v-icon name="replay" />
 				</v-button>
-				<v-button icon rounded @click="updateLayers" v-tooltip.bottom="t('save')">
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="updateLayers">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 			<div class="custom-layers">
-				<interface-input-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
+				<interface-input-code v-model="customLayers" language="json" type="json" :line-number="false" />
 			</div>
 		</v-drawer>
 	</div>

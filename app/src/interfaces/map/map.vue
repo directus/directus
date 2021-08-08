@@ -1,13 +1,13 @@
 <template>
 	<div class="interface-map">
 		<div
-			class="map"
 			ref="container"
+			class="map"
 			:class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }"
 		/>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
 			<v-icon name="map" />
-			<v-select inline v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
 		<transition name="fade">
 			<v-info
@@ -33,8 +33,8 @@
 				</v-notice>
 				<template #append>
 					<v-card-actions>
-						<v-button small @click="resetValue(false)" class="soft-reset" secondary>{{ t('continue') }}</v-button>
-						<v-button small @click="resetValue(true)" class="hard-reset">{{ t('reset') }}</v-button>
+						<v-button small class="soft-reset" secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
+						<v-button small class="hard-reset" @click="resetValue(true)">{{ t('reset') }}</v-button>
 					</v-card-actions>
 				</template>
 			</v-info>
@@ -143,7 +143,7 @@ export default defineComponent({
 		const { basemap } = toRefs(appStore);
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
-			return getStyleFromBasemapSource(source);
+			return basemap.value, getStyleFromBasemapSource(source);
 		});
 
 		let parse: GeoJSONParser;
@@ -241,6 +241,18 @@ export default defineComponent({
 					}
 				},
 				{ immediate: true }
+			);
+
+			watch(
+				() => style.value,
+				async () => {
+					map.removeControl(controls.draw);
+					map.setStyle(style.value, { diff: false });
+					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
+					await addMarkerImage();
+					map.addControl(controls.draw as IControl, 'top-left');
+					loadValueFromProps();
+				}
 			);
 		}
 

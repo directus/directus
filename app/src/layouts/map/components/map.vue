@@ -117,17 +117,18 @@ export default defineComponent({
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 
+			if (mapboxKey) {
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
+			}
+			map.addControl(attributionControl, 'top-right');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(boxSelectControl, 'top-left');
-			map.addControl(attributionControl, 'top-right');
-			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
-			}
 
 			map.on('load', () => {
-				watch(() => style.value, updateStyle), watch(() => props.bounds, fitBounds);
+				watch(() => style.value, updateStyle);
+				watch(() => props.bounds, fitBounds);
 				map.on('click', '__directus_polygons', onFeatureClick);
 				map.on('mousemove', '__directus_polygons', updatePopup);
 				map.on('mouseleave', '__directus_polygons', updatePopup);
@@ -393,7 +394,7 @@ export default defineComponent({
 
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
-	height: 24px;
+	min-height: 24px;
 	color: var(--foreground-normal);
 	background: var(--background-subdued) !important;
 }
