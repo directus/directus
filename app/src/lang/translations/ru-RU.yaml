@@ -21,8 +21,8 @@
 #'Proxy', 'Intl'
 edit_field: Редактировать поле
 conditions: Условия
-item_revision: Версия Элемента
-duplicate_field: Дубликат Поля
+item_revision: Редакция
+duplicate_field: Клонировать поле
 half_width: Половина Ширины
 full_width: Полная ширина
 group: Группа
@@ -341,7 +341,9 @@ save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
 add_existing: Добавить Существующий
 creating_items: Создание элементов
+enable_create_button: С кнопкой «Создать»
 selecting_items: Выбор элементов
+enable_select_button: С кнопкой «Выбрать»
 comments: Комментарии
 no_comments: Комментариев Пока Нет
 click_to_expand: Нажмите, чтобы Раскрыть
@@ -424,6 +426,7 @@ errors:
   ROUTE_NOT_FOUND: Не найдено
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   USER_SUSPENDED: Пользователь заблокирован
+  CONTAINS_NULL_VALUES: Поле содержит значения null
   UNKNOWN: Неожиданная Ошибка
   UNPROCESSABLE_ENTITY: Необрабатываемый объект
   INTERNAL_SERVER_ERROR: Неожиданная Ошибка
@@ -962,6 +965,7 @@ interfaces:
   input-hash:
     hash: Хэш
     description: Введите значение для хеширования
+    masked: С маской
     masked_label: Скрывать настоящие значения
   select-icon:
     icon: Иконка
@@ -1011,6 +1015,7 @@ interfaces:
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
     field_name_placeholder: Введите название поля...
+    field_note_placeholder: Примечание к полю...
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
@@ -1034,18 +1039,21 @@ interfaces:
     description: Ввести значение вручную
     trim: Обрезать
     trim_label: Обрезать начало и конец
+    mask: С маской
     mask_label: Скрыть настоящее значение
     clear: Очищенное значение
     clear_label: Сохранить как пустую строку
     minimum_value: Минимальное значение
     maximum_value: Максимальное значение
     step_interval: Интервал шага
+    slug: Форматировать для URL
     slug_label: Сделать введённое значение безопасным для URL
   input-multiline:
     textarea: Область текста
     description: Введите простой текст (несколько строк)
   boolean:
     toggle: Переключить
+    description: Переключение вкл / выкл
     label_placeholder: Введите метку...
     label_default: Включен
   translations:
@@ -1067,6 +1075,7 @@ interfaces:
     options_override: Переопределение параметров
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
+    value_path: Путь значения
     trigger: Триггер
   group-detail:
     show_header: Показывать заголовок группы
@@ -1162,7 +1171,7 @@ layouts:
     image_source: Источник изображения
     image_fit: Подгон Изображения
     crop: Обрезать
-    contain: Содержать
+    contain: Вписать
     title: Заголовок
     subtitle: Подзаголовок
   tabular:
