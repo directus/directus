@@ -23,10 +23,10 @@ edit_field: Редактировать поле
 conditions: Условия
 item_revision: Редакция
 duplicate_field: Клонировать поле
-half_width: Половина Ширины
-full_width: Полная ширина
+half_width: Полширины
+full_width: Вся ширина
 group: Группа
-fill_width: Полная Ширина
+fill_width: В ширину
 field_name_translations: Переводы Названия Поля
 enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
 add_field: Добавить поле
@@ -35,15 +35,15 @@ branch: Ветка
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать элементы в архиве
-edited: Изменённое значение
+edited: Значение изменено
 required: Необходимые
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
-create_role: Создать Роль
-create_user: Создать Пользователя
+create_role: Создать роль
+create_user: Создать пользователя
 create_webhook: Создать веб-хук
-invite_users: Пригласить Пользователей
+invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
