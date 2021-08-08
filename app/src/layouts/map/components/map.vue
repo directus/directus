@@ -177,6 +177,7 @@ export default defineComponent({
 				map.fitBounds(bbox, {
 					padding: 100,
 					speed: 1.3,
+					maxZoom: 14,
 				});
 			}
 		}

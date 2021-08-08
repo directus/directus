@@ -137,17 +137,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		const viewBoundsfilter = computed<Filter | undefined>(() => {
-			/* eslint-disable vue/no-side-effects-in-computed-properties */
-			if (geometryOptions.value?.geometryFormat !== 'native') {
+		const viewBoundsFilter = computed<Filter | undefined>(() => {
+			if (!geometryField.value || !cameraOptions.value) {
 				return;
 			}
-			if (!geometryField.value || !cameraOptions.value || !fitDataToView.value) {
-				shouldUpdateCamera.value = true;
-				return;
-			}
-			shouldUpdateCamera.value = false;
-			const bbox = cameraOptions.value.bbox;
+			const bbox = cameraOptions.value?.bbox;
 			const bboxPolygon = [
 				[bbox[0], bbox[1]],
 				[bbox[2], bbox[1]],
@@ -168,7 +162,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const shouldUpdateCamera = ref(false);
 		const _filters = computed(() => {
-			return filters.value.concat(viewBoundsfilter.value ?? []);
+			if (geometryOptions.value?.geometryFormat == 'native' && fitDataToView.value) {
+				return filters.value.concat(viewBoundsFilter.value ?? []);
+			}
+			return filters.value;
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
@@ -184,6 +181,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref(false);
+
+		watch(
+			() => cameraOptions.value,
+			() => {
+				shouldUpdateCamera.value = false;
+			}
+		);
 
 		watch(() => searchQuery.value, onQueryChange);
 		watch(() => collection.value, onQueryChange);
@@ -213,7 +217,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
-					shouldUpdateCamera.value = true;
 				} catch (error) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
