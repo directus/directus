@@ -10,7 +10,7 @@
 				v-model="geometryType"
 				:placeholder="t('any')"
 				:show-deselect="true"
-				:disabled="hasGeometryType || geometryFormat == 'lnglat'"
+				:disabled="!!nativeGeometryType || geometryFormat == 'lnglat'"
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
@@ -27,13 +27,14 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@/types';
-import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from 'vue';
+import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { GeometryType, GeometryFormat } from '@/types';
+import { Field, GeometryType, GeometryFormat } from '@directus/shared/types';
 import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
+import { useAppStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -53,11 +54,13 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const isGeometry = props.fieldData.type == 'geometry';
-		const hasGeometryType = isGeometry && !!props.fieldData!.schema!.geometry_type;
+		const nativeGeometryType = isGeometry ? props.fieldData!.schema!.geometry_type : undefined;
 		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
 
 		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
-		const geometryType = ref<GeometryType>(geometryFormat.value == 'lnglat' ? 'Point' : props.value?.geometryType);
+		const geometryType = ref<GeometryType>(
+			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
+		);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 		const fitBounds = ref<boolean>(props.value?.fitBounds ?? true);
 
@@ -72,10 +75,19 @@ export default defineComponent({
 
 		const mapContainer = ref<HTMLElement | null>(null);
 		let map: Map;
+
+		const basemaps = getBasemapSources();
+		const appStore = useAppStore();
+		const { basemap } = toRefs(appStore);
+		const style = computed(() => {
+			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+			return getStyleFromBasemapSource(source);
+		});
+
 		onMounted(() => {
 			map = new Map({
 				container: mapContainer.value!,
-				style: { version: 8, layers: [] },
+				style: style.value,
 				attributionControl: false,
 				...(defaultView.value || {}),
 			});
@@ -95,7 +107,7 @@ export default defineComponent({
 		return {
 			t,
 			isGeometry,
-			hasGeometryType,
+			nativeGeometryType,
 			compatibleFormat,
 			geometryFormat,
 			GEOMETRY_TYPES,
