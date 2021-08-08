@@ -3,7 +3,7 @@
 		<v-card>
 			<v-card-title>{{ t('add_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="{ folder }" multiple @input="close" from-url />
+				<v-upload :preset="{ folder }" multiple from-url @input="close" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ t('done') }}</v-button>

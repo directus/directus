@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';

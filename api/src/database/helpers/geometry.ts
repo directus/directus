@@ -1,4 +1,4 @@
-import { Field, RawField } from '../../types';
+import { Field, RawField } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
 import getDatabase from '..';

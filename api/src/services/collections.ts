@@ -8,17 +8,10 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
 import { FieldsService } from '../services/fields';
-import { RawField } from '../types';
 import { ItemsService, MutationOptions } from '../services/items';
 import Keyv from 'keyv';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	CollectionMeta,
-	FieldMeta,
-	SchemaOverview,
-} from '../types';
+import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, SchemaOverview } from '../types';
+import { FieldMeta, RawField } from '@directus/shared/types';
 
 export type RawCollection = {
 	collection: string;
@@ -214,6 +207,11 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
+		/**
+		 * The collections as known in the schema cache.
+		 */
+		const knownCollections = Object.keys(this.schema.collections);
+
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
@@ -221,7 +219,12 @@ export class CollectionsService {
 				schema: table,
 			};
 
-			collections.push(collection);
+			// By only returning collections that are known in the schema cache, we prevent weird
+			// situations where the collections endpoint returns different info from every other
+			// collection
+			if (knownCollections.includes(table.name)) {
+				collections.push(collection);
+			}
 		}
 
 		return collections;
@@ -273,6 +276,8 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
+		const knownCollections = Object.keys(this.schema.collections);
+
 		for (const table of tables) {
 			const collection: Collection = {
 				collection: table.name,
@@ -280,7 +285,12 @@ export class CollectionsService {
 				schema: table,
 			};
 
-			collections.push(collection);
+			// By only returning collections that are known in the schema cache, we prevent weird
+			// situations where the collections endpoint returns different info from every other
+			// collection
+			if (knownCollections.includes(table.name)) {
+				collections.push(collection);
+			}
 		}
 
 		return collections;

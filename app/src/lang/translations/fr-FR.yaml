@@ -1,14 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Modifier le champ
+conditions: Conditions
 item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
+group: Groupe
+and: Et
+or: Ou
 fill_width: Pleine largeur
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
+branch: Branche
+leaf: Feuille
+indeterminate: Indéterminé
+exclusive: Exclusif
+children: Les enfants
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
@@ -42,7 +71,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Déconnecté
   SESSION_EXPIRED: Votre session a expiré
-public: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 not_allowed: Non autorisé
 directus_version: Version de Directus
@@ -98,6 +126,7 @@ field_m2a: Relation M2A
 field_o2m: Relation O2M
 field_m2m: Relation M2M
 field_translations: Traductions
+field_group: Groupe de Champs
 item_permissions: Autorisations pour l'élément
 field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
@@ -251,7 +280,7 @@ move_to_folder: Déplacer vers le dossier
 move: Déplacer
 system: Système
 add_field_related: Ajouter le champ à la collection associée
-interface: Interface
+interface_label: Interface
 today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
@@ -281,7 +310,6 @@ drag_mode: Mode Glisser/Déposer
 cancel_crop: Annuler le recadrage
 original: Initial
 url: URL
-import: Importer
 file_details: Détails du fichier
 dimensions: Dimensions
 size: Taille
@@ -478,6 +506,10 @@ operators:
   nnull: N'est pas null
   contains: Contient
   ncontains: Ne contient pas
+  starts_with: Commence par
+  nstarts_with: Ne commence pas par
+  ends_with: Termine par
+  nends_with: Ne finit pas par
   between: Est entre
   nbetween: N'est pas entre
   empty: Est vide
@@ -496,6 +528,7 @@ upload_files_success: '{count} fichiers envoyés'
 upload_pending: Envoi en attente
 drag_file_here: Glisser-déposer un fichier ici
 click_to_browse: Cliquer pour rechercher
+interface_options: Options d'interface
 layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
@@ -521,6 +554,7 @@ no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résu
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
+rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
 no_presets_copy: Aucun préréglage ou favori n'a encore été enregistré.
@@ -796,11 +830,10 @@ referential_action_cascade: Supprimer l'objet {collection} (cascade)
 referential_action_set_null: Vider le champ {field}
 referential_action_set_default: Remettre {field} à sa valeur par défaut
 choose_action: Choisir une action
-continue: Continuer
+continue_as: >-
+  {name} est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
 creating_webhook: Création du Webhook
-default: Défaut
-delete: Supprimer
 delete_are_you_sure: >-
   Cette action est permanente et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
@@ -872,6 +905,11 @@ interfaces:
     allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
+  select-multiple-checkbox-tree:
+    name: Cases à cocher (Arborescence)
+    description: Choisissez entre plusieurs options via des cases à cocher imbriquées
+    value_combining: Combinaison de valeurs
+    value_combining_note: Contrôle la valeur stockée lorsque des sélections imbriquées sont faites.
   input-code:
     code: Code
     description: Écrire ou partager des extraits de code
@@ -985,6 +1023,11 @@ interfaces:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
+  system-folder:
+    folder: Dossier
+    description: Sélectionner un dossier
+    root_name: Bibliothèque de fichiers racine
+    system_default: Paramètres par défaut du système
   select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés

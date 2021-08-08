@@ -1,4 +1,4 @@
-import { defineLayout } from '@/layouts/define';
+import { defineLayout } from '@directus/shared/utils';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import MapSidebar from './sidebar.vue';
@@ -15,7 +15,7 @@ import { Filter } from '@directus/shared/types';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import type { Field, GeometryFormat } from '@/types';
+import type { Field, GeometryFormat } from '@directus/shared/types';
 
 import { cloneDeep, merge } from 'lodash';
 

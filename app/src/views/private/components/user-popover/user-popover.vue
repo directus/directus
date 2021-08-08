@@ -1,8 +1,8 @@
 <template>
-	<v-menu show-arrow placement="top" trigger="hover" :delay="300" v-model="active">
+	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
 		<template #activator><slot /></template>
 
-		<div class="loading" v-if="loading">
+		<div v-if="loading" class="loading">
 			<v-skeleton-loader class="avatar" />
 			<div>
 				<v-skeleton-loader type="text" />
@@ -11,14 +11,14 @@
 			</div>
 		</div>
 
-		<div class="error" v-else-if="error">
+		<div v-else-if="error" class="error">
 			{{ error }}
 		</div>
 
-		<div class="user-box" v-else-if="data">
+		<div v-else-if="data" class="user-box">
 			<v-avatar x-large class="avatar">
 				<img v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon name="person" outline v-else />
+				<v-icon v-else name="person" outline />
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>

@@ -1,10 +1,10 @@
 <template>
-	<header class="header-bar" ref="headerEl" :class="{ collapsed, small }">
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
-		<div class="title-outer-prepend" v-if="$slots['title-outer:prepend']">
+		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
 
@@ -41,7 +41,6 @@ import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
-	emits: ['primary', 'toggle:sidebar'],
 	components: { HeaderBarActions },
 	props: {
 		title: {
@@ -61,6 +60,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['primary', 'toggle:sidebar'],
 	setup() {
 		const headerEl = ref<Element>();
 

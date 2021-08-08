@@ -1,7 +1,7 @@
 import { OperatorType } from './types';
-import { types } from '@/types';
+import { Type } from '@directus/shared/types';
 
-export default function getAvailableOperatorsForType(type: typeof types[number]): OperatorType {
+export default function getAvailableOperatorsForType(type: Type): OperatorType {
 	/**
 	 * @NOTE
 	 * In the filter, you can't filter on the relational field itself, so we don't have to account

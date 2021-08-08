@@ -2,7 +2,7 @@
 	<value-null v-if="!displayValue" />
 	<v-menu v-else-if="displayValue.length > 1" show-arrow>
 		<template #activator="{ toggle }">
-			<span @click.stop="toggle" class="toggle">
+			<span class="toggle" @click.stop="toggle">
 				<span class="label">
 					{{ displayValue.length }}
 					{{ t('items') }}

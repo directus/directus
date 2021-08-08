@@ -15,7 +15,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
+			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" @click="on">
 						<v-icon name="delete" outline />
@@ -26,33 +26,33 @@
 					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
+						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ t('delete') }}
+						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-if="selection.length > 1"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="t('edit')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="t('create_webhook')">
+			<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
 
-		<component class="layout" :is="`layout-${layout}`">
+		<component :is="`layout-${layout}`" class="layout">
 			<template #no-results>
 				<v-info :title="t('no_results')" icon="search" center>
 					{{ t('no_results_copy') }}
@@ -76,7 +76,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_webhooks_collection'))" />
+				<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
 			<component :is="`layout-sidebar-${layout}`" />
@@ -89,7 +89,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, reactive } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import { md } from '@/utils/md';
 import { usePreset } from '@/composables/use-preset';
 import { useLayout } from '@/composables/use-layout';
 import api from '@/api';
@@ -100,7 +99,7 @@ type Item = {
 };
 
 export default defineComponent({
-	name: 'webhooks-collection',
+	name: 'WebhooksCollection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
 	setup() {
 		const { t } = useI18n();
@@ -138,7 +137,6 @@ export default defineComponent({
 			layoutQuery,
 			layout,
 			searchQuery,
-			md,
 			clearFilters,
 		};
 

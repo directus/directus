@@ -3,14 +3,14 @@ import yaml from 'js-yaml';
 import { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
-import { types, Field } from '../../types';
+import { Type, Field } from '@directus/shared/types';
 import { getGeometryHelper } from '../helpers/geometry';
 
 type TableSeed = {
 	table: string;
 	columns: {
 		[column: string]: {
-			type?: typeof types[number];
+			type?: Type;
 			primary?: boolean;
 			nullable?: boolean;
 			default?: any;
@@ -45,6 +45,8 @@ export default async function runSeed(database: Knex): Promise<void> {
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
 				let column: Knex.ColumnBuilder;
+
+				if (columnInfo.type === 'alias' || columnInfo.type === 'unknown') return;
 
 				if (columnInfo.type === 'string') {
 					column = tableBuilder.string(columnName, columnInfo.length);

@@ -73,3 +73,8 @@ fields:
   - collection: directus_fields
     field: note
     width: half
+
+  - collection: directus_fields
+    field: conditions
+    hidden: true
+    special: json

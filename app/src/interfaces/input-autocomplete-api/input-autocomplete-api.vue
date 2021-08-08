@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="!url || !resultsPath || !valuePath">
+	<v-notice v-if="!url" type="warning">
 		{{ t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
@@ -82,6 +82,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -97,15 +98,15 @@ export default defineComponent({
 
 			try {
 				const result = await axios.get(url);
-				const resultsArray = get(result.data, props.resultsPath);
+				const resultsArray = props.resultsPath ? get(result.data, props.resultsPath) : result.data;
 
 				if (Array.isArray(resultsArray) === false) {
 					// eslint-disable-next-line no-console
-					console.warn(`Expected results type of array, "${typeof resultsArray}" recieved`);
+					console.warn(`Expected results type of array, "${typeof resultsArray}" received`);
 					return;
 				} else {
 					results.value = resultsArray
-						.map((result: Record<string, unknown>) => get(result, props.valuePath))
+						.map((result: Record<string, unknown>) => (props.valuePath ? get(result, props.valuePath) : result))
 						.filter((val: unknown) => val);
 				}
 			} catch (err) {

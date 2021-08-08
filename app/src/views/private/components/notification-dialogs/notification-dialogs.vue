@@ -1,6 +1,6 @@
 <template>
 	<div class="notification-dialogs">
-		<v-dialog :model-value="true" v-for="notification in notifications" :key="notification.id" persist>
+		<v-dialog v-for="notification in notifications" :key="notification.id" :model-value="true" persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text">
@@ -9,7 +9,7 @@
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'">
+					<v-button v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
 							{{ t('report_error') }}
 						</a>

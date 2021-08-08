@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: แก้ไขฟิลด์
 item_revision: ประวัติรายการ
 duplicate_field: สำเนาฟิลด์
@@ -42,7 +62,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: ออกจากระบบ
   SESSION_EXPIRED: เซสชั่นหมดอายุแล้ว
-public: สาธารณะ
 public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
 not_allowed: ไม่อนุญาต
 directus_version: เวอร์ชั่น Directus
@@ -250,7 +269,7 @@ move_to_folder: ย้ายไปยังโฟลเดอร์
 move: ย้าย
 system: ระบบ
 add_field_related: เพิ่มฟิลด์ไปยังคอลเลกชันที่เกี่ยวข้อง
-interface: อินเทอร์เฟซ
+interface_label: อินเทอร์เฟซ
 today: วันนี้
 yesterday: เมื่อวาน
 delete_comment: ลบความคิดเห็น
@@ -280,7 +299,6 @@ drag_mode: โหลดคลิ๊กแล้วลาก
 cancel_crop: ยกเลิกการครอบตัด
 original: ต้นฉบับ
 url: URL
-import: นำ​เข้า
 file_details: รายละเอียดไฟล์
 dimensions: ขนาด
 size: ขนาด
@@ -495,6 +513,7 @@ upload_files_success: '{count} ไฟล์ถูกอัพโหลดแล�
 upload_pending: รอการอัพโหลด
 drag_file_here: ลากและวางไฟล์ที่นี่
 click_to_browse: คลิ๊กเพื่อเรียกดู
+interface_options: ตัวเลือกอินเทอร์เฟส
 layout_options: ตัวเลือกเค้าโครง
 rows: แถว
 columns: คอลัมน์
@@ -795,11 +814,8 @@ referential_action_cascade: ลบ {collection} รายการ (เรีย
 referential_action_set_null: "ทำให้ฟิลด์ {field} เป็นโมฆะ\n"
 referential_action_set_default: ตั้งค่า {field} เป็นค่าเริ่มต้น
 choose_action: เลือกการกระทำ
-continue: ทำต่อ
 editing_role: 'บทบาท {role}'
 creating_webhook: สร้าง webhook
-default: ค่าเริ่มต้น
-delete: ลบ
 delete_are_you_sure: >-
   การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
 delete_field_are_you_sure: >-
@@ -972,6 +988,8 @@ interfaces:
     one-to-many: One to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบตาราง
+  system-folder:
+    folder: โฟลเดอร์
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
     description: เลือกได้ 1 จากหลายตัวเลือก

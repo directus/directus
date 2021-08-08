@@ -12,6 +12,7 @@
 #   Minio (S3):      5106
 #   Azure            5107
 #   MySQL (5.7):     5108
+#   Memcached:       5109
 #
 # Credentials:
 #   Postgres:
@@ -48,6 +49,9 @@
 #     Name:          devstoreaccount1
 #     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
 #     Container:     devstoreaccount1
+#
+#   Memcached
+#     n/a
 
 version: '3.1'
 services:
@@ -116,3 +120,8 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5108:3306
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 5109:11211

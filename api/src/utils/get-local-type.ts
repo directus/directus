@@ -1,15 +1,17 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FieldMeta, DataType } from '../types';
+import { FieldMeta, Type } from '@directus/shared/types';
 
 /**
  * Typemap graciously provided by @gpetrov
  */
+
 type LocalTypeEntry = {
-	type: DataType | 'unknown';
+	type: Type | 'unknown';
 	useTimezone?: boolean;
 	geometry_type?: 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
 };
+
 const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
 	boolean: { type: 'boolean' },

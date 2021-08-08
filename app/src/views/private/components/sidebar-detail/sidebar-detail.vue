@@ -1,15 +1,15 @@
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button class="toggle" @click="toggle" :class="{ open: active }">
+		<button class="toggle" :class="{ open: active }" @click="toggle">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" outline />
 				</v-badge>
 			</div>
-			<div class="title" v-show="sidebarOpen">
+			<div v-show="sidebarOpen" class="title">
 				{{ title }}
 			</div>
-			<div class="icon" v-if="!close">
+			<div v-if="!close" class="icon">
 				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
 			</div>
 		</button>

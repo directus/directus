@@ -1,12 +1,12 @@
 <template>
-	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
+	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
 		<template v-if="loading || itemCount > 0">
 			<cards-header
-				@select-all="selectAll"
-				:fields="fieldsInCollection"
 				v-model:size="size"
 				v-model:selection="props.selection"
 				v-model:sort="sort"
+				:fields="fieldsInCollection"
+				@select-all="selectAll"
 			/>
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
@@ -15,10 +15,11 @@
 				</template>
 
 				<card
-					v-else
 					v-for="item in items"
-					:item-key="primaryKeyField.field"
+					v-else
 					:key="item[primaryKeyField.field]"
+					v-model="props.selection"
+					:item-key="primaryKeyField.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
@@ -26,12 +27,11 @@
 					:select-mode="props.selectMode || (props.selection && props.selection.length > 0)"
 					:to="getLinkForItem(item)"
 					:readonly="props.readonly"
-					v-model="props.selection"
 				>
-					<template #title v-if="title">
+					<template v-if="title" #title>
 						<render-template :collection="props.collection" :item="item" :template="title" />
 					</template>
-					<template #subtitle v-if="subtitle">
+					<template v-if="subtitle" #subtitle>
 						<render-template :collection="props.collection" :item="item" :template="subtitle" />
 					</template>
 				</card>
@@ -52,10 +52,10 @@
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ t('per_page') }}</span>
 					<v-select
-						@update:model-value="limit = +$event"
 						:model-value="`${limit}`"
 						:items="['25', '50', '100', '250', '500', '1000']"
 						inline
+						@update:model-value="limit = +$event"
 					/>
 				</div>
 			</div>
@@ -67,7 +67,7 @@
 			<template #append>
 				<v-error :error="error" />
 
-				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
+				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
 					{{ t('reset_page_preferences') }}
 				</v-button>
 			</template>

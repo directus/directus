@@ -24,21 +24,21 @@
 			</template>
 		</v-table>
 
-		<v-info icon="box" :title="t('no_collections')" v-else center>
+		<v-info v-else icon="box" :title="t('no_collections')" center>
 			<template v-if="isAdmin">
 				{{ t('no_collections_copy_admin') }}
 			</template>
 			<template v-else>
 				{{ t('no_collections_copy') }}
 			</template>
-			<template #append v-if="isAdmin">
+			<template v-if="isAdmin" #append>
 				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 		</v-info>
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_collections_overview'))" />
+				<div v-md="t('page_help_collections_overview')" class="page-description" />
 			</sidebar-detail>
 		</template>
 	</private-view>
@@ -53,10 +53,8 @@ import useNavigation, { NavItem } from '../composables/use-navigation';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 
-import { md } from '@/utils/md';
-
 export default defineComponent({
-	name: 'collections-overview',
+	name: 'CollectionsOverview',
 	components: {
 		CollectionsNavigation,
 		CollectionsNavigationSearch,
@@ -92,7 +90,7 @@ export default defineComponent({
 
 		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
-		return { t, tableHeaders, navItems, navigateToCollection, isAdmin, md };
+		return { t, tableHeaders, navItems, navigateToCollection, isAdmin };
 
 		function navigateToCollection(navItem: NavItem) {
 			router.push(navItem.to);

@@ -1,5 +1,5 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';

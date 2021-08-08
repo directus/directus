@@ -39,6 +39,7 @@ export default function getMailer(): Transporter {
 					api_key: env.EMAIL_MAILGUN_API_KEY,
 					domain: env.EMAIL_MAILGUN_DOMAIN,
 				},
+				host: env.EMAIL_MAILGUN_HOST || 'https://api.mailgun.net',
 			}) as any
 		);
 	} else {

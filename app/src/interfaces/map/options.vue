@@ -2,21 +2,21 @@
 	<div class="form-grid">
 		<div class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_format') }}</div>
-			<v-input :disabled="true" v-model="geometryFormat" :value="t(`interfaces.map.${compatibleFormat}`)" />
+			<v-input v-model="geometryFormat" :disabled="true" :value="t(`interfaces.map.${compatibleFormat}`)" />
 		</div>
 		<div class="field half-right">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
-				:showDeselect="true"
+				:show-deselect="true"
 				:disabled="hasGeometryType || geometryFormat == 'lnglat'"
-				:items="geometryTypes.map((value) => ({ value, text: value }))"
+				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
 		<div class="field">
 			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
-			<div class="map" ref="mapContainer"></div>
+			<div ref="mapContainer" class="map"></div>
 		</div>
 		<div class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.fit_bounds') }}</div>
@@ -29,7 +29,8 @@
 import { useI18n } from 'vue-i18n';
 import { Field } from '@/types';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted } from 'vue';
-import { geometryTypes, GeometryType, GeometryFormat } from '@/types';
+import { GEOMETRY_TYPES } from '@directus/shared/constants';
+import { GeometryType, GeometryFormat } from '@/types';
 import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
@@ -97,7 +98,7 @@ export default defineComponent({
 			hasGeometryType,
 			compatibleFormat,
 			geometryFormat,
-			geometryTypes,
+			GEOMETRY_TYPES,
 			geometryType,
 			mapContainer,
 			fitBounds,

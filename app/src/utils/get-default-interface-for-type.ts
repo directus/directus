@@ -1,6 +1,6 @@
-import { types } from '@/types';
+import { Type } from '@directus/shared/types';
 
-const defaultInterfaceMap: Record<typeof types[number], string> = {
+const defaultInterfaceMap: Record<Type, string> = {
 	alias: 'input',
 	bigInteger: 'input',
 	binary: 'input',
@@ -22,6 +22,6 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	geometry: 'map',
 };
 
-export function getDefaultInterfaceForType(type: typeof types[number]): string {
+export function getDefaultInterfaceForType(type: Type): string {
 	return defaultInterfaceMap[type] || 'input';
 }

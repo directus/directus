@@ -1,4 +1,4 @@
-import { DataType, GeometryType, GeometryFormat } from '@/types';
+import { Type, GeometryType, GeometryFormat } from '@directus/shared/types';
 import {
 	BBox,
 	Point,
@@ -49,7 +49,7 @@ export function getBBox(object: AnyGeometry): BBox {
 	return bbox;
 }
 
-export function getGeometryFormatForType(type: DataType): GeometryFormat | undefined {
+export function getGeometryFormatForType(type: Type): GeometryFormat | undefined {
 	switch (type) {
 		case 'geometry':
 			return 'native';

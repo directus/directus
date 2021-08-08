@@ -1,6 +1,4 @@
-<br>
-
-<p align="center"><img width="400" alt="Logo" src="https://user-images.githubusercontent.com/522079/89687381-23943700-d8ce-11ea-9a4d-ae3eae136423.png"></p>
+<p align="center"><img alt="Logo" src="https://user-images.githubusercontent.com/522079/127886783-ae6b4ec6-e2ad-4615-8df9-d77c33e92d7e.png"></p>
 
 <br>
 
@@ -64,7 +62,7 @@ services.
 
 Directus only requires Node.js and supports most operating systems and SQL database vendors.
 
-- Node.js 10+
+- Node.js 12.20+
 - npm 6.x+
 
 #### Supported Databases
@@ -97,7 +95,7 @@ channels:
 
 - [Discord](https://directus.chat) (Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions/category_choices) (Questions, Feature Requests)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Questions, Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

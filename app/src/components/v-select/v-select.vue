@@ -17,10 +17,10 @@
 				readonly
 				:model-value="displayValue"
 				clickable
-				@click="toggle"
 				:placeholder="placeholder"
 				:disabled="disabled"
 				:active="active"
+				@click="toggle"
 			>
 				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
 				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
@@ -29,7 +29,7 @@
 
 		<v-list class="list">
 			<template v-if="showDeselect">
-				<v-list-item clickable @click="$emit('update:modelValue', null)" :disabled="modelValue === null">
+				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -44,69 +44,61 @@
 			</template>
 
 			<template v-for="(item, index) in internalItems" :key="index">
-				<v-divider v-if="item.divider === true" />
-
-				<v-list-item
+				<select-list-item-group
+					v-if="item.children"
+					:item="item"
+					:model-value="modelValue"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+				<select-list-item
 					v-else
-					:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
-					:disabled="item.disabled"
-					clickable
-					@click="multiple ? null : $emit('update:modelValue', item.value)"
-				>
-					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
-						<v-icon :name="item.icon" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
-						<v-checkbox
-							v-else
-							:model-value="modelValue || []"
-							:label="item.text"
-							:value="item.value"
-							:disabled="item.disabled"
-							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-content>
-				</v-list-item>
+					:model-value="modelValue"
+					:item="item"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
 			</template>
 
 			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
 				<v-list-item-content>
 					<input
-						class="other-input"
-						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 						v-model="otherValue"
+						class="other-input"
 						:placeholder="t('other')"
+						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
 				</v-list-item-content>
 			</v-list-item>
 
 			<template v-if="allowOther && multiple === true">
 				<v-list-item
-					v-for="otherValue in otherValues"
-					:key="otherValue.key"
-					:active="(modelValue || []).includes(otherValue.value)"
+					v-for="otherVal in otherValues"
+					:key="otherVal.key"
+					:active="(modelValue || []).includes(otherVal.value)"
 					@click.stop
 				>
 					<v-list-item-icon>
 						<v-checkbox
 							:model-value="modelValue || []"
-							:value="otherValue.value"
+							:value="otherVal.value"
 							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>
 						<input
-							class="other-input"
-							:value="otherValue.value"
-							:placeholder="t('other')"
 							v-focus
-							@input="setOtherValue(otherValue.key, $event.target.value)"
-							@blur="otherValue.value.length === 0 && setOtherValue(otherValue.key, null)"
+							class="other-input"
+							:value="otherVal.value"
+							:placeholder="t('other')"
+							@input="setOtherValue(otherVal.key, $event.target.value)"
+							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" clickable @click="setOtherValue(otherValue.key, null)" />
+						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
@@ -124,12 +116,15 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 import { get } from 'lodash';
+import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItem from './select-list-item.vue';
+import { Option } from './types';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
-	emits: ['update:modelValue'],
+	components: { SelectListItemGroup, SelectListItem },
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,
@@ -150,6 +145,10 @@ export default defineComponent({
 		itemDisabled: {
 			type: String,
 			default: 'disabled',
+		},
+		itemChildren: {
+			type: String,
+			default: 'children',
 		},
 		modelValue: {
 			type: [Array, String, Number, Boolean] as PropType<InputValue>,
@@ -192,6 +191,7 @@ export default defineComponent({
 			default: 3,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -211,7 +211,7 @@ export default defineComponent({
 
 		function useItems() {
 			const internalItems = computed(() => {
-				const items = props.items.map((item) => {
+				const parseItem = (item: Record<string, any>): Option => {
 					if (typeof item === 'string') {
 						return {
 							text: item,
@@ -219,15 +219,20 @@ export default defineComponent({
 						};
 					}
 
-					if (item.divider === true) return { divider: true };
+					if (item.divider === true) return { value: null, divider: true };
+
+					const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 
 					return {
 						text: get(item, props.itemText),
 						value: get(item, props.itemValue),
 						icon: get(item, props.itemIcon),
 						disabled: get(item, props.itemDisabled),
+						children,
 					};
-				});
+				};
+
+				const items = props.items.map(parseItem);
 
 				return items;
 			});

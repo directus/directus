@@ -1,14 +1,40 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Edytuj pole
 item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
+group: Grupa
 fill_width: Szerokość wypełnienia
 field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
 add_field: Dodaj pole
 role_name: Nazwa roli
+branch: Gałąź
+leaf: Arkusz
+indeterminate: Nieokreślony
+exclusive: Ekskluzywny
+children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 show_archived_items: Pokaż zarchiwizowane elementy
 edited: Wartość zmieniona
@@ -20,6 +46,7 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
+email_examples: "admin@example.com, użytkownik@example.com..."
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
@@ -41,7 +68,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
-public: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
@@ -97,6 +123,7 @@ field_m2a: Powiązanie M2A
 field_o2m: Powiązanie 02M
 field_m2m: Powiązanie M2M
 field_translations: Tłumaczenia
+field_group: Grupa pól
 item_permissions: Uprawnienia
 field_permissions: Uprawnienia pola
 field_validation: Walidacja pola
@@ -249,7 +276,7 @@ move_to_folder: Przenieś do folderu
 move: Przenieś
 system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
-interface: Interfejs
+interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
@@ -279,7 +306,6 @@ drag_mode: Tryb przeciągania
 cancel_crop: Anuluj przycinanie
 original: Oryginalny
 url: Adres URL
-import: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
@@ -476,6 +502,10 @@ operators:
   nnull: Nie jest puste
   contains: Zawiera
   ncontains: Nie zawiera
+  starts_with: Zaczyna się od
+  nstarts_with: Nie zaczyna się od
+  ends_with: Kończy się na
+  nends_with: Nie kończy się na
   between: Jest pomiędzy
   nbetween: Nie jest pomiędzy
   empty: Jest pusty
@@ -494,6 +524,7 @@ upload_files_success: 'Przesłano {count} plików'
 upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
+interface_options: Opcje interfejsu
 layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
@@ -794,11 +825,10 @@ referential_action_cascade: Usuń {collection} element (kaskada)
 referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
-continue: Kontynuuj
+continue_as: >-
+  {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
-default: Domyślnie
-delete: Usuń
 delete_are_you_sure: >-
   Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
 delete_field_are_you_sure: >-
@@ -870,6 +900,11 @@ interfaces:
     allow_other: Zezwól na inne
     show_more: 'Pokaż {count} więcej'
     items_shown: Wyświetlane elementy
+  select-multiple-checkbox-tree:
+    name: Pola wyboru (Tree)
+    description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
+    value_combining: Połączenie wartości
+    value_combining_note: Kontroluje wartość zapisaną podczas zagnieżdżonych wyborów.
   input-code:
     code: Kod
     description: Zapisz lub udostępnij kod snippeta
@@ -971,6 +1006,8 @@ interfaces:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
+  system-folder:
+    folder: Folder
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów

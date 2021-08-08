@@ -2,10 +2,10 @@
 	<div class="wysiwyg" :class="{ disabled }">
 		<editor
 			ref="editorElement"
+			v-model="internalValue"
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			v-model="internalValue"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
@@ -30,33 +30,33 @@
 						<div class="field half-right">
 							<div class="type-label">{{ t('open_link_in') }}</div>
 							<v-checkbox
-								block
 								v-model="linkSelection.newTab"
+								block
 								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
 							></v-checkbox>
 						</div>
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="closeLinkDrawer" secondary>{{ t('cancel') }}</v-button>
+					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
 					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" @cancel="closeCodeDrawer" icon="code">
+		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
 			<div class="content">
-				<interface-input-code :value="code" @input="code = $event" language="htmlmixed"></interface-input-code>
+				<interface-input-code :value="code" language="htmlmixed" @input="code = $event"></interface-input-code>
 			</div>
 
 			<template #actions>
-				<v-button @click="saveCode" icon rounded>
+				<v-button icon rounded @click="saveCode">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" @cancel="closeImageDrawer" icon="image">
+		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
 			<div class="content">
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.imageUrl" />
@@ -79,17 +79,17 @@
 						</div>
 					</div>
 				</template>
-				<v-upload v-else @input="onImageSelect" :multiple="false" from-library from-url />
+				<v-upload v-else :multiple="false" from-library from-url @input="onImageSelect" />
 			</div>
 
 			<template #actions>
-				<v-button @click="saveImage" v-tooltip.bottom="t('save_image')" icon rounded>
+				<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="saveImage">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" @cancel="closeMediaDrawer" icon="slideshow">
+		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
 			<template #sidebar>
 				<v-tabs v-model="openMediaTab" vertical>
 					<v-tab value="video">{{ t('media') }}</v-tab>
@@ -119,7 +119,7 @@
 								</div>
 							</div>
 						</template>
-						<v-upload v-else @input="onMediaSelect" :multiple="false" from-library from-url />
+						<v-upload v-else :multiple="false" from-library from-url @input="onMediaSelect" />
 					</v-tab-item>
 					<v-tab-item value="embed">
 						<div class="grid">
@@ -133,7 +133,7 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="saveMedia" v-tooltip.bottom="t('save_media')" icon rounded>
+				<v-button v-tooltip.bottom="t('save_media')" icon rounded @click="saveMedia">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -181,7 +181,6 @@ type CustomFormat = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	components: { Editor },
 	props: {
 		value: {
@@ -230,6 +229,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

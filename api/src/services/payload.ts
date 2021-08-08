@@ -6,7 +6,7 @@ import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
 import { toArray } from '../utils/to-array';
 import { ItemsService } from './items';
 import { isNativeGeometry } from '../utils/geometry';
@@ -23,16 +23,6 @@ type Transformers = {
 		accountability: Accountability | null;
 		specials: string[];
 	}) => Promise<any>;
-};
-
-type Alterations = {
-	create: {
-		[key: string]: any;
-	}[];
-	update: {
-		[key: string]: any;
-	}[];
-	delete: (number | string)[];
 };
 
 /**
@@ -54,13 +44,6 @@ export class PayloadService {
 		return this;
 	}
 
-	/**
-	 * @todo allow this to be extended
-	 *
-	 * @todo allow these extended special types to have "field dependencies"?
-	 * f.e. the file-links transformer needs the id and filename_download to be fetched from the DB
-	 * in order to work
-	 */
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
@@ -251,7 +234,11 @@ export class PayloadService {
 			['dateTime', 'date', 'timestamp'].includes(field.type)
 		);
 
-		if (dateColumns.length === 0) return payloads;
+		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
+			return field.type === 'time';
+		});
+
+		if (dateColumns.length === 0 && timeColumns.length === 0) return payloads;
 
 		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
@@ -265,7 +252,9 @@ export class PayloadService {
 				if (!value) continue;
 
 				if (action === 'read') {
-					if (typeof value === 'string') value = new Date(value);
+					if (typeof value === 'string') {
+						value = new Date(value);
+					}
 
 					if (dateColumn.type === 'timestamp') {
 						const newValue = formatISO(value);
@@ -279,8 +268,10 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'date') {
+						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+
 						// Strip off the time / timezone information from a date-only value
-						const newValue = format(value, 'yyyy-MM-dd');
+						const newValue = `${year}-${month}-${day}`;
 						payload[name] = newValue;
 					}
 				} else {
@@ -295,6 +286,22 @@ export class PayloadService {
 							payload[name] = newValue;
 						}
 					}
+				}
+			}
+		}
+
+		/**
+		 * Some DB drivers (MS SQL f.e.) return time values as Date objects. For consistencies sake,
+		 * we'll abstract those back to hh:mm:ss
+		 */
+		for (const [name] of timeColumns) {
+			for (const payload of payloads) {
+				const value = payload[name];
+
+				if (!value) continue;
+
+				if (action === 'read') {
+					if (value instanceof Date) payload[name] = format(value, 'HH:mm:ss');
 				}
 			}
 		}
@@ -347,6 +354,9 @@ export class PayloadService {
 
 			const relatedPrimary = this.schema.collections[relatedCollection].primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
+
+			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
 			const hasPrimaryKey = relatedPrimary in relatedRecord;
 
 			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];
@@ -569,7 +579,7 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[this.collection].primary;
+					const primaryKeyField = this.schema.collections[relation.collection].primary;
 
 					for (const item of alterations.update) {
 						await itemsService.updateOne(
