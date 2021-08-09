@@ -23,6 +23,12 @@ export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
 	return { cache, schemaCache };
 }
 
+export async function flushCaches(): Promise<void> {
+	const { schemaCache, cache } = getCache();
+	await schemaCache?.clear();
+	await cache?.clear();
+}
+
 function getKeyvInstance(ttl: number | undefined): Keyv {
 	switch (env.CACHE_STORE) {
 		case 'redis':
