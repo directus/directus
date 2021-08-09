@@ -10,8 +10,8 @@ import logger from '../logger';
 import { FieldsService } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, SchemaOverview } from '../types';
-import { FieldMeta, RawField } from '@directus/shared/types';
+import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
+import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
 
 export type RawCollection = {
 	collection: string;

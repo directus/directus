@@ -28,7 +28,7 @@ export type Filter = FieldFilter & {
 };
 
 export type FieldFilter = {
-	[field: string]: FieldFilterOperator | FieldFilter;
+	[field: string]: FieldFilterOperator | FieldValidationOperator | FieldFilter;
 };
 
 export type FieldFilterOperator = {
@@ -52,4 +52,9 @@ export type FieldFilterOperator = {
 	_nintersects?: string;
 	_intersects_bbox?: string;
 	_nintersects_bbox?: string;
+};
+
+export type FieldValidationOperator = {
+	_submitted?: boolean;
+	_regex?: string;
 };

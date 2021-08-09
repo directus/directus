@@ -387,7 +387,6 @@ documentation: Dokumentaatio
 sidebar: Sivupalkki
 duration: Kesto
 charset: Merkistö
-second: Sekunti
 file_moved: Tiedosto siirretty
 collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
@@ -427,6 +426,7 @@ errors:
   CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   UNKNOWN: Odottamaton virhe
   INTERNAL_SERVER_ERROR: Odottamaton virhe
+  NOT_NULL_VIOLATION: Arvo ei voi olla null
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki

@@ -7,6 +7,7 @@ import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
 import fse from 'fs-extra';
 import path from 'path';
+import { merge } from 'lodash';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -52,7 +53,10 @@ export default function getDatabase(): Knex {
 		searchPath: env.DB_SEARCH_PATH,
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
-			warn: (msg) => logger.warn(msg),
+			warn: (msg) => {
+				if (msg.startsWith('.returning()')) return;
+				return logger.warn(msg);
+			},
 			error: (msg) => logger.error(msg),
 			deprecate: (msg) => logger.info(msg),
 			debug: (msg) => logger.debug(msg),
@@ -65,6 +69,13 @@ export default function getDatabase(): Knex {
 		poolConfig.afterCreate = (conn: any, cb: any) => {
 			conn.run('PRAGMA foreign_keys = ON', cb);
 		};
+	}
+
+	if (env.DB_CLIENT === 'mssql') {
+		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
+		// timezone conversion on the database level, especially not when other database vendors don't
+		// act the same
+		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
 	database = knex(knexConfig);

@@ -15,7 +15,8 @@ import {
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from '../services/activity';
-import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
+import { AbstractServiceOptions, Action, SchemaOverview, Session } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
 import { merge } from 'lodash';
 import { performance } from 'perf_hooks';

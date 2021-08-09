@@ -1,10 +1,7 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
-
-/**
- * Typemap graciously provided by @gpetrov
- */
+import getDatabase from '../database';
 
 type LocalTypeEntry = {
 	type: Type | 'unknown';
@@ -15,7 +12,7 @@ type LocalTypeEntry = {
 const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
 	boolean: { type: 'boolean' },
-	tinyint: { type: 'boolean' },
+	tinyint: { type: 'integer' },
 	smallint: { type: 'integer' },
 	mediumint: { type: 'integer' },
 	int: { type: 'integer' },
@@ -68,7 +65,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'dateTime', useTimezone: true },
+	datetimeoffset: { type: 'timestamp', useTimezone: true },
 	datetime2: { type: 'dateTime' },
 	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
@@ -102,15 +99,21 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 
 	// Oracle
 	number: { type: 'integer' },
+
+	// SQLite
+	integerfirst: { type: 'integer' },
 };
 
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): LocalTypeEntry {
+	const database = getDatabase();
+
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;
+
 	if (special) {
 		if (special.includes('json')) return { type: 'json' };
 		if (special.includes('hash')) return { type: 'hash' };
@@ -121,6 +124,18 @@ export default function getLocalType(
 		}
 	}
 
+	/** Handle OracleDB timestamp with time zone */
+	if (database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle') {
+		const type = column.data_type.toLowerCase();
+
+		if (type.startsWith('timestamp')) {
+			if (type.endsWith('with local time zone')) {
+				return { type: 'timestamp' };
+			} else {
+				return { type: 'dateTime' };
+			}
+		}
+	}
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return { type: 'decimal' };
@@ -129,6 +144,11 @@ export default function getLocalType(
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
 	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return { type: 'text' };
+	}
+
+	/** Handle Boolean as TINYINT*/
+	if (column.data_type.toLowerCase() === 'tinyint(1)' || column.data_type.toLowerCase() === 'tinyint(0)') {
+		return { type: 'boolean' };
 	}
 
 	if (type) {

@@ -57,7 +57,7 @@
 					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
 						<span class="name">
 							{{ field.field }}
-							<v-icon v-if="field.schema && field.schema.is_nullable === false" name="star" class="required" sup />
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
 						</span>
 						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>

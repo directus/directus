@@ -400,7 +400,6 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
-second: Seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -441,6 +440,7 @@ errors:
   UNKNOWN: Onverwachte fout
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
+  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
