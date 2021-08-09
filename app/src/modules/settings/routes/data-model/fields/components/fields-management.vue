@@ -66,7 +66,7 @@ import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { orderBy, isNil } from 'lodash';
-import { LocalType } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
 export default defineComponent({
 	name: 'FieldsManagement',
