@@ -64,7 +64,7 @@ export default async function create(type: string, name: string): Promise<void> 
 			build: 'directus-extension build',
 		},
 		devDependencies: {
-			'@directus/extension-sdk': pkg.version,
+			'@directus/extensions-sdk': pkg.version,
 		},
 	};
 

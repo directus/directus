@@ -3,7 +3,7 @@
 
 const inquirer = require('inquirer');
 const { EXTENSION_TYPES } = require('@directus/shared/constants');
-const { create } = require('@directus/extension-sdk/cli');
+const { create } = require('@directus/extensions-sdk/cli');
 
 run();
 
