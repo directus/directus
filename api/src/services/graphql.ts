@@ -74,6 +74,24 @@ import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
+const GraphQLAny = new GraphQLScalarType({
+	name: 'Any',
+
+	description: 'Represents ANY values',
+
+	serialize() {
+		return 'any';
+	},
+
+	parseValue() {
+		return 'any';
+	},
+
+	parseLiteral() {
+		return 'any';
+	},
+});
+
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
