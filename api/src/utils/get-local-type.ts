@@ -128,7 +128,7 @@ export default function getLocalType(
 	}
 
 	/** Handle Boolean as TINYINT*/
-	if (column.data_type === 'tinyint(1)' || column.data_type === 'tinyint(0)') {
+	if (column.data_type.toLowerCase() === 'tinyint(1)' || column.data_type.toLowerCase() === 'tinyint(0)') {
 		return 'boolean';
 	}
 
