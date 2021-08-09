@@ -52,16 +52,18 @@ export default defineComponent({
 		},
 		bounds: {
 			type: Array as unknown as PropType<GeoJSON.BBox>,
+			default: undefined,
 		},
 		featureId: {
 			type: String,
-			required: false,
+			default: undefined,
 		},
 		selection: {
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
 		},
 	},
+	emits: ['moveend', 'featureclick', 'featureselect'],
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		let map: Map;
@@ -118,7 +120,7 @@ export default defineComponent({
 			});
 
 			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }) as any, 'top-right');
 			}
 			map.addControl(attributionControl, 'top-right');
 			map.addControl(navigationControl, 'top-left');
@@ -163,7 +165,7 @@ export default defineComponent({
 			});
 
 			watch(
-				() => appStore.sidebarOpen,
+				() => sidebarOpen.value,
 				(opened) => {
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}

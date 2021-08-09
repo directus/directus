@@ -76,12 +76,11 @@ import {
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
-import { Field, GeometryFormat } from '@/types';
+import { Field, GeometryType, GeometryFormat } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 import { useAppStore } from '@/stores';
 
-import { GeometryType } from '@/types';
 type _Geometry = SimpleGeometry | MultiGeometry;
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
@@ -96,7 +95,7 @@ export default defineComponent({
 		},
 		fieldData: {
 			type: Object as PropType<Field | undefined>,
-			required: false,
+			default: undefined,
 		},
 		value: {
 			type: [Object, Array, String] as PropType<any>,
@@ -112,9 +111,11 @@ export default defineComponent({
 		},
 		geometryFormat: {
 			type: String as PropType<GeometryFormat>,
+			default: undefined,
 		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
+			default: undefined,
 		},
 		defaultView: {
 			type: Object,
@@ -125,6 +126,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const container = ref<HTMLElement | null>(null);

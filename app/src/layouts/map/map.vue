@@ -1,11 +1,11 @@
 <template>
-	<div class="layout-map" ref="layoutElement">
+	<div ref="layoutElement" class="layout-map">
 		<map-component
 			ref="map"
 			class="mapboxgl-map"
 			:class="{ loading, error: error || geojsonError || !geometryOptions }"
 			:data="geojson"
-			:featureId="featureId"
+			:feature-id="featureId"
 			:selection="selection"
 			:camera="cameraOptions"
 			:bounds="geojsonBounds"
@@ -21,7 +21,7 @@
 				{{ t('unexpected_error_copy') }}
 				<template #append>
 					<v-error :error="error" />
-					<v-button small @click="resetPresetAndRefresh" class="reset-preset">
+					<v-button small class="reset-preset" @click="resetPresetAndRefresh">
 						{{ t('reset_page_preferences') }}
 					</v-button>
 				</template>
@@ -54,10 +54,10 @@
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ t('per_page') }}</span>
 					<v-select
-						@update:model-value="limit = +$event"
 						:model-value="`${limit}`"
 						:items="['100', '1000', '10000', '100000']"
 						inline
+						@update:model-value="limit = +$event"
 					/>
 				</div>
 			</div>

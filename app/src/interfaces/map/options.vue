@@ -48,8 +48,10 @@ export default defineComponent({
 		},
 		value: {
 			type: Object as PropType<GeometryOptions & { defaultView?: CameraOptions; fitBounds: boolean }>,
+			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
