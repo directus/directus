@@ -369,7 +369,6 @@ documentation: Dökümantasyon
 sidebar: Kenar çubuğu
 duration: Süre
 charset: Karakter seti
-second: İkinci
 file_moved: Dosya taşındı
 collection_created: Koleksiyon oluşturuldu
 modified_on: Düzenleme Tarihi
@@ -401,6 +400,7 @@ errors:
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
   UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
+  NOT_NULL_VIOLATION: Değer null olamaz
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur

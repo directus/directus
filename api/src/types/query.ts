@@ -41,5 +41,3 @@ export type FilterOperator =
 	| 'nintersects'
 	| 'bbox_intersects'
 	| 'bbox_nintersects';
-
-export type ValidationOperator = 'required' | 'regex';

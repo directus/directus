@@ -18,8 +18,19 @@
 			:disabled="disabled"
 			:choices="choices"
 			:value-combining="valueCombining"
+			:show-selection-only="showSelectionOnly"
 			@update:model-value="$emit('input', $event)"
 		/>
+
+		<div class="footer">
+			<span :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
+				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+			</span>
+			/
+			<span :class="{ active: showSelectionOnly === true }" @click="showSelectionOnly = true">
+				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+			</span>
+		</div>
 	</div>
 </template>
 
@@ -58,6 +69,8 @@ export default defineComponent({
 		const { t } = useI18n();
 		const search = ref('');
 
+		const showSelectionOnly = ref(false);
+
 		const setSearchDebounced = debounce((val: string) => {
 			searchDebounced.value = val;
 		}, 250);
@@ -66,7 +79,7 @@ export default defineComponent({
 
 		const searchDebounced = ref('');
 
-		return { search, t, searchDebounced };
+		return { search, t, searchDebounced, showSelectionOnly };
 	},
 });
 </script>
@@ -89,5 +102,32 @@ export default defineComponent({
 
 .search .v-input {
 	box-shadow: 0 0 4px 4px var(--background-page);
+}
+
+.footer {
+	position: sticky;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+	float: right;
+	width: max-content;
+	padding: 4px 8px;
+	text-align: right;
+	background-color: var(--background-page);
+	border-top-left-radius: var(--border-radius);
+}
+
+.footer > span {
+	color: var(--foreground-subdued);
+	cursor: pointer;
+	transition: color var(--fast) var(--transition);
+}
+
+.footer > span:hover {
+	color: var(--foreground-normal);
+}
+
+.footer > span.active {
+	color: var(--primary);
 }
 </style>

@@ -11,11 +11,12 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import { Field, RawField, FieldMeta, Type } from '@directus/shared/types';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { Field, FieldMeta, RawField, Type } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
 import { getGeometryHelper } from '../database/helpers/geometry';
@@ -449,6 +450,10 @@ export class FieldsService {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
+		} else if (field.type === 'dateTime') {
+			column = table.dateTime(field.field, { useTz: false });
+		} else if (field.type === 'timestamp') {
+			column = table.timestamp(field.field, { useTz: true });
 		} else if (field.type === 'geometry') {
 			const helper = getGeometryHelper();
 			column = helper.createColumn(table, field);

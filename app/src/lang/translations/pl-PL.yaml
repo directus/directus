@@ -395,7 +395,6 @@ documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
 charset: Zestaw znaków
-second: Drugi
 file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
@@ -435,6 +434,7 @@ errors:
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
   UNKNOWN: Nieoczekiwany błąd
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
+  NOT_NULL_VIOLATION: Wartość nie może być pusta
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę

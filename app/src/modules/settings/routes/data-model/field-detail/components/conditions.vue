@@ -83,6 +83,18 @@ export default defineComponent({
 				},
 			},
 			{
+				field: 'required',
+				name: t('required'),
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: t('require_value_to_be_set'),
+					},
+					width: 'half',
+				},
+			},
+			{
 				field: 'options',
 				name: t('interface_options'),
 				type: 'json',

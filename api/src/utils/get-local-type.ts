@@ -1,10 +1,7 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { FieldMeta, Type } from '@directus/shared/types';
-
-/**
- * Typemap graciously provided by @gpetrov
- */
+import getDatabase from '../database';
 
 type LocalTypeEntry = {
 	type: Type | 'unknown';
@@ -68,7 +65,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'dateTime', useTimezone: true },
+	datetimeoffset: { type: 'timestamp', useTimezone: true },
 	datetime2: { type: 'dateTime' },
 	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
@@ -102,15 +99,21 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 
 	// Oracle
 	number: { type: 'integer' },
+
+	// SQLite
+	integerfirst: { type: 'integer' },
 };
 
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
 ): LocalTypeEntry {
+	const database = getDatabase();
+
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;
+
 	if (special) {
 		if (special.includes('json')) return { type: 'json' };
 		if (special.includes('hash')) return { type: 'hash' };
@@ -118,6 +121,19 @@ export default function getLocalType(
 		if (special.includes('uuid')) return { type: 'uuid' };
 		if (type?.type == 'geometry' && !type.geometry_type) {
 			type.geometry_type = special[1] as any;
+		}
+	}
+
+	/** Handle OracleDB timestamp with time zone */
+	if (database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle') {
+		const type = column.data_type.toLowerCase();
+
+		if (type.startsWith('timestamp')) {
+			if (type.endsWith('with local time zone')) {
+				return { type: 'timestamp' };
+			} else {
+				return { type: 'dateTime' };
+			}
 		}
 	}
 
