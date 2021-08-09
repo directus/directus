@@ -43,6 +43,7 @@ import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
+import { flushCaches } from './cache';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -63,6 +64,8 @@ export default async function createApp(): Promise<express.Application> {
 	if ((await validateMigrations()) === false) {
 		logger.warn(`Database migrations have not all been run`);
 	}
+
+	await flushCaches();
 
 	await initializeExtensions();
 
@@ -171,7 +174,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
-	app.use('/server/', serverRouter);
+	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);

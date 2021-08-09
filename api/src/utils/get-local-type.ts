@@ -12,7 +12,7 @@ type LocalTypeEntry = {
 const localTypeMap: Record<string, LocalTypeEntry> = {
 	// Shared
 	boolean: { type: 'boolean' },
-	tinyint: { type: 'boolean' },
+	tinyint: { type: 'integer' },
 	smallint: { type: 'integer' },
 	mediumint: { type: 'integer' },
 	int: { type: 'integer' },
@@ -136,7 +136,6 @@ export default function getLocalType(
 			}
 		}
 	}
-
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return { type: 'decimal' };
@@ -145,6 +144,11 @@ export default function getLocalType(
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
 	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return { type: 'text' };
+	}
+
+	/** Handle Boolean as TINYINT*/
+	if (column.data_type.toLowerCase() === 'tinyint(1)' || column.data_type.toLowerCase() === 'tinyint(0)') {
+		return 'boolean';
 	}
 
 	if (type) {
