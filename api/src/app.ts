@@ -171,7 +171,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
-	app.use('/server/', serverRouter);
+	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
