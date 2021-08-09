@@ -1,14 +1,19 @@
 import {
+	API_EXTENSION_PACKAGE_TYPES,
 	API_EXTENSION_TYPES,
+	APP_EXTENSION_PACKAGE_TYPES,
 	APP_EXTENSION_TYPES,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 } from '../constants';
 
-export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
+export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
 export type ExtensionType = typeof EXTENSION_TYPES[number];
+
+export type AppExtensionPackageType = typeof APP_EXTENSION_PACKAGE_TYPES[number];
+export type ApiExtensionPackageType = typeof API_EXTENSION_PACKAGE_TYPES[number];
 export type ExtensionPackageType = typeof EXTENSION_PACKAGE_TYPES[number];
 
 export type Extension = {
