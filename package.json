@@ -15,7 +15,7 @@
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
 		"pack": "node docker/pack",
-		"release": "lerna version --force-publish --exact",
+		"release": "lerna version --force-publish --exact --no-push && echo \"Don't forget to update package-lock and push the changes to GH!\"",
 		"test": "lerna run test",
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
