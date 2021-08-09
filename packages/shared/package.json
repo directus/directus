@@ -52,7 +52,7 @@
 		"knex-schema-inspector": "1.5.13",
 		"lodash": "4.17.21",
 		"vue": "3.1.5",
-		"vue-router": "4.0.10"
+		"vue-router": "4.0.11"
 	},
 	"devDependencies": {
 		"npm-run-all": "4.1.5",
