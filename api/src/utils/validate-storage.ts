@@ -1,6 +1,6 @@
 import env from '../env';
 import logger from '../logger';
-import { access } from 'fs/promises';
+import { access } from 'fs-extra';
 import { constants } from 'fs';
 import path from 'path';
 
