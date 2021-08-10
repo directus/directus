@@ -163,77 +163,75 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { i18n } from '@/lang';
 import { state } from '../store';
+import { translate } from '@/utils/translate-object-values';
 
-export function getFieldTypes() {
-	return [
-		{
-			text: i18n.global.t('string'),
-			value: 'string',
-		},
-		{
-			text: i18n.global.t('text'),
-			value: 'text',
-		},
-		{ divider: true },
-		{
-			text: i18n.global.t('boolean'),
-			value: 'boolean',
-		},
-		{ divider: true },
-		{
-			text: i18n.global.t('integer'),
-			value: 'integer',
-		},
-		{
-			text: i18n.global.t('bigInteger'),
-			value: 'bigInteger',
-		},
-		{
-			text: i18n.global.t('float'),
-			value: 'float',
-		},
-		{
-			text: i18n.global.t('decimal'),
-			value: 'decimal',
-		},
-		{ divider: true },
-		{
-			text: i18n.global.t('timestamp'),
-			value: 'timestamp',
-		},
-		{
-			text: i18n.global.t('datetime'),
-			value: 'dateTime',
-		},
-		{
-			text: i18n.global.t('date'),
-			value: 'date',
-		},
-		{
-			text: i18n.global.t('time'),
-			value: 'time',
-		},
-		{ divider: true },
-		{
-			text: i18n.global.t('json'),
-			value: 'json',
-		},
-		{
-			text: i18n.global.t('csv'),
-			value: 'csv',
-		},
-		{
-			text: i18n.global.t('uuid'),
-			value: 'uuid',
-		},
-		{
-			text: i18n.global.t('hash'),
-			value: 'hash',
-		},
-	];
-}
+export const fieldTypes = [
+	{
+		text: '$t:string',
+		value: 'string',
+	},
+	{
+		text: '$t:text',
+		value: 'text',
+	},
+	{ divider: true },
+	{
+		text: '$t:boolean',
+		value: 'boolean',
+	},
+	{ divider: true },
+	{
+		text: '$t:integer',
+		value: 'integer',
+	},
+	{
+		text: '$t:bigInteger',
+		value: 'bigInteger',
+	},
+	{
+		text: '$t:float',
+		value: 'float',
+	},
+	{
+		text: '$t:decimal',
+		value: 'decimal',
+	},
+	{ divider: true },
+	{
+		text: '$t:timestamp',
+		value: 'timestamp',
+	},
+	{
+		text: '$t:datetime',
+		value: 'dateTime',
+	},
+	{
+		text: '$t:date',
+		value: 'date',
+	},
+	{
+		text: '$t:time',
+		value: 'time',
+	},
+	{ divider: true },
+	{
+		text: '$t:json',
+		value: 'json',
+	},
+	{
+		text: '$t:csv',
+		value: 'csv',
+	},
+	{
+		text: '$t:uuid',
+		value: 'uuid',
+	},
+	{
+		text: '$t:hash',
+		value: 'hash',
+	},
+];
 
 export default defineComponent({
 	props: {
@@ -249,7 +247,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const typesWithLabels = getFieldTypes();
+		const typesWithLabels = computed(() => translate(fieldTypes));
 
 		const typeDisabled = computed(() => {
 			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);
