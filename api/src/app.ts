@@ -45,6 +45,7 @@ import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
 import { flushCaches } from './cache';
+import { URL } from 'url';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
