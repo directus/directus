@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -51,7 +52,7 @@ import { ForbiddenException, GraphQLValidationException, InvalidPayloadException
 import { BaseException } from '@directus/shared/exceptions';
 import { listExtensions } from '../extensions';
 import { Accountability } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -209,7 +210,6 @@ export class GraphQLService {
 		const readableCollections = Object.values(schema.read.collections)
 			.filter((collection) => collection.collection in ReadCollectionTypes)
 			.filter(scopeFilter);
-
 		if (readableCollections.length > 0) {
 			schemaComposer.Query.addFields(
 				readableCollections.reduce((acc, collection) => {
@@ -321,7 +321,6 @@ export class GraphQLService {
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
-
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -405,7 +404,7 @@ export class GraphQLService {
 		function getReadableTypes() {
 			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
-
+			const AggregateCollectionFields: Record<string, ObjectTypeComposer> = {};
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
 				fields: {
@@ -537,11 +536,9 @@ export class GraphQLService {
 					},
 				},
 			});
-
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
-
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -564,16 +561,36 @@ export class GraphQLService {
 						}
 
 						acc[field.field] = filterOperatorType;
-
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
-
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
-
+				// const fields = Object.values(collection.fields).reduce((acc, field) => {
+				// 	return field.field;
+				// }, {});
+				AggregateCollectionFields[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated`,
+					fields: {
+						avg: {
+							type: () => ReadCollectionTypes[collection.collection],
+						},
+						min: {
+							type: () => ReadCollectionTypes[collection.collection],
+						},
+						max: {
+							type: () => ReadCollectionTypes[collection.collection],
+						},
+						count: {
+							type: () => ReadCollectionTypes[collection.collection],
+						},
+						sum: {
+							type: () => ReadCollectionTypes[collection.collection],
+						},
+					},
+				});
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
@@ -607,7 +624,7 @@ export class GraphQLService {
 				});
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: `${collection.collection}_aggregated`,
-					type: [ReadCollectionTypes[collection.collection]],
+					type: [AggregateCollectionFields[collection.collection]],
 					args: {
 						groupBy: GraphQLString,
 					},
@@ -852,17 +869,23 @@ export class GraphQLService {
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 		if (!selections) return null;
+
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
-		const query = this.getQuery(args, selections, info.variableValues);
 
-		if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
-			collection = collection.slice(0, -6);
-		}
+		let query: Record<string, any>;
 
-		if (collection.endsWith('_aggregated') && collection in this.schema.collections === false) {
+		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
+
+		if (isAggregate) {
+			query = this.getAggregateQuery(args, selections);
 			collection = collection.slice(0, -11);
-		}
+		} else {
+			query = this.getQuery(args, selections, info.variableValues);
 
+			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
+				collection = collection.slice(0, -6);
+			}
+		}
 		if (args.id) {
 			query.filter = {
 				_and: [
@@ -877,11 +900,13 @@ export class GraphQLService {
 
 			query.limit = 1;
 		}
+
 		const result = await this.read(collection, query);
 
 		if (args.id) {
 			return result?.[0] || null;
 		}
+
 		return result;
 	}
 
@@ -1045,6 +1070,7 @@ export class GraphQLService {
 		variableValues: GraphQLResolveInfo['variableValues']
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
 
@@ -1093,10 +1119,37 @@ export class GraphQLService {
 					}
 				}
 			}
-
 			return uniq(fields);
 		};
 		query.fields = parseFields(selections);
+		return query;
+	}
+
+	/**
+	 * Resolve the aggregation query based on the requested aggregated fields
+	 */
+	getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Query {
+		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+
+		query.aggregate = {};
+
+		for (let aggregationGroup of selections) {
+			if ((aggregationGroup.kind === 'Field') !== true) continue;
+
+			aggregationGroup = aggregationGroup as FieldNode;
+
+			// filter out graphql pointers, like __typename
+			if (aggregationGroup.name.value.startsWith('__')) continue;
+
+			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
+
+			query.aggregate[aggregateProperty] =
+				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
+					selectionNode = selectionNode as FieldNode;
+					return selectionNode.name.value;
+				}) ?? [];
+		}
+
 		return query;
 	}
 
@@ -2046,6 +2099,7 @@ export class GraphQLService {
 							info.fragments
 						);
 						const query = this.getQuery(args, selections || [], info.variableValues);
+
 						return await service.readOne(this.accountability.user, query);
 					},
 				},
