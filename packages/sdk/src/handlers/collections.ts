@@ -33,7 +33,7 @@ export class CollectionsHandler<T = CollectionItem> {
 	}
 
 	async createMany(collections: PartialItem<T>[]): Promise<ManyItems<T>> {
-		const { data, meta } = await this.transport.get(`/collections`, {
+		const { data, meta } = await this.transport.post(`/collections`, {
 			params: collections,
 		});
 
