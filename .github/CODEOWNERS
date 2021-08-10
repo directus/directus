@@ -8,4 +8,5 @@
 
 /packages/shared @nickrum
 /packages/extension-sdk @nickrum
+/packages/create-directus-extension @nickrum
 /app/vite.config.js @nickrum
