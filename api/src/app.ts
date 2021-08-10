@@ -41,6 +41,7 @@ import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
+import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
 import { flushCaches } from './cache';
@@ -53,6 +54,8 @@ export default async function createApp(): Promise<express.Application> {
 	} catch {
 		logger.warn('PUBLIC_URL is not a valid URL');
 	}
+
+	await validateStorage();
 
 	await validateDBConnection();
 
