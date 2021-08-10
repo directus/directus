@@ -350,10 +350,12 @@ variables to automatically configure the first user:
 
 ## Telemetry
 
-Directus collects little and anonymized data about your environment. You can easily opt-out with the following environment variable:
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
+Directus collects little and anonymized data about your environment. You can easily opt-out with the following
+environment variable:
 
 | Variable    | Description                                                       | Default Value |
-| ------------| ----------------------------------------------------------------- | ------------- |
+| ----------- | ----------------------------------------------------------------- | ------------- |
 | `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | true          |
 
 ---
