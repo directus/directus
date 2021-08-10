@@ -19,7 +19,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.fields = sanitizeFields(rawQuery.fields);
 	}
 
-	if (rawQuery.group) {
+	if (rawQuery.group || rawQuery.groupBy) {
+		if (rawQuery.groupBy) {
+			rawQuery.group = rawQuery.groupBy;
+		}
 		query.group = sanitizeFields(rawQuery.group);
 	}
 

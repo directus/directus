@@ -220,8 +220,10 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
+						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_aggregated`
+						);
 					}
-
 					return acc;
 				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -603,7 +605,18 @@ export class GraphQLService {
 						return result;
 					},
 				});
-
+				ReadCollectionTypes[collection.collection].addResolver({
+					name: `${collection.collection}_aggregated`,
+					type: [ReadCollectionTypes[collection.collection]],
+					args: {
+						groupBy: GraphQLString,
+					},
+					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+						const result = await self.resolveQuery(info);
+						context.data = result;
+						return result;
+					},
+				});
 				if (collection.singleton === false) {
 					ReadCollectionTypes[collection.collection].addResolver({
 						name: `${collection.collection}_by_id`,
@@ -836,16 +849,18 @@ export class GraphQLService {
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
-
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 		if (!selections) return null;
-
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 		const query = this.getQuery(args, selections, info.variableValues);
 
 		if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 			collection = collection.slice(0, -6);
+		}
+
+		if (collection.endsWith('_aggregated') && collection in this.schema.collections === false) {
+			collection = collection.slice(0, -11);
 		}
 
 		if (args.id) {
@@ -862,13 +877,11 @@ export class GraphQLService {
 
 			query.limit = 1;
 		}
-
 		const result = await this.read(collection, query);
 
 		if (args.id) {
 			return result?.[0] || null;
 		}
-
 		return result;
 	}
 
@@ -1032,14 +1045,12 @@ export class GraphQLService {
 		variableValues: GraphQLResolveInfo['variableValues']
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
-
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
 
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
 				selection = selection as FieldNode | InlineFragmentNode;
-
 				let current: string;
 
 				if (selection.kind === 'InlineFragment') {
@@ -1085,9 +1096,7 @@ export class GraphQLService {
 
 			return uniq(fields);
 		};
-
 		query.fields = parseFields(selections);
-
 		return query;
 	}
 
