@@ -903,6 +903,8 @@ export class GraphQLService {
 
 		const result = await this.read(collection, query);
 
+		console.log(result);
+
 		if (args.id) {
 			return result?.[0] || null;
 		}

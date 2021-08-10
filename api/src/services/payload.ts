@@ -10,6 +10,7 @@ import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Altera
 import { Accountability } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import { unflatten } from 'flat';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -121,7 +122,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = toArray(payload);
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -159,6 +160,8 @@ export class PayloadService {
 				}
 			});
 		}
+
+		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
 
 		if (Array.isArray(payload)) {
 			return processedPayload;

@@ -515,39 +515,39 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate)
 
 		for (const field of fields) {
 			if (operation === 'avg') {
-				dbQuery.avg(field, { as: `${field}_avg` });
+				dbQuery.avg(field, { as: `avg->${field}` });
 			}
 
 			if (operation === 'avg_distinct') {
-				dbQuery.avgDistinct(field, { as: `${field}_avg_distinct` });
+				dbQuery.avgDistinct(field, { as: `avgDistinct->${field}` });
 			}
 
 			if (operation === 'count') {
 				if (field === '*') {
 					dbQuery.count('*', { as: 'count' });
 				} else {
-					dbQuery.count(field, { as: `${field}_count` });
+					dbQuery.count(field, { as: `count->${field}` });
 				}
 			}
 
 			if (operation === 'count_distinct') {
-				dbQuery.countDistinct(field, { as: `${field}_count_distinct` });
+				dbQuery.countDistinct(field, { as: `countDistinct->${field}` });
 			}
 
 			if (operation === 'sum') {
-				dbQuery.sum(field, { as: `${field}_sum` });
+				dbQuery.sum(field, { as: `sum->${field}` });
 			}
 
 			if (operation === 'sumDistinct') {
-				dbQuery.sum(field, { as: `${field}_sum_distinct` });
+				dbQuery.sumDistinct(field, { as: `sumDistinct->${field}` });
 			}
 
 			if (operation === 'min') {
-				dbQuery.min(field, { as: `${field}_min` });
+				dbQuery.min(field, { as: `min->${field}` });
 			}
 
 			if (operation === 'max') {
-				dbQuery.max(field, { as: `${field}_max` });
+				dbQuery.max(field, { as: `max->${field}` });
 			}
 		}
 	}
