@@ -134,7 +134,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			try {
 				const result = await trx.insert(payloadWithoutAliases).into(this.collection).returning(primaryKeyField);
-				primaryKey = result[0];
+				primaryKey = primaryKey ?? result[0];
 			} catch (err) {
 				throw await translateDatabaseError(err);
 			}
