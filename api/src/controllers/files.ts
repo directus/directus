@@ -33,7 +33,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	 */
 
 	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
-	const payload: Partial<File> = {};
+	let payload: Partial<File> = {};
 	let fileCount = 0;
 
 	busboy.on('field', (fieldname: keyof File, val) => {
@@ -69,6 +69,9 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			type: mimetype,
 			storage: payload.storage || disk,
 		};
+
+		// Clear the payload for the next to-be-uploaded file
+		payload = {};
 
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
