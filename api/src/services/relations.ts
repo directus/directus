@@ -143,6 +143,10 @@ export class RelationsService {
 			);
 		}
 
+		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
+		}
+
 		const existingRelation = this.schema.relations.find(
 			(existingRelation) =>
 				existingRelation.collection === relation.collection && existingRelation.field === relation.field
