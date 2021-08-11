@@ -720,6 +720,9 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+  directus_webhooks:
+    name: الاسم
+    status: حالة
 field_options:
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
