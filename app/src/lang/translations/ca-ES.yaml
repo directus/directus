@@ -33,7 +33,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: S'ha desconnectat
   SESSION_EXPIRED: Sessió caducada
-public: Públic
 public_description: Controla quines dades API estan disponibles sense autenticar.
 not_allowed: No permès
 directus_version: Versió de Directus
@@ -74,12 +73,14 @@ create_collection: Crea una col·lecció
 relationship_not_setup: La relació no s'ha configurat correctament
 users: Usuaris
 activity: Activitat
+user_directory: Directori de l'usuari
 duration: Durada
 sort_field: Camp d'ordenació
 status: Estat
 edit: Edita
 bookmarks: Favorits
 back: Enrere
+all_users: Tots els usuaris
 placeholder: Referència
 icon_left: Icona a l'esquerra
 icon_right: Icona a la dreta
@@ -100,6 +101,7 @@ dropdown: Desplegable
 choices: Opcions
 deselect: Deselecciona
 editing_in_batch: 'Editant {count} elements'
+page_help_users_collection: '**Directori de l''usuari**.'
 add_new: Afegir nou
 all: Tots
 batch_delete_confirm: >-
@@ -151,16 +153,15 @@ fields:
     tfa_secret: Autenticació de doble factor
     status: Estat
     role: Rol
+    token: Token
   directus_fields:
     translation: Traducció de noms de camps
     display_template: Plantilla
   directus_roles:
     name: Nom del Rol
     description: Descripció
+    users: Usuaris al rol
 comment: Comentari
-continue: Continua
-default: Predeterminat
-delete: Elimina
 description: Descripció
 done: Fet
 duplicate: Duplicat
@@ -194,6 +195,7 @@ interfaces:
   translations:
     display_template: Mostra la plantilla
   user:
+    description: Seleccioneu un usuari existent
     modes:
       dropdown: Desplegable
 displays:
@@ -209,6 +211,7 @@ displays:
   rating:
     rating: Puntuació
   user:
+    description: Mostra un usuari
     avatar: Foto
     both: Ambdós
 layouts:

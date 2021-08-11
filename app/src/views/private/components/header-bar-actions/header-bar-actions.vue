@@ -80,6 +80,7 @@ export default defineComponent({
 .actions .action-buttons .sidebar-toggle {
 	flex-shrink: 0;
 }
+
 @media (min-width: 960px) {
 	.actions .action-buttons .sidebar-toggle {
 		display: none;
@@ -102,9 +103,10 @@ export default defineComponent({
 	transform: rotate(180deg);
 }
 
-.actions.active .action-buttons > * {
+.actions.active .action-buttons > :deep(*) {
 	display: inherit;
 }
+
 @media (min-width: 960px) {
 	.actions .action-buttons > :deep(*:not(.sidebar-toggle)) {
 		display: inherit !important;

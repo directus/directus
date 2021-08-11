@@ -1,14 +1,40 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Editar campo
 item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
+group: Grupos
 fill_width: Preencher
 field_name_translations: Traduções Dos Nomes Dos Campos
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do cargo
+branch: Branch
+leaf: Folha
+indeterminate: Indeterminado
+exclusive: Exclusivo
+children: Filhos
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
@@ -42,7 +68,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
-public: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
 directus_version: Versão do Directus
@@ -98,6 +123,7 @@ field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
+field_group: Grupo de Campos
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
@@ -250,7 +276,7 @@ move_to_folder: Mover para pasta
 move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
-interface: Interface
+interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
@@ -280,7 +306,6 @@ drag_mode: Modo de arrastar
 cancel_crop: Cancelar Recorte
 original: Original
 url: URL
-import: Importar
 file_details: Detalhes do Arquivo
 dimensions: Dimensões
 size: Tamanho
@@ -370,7 +395,6 @@ documentation: Documentação
 sidebar: Barra lateral
 duration: Duração
 charset: Codificação de caracteres
-second: Segundo
 file_moved: Arquivo movido
 collection_created: Coleção criada
 modified_on: Modificado em
@@ -410,6 +434,7 @@ errors:
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNKNOWN: Erro inesperado
   INTERNAL_SERVER_ERROR: Erro inesperado
+  NOT_NULL_VIOLATION: Valor não pode ser nulo
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
@@ -477,6 +502,10 @@ operators:
   nnull: Não é nulo
   contains: Contém
   ncontains: Não contém
+  starts_with: Começa com
+  nstarts_with: Não começa com
+  ends_with: Termina com
+  nends_with: Não termina com
   between: Está entre
   nbetween: Não está entre
   empty: Está vazio
@@ -495,6 +524,7 @@ upload_files_success: '{count} arquivos enviados'
 upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
+interface_options: Opções de Interface
 layout_options: Opções de Layout
 rows: Linhas
 columns: Colunas
@@ -792,13 +822,13 @@ referential_action_field_label_m2o: Ao Excluir de {collection}...
 referential_action_field_label_o2m: Em Desmarcar {collection}...
 referential_action_no_action: Evitar a exclusão
 referential_action_cascade: Excluir o item {collection} (cascade)
+referential_action_set_null: Anular o campo {field}
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolha uma ação
-continue: Continuar
+continue_as: >-
+  {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
 creating_webhook: Criando Webhook
-default: Padrão
-delete: Deletar
 delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 delete_field_are_you_sure: >-
@@ -870,6 +900,11 @@ interfaces:
     allow_other: Permitir outros
     show_more: 'Exibir {count} mais'
     items_shown: Itens mostrados
+  select-multiple-checkbox-tree:
+    name: Caixas de seleção (árvore)
+    description: Escolha entre várias opções via caixas de seleção aninhadas
+    value_combining: Combinação de Valor
+    value_combining_note: Controla qual valor é armazenado quando seleções aninhadas são feitas.
   input-code:
     code: Código
     description: Escrever ou compartilhar trechos de código
@@ -971,6 +1006,12 @@ interfaces:
     one-to-many: Um para muitos
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
+  system-folder:
+    folder: Pasta
+    description: Selecionar uma pasta
+    field_hint: Coloca arquivos recém-enviados na pasta selecionada. Não afeta os arquivos existentes que estão selecionados.
+    root_name: Raiz da biblioteca de arquivos
+    system_default: Padrões do sistema
   select-radio:
     radio-buttons: Botão de seleção única
     description: Selecione uma das múltiplas escolhas

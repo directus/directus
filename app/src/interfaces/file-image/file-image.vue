@@ -42,7 +42,7 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url @input="setImage" />
+		<v-upload v-else from-library from-url :folder="folder" @input="setImage" />
 	</div>
 </template>
 
@@ -77,6 +77,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

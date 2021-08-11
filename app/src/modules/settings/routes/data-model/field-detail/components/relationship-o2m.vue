@@ -241,7 +241,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import { state, generationInfo } from '../store';

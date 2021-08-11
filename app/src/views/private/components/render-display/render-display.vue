@@ -23,7 +23,7 @@
 import { defineComponent, computed } from 'vue';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig } from '@/displays/types';
+import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { ValueNull },

@@ -6,6 +6,7 @@ import ora from 'ora';
 import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
 import { isExtension } from '@directus/shared/utils';
 import log from '../utils/logger';
+import renameMap from '../utils/rename-map';
 
 const pkg = require('../../../../package.json');
 
@@ -46,6 +47,7 @@ export default async function create(type: string, name: string): Promise<void> 
 
 	await fse.copy(path.join(TEMPLATE_PATH, 'common'), targetPath);
 	await fse.copy(path.join(TEMPLATE_PATH, type), targetPath);
+	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
 	const packageManifest = {
 		name: `directus-extension-${name}`,

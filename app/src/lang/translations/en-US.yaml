@@ -1,9 +1,34 @@
+## Be aware:
+#  Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+# "void", etc are stripped out. See
+# https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+# and
+# https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#
+# Illegal words:
+# 'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+# 'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+# 'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+# 'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+# 'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+# 'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+# 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+# 'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+# 'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+# 'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+# 'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+# 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+# 'Proxy', 'Intl'
+
 edit_field: Edit Field
+conditions: Conditions
 item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+and: And
+or: Or
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -47,7 +72,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
-public: Public
+public_label: Public
 public_description: Controls what API data is available without authenticating.
 not_allowed: Not Allowed
 directus_version: Directus Version
@@ -97,6 +122,8 @@ no_access: No Access
 use_custom: Use Custom
 nullable: Nullable
 allow_null_value: Allow NULL value
+allow_multiple: Allow Multiple
+allow_multiple_to_be_open: Allow Multiple to be Opened
 enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
 field_standard: Standard
 field_presentation: Presentation & Aliases
@@ -261,7 +288,7 @@ move_to_folder: Move to Folder
 move: Move
 system: System
 add_field_related: Add Field to Related Collection
-interface: Interface
+interface_label: Interface
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -291,7 +318,7 @@ drag_mode: Drag Mode
 cancel_crop: Cancel Crop
 original: Original
 url: URL
-import: Import
+import_label: Import
 file_details: File Details
 dimensions: Dimensions
 size: Size
@@ -369,6 +396,7 @@ display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
 active: Active
+inactive: Inactive
 users: Users
 activity: Activity
 webhooks: Webhooks
@@ -381,7 +409,7 @@ documentation: Documentation
 sidebar: Sidebar
 duration: Duration
 charset: Charset
-second: Second
+second: second
 file_moved: File Moved
 collection_created: Collection Created
 modified_on: Modified On
@@ -420,7 +448,10 @@ errors:
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
+  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
+  NOT_NULL_VIOLATION: Value can't be null
+security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
@@ -511,6 +542,7 @@ upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
+interface_options: Interface Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -536,10 +568,12 @@ no_results_copy: Adjust or clear search filters to see results.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+rule: Rule
 user: User
 no_presets: No Presets
 no_presets_copy: No presets or bookmarks have been saved yet.
 no_presets_cta: Add Preset
+presets_only: Presets Only
 create: Create
 on_create: On Create
 on_update: On Update
@@ -555,6 +589,7 @@ label: Label
 image_url: Image Url
 alt_text: Alternative Text
 media: Media
+quality: Quality
 width: Width
 height: Height
 source: Source
@@ -755,12 +790,23 @@ fields:
     title: Title
     description: Description
     tags: Tags
+    user_preferences: User Preferences
     language: Language
     theme: Theme
+    theme_auto: Automatic (Based on System)
+    theme_light: Light Mode
+    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
+    admin_options: Admin Options
     status: Status
+    status_draft: Draft
+    status_invited: Inactive
+    status_active: Активен
+    status_suspended: Suspended
+    status_archived: Archived
     role: Role
     token: Token
+    token_placeholder: Enter a secure access token...
     last_page: Last Page
     last_access: Last Access
   directus_settings:
@@ -768,13 +814,17 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
+    public_pages: Public Pages
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
+    files_and_thumbnails: Files & Thumbnails
+    storage_default_folder: Storage Default Folder
     storage_asset_presets: Storage Asset Presets
     storage_asset_transform: Storage Asset Transform
+    overrides: App Overrides
     custom_css: Custom CSS
   directus_fields:
     collection: Collection Name
@@ -795,6 +845,14 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+  directus_webhooks:
+    name: Name
+    method: Method
+    status: Status
+    data: Data
+    data_label: Send Event Data
+    triggers: Triggers
+    actions: Actions
 field_options:
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
@@ -817,13 +875,13 @@ referential_action_cascade: Delete the {collection} item (cascade)
 referential_action_set_null: Nullify the {field} field
 referential_action_set_default: Set {field} to its default value
 choose_action: Choose Action
-continue: Continue
+continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 creating_webhook: Creating Webhook
-default: Default
-delete: Delete
+default_label: Default
+delete_label: Delete
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
@@ -875,12 +933,22 @@ sort_direction: Sort Direction
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
+require_value_to_be_set: Require value to be set
 translation: Translation
 value: Value
 view_project: View Project
 weeks: {}
 report_error: Report Error
+start: Start
 interfaces:
+  group-accordion:
+    name: Accordion
+    description: Display fields or groups as accordion sections
+    all_closed: All Closed
+    first_opened: First Opened
+    all_opened: All Opened
+    accordion_mode: Accordion Mode
+    max_one_section_open: Max 1 Section Open
   presentation-links:
     presentation-links: Button Links
     links: Links
@@ -901,6 +969,8 @@ interfaces:
     description: Choose between multiple options via nested checkboxes
     value_combining: Value Combining
     value_combining_note: Controls what value is stored when nested selections are made.
+    show_all: Show All
+    show_selected: Show Selected
   input-code:
     code: Code
     description: Write or share code snippets
@@ -1002,6 +1072,12 @@ interfaces:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
+  system-folder:
+    folder: Folder
+    description:  Select a folder
+    field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
+    root_name: File Library Root
+    system_default: System Defaults
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
@@ -1080,8 +1156,16 @@ interfaces:
     trigger: Trigger
     rate: Rate
   group-raw:
-    name: Raw Fields
-    description: Show the fields as normal.
+    name: Raw Group
+    description: Render the fields as-is
+  group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
+    show_header: Show Group Header
+    header_icon: Header Icon
+    header_color: Header Color
+    start_open: Start Open
+    start_closed: Start Closed
 displays:
   boolean:
     boolean: Boolean

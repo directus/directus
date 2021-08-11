@@ -26,8 +26,10 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './list.vue';
-import { Field, FieldMeta } from '@/types';
+import { Field, FieldMeta } from '@directus/shared/types';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
+import { DeepPartial } from '@directus/shared/types';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { Repeater },
@@ -109,13 +111,13 @@ export default defineComponent({
 					width: 'half',
 					sort: 4,
 					options: {
-						choices: fieldTypes,
+						choices: translate(fieldTypes),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: t('interface'),
+				name: t('interface_label'),
 				field: 'interface',
 				type: 'string',
 				meta: {

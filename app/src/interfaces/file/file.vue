@@ -17,7 +17,7 @@
 								class="preview"
 								:class="{
 									'has-file': file,
-									'is-svg': file && file.type.includes('svg'),
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
@@ -95,7 +95,7 @@
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload from-url @input="onUpload" />
+					<v-upload from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
@@ -126,7 +126,7 @@
 						{{ t('cancel') }}
 					</v-button>
 					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-						{{ t('import') }}
+						{{ t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -162,6 +162,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
@@ -289,6 +293,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					file.value = response.data.data;

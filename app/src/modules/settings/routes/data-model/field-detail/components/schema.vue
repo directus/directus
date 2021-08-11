@@ -163,72 +163,72 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { i18n } from '@/lang';
 import { state } from '../store';
+import { translate } from '@/utils/translate-object-values';
 
 export const fieldTypes = [
 	{
-		text: i18n.global.t('string'),
+		text: '$t:string',
 		value: 'string',
 	},
 	{
-		text: i18n.global.t('text'),
+		text: '$t:text',
 		value: 'text',
 	},
 	{ divider: true },
 	{
-		text: i18n.global.t('boolean'),
+		text: '$t:boolean',
 		value: 'boolean',
 	},
 	{ divider: true },
 	{
-		text: i18n.global.t('integer'),
+		text: '$t:integer',
 		value: 'integer',
 	},
 	{
-		text: i18n.global.t('bigInteger'),
+		text: '$t:bigInteger',
 		value: 'bigInteger',
 	},
 	{
-		text: i18n.global.t('float'),
+		text: '$t:float',
 		value: 'float',
 	},
 	{
-		text: i18n.global.t('decimal'),
+		text: '$t:decimal',
 		value: 'decimal',
 	},
 	{ divider: true },
 	{
-		text: i18n.global.t('timestamp'),
+		text: '$t:timestamp',
 		value: 'timestamp',
 	},
 	{
-		text: i18n.global.t('datetime'),
+		text: '$t:datetime',
 		value: 'dateTime',
 	},
 	{
-		text: i18n.global.t('date'),
+		text: '$t:date',
 		value: 'date',
 	},
 	{
-		text: i18n.global.t('time'),
+		text: '$t:time',
 		value: 'time',
 	},
 	{ divider: true },
 	{
-		text: i18n.global.t('json'),
+		text: '$t:json',
 		value: 'json',
 	},
 	{
-		text: i18n.global.t('csv'),
+		text: '$t:csv',
 		value: 'csv',
 	},
 	{
-		text: i18n.global.t('uuid'),
+		text: '$t:uuid',
 		value: 'uuid',
 	},
 	{
-		text: i18n.global.t('hash'),
+		text: '$t:hash',
 		value: 'hash',
 	},
 ];
@@ -247,9 +247,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const typesWithLabels = computed(() => {
-			return fieldTypes;
-		});
+		const typesWithLabels = computed(() => translate(fieldTypes));
 
 		const typeDisabled = computed(() => {
 			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);

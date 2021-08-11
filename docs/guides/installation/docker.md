@@ -22,7 +22,6 @@ Before 9.0.0-rc.84 the Docker tags were prefixed by a "v" - e.g. v9.0.0-rc.83.
 
 :::
 
-
 ### Create admin user using docker
 
 The published Docker image will automatically populate the database, and create a user. To configure the email/password
@@ -108,6 +107,10 @@ services:
 
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
+
+      # Make sure to set this in production
+      # (see https://docs.directus.io/reference/environment-variables/#general)
+      # PUBLIC_URL: 'https://directus.example.com'
 
 networks:
   directus:

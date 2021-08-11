@@ -1,14 +1,12 @@
 import { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { Column } from 'knex-schema-inspector/dist/types/column';
-import { FieldMeta, types } from '../types';
+import { FieldMeta, Type } from '@directus/shared/types';
+import getDatabase from '../database';
 
-/**
- * Typemap graciously provided by @gpetrov
- */
-const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: boolean }> = {
+const localTypeMap: Record<string, { type: Type; useTimezone?: boolean }> = {
 	// Shared
 	boolean: { type: 'boolean' },
-	tinyint: { type: 'boolean' },
+	tinyint: { type: 'integer' },
 	smallint: { type: 'integer' },
 	mediumint: { type: 'integer' },
 	int: { type: 'integer' },
@@ -51,7 +49,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'dateTime', useTimezone: true },
+	datetimeoffset: { type: 'timestamp', useTimezone: true },
 	datetime2: { type: 'dateTime' },
 	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
@@ -85,15 +83,21 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 
 	// Oracle
 	number: { type: 'integer' },
+
+	// SQLite
+	integerfirst: { type: 'integer' },
 };
 
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: { special?: FieldMeta['special'] }
-): typeof types[number] | 'unknown' {
+): Type | 'unknown' {
+	const database = getDatabase();
+
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	const special = field?.special;
+
 	if (special) {
 		if (special.includes('json')) return 'json';
 		if (special.includes('hash')) return 'hash';
@@ -101,6 +105,18 @@ export default function getLocalType(
 		if (special.includes('uuid')) return 'uuid';
 	}
 
+	/** Handle OracleDB timestamp with time zone */
+	if (database.client.constructor.name === 'Client_Oracledb' || database.client.constructor.name === 'Client_Oracle') {
+		const type = column.data_type.toLowerCase();
+
+		if (type.startsWith('timestamp')) {
+			if (type.endsWith('with local time zone')) {
+				return 'timestamp';
+			} else {
+				return 'dateTime';
+			}
+		}
+	}
 	/** Handle Postgres numeric decimals */
 	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
@@ -109,6 +125,11 @@ export default function getLocalType(
 	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
 	if (column.data_type === 'nvarchar' && column.max_length === -1) {
 		return 'text';
+	}
+
+	/** Handle Boolean as TINYINT*/
+	if (column.data_type.toLowerCase() === 'tinyint(1)' || column.data_type.toLowerCase() === 'tinyint(0)') {
+		return 'boolean';
 	}
 
 	if (type) {

@@ -47,7 +47,7 @@
 			<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
@@ -66,7 +66,7 @@
 							{{ t('cancel') }}
 						</v-button>
 						<v-button class="action-delete" :loading="deleting" @click="batchDelete">
-							{{ t('delete') }}
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -165,7 +165,7 @@ import emitter, { Events } from '@/events';
 import { useRouter } from 'vue-router';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
 import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
@@ -603,11 +603,9 @@ export default defineComponent({
 				});
 
 				await uploadFiles(files, {
-					preset: props.folder
-						? {
-								folder: props.folder,
-						  }
-						: {},
+					preset: {
+						folder: props.folder,
+					},
 					onProgressChange: (progress) => {
 						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 

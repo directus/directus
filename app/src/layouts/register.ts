@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getLayouts } from './index';
-import { LayoutConfig } from './types';
+import { LayoutConfig } from '@directus/shared/types';
 
 const { layoutsRaw } = getLayouts();
 
@@ -16,9 +16,11 @@ export async function registerLayouts(app: App): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
 
 		layouts.push(...customLayouts.default);
-	} catch {
+	} catch (err) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom layouts`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	layoutsRaw.value = layouts;

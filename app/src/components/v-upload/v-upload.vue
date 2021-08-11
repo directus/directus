@@ -75,7 +75,7 @@
 								{{ t('cancel') }}
 							</v-button>
 							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-								{{ t('import') }}
+								{{ t('import_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -116,6 +116,10 @@ export default defineComponent({
 		fromLibrary: {
 			type: Boolean,
 			default: false,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
@@ -159,6 +163,12 @@ export default defineComponent({
 				uploading.value = true;
 				progress.value = 0;
 
+				const folderPreset: { folder?: string } = {};
+
+				if (props.folder) {
+					folderPreset.folder = props.folder;
+				}
+
 				try {
 					numberOfFiles.value = files.length;
 
@@ -168,7 +178,10 @@ export default defineComponent({
 								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 								done.value = percentage.filter((p) => p === 100).length;
 							},
-							preset: props.preset,
+							preset: {
+								...props.preset,
+								...folderPreset,
+							},
 						});
 
 						uploadedFiles && emit('input', uploadedFiles);
@@ -179,7 +192,10 @@ export default defineComponent({
 								done.value = percentage === 100 ? 1 : 0;
 							},
 							fileId: props.fileId,
-							preset: props.preset,
+							preset: {
+								...props.preset,
+								...folderPreset,
+							},
 						});
 
 						uploadedFile && emit('input', uploadedFile);
@@ -272,6 +288,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					if (props.multiple) {

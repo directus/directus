@@ -24,7 +24,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import { isInstalled, validateDBConnection } from './database';
+import { isInstalled, validateDBConnection, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
@@ -41,8 +41,11 @@ import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
+import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
+import { flushCaches } from './cache';
+import { URL } from 'url';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -53,12 +56,20 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn('PUBLIC_URL is not a valid URL');
 	}
 
+	await validateStorage();
+
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
+
+	if ((await validateMigrations()) === false) {
+		logger.warn(`Database migrations have not all been run`);
+	}
+
+	await flushCaches();
 
 	await initializeExtensions();
 
@@ -105,21 +116,21 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	app.get('/', (req, res, next) => {
+		if (env.ROOT_REDIRECT) {
+			res.redirect(env.ROOT_REDIRECT);
+		} else {
+			next();
+		}
+	});
+
+	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 
 		// Set the App's base path according to the APIs public URL
 		let html = fse.readFileSync(adminPath, 'utf-8');
 		html = html.replace(/<meta charset="utf-8" \/>/, `<meta charset="utf-8" />\n\t\t<base href="${publicUrl}admin/">`);
-
-		app.get('/', (req, res, next) => {
-			if (env.ROOT_REDIRECT) {
-				res.redirect(env.ROOT_REDIRECT);
-			} else {
-				next();
-			}
-		});
 
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
@@ -167,7 +178,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
-	app.use('/server/', serverRouter);
+	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);

@@ -106,7 +106,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete') }}</v-button>
+					<v-button :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -116,7 +116,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import useFolders, { Folder } from '../composables/use-folders';
+import useFolders, { Folder } from '@/composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
 import { useRouter } from 'vue-router';
