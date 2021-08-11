@@ -203,6 +203,7 @@ export default defineComponent({
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
 			map.addControl(controls.draw as IControl, 'top-left');
+
 			if (mapboxKey) {
 				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
 			}

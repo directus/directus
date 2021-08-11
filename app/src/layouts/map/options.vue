@@ -35,7 +35,7 @@
 		/>
 	</div>
 
-	<div class="field">
+	<!-- <div class="field">
 		<v-drawer
 			v-model="customLayerDrawerOpen"
 			:title="t('layouts.map.custom_layers')"
@@ -57,7 +57,7 @@
 				<interface-input-code v-model="customLayers" language="json" type="json" :line-number="false" />
 			</div>
 		</v-drawer>
-	</div>
+	</div> -->
 </template>
 
 <script lang="ts">

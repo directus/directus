@@ -168,6 +168,7 @@ export default defineComponent({
 	opacity: 0.4;
 }
 </style>
+
 <style lang="scss" scoped>
 .layout-map {
 	width: 100%;

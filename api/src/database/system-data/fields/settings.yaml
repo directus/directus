@@ -269,7 +269,7 @@ fields:
     interface: presentation-divider
     options:
       icon: map
-      title: $t:layouts.map.map
+      title: $t:maps
     special:
       - alias
       - no-data
@@ -280,8 +280,10 @@ fields:
     options:
       icon: key
       title: Mapbox Access Token
-      placeholder: pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t4YnHHqvQZ8Y0MTCNy0NNw
-    width: full
+      placeholder: pk.eyJ1Ijo.....
+      iconLeft: vpn_key
+      font: monospace
+    width: half
 
   - field: basemaps
     interface: list

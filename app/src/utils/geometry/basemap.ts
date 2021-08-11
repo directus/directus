@@ -1,6 +1,7 @@
 import { Style, RasterSource } from 'maplibre-gl';
 import getSetting from '@/utils/get-setting';
 import maplibre from 'maplibre-gl';
+import { getTheme } from '@/utils/get-theme';
 
 export type BasemapSource = {
 	name: string;
@@ -21,11 +22,16 @@ const baseStyle: Style = {
 };
 
 export function getBasemapSources(): BasemapSource[] {
+	if (getSetting('mapbox_key')) {
+		return [getDefaultMapboxBasemap(), defaultBasemap, ...(getSetting('basemaps') || [])];
+	}
+
 	return [defaultBasemap, ...(getSetting('basemaps') || [])];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
 	setMapboxAccessToken(basemap.url);
+
 	if (basemap.type == 'style') {
 		return basemap.url;
 	} else {
@@ -80,6 +86,7 @@ function expandUrl(url: string): string[] {
 
 function setMapboxAccessToken(styleURL: string): void {
 	styleURL = styleURL.replace(/^mapbox:\//, 'https://api.mapbox.com/styles/v1');
+
 	try {
 		const url = new URL(styleURL);
 		if (url.host == 'api.mapbox.com') {
@@ -89,4 +96,18 @@ function setMapboxAccessToken(styleURL: string): void {
 	} catch (e) {
 		return;
 	}
+}
+
+function getDefaultMapboxBasemap(): BasemapSource {
+	const defaultMapboxBasemap: BasemapSource = {
+		name: 'Mapbox',
+		type: 'style',
+		url: 'mapbox://styles/mapbox/light-v10',
+	};
+
+	if (getTheme() === 'dark') {
+		defaultMapboxBasemap.url = 'mapbox://styles/mapbox/dark-v10';
+	}
+
+	return defaultMapboxBasemap;
 }
