@@ -64,35 +64,32 @@ export default defineComponent({
 
 .action {
 	&.info {
-		--v-button-icon-color: var(--white);
-		--v-button-background-color: var(--primary);
-		--v-button-background-color-hover: var(--primary-110);
-		--v-button-color: var(--white);
-		--v-button-color-hover: var(--white);
+		--v-button-background-color: var(--blue);
+		--v-button-background-color-hover: var(--blue-125);
+		--v-button-color: var(--blue-alt);
+		--v-button-color-hover: var(--blue-alt);
 	}
 
 	&.success {
-		--v-button-icon-color: var(--white);
 		--v-button-background-color: var(--success);
-		--v-button-background-color-hover: var(--success-110);
-		--v-button-color: var(--white);
-		--v-button-color-hover: var(--white);
+		--v-button-background-color-hover: var(--success-125);
+		--v-button-color: var(--success-alt);
+		--v-button-color-hover: var(--success-alt);
 	}
 
 	&.warning {
-		--v-button-icon-color: var(--white);
 		--v-button-background-color: var(--warning);
-		--v-button-background-color-hover: var(--warning-110);
-		--v-button-color: var(--white);
-		--v-button-color-hover: var(--white);
+		--v-button-background-color-hover: var(--warning-125);
+		--v-button-color: var(--warning-alt);
+		--v-button-color-hover: var(--warning-alt);
 	}
 
 	&.danger {
 		--v-button-icon-color: var(--white);
 		--v-button-background-color: var(--danger);
-		--v-button-background-color-hover: var(--danger-110);
-		--v-button-color: var(--white);
-		--v-button-color-hover: var(--white);
+		--v-button-background-color-hover: var(--danger-125);
+		--v-button-color: var(--danger-alt);
+		--v-button-color-hover: var(--danger-alt);
 	}
 }
 </style>

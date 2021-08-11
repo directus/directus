@@ -2,6 +2,160 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.89 (August 9, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#7202](https://github.com/directus/directus/pull/7202) Support dynamic variables in conditional fields
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7166](https://github.com/directus/directus/pull/7166) Add support for app-required field state
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#7201](https://github.com/directus/directus/pull/7201) Allow JSON in env variables
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7082](https://github.com/directus/directus/pull/7082) Allow setting TLS options for SMTP configuration
+    ([@bernatvadell](https://github.com/bernatvadell))
+- **sdk**
+  - [#7192](https://github.com/directus/directus/pull/7192) Updated routes for SDK Settings, Relations, Collections, and
+    Fields ([@jaycammarano](https://github.com/jaycammarano))
+
+### :rocket: Improvements
+
+- **API**
+  - [#7294](https://github.com/directus/directus/pull/7294) Flush caches on server (re)start
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7287](https://github.com/directus/directus/pull/7287) Only treat `tinyint(1)` and `tinyint(0)` as booleans
+    ([@jaycammarano](https://github.com/jaycammarano))
+  - [#7259](https://github.com/directus/directus/pull/7259) Rely on `RETURNING` when possible
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7248](https://github.com/directus/directus/pull/7248) Add logger statement on password request failures
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7226](https://github.com/directus/directus/pull/7226) Add cache connection fallbacks
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7223](https://github.com/directus/directus/pull/7223) Warn if a collection includes a space
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7176](https://github.com/directus/directus/pull/7176) Don't trigger updates for pre-existing selected items
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7170](https://github.com/directus/directus/pull/7170) Show any sso login warnings in stdout
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6922](https://github.com/directus/directus/pull/6922) Switch to exifr for image metadata extraction
+    ([@paescuj](https://github.com/paescuj))
+- **Extensions**
+  - [#7275](https://github.com/directus/directus/pull/7275) Only loads app extensions if SERVE_APP is true
+    ([@nickrum](https://github.com/nickrum))
+- **App**
+  - [#7274](https://github.com/directus/directus/pull/7274) Log error message when registering app extension fails
+    ([@nickrum](https://github.com/nickrum))
+  - [#7254](https://github.com/directus/directus/pull/7254) Rate limit the outgoing requests from the app
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7229](https://github.com/directus/directus/pull/7229) Update/tweak groups
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7177](https://github.com/directus/directus/pull/7177) Refresh token after idle period/background tab
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7161](https://github.com/directus/directus/pull/7161) Add show all/selected toggle to tree-select
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#7292](https://github.com/directus/directus/pull/7292) Handle JSON in labels display
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7258](https://github.com/directus/directus/pull/7258) Don't use tags interface for CSV filter
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7253](https://github.com/directus/directus/pull/7253) Fix formatted-value overflow ellpisis on card layout
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7252](https://github.com/directus/directus/pull/7252) Handle empty collection group in custom nav
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7175](https://github.com/directus/directus/pull/7175) Fix export sidebar detail for system collections
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7173](https://github.com/directus/directus/pull/7173) Only trim input on blur for text based values
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7169](https://github.com/directus/directus/pull/7169) Make sure disabled prevents click on list-item
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7158](https://github.com/directus/directus/pull/7158) Fix list-selection branch mode unselect bug
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **Extensions**
+  - [#7279](https://github.com/directus/directus/pull/7279) Fix gitignore file in extension templates being deleted when
+    publishing ([@nickrum](https://github.com/nickrum))
+  - [#7196](https://github.com/directus/directus/pull/7196) extension-sdk no long missing common folder
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **API**
+  - [#7259](https://github.com/directus/directus/pull/7259) Rely on `RETURNING` when possible
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7249](https://github.com/directus/directus/pull/7249) Fix import of perf hook on node < 16
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7240](https://github.com/directus/directus/pull/7240) Fix error on item creation with no validation step
+    ([@bernatvadell](https://github.com/bernatvadell))
+  - [#7200](https://github.com/directus/directus/pull/7200) Fix timezone problems in `dateTime` type
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7168](https://github.com/directus/directus/pull/7168) Fix nested m2a collection permission retrieval
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **sdk**
+  - [#7192](https://github.com/directus/directus/pull/7192) Updated routes for SDK Settings, Relations, Collections, and
+    Fields ([@jaycammarano](https://github.com/jaycammarano))
+- **specs**
+  - [#7172](https://github.com/directus/directus/pull/7172) Fix spec for default folder setting
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :memo: Documentation
+
+- [#7174](https://github.com/directus/directus/pull/7174) Remove advanced example
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+
+### :package: Dependency Updates
+
+- [#7293](https://github.com/directus/directus/pull/7293) update vue monorepo to v3.2.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7289](https://github.com/directus/directus/pull/7289) update dependency vue to v3.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7288](https://github.com/directus/directus/pull/7288) update dependency @vue/compiler-sfc to v3.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7283](https://github.com/directus/directus/pull/7283) update typescript-eslint monorepo to v4.29.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7272](https://github.com/directus/directus/pull/7272) update dependency vue-router to v4.0.11
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7271](https://github.com/directus/directus/pull/7271) update dependency ts-node to v10.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7269](https://github.com/directus/directus/pull/7269) update dependency rollup to v2.56.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7263](https://github.com/directus/directus/pull/7263) update dependency @vitejs/plugin-vue to v1.4.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7255](https://github.com/directus/directus/pull/7255) update dependency p-queue to v7
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7238](https://github.com/directus/directus/pull/7238) update dependency lint-staged to v11.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7230](https://github.com/directus/directus/pull/7230) Fix pino deprecation warning
+  ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- [#7227](https://github.com/directus/directus/pull/7227) update dependency npm to v7.20.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7225](https://github.com/directus/directus/pull/7225) update dependency npm to v7.20.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7208](https://github.com/directus/directus/pull/7208) update dependency rollup to v2.56.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7194](https://github.com/directus/directus/pull/7194) update dependency gatsby-source-filesystem to v3.11.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7187](https://github.com/directus/directus/pull/7187) update dependency npm to v7.20.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7181](https://github.com/directus/directus/pull/7181) update dependency sass to v1.37.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7179](https://github.com/directus/directus/pull/7179) update dependency sass to v1.37.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7171](https://github.com/directus/directus/pull/7171) update dependency sass to v1.37.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7165](https://github.com/directus/directus/pull/7165) update dependency @popperjs/core to v2.9.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7153](https://github.com/directus/directus/pull/7153) update dependency @types/lodash to v4.14.172
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7151](https://github.com/directus/directus/pull/7151) update dependency eslint-plugin-vue to v7.15.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7150](https://github.com/directus/directus/pull/7150) update dependency sass to v1.37.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7148](https://github.com/directus/directus/pull/7148) update dependency sass to v1.37.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7055](https://github.com/directus/directus/pull/7055) update dependency pinia to v2.0.0-rc.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.88 (August 2, 2021)
 
 ### :sparkles: New Features

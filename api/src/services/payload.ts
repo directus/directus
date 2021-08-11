@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -512,8 +512,9 @@ export class PayloadService {
 						// primary key might be reported as a string instead of number, coming from the
 						// http route, and or a bigInteger in the DB
 						if (
-							existingRecord[relation.field] == parent ||
-							existingRecord[relation.field] == payload[currentPrimaryKeyField]
+							isNil(existingRecord[relation.field]) === false &&
+							(existingRecord[relation.field] == parent ||
+								existingRecord[relation.field] == payload[currentPrimaryKeyField])
 						) {
 							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
 							continue;
