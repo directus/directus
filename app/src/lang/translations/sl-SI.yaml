@@ -812,6 +812,9 @@ fields:
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
     collection_list: Krmarjenje po zbirki
+  directus_webhooks:
+    name: Ime
+    status: Stanje
 field_options:
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
