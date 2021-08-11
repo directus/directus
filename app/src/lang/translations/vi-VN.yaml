@@ -548,6 +548,9 @@ fields:
   directus_roles:
     name: Tên Quyền
     description: Mô tả
+  directus_webhooks:
+    name: Tên
+    status: Trạng thái
 comment: Bình luận
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
