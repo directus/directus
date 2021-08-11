@@ -626,6 +626,9 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+  directus_webhooks:
+    name: İsim
+    status: Durum
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
