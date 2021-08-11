@@ -44,7 +44,7 @@ fields:
     interface: presentation-divider
     options:
       icon: public
-      title: Public Pages
+      title: $t:fields.directus_settings.public_pages
     special:
       - alias
       - no-data
@@ -74,7 +74,7 @@ fields:
     interface: presentation-divider
     options:
       icon: security
-      title: Security
+      title: $t:security
     special:
       - alias
       - no-data
@@ -104,7 +104,7 @@ fields:
     interface: presentation-divider
     options:
       icon: storage
-      title: Files & Thumbnails
+      title: $t:fields.directus_settings.files_and_thumbnails
     special:
       - alias
       - no-data
@@ -115,7 +115,7 @@ fields:
     options:
       fields:
         - field: key
-          name: Key
+          name: $t:key
           type: string
           schema:
             is_nullable: false
@@ -144,7 +144,7 @@ fields:
                   text: Fit outside
             width: half
         - field: width
-          name: Width
+          name: $t:width
           type: integer
           schema:
             is_nullable: false
@@ -152,7 +152,7 @@ fields:
             interface: input
             width: half
         - field: height
-          name: Height
+          name: $t:height
           type: integer
           schema:
             is_nullable: false
@@ -161,7 +161,7 @@ fields:
             width: half
         - field: quality
           type: integer
-          name: Quality
+          name: $t:quality
           schema:
             default_value: 80
             is_nullable: false
@@ -236,23 +236,23 @@ fields:
     options:
       choices:
         - value: all
-          text: All
+          text: $t:all
         - value: none
-          text: None
+          text: $t:none
         - value: presets
-          text: Presets Only
+          text: $t:presets_only
     width: half
 
   - field: storage_default_folder
     interface: system-folder
     width: half
-    note: Default folder where new files are uploaded
+    note: $t:interfaces.system-folder.field_hint
 
   - field: overrides_divider
     interface: presentation-divider
     options:
       icon: brush
-      title: App Overrides
+      title: $t:fields.directus_settings.overrides
     special:
       - alias
       - no-data
