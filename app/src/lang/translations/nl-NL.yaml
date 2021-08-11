@@ -810,6 +810,9 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
+  directus_webhooks:
+    name: Naam
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
