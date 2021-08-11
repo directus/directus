@@ -54,6 +54,8 @@ fields:
     role: როლი
   directus_roles:
     description: აღწერა
+  directus_webhooks:
+    status: სტატუსი
 comment: კომენტარი
 description: აღწერა
 email: ელ-ფოსტა
