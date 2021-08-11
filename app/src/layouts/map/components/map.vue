@@ -75,7 +75,7 @@ export default defineComponent({
 		const { sidebarOpen, basemap } = toRefs(appStore);
 		const basemaps = getBasemapSources();
 		const style = computed(() => {
-			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
 		});
 

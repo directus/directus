@@ -52,10 +52,27 @@
 					/>
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
-					<span>{{ t('per_page') }}</span>
+					<span>{{ t('limit') }}</span>
 					<v-select
-						:model-value="`${limit}`"
-						:items="['100', '1000', '10000', '100000']"
+						:model-value="limit"
+						:items="[
+							{
+								text: n(100),
+								value: 100,
+							},
+							{
+								text: n(1000),
+								value: 1000,
+							},
+							{
+								text: n(10000),
+								value: 10000,
+							},
+							{
+								text: n(100000),
+								value: 100000,
+							},
+						]"
 						inline
 						@update:model-value="limit = +$event"
 					/>
@@ -75,7 +92,7 @@ import { useLayoutState } from '@directus/shared/composables';
 export default defineComponent({
 	components: { MapComponent },
 	setup() {
-		const { t } = useI18n();
+		const { t, n } = useI18n();
 		const layoutState = useLayoutState();
 
 		const {
@@ -127,6 +144,7 @@ export default defineComponent({
 			page,
 			toPage,
 			limit,
+			n,
 		};
 	},
 });

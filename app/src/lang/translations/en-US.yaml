@@ -27,6 +27,7 @@ item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
+limit: Limit
 group: Group
 and: And
 or: Or

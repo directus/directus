@@ -20,7 +20,7 @@
 		</div>
 		<div class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.fit_bounds') }}</div>
-			<v-checkbox block :input-value="fitBounds" :label="t('enabled')" />
+			<v-checkbox v-model="fitBounds" block :label="t('enabled')" />
 		</div>
 	</div>
 </template>

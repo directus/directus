@@ -10,7 +10,6 @@ import { parseFilter } from '@/utils/parse-filter';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
-import { DeepPartial } from '@directus/shared/types';
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need

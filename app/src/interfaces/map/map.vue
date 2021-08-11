@@ -167,17 +167,10 @@ export default defineComponent({
 		};
 
 		onMounted(() => {
-			watch(
-				() => props.loading,
-				(loading) => {
-					if (!loading || !props.fieldData) {
-						setupMap();
-						onUnmounted(() => map.remove());
-					}
-				},
-				{ immediate: true }
-			);
+			setupMap();
 		});
+
+		onUnmounted(() => map.remove());
 
 		return {
 			t,
@@ -340,7 +333,7 @@ export default defineComponent({
 				if (props.fitBounds) {
 					if (geometryParsingError.value) {
 						const bbox = getBBox(initialValue!) as LngLatBoundsLike;
-						map.fitBounds(bbox, { padding: 80, maxZoom: 8, duration: 0 });
+						map.fitBounds(bbox, { padding: 0, maxZoom: 8, duration: 0 });
 					} else {
 						fitDataBounds({ duration: 0 });
 					}
