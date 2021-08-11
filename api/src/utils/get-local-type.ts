@@ -5,7 +5,6 @@ import getDatabase from '../database';
 
 type LocalTypeEntry = {
 	type: Type | 'unknown';
-	useTimezone?: boolean;
 	geometry_type?: 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
 };
 
@@ -65,7 +64,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	bit: { type: 'boolean' },
 	smallmoney: { type: 'float' },
 	money: { type: 'float' },
-	datetimeoffset: { type: 'timestamp', useTimezone: true },
+	datetimeoffset: { type: 'timestamp' },
 	datetime2: { type: 'dateTime' },
 	smalldatetime: { type: 'dateTime' },
 	nchar: { type: 'text' },
@@ -89,10 +88,10 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	_varchar: { type: 'string' },
 	bpchar: { type: 'string' },
 	timestamptz: { type: 'timestamp' },
-	'timestamp with time zone': { type: 'timestamp', useTimezone: true },
+	'timestamp with time zone': { type: 'timestamp' },
 	'timestamp without time zone': { type: 'dateTime' },
 	timetz: { type: 'time' },
-	'time with time zone': { type: 'time', useTimezone: true },
+	'time with time zone': { type: 'time' },
 	'time without time zone': { type: 'time' },
 	float4: { type: 'float' },
 	float8: { type: 'float' },
