@@ -223,8 +223,8 @@ export default defineComponent({
 }
 
 .v-info {
-	padding: 20px;
-	background-color: var(--background-subdued);
+	padding: 40px;
+	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
 }
