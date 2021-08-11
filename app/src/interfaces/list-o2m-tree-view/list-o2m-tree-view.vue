@@ -210,7 +210,7 @@ export default defineComponent({
 					return (value || []).map((item, index) => {
 						return {
 							...item,
-							[relation.value.meta!.sort_field!]: index,
+							[relation.value.meta!.sort_field!]: index + 1,
 							[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
 						};
 					});
@@ -227,7 +227,7 @@ export default defineComponent({
 		}
 
 		function onDraggableChange() {
-			emit('input', stagedValues.value);
+			emitValue(stagedValues.value);
 		}
 
 		function useSelection() {
