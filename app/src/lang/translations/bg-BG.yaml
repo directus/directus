@@ -390,6 +390,7 @@ display_template_not_setup: Опциите за показване на шабл
 collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
 select_a_collection: Избор на колекция
 active: Активен
+inactive: Неактивен
 users: Потребители
 activity: Активности
 webhooks: Уеб-куки
@@ -443,6 +444,7 @@ errors:
   UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
+security: Сигурност
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
@@ -563,6 +565,7 @@ user: Потребител
 no_presets: Няма заготовки
 no_presets_copy: Все още няма запазени заготовки или отметки.
 no_presets_cta: Добавяне на заготовка
+presets_only: Само заготовки
 create: Създаване
 on_create: При създаване
 on_update: При промяна
@@ -578,6 +581,7 @@ label: Етикет
 image_url: URL на изображение
 alt_text: Алтернативен текст
 media: Медия
+quality: Качество
 width: Ширина
 height: Височина
 source: Източник
@@ -772,12 +776,23 @@ fields:
     title: Заглавие
     description: Описание
     tags: Тагове
+    user_preferences: Потребителски настройки
     language: Език
     theme: Тема
+    theme_auto: Автоматичен (според системата)
+    theme_light: Светъл режим
+    theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
+    admin_options: Административни настройки
     status: Статус
+    status_draft: Чернова
+    status_invited: Поканен
+    status_active: Активен
+    status_suspended: Замразен
+    status_archived: Архивиран
     role: Роля
     token: Токен
+    token_placeholder: Въвеждане на сигурен ключ за достъп...
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -785,13 +800,17 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
+    public_pages: Публични Страници
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
     auth_login_attempts: Брой за опити за вход
+    files_and_thumbnails: Файлове и картинки
+    storage_default_folder: Папка по подразбиране
     storage_asset_presets: Заготовки за съхранените файлове
     storage_asset_transform: Трансформации на съхранените файлове
+    overrides: Отмяна
     custom_css: Потребителски CSS
   directus_fields:
     collection: Име на колекцията
@@ -812,6 +831,15 @@ fields:
     users: Потребители към роля
     module_list: Модули
     collection_list: Навигация в колекции
+  directus_webhooks:
+    name: Име
+    method: Метод
+    status: Статус
+    data: Данни
+    data_label: Изпращане и на данните
+    triggers: Тригер
+    actions: Действия
+    collections: Колекции
 field_options:
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
