@@ -733,6 +733,9 @@ fields:
     users: Vartotojai grupėje
     module_list: Modulių navigacija
     collection_list: Kolekcijų navigacija
+  directus_webhooks:
+    name: Pavadinimas
+    status: Būsena
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID
