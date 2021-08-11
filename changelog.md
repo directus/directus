@@ -2,6 +2,34 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.90 (August 11, 2021)
+
+### :rocket: Improvements
+
+- **App**
+  - [#7358](https://github.com/directus/directus/pull/7358) Add missing translations ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+- **API**
+  - [#7310](https://github.com/directus/directus/pull/7310) Add permission check for sqlite, upload and extensions directories ([@paescuj](https://github.com/paescuj))
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#7331](https://github.com/directus/directus/pull/7331) Check for non-existing parent pk records ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7323](https://github.com/directus/directus/pull/7323) Check for related collection before creation relation ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7319](https://github.com/directus/directus/pull/7319) Fix graphql GET request cache query extraction ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7315](https://github.com/directus/directus/pull/7315) Clear the file payload after file upload ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7312](https://github.com/directus/directus/pull/7312) Fix uuid resolving in DBs without returning support ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **App**
+  - [#7327](https://github.com/directus/directus/pull/7327) Fix schema field types not being translated in the app ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#7322](https://github.com/directus/directus/pull/7322) Fix colors on different types ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+- **sdk**
+  - [#7304](https://github.com/directus/directus/pull/7304) Fix HTTP method for collections.createMany in SDK ([@paescuj](https://github.com/paescuj))
+
+### :package: Dependency Updates
+
+- [#7303](https://github.com/directus/directus/pull/7303) update dependency rollup to v2.56.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7300](https://github.com/directus/directus/pull/7300) update dependency eslint-plugin-vue to v7.16.0 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.89 (August 9, 2021)
 
 ### :sparkles: New Features
