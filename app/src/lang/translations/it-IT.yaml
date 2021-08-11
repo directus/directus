@@ -813,6 +813,9 @@ fields:
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
     collection_list: Navigazione Raccolte
+  directus_webhooks:
+    name: Nome
+    status: Stato
 field_options:
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
@@ -897,7 +900,6 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
