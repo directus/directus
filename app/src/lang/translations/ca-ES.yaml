@@ -161,6 +161,8 @@ fields:
     name: Nom del Rol
     description: Descripció
     users: Usuaris al rol
+  directus_webhooks:
+    status: Estat
 comment: Comentari
 description: Descripció
 done: Fet
