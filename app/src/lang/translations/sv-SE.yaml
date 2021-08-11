@@ -768,6 +768,9 @@ fields:
     users: Användare i rollen
     module_list: Navigering för modul
     collection_list: Navigering för kollektion
+  directus_webhooks:
+    name: Namn
+    status: Status
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
