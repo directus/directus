@@ -794,6 +794,9 @@ fields:
     users: Пользователи в Роли
     module_list: Навигация по Модулям
     collection_list: Навигация по Коллекциям
+  directus_webhooks:
+    name: Имя
+    status: Статус
 field_options:
   directus_collections:
     track_activity_revisions: Отслеживание активности и изменений
