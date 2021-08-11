@@ -791,6 +791,9 @@ fields:
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
     collection_list: Andmekogude näitamine
+  directus_webhooks:
+    name: Nimi
+    status: Staatus
 field_options:
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
