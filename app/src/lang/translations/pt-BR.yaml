@@ -803,6 +803,9 @@ fields:
     users: Usuários no cargo
     module_list: Navegação do Módulo
     collection_list: Navegação da Coleção
+  directus_webhooks:
+    name: Nome
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
