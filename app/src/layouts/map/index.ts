@@ -124,11 +124,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
-			const fields: Field[] = fieldsInCollection.value;
-			return fields
-				.slice(0, 3)
-				.map((f) => `{{${f.field}}}`)
-				.join(' ');
+			return `{{ ${primaryKeyField.value?.field} }}`;
 		});
 
 		const queryFields = computed(() => {

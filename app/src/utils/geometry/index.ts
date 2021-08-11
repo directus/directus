@@ -12,10 +12,10 @@ import {
 	GeometryCollection,
 	Geometry,
 } from 'geojson';
-import { render } from 'micromustache';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
 import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
+import { renderStringTemplate } from '@/utils/render-string-template';
 
 export type GeometryOptions = {
 	geometryField: string;
@@ -109,11 +109,13 @@ export function getParser(options: GeometryOptions): GeoJSONParser {
 
 export function toGeoJSON(entries: any[], options: GeometryOptions, template: string): FeatureCollection {
 	const parser = getParser(options);
+
 	const geojson: FeatureCollection = {
 		type: 'FeatureCollection',
 		features: [],
 		bbox: [Infinity, Infinity, -Infinity, -Infinity],
 	};
+
 	for (let i = 0; i < entries.length; i++) {
 		const geometry = parser(entries[i]);
 		if (!geometry) continue;
@@ -122,7 +124,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions, template: st
 		geojson.bbox = expandBBox(geojson.bbox!, [c, d]);
 		const properties = { ...entries[i] };
 		delete properties[options.geometryField];
-		properties.description = render(template, entries[i]);
+		properties.description = renderStringTemplate(template, entries[i]).displayValue;
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as Feature);
 	}
