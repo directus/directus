@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { isPlainObject } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
 import { Query } from '../types';
+import { stringify } from 'wellknown';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -74,6 +75,13 @@ function validateFilter(filter: Query['filter']) {
 				case '_nempty':
 					validateBoolean(value, key);
 					break;
+
+				case '_intersects':
+				case '_nintersects':
+				case '_intersects_bbox':
+				case '_nintersects_bbox':
+					validateGeometry(value, key);
+					break;
 			}
 		} else if (isPlainObject(nested) === false && Array.isArray(nested) === false) {
 			validateFilterPrimitive(nested, '_eq');
@@ -117,6 +125,16 @@ function validateList(value: any, key: string) {
 function validateBoolean(value: any, key: string) {
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryException(`"${key}" has to be a boolean`);
+	}
+
+	return true;
+}
+
+function validateGeometry(value: any, key: string) {
+	try {
+		stringify(value);
+	} catch {
+		throw new InvalidQueryException(`"${key}" has to be a valid GeoJSON object`);
 	}
 
 	return true;
