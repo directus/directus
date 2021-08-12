@@ -136,18 +136,20 @@ async function getDatabaseSchema(
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => ({
-				field: column.column_name,
-				defaultValue: getDefaultValue(column) ?? null,
-				nullable: column.is_nullable ?? true,
-				type: getLocalType(column) || 'alias',
-				dbType: column.data_type,
-				precision: column.numeric_precision || null,
-				scale: column.numeric_scale || null,
-				special: [],
-				note: null,
-				alias: false,
-			})),
+			fields: mapValues(schemaOverview[collection].columns, (column) => {
+				return {
+					field: column.column_name,
+					defaultValue: getDefaultValue(column) ?? null,
+					nullable: column.is_nullable ?? true,
+					type: getLocalType(column).type,
+					dbType: column.data_type,
+					precision: column.numeric_precision || null,
+					scale: column.numeric_scale || null,
+					special: [],
+					note: null,
+					alias: false,
+				};
+			}),
 		};
 	}
 
@@ -168,20 +170,19 @@ async function getDatabaseSchema(
 		if (!result.collections[field.collection]) continue;
 
 		const existing = result.collections[field.collection].fields[field.field];
+		const column = schemaOverview[field.collection].columns[field.field];
+		const special = field.special ? toArray(field.special) : [];
+		const { type = 'alias' } = existing && column ? getLocalType(column, { special }) : {};
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
-			type: existing
-				? getLocalType(schemaOverview[field.collection].columns[field.field], {
-						special: field.special ? toArray(field.special) : [],
-				  })
-				: 'alias',
+			type: type,
 			dbType: existing?.dbType || null,
 			precision: existing?.precision || null,
 			scale: existing?.scale || null,
-			special: field.special ? toArray(field.special) : [],
+			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
 		};

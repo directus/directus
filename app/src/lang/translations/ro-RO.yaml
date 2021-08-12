@@ -160,6 +160,8 @@ fields:
   directus_roles:
     name: Nume de rol
     description: Descriere
+  directus_webhooks:
+    status: Stare
 comment: Comentariu
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.

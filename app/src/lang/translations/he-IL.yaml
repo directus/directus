@@ -89,6 +89,8 @@ fields:
   directus_roles:
     name: שם תפקיד
     description: תיאור
+  directus_webhooks:
+    status: סטטוס
 comment: הערה
 description: תיאור
 email: דוא"ל

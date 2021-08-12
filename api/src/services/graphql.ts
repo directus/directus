@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { validateQuery } from '../utils/validate-query';
 import {
 	ArgumentNode,
 	BooleanValueNode,
@@ -51,7 +52,7 @@ import { ForbiddenException, GraphQLValidationException, InvalidPayloadException
 import { BaseException } from '@directus/shared/exceptions';
 import { listExtensions } from '../extensions';
 import { Accountability } from '@directus/shared/types';
-import { AbstractServiceOptions, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Action, Aggregate, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -90,6 +91,12 @@ const GraphQLVoid = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLGeoJSON = new GraphQLScalarType({
+	...GraphQLJSON,
+	name: 'GraphQLGeoJSON',
+	description: 'GeoJSON value',
 });
 
 export const GraphQLDate = new GraphQLScalarType({
@@ -220,6 +227,22 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
+
+						const hasAggregate = Object.values(collection.fields).some((field) => {
+							const graphqlType = getGraphQLType(field.type);
+
+							if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
+								return true;
+							}
+
+							return false;
+						});
+
+						if (hasAggregate) {
+							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+								`${collection.collection}_aggregated`
+							);
+						}
 					}
 
 					return acc;
@@ -319,7 +342,6 @@ export class GraphQLService {
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
-
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -402,7 +424,11 @@ export class GraphQLService {
 		 */
 		function getReadableTypes() {
 			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
+
+			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
@@ -536,6 +562,30 @@ export class GraphQLService {
 				},
 			});
 
+			const GeometryFilterOperators = schemaComposer.createInputTC({
+				name: 'geometry_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLGeoJSON,
+					},
+					_neq: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+				},
+			});
+
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -557,12 +607,14 @@ export class GraphQLService {
 							case GraphQLDate:
 								filterOperatorType = DateFilterOperators;
 								break;
+							case GraphQLGeoJSON:
+								filterOperatorType = GeometryFilterOperators;
+								break;
 							default:
 								filterOperatorType = StringFilterOperators;
 						}
 
 						acc[field.field] = filterOperatorType;
-
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
@@ -570,6 +622,69 @@ export class GraphQLService {
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
+				});
+
+				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated_fields`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						const graphqlType = getGraphQLType(field.type);
+
+						switch (graphqlType) {
+							case GraphQLInt:
+							case GraphQLFloat:
+								acc[field.field] = {
+									type: GraphQLFloat,
+									description: field.note,
+								};
+								break;
+							default:
+								break;
+						}
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+
+				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated`,
+					fields: {
+						group: {
+							name: 'group',
+							type: GraphQLJSON,
+						},
+						avg: {
+							name: 'avg',
+							type: AggregatedFilters[collection.collection],
+						},
+						sum: {
+							name: 'sum',
+							type: AggregatedFilters[collection.collection],
+						},
+						count: {
+							name: 'count',
+							type: AggregatedFilters[collection.collection],
+						},
+						countDistinct: {
+							name: 'countDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						avgDistinct: {
+							name: 'avgDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						sumDistinct: {
+							name: 'sumDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						min: {
+							name: 'min',
+							type: AggregatedFilters[collection.collection],
+						},
+						max: {
+							name: 'max',
+							type: AggregatedFilters[collection.collection],
+						},
+					},
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({
@@ -603,7 +718,19 @@ export class GraphQLService {
 						return result;
 					},
 				});
+				ReadCollectionTypes[collection.collection].addResolver({
+					name: `${collection.collection}_aggregated`,
+					type: [AggregatedFunctions[collection.collection]],
+					args: {
+						groupBy: GraphQLString,
+					},
+					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+						const result = await self.resolveQuery(info);
+						context.data = result;
 
+						return result;
+					},
+				});
 				if (collection.singleton === false) {
 					ReadCollectionTypes[collection.collection].addResolver({
 						name: `${collection.collection}_by_id`,
@@ -836,18 +963,26 @@ export class GraphQLService {
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
-
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 		if (!selections) return null;
 
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
-		const query = this.getQuery(args, selections, info.variableValues);
 
-		if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
-			collection = collection.slice(0, -6);
+		let query: Record<string, any>;
+
+		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
+
+		if (isAggregate) {
+			query = this.getAggregateQuery(args, selections);
+			collection = collection.slice(0, -11);
+		} else {
+			query = this.getQuery(args, selections, info.variableValues);
+
+			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
+				collection = collection.slice(0, -6);
+			}
 		}
-
 		if (args.id) {
 			query.filter = {
 				_and: [
@@ -862,20 +997,19 @@ export class GraphQLService {
 
 			query.limit = 1;
 		}
-
 		const result = await this.read(collection, query);
-
 		if (args.id) {
 			return result?.[0] || null;
 		}
-
+		if (query.group) {
+			// for every entry in result add a group field based on query.group;
+			result.map((field) => {
+				field.group = field[query.group[0]];
+			});
+		}
 		return result;
 	}
 
-	/**
-	 * Generic mutation resolver that converts the incoming GraphQL mutation AST into a Directus query and executes the
-	 * appropriate C-UD operation
-	 */
 	async resolveMutation(
 		args: Record<string, any>,
 		info: GraphQLResolveInfo
@@ -1039,7 +1173,6 @@ export class GraphQLService {
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
 				selection = selection as FieldNode | InlineFragmentNode;
-
 				let current: string;
 
 				if (selection.kind === 'InlineFragment') {
@@ -1082,11 +1215,38 @@ export class GraphQLService {
 					}
 				}
 			}
-
 			return uniq(fields);
 		};
-
 		query.fields = parseFields(selections);
+		return query;
+	}
+
+	/**
+	 * Resolve the aggregation query based on the requested aggregated fields
+	 */
+	getAggregateQuery(rawQuery: Query, selections: readonly SelectionNode[]): Query {
+		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+
+		query.aggregate = {};
+
+		for (let aggregationGroup of selections) {
+			if ((aggregationGroup.kind === 'Field') !== true) continue;
+
+			aggregationGroup = aggregationGroup as FieldNode;
+
+			// filter out graphql pointers, like __typename
+			if (aggregationGroup.name.value.startsWith('__')) continue;
+
+			const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
+
+			query.aggregate[aggregateProperty] =
+				aggregationGroup.selectionSet?.selections.map((selectionNode) => {
+					selectionNode = selectionNode as FieldNode;
+					return selectionNode.name.value;
+				}) ?? [];
+		}
+
+		validateQuery(query);
 
 		return query;
 	}
@@ -2037,6 +2197,7 @@ export class GraphQLService {
 							info.fragments
 						);
 						const query = this.getQuery(args, selections || [], info.variableValues);
+
 						return await service.readOne(this.accountability.user, query);
 					},
 				},

@@ -16,9 +16,11 @@ export async function registerInterfaces(app: App): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/interfaces/index.js`);
 
 		interfaces.push(...customInterfaces.default);
-	} catch {
+	} catch (err) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom interfaces`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	interfacesRaw.value = interfaces;

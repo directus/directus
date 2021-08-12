@@ -3,7 +3,8 @@ import yaml from 'js-yaml';
 import { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
-import { Type } from '@directus/shared/types';
+import { Type, Field } from '@directus/shared/types';
+import { getGeometryHelper } from '../helpers/geometry';
 
 type TableSeed = {
 	table: string;
@@ -55,6 +56,9 @@ export default async function runSeed(database: Knex): Promise<void> {
 					column = tableBuilder.string(columnName);
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
+				} else if (columnInfo.type === 'geometry') {
+					const helper = getGeometryHelper();
+					column = helper.createColumn(tableBuilder, { field: columnName } as Field);
 				} else {
 					column = tableBuilder[columnInfo.type!](columnName);
 				}
