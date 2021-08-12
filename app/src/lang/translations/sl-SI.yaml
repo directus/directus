@@ -924,13 +924,13 @@ require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
-weeks: { }
 report_error: Sporoči napako
 start: Začetek
 interfaces:
   group-accordion:
     name: Harmonika
     description: Prikaži polja ali skupine kot segmente harmonike
+    start: Začetek
     all_closed: Vse zaprto
     first_opened: Prvo odprto
     all_opened: Vse odprto
@@ -1051,6 +1051,8 @@ interfaces:
     box: Blok / v vrstici
     imageToken: Žeton slike
     imageToken_label: Kateri statični žeton se naj doda k sliki
+  map:
+    zoom: Povečaj
   presentation-notice:
     notice: Obvestilo
     description: Pokaži kratko obvestilo
