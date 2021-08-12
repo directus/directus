@@ -767,6 +767,7 @@ fields:
     theme: Tema
     tfa_secret: Autenticação em Duas Etapas
     status: Status
+    status_active: Ativo
     role: Função
     token: Token
     last_page: Última página
