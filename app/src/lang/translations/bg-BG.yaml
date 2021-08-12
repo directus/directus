@@ -788,6 +788,7 @@ fields:
     status: Статус
     status_draft: Чернова
     status_invited: Неактивен
+    status_active: Активен
     status_suspended: Замразен
     status_archived: Архивиран
     role: Роля
@@ -923,6 +924,7 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
