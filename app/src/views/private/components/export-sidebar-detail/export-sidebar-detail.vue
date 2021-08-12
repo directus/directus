@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -73,7 +73,7 @@ export default defineComponent({
 		const format = ref('csv');
 		const useFilters = ref(true);
 		const collectionsStore = useCollectionsStore();
-		let collectionName = collectionsStore.getCollection(props.collection).name;
+		const collectionName = computed(() => collectionsStore.getCollection(props.collection).name);
 
 		return { t, format, useFilters, exportData, collectionName };
 
