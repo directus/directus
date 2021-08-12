@@ -338,7 +338,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
 
-## Misc.
+## Admin Account
 
 If you're relying on Docker and/or the `directus bootstrap` CLI command, you can pass the following two environment
 variables to automatically configure the first user:
@@ -347,6 +347,16 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+
+## Telemetry
+
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
+Directus collects little and anonymized data about your environment. You can easily opt-out with the following
+environment variable:
+
+| Variable    | Description                                                       | Default Value |
+| ----------- | ----------------------------------------------------------------- | ------------- |
+| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | true          |
 
 ---
 

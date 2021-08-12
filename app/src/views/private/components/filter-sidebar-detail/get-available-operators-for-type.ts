@@ -57,6 +57,12 @@ export default function getAvailableOperatorsForType(type: Type): OperatorType {
 				type,
 				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
 			};
+		// Geometry
+		case 'geometry':
+			return {
+				type,
+				operators: ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'],
+			};
 		default:
 			return {
 				type,

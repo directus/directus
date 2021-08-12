@@ -7,6 +7,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'json':
 		case 'hash':
 		case 'string':
+		case 'csv':
 			return [
 				'contains',
 				'ncontains',
@@ -38,6 +39,9 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'date':
 		case 'time':
 			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'];
+
+		case 'geometry':
+			return ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [

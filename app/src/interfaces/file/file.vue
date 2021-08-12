@@ -17,7 +17,7 @@
 								class="preview"
 								:class="{
 									'has-file': file,
-									'is-svg': file && file.type.includes('svg'),
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />

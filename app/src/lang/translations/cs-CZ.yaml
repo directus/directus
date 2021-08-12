@@ -315,6 +315,9 @@ fields:
   directus_roles:
     name: Jméno role
     description: Popis
+  directus_webhooks:
+    name: Jméno
+    status: Stav
 comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.

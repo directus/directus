@@ -37,19 +37,3 @@ export type Aggregate = {
 	min?: string[];
 	max?: string[];
 };
-
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'contains'
-	| 'ncontains'
-	| 'in'
-	| 'nin'
-	| 'gt'
-	| 'gte'
-	| 'lt'
-	| 'lte'
-	| 'null'
-	| 'nnull'
-	| 'empty'
-	| 'nempty';
