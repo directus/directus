@@ -24,6 +24,7 @@ export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLSc
 		case 'csv':
 			return new GraphQLList(GraphQLString);
 		case 'json':
+		case 'geometry':
 			return GraphQLJSON;
 		case 'timestamp':
 		case 'dateTime':
