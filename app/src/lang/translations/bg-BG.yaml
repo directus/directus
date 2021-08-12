@@ -780,20 +780,20 @@ fields:
     user_preferences: Потребителски настройки
     language: Език
     theme: Тема
-    theme_auto: Автоматично (според системата)
+    theme_auto: Автоматичен (според системата)
     theme_light: Светъл режим
     theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
     status_draft: Чернова
-    status_invited: Неактивен
+    status_invited: Поканен
     status_active: Активен
     status_suspended: Замразен
     status_archived: Архивиран
     role: Роля
     token: Токен
-    token_placeholder: Въвеждане на сигурен токен...
+    token_placeholder: Въвеждане на сигурен ключ за достъп...
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -801,7 +801,7 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
-    public_pages: Публични страници
+    public_pages: Публични Страници
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
@@ -837,9 +837,10 @@ fields:
     method: Метод
     status: Статус
     data: Данни
-    data_label: Изпращане на данните
-    triggers: Тригери
+    data_label: Изпращане и на данните
+    triggers: Тригер
     actions: Действия
+    collections: Колекции
 field_options:
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
