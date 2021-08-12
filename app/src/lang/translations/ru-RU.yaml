@@ -883,6 +883,7 @@ interfaces:
   group-accordion:
     name: Аккордеон
     description: Отображать поля или группы как секции аккордеона
+    start: Начало
     all_closed: Все закрыты
     first_opened: Первая открыта
     all_opened: Все открыты
@@ -999,6 +1000,8 @@ interfaces:
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
+  map:
+    zoom: Масштаб
   presentation-notice:
     notice: Уведомление
     description: Показать короткое уведомление
