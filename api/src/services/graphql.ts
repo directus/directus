@@ -603,6 +603,10 @@ export class GraphQLService {
 				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated`,
 					fields: {
+						group: {
+							name: 'group',
+							type: GraphQLJSON,
+						},
 						avg: {
 							name: 'avg',
 							type: AggregatedFilters[collection.collection],
@@ -951,6 +955,12 @@ export class GraphQLService {
 		const result = await this.read(collection, query);
 		if (args.id) {
 			return result?.[0] || null;
+		}
+		if (query.group) {
+			// for every entry in result add a group field based on query.group;
+			result.map((field) => {
+				field.group = field[query.group[0]];
+			});
 		}
 		return result;
 	}
