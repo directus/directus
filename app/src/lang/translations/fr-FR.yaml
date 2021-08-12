@@ -771,6 +771,7 @@ fields:
     theme: Thème
     tfa_secret: Authentification à deux facteurs
     status: État
+    status_active: Actif
     role: Rôle
     token: Token
     last_page: Dernière page
