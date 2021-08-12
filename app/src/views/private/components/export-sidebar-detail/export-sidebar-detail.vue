@@ -25,7 +25,7 @@
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ t('Export ' + collectionName) }}
+					{{ t('export_collection', { collection: collectionName }) }}
 				</v-button>
 			</div>
 		</div>
@@ -72,15 +72,10 @@ export default defineComponent({
 
 		const format = ref('csv');
 		const useFilters = ref(true);
-		const collections = useCollectionsStore();
-		let collectionName;
-		collections.visibleCollections.forEach((collection) => {
-			if (collection.collection === props.collection) {
-				collectionName = collection.name;
-			}
-		});
+		const collectionsStore = useCollectionsStore();
+		let collectionName = collectionsStore.getCollection(props.collection).name;
 
-		return { t, format, useFilters, exportData, collections, collectionName };
+		return { t, format, useFilters, exportData, collectionName };
 
 		function exportData() {
 			const endpoint = props.collection.startsWith('directus_')
