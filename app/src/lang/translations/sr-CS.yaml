@@ -756,6 +756,7 @@ fields:
     theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
+    status_active: Aktivan
     role: Uloga
     token: Token
     last_page: Posljednja Stranica
