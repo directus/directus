@@ -21,23 +21,3 @@ export type Sort = {
 export type Filter = {
 	[keyOrOperator: string]: Filter | any;
 };
-
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'contains'
-	| 'ncontains'
-	| 'in'
-	| 'nin'
-	| 'gt'
-	| 'gte'
-	| 'lt'
-	| 'lte'
-	| 'null'
-	| 'nnull'
-	| 'empty'
-	| 'nempty'
-	| 'intersects'
-	| 'nintersects'
-	| 'bbox_intersects'
-	| 'bbox_nintersects';
