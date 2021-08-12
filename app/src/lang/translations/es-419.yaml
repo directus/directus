@@ -902,6 +902,7 @@ report_error: Reportar Error
 start: Iniciar
 interfaces:
   group-accordion:
+    start: Iniciar
     all_closed: Todo Cerrado
     first_opened: Primero Abierto
     all_opened: Todo Abierto
@@ -1013,6 +1014,8 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
+  map:
+    zoom: Lupa
   presentation-notice:
     notice: Aviso
   list-o2m:
