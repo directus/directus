@@ -682,8 +682,6 @@ interfaces:
     interface: Kezelőfelület
   select-dropdown-m2o:
     display_template: Megjelenítési sablon
-  map:
-    zoom: Nagyítás
   system-folder:
     folder: Könyvtár
   slider:
