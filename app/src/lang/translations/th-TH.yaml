@@ -776,6 +776,7 @@ fields:
     theme: ธีม
     tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
     status: สถานะ
+    status_active: เปิดใช้งาน
     role: บทบาท
     token: โทเค็น
     last_page: หน้าสุดท้าย
