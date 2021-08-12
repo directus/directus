@@ -536,7 +536,9 @@ operators:
   all: Contains these keys
   has: Contains some of these keys
   intersects: Intersects
-  nintersects: Doesn't intersects
+  nintersects: Doesn't intersect
+  intersects_bbox: Intersects bounding box
+  nintersects_bbox: Doesn't intersect bounding box
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -1080,12 +1082,12 @@ interfaces:
     geometry_format: Geometry format
     default_view: Default view
     invalid_options: Invalid options
-    invalid_format: Invalid format ( {format} )
-    unexpected_geometry: Expeted {expected}, got {got}.
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
     fit_bounds: Fit view to data
     native: Native
     geojson: GeoJSON
-    lnglat: Longitude,Latitude
+    lnglat: Longitude, Latitude
     wkt: WKT
     wkb: WKB
   presentation-notice:
@@ -1300,7 +1302,7 @@ layouts:
   map:
     map: Map
     basemap: Basemap
-    layers: Layers,
+    layers: Layers
     edit_custom_layers: Edit Layers
     cluster_options: Clustering options
     cluster: Activate clustering
