@@ -339,7 +339,7 @@ manual_string: Введенная вручную строка
 save_and_create_new: Сохранить и Создать Новый
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
-add_existing: Добавить Существующий
+add_existing: Добавить
 creating_items: Создание элементов
 enable_create_button: С кнопкой «Создать»
 selecting_items: Выбор элементов
@@ -685,7 +685,7 @@ page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
 activity_feed: Лента Активности
 add_new: Создать
-create_new: Создать Новый
+create_new: Создать
 all: Все
 none: Нет
 no_layout_collection_selected_yet: Макет/коллекция пока не выбраны
@@ -758,6 +758,7 @@ fields:
     theme: Тема
     tfa_secret: Двухфакторная аутентификация
     status: Статус
+    status_active: Активный
     role: Роль
     token: Жетон
     last_page: Последняя Страница
@@ -794,6 +795,9 @@ fields:
     users: Пользователи в Роли
     module_list: Навигация по Модулям
     collection_list: Навигация по Коллекциям
+  directus_webhooks:
+    name: Имя
+    status: Статус
 field_options:
   directus_collections:
     track_activity_revisions: Отслеживание активности и изменений
@@ -885,7 +889,7 @@ interfaces:
     accordion_mode: Вид аккордеона
     max_one_section_open: 1 открытая секция
   presentation-links:
-    presentation-links: Ссылки кнопок
+    presentation-links: Кнопки-ссылки
     links: Ссылки
     description: Настраиваемые кнопки-ссылки для динамических URL-адресов
     style: Стиль

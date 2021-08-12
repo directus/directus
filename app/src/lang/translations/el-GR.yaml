@@ -222,6 +222,9 @@ fields:
   directus_roles:
     name: Όνομα Ρόλου
     description: Περιγραφή
+  directus_webhooks:
+    name: Όνομα
+    status: Κατάσταση
 comment: Σχόλιο
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.

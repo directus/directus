@@ -71,6 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Cerrar sesión
   SESSION_EXPIRED: Sesión expirada
+public_label: Público
 public_description: Control de datos disponibles por API sin autentificación.
 not_allowed: No permitido
 directus_version: Versión de Directus
@@ -308,6 +309,7 @@ drag_mode: Modo arrastrar
 cancel_crop: Cancelar corte
 original: Original
 url: URL
+import_label: Importar
 file_details: Detalles del archivo
 dimensions: Dimensiones
 size: Tamaño
@@ -397,6 +399,7 @@ documentation: Documentación
 sidebar: Barra Lateral
 duration: Duración
 charset: Codificación
+second: segundo
 file_moved: Archivo Movido
 collection_created: Colección Creada
 modified_on: Modificado en
@@ -435,6 +438,7 @@ errors:
   USER_SUSPENDED: Usuario Suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNKNOWN: Error Inesperado
+  UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
 value_hashed: Valor Hasheado de Manera Segura
@@ -504,6 +508,10 @@ operators:
   nnull: No es Nulo
   contains: Contiene
   ncontains: No contiene
+  starts_with: Comienza con
+  nstarts_with: No comienza con
+  ends_with: Termina con
+  nends_with: No termina con
   between: Está Entre
   nbetween: No está Entre
   empty: Está vacío
@@ -548,6 +556,7 @@ no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
 clear_filters: Limpiar Filtros
 saves_automatically: Guardar Automáticamente
 role: Rol
+rule: Regla
 user: Usuario
 no_presets: Sin Predefinidos
 no_presets_copy: Los Predefinidos o Marcadores no se han guardado aún.
@@ -765,6 +774,7 @@ fields:
     theme: Tema
     tfa_secret: Autenticación de dos pasos
     status: Estatus
+    status_active: Activo
     role: Rol
     token: Token
     last_page: Última página
@@ -801,6 +811,9 @@ fields:
     users: Usuarios en el Rol
     module_list: Navegación en Módulo
     collection_list: Navegación en Colección
+  directus_webhooks:
+    name: Nombre
+    status: Estatus
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
@@ -819,11 +832,17 @@ relational_triggers: Disparadores Relacionales
 referential_action_field_label_m2o: Al eliminar {collection}...
 referential_action_field_label_o2m: Al deseleccionar {collection}...
 referential_action_no_action: Evitar la eliminación
+referential_action_cascade: Eliminar el item {collection} (cascada)
 referential_action_set_null: Anular el campo {field}
 referential_action_set_default: Establecer {field} a su valor predeterminado
 choose_action: Elegir acción
+continue_label: Continuar
+continue_as: >-
+  Actualmente {name} ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
 editing_role: 'Rol {role}'
 creating_webhook: Creando Webhook
+default_label: Por defecto
+delete_label: Eliminar
 delete_are_you_sure: >-
   Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
@@ -875,11 +894,17 @@ sort_direction: Dirección de Ordenamiento
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
+require_value_to_be_set: Requiere valor para ser establecido
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
+start: Iniciar
 interfaces:
+  group-accordion:
+    all_closed: Todo Cerrado
+    first_opened: Primero Abierto
+    all_opened: Todo Abierto
   presentation-links:
     presentation-links: Botón de enlace
     links: Enlaces
@@ -988,8 +1013,18 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
+  presentation-notice:
+    notice: Aviso
+  list-o2m:
+    one-to-many: Uno a Muchos
+    no_collection: No se encontró la colección
   system-folder:
     folder: Carpeta
+    description: Seleccione una carpeta
+    root_name: Raíz de la Biblioteca de Archivos
+    system_default: Valores por defecto del sistema
+  list:
+    repeater: Repetidor
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1010,8 +1045,18 @@ interfaces:
     add_tags: Agregar etiquetas...
   input:
     mask: Enmascarado
+    mask_label: Ocultar el valor real
+    clear: Valor Limpiado
+    clear_label: Guardar como cadena vacía
+    minimum_value: Valor Mínimo
+    maximum_value: Valor Máximo
+    step_interval: Intervalo de Pasos
+    slug: Slugify
+  input-multiline:
+    textarea: Área de Texto
   boolean:
     toggle: Alternar
+    description: Alternar entre Activado y Desactivado
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
@@ -1024,6 +1069,13 @@ interfaces:
       auto: Automático
       dropdown: Lista Desplegable
       modal: Diálogo
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    toolbar: Barra de Herramientas
+    custom_formats: Formatos Personalizados
+    options_override: Sobrescribir Opciones
+  input-autocomplete-api:
+    results_path: Ruta de Resultados
 displays:
   boolean:
     boolean: Booleano
@@ -1126,3 +1178,7 @@ layouts:
     comfortable: Cómoda
     compact: Compacto
     cozy: Cómoda
+  calendar:
+    calendar: Calendario
+    start_date_field: Campo Fecha de Inicio
+    end_date_field: Campo Fecha de Fin

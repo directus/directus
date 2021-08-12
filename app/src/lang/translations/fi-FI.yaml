@@ -753,6 +753,7 @@ fields:
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
+    status_active: Aktiivinen
     role: Rooli
     token: Token
     last_page: Viimeinen sivu
@@ -789,6 +790,9 @@ fields:
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
     collection_list: Kokoelman navigointi
+  directus_webhooks:
+    name: Nimi
+    status: Tila
 field_options:
   directus_collections:
     track_activity_revisions: Seuraa tapahtumia ja versioita

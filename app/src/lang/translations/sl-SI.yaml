@@ -390,6 +390,7 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
+inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
 webhooks: Prožilci
@@ -402,6 +403,7 @@ documentation: Dokumentacija
 sidebar: Stranska vrstica
 duration: Trajanje
 charset: Nabor znakov
+second: sekunda
 file_moved: Datoteka premaknjena
 collection_created: Zbirka ustvarjena
 modified_on: Spremenjeno dne
@@ -443,6 +445,7 @@ errors:
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
+security: Varnost
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
 create_bookmark: Ustvari zaznamek
@@ -563,6 +566,7 @@ user: Uporabnik
 no_presets: Ni prednastavitev
 no_presets_copy: Nimate nobenih prednastavitev ali zaznamkov.
 no_presets_cta: Dodaj prednastavitev
+presets_only: Samo prednastavitve
 create: Ustvari
 on_create: Pri ustvarjanju
 on_update: Pri urejanju
@@ -578,6 +582,7 @@ label: Oznaka
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
+quality: Kakovost
 width: Širina
 height: Višina
 source: Vir
@@ -772,12 +777,23 @@ fields:
     title: Naslov
     description: Opis
     tags: Značke
+    user_preferences: Uporabniške nastavitve
     language: Jezik
     theme: Tema
+    theme_auto: Avtomatsko (sistemsko)
+    theme_light: Svetla tema
+    theme_dark: Temna tema
     tfa_secret: Dvojno preverjanja pristnosti
+    admin_options: Administracijske opcije
     status: Stanje
+    status_draft: Osnutek
+    status_invited: Neaktivno
+    status_active: Aktivno
+    status_suspended: Zaustavljeno
+    status_archived: Arhivirano
     role: Vloga
     token: Žeton
+    token_placeholder: Vnesite žeton ...
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
@@ -785,13 +801,17 @@ fields:
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
+    public_pages: Javne strani
     public_foreground: Barva teksta v javnem delu
     public_background: Barva ozadja v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
+    files_and_thumbnails: Datoteke & sličice
+    storage_default_folder: Privzeta mapa za shranjevanje
     storage_asset_presets: Prednastavitve shrambe
     storage_asset_transform: Pretvorba elementa
+    overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
   directus_fields:
     collection: Ime zbirke
@@ -812,6 +832,14 @@ fields:
     users: Uporabniki v vlogi
     module_list: Krmarjenje po modulu
     collection_list: Krmarjenje po zbirki
+  directus_webhooks:
+    name: Ime
+    method: Metoda
+    status: Stanje
+    data: Podatki
+    data_label: Pošlji podatke dogodka
+    triggers: Sprožilci
+    actions: Dejanja
 field_options:
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
@@ -896,7 +924,9 @@ require_value_to_be_set: Zahtevaj vrednost
 translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
+weeks: { }
 report_error: Sporoči napako
+start: Začetek
 interfaces:
   group-accordion:
     name: Harmonika
@@ -904,6 +934,8 @@ interfaces:
     all_closed: Vse zaprto
     first_opened: Prvo odprto
     all_opened: Vse odprto
+    accordion_mode: Način harmonike
+    max_one_section_open: Največ ena odprta sekcija
   presentation-links:
     presentation-links: Povezave
     links: Povezave
@@ -1110,6 +1142,17 @@ interfaces:
     value_path: Vrednosti
     trigger: Sprožilec
     rate: Oceni
+  group-raw:
+    name: Osnovna skupina
+    description: Prikaži originalno vsebino polja
+  group-detail:
+    name: Skupina podrobnosti
+    description: Prikaži polje kot zložljiv odsek
+    show_header: Pokaži naslov skupine
+    header_icon: Ikona glave
+    header_color: Barva glave
+    start_open: Začni odprto
+    start_closed: Začni zaprto
 displays:
   boolean:
     boolean: Boolean

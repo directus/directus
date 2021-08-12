@@ -541,6 +541,9 @@ fields:
     description: 描述說明
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
+  directus_webhooks:
+    name: 名稱
+    status: 狀態
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID

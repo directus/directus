@@ -767,6 +767,7 @@ fields:
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
     status: Status
+    status_active: Aktywne
     role: Rola
     token: Token
     last_page: Ostatnia strona
@@ -803,6 +804,9 @@ fields:
     users: Użytkownicy w roli
     module_list: Moduł Nawigacji
     collection_list: Kolekcja Nawigacji
+  directus_webhooks:
+    name: Nazwa
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Śledź aktywność i rewizje

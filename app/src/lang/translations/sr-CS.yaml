@@ -756,6 +756,7 @@ fields:
     theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
+    status_active: Aktivan
     role: Uloga
     token: Token
     last_page: Posljednja Stranica
@@ -792,6 +793,9 @@ fields:
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
     collection_list: Navigacija Kolekcije
+  directus_webhooks:
+    name: Ime
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije

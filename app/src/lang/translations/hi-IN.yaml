@@ -238,6 +238,8 @@ fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
+  directus_webhooks:
+    name: नाम
 interfaces:
   presentation-links:
     primary: प्राइमरी

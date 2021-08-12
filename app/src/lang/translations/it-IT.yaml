@@ -390,6 +390,7 @@ display_template_not_setup: L'opzione del modello di visualizzazione non è conf
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
 active: Attivo
+inactive: Disattivato
 users: Utenti
 activity: Attività
 webhooks: Webhooks
@@ -444,6 +445,7 @@ errors:
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
@@ -564,6 +566,7 @@ user: Utente
 no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
+presets_only: Solo Preset
 create: Creare
 on_create: Alla Creazione
 on_update: In aggiornamento
@@ -579,6 +582,7 @@ label: Etichetta
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
+quality: Qualità
 width: Larghezza
 height: Altezza
 source: Sorgente
@@ -773,12 +777,23 @@ fields:
     title: Titolo
     description: Descrizione
     tags: Tags
+    user_preferences: Preferenze utente
     language: Linguaggio
     theme: Tema
+    theme_auto: Automatico (in base al sistema)
+    theme_light: Tema chiaro
+    theme_dark: Tema scuro
     tfa_secret: Autenticazione a due fattori
+    admin_options: Opzioni Amministratore
     status: Stato
+    status_draft: Bozza
+    status_invited: Disattivato
+    status_active: Attivo
+    status_suspended: Sospeso
+    status_archived: Archiviato
     role: Ruolo
     token: Token
+    token_placeholder: Inserisci un token di accesso sicuro...
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
@@ -786,13 +801,17 @@ fields:
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    public_pages: Pagine pubbliche
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Criteri Password di accesso
     auth_login_attempts: Tentativi di accesso
+    files_and_thumbnails: File e miniature
+    storage_default_folder: Cartella predefinita di archiviazione
     storage_asset_presets: Preimpostazioni salvataggio risorse
     storage_asset_transform: Trasformazione salvataggio risorse
+    overrides: Personalizzazioni App
     custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
@@ -813,6 +832,14 @@ fields:
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
     collection_list: Navigazione Raccolte
+  directus_webhooks:
+    name: Nome
+    method: Metodo
+    status: Stato
+    data: Dati
+    data_label: Invia dati evento
+    triggers: Trigger
+    actions: Azioni
 field_options:
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
@@ -1113,7 +1140,7 @@ interfaces:
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
-    trigger: Attivazione
+    trigger: Trigger
     rate: Intervallo
   group-raw:
     name: Gruppo grezzo

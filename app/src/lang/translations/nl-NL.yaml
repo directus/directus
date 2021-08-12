@@ -774,6 +774,7 @@ fields:
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
+    status_active: Actief
     role: Rol
     token: Token
     last_page: Laatste pagina
@@ -810,6 +811,9 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
+  directus_webhooks:
+    name: Naam
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
