@@ -732,6 +732,7 @@ fields:
     theme: Tema
     tfa_secret: Tvåfaktorsautentisering
     status: Status
+    status_active: Aktiv
     role: Roll
     token: Token
     last_page: Sista sidan
