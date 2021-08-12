@@ -18,10 +18,6 @@
 			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
 			<div ref="mapContainer" class="map"></div>
 		</div>
-		<div class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.fit_bounds') }}</div>
-			<v-checkbox v-model="fitBounds" block :label="t('enabled')" />
-		</div>
 	</div>
 </template>
 
@@ -29,8 +25,8 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { Field, GeometryType, GeometryFormat } from '@directus/shared/types';
-import { getGeometryFormatForType, GeometryOptions } from '@/utils/geometry';
+import { Field, GeometryType, GeometryFormat, GeometryOptions } from '@directus/shared/types';
+import { getGeometryFormatForType } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
@@ -47,7 +43,7 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Object as PropType<GeometryOptions & { defaultView?: CameraOptions; fitBounds: boolean }>,
+			type: Object as PropType<GeometryOptions & { defaultView?: CameraOptions }>,
 			default: null,
 		},
 	},
@@ -56,21 +52,18 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const isGeometry = props.fieldData.type == 'geometry';
-		const nativeGeometryType = isGeometry ? props.fieldData!.schema!.geometry_type : undefined;
+		const nativeGeometryType = isGeometry ? (props.fieldData!.schema!.geometry_type as GeometryType) : undefined;
 		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
 
 		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
-		const geometryType = ref<GeometryType>(
-			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
-		);
+		const geometryType = ref<GeometryType>(nativeGeometryType ?? 'GeometryCollection');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
-		const fitBounds = ref<boolean>(props.value?.fitBounds ?? true);
 
 		watch(
-			[geometryFormat, geometryType, defaultView, fitBounds],
+			[geometryFormat, geometryType, defaultView],
 			() => {
 				const type = geometryFormat.value == 'lnglat' ? 'Point' : geometryType;
-				emit('input', { defaultView, geometryFormat, geometryType: type, fitBounds: fitBounds.value });
+				emit('input', { defaultView, geometryFormat, geometryType: type });
 			},
 			{ immediate: true }
 		);
