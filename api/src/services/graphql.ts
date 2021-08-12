@@ -216,6 +216,7 @@ export class GraphQLService {
 		const readableCollections = Object.values(schema.read.collections)
 			.filter((collection) => collection.collection in ReadCollectionTypes)
 			.filter(scopeFilter);
+
 		if (readableCollections.length > 0) {
 			schemaComposer.Query.addFields(
 				readableCollections.reduce((acc, collection) => {
@@ -226,20 +227,18 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
-						const arr: boolean[] = [];
-						Object.values(collection.fields).forEach((field) => {
-							const graphqlType = getGraphQLType(field.dbType);
-							switch (graphqlType) {
-								case GraphQLInt || GraphQLFloat:
-									arr.push(true);
-									break;
-								default:
-									arr.push(false);
-									break;
+
+						const hasAggregate = Object.values(collection.fields).some((field) => {
+							const graphqlType = getGraphQLType(field.type);
+
+							if (graphqlType === GraphQLInt || graphqlType === GraphQLFloat) {
+								return true;
 							}
-							return acc;
+
+							return false;
 						});
-						if (arr.includes(true)) {
+
+						if (hasAggregate) {
 							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
 								`${collection.collection}_aggregated`
 							);
@@ -425,9 +424,12 @@ export class GraphQLService {
 		 */
 		function getReadableTypes() {
 			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
-			const AggregatedFunctions = {};
-			const AggregatedFilters = {};
+
+			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
+			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
+
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
 				fields: {
@@ -587,6 +589,7 @@ export class GraphQLService {
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -615,6 +618,7 @@ export class GraphQLService {
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
+
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
@@ -624,17 +628,23 @@ export class GraphQLService {
 					name: `${collection.collection}_aggregated_fields`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						const graphqlType = getGraphQLType(field.type);
+
 						switch (graphqlType) {
-							case GraphQLInt || GraphQLFloat:
-								field.type = GraphQLFloat;
-								acc[field.field] = field;
+							case GraphQLInt:
+							case GraphQLFloat:
+								acc[field.field] = {
+									type: GraphQLFloat,
+									description: field.note,
+								};
 								break;
 							default:
 								break;
 						}
+
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
 				});
+
 				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated`,
 					fields: {
