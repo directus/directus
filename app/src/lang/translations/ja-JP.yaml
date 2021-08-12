@@ -379,6 +379,9 @@ fields:
     description: 説明
     ip_access: IP アクセス
     enforce_tfa: 二段階認証が必要
+  directus_webhooks:
+    name: 名前
+    status: ステータス
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存

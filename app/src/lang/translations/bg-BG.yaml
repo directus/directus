@@ -403,6 +403,7 @@ documentation: Документация
 sidebar: Страничен панел
 duration: Продължителност
 charset: Набор символи
+second: секунда
 file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
@@ -920,10 +921,13 @@ sort_direction: Ред на подредба
 sort_asc: Възходящо сортиране
 sort_desc: Низходящо сортиране
 template: Шаблон
+require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
+start: Начало
 interfaces:
   group-accordion:
     name: Акордеон
@@ -931,6 +935,8 @@ interfaces:
     all_closed: Всички са затворени
     first_opened: Първият е отворен
     all_opened: Всички са отворени
+    accordion_mode: Акордионен режим
+    max_one_section_open: До 1 отворена секция
   presentation-links:
     presentation-links: Бутони с връзки
     links: Връзки
@@ -951,6 +957,8 @@ interfaces:
     description: Избор измежду множество опции чрез вложени отметки
     value_combining: Комбинация от стойности
     value_combining_note: Контрол върху стойността за запазване при направен избор.
+    show_all: Показване на всички
+    show_selected: Показване на избраното
   input-code:
     code: Код
     description: Писане или споделяне на кодови откъси
@@ -1135,6 +1143,17 @@ interfaces:
     value_path: Път до стойността
     trigger: Задействане
     rate: Оценка
+  group-raw:
+    name: Обикновена група
+    description: Изобразяване както е
+  group-detail:
+    name: Детайлна група
+    description: Изобразяване на полетата с възможност за свиване
+    show_header: Показване на заглавието
+    header_icon: Икона на заглавието
+    header_color: Цвят на заглавието
+    start_open: Отворена в началото
+    start_closed: Затворена в началото
 displays:
   boolean:
     boolean: Булев

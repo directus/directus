@@ -759,6 +759,7 @@ fields:
     theme: Design
     tfa_secret: Zwei-Faktor-Authentifizierung
     status: Status
+    status_active: Aktiv
     role: Rolle
     token: Token
     last_page: Letzte Seite
@@ -795,6 +796,9 @@ fields:
     users: Benutzer in Rolle
     module_list: Modulnavigation
     collection_list: Sammlungsnavigation
+  directus_webhooks:
+    name: Name
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen

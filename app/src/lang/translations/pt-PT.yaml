@@ -605,6 +605,7 @@ fields:
     theme: Tema
     tfa_secret: Autenticação em dois passos
     status: Estado
+    status_active: Ativar
     role: Perfil
     token: Token
     last_page: Última página
@@ -632,6 +633,9 @@ fields:
     users: Utilizadores na função
     module_list: Navegação do Modulo
     collection_list: Navegação da coleção
+  directus_webhooks:
+    name: Nome
+    status: Estado
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões

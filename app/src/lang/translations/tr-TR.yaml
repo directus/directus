@@ -604,6 +604,7 @@ fields:
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
+    status_active: Aktif
     role: Rol
     last_page: Son Sayfa
     last_access: Son Erişim
@@ -626,6 +627,9 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+  directus_webhooks:
+    name: İsim
+    status: Durum
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum

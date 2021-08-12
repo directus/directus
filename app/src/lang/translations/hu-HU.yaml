@@ -557,6 +557,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
+    status_active: aktív
     role: Szerepkör
     token: Token
     last_page: Utolsó oldal
@@ -585,6 +586,9 @@ fields:
     admin_access: Admin hozzáférés
     ip_access: IP cím
     collection_list: Gyűjtemény navigáció
+  directus_webhooks:
+    name: Név
+    status: Állapot
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
 block: Blokk

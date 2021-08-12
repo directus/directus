@@ -772,6 +772,7 @@ fields:
     theme: 主题
     tfa_secret: 2FA（双因素身份验证）
     status: 状态
+    status_active: 激活
     role: 角色
     token: Token
     last_page: 尾页
@@ -808,6 +809,9 @@ fields:
     users: 角色中的用户
     module_list: 模块导航
     collection_list: 集合导航
+  directus_webhooks:
+    name: 名称
+    status: 状态
 field_options:
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本

@@ -70,7 +70,7 @@ os_type: OS Tüüp
 os_version: OS Versioon
 os_uptime: OS Ülevaloleku aeg
 os_totalmem: OS Mälu
-archive: Arhiveeri
+archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
@@ -712,7 +712,7 @@ fields:
     hidden: Peidetud
     singleton: Üksik
     translations: Andmekogu nimetuste tõlked
-    archive_app_filter: Arhiveeri rakenduse filter
+    archive_app_filter: Arhiveerimisfilter
     archive_value: Arhiveeri väärtus
     unarchive_value: Aktiveeri väärtus
     sort_field: Sorteerimisväli
@@ -755,6 +755,8 @@ fields:
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
+    status_active: aktiivne
+    status_archived: Arhiveeritud
     role: Roll
     token: Kontrollkood
     last_page: Viimane leht
@@ -791,6 +793,9 @@ fields:
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
     collection_list: Andmekogude näitamine
+  directus_webhooks:
+    name: Nimi
+    status: Staatus
 field_options:
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika

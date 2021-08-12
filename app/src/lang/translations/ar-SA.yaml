@@ -700,6 +700,7 @@ fields:
     theme: السمة
     tfa_secret: التحقق بخطوتين
     status: حالة
+    status_active: مفعل
     role: الدور
     last_page: آخر صفحة
     last_access: آخر وصول
@@ -720,6 +721,9 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+  directus_webhooks:
+    name: الاسم
+    status: حالة
 field_options:
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات

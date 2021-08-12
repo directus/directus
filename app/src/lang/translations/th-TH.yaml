@@ -776,6 +776,7 @@ fields:
     theme: ธีม
     tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
     status: สถานะ
+    status_active: เปิดใช้งาน
     role: บทบาท
     token: โทเค็น
     last_page: หน้าสุดท้าย
@@ -812,6 +813,9 @@ fields:
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
     collection_list: รายการคอลเลกชัน
+  directus_webhooks:
+    name: ชื่อ
+    status: สถานะ
 field_options:
   directus_collections:
     track_activity_revisions: ติดตามกิจกรรมและการแก้ไข

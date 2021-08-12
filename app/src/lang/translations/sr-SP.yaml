@@ -136,6 +136,9 @@ fields:
     display_template: Шаблон
   directus_roles:
     description: Опис
+  directus_webhooks:
+    name: Име
+    status: Стање
 comment: Коментар
 description: Опис
 done: Завршено
