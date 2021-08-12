@@ -557,6 +557,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
+    status_active: aktív
     role: Szerepkör
     token: Token
     last_page: Utolsó oldal
