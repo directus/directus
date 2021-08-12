@@ -1010,6 +1010,8 @@ interfaces:
     box: Block / Inline
     imageToken: 图像Token
     imageToken_label: 添加到源图片的Token
+  map:
+    zoom: 缩放
   presentation-notice:
     notice: 提示
     description: 显示一个快捷提示
