@@ -604,6 +604,7 @@ fields:
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
+    status_active: Aktif
     role: Rol
     last_page: Son Sayfa
     last_access: Son Erişim
