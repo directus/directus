@@ -536,6 +536,7 @@ fields:
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
+    status_active: Kích hoạt
     role: Phân quyền
   directus_settings:
     project_name: Tên Dự Án
