@@ -759,6 +759,7 @@ fields:
     theme: Design
     tfa_secret: Zwei-Faktor-Authentifizierung
     status: Status
+    status_active: Aktiv
     role: Rolle
     token: Token
     last_page: Letzte Seite
