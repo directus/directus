@@ -80,9 +80,7 @@ export default defineComponent({
 			}
 		});
 
-		const visibleStore = collections.visibleCollections;
-
-		return { t, format, useFilters, exportData, collections, visibleStore, collectionName };
+		return { t, format, useFilters, exportData, collections, collectionName };
 
 		function exportData() {
 			const endpoint = props.collection.startsWith('directus_')
