@@ -444,6 +444,23 @@ export function applyFilter(
 			if (operator == '_nintersects_bbox') {
 				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
 			}
+
+			const geometryHelper = getGeometryHelper();
+
+			if (operator == '_intersects') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+			}
+
+			if (operator == '_nintersects') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+			}
+			if (operator == '_intersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+			}
+
+			if (operator == '_nintersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
+			}
 		}
 
 		function getWhereColumn(path: string[], collection: string) {

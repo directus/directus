@@ -1248,6 +1248,8 @@ export class GraphQLService {
 
 		validateQuery(query);
 
+		validateQuery(query);
+
 		return query;
 	}
 

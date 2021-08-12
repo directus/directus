@@ -154,7 +154,6 @@ async function parseCurrentLevel(
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helper = getGeometryHelper();
-
 	return function (column: string): Knex.Raw<string> {
 		const field = schema.collections[table].fields[column];
 
