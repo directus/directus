@@ -42,8 +42,6 @@ function validateFilter(filter: Query['filter']) {
 	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
-		} else if (isPlainObject(nested)) {
-			validateFilter(nested);
 		} else if (key.startsWith('_')) {
 			const value = nested;
 
@@ -83,7 +81,9 @@ function validateFilter(filter: Query['filter']) {
 					validateGeometry(value, key);
 					break;
 			}
-		} else if (isPlainObject(nested) === false && Array.isArray(nested) === false) {
+		} else if (isPlainObject(nested)) {
+			validateFilter(nested);
+		} else if (Array.isArray(nested) === false) {
 			validateFilterPrimitive(nested, '_eq');
 		} else {
 			validateFilter(nested);

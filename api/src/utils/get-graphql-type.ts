@@ -8,7 +8,7 @@ import {
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLDate } from '../services/graphql';
+import { GraphQLDate, GraphQLGeoJSON } from '../services/graphql';
 import { Type } from '@directus/shared/types';
 
 export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLScalarType | GraphQLList<GraphQLType> {
@@ -24,8 +24,9 @@ export function getGraphQLType(localType: Type | 'alias' | 'unknown'): GraphQLSc
 		case 'csv':
 			return new GraphQLList(GraphQLString);
 		case 'json':
-		case 'geometry':
 			return GraphQLJSON;
+		case 'geometry':
+			return GraphQLGeoJSON;
 		case 'timestamp':
 		case 'dateTime':
 		case 'date':
