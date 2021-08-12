@@ -758,6 +758,7 @@ fields:
     theme: Тема
     tfa_secret: Двухфакторная аутентификация
     status: Статус
+    status_active: Активный
     role: Роль
     token: Жетон
     last_page: Последняя Страница
