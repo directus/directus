@@ -801,7 +801,7 @@ fields:
     status: Status
     status_draft: Draft
     status_invited: Inactive
-    status_active: Активен
+    status_active: Active
     status_suspended: Suspended
     status_archived: Archived
     role: Role
