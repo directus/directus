@@ -767,6 +767,7 @@ fields:
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
     status: Status
+    status_active: Aktywne
     role: Rola
     token: Token
     last_page: Ostatnia strona
