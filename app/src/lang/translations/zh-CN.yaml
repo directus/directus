@@ -772,6 +772,7 @@ fields:
     theme: 主题
     tfa_secret: 2FA（双因素身份验证）
     status: 状态
+    status_active: 激活
     role: 角色
     token: Token
     last_page: 尾页
