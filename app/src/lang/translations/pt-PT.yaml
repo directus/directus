@@ -605,6 +605,7 @@ fields:
     theme: Tema
     tfa_secret: Autenticação em dois passos
     status: Estado
+    status_active: Ativar
     role: Perfil
     token: Token
     last_page: Última página
