@@ -264,3 +264,58 @@ fields:
       language: css
       lineNumber: true
     width: full
+
+  - field: map_divider
+    interface: presentation-divider
+    options:
+      icon: map
+      title: $t:maps
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: mapbox_key
+    interface: input
+    options:
+      icon: key
+      title: Mapbox Access Token
+      placeholder: pk.eyJ1Ijo.....
+      iconLeft: vpn_key
+      font: monospace
+    width: half
+
+  - field: basemaps
+    interface: list
+    special: json
+    options:
+      template: '{{name}}'
+      fields:
+        - field: name
+          name: $t:name
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: Enter the basemap name...
+        - field: type
+          name: $t:type
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - value: raster
+                  text: Raster
+                - value: tile
+                  text: Raster TileJSON
+                - value: style
+                  text: Mapbox Style
+        - field: url
+          name: $t:url
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png

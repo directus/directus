@@ -23,6 +23,7 @@
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
+			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"

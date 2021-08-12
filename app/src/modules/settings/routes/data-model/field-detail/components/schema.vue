@@ -34,7 +34,22 @@
 				/>
 			</div>
 
-			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
+			<template v-if="fieldData.type == 'geometry'">
+				<template v-if="fieldData.schema">
+					<div class="field half-right">
+						<div class="label type-label">{{ t('interfaces.map.geometry_type') }}</div>
+						<v-select
+							v-model="fieldData.schema.geometry_type"
+							:show-deselect="true"
+							:placeholder="t('any')"
+							:disabled="isExisting"
+							:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
+						/>
+					</div>
+				</template>
+			</template>
+
+			<template v-else-if="['decimal', 'float'].includes(fieldData.type) === false">
 				<div v-if="fieldData.schema" class="field half">
 					<div class="label type-label">{{ t('length') }}</div>
 					<v-input
@@ -164,9 +179,13 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { state } from '../store';
+import { GEOMETRY_TYPES } from '@directus/shared/constants';
 import { translate } from '@/utils/translate-object-values';
 
-export const fieldTypes = [
+import { Type } from '@directus/shared/types';
+import { TranslateResult } from 'vue-i18n';
+
+export const fieldTypes: Array<{ value: Type; text: TranslateResult | string } | { divider: true }> = [
 	{
 		text: '$t:string',
 		value: 'string',
@@ -196,6 +215,11 @@ export const fieldTypes = [
 	{
 		text: '$t:decimal',
 		value: 'decimal',
+	},
+	{ divider: true },
+	{
+		text: '$t:geometry',
+		value: 'geometry',
 	},
 	{ divider: true },
 	{
@@ -286,6 +310,7 @@ export default defineComponent({
 			t,
 			fieldData: state.fieldData,
 			typesWithLabels,
+			GEOMETRY_TYPES,
 			typeDisabled,
 			typePlaceholder,
 			defaultValue,

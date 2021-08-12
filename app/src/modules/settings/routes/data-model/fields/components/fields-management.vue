@@ -66,6 +66,7 @@ import { useFieldsStore } from '@/stores/';
 import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { orderBy, isNil } from 'lodash';
+import { LocalType } from '@directus/shared/types';
 
 export default defineComponent({
 	name: 'FieldsManagement',
@@ -97,7 +98,7 @@ export default defineComponent({
 			return parsedFields.value.filter((field) => field.meta?.system !== true);
 		});
 
-		const addOptions = computed(() => [
+		const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
 			{
 				type: 'standard',
 				icon: 'create',
