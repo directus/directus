@@ -7,8 +7,8 @@ export class PasswordsHandler {
 		this.transport = transport;
 	}
 
-	async request(email: string, reset_url?: string | null): Promise<void> {
-		await this.transport.post('/auth/password/request', { email, reset_url });
+	async request(email: string, reset_url?: string | null, subject?: string | null): Promise<void> {
+		await this.transport.post('/auth/password/request', { email, reset_url, subject });
 	}
 
 	async reset(token: string, password: string): Promise<void> {
