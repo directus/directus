@@ -56,7 +56,9 @@ export default defineComponent({
 		const compatibleFormat = isGeometry ? ('native' as const) : getGeometryFormatForType(props.fieldData.type);
 
 		const geometryFormat = ref<GeometryFormat>(compatibleFormat!);
-		const geometryType = ref<GeometryType>(nativeGeometryType ?? 'GeometryCollection');
+		const geometryType = ref<GeometryType>(
+			geometryFormat.value == 'lnglat' ? 'Point' : nativeGeometryType ?? props.value?.geometryType
+		);
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
 		watch(
