@@ -423,6 +423,7 @@ fields:
     tags: Etiketter
     language: Språk
     status: Status
+    status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
   directus_settings:
