@@ -70,7 +70,7 @@ os_type: OS Tüüp
 os_version: OS Versioon
 os_uptime: OS Ülevaloleku aeg
 os_totalmem: OS Mälu
-archive: Arhiveeri
+archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
@@ -755,6 +755,7 @@ fields:
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
+    status_archived: Arhiveeritud
     role: Roll
     token: Kontrollkood
     last_page: Viimane leht
