@@ -518,7 +518,7 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate)
 				dbQuery.avg(field, { as: `avg->${field}` });
 			}
 
-			if (operation === 'avg_distinct') {
+			if (operation === 'avgDistinct') {
 				dbQuery.avgDistinct(field, { as: `avgDistinct->${field}` });
 			}
 
@@ -530,7 +530,7 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate)
 				}
 			}
 
-			if (operation === 'count_distinct') {
+			if (operation === 'countDistinct') {
 				dbQuery.countDistinct(field, { as: `countDistinct->${field}` });
 			}
 

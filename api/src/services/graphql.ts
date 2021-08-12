@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -220,10 +219,26 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
 							`${collection.collection}_by_id`
 						);
-						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
-							`${collection.collection}_aggregated`
-						);
+						const arr: boolean[] = [];
+						Object.values(collection.fields).forEach((field) => {
+							const graphqlType = getGraphQLType(field.dbType);
+							switch (graphqlType) {
+								case GraphQLInt || GraphQLFloat:
+									arr.push(true);
+									break;
+								default:
+									arr.push(false);
+									break;
+							}
+							return acc;
+						});
+						if (arr.includes(true)) {
+							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+								`${collection.collection}_aggregated`
+							);
+						}
 					}
+
 					return acc;
 				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -404,7 +419,8 @@ export class GraphQLService {
 		function getReadableTypes() {
 			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
-			const AggregateCollectionFields: Record<string, ObjectTypeComposer> = {};
+			const AggregatedFunctions = {};
+			const AggregatedFilters = {};
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
 				fields: {
@@ -568,29 +584,60 @@ export class GraphQLService {
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
-				// const fields = Object.values(collection.fields).reduce((acc, field) => {
-				// 	return field.field;
-				// }, {});
-				AggregateCollectionFields[collection.collection] = schemaComposer.createObjectTC({
+
+				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
+					name: `${collection.collection}_aggregated_fields`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						const graphqlType = getGraphQLType(field.type);
+						switch (graphqlType) {
+							case GraphQLInt || GraphQLFloat:
+								field.type = GraphQLFloat;
+								acc[field.field] = field;
+								break;
+							default:
+								break;
+						}
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+				AggregatedFunctions[collection.collection] = schemaComposer.createObjectTC({
 					name: `${collection.collection}_aggregated`,
 					fields: {
 						avg: {
-							type: () => ReadCollectionTypes[collection.collection],
-						},
-						min: {
-							type: () => ReadCollectionTypes[collection.collection],
-						},
-						max: {
-							type: () => ReadCollectionTypes[collection.collection],
-						},
-						count: {
-							type: () => ReadCollectionTypes[collection.collection],
+							name: 'avg',
+							type: AggregatedFilters[collection.collection],
 						},
 						sum: {
-							type: () => ReadCollectionTypes[collection.collection],
+							name: 'sum',
+							type: AggregatedFilters[collection.collection],
+						},
+						count: {
+							name: 'count',
+							type: AggregatedFilters[collection.collection],
+						},
+						countDistinct: {
+							name: 'countDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						avgDistinct: {
+							name: 'avgDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						sumDistinct: {
+							name: 'sumDistinct',
+							type: AggregatedFilters[collection.collection],
+						},
+						min: {
+							name: 'min',
+							type: AggregatedFilters[collection.collection],
+						},
+						max: {
+							name: 'max',
+							type: AggregatedFilters[collection.collection],
 						},
 					},
 				});
+
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
@@ -624,13 +671,14 @@ export class GraphQLService {
 				});
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: `${collection.collection}_aggregated`,
-					type: [AggregateCollectionFields[collection.collection]],
+					type: [AggregatedFunctions[collection.collection]],
 					args: {
 						groupBy: GraphQLString,
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
 						context.data = result;
+
 						return result;
 					},
 				});
@@ -900,22 +948,13 @@ export class GraphQLService {
 
 			query.limit = 1;
 		}
-
 		const result = await this.read(collection, query);
-
-		console.log(result);
-
 		if (args.id) {
 			return result?.[0] || null;
 		}
-
 		return result;
 	}
 
-	/**
-	 * Generic mutation resolver that converts the incoming GraphQL mutation AST into a Directus query and executes the
-	 * appropriate C-UD operation
-	 */
 	async resolveMutation(
 		args: Record<string, any>,
 		info: GraphQLResolveInfo
@@ -1151,7 +1190,6 @@ export class GraphQLService {
 					return selectionNode.name.value;
 				}) ?? [];
 		}
-
 		return query;
 	}
 
