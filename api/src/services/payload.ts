@@ -208,13 +208,17 @@ export class PayloadService {
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		const helper = getGeometryHelper();
+
 		const process =
 			action == 'read'
-				? (value: any) => wktToGeoJSON(value)
+				? (value: any) => {
+						if (typeof value === 'string') return wktToGeoJSON(value);
+				  }
 				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
+
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
 				if (payload[name]) {
@@ -222,6 +226,7 @@ export class PayloadService {
 				}
 			}
 		}
+
 		return payloads;
 	}
 	/**

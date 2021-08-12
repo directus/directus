@@ -105,7 +105,7 @@ export default defineComponent({
 		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
-			default: undefined,
+			default: 'GeometryCollection',
 		},
 		defaultView: {
 			type: Object,
@@ -127,7 +127,7 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = props.fieldData?.schema?.geometry_type || props.geometryType;
+		const geometryType = (props.fieldData?.schema?.geometry_type ?? props.geometryType) as GeometryType;
 		const geometryFormat = props.geometryFormat || getGeometryFormatForType(props.type)!;
 
 		const basemaps = getBasemapSources();
@@ -160,7 +160,9 @@ export default defineComponent({
 			setupMap();
 		});
 
-		onUnmounted(() => map.remove());
+		onUnmounted(() => {
+			map.remove();
+		});
 
 		return {
 			t,
