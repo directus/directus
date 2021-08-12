@@ -105,7 +105,7 @@ export default defineComponent({
 		},
 		geometryType: {
 			type: String as PropType<GeometryType>,
-			default: 'GeometryCollection',
+			default: undefined,
 		},
 		defaultView: {
 			type: Object,
