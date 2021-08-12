@@ -339,7 +339,7 @@ manual_string: Введенная вручную строка
 save_and_create_new: Сохранить и Создать Новый
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
-add_existing: Добавить Существующий
+add_existing: Добавить
 creating_items: Создание элементов
 enable_create_button: С кнопкой «Создать»
 selecting_items: Выбор элементов
@@ -685,7 +685,7 @@ page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
 activity_feed: Лента Активности
 add_new: Создать
-create_new: Создать Новый
+create_new: Создать
 all: Все
 none: Нет
 no_layout_collection_selected_yet: Макет/коллекция пока не выбраны
