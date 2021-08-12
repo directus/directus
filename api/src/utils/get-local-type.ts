@@ -51,7 +51,6 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 	multilinestring: { type: 'geometry', geometry_type: 'MultiLineString' },
 	multipolygon: { type: 'geometry', geometry_type: 'MultiPolygon' },
 	geometry: { type: 'geometry' },
-	sdo_geometry: { type: 'geometry' },
 
 	// MySQL
 	string: { type: 'text' },
@@ -98,6 +97,7 @@ const localTypeMap: Record<string, LocalTypeEntry> = {
 
 	// Oracle
 	number: { type: 'integer' },
+	sdo_geometry: { type: 'geometry' },
 
 	// SQLite
 	integerfirst: { type: 'integer' },
