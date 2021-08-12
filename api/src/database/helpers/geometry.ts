@@ -52,10 +52,10 @@ class KnexSpatial {
 		return this.knex.raw('st_intersects(??, ?)', [key, geometry]);
 	}
 	intersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.isTrue(this.intersects(key, geojson));
+		return this.isTrue(this._intersects(key, geojson));
 	}
 	nintersects(key: string, geojson: GeoJSONGeometry): Knex.Raw {
-		return this.isFalse(this.intersects(key, geojson));
+		return this.isFalse(this._intersects(key, geojson));
 	}
 	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
@@ -77,7 +77,7 @@ class KnexSpatial_PG extends KnexSpatial {
 		const type = field.schema?.geometry_type ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type})`);
 	}
-	intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('?? && ?', [key, geometry]);
 	}

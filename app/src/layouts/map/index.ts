@@ -158,7 +158,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const shouldUpdateCamera = ref(false);
 		const _filters = computed(() => {
-			if (geometryOptions.value?.geometryFormat == 'native' && fitDataToView.value) {
+			if (geometryOptions.value?.geometryFormat === 'native' && fitDataToView.value) {
 				return filters.value.concat(viewBoundsFilter.value ?? []);
 			}
 			return filters.value;
