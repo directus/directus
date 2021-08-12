@@ -11,11 +11,12 @@ describe('password', function () {
 			.post('/auth/password/request', {
 				email: 'admin@example.com',
 				reset_url: 'http://some_url.com',
+				subject: 'some subject'
 			})
 			.reply(200, {});
 
 		const sdk = new Directus(url);
-		await sdk.auth.password.request('admin@example.com', 'http://some_url.com');
+		await sdk.auth.password.request('admin@example.com', 'http://some_url.com','some subject');
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});
