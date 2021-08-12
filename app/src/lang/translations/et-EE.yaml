@@ -755,6 +755,7 @@ fields:
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
+    status_active: aktiivne
     status_archived: Arhiveeritud
     role: Roll
     token: Kontrollkood
