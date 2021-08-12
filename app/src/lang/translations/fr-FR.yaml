@@ -168,7 +168,7 @@ bigInteger: Grand entier
 boolean: Booléen
 date: Date
 datetime: Date et heure
-decimal: Décimal
+decimal: Décimale
 float: Décimal
 integer: Entier
 json: JSON
@@ -179,7 +179,6 @@ time: Date et heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
-geometry: Geometrie
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -1008,17 +1007,7 @@ interfaces:
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
-    map: Map
-    description: Selectionner un lieu sur une carte
-    geometry_type: Type de géométrie
-    geometry_format: Format de géométrie
-    storage_type: Storage type
-    default_view: Vue par défault
-    invalid_options: Options invalides
-    invalid_format: Format invalide ( {format} )
-    unexpected_geometry: Attendu {expected}, reçu {got}.
-    fit_bounds: Ajuster la vue aux donnnées
-    native: Natif
+    zoom: Zoom
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1215,15 +1204,3 @@ layouts:
     calendar: Calendrier
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
-  map:
-    map: Carte
-    layers: Couche,
-    edit_custom_layers: Éditer les couches
-    cluster_options: Options de partitionnement
-    cluster: Activer le partitionnement
-    cluster_radius: Rayon de partitionnement
-    cluster_minpoints: Taille minimum de partitionnement
-    cluster_maxzoom: Zoom maximum du partitionnement
-    fit_data: Filter les données selon la position
-    field: Geometrie
-    invalid_geometry: Geometrie invalide

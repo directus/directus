@@ -636,6 +636,8 @@ interfaces:
     interface: 介面
   select-dropdown-m2o:
     display_template: 顯示模板
+  map:
+    zoom: 縮放
   system-folder:
     folder: 資料夾
   slider:

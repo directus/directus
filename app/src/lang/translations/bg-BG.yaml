@@ -780,20 +780,20 @@ fields:
     user_preferences: Потребителски настройки
     language: Език
     theme: Тема
-    theme_auto: Автоматичен (според системата)
+    theme_auto: Автоматично (според системата)
     theme_light: Светъл режим
     theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
     status_draft: Чернова
-    status_invited: Поканен
+    status_invited: Неактивен
     status_active: Активен
     status_suspended: Замразен
     status_archived: Архивиран
     role: Роля
     token: Токен
-    token_placeholder: Въвеждане на сигурен ключ за достъп...
+    token_placeholder: Въвеждане на сигурен токен...
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -801,7 +801,7 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
-    public_pages: Публични Страници
+    public_pages: Публични страници
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
@@ -837,10 +837,9 @@ fields:
     method: Метод
     status: Статус
     data: Данни
-    data_label: Изпращане и на данните
-    triggers: Тригер
+    data_label: Изпращане на данните
+    triggers: Тригери
     actions: Действия
-    collections: Колекции
 field_options:
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
@@ -925,13 +924,13 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
+    start: Начало
     all_closed: Всички са затворени
     first_opened: Първият е отворен
     all_opened: Всички са отворени
@@ -1052,6 +1051,8 @@ interfaces:
     box: Блоков / Вложен
     imageToken: Токън за изображенията
     imageToken_label: Какъв (статичен) токън да се добави, към адресите на изображенията
+  map:
+    zoom: Мащабиране
   presentation-notice:
     notice: Пояснение
     description: Показване на кратко пояснение
