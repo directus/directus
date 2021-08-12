@@ -753,6 +753,7 @@ fields:
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
+    status_active: Aktiivinen
     role: Rooli
     token: Token
     last_page: Viimeinen sivu
