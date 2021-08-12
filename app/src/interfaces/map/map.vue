@@ -62,17 +62,8 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { ButtonControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
-import {
-	flatten,
-	getBBox,
-	getParser,
-	getSerializer,
-	getGeometryFormatForType,
-	GeoJSONParser,
-	GeoJSONSerializer,
-	SimpleGeometry,
-	MultiGeometry,
-} from '@/utils/geometry';
+import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } from '@/utils/geometry';
+import { GeoJSONParser, GeoJSONSerializer, SimpleGeometry, MultiGeometry } from '@directus/shared/types';
 import getSetting from '@/utils/get-setting';
 import { snakeCase, isEqual } from 'lodash';
 import styles from './style';
@@ -81,7 +72,6 @@ import { useI18n } from 'vue-i18n';
 import { TranslateResult } from 'vue-i18n';
 import { useAppStore } from '@/stores';
 
-type _Geometry = SimpleGeometry | MultiGeometry;
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
@@ -345,7 +335,7 @@ export default defineComponent({
 
 		function getCurrentGeometry(): Geometry | null {
 			const features = controls.draw.getAll().features;
-			const geometries = features.map((f) => f.geometry) as _Geometry[];
+			const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 			let result: Geometry;
 			if (geometries.length == 0) {
 				return null;

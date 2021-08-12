@@ -1,38 +1,21 @@
-import { Type, GeometryType, GeometryFormat } from '@directus/shared/types';
 import {
-	BBox,
-	Point,
-	Feature,
-	FeatureCollection,
-	Polygon,
-	LineString,
-	MultiPoint,
-	MultiPolygon,
-	MultiLineString,
-	GeometryCollection,
-	Geometry,
-} from 'geojson';
+	Type,
+	GeometryFormat,
+	Coordinate,
+	AnyGeometry,
+	GeometryOptions,
+	GeoJSONSerializer,
+	AllGeoJSON,
+	GeoJSONParser,
+	SimpleGeometry,
+} from '@directus/shared/types';
+import { BBox, Point, Feature, FeatureCollection } from 'geojson';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
 import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
 import { renderStringTemplate } from '@/utils/render-string-template';
 
-export type GeometryOptions = {
-	geometryField: string;
-	geometryFormat: GeometryFormat;
-	geometryType?: GeometryType;
-};
-
-export type SimpleGeometry = Point | Polygon | LineString;
-export type MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
-
-export type AnyGeometry = Geometry | GeometryCollection;
-export type AllGeoJSON = Geometry & GeometryCollection & Feature & FeatureCollection;
-export type GeoJSONParser = (entry: any) => AnyGeometry | undefined;
-export type GeoJSONSerializer = (entry: AllGeoJSON) => any;
-type Coord = [number, number];
-
-export function expandBBox(bbox: BBox, coord: Coord): BBox {
+export function expandBBox(bbox: BBox, coord: Coordinate): BBox {
 	return [
 		Math.min(bbox[0], coord[0]),
 		Math.min(bbox[1], coord[1]),
@@ -44,7 +27,7 @@ export function expandBBox(bbox: BBox, coord: Coord): BBox {
 export function getBBox(object: AnyGeometry): BBox {
 	let bbox: BBox = [Infinity, Infinity, -Infinity, -Infinity];
 	coordEach(object as AllGeoJSON, (coord) => {
-		bbox = expandBBox(bbox, coord as Coord);
+		bbox = expandBBox(bbox, coord as Coordinate);
 	});
 	return bbox;
 }
