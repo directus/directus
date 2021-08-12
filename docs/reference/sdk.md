@@ -487,7 +487,7 @@ await directus.auth.password.request('admin@example.com');
 Supports optional query:
 
 ```js
-await directus.auth.password.request('admin@example.com', PASSWORD_RESET_URL_ALLOW_LIST, 'Subject' );
+await directus.auth.password.request('admin@example.com', 'https://reset.url', 'Subject' );
 ```
 
 ### Reset a Password
