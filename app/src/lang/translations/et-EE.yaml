@@ -712,7 +712,7 @@ fields:
     hidden: Peidetud
     singleton: Üksik
     translations: Andmekogu nimetuste tõlked
-    archive_app_filter: Arhiveeri rakenduse filter
+    archive_app_filter: Arhiveerimisfilter
     archive_value: Arhiveeri väärtus
     unarchive_value: Aktiveeri väärtus
     sort_field: Sorteerimisväli
