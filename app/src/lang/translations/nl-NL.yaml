@@ -774,6 +774,7 @@ fields:
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
+    status_active: Actief
     role: Rol
     token: Token
     last_page: Laatste pagina
