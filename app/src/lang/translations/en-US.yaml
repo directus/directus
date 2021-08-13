@@ -22,10 +22,12 @@
 
 edit_field: Edit Field
 conditions: Conditions
+maps: Maps
 item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
+limit: Limit
 group: Group
 and: And
 or: Or
@@ -187,6 +189,7 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometry
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -386,6 +389,7 @@ no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: There are no webhooks yet.
 all_items: All Items
+any: Any
 csv: CSV
 no_collections: No Collections
 create_collection: Create Collection
@@ -504,6 +508,7 @@ color: Color
 circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
+advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
@@ -530,6 +535,10 @@ operators:
   nempty: Isn't empty
   all: Contains these keys
   has: Contains some of these keys
+  intersects: Intersects
+  nintersects: Doesn't intersect
+  intersects_bbox: Intersects bounding box
+  nintersects_bbox: Doesn't intersect bounding box
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -944,6 +953,7 @@ interfaces:
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections
+    start: Start
     all_closed: All Closed
     first_opened: First Opened
     all_opened: All Opened
@@ -1064,6 +1074,22 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+  map:
+    map: Map
+    description: Select a location on a map
+    zoom: Zoom
+    geometry_type: Geometry type
+    geometry_format: Geometry format
+    default_view: Default view
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Notice
     description: Display a short notice
@@ -1273,3 +1299,16 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+  map:
+    map: Map
+    basemap: Basemap
+    layers: Layers
+    edit_custom_layers: Edit Layers
+    cluster_options: Clustering options
+    cluster: Activate clustering
+    cluster_radius: Cluster radius
+    cluster_minpoints: Cluster minimum size
+    cluster_maxzoom: Maximum zoom for clustering
+    fit_data: Fit data to view bounds
+    field: Geometry
+    invalid_geometry: Invalid geometry
