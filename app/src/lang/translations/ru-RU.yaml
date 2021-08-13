@@ -275,8 +275,8 @@ today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
