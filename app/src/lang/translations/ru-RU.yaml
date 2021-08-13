@@ -21,14 +21,18 @@
 #'Proxy', 'Intl'
 edit_field: Редактировать поле
 conditions: Условия
+maps: Карты
 item_revision: Редакция
 duplicate_field: Клонировать поле
 half_width: Полширины
 full_width: Вся ширина
+limit: Лимит
 group: Группа
+and: и
+or: или
 fill_width: В ширину
-field_name_translations: Переводы Названия Поля
-enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
+field_name_translations: Переводы названия поля
+enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
 add_field: Добавить поле
 role_name: Название роли
 branch: Ветка
@@ -48,9 +52,9 @@ invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
 connection_excellent: Отличное Подключение
-connection_good: Хорошее Подключение
-connection_fair: Нормальное Подключение
-connection_poor: Плохое Подключение
+connection_good: Хорошее соединение
+connection_fair: Сносное соединение
+connection_poor: Плохое соединение
 primary: Первичный
 rename_folder: Переименовать папку
 delete_folder: Удалить папку
@@ -61,7 +65,7 @@ rename_bookmark: Переименовать закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
 delete_bookmark_copy: >-
-  Вы уверены, что хотите удалить закладку "{bookmark}"? Это действие не может быть отменено.
+  Точно удалить закладку «{bookmark}»? Ее нельзя будет восстановить.
 logoutReason:
   SIGN_OUT: Вы вышли
   SESSION_EXPIRED: Сессия истекла
@@ -277,9 +281,9 @@ delete_comment: Удалить комментарий
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
-date-fns_date_short_no_year: MMM d
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
 month: Месяц
 year: Год
 select_all: Выбрать Все
@@ -782,7 +786,7 @@ fields:
     note: Заметка
     hidden: Скрыто
     singleton: Синглтон
-    translation: Переводы Названия Поля
+    translation: Переводы названия поля
     display_template: Шаблон
   directus_roles:
     name: Название роли
