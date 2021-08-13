@@ -984,6 +984,8 @@ interfaces:
     box: Plokk / Tekstisisene
     imageToken: Pildi kood
     imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+  map:
+    zoom: Suurenda
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
