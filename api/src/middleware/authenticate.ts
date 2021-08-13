@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import getDatabase from '../database';
 import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
+import { InvalidCredentialsException, ServiceUnavailableException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 import isJWT from '../utils/is-jwt';
 
@@ -11,7 +11,10 @@ import isJWT from '../utils/is-jwt';
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	req.accountability = {
+		maintenance: false,
+		maintenance_role: null,
 		user: null,
+		user_role: null,
 		role: null,
 		admin: false,
 		app: false,
@@ -19,9 +22,22 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		userAgent: req.get('user-agent'),
 	};
 
-	if (!req.token) return next();
-
 	const database = getDatabase();
+	const settings = await database
+		.select('directus_settings.maintenance_active', 'directus_settings.maintenance_role')
+		.from('directus_settings')
+		.first();
+
+	if (settings && settings.maintenance_active) {
+		req.accountability.maintenance = true;
+		req.accountability.maintenance_role = settings.maintenance_role;
+
+		if (!settings.maintenance_role) {
+			throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
+		}
+	}
+
+	if (!req.token) return next();
 
 	if (isJWT(req.token)) {
 		let payload: { id: string };
@@ -53,9 +69,15 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		req.accountability.user = payload.id;
-		req.accountability.role = user.role;
+		req.accountability.user_role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+
+		if (!req.accountability.admin && req.accountability.maintenance_role) {
+			req.accountability.role = req.accountability.maintenance_role;
+		} else {
+			req.accountability.role = req.accountability.user_role;
+		}
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
