@@ -48,6 +48,7 @@ create_role: Создать роль
 create_user: Создать пользователя
 create_webhook: Создать веб-хук
 invite_users: Пригласить пользователей
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
@@ -85,6 +86,7 @@ archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
 reset_system_permissions_to: 'Сбросить системные разрешения для:'
 reset_system_permissions_copy: Это перезапишет любые индивидуальные разрешения, которые вы могли задать системным коллекциям. Вы уверены?
+the_following_are_minimum_permissions: Ниже приведены разрешения, требуемые при включенном доступе к приложению. Их можно расширить, но не сократить.
 app_access_minimum: Минимальный доступ приложения
 recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Извлечь их архива
@@ -115,10 +117,11 @@ use_custom: Использовать Свой
 nullable: Разрешить NULL значение
 allow_null_value: Разрешить NULL значение
 allow_multiple: Разрешить несколько
+allow_multiple_to_be_open: Можно открыть несколько
 field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
-field_files: Несколько Файлов
+field_files: Несколько файлов
 field_m2o: Отношение M2O
 field_m2a: Отношение M2A
 field_o2m: Связка O2M
@@ -146,7 +149,7 @@ field_update_success: 'Обновлено поле: "{field}"'
 duplicate_where_to: Куда вы хотите дублировать это поле?
 language: Язык
 global: Глобальный
-admins_have_all_permissions: Администраторы имеют все права
+admins_have_all_permissions: У администраторов есть все права
 camera: Камера
 exposure: Экспозиция
 shutter: Затвор
@@ -176,6 +179,7 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
+geometry: Геометрия
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_refresh: Авто обновление
@@ -197,12 +201,12 @@ add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
 add_o2m_to_collection: 'Добавить One-to-Many в "{collection}"'
 add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
 choose_a_type: Выберите Тип...
-determined_by_relationship: Определяется Связкой
+determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
 default_value: Значение По умолчанию
 standard_field: Стандартное Поле
 single_file: Один Файл
-multiple_files: Несколько Файлов
+multiple_files: Несколько файлов
 m2o_relationship: Отношение Многие к Одному
 o2m_relationship: Связка One to Many
 m2m_relationship: Отношение Многие ко Многим
@@ -758,13 +762,16 @@ fields:
     title: Заголовок
     description: Описание
     tags: Теги
+    user_preferences: Пользовательские настройки
     language: Язык
     theme: Тема
     tfa_secret: Двухфакторная аутентификация
+    admin_options: Настройки администратора
     status: Статус
     status_active: Активный
     role: Роль
-    token: Жетон
+    token: Ключ доступа
+    token_placeholder: Укажите достаточно защищенный ключ доступа
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
@@ -1004,6 +1011,7 @@ interfaces:
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
     imageToken: Ключ изображения
+    imageToken_label: Статичный ключ, добавляемый к адресам изображений
   map:
     zoom: Масштаб
   presentation-notice:
@@ -1196,3 +1204,5 @@ layouts:
     calendar: Календарь
     start_date_field: Поле даты начала
     end_date_field: Поле даты окончания
+  map:
+    field: Геометрия
