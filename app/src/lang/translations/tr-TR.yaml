@@ -720,6 +720,8 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  map:
+    zoom: Yakınlaş
   system-folder:
     folder: Klasör
   slider:
