@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import argon2 from 'argon2';
 import { validateQuery } from '../utils/validate-query';
 import {
@@ -322,7 +323,6 @@ export class GraphQLService {
 		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
-
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -570,7 +570,6 @@ export class GraphQLService {
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
-
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -718,6 +717,22 @@ export class GraphQLService {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
 			const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
+			const RelationalFields: Record<string, ObjectTypeComposer> = {};
+			const RegularFields: Record<string, ObjectTypeComposer> = {};
+
+			const UpsertTC = schemaComposer.createScalarTC({
+				name: 'Upsert',
+				description: 'Upsert Nested Relations',
+				serialize: () => {
+					null;
+				},
+				parseValue: () => {
+					null;
+				},
+				parseLiteral: () => {
+					null;
+				},
+			});
 
 			for (const collection of Object.values(schema.create.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
@@ -728,7 +743,19 @@ export class GraphQLService {
 
 				const creatableFields = CreateCollectionTypes[collection.collection]?.getFields() || {};
 
-				if (Object.keys(creatableFields).length > 0) {
+				const useableFields = Object.entries(creatableFields).reduce((acc, field) => {
+					for (const [k, v] of Object.entries(creatableFields)) {
+						if (v.type && v.type.ofType && typeof v.type?.ofType['_gqcFields'] === 'object') {
+							creatableFields[k].type = UpsertTC;
+							acc[k] = creatableFields[k];
+						}
+					}
+					acc[field.field] = field;
+					return acc;
+				});
+
+				if (Object.keys(useableFields).length > 0) {
+					console.log(useableFields);
 					CreateCollectionTypes[collection.collection].addResolver({
 						name: `create_${collection.collection}_items`,
 						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
