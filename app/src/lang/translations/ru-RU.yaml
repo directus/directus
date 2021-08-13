@@ -772,6 +772,7 @@ fields:
     user_preferences: Пользовательские настройки
     language: Язык
     theme: Тема
+    theme_auto: Автоматически (как в системе)
     theme_light: Светлая тема
     theme_dark: Тёмная тема
     tfa_secret: Двухфакторная аутентификация
@@ -788,20 +789,21 @@ fields:
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
-    project_name: Имя Проекта
-    project_url: URL Проекта
+    project_name: Название проекта
+    project_url: URL проекта
     project_color: Цвет Проекта
-    project_logo: Логотип Проекта
+    project_logo: Логотип проекта
     public_pages: Публичные страницы
-    public_foreground: Публичный Передний План
-    public_background: Публичный Фон
-    public_note: Публичное Примечание
-    auth_password_policy: Политика Паролей Входа
-    auth_login_attempts: Попыток Входа
+    public_foreground: Изображение на переднем плане
+    public_background: Фоновое изображение
+    public_note: Заметка
+    auth_password_policy: Минимальная сложность пароля
+    auth_login_attempts: Попыток войти
     files_and_thumbnails: Файлы и миниатюры
     storage_default_folder: Основная папка
     storage_asset_presets: Пресеты Элементов Хранилища
     storage_asset_transform: Преобразование Элементов Хранилища
+    overrides: Переопределить заводские настройки
     custom_css: Пользовательский CSS
   directus_fields:
     collection: Название Коллекции
@@ -976,6 +978,7 @@ interfaces:
     select_a_collection: Выберите Коллекцию
   presentation-divider:
     divider: Разделитель
+    description: Разделить поля на секции с заголовками
     title_placeholder: Введите название...
     inline_title: Строчный заголовок
     inline_title_label: Показать заголовок внутри строки
@@ -1040,6 +1043,10 @@ interfaces:
     geometry_type: Тип геометрии
     geometry_format: Формат
     default_view: Вид по умолчанию
+    invalid_options: Некорректные настройки
+    invalid_format: Некорректный формат ({format})
+    unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
+    native: Родной
     geojson: GeoJSON
     lnglat: Долгота, широта (Lon, Lat)
     wkt: WKT
@@ -1251,5 +1258,6 @@ layouts:
     cluster: Использовать кластеры
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
+    cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геометрия
     invalid_geometry: Некорректная геометрия
