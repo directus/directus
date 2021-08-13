@@ -13,6 +13,7 @@ export type Query = {
 	group?: string[];
 	aggregate?: Aggregate;
 	deep?: Record<string, Query>;
+	alias?: Record<string, string>;
 };
 
 export type Sort = {

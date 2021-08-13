@@ -60,14 +60,15 @@ export default async function runAST(
 
 	async function run(collection: string, children: (NestedCollectionNode | FieldNode)[], query: Query) {
 		// Retrieve the database columns to select in the current AST
-		const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
+		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
 			collection,
-			children
+			children,
+			query
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, options?.nested);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -106,7 +107,8 @@ export default async function runAST(
 async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
-	children: (NestedCollectionNode | FieldNode)[]
+	children: (NestedCollectionNode | FieldNode)[],
+	query: Query
 ) {
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
@@ -117,8 +119,17 @@ async function parseCurrentLevel(
 	for (const child of children) {
 		if (child.type === 'field') {
 			const fieldKey = stripFunction(child.name);
+
 			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
 				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
+
+				if (query.alias) {
+					columnsToSelectInternal.push(
+						...Object.entries(query.alias)
+							.filter(([_key, value]) => value === child.name)
+							.map(([key]) => key)
+					);
+				}
 			}
 
 			continue;
@@ -138,30 +149,42 @@ async function parseCurrentLevel(
 		nestedCollectionNodes.push(child);
 	}
 
-	/**
-	 * Always fetch primary key in case there's a nested relation that needs it
+	const isAggregate = (query.aggregate && Object.keys(query.aggregate).length > 0) ?? false;
+
+	/** Always fetch primary key in case there's a nested relation that needs it. Aggregate payloads
+	 * can't have nested relational fields
 	 */
-	const childrenContainRelational = children.some((child) => child.type !== 'field');
-	if (childrenContainRelational && columnsToSelectInternal.includes(primaryKeyField) === false) {
+	if (isAggregate === false && columnsToSelectInternal.includes(primaryKeyField) === false) {
 		columnsToSelectInternal.push(primaryKeyField);
 	}
 
 	/** Make sure select list has unique values */
 	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
-	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
+	const fieldNodes = children.filter((childNode) => {
+		return columnsToSelect.includes(childNode.fieldKey);
+	}) as FieldNode[];
+
+	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
 }
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helper = getGeometryHelper();
-	return function (column: string): Knex.Raw<string> {
-		const field = schema.collections[table].fields[column];
 
-		if (isNativeGeometry(field)) {
-			return helper.asText(table, column);
+	return function (fieldNode: FieldNode): Knex.Raw<string> {
+		const field = schema.collections[table].fields[fieldNode.name];
+
+		let alias = undefined;
+
+		if (fieldNode.name !== fieldNode.fieldKey) {
+			alias = fieldNode.fieldKey;
 		}
 
-		return getColumn(knex, table, column);
+		if (isNativeGeometry(field)) {
+			return helper.asText(table, fieldNode.name);
+		}
+
+		return getColumn(knex, table, fieldNode.name, alias);
 	};
 }
 
@@ -169,12 +192,12 @@ function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
-	columns: string[],
+	fieldNodes: FieldNode[],
 	query: Query,
 	nested?: boolean
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	const dbQuery = knex.select(columns.map(preProcess)).from(table);
+	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
@@ -399,10 +422,9 @@ function removeTemporaryFields(
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 		for (const child of ast.children) {
-			if (child.type === 'field') {
-				fields.push(child.name);
-			} else {
-				fields.push(child.fieldKey);
+			fields.push(child.fieldKey);
+
+			if (child.type !== 'field') {
 				nestedCollectionNodes.push(child);
 			}
 		}
@@ -414,7 +436,7 @@ function removeTemporaryFields(
 
 				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
 
-				fields.push(...aggregateFields.map((field) => `${field}_${operation}`));
+				fields.push(...aggregateFields.map((field) => `${operation}.${field}`));
 			}
 		}
 

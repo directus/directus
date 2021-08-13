@@ -3,7 +3,7 @@
  */
 
 import { Knex } from 'knex';
-import { cloneDeep, mapKeys, omitBy } from 'lodash';
+import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
 import { Accountability } from '@directus/shared/types';
 import { AST, FieldNode, NestedCollectionNode, PermissionsAction, Query, SchemaOverview } from '../types';
 import { getRelationType } from '../utils/get-relation-type';
@@ -64,6 +64,19 @@ export default async function getASTFromQuery(
 	if (query.group) {
 		fields = query.group;
 	}
+
+	/**
+	 * When we're requesting field duplicates through aliases, we have to explicitly ask for the
+	 * the alias name, otherwise they're ignored as non-existing fields
+	 */
+
+	if (query.alias) {
+		for (const aliasName of Object.keys(query.alias)) {
+			fields.push(aliasName);
+		}
+	}
+
+	fields = uniq(fields);
 
 	const deep = query.deep || {};
 
@@ -154,7 +167,11 @@ export default async function getASTFromQuery(
 					}
 				}
 			} else {
-				children.push({ type: 'field', name: field });
+				if (query.alias && field in query.alias) {
+					children.push({ type: 'field', name: query.alias[field], fieldKey: field });
+				} else {
+					children.push({ type: 'field', name: field, fieldKey: field });
+				}
 			}
 		}
 
