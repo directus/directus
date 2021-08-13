@@ -265,6 +265,33 @@ fields:
       lineNumber: true
     width: full
 
+  - field: maintenance_divider
+    interface: presentation-divider
+    options:
+      icon: engineering
+      title: Maintenance mode
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: maintenance_active
+    special: boolean
+    interface: boolean
+    options:
+      label: Maintenance mode
+    width: half
+
+  - field: maintenance_role
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special: m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
   - field: map_divider
     interface: presentation-divider
     options:
