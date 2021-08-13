@@ -872,6 +872,8 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     description: أدخل و معاينة markdown
+  map:
+    zoom: تكبير/تصغير
   list-o2m:
     description: حدد عدة عناصر ذات صلة
   system-folder:
