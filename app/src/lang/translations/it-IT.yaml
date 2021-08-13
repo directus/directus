@@ -924,13 +924,13 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
-    start: Inizio
     all_closed: Tutto chiuso
     first_opened: Apri la prima sezione
     all_opened: Tutto aperto
@@ -1051,8 +1051,6 @@ interfaces:
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
-  map:
-    zoom: Zoom
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve

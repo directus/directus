@@ -1005,8 +1005,6 @@ interfaces:
     box: กล่อง/บรรทัดเดียวกัน
     imageToken: Image Token
     imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
-  map:
-    zoom: ซูม
   presentation-notice:
     notice: แจ้งให้ทราบ
     description: แสดงการแจ้งให้ทราบแบบย่อ
