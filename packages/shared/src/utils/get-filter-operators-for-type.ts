@@ -40,6 +40,9 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 		case 'time':
 			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'];
 
+		case 'geometry':
+			return ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+
 		default:
 			return [
 				'eq',

@@ -773,6 +773,7 @@ fields:
     theme: Tema
     tfa_secret: Autentificación en 2 Pasos
     status: Estado
+    status_active: Activo
     role: Rol
     token: Token
     last_page: Última Página
@@ -809,6 +810,9 @@ fields:
     users: Usuarios en el Rol
     module_list: Navegación en Módulo
     collection_list: Navegación en Colección
+  directus_webhooks:
+    name: Nombre
+    status: Estado
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
@@ -897,6 +901,7 @@ report_error: Reportar Error
 start: Iniciar
 interfaces:
   group-accordion:
+    start: Iniciar
     all_closed: Todo Cerrado
     first_opened: Primero Abierto
     all_opened: Todo Abierto
@@ -1008,6 +1013,8 @@ interfaces:
     box: Bloque / Alineación
     imageToken: Token de Imagen
     imageToken_label: Qué token (estático) añadir a las fuentes de la imagen
+  map:
+    zoom: Zoom
   presentation-notice:
     notice: Aviso
   list-o2m:
