@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import argon2 from 'argon2';
 import { validateQuery } from '../utils/validate-query';
 import {
@@ -1167,34 +1166,34 @@ export class GraphQLService {
 		variableValues: GraphQLResolveInfo['variableValues']
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+		const parseAliases = (selections) => {
+			const aliases = {};
+			for (const selection of selections) {
+				if (selection.alias?.value) {
+					aliases[selection.alias?.value] = selection.name.value;
+				}
+			}
+			return aliases;
+		};
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
-
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
 				selection = selection as FieldNode | InlineFragmentNode;
-
-				console.log('new selection');
 				let current: string;
-
+				selection;
 				if (selection.kind === 'InlineFragment') {
 					// filter out graphql pointers, like __typename
 					if (selection.typeCondition!.name.value.startsWith('__')) continue;
-					if (selection.alias?.value) {
-						current = `${parent}:alias(${selection.typeCondition!.name.value}, ${selection.alias?.value})`;
-					} else {
-						current = `${parent}:${selection.typeCondition!.name.value}`;
-					}
+
+					current = `${parent}:${selection.typeCondition!.name.value}`;
 				} else {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
-					if (selection.alias?.value) {
-						current = `alias(${selection.name.value}, ${selection.alias?.value})`;
-					} else {
-						current = selection.name.value;
-					}
+
+					current = selection.name.value;
+
 					if (parent) {
-						console.log(current);
 						current = `${parent}.${current}`;
 					}
 				}
@@ -1226,6 +1225,7 @@ export class GraphQLService {
 			}
 			return uniq(fields);
 		};
+		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
 		return query;
 	}
