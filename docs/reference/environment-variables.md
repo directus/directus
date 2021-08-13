@@ -304,10 +304,12 @@ covered. Checkout [the grant repo](https://github.com/simov/grant) for more info
 
 ## Email
 
-| Variable          | Description                                                       | Default Value          |
-| ----------------- | ----------------------------------------------------------------- | ---------------------- |
-| `EMAIL_FROM`      | Email address from which emails are sent.                         | `no-reply@directus.io` |
-| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
+| Variable                       | Description                                                       | Default Value          |
+| -------------------------------| ----------------------------------------------------------------- | ---------------------- |
+| `EMAIL_FROM`                   | Email address from which emails are sent.                         | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT`              | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`. | `sendmail`             |
+| `EMAIL_PASSWORD_RESET_SUBJECT` | Subject for Password Reset E-Mail                                 | --                     |
+| `EMAIL_USER_INVITE_SUBJECT`    | Subject for User invite E-Mail                                    | --                     |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
