@@ -717,8 +717,6 @@ export class GraphQLService {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
 			const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
-			const RelationalFields: Record<string, ObjectTypeComposer> = {};
-			const RegularFields: Record<string, ObjectTypeComposer> = {};
 
 			const UpsertTC = schemaComposer.createScalarTC({
 				name: 'Upsert',
