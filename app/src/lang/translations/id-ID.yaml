@@ -607,8 +607,6 @@ interfaces:
     interface: Antarmuka
   select-dropdown-m2o:
     display_template: Tampilan Template
-  map:
-    zoom: Perbesar
   system-folder:
     folder: Direktori
   boolean:

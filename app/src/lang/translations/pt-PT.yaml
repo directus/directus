@@ -680,8 +680,6 @@ interfaces:
     interface: Interface
   select-dropdown-m2o:
     display_template: Templates de Exibição
-  map:
-    zoom: Zoom
   system-folder:
     folder: Pasta
   tags:

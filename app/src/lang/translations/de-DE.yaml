@@ -989,8 +989,6 @@ interfaces:
     box: Block / Inline
     imageToken: Bild-Token
     imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
-  map:
-    zoom: Zoom
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
