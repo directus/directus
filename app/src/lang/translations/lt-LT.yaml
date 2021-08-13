@@ -848,6 +848,8 @@ interfaces:
     interface: Sąsaja
   select-dropdown-m2o:
     display_template: Rodymo šablonas
+  map:
+    zoom: Padidinti
   system-folder:
     folder: Aplankas
   tags:

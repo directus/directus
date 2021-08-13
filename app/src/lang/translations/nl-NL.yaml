@@ -958,6 +958,8 @@ interfaces:
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken
+  map:
+    zoom: Zoom
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
