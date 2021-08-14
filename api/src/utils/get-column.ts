@@ -28,15 +28,15 @@ export function getColumn(
 		if (functionName in fn) {
 			const result = fn[functionName as keyof typeof fn](table, columnName);
 
-			if (alias) {
-				return knex.raw(result + ' AS ??', [alias]);
-			}
-
-			return result;
+			return knex.raw(result + ' AS ??', [alias]);
 		} else {
 			throw new Error(`Invalid function specified "${functionName}"`);
 		}
 	}
 
-	return knex.raw('??.??', [table, column]);
+	if (column !== alias) {
+		return knex.ref(`${table}.${column}`).as(alias);
+	}
+
+	return knex.ref(`${table}.${column}`);
 }

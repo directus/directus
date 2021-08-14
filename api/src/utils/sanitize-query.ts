@@ -61,6 +61,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.deep = sanitizeDeep(rawQuery.deep, accountability);
 	}
 
+	if (rawQuery.alias) {
+		query.alias = sanitizeAlias(rawQuery.alias);
+	}
+
 	return query;
 }
 
@@ -201,4 +205,18 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 			set(result, path, merge({}, get(result, path, {}), parsedLevel));
 		}
 	}
+}
+
+function sanitizeAlias(rawAlias: any) {
+	let alias: Record<string, string> = rawAlias;
+
+	if (typeof rawAlias === 'string') {
+		try {
+			alias = JSON.parse(rawAlias);
+		} catch (err) {
+			logger.warn('Invalid value passed for alias query parameter.');
+		}
+	}
+
+	return alias;
 }
