@@ -342,6 +342,7 @@ export class GraphQLService {
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -361,6 +362,9 @@ export class GraphQLService {
 						acc[field.field] = {
 							type,
 							description: field.note,
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? field.field];
+							},
 						};
 
 						return acc;
@@ -373,6 +377,9 @@ export class GraphQLService {
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection],
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? relation.field];
+							},
 						},
 					});
 
@@ -380,6 +387,9 @@ export class GraphQLService {
 						CollectionTypes[relation.related_collection]?.addFields({
 							[relation.meta.one_field]: {
 								type: [CollectionTypes[relation.collection]],
+								resolve: (obj: Record<string, any>, _, __, info) => {
+									return obj[info?.path?.key ?? relation.meta!.one_field];
+								},
 							},
 						});
 					}
@@ -411,6 +421,9 @@ export class GraphQLService {
 									return CollectionTypes[collection].getType();
 								},
 							}),
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? relation.field];
+							},
 						},
 					});
 				}
@@ -996,17 +1009,20 @@ export class GraphQLService {
 
 			query.limit = 1;
 		}
+
 		const result = await this.read(collection, query);
+
 		if (args.id) {
 			return result?.[0] || null;
 		}
 
 		if (query.group) {
 			// for every entry in result add a group field based on query.group;
-			result.map((field) => {
+			result.map((field: Item) => {
 				field.group = field[query.group[0]];
 			});
 		}
+
 		return result;
 	}
 
