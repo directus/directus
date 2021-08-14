@@ -269,7 +269,7 @@ fields:
     interface: presentation-divider
     options:
       icon: engineering
-      title: Maintenance mode
+      title: Maintenance Mode
     special:
       - alias
       - no-data
