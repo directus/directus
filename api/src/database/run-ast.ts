@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { clone, cloneDeep, pick, uniq } from 'lodash';
 import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
-import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
+import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
@@ -138,7 +138,7 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelectInternal.push(child.relation.field);
+			columnsToSelectInternal.push(child.fieldKey);
 		}
 
 		if (child.type === 'm2a') {
@@ -161,9 +161,10 @@ async function parseCurrentLevel(
 	/** Make sure select list has unique values */
 	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
-	const fieldNodes = children.filter((childNode) => {
-		return columnsToSelect.includes(childNode.fieldKey);
-	}) as FieldNode[];
+	const fieldNodes = columnsToSelect.map(
+		(column: string) =>
+			children.find((childNode) => childNode.fieldKey === column) ?? { type: 'field', name: column, fieldKey: column }
+	) as FieldNode[];
 
 	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
 }
@@ -171,8 +172,14 @@ async function parseCurrentLevel(
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helper = getGeometryHelper();
 
-	return function (fieldNode: FieldNode): Knex.Raw<string> {
-		const field = schema.collections[table].fields[fieldNode.name];
+	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
+		let field;
+
+		if (fieldNode.type === 'field') {
+			field = schema.collections[table].fields[fieldNode.name];
+		} else {
+			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
+		}
 
 		let alias = undefined;
 
@@ -181,10 +188,10 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (isNativeGeometry(field)) {
-			return helper.asText(table, fieldNode.name);
+			return helper.asText(table, field.field);
 		}
 
-		return getColumn(knex, table, fieldNode.name, alias);
+		return getColumn(knex, table, field.field, alias);
 	};
 }
 
@@ -240,11 +247,19 @@ function applyParentFilters(
 			});
 
 			if (relatedM2OisFetched === false) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.field });
+				nestedNode.children.push({
+					type: 'field',
+					name: nestedNode.relation.field,
+					fieldKey: nestedNode.relation.field,
+				});
 			}
 
 			if (nestedNode.relation.meta?.sort_field) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.meta.sort_field });
+				nestedNode.children.push({
+					type: 'field',
+					name: nestedNode.relation.meta.sort_field,
+					fieldKey: nestedNode.relation.meta.sort_field,
+				});
 			}
 
 			nestedNode.query = {

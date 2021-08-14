@@ -263,8 +263,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			knex: this.knex,
 		});
 
-		// console.dir(ast, { depth: null });
-
 		if (this.accountability && this.accountability.admin !== true) {
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}

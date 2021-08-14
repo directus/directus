@@ -160,5 +160,9 @@ function validateAlias(alias: any) {
 		if (typeof value !== 'string') {
 			throw new InvalidQueryException(`"alias" value has to be a string. "${typeof key}" given.`);
 		}
+
+		if (key.includes('.') || value.includes('.')) {
+			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+		}
 	}
 }
