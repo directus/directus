@@ -984,6 +984,8 @@ interfaces:
     box: Blok / Linijski
     imageToken: Token Fotografije
     imageToken_label: Koji (statični) token prikačiti na izvore slika
+  map:
+    zoom: Uvеćanjе
   presentation-notice:
     notice: Napomеna
     description: Prikaži kratku napomenu

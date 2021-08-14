@@ -883,6 +883,8 @@ interfaces:
     interface: Gränssnitt
   select-dropdown-m2o:
     display_template: Visningsmall
+  map:
+    zoom: Zooma
   system-folder:
     folder: Mapp
   slider:

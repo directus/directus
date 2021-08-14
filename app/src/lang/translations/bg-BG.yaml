@@ -924,13 +924,13 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
   group-accordion:
     name: Акордеон
     description: Показване на полетата или групите по секции, като акордеон
+    start: Начало
     all_closed: Всички са затворени
     first_opened: Първият е отворен
     all_opened: Всички са отворени
@@ -1051,6 +1051,8 @@ interfaces:
     box: Блоков / Вложен
     imageToken: Токън за изображенията
     imageToken_label: Какъв (статичен) токън да се добави, към адресите на изображенията
+  map:
+    zoom: Мащабиране
   presentation-notice:
     notice: Пояснение
     description: Показване на кратко пояснение
