@@ -36,6 +36,7 @@ import { checkIP } from './middleware/check-ip';
 import cors from './middleware/cors';
 import errorHandler from './middleware/error-handler';
 import extractToken from './middleware/extract-token';
+import maintenance from './middleware/maintenance';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
@@ -146,6 +147,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	// We only rely on cookie-sessions in the oAuth flow where it's required
 	app.use(session);
+
+	app.use(maintenance);
 
 	app.use(authenticate);
 

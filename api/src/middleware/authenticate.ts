@@ -11,10 +11,7 @@ import isJWT from '../utils/is-jwt';
  */
 const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	req.accountability = {
-		maintenance: false,
-		maintenance_role: null,
 		user: null,
-		user_role: null,
 		role: null,
 		admin: false,
 		app: false,
@@ -22,22 +19,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		userAgent: req.get('user-agent'),
 	};
 
-	const database = getDatabase();
-	const settings = await database
-		.select('directus_settings.maintenance_enabled', 'directus_settings.maintenance_role')
-		.from('directus_settings')
-		.first();
-
-	if (settings && settings.maintenance_enabled) {
-		req.accountability.maintenance = true;
-		req.accountability.maintenance_role = settings.maintenance_role;
-
-		if (!settings.maintenance_role) {
-			throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
-		}
-	}
-
 	if (!req.token) return next();
+
+	const database = getDatabase();
 
 	if (isJWT(req.token)) {
 		let payload: { id: string };
@@ -69,14 +53,16 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		req.accountability.user = payload.id;
-		req.accountability.user_role = user.role;
+		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
 
-		if (!req.accountability.admin && req.accountability.maintenance_role) {
-			req.accountability.role = req.accountability.maintenance_role;
-		} else {
-			req.accountability.role = req.accountability.user_role;
+		if (req.maintenance.enabled && !req.accountability.admin) {
+			if (req.maintenance.role) {
+				req.accountability.role = req.maintenance.role;
+			} else {
+				throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
+			}
 		}
 	} else {
 		// Try finding the user with the provided token
@@ -98,6 +84,10 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+
+		if (req.maintenance.enabled && !req.accountability.admin) {
+			throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
+		}
 	}
 
 	return next();

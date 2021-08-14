@@ -2,7 +2,7 @@
  * Custom properties on the req object in express
  */
 
-import { Accountability } from '@directus/shared/types';
+import { Accountability, Maintenance } from '@directus/shared/types';
 import { Query } from './query';
 import { SchemaOverview } from './schema';
 
@@ -17,6 +17,7 @@ declare global {
 			schema: SchemaOverview;
 
 			accountability?: Accountability;
+			maintenance?: Maintenance;
 			singleton?: boolean;
 		}
 	}
