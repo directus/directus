@@ -7,7 +7,7 @@ import { systemFieldRows } from '../database/system-data/fields';
 import logger from '../logger';
 import { RelationsService } from '../services';
 import { Permission, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import { Accountability, Maintenance } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
@@ -17,8 +17,35 @@ import { getCache } from '../cache';
 import env from '../env';
 import ms from 'ms';
 
+async function getPermissionsForRole(database: Knex, role: string | null): Promise<Permission[]> {
+	const permissionsForRole = await database.select('*').from('directus_permissions').where({ role });
+
+	const permissions: Permission[] = permissionsForRole.map((permissionRaw) => {
+		if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
+			permissionRaw.permissions = JSON.parse(permissionRaw.permissions);
+		}
+
+		if (permissionRaw.validation && typeof permissionRaw.validation === 'string') {
+			permissionRaw.validation = JSON.parse(permissionRaw.validation);
+		}
+
+		if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
+			permissionRaw.presets = JSON.parse(permissionRaw.presets);
+		}
+
+		if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
+			permissionRaw.fields = permissionRaw.fields.split(',');
+		}
+
+		return permissionRaw;
+	});
+
+	return permissions;
+}
+
 export async function getSchema(options?: {
 	accountability?: Accountability;
+	maintenance?: Maintenance;
 	database?: Knex;
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
@@ -58,33 +85,20 @@ export async function getSchema(options?: {
 	let permissions: Permission[] = [];
 
 	if (options?.accountability && options.accountability.admin !== true) {
-		const permissionsForRole = await database
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: options.accountability.role });
+		permissions = await getPermissionsForRole(database, options.accountability.role);
 
-		permissions = permissionsForRole.map((permissionRaw) => {
-			if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
-				permissionRaw.permissions = JSON.parse(permissionRaw.permissions);
-			}
-
-			if (permissionRaw.validation && typeof permissionRaw.validation === 'string') {
-				permissionRaw.validation = JSON.parse(permissionRaw.validation);
-			}
-
-			if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
-				permissionRaw.presets = JSON.parse(permissionRaw.presets);
-			}
-
-			if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
-				permissionRaw.fields = permissionRaw.fields.split(',');
-			}
-
-			return permissionRaw;
-		});
+		if (options?.maintenance?.enabled && options.maintenance.role) {
+			const maintenancePermissions: Permission[] = await getPermissionsForRole(database, options.maintenance.role);
+			permissions = mergePermissions(
+				'_and',
+				permissions,
+				maintenancePermissions.map((permission) => ({ ...permission, role: options.accountability!.role }))
+			);
+		}
 
 		if (options.accountability.app === true) {
 			permissions = mergePermissions(
+				'_or',
 				permissions,
 				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
 			);

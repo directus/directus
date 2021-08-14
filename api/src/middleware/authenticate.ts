@@ -78,12 +78,8 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.app = user.app_access === true || user.app_access == 1;
 	}
 
-	if (req.maintenance.enabled && !req.accountability.admin) {
-		if (req.maintenance.role) {
-			req.accountability.role = req.maintenance.role;
-		} else {
-			throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
-		}
+	if (req.maintenance?.enabled && !req.accountability.admin && !req.maintenance.role) {
+		throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
 	}
 
 	return next();
