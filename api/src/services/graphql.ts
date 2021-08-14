@@ -1166,22 +1166,28 @@ export class GraphQLService {
 		variableValues: GraphQLResolveInfo['variableValues']
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
-		const parseAliases = (selections) => {
-			const aliases = {};
+
+		const parseAliases = (selections: readonly SelectionNode[]) => {
+			const aliases: Record<string, string> = {};
+
 			for (const selection of selections) {
+				if (selection.kind !== 'Field') continue;
+
 				if (selection.alias?.value) {
-					aliases[selection.alias?.value] = selection.name.value;
+					aliases[selection.alias.value] = selection.name.value;
 				}
 			}
+
 			return aliases;
 		};
+
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
 				selection = selection as FieldNode | InlineFragmentNode;
 				let current: string;
-				selection;
+
 				if (selection.kind === 'InlineFragment') {
 					// filter out graphql pointers, like __typename
 					if (selection.typeCondition!.name.value.startsWith('__')) continue;
@@ -1191,7 +1197,7 @@ export class GraphQLService {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
-					current = selection.name.value;
+					current = selection.alias?.value ?? selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1225,8 +1231,12 @@ export class GraphQLService {
 			}
 			return uniq(fields);
 		};
+
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
+
+		validateQuery(query);
+
 		return query;
 	}
 
@@ -1254,8 +1264,6 @@ export class GraphQLService {
 					return selectionNode.name.value;
 				}) ?? [];
 		}
-
-		validateQuery(query);
 
 		validateQuery(query);
 
