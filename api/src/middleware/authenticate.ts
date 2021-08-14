@@ -56,14 +56,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
-
-		if (req.maintenance.enabled && !req.accountability.admin) {
-			if (req.maintenance.role) {
-				req.accountability.role = req.maintenance.role;
-			} else {
-				throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
-			}
-		}
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
@@ -84,8 +76,12 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+	}
 
-		if (req.maintenance.enabled && !req.accountability.admin) {
+	if (req.maintenance.enabled && !req.accountability.admin) {
+		if (req.maintenance.role) {
+			req.accountability.role = req.maintenance.role;
+		} else {
 			throw new ServiceUnavailableException('Maintenance tasks', { service: 'system' });
 		}
 	}
