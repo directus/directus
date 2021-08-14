@@ -176,7 +176,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field') {
-			field = schema.collections[table].fields[fieldNode.name];
+			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
 		} else {
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
 		}
@@ -191,7 +191,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 			return helper.asText(table, field.field);
 		}
 
-		return getColumn(knex, table, field.field, alias);
+		return getColumn(knex, table, fieldNode.name, alias);
 	};
 }
 

@@ -43,7 +43,7 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
+import { flatten, get, mapKeys, merge, set, uniq, pick } from 'lodash';
 import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
@@ -339,6 +339,50 @@ export class GraphQLService {
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 
+			const DateFunctions = schemaComposer.createObjectTC({
+				name: 'date_functions',
+				fields: {
+					year: {
+						type: GraphQLInt,
+					},
+					month: {
+						type: GraphQLInt,
+					},
+					week: {
+						type: GraphQLInt,
+					},
+					day: {
+						type: GraphQLInt,
+					},
+					weekday: {
+						type: GraphQLInt,
+					},
+				},
+			});
+
+			const TimeFunctions = schemaComposer.createObjectTC({
+				name: 'time_functions',
+				fields: {
+					hour: {
+						type: GraphQLInt,
+					},
+					minute: {
+						type: GraphQLInt,
+					},
+					second: {
+						type: GraphQLInt,
+					},
+				},
+			});
+
+			const DateTimeFunctions = schemaComposer.createObjectTC({
+				name: 'datetime_functions',
+				fields: {
+					...DateFunctions.getFields(),
+					...TimeFunctions.getFields(),
+				},
+			});
+
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -366,6 +410,36 @@ export class GraphQLService {
 								return obj[info?.path?.key ?? field.field];
 							},
 						};
+
+						if (field.type === 'date') {
+							acc[`${field.field}_func`] = {
+								type: DateFunctions,
+								resolve: (obj: Record<string, any>) => {
+									const funcFields = Object.keys(DateFunctions.getFields()).map((key) => `${field.field}_${key}`);
+									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+								},
+							};
+						}
+
+						if (field.type === 'time') {
+							acc[`${field.field}_func`] = {
+								type: TimeFunctions,
+								resolve: (obj: Record<string, any>) => {
+									const funcFields = Object.keys(TimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+								},
+							};
+						}
+
+						if (field.type === 'dateTime' || field.type === 'timestamp') {
+							acc[`${field.field}_func`] = {
+								type: DateTimeFunctions,
+								resolve: (obj: Record<string, any>) => {
+									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+								},
+							};
+						}
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -609,6 +683,7 @@ export class GraphQLService {
 						const graphqlType = getGraphQLType(field.type);
 
 						let filterOperatorType: InputTypeComposer;
+
 						switch (graphqlType) {
 							case GraphQLBoolean:
 								filterOperatorType = BooleanFilterOperators;
@@ -1199,17 +1274,22 @@ export class GraphQLService {
 
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
+
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
+
 				selection = selection as FieldNode | InlineFragmentNode;
+
 				let current: string;
 
+				// Union type (Many-to-Any)
 				if (selection.kind === 'InlineFragment') {
-					// filter out graphql pointers, like __typename
 					if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
 					current = `${parent}:${selection.typeCondition!.name.value}`;
-				} else {
+				}
+				// Any other field type
+				else {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
 
@@ -1221,7 +1301,20 @@ export class GraphQLService {
 				}
 
 				if (selection.selectionSet) {
-					const children = parseFields(selection.selectionSet.selections, current);
+					let children: string[];
+
+					if (current.endsWith('_func')) {
+						children = [];
+
+						const rootField = current.slice(0, -5);
+
+						for (const subSelection of selection.selectionSet.selections) {
+							if (subSelection.kind !== 'Field') continue;
+							children.push(`${subSelection.name!.value}(${rootField})`);
+						}
+					} else {
+						children = parseFields(selection.selectionSet.selections, current);
+					}
 
 					fields.push(...children);
 				} else {
@@ -1245,6 +1338,7 @@ export class GraphQLService {
 					}
 				}
 			}
+
 			return uniq(fields);
 		};
 
