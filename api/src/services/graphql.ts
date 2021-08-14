@@ -966,7 +966,6 @@ export class GraphQLService {
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 		if (!selections) return null;
-
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
 		let query: Record<string, any>;
@@ -1001,6 +1000,7 @@ export class GraphQLService {
 		if (args.id) {
 			return result?.[0] || null;
 		}
+
 		if (query.group) {
 			// for every entry in result add a group field based on query.group;
 			result.map((field) => {
@@ -1167,9 +1167,22 @@ export class GraphQLService {
 	): Query {
 		const query: Query = sanitizeQuery(rawQuery, this.accountability);
 
+		const parseAliases = (selections: readonly SelectionNode[]) => {
+			const aliases: Record<string, string> = {};
+
+			for (const selection of selections) {
+				if (selection.kind !== 'Field') continue;
+
+				if (selection.alias?.value) {
+					aliases[selection.alias.value] = selection.name.value;
+				}
+			}
+
+			return aliases;
+		};
+
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
-
 			for (let selection of selections) {
 				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
 				selection = selection as FieldNode | InlineFragmentNode;
@@ -1183,7 +1196,8 @@ export class GraphQLService {
 				} else {
 					// filter out graphql pointers, like __typename
 					if (selection.name.value.startsWith('__')) continue;
-					current = selection.name.value;
+
+					current = selection.alias?.value ?? selection.name.value;
 
 					if (parent) {
 						current = `${parent}.${current}`;
@@ -1217,7 +1231,12 @@ export class GraphQLService {
 			}
 			return uniq(fields);
 		};
+
+		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
+
+		validateQuery(query);
+
 		return query;
 	}
 
@@ -1248,11 +1267,8 @@ export class GraphQLService {
 
 		validateQuery(query);
 
-		validateQuery(query);
-
 		return query;
 	}
-
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
