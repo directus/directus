@@ -24,11 +24,11 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const database = getDatabase();
 	const settings = await database
-		.select('directus_settings.maintenance_active', 'directus_settings.maintenance_role')
+		.select('directus_settings.maintenance_enabled', 'directus_settings.maintenance_role')
 		.from('directus_settings')
 		.first();
 
-	if (settings && settings.maintenance_active) {
+	if (settings && settings.maintenance_enabled) {
 		req.accountability.maintenance = true;
 		req.accountability.maintenance_role = settings.maintenance_role;
 

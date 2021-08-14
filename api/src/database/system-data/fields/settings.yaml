@@ -275,7 +275,7 @@ fields:
       - no-data
     width: full
 
-  - field: maintenance_active
+  - field: maintenance_enabled
     special: boolean
     interface: boolean
     options:

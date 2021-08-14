@@ -5,7 +5,7 @@ const indexName = getDefaultIndexName('foreign', 'directus_settings', 'maintenan
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
-		table.boolean('maintenance_active');
+		table.boolean('maintenance_enabled');
 		table
 			.uuid('maintenance_role')
 			.references('id')
@@ -19,6 +19,6 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.dropForeign(['maintenance_role'], indexName);
 		table.dropColumn('maintenance_role');
-		table.dropColumn('maintenance_active');
+		table.dropColumn('maintenance_enabled');
 	});
 }
