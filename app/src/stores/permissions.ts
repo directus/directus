@@ -13,9 +13,7 @@ export const usePermissionsStore = defineStore({
 		async hydrate() {
 			const userStore = useUserStore();
 
-			const response = await api.get('/permissions', {
-				params: { limit: -1, filter: { role: { _eq: userStore.currentUser!.role.id } } },
-			});
+			const response = await api.get('/users/me/permissions');
 
 			this.permissions = response.data.data.map((rawPermission: any) => {
 				if (rawPermission.permissions) {
@@ -35,17 +33,6 @@ export const usePermissionsStore = defineStore({
 		},
 		dehydrate() {
 			this.$reset();
-		},
-		getPermissionsForUser(collection: string, action: Permission['action']) {
-			const userStore = useUserStore();
-			return (
-				this.permissions.find(
-					(permission) =>
-						permission.action === action &&
-						permission.collection === collection &&
-						permission.role === userStore.currentUser?.role?.id
-				) || null
-			);
 		},
 	},
 });

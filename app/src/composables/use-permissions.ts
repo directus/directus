@@ -50,7 +50,10 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 		if (userStore.currentUser?.role?.admin_access === true) return fields;
 
-		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
+		const permissions = permissionsStore.permissions.find(
+			(permission) =>
+				permission.collection === collection.value && permission.action === (isNew.value ? 'create' : 'update')
+		);
 
 		if (!permissions) return fields;
 
