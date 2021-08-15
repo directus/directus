@@ -243,19 +243,73 @@ type: Tipus
 creating_new_collection: Creant una nova col·lecció
 created_by: Creat per
 created_on: Creat el
+creating_collection_info: Fica nom a la col·lecció i estableix la seu camp "clau" únic...
 comments: Comentaris
 create_collection: Crea una col·lecció
 relationship_not_setup: La relació no s'ha configurat correctament
 users: Usuaris
 activity: Activitat
 user_directory: Directori de l'usuari
+documentation: Documentació
+sidebar: Barra lateral
 duration: Durada
+charset: Conjunt de caràcters
+second: segon
+file_moved: Fitxer mogut
+collection_created: Col·lecció creada
+modified_on: Modificat el
+card_size: Mida de la targeta
 sort_field: Camp d'ordenació
+add_sort_field: Afegeix el camp d'ordenació
+sort: Ordre
 status: Estat
+remove: Elimina
+toggle_manual_sorting: Activa l'ordenació manual
+bookmark_doesnt_exist: No existeix el marcador
+bookmark_doesnt_exist_copy: El marcador que estàs intentant obrir no pot ser trobat.
+bookmark_doesnt_exist_cta: Torna a la col·lecció
+select_an_item: Selecciona un element...
 edit: Edita
+enabled: Habilitat
+disable_tfa: Desactiva 2FA
+tfa_scan_code: Escaneja el codi a l'aplicació d'autenticació per acabar d'establir el 2Fa
+enter_otp_to_disable_tfa: Introdueix el OTP per deshabilitar el 2FA
+create_account: Crea un compte
+account_created_successfully: Compte creat amb èxit
+auto_fill: Omple automàticament
+corresponding_field: Camp corresponent
 errors:
+  COLLECTION_NOT_FOUND: "La col·lecció no existeix"
+  FIELD_NOT_FOUND: Camp no trobat
+  FORBIDDEN: Prohibit
+  INVALID_CREDENTIALS: Identificador o contrasenya incorrectes
+  INVALID_OTP: Contrasenya d'un sol ús errònia
+  INVALID_PAYLOAD: Payload invàlid
+  INVALID_QUERY: Consulta invàlida
+  ITEM_LIMIT_REACHED: Límit d'elements assolit
+  ITEM_NOT_FOUND: Element no trobat
+  ROUTE_NOT_FOUND: No trobat
+  RECORD_NOT_UNIQUE: Valor duplicat detectat
+  USER_SUSPENDED: Usuari suspès
+  CONTAINS_NULL_VALUES: El camp conté valors nuls
+  UNKNOWN: Error inesperat
+  UNPROCESSABLE_ENTITY: Entitat no processable
+  INTERNAL_SERVER_ERROR: Error inesperat
   NOT_NULL_VIOLATION: El valor no pot ser null
+security: Seguretat
+value_hashed: Aplicat hash segur al valor
+bookmark_name: Nom del marcador...
+create_bookmark: Crea un marcador
+edit_bookmark: Edita el marcador
 bookmarks: Favorits
+presets: Preajustos
+unexpected_error: Error inesperat
+unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més tard.
+copy_details: Copia detalls
+no_app_access: Sense accés a l'aplicació
+no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
+password_reset_sent: T'hem enviat un enllaç segur per restablir la teva contrasenya
+password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
 all_users: Tots els usuaris
 placeholder: Referència
@@ -266,22 +320,115 @@ divider: Separador
 color: Color
 operators:
   contains: Conté
+  empty: Es buida
+  nempty: No es buida
+  all: Conté aquestes claus
+  has: Conté alguna d'aquestes claus
+  intersects: Intersecta
+  nintersects: No intersecta
+  intersects_bbox: Intersecta la caixa delimitadora
+  nintersects_bbox: No intersecta la caixa delimitadora
+loading: Carregant...
+drop_to_upload: Deixa anar per carregar
+item: Element
+items: Elements
+upload_file: Carrega un fitxer
+upload_file_indeterminate: Carregant el fitxer...
+upload_file_success: Fitxer carregat
+upload_files_indeterminate: 'Carregant fitxers {done}/{total}'
+upload_files_success: '{count} fitxers carregats'
+upload_pending: Càrrega pendent
+drag_file_here: Arrossega i deixa anar un fitxer aquí
+click_to_browse: Fes clic per a explorar
+layout_options: Opcions de presentació
+rows: Files
+columns: Columnes
+collection_setup: Configuració de la col·lecció
+optional_system_fields: Camps del sistema opcionals
 value_unique: El valor ha de ser únic
+all_activity: Tota l'activitat
+create_item: Crea un element
 display_template: Mostra la plantilla
+language_display_template: Plantilla de visualització d'idioma
+translations_display_template: Plantilla de visualització de traduccions
+n_items_selected: 'No hi han elements seleccionats | Un element seleccionat | {n} Elements seleccionats'
+per_page: Per pàgina
+all_files: Tots els fitxers
+my_files: Els meus fitxers
+recent_files: Fitxers recents
+create_folder: Crea una carpeta
+folder_name: Nom de la carpeta...
+add_file: Afegeix un fitxer
+replace_file: Reemplaça el fitxer
+no_results: Sense resultats
+no_results_copy: Ajusta o neteja els filtres de cerca per veure els resultats.
+clear_filters: Neteja els filtres
+saves_automatically: Desa automàticament
 role: Rol
+rule: Regla
+user: Usuari
+no_presets: Sense preajustos
+no_presets_copy: Encara no s'han desat preajustos o marcadors.
+no_presets_cta: Preajustament
+presets_only: Només preajustaments
 create: Crear
+on_create: En la creació
+on_update: En l'actualització
 width: Amplada
 height: Alçada
 wysiwyg_options:
   forecolor: Color de primer pla
   backcolor: Color de fons
   codeblock: Codi
+  h6: Heading 6
+  fontselect: Selecciona font
+  fontsizeselect: Selecciona la mida de la font
+  indent: Sagna
+  outdent: Redueix el sagnat
+  undo: Desfés
+  redo: Refés
+  remove: Elimina
+  removeformat: Elimina el format
   selectall: Marca totes
   table: Taula
+  visualaid: Visualitza els elements invisibles
+  source_code: Edita el codi font
+  fullscreen: Pantalla completa
+  directionality: Direcció
 dropdown: Desplegable
 choices: Opcions
+choices_option_configured_incorrectly: Opcions configurades incorrectament
 deselect: Deselecciona
+deselect_all: Desselecciona-ho tot
+other: Altres...
+adding_user: Afegint usuari
+unknown_user: Usuari desconegut
+creating_in: 'Creant element a {collection}'
+editing_in: 'Editant l''element a {collection}'
+creating_unit: 'Creant {unit}'
+editing_unit: 'Editant {unit}'
 editing_in_batch: 'Editant {count} elements'
+no_options_available: Sense opcions disponibles
+settings_data_model: Model de dades
+settings_permissions: Rols i permisos
+settings_project: Ajustaments del projecte
+settings_presets: Preajustos i Marcadors
+one_or_more_options_are_missing: Falta una o més opcions
+scope: Abast
+select: Selecciona...
+layout: Disposició
+tree_view: Vista d'arbre
+changes_are_permanent: Els canvis són permanents
+preset_name_placeholder: Serveix com a predeterminat quan és buit...
+preset_search_placeholder: Cerca consulta...
+editing_preset: Editant el preajust
+layout_preview: Vista preliminar de la disposició
+layout_setup: Configuració de la disposició
+unsaved_changes: Canvis no desats
+unsaved_changes_copy: Estàs segur que vols sortir d'aquesta pàgina?
+discard_changes: Descarta els canvis
+keep_editing: Continua editant
+page_help_collections_overview: '** Visió general de les col·leccions **: Llistes de totes les col·leccions a les quals tens accés.'
 page_help_users_collection: '**Directori de l''usuari**.'
 add_new: Afegir nou
 all: Tots
@@ -312,6 +459,7 @@ fields:
     location: Localització
     metadata: Metadades
     filesize: Mida
+    modified_on: Modificat el
     created_on: Creat el
     created_by: Creat per
     embed: Inclou
@@ -320,6 +468,7 @@ fields:
     width: Amplada
     uploaded_on: Pujat el
     height: Alçada
+    charset: Conjunt de caràcters
     duration: Durada
   directus_users:
     first_name: Nom
@@ -389,9 +538,12 @@ interfaces:
     folder: Carpeta
   tags:
     tags: Etiquetes
+  boolean:
+    label_default: Habilitat
   translations:
     display_template: Mostra la plantilla
   user:
+    user: Usuari
     description: Seleccioneu un usuari existent
     modes:
       dropdown: Desplegable
@@ -410,6 +562,7 @@ displays:
   rating:
     rating: Puntuació
   user:
+    user: Usuari
     description: Mostra un usuari
     avatar: Foto
     name: Nom
