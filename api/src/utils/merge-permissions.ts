@@ -1,14 +1,14 @@
 import { flatten, merge, omit } from 'lodash';
 import { Permission } from '../types';
 
-export function mergePermissions(operator: string, ...permissions: Permission[][]): Permission[] {
+export function mergePermissions(...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);
 
 	const mergedPermissions = allPermissions
 		.reduce((acc, val) => {
 			const key = `${val.collection}__${val.action}__${val.role || '$PUBLIC'}`;
 			const current = acc.get(key);
-			acc.set(key, current ? mergePerm(operator, current, val) : val);
+			acc.set(key, current ? mergePerm(current, val) : val);
 			return acc;
 		}, new Map())
 		.values();
@@ -20,89 +20,62 @@ export function mergePermissions(operator: string, ...permissions: Permission[][
 	return result;
 }
 
-function mergeFilters(
-	operator: string,
-	currentFilters: Record<string, any> | null,
-	newFilters: Record<string, any> | null
-) {
-	if (!newFilters) {
-		return currentFilters;
-	}
+function mergePerm(currentPerm: Permission, newPerm: Permission) {
+	let permissions = currentPerm.permissions;
+	let validation = currentPerm.validation;
+	let fields = currentPerm.fields;
+	let presets = currentPerm.presets;
+	let limit = currentPerm.limit;
 
-	if (currentFilters) {
-		if (Object.keys(currentFilters)[0] === operator) {
-			return { [operator]: [...currentFilters[operator], newFilters] };
-		}
-
-		return { [operator]: [currentFilters, newFilters] };
-	}
-
-	return { [operator]: [newFilters] };
-}
-
-function mergeFields(operator: string, currentItems: string[] | null, newItems: string[] | null): string[] | null {
-	let items = currentItems;
-
-	if (Array.isArray(newItems)) {
-		if (Array.isArray(currentItems)) {
-			if (operator === '_or') {
-				items = [...new Set([...currentItems, ...newItems])];
-			} else {
-				items = newItems.filter((item) => items!.includes(item));
-			}
+	if (newPerm.permissions) {
+		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === '_or') {
+			permissions = {
+				_or: [...currentPerm.permissions._or, newPerm.permissions],
+			};
+		} else if (currentPerm.permissions) {
+			permissions = {
+				_or: [currentPerm.permissions, newPerm.permissions],
+			};
 		} else {
-			items = newItems;
-		}
-
-		if (items.includes('*')) {
-			if (operator === '_or') {
-				items = ['*'];
-			} else if (items.some((item) => item !== '*')) {
-				items = items.filter((item) => item === '*');
-			}
+			permissions = {
+				_or: [newPerm.permissions],
+			};
 		}
 	}
 
-	return items;
-}
-
-function mergePresets(
-	currentPresets: Record<string, any> | null,
-	newPresets: Record<string, any> | null
-): Record<string, any> | null {
-	if (newPresets) {
-		return merge({}, currentPresets, newPresets);
+	if (newPerm.validation) {
+		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === '_or') {
+			validation = {
+				_or: [...currentPerm.validation._or, newPerm.validation],
+			};
+		} else if (currentPerm.validation) {
+			validation = {
+				_or: [currentPerm.validation, newPerm.validation],
+			};
+		} else {
+			validation = {
+				_or: [newPerm.validation],
+			};
+		}
 	}
 
-	return currentPresets;
-}
-
-function mergeLimit(operator: string, currentLimit: number | null, newLimit: number | null): number | null {
-	if (!Number.isInteger(newLimit)) {
-		return currentLimit;
-	}
-
-	if (!Number.isInteger(currentLimit)) {
-		return newLimit;
-	}
-
-	if (operator === '_or') {
-		if (currentLimit === -1 || newLimit === -1) {
-			return -1;
+	if (newPerm.fields) {
+		if (Array.isArray(currentPerm.fields)) {
+			fields = [...new Set([...currentPerm.fields, ...newPerm.fields])];
+		} else {
+			fields = newPerm.fields;
 		}
 
-		return newLimit! > currentLimit! ? newLimit : currentLimit;
-	} else {
-		return newLimit! >= 0 && newLimit! < currentLimit! ? newLimit : currentLimit;
+		if (fields.includes('*')) fields = ['*'];
 	}
-}
 
-function mergePerm(operator: string, currentPerm: Permission, newPerm: Permission) {
-	const permissions = mergeFilters(operator, currentPerm.permissions, newPerm.permissions);
-	const validation = mergeFilters(operator, currentPerm.validation, newPerm.validation);
-	const fields = mergeFields(operator, currentPerm.fields, newPerm.fields);
-	const presets = mergePresets(currentPerm.presets, newPerm.presets);
-	const limit = mergeLimit(operator, currentPerm.limit, newPerm.limit);
+	if (newPerm.presets) {
+		presets = merge({}, presets, newPerm.presets);
+	}
+
+	if (newPerm.limit && newPerm.limit > (currentPerm.limit || 0)) {
+		limit = newPerm.limit;
+	}
 
 	return {
 		...currentPerm,

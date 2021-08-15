@@ -14,3 +14,13 @@ export type Permission = {
 	fields: string[] | null;
 	system?: true;
 };
+
+export type PermissionAggregator = {
+	collection: string;
+	action: PermissionsAction;
+	permissions: (Record<string, any> | null)[];
+	validation: (Filter | null)[];
+	limit: (number | null)[];
+	presets: (Record<string, any> | null)[];
+	fields: (string[] | null)[];
+};

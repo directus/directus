@@ -12,6 +12,7 @@ import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { mergePermissions } from './merge-permissions';
+import { mergeRoles } from './merge-roles';
 import getDatabase from '../database';
 import { getCache } from '../cache';
 import env from '../env';
@@ -89,16 +90,11 @@ export async function getSchema(options?: {
 
 		if (options?.maintenance?.enabled && options.maintenance.role) {
 			const maintenancePermissions: Permission[] = await getPermissionsForRole(database, options.maintenance.role);
-			permissions = mergePermissions(
-				'_and',
-				permissions,
-				maintenancePermissions.map((permission) => ({ ...permission, role: options.accountability!.role }))
-			);
+			permissions = mergeRoles('intersection', permissions, maintenancePermissions);
 		}
 
 		if (options.accountability.app === true) {
 			permissions = mergePermissions(
-				'_or',
 				permissions,
 				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
 			);
