@@ -101,6 +101,20 @@ router.get(
 );
 
 router.get(
+	'/me/permissions',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		res.locals.payload = { data: req.schema.permissions };
+
+		return next();
+	}),
+	respond
+);
+
+router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
