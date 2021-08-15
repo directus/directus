@@ -2,6 +2,7 @@ export * from './app';
 export * from './collections';
 export * from './fields';
 export * from './latency';
+export * from './maintenance';
 export * from './notifications';
 export * from './permissions';
 export * from './presets';

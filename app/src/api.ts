@@ -1,5 +1,5 @@
 import { logout, LogoutReason, refresh } from '@/auth';
-import { useRequestsStore } from '@/stores/';
+import { useRequestsStore, useMaintenanceStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
@@ -42,6 +42,10 @@ export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> =>
 };
 
 export const onResponse = (response: AxiosResponse | Response): AxiosResponse | Response => {
+	const maintenanceStore = useMaintenanceStore();
+	const maintenanceMode = response.headers['x-directus-maintenance-mode'];
+	maintenanceStore.update(maintenanceMode === '1');
+
 	const requestsStore = useRequestsStore();
 	const id = (response.config as RequestConfig)?.id;
 	if (id) requestsStore.endRequest(id);
