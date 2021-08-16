@@ -65,6 +65,7 @@ export default defineComponent({
 .v-list {
 	position: static;
 	display: block;
+	list-style: none;
 	min-width: var(--v-list-min-width);
 	max-width: var(--v-list-max-width);
 	min-height: var(--v-list-min-height);
