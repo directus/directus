@@ -22,6 +22,7 @@ pageClass: page-reference
 - [Offset](#offset) / [Page](#page)
 - [Aggregate and Grouping](#aggregate-and-grouping)
 - [Deep](#deep)
+- [Aliases](#aliases)
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
@@ -600,6 +601,64 @@ query {
 </div>
 
 ---
+
+## Aliases
+
+<div class="two-up">
+<div class="left">
+
+Aliases allow you to make multiple queries to the same collection under different names. For example an alias of
+`translations` could be `all_translations` and they could both be used in the same query.
+
+### Examples
+
+Return both a filtered translations field and an unfiltered `translations` as `all_translations`
+
+```json
+{
+	"articles: {
+		"translations"{
+			"languages_code" {
+				"_eq": "en_us"
+			 }
+		}
+		"all_translations": [
+			{"languages_code": "en_us"},
+			{"languages_code": "ru"},
+			{"languages_code": "en_us"}
+		]
+	}
+}
+```
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?alias[all_translations]=translations&deep[all_translations][filter_][languages_code][_eq]=en_us
+```
+
+### GraphQL
+
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	articles {
+		translations(filter: { code: { _eq: en_us } }) {
+			lanuage_code
+		}
+		all_translations: translations {
+			lanuage_code
+		}
+	}
+}
+```
+
+</div>
+</div>
 
 ## Metadata
 
