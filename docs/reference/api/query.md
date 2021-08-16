@@ -20,9 +20,11 @@ pageClass: page-reference
 - [Sort](#sort)
 - [Limit](#limit)
 - [Offset](#offset) / [Page](#page)
-- [Group](#group)
-- [Aggregate](#aggregate) (sum/avg/min/max/count)
+- [Aggregate and Grouping](#aggregate-and-grouping)
 - [Deep](#deep)
+- [Metadata](#metadata)
+  - [Total Count](#total-count)
+  - [Filter Count](#filter-count)
 - [Export](#export)
 
 </div>
@@ -443,12 +445,58 @@ query {
 
 ---
 
-## Group
+## Aggregate and Grouping
 
 <div class="two-up">
 <div class="left">
 
-Group allows you to group the output items based on (a) shared value(s).
+The aggegate functions all the transformation of fields. Supported functions are avg, avg_distinct, count,
+count_distinct, min, max, sum, sum_distinct.
+
+A group by option can be added to the arguments which groups the return by a specified field.
+
+Aggregated functions can be accessed with the syntax `collection_aggregated`.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Return of an aggregated sum of the revenue field.
+
+```json
+{
+	"articles_aggregated": {
+		"sum": {
+			"revenue": 598
+		}
+	}
+}
+```
+
+Return of an aggregate sum of the revenue field with a group by on authors
+
+```json
+{
+	"articles_aggregated": [
+		{
+			"group": "John",
+			"sum": {
+				"revenue": 475
+			}
+		},
+		{
+			"group": "Smith",
+			"sum": {
+				"revenue": 123
+			}
+		}
+	]
+}
+```
 
 </div>
 <div class="right">
@@ -456,47 +504,23 @@ Group allows you to group the output items based on (a) shared value(s).
 ### REST API
 
 ```
-?group=year
-?group=year,status
+&
+// or
+
 ```
 
 ### GraphQL
 
-TBD
-
-</div>
-</div>
-
----
-
-## Aggregate
-
-<div class="two-up">
-<div class="left">
-
-Aggregate allows you to retrieve the output of several functions in your items. In the syntax listed to the right,
-`<type>` is one of `avg`, `sum`, `min`, `max`, or `count`, `<field>` is the column you'd like to run the function on,
-and `<alias>` is how the result should be returned.
-
-</div>
-<div class="right">
-
-### REST API
-
+```graphql
+query {
+	articles_aggregated(groupBy: "author") {
+		group
+		sum {
+			revenue
+		}
+	}
+}
 ```
-?aggregate[<type>][<field>]=<alias>
-```
-
-##### Example
-
-```
-?aggregate[avg][price]=average_sale
-&aggregate[sum][price]=revenue
-```
-
-### GraphQL
-
-TBD
 
 </div>
 </div>
@@ -571,6 +595,50 @@ query {
 	}
 }
 ```
+
+</div>
+</div>
+
+---
+
+## Metadata
+
+<div class="two-up">
+<div class="left">
+
+Metadata allows you to retrieve some additional information about the items in the collection you're fetching. `*` can
+be used as a wildcard to retrieve all metadata.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Total Count
+
+Returns the total item count of the collection you're querying.
+
+### Filter Count
+
+Returns the item count of the collection you're querying, taking the current filter/search parameters into account.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?meta=total_count
+
+?meta=filter_count
+
+?meta=*
+```
+
+### GraphQL
+
+n/a
 
 </div>
 </div>
