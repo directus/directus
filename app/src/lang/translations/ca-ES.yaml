@@ -119,9 +119,26 @@ no_access: Sense accés
 use_custom: Personalitzat
 nullable: Nullable
 allow_null_value: Permet valors nuls
+allow_multiple: Permet múltiples
+allow_multiple_to_be_open: Permet que s'obrin múltiples
+enter_value_to_replace_nulls: Si us plau, introdueix un nou valor per reemplaçar qualsevol NULL que hi hagi en aquest camp.
+field_standard: Estàndard
 field_file: Un fitxer
 field_files: Multiples fitxers
+field_m2o: Relació M2O
+field_m2a: Relació M2A
+field_o2m: Relació O2M
+field_m2m: Relació M2M
 field_translations: Traduccions
+field_group: Agrupació de camps
+item_permissions: Permisos de l'element
+field_permissions: Permisos del camp
+field_validation: Validació del camp
+field_presets: Preajustos del camp
+permissions_for_role: 'Elements {role} pooden {action}.'
+fields_for_role: 'Camps del {role} poden {action}.'
+validation_for_role: 'El camp {action} determina que el rol {role} ha de obeir.'
+presets_for_role: 'Valor de camp predeterminat per al rol {role}.'
 language: Idioma
 create_field: Crea un camp
 date: Data
