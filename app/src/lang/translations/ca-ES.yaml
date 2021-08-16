@@ -285,6 +285,7 @@ move_to_folder: Mou a la carpeta
 move: Mou
 system: Sistema
 add_field_related: Afegeix camps a la col·lecció relacionada
+interface_label: Interfície
 today: Avui
 yesterday: Ahir
 delete_comment: Elimina comentari
@@ -519,6 +520,10 @@ operators:
   ncontains: No conté
   starts_with: Comença amb
   nstarts_with: No comença amb
+  ends_with: Acaba amb
+  nends_with: No acaba amb
+  between: És entre
+  nbetween: No és entre
   empty: Es buida
   nempty: No es buida
   all: Conté aquestes claus
@@ -539,6 +544,7 @@ upload_files_success: '{count} fitxers carregats'
 upload_pending: Càrrega pendent
 drag_file_here: Arrossega i deixa anar un fitxer aquí
 click_to_browse: Fes clic per a explorar
+interface_options: Opcions d'Interfície
 layout_options: Opcions de presentació
 rows: Files
 columns: Columnes
@@ -573,12 +579,55 @@ presets_only: Només preajustos
 create: Crear
 on_create: En la creació
 on_update: En l'actualització
+read: Llegir
+update: Actualitzar
+select_fields: Selecciona els camps
+format_text: Formata el text
+bold: Negreta
+toggle: Canvia
+icon_on: Icona activada
+icon_off: Icona desactivada
+label: Etiqueta
+image_url: URL de la imatge
+alt_text: Text alternatiu
+media: Mèdia
+quality: Qualitat
 width: Amplada
 height: Alçada
+source: Origen
+url_placeholder: Introdueix una URL...
+display_text: Text a mostrar
+display_text_placeholder: Introdueix el text a mostrar...
+tooltip: Consell
+tooltip_placeholder: Introdueix el consell...
+unlimited: Il·limitat
+open_link_in: Obre l'enllaç a
+new_tab: Nova pestanya
+current_tab: Pestanya actual
 wysiwyg_options:
+  aligncenter: Alinea al centre
+  alignjustify: Justifica
+  alignleft: Alinea a l'esquerra
+  alignnone: Cap alineament
+  alignright: Alinea a la dreta
   forecolor: Color de primer pla
   backcolor: Color de fons
+  bold: Negreta
+  italic: Cursiva
+  underline: Subratllat
+  strikethrough: Tatxat
+  subscript: Subíndex
+  superscript: Superíndex
   codeblock: Codi
+  blockquote: Bloc de cita
+  bullist: Llista amb vinyetes 
+  numlist: Llista ordenada
+  hr: Regle horitzontal
+  link: Afegeix / Edita l'enllaç
+  unlink: Elimina l'enllaç
+  media: Afegeix / Edita el mèdia
+  image: Afegeix / Edita la imatge
+  copy: Copia
   cut: Retalla
   paste: Enganxa
   heading: Encapçalament
@@ -689,8 +738,10 @@ fields:
     comment: Comentari
     user_agent: Agent de l'usuari
     ip: Adreça IP
+    revisions: Revisions
   directus_collections:
     collection: Coŀlecció
+    icon: Icona
     note: Nota
     display_template: Mostra la plantilla
     singleton: Singleton
@@ -773,16 +824,70 @@ fields:
     name: Nom
     status: Estat
 comment: Comentari
+delete_are_you_sure: >-
+  Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+delete_field_are_you_sure: >-
+  Segur que vols eliminar el camp "{field}"? Aquesta acció no es pot desfer.
 description: Descripció
 done: Fet
 duplicate: Duplicat
 email: Correu electrònic
 embed: Inclou
+fallback_icon: Icona de reserva
 field: Camp | Camps
+file: Fitxer
+file_library: Biblioteca de fitxers
+forgot_password: He oblidat la contrasenya
+icon: Icona
+info: Informació
+normal: Normal
+success: Èxit
+warning: Advertencia
+danger: Perill
+junction_collection: Unió de col·leccions
+latency: Latència
+login: Entra
+my_activity: La meva activitat
+not_authenticated: No autenticat
+authenticated: Autenticat
+options: Opcions
 otp: Contrasenya d'un sol ús
 password: Contrasenya
+permissions: Permisos
+relationship: Relacions
+reset: Restablir
+reset_password: Restableix la contrasenya
+revisions: Revisions
+revert: Desfés
+save: Desa
+schema: Esquema
+search: Cerca
+select_existing: Selecciona existent
+select_field_type: Selecciona el tipus de camp
+select_interface: Selecciona la interfície
+settings: Configuració
+sign_in: Inicia sessió
+sign_out: Tanca la sessió
+sign_out_confirm: Estàs segur que vols tancar la sessió?
+something_went_wrong: Alguna cosa no ha anat bé.
+sort_direction: Direcció de l'ordenació
+sort_asc: Ordre ascendent
+sort_desc: Ordre descendent
 template: Plantilla
+require_value_to_be_set: Requereix un valor
+translation: Traducció
+value: Valor
+view_project: Veure el projecte
+report_error: Notifica un error
+start: Comença
 interfaces:
+  group-accordion:
+    name: Acordió
+    description: Mostra els camps o els grups com a seccions de l'acordió
+    start: Comença
+    all_closed: Tots tancats
+    first_opened: Primer obert
+    all_opened: Tots oberts
   presentation-links:
     primary: Primari
   input-code:
@@ -803,19 +908,63 @@ interfaces:
     divider: Separador
   select-dropdown:
     choices_value_placeholder: Introdueix un valor...
+  file:
+    file: Fitxer
   files:
     files: Arxius
+    description: Selecciona o carrega múltiples fitxers
   input-hash:
     hash: Hash
+    description: Entra un valor per aplicar-hi hash
+    masked: Enmascarat
+    masked_label: Amaga els valors "cert"
+  select-icon:
+    icon: Icona
+    description: Selecciona la icona d'un desplegable
+    search_for_icon: Cerca una icona...
+  file-image:
+    description: Selecciona o carrega una imatge
+  system-interface:
+    interface: Interfície
+    description: Selecciona una interfície existent
+    placeholder: Selecciona una interfície...
+  system-interface-options:
+    interface-options: Opcions d'Interfície
+    description: Un modal per la selecció de les opcions d'interfície
+  list-m2m:
+    many-to-many: Molts a molts
+    description: Selecciona múltiples elements d'unió relacionats
   select-dropdown-m2o:
+    many-to-one: Molts a un
+    description: Selecciona un únic element relacionat
     display_template: Mostra la plantilla
+  input-rich-text-md:
+    markdown: Markdown
+    description: Entra i previsualitza el markdown
+    customSyntax: Blocs personalitzats
+    customSyntax_label: Afegeix tipus de sintaxi personalitzats
+    customSyntax_add: Afegeix sintaxi personalitzada
+    box: Block / Inline
+    imageToken: Testimoni d'Imatge
+    imageToken_label: Quin testimoni (estàtic) a afegir a els origen de la imatge
   map:
+    map: Mapa
+    description: Selecciona una localització al mapa
     zoom: Zoom
+    geometry_type: Tipus geometria
+    geometry_format: Format geometria
+    default_view: Vista predeterminada
+    invalid_options: Opcions no vàlides
+    invalid_format: Format no vàlid ({format})
+    unexpected_geometry: Esperat {expected}, obtingut {got}.
   system-folder:
     folder: Carpeta
   tags:
     tags: Etiquetes
+  input:
+    mask: Enmascarat
   boolean:
+    toggle: Canvia
     label_default: Habilitat
   translations:
     display_template: Mostra la plantilla
@@ -827,6 +976,8 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Icona activada
+    icon_off: Icona desactivada
   collection:
     collection: Coŀlecció
   color:
@@ -834,8 +985,12 @@ displays:
   datetime:
     datetime: Data i hora
     format: Format
+  file:
+    file: Fitxer
   filesize:
     filesize: Mida del fitxer
+  icon:
+    icon: Icona
   image:
     circle: Cercle
   labels:
@@ -860,4 +1015,5 @@ layouts:
     compact: Compacta
     cozy: Acollidora
   map:
+    map: Mapa
     field: Geometria
