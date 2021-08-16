@@ -1064,18 +1064,48 @@ interfaces:
   input:
     input: Entrada
     description: Entra manualment un valor
+    trim: Elimina espais
+    trim_label: Elimina espais de l'inici i el final
     mask: Enmascarat
+    mask_label: Amaga el valor real
+    clear: Valor netejat
+    clear_label: Desa com una cadena buida
+    minimum_value: Valor mínim
+    maximum_value: Valor màxim
+    step_interval: Interval del pas
+    slug: Slugify
+    slug_label: Fes URL segura el valor entrat
+  input-multiline:
+    textarea: Textarea
+    description: Entra text multilínia
   boolean:
     toggle: Canvia
+    description: Canvia entre Encés i apagat
+    label_placeholder: Introdueix una etiqueta...
     label_default: Habilitat
   translations:
     display_template: Mostra la plantilla
+    no_collection: No hi ha col·leccions
+  list-o2m-tree-view:
+    description: Vista d'arbre per a elements un-a-molts anidats recursivament
+    recursive_only: La interfície de vista d'arbre només funciona per a relacions recursives.
   user:
     user: Usuari
     description: Seleccioneu un usuari existent
+    select_mode: Selecciona el mode
     modes:
+      auto: Auto
       dropdown: Desplegable
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Un editor de text enriquit escrivint contingut HTML
+    toolbar: Barra d'eines
+    custom_formats: Formats personalitzats
+    options_override: Sobreescriptura d'opcions
   input-autocomplete-api:
+    input-autocomplete-api: Entrada autocompleta (API)
+    description: Una cerca typeahead per valors d'API externes.
     results_path: Camí dels resultats
     value_path: Camí del Valor
     trigger: Disparador
@@ -1152,26 +1182,59 @@ displays:
     default_foreground: Primer pla predeterminat
     default_background: Fons prederterminat
     format_label: Formata cada etiqueta
+    show_as_dot: Mostra com a punt
     choices_value_placeholder: Introdueix un valor...
+    choices_text_placeholder: Introdueix un text...
+  mime-type:
+    mime-type: TIpus MIME
+    description: Mostra el tipus MIME d'un fitxer
+    extension_only: Només l'extensió
+    extension_only_label: Mostra només l'extensió
   rating:
     rating: Puntuació
+    description: Visualitza un número d'estrelles relatiu al valor màxim
+    simple: Simple
+    simple_label: Mostra estrelles en un format simple
+  raw:
+    raw: Calor en brut
+  related-values:
+    related-values: Valors relacionats
+    description: Mostra valors relacionats
   user:
     user: Usuari
     description: Mostra un usuari
     avatar: Foto
     name: Nom
     both: Ambdós
+    circle_label: Mostra l'usuari en un cercle
 layouts:
   cards:
     cards: Targetes
     image_source: Recurs d'imatge
+    image_fit: Ajusta l'imatge
+    crop: Retalla
+    contain: Conté
     title: Títol
     subtitle: Subtítol
   tabular:
     tabular: Taula
+    fields: Camps
+    spacing: Espaiat
     comfortable: Còmoda
     compact: Compacta
     cozy: Acollidora
+  calendar:
+    calendar: Calendari
+    start_date_field: Camp de data d'inici
+    end_date_field: Camp de data de fi
   map:
     map: Mapa
+    basemap: Mapa base
+    layers: Capes
+    edit_custom_layers: Edita capes
+    cluster_options: Opcions de clustering
+    cluster: Activa el clustering
+    cluster_radius: Radi del cluster
+    cluster_minpoints: Mida mínima del clúster
+    cluster_maxzoom: Zoom màxim per clustering
     field: Geometria
