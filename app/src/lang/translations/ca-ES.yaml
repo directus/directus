@@ -423,13 +423,47 @@ rotate: Gira
 all_users: Tots els usuaris
 delete_collection: Elimina la col·lecció
 update_collection_success: Actualitza la col·lecció
+delete_collection_success: Col·lecció eliminada
+start_end_of_count_items: '{start}-{end} de {count} elements'
+start_end_of_count_filtered_items: '{start}-{end} de {count} elements filtrats'
+one_item: '1 element'
+one_filtered_item: '1 element filtrat'
+delete_collection_are_you_sure: >-
+  Estàs segur d'eliminar aquesta col·lecció? Això també eliminarà tots els elements que contè. Aquesta acció és permanent.
+collections_shown: Col·leccions mostrades
+visible_collections: Col·leccions visibles
+hidden_collections: Col·leccions amagades
+show_hidden_collections: Mosta les col·leccions amagades
+hide_hidden_collections: Amaga les col·leccions amagades
+unmanaged_collections: Col·leccions no configurades
+system_collections: Col·leccions del sistema
 placeholder: Referència
 icon_left: Icona a l'esquerra
 icon_right: Icona a la dreta
+count_other_revisions: '{count} revisions més'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
 monospace: Espai únic
 divider: Separador
 color: Color
+circle: Cercle
+empty_item: Element buit
+log_in_with: 'Inicia sessió amb {provider}'
+advanced_settings: Ajustaments avançats
+advanced_filter: Filtre avançat
+delete_advanced_filter: Elimina filtre
+change_advanced_filter_operator: Operador Canvia
 operators:
+  eq: És igual
+  neq: No és igual
+  lt: Menor que
+  gt: Major que
+  lte: Menor o igual que
+  gte: Major o igual que
+  in: És un de
+  nin: No és un de
+  null: És nul
   contains: Conté
   empty: Es buida
   nempty: No es buida
@@ -491,6 +525,14 @@ wysiwyg_options:
   forecolor: Color de primer pla
   backcolor: Color de fons
   codeblock: Codi
+  cut: Retalla
+  paste: Enganxa
+  heading: Encapçalament
+  h1: Capçalera 1
+  h2: Encapçalament 2
+  h3: Encapçalament 3
+  h4: Encapçalament 4
+  h5: Encapçalament 5
   h6: Heading 6
   fontselect: Selecciona font
   fontsizeselect: Selecciona la mida de la font
@@ -554,14 +596,34 @@ page_help_files_collection: >-
 page_help_files_item: >-
   ** Detall de fitxer **: Formulari per gestionar metadades de fitxers, editar el recurs original i actualitzar la configuració d'accés.
 page_help_settings_project: "** Configuració del projecte **: Opcions de configuració global del vostre projecte."
+page_help_settings_datamodel_collections: >-
+  ** Model de dades: Col·leccions **: Llista de totes les col·leccions disponibles. Això inclou col·leccions visibles, ocultes i del sistema, així com taules de bases de dades no gestionades que es poden afegir.
+page_help_settings_datamodel_fields: >-
+  ** Model de dades: col·lecció **: Un formulari per gestionar aquesta col·lecció i els seus camps.
+page_help_settings_roles_collection: '** Fons d''exploració **: Llista dels rols Administrador, públic i personalitzats.'
+page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
+page_help_settings_presets_collection: >-
+  ** Cerca preajustos **: Llista de tots els preajustos del projecte, inclosos: marcadors d'usuaris, de rol i globals, així com les vistes predeterminades.
+page_help_settings_presets_item: >-
+  ** Detall de preajust **: Un formulari per gestionar adreces d'interès i preajustos de col·lecció predeterminats.
+page_help_settings_webhooks_collection: '** Examinar Webhooks **: Llista tots els webhooks del projecte.'
+page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
 page_help_users_collection: '**Directori de l''usuari**.'
+page_help_users_item: >-
+  ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
+activity_feed: Canal d'activitat
 add_new: Afegir nou
+create_new: Crea un nou
 all: Tots
+none: Cap
+no_layout_collection_selected_yet: No s'ha seleccionat cap disposició / col·lecció
 batch_delete_confirm: >-
   No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. | Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
 cancel: Cancel · la
 collection: Coŀlecció
 collections: Col·leccions
+singleton: Singleton
+singleton_label: Tracta com un objecte únic
 fields:
   directus_activity:
     item: Clau primaria de l'ítem
@@ -576,6 +638,7 @@ fields:
     collection: Coŀlecció
     note: Nota
     display_template: Mostra la plantilla
+    singleton: Singleton
     sort_field: Camp d'ordenació
   directus_files:
     title: Títol
@@ -617,6 +680,7 @@ fields:
     last_access: Últim accés
   directus_fields:
     note: Nota
+    singleton: Singleton
     translation: Traducció de noms de camps
     display_template: Plantilla
   directus_roles:
@@ -689,6 +753,8 @@ displays:
     format: Format
   filesize:
     filesize: Mida del fitxer
+  image:
+    circle: Cercle
   labels:
     choices_value_placeholder: Introdueix un valor...
   rating:
