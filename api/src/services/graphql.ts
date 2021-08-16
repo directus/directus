@@ -806,11 +806,18 @@ export class GraphQLService {
 						return result;
 					},
 				});
+
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: `${collection.collection}_aggregated`,
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
-						groupBy: GraphQLString,
+						groupBy: schemaComposer.createEnumTC({
+							name: `${collection.collection}_group_by`,
+							values: Object.values(collection.fields).reduce((acc, field) => {
+								acc[field.field] = { value: field.field };
+								return acc;
+							}, {} as Record<string, { value: string }>),
+						}),
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -819,6 +826,7 @@ export class GraphQLService {
 						return result;
 					},
 				});
+
 				if (collection.singleton === false) {
 					ReadCollectionTypes[collection.collection].addResolver({
 						name: `${collection.collection}_by_id`,
