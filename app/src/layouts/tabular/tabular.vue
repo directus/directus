@@ -3,11 +3,11 @@
 		<v-table
 			v-if="loading || itemCount > 0"
 			ref="table"
-			v-model="props.selection"
-			v-model:headers="tableHeaders"
+			v-model="selectionWritable"
+			v-model:headers="tableHeadersWritable"
 			class="table"
 			fixed-header
-			:show-select="props.readonly ? false : props.selection !== undefined"
+			:show-select="readonly ? false : selection !== undefined"
 			show-resize
 			must-sort
 			:sort="tableSort"
@@ -31,7 +31,7 @@
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
-					:collection="props.collection"
+					:collection="collection"
 					:field="header.field.field"
 				/>
 			</template>
@@ -55,7 +55,7 @@
 							:model-value="`${limit}`"
 							:items="['25', '50', '100', '250', '500', ' 1000']"
 							inline
-							@update:model-value="limit = +$event"
+							@update:model-value="limitWritable = +$event"
 						/>
 					</div>
 				</div>
@@ -81,81 +81,131 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
-
-import { useLayoutState } from '@directus/shared/composables';
+import { ComponentPublicInstance, defineComponent, PropType, ref } from 'vue';
+import useSync from '@/composables/use-sync';
+import useShortcut from '@/composables/use-shortcut';
+import { Field, Item } from '@directus/shared/types';
+import { HeaderRaw } from '@/components/v-table/types';
+import { Collection } from '@/types';
 
 export default defineComponent({
-	setup() {
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		selection: {
+			type: Array as PropType<Item[]>,
+			default: () => [],
+		},
+		readonly: {
+			type: Boolean,
+			required: true,
+		},
+		tableHeaders: {
+			type: Array as PropType<HeaderRaw[]>,
+			required: true,
+		},
+		items: {
+			type: Array as PropType<Item[]>,
+			required: true,
+		},
+		loading: {
+			type: Boolean,
+			required: true,
+		},
+		error: {
+			type: Object as PropType<any>,
+			default: null,
+		},
+		totalPages: {
+			type: Number,
+			required: true,
+		},
+		tableSort: {
+			type: Object as PropType<{ by: string; desc: boolean }>,
+			required: true,
+		},
+		onRowClick: {
+			type: Function as PropType<(item: Item) => void>,
+			required: true,
+		},
+		onSortChange: {
+			type: Function as PropType<(newSort: { by: string; desc: boolean }) => void>,
+			required: true,
+		},
+		tableRowHeight: {
+			type: Number,
+			required: true,
+		},
+		page: {
+			type: Number,
+			required: true,
+		},
+		toPage: {
+			type: Function as PropType<(newPage: number) => void>,
+			required: true,
+		},
+		itemCount: {
+			type: Number,
+			default: null,
+		},
+		fields: {
+			type: Array as PropType<string[]>,
+			required: true,
+		},
+		limit: {
+			type: Number,
+			required: true,
+		},
+		primaryKeyField: {
+			type: Object as PropType<Field>,
+			default: null,
+		},
+		info: {
+			type: Object as PropType<Collection>,
+			default: null,
+		},
+		sortField: {
+			type: String,
+			default: null,
+		},
+		changeManualSort: {
+			type: Function as PropType<(data: any) => Promise<void>>,
+			required: true,
+		},
+		activeFilterCount: {
+			type: Number,
+			required: true,
+		},
+		resetPresetAndRefresh: {
+			type: Function as PropType<() => Promise<void>>,
+			required: true,
+		},
+		selectAll: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+	},
+	emits: ['update:selection', 'update:tableHeaders', 'update:limit'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const layoutState = useLayoutState();
-		const {
-			props,
-			table,
-			tableHeaders,
-			items,
-			loading,
-			error,
-			totalPages,
-			tableSort,
-			onRowClick,
-			onSortChange,
-			tableRowHeight,
-			page,
-			toPage,
-			itemCount,
-			totalCount,
-			fieldsInCollection,
-			fields,
-			limit,
-			activeFields,
-			tableSpacing,
-			primaryKeyField,
-			info,
-			showingCount,
-			sortField,
-			changeManualSort,
-			hideDragImage,
-			activeFilterCount,
-			refresh,
-			resetPresetAndRefresh,
-			availableFields,
-		} = toRefs(layoutState.value);
+		const selectionWritable = useSync(props, 'selection', emit);
+		const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
+		const limitWritable = useSync(props, 'limit', emit);
 
-		return {
-			t,
-			props,
-			table,
-			tableHeaders,
-			items,
-			loading,
-			error,
-			totalPages,
-			tableSort,
-			onRowClick,
-			onSortChange,
-			tableRowHeight,
-			page,
-			toPage,
-			itemCount,
-			totalCount,
-			fieldsInCollection,
-			fields,
-			limit,
-			activeFields,
-			tableSpacing,
-			primaryKeyField,
-			info,
-			showingCount,
-			sortField,
-			changeManualSort,
-			hideDragImage,
-			activeFilterCount,
-			refresh,
-			resetPresetAndRefresh,
-			availableFields,
-		};
+		const table = ref<ComponentPublicInstance>();
+
+		useShortcut(
+			'meta+a',
+			() => {
+				props.selectAll();
+			},
+			table
+		);
+
+		return { t, selectionWritable, tableHeadersWritable, limitWritable, table };
 	},
 });
 </script>
