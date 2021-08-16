@@ -56,7 +56,9 @@
 		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"cleanup": "rimraf dist",
 		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect --exit-child -- src/start.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/index.ts"
+		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/index.ts",
+		"test": "jest --coverage",
+		"test:watch": "jest --watchAll"
 	},
 	"engines": {
 		"node": ">=12.20.0"
@@ -170,6 +172,7 @@
 		"@types/express-session": "1.17.4",
 		"@types/fs-extra": "9.0.12",
 		"@types/inquirer": "7.3.3",
+		"@types/jest": "27.0.1",
 		"@types/js-yaml": "4.0.2",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.4",
@@ -189,6 +192,8 @@
 		"@types/wellknown": "0.5.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
+		"jest": "27.0.6",
+		"ts-jest": "27.0.4",
 		"ts-node-dev": "1.1.8",
 		"typescript": "4.3.5"
 	}
