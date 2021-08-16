@@ -293,6 +293,7 @@ export default defineComponent({
 									_in: existingPrimaryKeys.value,
 								},
 							},
+							limit: -1,
 						},
 					});
 
@@ -399,6 +400,7 @@ export default defineComponent({
 									_eq: props.primaryKey,
 								},
 							},
+							limit: -1,
 						},
 					});
 

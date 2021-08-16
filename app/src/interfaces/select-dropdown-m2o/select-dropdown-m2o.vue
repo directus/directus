@@ -211,13 +211,14 @@ export default defineComponent({
 			const currentPrimaryKey = computed<string | number>(() => {
 				if (!currentItem.value) return '+';
 				if (!props.value) return '+';
+				if (!relatedPrimaryKeyField.value) return '+';
 
 				if (typeof props.value === 'number' || typeof props.value === 'string') {
-					return props.value;
+					return props.value!;
 				}
 
-				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in props.value) {
-					return props.value[relatedPrimaryKeyField.value.field];
+				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in (props.value ?? {})) {
+					return props.value?.[relatedPrimaryKeyField.value.field] ?? '+';
 				}
 
 				return '+';
@@ -226,11 +227,14 @@ export default defineComponent({
 			return { setCurrent, currentItem, loading, currentPrimaryKey };
 
 			function setCurrent(item: Record<string, any>) {
+				if (!relatedPrimaryKeyField.value) return;
 				currentItem.value = item;
 				emit('input', item[relatedPrimaryKeyField.value.field]);
 			}
 
 			async function fetchCurrent() {
+				if (!relatedPrimaryKeyField.value || !relatedCollection.value) return;
+
 				loading.value = true;
 
 				const fields = requiredFields.value || [];
@@ -242,7 +246,7 @@ export default defineComponent({
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
 						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value)}`;
+						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value!)}`;
 
 					const response = await api.get(endpoint, {
 						params: {
@@ -274,6 +278,7 @@ export default defineComponent({
 
 			async function fetchItems() {
 				if (items.value !== null) return;
+				if (!relatedCollection.value || !relatedPrimaryKeyField.value) return;
 
 				loading.value = true;
 
@@ -304,6 +309,8 @@ export default defineComponent({
 			}
 
 			async function fetchTotalCount() {
+				if (!relatedCollection.value) return;
+
 				const endpoint = relatedCollection.value.collection.startsWith('directus_')
 					? `/${relatedCollection.value.collection.substring(9)}`
 					: `/items/${relatedCollection.value.collection}`;
@@ -325,10 +332,15 @@ export default defineComponent({
 			});
 
 			const relatedCollection = computed(() => {
-				return collectionsStore.getCollection(relation.value.related_collection!)!;
+				if (!relation.value?.related_collection) return null;
+				return collectionsStore.getCollection(relation.value.related_collection)!;
 			});
 
-			const { primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection.value.collection);
+			const relatedPrimaryKeyField = computed(() => {
+				if (!relatedCollection.value?.collection) return null;
+				const { primaryKeyField } = useCollection(relatedCollection.value?.collection);
+				return primaryKeyField.value;
+			});
 
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
@@ -350,11 +362,12 @@ export default defineComponent({
 		function usePreview() {
 			const displayTemplate = computed(() => {
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template || `{{ ${relatedPrimaryKeyField.value.field} }}`;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relatedPrimaryKeyField?.value?.field || ''} }}`;
 			});
 
 			const requiredFields = computed(() => {
-				if (!displayTemplate.value) return null;
+				if (!displayTemplate.value || !relatedCollection.value) return null;
+
 				return adjustFieldsForDisplays(
 					getFieldsFromTemplate(displayTemplate.value),
 					relatedCollection.value.collection
@@ -381,13 +394,14 @@ export default defineComponent({
 
 			const selection = computed<(number | string)[]>(() => {
 				if (!props.value) return [];
+				if (!relatedPrimaryKeyField.value) return [];
 
-				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in props.value) {
-					return [props.value[relatedPrimaryKeyField.value.field]];
+				if (typeof props.value === 'object' && relatedPrimaryKeyField.value.field in (props.value ?? {})) {
+					return [props.value![relatedPrimaryKeyField.value.field]];
 				}
 
 				if (typeof props.value === 'string' || typeof props.value === 'number') {
-					return [props.value];
+					return [props.value!];
 				}
 
 				return [];
@@ -418,6 +432,8 @@ export default defineComponent({
 			return { edits, stageEdits };
 
 			function stageEdits(newEdits: Record<string, any>) {
+				if (!relatedPrimaryKeyField.value) return;
+
 				// Make sure we stage the primary key if it exists. This is needed to have the API
 				// update the existing item instead of create a new one
 				if (currentPrimaryKey.value && currentPrimaryKey.value !== '+') {
