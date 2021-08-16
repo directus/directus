@@ -47,7 +47,7 @@ describe('get cache key', () => {
 		expect(hasDuplicate).toBeFalsy();
 	});
 
-	test('should create a unique key for GraphQL reuqests with different variables', () => {
+	test('should create a unique key for GraphQL requests with different variables', () => {
 		const query = 'query Test ($name: String) { test (filter: { name: { _eq: $name } }) { id } }';
 		const operationName = 'test';
 		const variables1 = JSON.stringify({ name: 'test 1' });
