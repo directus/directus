@@ -22,7 +22,7 @@
 edit_field: Edita el camp
 conditions: Condicions
 maps: Mapes
-item_revision: Revisió de l'item
+item_revision: Revisió de l'element
 duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
@@ -46,7 +46,7 @@ edited: Valor editat
 required: Requerit
 required_for_app_access: Requerit per l'accés a l'aplicació
 requires_value: Requereix valor
-create_preset: Crear un Predefinit
+create_preset: Crear un preajust
 create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
@@ -233,8 +233,16 @@ updated_on: Actualitzat el
 updated_by: Actualitzat per
 primary_key: Clau primària
 foreign_key: Clau forana
+finish_setup: Finalitza la configuració
+dismiss: Descarta
+raw_value: Valor en brut
+edit_raw_value: Edita valor en brut
+enter_raw_value: Introdueix valor en brut...
 clear_value: Esborra el valor
+reset_to_default: Restableix valors predeterminats
 undo_changes: Desfer els canvis
+notifications: Notificacions
+show_all_activity: Mostra tota l'activitat
 page_not_found: Pàgina no trobada
 page_not_found_body: No hem trobat la pàgina que cerques.
 confirm_revert: Confirma Revertir
@@ -338,9 +346,51 @@ creating_new_collection: Creant una nova col·lecció
 created_by: Creat per
 created_on: Creat el
 creating_collection_info: Fica nom a la col·lecció i estableix la seu camp "clau" únic...
+creating_collection_system: Habilita i reanomena qualsevol d'aquests camps opcionals.
+auto_increment_integer: Sencer auto-incremental
+generated_uuid: UUID Generat
+manual_string: String entrada manualment
+save_and_create_new: Desa i crea un nou
+save_and_stay: Desa i queda't
+save_as_copy: Desa com a còpia
+add_existing: Afegeix existent
+creating_items: Creant elements
+enable_create_button: Habilita el botó de creació
+selecting_items: Seleccionant elements
+enable_select_button: Habilita el botó de selecció
 comments: Comentaris
+no_comments: No hi ha comentaris, encara
+click_to_expand: Fes clic per ampliar
+select_item: Selecciona element
+no_items: No hi ha elements
+search_items: Cerca elements...
+disabled: Deshabilitat
+information: Informació
+report_bug: Informa d'un error
+request_feature: Sol·licita una millora
+interface_not_found: 'Interficie "{interface}" no trobada.'
+reset_interface: Restableix la interfície
+display_not_found: 'Disposició "{display}" no trobada.'
+reset_display: Restableix disposició
+list-m2a: Constructor (M2A)
+item_count: 'No hi ha elements | Un element | {count} elements'
+no_items_copy: Encara no hi ha elements en aquesta col·lecció.
+file_count: 'No hi ha fitxers | Un fitxer | {count} fitxers'
+no_files_copy: No hi ha fitxers aquí.
+user_count: 'No hi ha usuaris | Un usuari | {count} usuaris'
+no_users_copy: Encara no hi ha usuaris en aquest rol.
+webhooks_count: 'No hi ha webhooks | Un webhook | {count} webhooks'
+no_webhooks_copy: Encara no hi ha webhooks.
+all_items: Tots els elements
+any: Qualsevol
+csv: CSV
+no_collections: No hi ha col·leccions
 create_collection: Crea una col·lecció
+no_collections_copy_admin: Encara no hi ha cap col·lecció. Fes clic al botó següent per començar.
+no_collections_copy: Encara no hi ha cap col·lecció. Posa't en contacte amb l'administrador del sistema.
 relationship_not_setup: La relació no s'ha configurat correctament
+display_template_not_setup: L'opció de plantilla de disposió no està configurada
+collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
 active: Activa
 inactive: Inactiva
@@ -624,6 +674,7 @@ collection: Coŀlecció
 collections: Col·leccions
 singleton: Singleton
 singleton_label: Tracta com un objecte únic
+system_fields_locked: Els camps del sistema estan bloquejats i no poden editar-se
 fields:
   directus_activity:
     item: Clau primaria de l'ítem
@@ -639,14 +690,25 @@ fields:
     note: Nota
     display_template: Mostra la plantilla
     singleton: Singleton
+    translations: Traduccions de noms de col·lecció
+    archive_app_filter: Filtre d'arxivat de l'aplicació
+    archive_value: Valor d'arxivat
+    unarchive_value: Valor per desarxivar
     sort_field: Camp d'ordenació
+    accountability: Traça d'activitat i revisió
   directus_files:
+    $thumbnail: Miniatura
     title: Títol
     description: Descripció
     tags: Etiquetes
     location: Localització
+    storage: Emmagatzematge
+    filename_disk: Nom del fitxer (Disc)
+    filename_download: Nom del fitxer (Descàrrega)
     metadata: Metadades
+    type: Tipus Mime
     filesize: Mida
+    modified_by: Modificat per
     modified_on: Modificat el
     created_on: Creat el
     created_by: Creat per
@@ -668,16 +730,32 @@ fields:
     title: Títol
     description: Descripció
     tags: Etiquetes
+    user_preferences: Preferències de l'usuari
     language: Idioma
     theme: Tema
+    theme_auto: Automàtic (basat en el sistema)
+    theme_light: Mode clar
+    theme_dark: Mode fosc
     tfa_secret: Autenticació de doble factor
+    admin_options: Opcions d'administrador
     status: Estat
+    status_draft: Esborrany
     status_invited: Inactiva
     status_active: Activa
+    status_suspended: Suspès
+    status_archived: Arxivat
     role: Rol
     token: Token
+    token_placeholder: Entra un testimoni d'accés (token) segur...
     last_page: Última pàgina
     last_access: Últim accés
+  directus_settings:
+    project_name: Nom del projecte
+    project_url: URL del projecte
+    project_color: Color del projecte
+    project_logo: Logotip del projecte
+    public_pages: Pàgines públiques
+    public_foreground: Primer pla públic
   directus_fields:
     note: Nota
     singleton: Singleton
@@ -715,6 +793,7 @@ interfaces:
     datetime: Data i hora
   system-display-template:
     display-template: Mostra la plantilla
+    collection_field_not_setup: L'opció de camp de col·lecció no està configurada
     select_a_collection: Selecciona una col·lecció
   presentation-divider:
     divider: Separador
