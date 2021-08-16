@@ -478,7 +478,7 @@ Return of an aggregated sum of the revenue field.
 }
 ```
 
-Return of an aggregate sum of the revenue field with a group by on authors
+Return of an aggregate sum of the revenue field with a group by on `author`
 
 ```json
 {
@@ -505,7 +505,7 @@ Return of an aggregate sum of the revenue field with a group by on authors
 ### REST API
 
 ```
-?alias[articles_aggregated]=articles&sum[revenue]
+?aggregate[sum]=revenue&groupBy=author
 ```
 
 ### GraphQL
@@ -614,18 +614,28 @@ Return both a filtered translations field and an unfiltered `translations` as `a
 
 ```json
 {
-	"articles: {
-		"translations"{
-			"languages_code" {
-				"_eq": "en_us"
-			 }
-		}
-		"all_translations": [
-			{"languages_code": "en_us"},
-			{"languages_code": "ru"},
-			{"languages_code": "en_us"}
+	"articles: [
+	  {
+        "translations": [],
+        "all_translations": [
+		  {
+			"id": "2"
+		  }
 		]
-	}
+      },
+      {
+        "translations": [
+          {
+            "id": "4"
+          }
+        ],
+        "all_translations": [
+          {
+            "id": "4"
+          }
+        ]
+      }
+	]
 }
 ```
 
@@ -635,7 +645,7 @@ Return both a filtered translations field and an unfiltered `translations` as `a
 ### REST API
 
 ```
-?alias[all_translations]=translations&deep[all_translations][filter_][languages_code][_eq]=en_us
+?translations[filter][id][_eq]=4&alias[all_translations]=translations
 ```
 
 ### GraphQL
@@ -645,11 +655,11 @@ _Natively supported in GraphQL:_
 ```graphql
 query {
 	articles {
-		translations(filter: { code: { _eq: en_us } }) {
-			lanuage_code
+		translations(filter: { id: { _eq: 4 } }) {
+			id
 		}
 		all_translations: translations {
-			lanuage_code
+			id
 		}
 	}
 }
