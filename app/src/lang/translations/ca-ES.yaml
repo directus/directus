@@ -933,6 +933,7 @@ require_value_to_be_set: Requereix un valor
 translation: Traducció
 value: Valor
 view_project: Veure el projecte
+weeks: { }
 report_error: Notifica un error
 start: Comença
 interfaces:
@@ -943,28 +944,85 @@ interfaces:
     all_closed: Tots tancats
     first_opened: Primer obert
     all_opened: Tots oberts
+    accordion_mode: Mode d'acordió
+    max_one_section_open: Màxim 1 secció oberta
   presentation-links:
+    presentation-links: Botó d'enllaços
+    links: Enllaços
+    description: Botons d'enllaços configurables per a llançar URLs dinàmiques
+    style: Estil
     primary: Primari
+    link: Enllaços
+    button: Botons
+    error: No es pot dur a terme l'acció
+  select-multiple-checkbox:
+    checkboxes: Camps de selecció (Checkboxes)
+    description: Selecciona entre múltiples opcions via camps de selecció
+    allow_other: Permet altres
+    show_more: 'Mostra {count} més'
+    items_shown: Elements mostrats
+  select-multiple-checkbox-tree:
+    name: Arbre de camps de selecció (checkboxes Tree)
+    description: Selecciona entre múltiples opcions via camps de selecció (checkboxes)
+    value_combining: Valor combinant
+    value_combining_note: Controla quin valor és emmagatzemant quan es fan les seleccions anidades.
+    show_all: Mostra-ho tot
+    show_selected: Mostra els seleccionts
   input-code:
     code: Codi
+    description: Escriu o comparteix snippets de codi
+    line_number: Número de línia
+    placeholder: Introdueix el codi aquí...
   system-collection:
     collection: Coŀlecció
+    description: Selecciona entre les següents col·leccions
+    include_system_collections: Inclou les col·leccions del sistema
   system-collections:
     collections: Col·leccions
+    description: Selecciona entre les següents col·leccions
+    include_system_collections: Inclou les col·leccions del sistema
   select-color:
     color: Color
+    description: Entra o selecciona un valor de color
+    placeholder: Tria un color...
+    preset_colors: Preajust de colors
+    preset_colors_add_label: Afegeix un nou color...
+    name_placeholder: Introdueix un nom de color...
   datetime:
     datetime: Data i hora
+    description: Introdueix dates i hores
+    include_seconds: Inclou els segons
+    set_to_now: Fixa'l a "Ara"
+    use_24: Utilitza el format de 24 hores
   system-display-template:
     display-template: Mostra la plantilla
+    description: Barreja text estàtic i valors de camp dinàmic
+    collection_field: Camp de col·lecció
     collection_field_not_setup: L'opció de camp de col·lecció no està configurada
     select_a_collection: Selecciona una col·lecció
   presentation-divider:
     divider: Separador
+    description: Etiqueta i divideix els camps en seccions
+    title_placeholder: Introdueix un títol...
+    inline_title: Títol en línia
+    inline_title_label: Mostra el títol dins la línia
+    margin_top: Marge superior
+    margin_top_label: Incrementa el marge superior
   select-dropdown:
+    description: Selecciona el valor del desplegable
+    choices_placeholder: Afegeix una nova opció
+    allow_other: Permet altres
+    allow_other_label: Permet altres valors
+    allow_none: No permetre cap
+    allow_none_label: Permet cap selecció
+    choices_name_placeholder: Introdueix un nom...
     choices_value_placeholder: Introdueix un valor...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Desplegable (Múltiple)
+    description: Selecciona múltiples valors des del desplegable
   file:
     file: Fitxer
+    description: Selecciona o carrega un fitxer
   files:
     files: Arxius
     description: Selecciona o carrega múltiples fitxers
@@ -1237,4 +1295,6 @@ layouts:
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
+    fit_data: Ajusta les dades als límits de la vista
     field: Geometria
+    invalid_geometry: Geometria invàlida
