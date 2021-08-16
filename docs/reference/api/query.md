@@ -505,9 +505,7 @@ Return of an aggregate sum of the revenue field with a group by on authors
 ### REST API
 
 ```
-&
-// or
-
+?alias[articles_aggregated]=articles&sum[revenue]
 ```
 
 ### GraphQL
