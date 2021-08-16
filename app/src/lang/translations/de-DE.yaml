@@ -789,12 +789,19 @@ fields:
     language: Sprache
     theme: Design
     theme_auto: Automatisch (Systemeinstellung verwenden)
+    theme_light: Heller Modus
+    theme_dark: Nachtmodus
     tfa_secret: Zwei-Faktor-Authentifizierung
+    admin_options: Admin-Optionen
     status: Status
+    status_draft: Entwurf
     status_invited: Inaktiv
     status_active: Aktiv
+    status_suspended: Angehalten
+    status_archived: Archiviert
     role: Rolle
     token: Token
+    token_placeholder: Einen sicheren Zugangs-Token eingeben...
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -802,13 +809,17 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farbe
     project_logo: Projekt Logo
+    public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
+    files_and_thumbnails: Dateien & Vorschaubilder
+    storage_default_folder: Standardspeicherordner
     storage_asset_presets: Asset-Presets
     storage_asset_transform: Asset-Transformierung
+    overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
     collection: Sammlungsname
@@ -831,7 +842,12 @@ fields:
     collection_list: Sammlungsnavigation
   directus_webhooks:
     name: Name
+    method: Methode
     status: Status
+    data: Daten
+    data_label: Ereignisdaten senden
+    triggers: Auslöser
+    actions: Aktionen
 field_options:
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
@@ -854,10 +870,13 @@ referential_action_cascade: Lösche das {collection} Element (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
+continue_label: Weiter
 continue_as: >-
   {name} ist derzeit authentifiziert. Wenn du dieses Konto erkennst, drücke fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
+default_label: Standard
+delete_label: Löschen
 delete_are_you_sure: >-
   Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
@@ -909,11 +928,17 @@ sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
+require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
 report_error: Fehler melden
+start: Start
 interfaces:
+  group-accordion:
+    name: Akkordeon
+    description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
+    start: Start
   presentation-links:
     presentation-links: Button-Links
     links: Links
