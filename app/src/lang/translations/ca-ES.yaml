@@ -514,7 +514,11 @@ operators:
   in: És un de
   nin: No és un de
   null: És nul
+  nnull: No és null
   contains: Conté
+  ncontains: No conté
+  starts_with: Comença amb
+  nstarts_with: No comença amb
   empty: Es buida
   nempty: No es buida
   all: Conté aquestes claus
