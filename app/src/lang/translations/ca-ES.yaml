@@ -123,6 +123,7 @@ allow_multiple: Permet múltiples
 allow_multiple_to_be_open: Permet que s'obrin múltiples
 enter_value_to_replace_nulls: Si us plau, introdueix un nou valor per reemplaçar qualsevol NULL que hi hagi en aquest camp.
 field_standard: Estàndard
+field_presentation: Presentació i àlies
 field_file: Un fitxer
 field_files: Multiples fitxers
 field_m2o: Relació M2O
@@ -139,10 +140,43 @@ permissions_for_role: 'Elements {role} pooden {action}.'
 fields_for_role: 'Camps del {role} poden {action}.'
 validation_for_role: 'El camp {action} determina que el rol {role} ha de obeir.'
 presets_for_role: 'Valor de camp predeterminat per al rol {role}.'
+presentation_and_aliases: Presentació i àlies
+revision_post_update: Així és com queda l'element després d'actualitar...
+changes_made: Aquests són els canvis específics que s'han fet...
+no_relational_data: Tingues present que això no inclou dades relacionals.
+hide_field_on_detail: Amaga el camp en el detall
+show_field_on_detail: Mostra el camp en el detall
+delete_field: Elimina el camp
+fields_and_layout: Camps i disposició
+field_create_success: 'Camp creat: "{field}"'
+field_update_success: 'Camp actualitzat: "{field}"'
+duplicate_where_to: A on t'agradaria duplicar aquest camp?
 language: Idioma
+global: Gobal
+admins_have_all_permissions: Els administradors tenen tots els permisos
+camera: Càmera
+exposure: Exposició
+shutter: Obturador
+iso: ISO
+focal_length: Distancia focal
+schema_setup_key: Aquest nom de columna del camp i clau de l'API
 create_field: Crea un camp
+creating_new_field: 'Nou camp ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Restableix la pàgina de preferències
+hidden_field: Camp ocult
+hidden_on_detail: Amagat al detall
+disabled_editing_value: Deshabilita l'edició del valor
+key: Clau
+alias: Àlies
+bigInteger: Big Integer
+boolean: Boolean
 date: Data
+datetime: DateTime
 decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
 xml: XML
 string: String
 text: Text
@@ -201,10 +235,52 @@ primary_key: Clau primària
 foreign_key: Clau forana
 clear_value: Esborra el valor
 undo_changes: Desfer els canvis
+page_not_found: Pàgina no trobada
+page_not_found_body: No hem trobat la pàgina que cerques.
+confirm_revert: Confirma Revertir
+confirm_revert_body: Això revertirà l'element a l'estat seleccionat.
 display: Mostra
+settings_update_success: Ajustaments actualitzats
 title: Títol
+revision_delta_created: Creat
+revision_delta_created_externally: Creat externament
+revision_delta_updated: 'Actualitzat 1 camp | Actualitzats {count} camps'
+revision_delta_deleted: Eliminat
+revision_delta_reverted: Revertit
+revision_delta_other: Revisió
+revision_delta_by: '{date} per {user}'
+private_user: Usuari privat
+revision_preview: Vista preliminar de la revisió
+updates_made: Actualitzacions fetes
+leave_comment: Deixa un comentari...
+post_comment_success: Comentari publicat
+item_create_success: Element creat | Elements creats
+item_update_success: Element actualitzat | Elements actualitzats
+item_delete_success: Element eliminat | Elements eliminats
 this_collection: Aquesta col·lecció
+related_collection: Col·lecció relacionada
+related_collections: Col·leccions relacionades
+translations_collection: Col·lecció de traduccions
+languages_collection: Col·lecció de idiomes
+export_data: Exporta les dades
 format: Format
+use_current_filters_settings: Utilitza els filtres i ajustaments actuals
+export_collection: 'Exporta {collection}'
+last_page: Última pàgina
+last_access: Últim accés
+fill_template: Emplena amb el valor de plantilla
+a_unique_table_name: Un nom de taula únic...
+a_unique_column_name: Un nom de columna únic...
+enable_custom_values: Habilita valors personalitzats
+submit: Envia
+move_to_folder: Mou a la carpeta
+move: Mou
+system: Sistema
+add_field_related: Afegeix camps a la col·lecció relacionada
+today: Avui
+yesterday: Ahir
+delete_comment: Elimina comentari
+date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h.mm a'
 date-fns_date_short: 'MMM d, u'
@@ -234,6 +310,7 @@ import_label: Importa
 file_details: Detalls del fitxer
 dimensions: Dimensions
 size: Mida
+created: Creat
 modified: Modificat
 checksum: Checksum
 owner: Propietari
@@ -264,8 +341,16 @@ creating_collection_info: Fica nom a la col·lecció i estableix la seu camp "cl
 comments: Comentaris
 create_collection: Crea una col·lecció
 relationship_not_setup: La relació no s'ha configurat correctament
+select_a_collection: Selecciona una col·lecció
+active: Activa
+inactive: Inactiva
 users: Usuaris
 activity: Activitat
+webhooks: Webhooks
+field_width: Amplada del camp
+add_filter: Afegeix un filtre
+upper_limit: Límit superior...
+lower_limit: Límit inferior...
 user_directory: Directori de l'usuari
 documentation: Documentació
 sidebar: Barra lateral
@@ -328,7 +413,16 @@ no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
 password_reset_sent: T'hem enviat un enllaç segur per restablir la teva contrasenya
 password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
+editing_image: Editant imatge
+square: Quadrat
+free: Lliure
+flip_horizontal: Capgira horitzontalment
+flip_vertical: Capgira verticalment
+aspect_ratio: Relació d'aspecte
+rotate: Gira
 all_users: Tots els usuaris
+delete_collection: Elimina la col·lecció
+update_collection_success: Actualitza la col·lecció
 placeholder: Referència
 icon_left: Icona a l'esquerra
 icon_right: Icona a la dreta
@@ -429,6 +523,7 @@ no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
 settings_permissions: Rols i permisos
 settings_project: Ajustaments del projecte
+settings_webhooks: Webhooks
 settings_presets: Preajustos i Marcadors
 one_or_more_options_are_missing: Falta una o més opcions
 scope: Abast
@@ -514,8 +609,12 @@ fields:
     theme: Tema
     tfa_secret: Autenticació de doble factor
     status: Estat
+    status_invited: Inactiva
+    status_active: Activa
     role: Rol
     token: Token
+    last_page: Última pàgina
+    last_access: Últim accés
   directus_fields:
     note: Nota
     translation: Traducció de noms de camps
@@ -552,6 +651,7 @@ interfaces:
     datetime: Data i hora
   system-display-template:
     display-template: Mostra la plantilla
+    select_a_collection: Selecciona una col·lecció
   presentation-divider:
     divider: Separador
   select-dropdown:
@@ -578,6 +678,8 @@ interfaces:
     modes:
       dropdown: Desplegable
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Coŀlecció
   color:
