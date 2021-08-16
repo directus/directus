@@ -744,6 +744,7 @@ fields:
     icon: Icona
     note: Nota
     display_template: Mostra la plantilla
+    hidden: Amagat
     singleton: Singleton
     translations: Traduccions de noms de col·lecció
     archive_app_filter: Filtre d'arxivat de l'aplicació
@@ -811,19 +812,72 @@ fields:
     project_logo: Logotip del projecte
     public_pages: Pàgines públiques
     public_foreground: Primer pla públic
+    public_background: Fons públic
+    public_note: Anotació de la vista pública
+    auth_password_policy: Política de contrasenyes
+    auth_login_attempts: Intents d'autenticació
+    files_and_thumbnails: Fitxers i miniatures
+    storage_default_folder: Carpeta predeterminada d'emmagatzematge
+    storage_asset_presets: Preajustos de recursos d'emmagatzematge
+    storage_asset_transform: Transformació de recursos d'emmagatzematge
+    overrides: Substitucións de l'aplicació
+    custom_css: CSS personalitzat
   directus_fields:
+    collection: Nom de la col·lecció
+    icon: Icona de la col·lecció
     note: Nota
+    hidden: Amagat
     singleton: Singleton
     translation: Traducció de noms de camps
     display_template: Plantilla
   directus_roles:
     name: Nom del Rol
+    icon: Icona del rol
     description: Descripció
+    app_access: Accés a l'aplicació
+    admin_access: Accés d'administrador
+    ip_access: Accés per IP
+    enforce_tfa: Requereix 2FA
     users: Usuaris al rol
+    module_list: Navegació dels mòduls
+    collection_list: Navegació de les col·leccions
   directus_webhooks:
     name: Nom
+    method: Mètode
     status: Estat
+    data: Dades
+    data_label: Envia les dades de l'event
+    triggers: Disparadors
+    actions: Accions
+field_options:
+  directus_collections:
+    track_activity_revisions: Traça l'activitat i revisions
+    only_track_activity: Només traça l'activitat
+    do_not_track_anything: No tracis res
+no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
+do_nothing: No facis res
+generate_and_save_uuid: Genera i Desa UUID
+save_current_user_id: Desa el ID d'usuari actual
+save_current_user_role: Desa el rol d'usuari actual
+save_current_datetime: Desa la Data/Hora actual
+block: Block
+inline: Inline
 comment: Comentari
+relational_triggers: Disparadors relacionals
+referential_action_field_label_m2o: Si s'esborra de {collection}...
+referential_action_field_label_o2m: Si es deselecciona de {collection}...
+referential_action_no_action: Evita l'eliminació
+referential_action_cascade: Elimina l'element de {collection} (cascada)
+referential_action_set_null: Nullifica el camp {field}
+referential_action_set_default: Assigna el camp {field} al valor per defecte
+choose_action: Tria una acció
+continue_label: Continua
+continue_as: >-
+  {name} està autenticat. Si no reconeixes aquest compte, polsa continua.
+editing_role: 'Rol {role}'
+creating_webhook: Creant el webhook
+default_label: Predeterminat
+delete_label: Elimina
 delete_are_you_sure: >-
   Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
 delete_field_are_you_sure: >-
@@ -838,6 +892,7 @@ field: Camp | Camps
 file: Fitxer
 file_library: Biblioteca de fitxers
 forgot_password: He oblidat la contrasenya
+hidden: Amagat
 icon: Icona
 info: Informació
 normal: Normal
@@ -923,6 +978,7 @@ interfaces:
     description: Selecciona la icona d'un desplegable
     search_for_icon: Cerca una icona...
   file-image:
+    image: Imatge
     description: Selecciona o carrega una imatge
   system-interface:
     interface: Interfície
@@ -980,9 +1036,34 @@ interfaces:
   select-radio:
     radio-buttons: Botons de selecció
     description: Selecciona una de múltiples opcions
+  list:
+    repeater: Repetidor
+    description: Crea múltiples entrades de la mateixa estructura
+    edit_fields: Edita els camps
+    add_label: 'Etiqueta "Crea nou"'
+    field_name_placeholder: Introdueix nou camp...
+    field_note_placeholder: Introdueix una nota sobre el camp...
+  slider:
+    slider: Lliscador
+    description: Selecciona un número utilitzant el lliscador
+    always_show_value: Mostra el valor sempre
   tags:
     tags: Etiquetes
+    description: Selecciona o afegeix etiquetes
+    whitespace: Espai en blanc
+    hyphen: Substitueix per guionet
+    underscore: Substitueix per guió baix
+    remove: Elimina l'espai en blanc
+    capitalization: Majúscules
+    uppercase: Converteix majúscules
+    lowercase: Converteix minúscules
+    auto_formatter: Utilitza autoformatador del títol
+    alphabetize: Alfabètic
+    alphabetize_label: Força ordre alfabètic
+    add_tags: Afegeix etiquetes...
   input:
+    input: Entrada
+    description: Entra manualment un valor
     mask: Enmascarat
   boolean:
     toggle: Canvia
@@ -998,27 +1079,79 @@ interfaces:
     results_path: Camí dels resultats
     value_path: Camí del Valor
     trigger: Disparador
+    rate: Velocitat
+  group-raw:
+    name: Grup en brut
+    description: Mostra el contingut tal com és
+  group-detail:
+    name: Detall del grup
+    description: Mostra els camps com una secció plegable
+    show_header: Mostra la capçalera del grup
+    header_icon: Icona de la capçalera
+    header_color: Color de la capçalera
+    start_open: Comença obert
+    start_closed: Comená tancat
 displays:
   boolean:
     boolean: Boolean
+    description: Mostra els estats Activat i desactivat
+    label_on: Etiqueta activada
+    label_on_placeholder: Introdueix l'etiqueta activada...
+    label_off: Etiqueta desactivada
+    label_off_placeholder: Introdueix l'etiqueta desactivada...
     icon_on: Icona activada
     icon_off: Icona desactivada
+    color_on: Color activat
+    color_off: Color desactivat
   collection:
     collection: Coŀlecció
+    description: Mostra una col·lecció
+    icon_label: Mostra la icona de la col·lecció
   color:
     color: Color
+    description: Mostra un punt colorejat
+    default_color: Color predeterminat
   datetime:
     datetime: Data i hora
+    description: Mostra valors associats al temps
     format: Format
+    format_note: >-
+      El format personalitzat accepta __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Llarg
+    short: Curt
+    relative: Relatiu
+    relative_label: 'Mostra el temps relatiu, ex: fa 5 minuts'
   file:
     file: Fitxer
+    description: Mostra fitxers
   filesize:
     filesize: Mida del fitxer
+    description: Mostra la mida del fitxer
+  formatted-value:
+    formatted-value: Valor formatat
+    description: Mostra una versió formatada del text
+    format_title: Títol del format
+    format_title_label: Auto formata les minúscules i majúscules
+    bold_label: Utilitza text en negreta
+  formatted-json-value:
+    formatted-json-value: Valor JSON formatat
+    description: Mostra una versió formatada del l'objecte
   icon:
     icon: Icona
+    description: Mostra una icona
+    filled: Emplenat
+    filled_label: Utilitza una variant emplenada
   image:
+    image: Imatge
+    description: Mostra una petita previsualització de la imatge
     circle: Cercle
+    circle_label: Mostra com a cercle
   labels:
+    labels: Etiquetes
+    description: Mostra un únic o bé una llista d'etiquetes
+    default_foreground: Primer pla predeterminat
+    default_background: Fons prederterminat
+    format_label: Formata cada etiqueta
     choices_value_placeholder: Introdueix un valor...
   rating:
     rating: Puntuació
