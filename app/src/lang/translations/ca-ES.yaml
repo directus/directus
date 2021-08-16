@@ -957,8 +957,29 @@ interfaces:
     invalid_options: Opcions no vàlides
     invalid_format: Format no vàlid ({format})
     unexpected_geometry: Esperat {expected}, obtingut {got}.
+    fit_bounds: Ajusta la vista a les dades
+    native: Nadiu
+    geojson: GeoJSON
+    lnglat: Longitud, Latitud
+    wkt: WKT
+    wkb: WKB
+  presentation-notice:
+    notice: Avís
+    description: Mostra un petit avís
+    text: Introdueix el contingut de l'avís aquí...
+  list-o2m:
+    one-to-many: Un a Molts
+    description: Selecciona múltiples elements relacionats
+    no_collection: No s'ha trobat la col·lecció
   system-folder:
     folder: Carpeta
+    description: Selecciona una carpeta
+    field_hint: Insereix els fitxers carregats recentment a la carpeta seleccionada. No afecta els fitxers existents seleccionats.
+    root_name: Arrel de la biblioteca de fitxers
+    system_default: Predeterminats del sistema
+  select-radio:
+    radio-buttons: Botons de selecció
+    description: Selecciona una de múltiples opcions
   tags:
     tags: Etiquetes
   input:
@@ -973,6 +994,10 @@ interfaces:
     description: Seleccioneu un usuari existent
     modes:
       dropdown: Desplegable
+  input-autocomplete-api:
+    results_path: Camí dels resultats
+    value_path: Camí del Valor
+    trigger: Disparador
 displays:
   boolean:
     boolean: Boolean
