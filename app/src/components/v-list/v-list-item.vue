@@ -2,7 +2,7 @@
 	<component
 		:is="component"
 		class="v-list-item"
-		:to="to"
+		:to="to !== '' ? to : undefined"
 		:class="{
 			active: isActiveRoute,
 			dense,
@@ -14,7 +14,7 @@
 		}"
 		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : null"
+		:target="component === 'a' ? '_blank' : undefined"
 		@click="onClick"
 	>
 		<slot />
@@ -43,7 +43,7 @@ export default defineComponent({
 		},
 		href: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		disabled: {
 			type: Boolean,
@@ -71,7 +71,7 @@ export default defineComponent({
 		},
 		download: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		value: {
 			type: [String, Number],
@@ -88,7 +88,7 @@ export default defineComponent({
 
 		const { route: linkRoute, isActive, isExactActive } = useLink(props);
 
-		const component = computed<string>(() => {
+		const component = computed(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
 			return 'li';
