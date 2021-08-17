@@ -56,7 +56,7 @@
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.1",
 		"@types/markdown-it": "12.2.0",
 		"@types/marked": "2.0.4",
-		"@types/mime-types": "2.1.0",
+		"@types/mime-types": "2.1.1",
 		"@types/ms": "0.7.31",
 		"@types/qrcode": "1.4.1",
 		"@types/wellknown": "0.5.1",
