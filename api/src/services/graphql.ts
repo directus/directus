@@ -516,7 +516,6 @@ export class GraphQLService {
 
 			const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
 			const AggregatedFilters: Record<string, ObjectTypeComposer<any, any>> = {};
-
 			const StringFilterOperators = schemaComposer.createInputTC({
 				name: 'string_filter_operators',
 				fields: {
@@ -672,10 +671,38 @@ export class GraphQLService {
 					},
 				},
 			});
-
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+				const DateFunctions = schemaComposer.createInputTC({
+					name: `${collection.collection}_date_functions`,
+					fields: {
+						year: {
+							type: NumberFilterOperators,
+						},
+						month: {
+							type: NumberFilterOperators,
+						},
+						week: {
+							type: NumberFilterOperators,
+						},
+						day: {
+							type: NumberFilterOperators,
+						},
+						weekday: {
+							type: NumberFilterOperators,
+						},
+						hour: {
+							type: NumberFilterOperators,
+						},
+						minute: {
+							type: NumberFilterOperators,
+						},
+						second: {
+							type: NumberFilterOperators,
+						},
+					},
+				});
 
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
@@ -710,6 +737,19 @@ export class GraphQLService {
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
+				});
+				// need to check if there are fields in DateTimeFields[collection.collection]
+				// need to add datetimefields to year ect
+				Object.values(collection.fields).some((field) => {
+					const graphqlType = getGraphQLType(field.type);
+
+					if (graphqlType === GraphQLDate) {
+						ReadableCollectionFilterTypes[collection.collection].addFields({
+							[`${field.field}_func`]: DateFunctions,
+						});
+						return true;
+					}
+					return false;
 				});
 
 				AggregatedFilters[collection.collection] = schemaComposer.createObjectTC({
@@ -1352,7 +1392,6 @@ export class GraphQLService {
 
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
-
 		validateQuery(query);
 
 		return query;

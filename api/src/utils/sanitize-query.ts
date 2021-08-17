@@ -3,6 +3,7 @@ import logger from '../logger';
 import { Aggregate, Filter, Meta, Query, Sort } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
+import { object } from 'joi';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -126,18 +127,35 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			logger.warn('Invalid value passed for filter query parameter.');
 		}
 	}
-
-	filters = deepMap(filters, (val) => {
-		try {
-			return JSON.parse(val);
-		} catch {
-			return val;
-		}
-	});
+	if (
+		Object.keys(filters).some((filter) => {
+			if (filter.endsWith('_func')) {
+				return true;
+			}
+			return false;
+		})
+	) {
+		Object.keys(filters).forEach((filter) => {
+			filters = sanitizeFuncFilters(filter, filters);
+		});
+	} else {
+		filters = deepMap(filters, (val) => {
+			try {
+				return JSON.parse(val);
+			} catch {
+				return val;
+			}
+		});
+	}
 
 	filters = parseFilter(filters, accountability);
-
 	return filters;
+}
+
+function sanitizeFuncFilters(filterName: string, val) {
+	const funcOperator = Object.keys(val[filterName]);
+	const truncName = filterName.substring(0, filterName.length - 5);
+	return { [`${funcOperator}(${truncName})`]: val[filterName][funcOperator[0]] };
 }
 
 function sanitizeLimit(rawLimit: any) {
