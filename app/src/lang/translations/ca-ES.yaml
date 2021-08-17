@@ -46,7 +46,7 @@ edited: Valor editat
 required: Requerit
 required_for_app_access: Requerit per l'accés a l'aplicació
 requires_value: Requereix valor
-create_preset: Crear un preajust
+create_preset: Crear un predefinit
 create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
@@ -135,7 +135,7 @@ field_group: Agrupació de camps
 item_permissions: Permisos de l'element
 field_permissions: Permisos del camp
 field_validation: Validació del camp
-field_presets: Preajustament del camp
+field_presets: Predefinits del camp
 permissions_for_role: 'Elements {role} poden {action}.'
 fields_for_role: 'Camps del {role} poden {action}.'
 validation_for_role: 'El camp {action} determina que el rol {role} ha de obeir.'
@@ -455,7 +455,7 @@ bookmark_name: Nom del marcador...
 create_bookmark: Crea un marcador
 edit_bookmark: Edita el marcador
 bookmarks: Favorits
-presets: Preajustos
+presets: Predefinits
 unexpected_error: Error inesperat
 unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més tard.
 copy_details: Copia detalls
@@ -572,10 +572,10 @@ saves_automatically: Desa automàticament
 role: Rol
 rule: Regla
 user: Usuari
-no_presets: Sense preajustos
-no_presets_copy: Encara no s'han desat preajustos o marcadors.
-no_presets_cta: Preajust
-presets_only: Només preajustos
+no_presets: Sense predefinits
+no_presets_copy: Encara no s'han desat predefinits o marcadors.
+no_presets_cta: Afegeix predefinit
+presets_only: Només predefinit
 create: Crear
 on_create: En la creació
 on_update: En l'actualització
@@ -669,7 +669,7 @@ settings_data_model: Model de dades
 settings_permissions: Rols i permisos
 settings_project: Ajustaments del projecte
 settings_webhooks: Webhooks
-settings_presets: Preajustos i Marcadors
+settings_presets: Predefinits i Marcadors
 one_or_more_options_are_missing: Falta una o més opcions
 scope: Abast
 select: Selecciona...
@@ -678,7 +678,7 @@ tree_view: Vista d'arbre
 changes_are_permanent: Els canvis són permanents
 preset_name_placeholder: Serveix com a predeterminat quan és buit...
 preset_search_placeholder: Cerca consulta...
-editing_preset: Editant el preajust
+editing_preset: Editant el predefinit
 layout_preview: Vista preliminar de la disposició
 layout_setup: Configuració de la disposició
 unsaved_changes: Canvis no desats
@@ -706,9 +706,9 @@ page_help_settings_datamodel_fields: >-
 page_help_settings_roles_collection: '** Fons d''exploració **: Llista dels rols Administrador, públic i personalitzats.'
 page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
 page_help_settings_presets_collection: >-
-  ** Cerca preajustos **: Llista de tots els preajustos del projecte, inclosos: marcadors d'usuaris, de rol i globals, així com les vistes predeterminades.
+  ** Cerca predefinits **: Llista de tots els predefinits del projecte, inclosos: marcadors d'usuaris, de rol i globals, així com les vistes predeterminades.
 page_help_settings_presets_item: >-
-  ** Detall de preajust **: Un formulari per gestionar adreces d'interès i preajustos de col·lecció predeterminats.
+  ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
 page_help_settings_webhooks_collection: '** Examinar Webhooks **: Llista tots els webhooks del projecte.'
 page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
 page_help_users_collection: '**Directori de l''usuari**.'
@@ -818,7 +818,7 @@ fields:
     auth_login_attempts: Intents d'autenticació
     files_and_thumbnails: Fitxers i miniatures
     storage_default_folder: Carpeta predeterminada d'emmagatzematge
-    storage_asset_presets: Preajustos de recursos d'emmagatzematge
+    storage_asset_presets: Predefinits de recursos d'emmagatzematge
     storage_asset_transform: Transformació de recursos d'emmagatzematge
     overrides: Substitucións de l'aplicació
     custom_css: CSS personalitzat
@@ -985,7 +985,7 @@ interfaces:
     color: Color
     description: Entra o selecciona un valor de color
     placeholder: Tria un color...
-    preset_colors: Preajust de colors
+    preset_colors: Predefinit de colors
     preset_colors_add_label: Afegeix un nou color...
     name_placeholder: Introdueix un nom de color...
   datetime:
