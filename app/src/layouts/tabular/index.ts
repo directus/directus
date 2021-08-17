@@ -215,17 +215,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						if (Array.isArray(layoutQuery.value.fields)) return layoutQuery.value.fields;
 					}
 
-					const fields =
-						layoutQuery.value?.fields ||
-						fieldsInCollection.value
-							.filter((field: Field) => !!field.meta?.hidden === false)
-							.slice(0, 4)
-							.sort((a: Field, b: Field) => {
-								if (a.field < b.field) return -1;
-								else if (a.field > b.field) return 1;
-								else return 1;
-							})
-							.map(({ field }: Field) => field);
+					const fields = fieldsInCollection.value
+						.filter((field: Field) => !!field.meta?.hidden === false)
+						.slice(0, 4)
+						.map((field) => field.field)
+						.sort();
 
 					return fields;
 				},
@@ -288,7 +282,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						value: field.field,
 						width: localWidths.value[field.field] || layoutOptions.value?.widths?.[field.field] || null,
 						field: {
-							display: field.meta?.display || getDefaultDisplayForType(field.type),
+							display: field.meta?.display || getDefaultDisplayForType(field.type, field.collection, field.field),
 							displayOptions: field.meta?.display_options,
 							interface: field.meta?.interface,
 							interfaceOptions: field.meta?.options,

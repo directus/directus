@@ -1,3 +1,4 @@
+import { useRelationsStore } from '@/stores';
 import { Type } from '@directus/shared/types';
 
 const defaultDisplayMap: Record<Type, string> = {
@@ -22,6 +23,11 @@ const defaultDisplayMap: Record<Type, string> = {
 	geometry: 'map',
 };
 
-export function getDefaultDisplayForType(type: Type): string {
+export function getDefaultDisplayForType(type: Type, collection?: string, field?: string): string {
+	if (collection !== undefined && field !== undefined) {
+		const store = useRelationsStore();
+		const relations = store.getRelationsForField(collection, field);
+		if (relations.length > 0) return 'related-values';
+	}
 	return defaultDisplayMap[type] || 'raw';
 }

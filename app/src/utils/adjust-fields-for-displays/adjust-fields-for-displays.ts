@@ -1,19 +1,26 @@
 import { getDisplays } from '@/displays';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { DisplayConfig, Field } from '@directus/shared/types';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
 	const { displays } = getDisplays();
 
 	const adjustedFields: string[] = fields
 		.map((fieldKey) => {
-			const field: Field = fieldsStore.getField(parentCollection, fieldKey);
+			const field = fieldsStore.getField(parentCollection, fieldKey);
 
 			if (!field) return fieldKey;
-			if (field.meta?.display === null) return fieldKey;
+			let displayName = field.meta?.display;
 
-			const display = displays.value.find((d: DisplayConfig) => d.id === field.meta?.display);
+			if (field.meta?.display === null) {
+				const relations = relationsStore.getRelationsForField(parentCollection, fieldKey);
+				if (relations.length > 0) displayName = 'related-values';
+				else return fieldKey;
+			}
+
+			const display = displays.value.find((d: DisplayConfig) => d.id === displayName);
 
 			if (!display) return fieldKey;
 			if (!display?.fields) return fieldKey;
