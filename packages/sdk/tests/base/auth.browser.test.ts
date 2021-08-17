@@ -1,5 +1,5 @@
 /**
- * @jest-environment jest-environment-jsdom-global
+ * @jest-environment jsdom
  */
 
 import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
