@@ -145,8 +145,12 @@ export default function getLocalType(
 		return { type: 'text' };
 	}
 
-	/** Handle Boolean as TINYINT*/
-	if (column.data_type.toLowerCase() === 'tinyint(1)' || column.data_type.toLowerCase() === 'tinyint(0)') {
+	/** Handle Boolean as TINYINT and edgecase MySQL where it still is just tinyint */
+	if (
+		(database.client.constructor.name === 'Client_MySQL' && column.data_type.toLowerCase() === 'tinyint') ||
+		column.data_type.toLowerCase() === 'tinyint(1)' ||
+		column.data_type.toLowerCase() === 'tinyint(0)'
+	) {
 		return { type: 'boolean' };
 	}
 
