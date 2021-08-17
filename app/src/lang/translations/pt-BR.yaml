@@ -20,11 +20,16 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Editar campo
+conditions: Condições
+maps: Mapas
 item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
+limit: Limite
 group: Grupos
+and: e
+or: Ou
 fill_width: Preencher
 field_name_translations: Traduções Dos Nomes Dos Campos
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
