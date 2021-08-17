@@ -3,7 +3,7 @@ import logger from '../logger';
 import { Aggregate, Filter, Meta, Query, Sort } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
-import { object } from 'joi';
+import _ from 'lodash';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -135,9 +135,17 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			return false;
 		})
 	) {
-		Object.keys(filters).forEach((filter) => {
-			filters = sanitizeFuncFilters(filter, filters);
+		filters = _.mapValues(filters, (value, key) => {
+			if (key.endsWith('_func')) {
+				const transform = Object.keys(value)[0];
+				return `${transform}(${key.slice(0, -5)})`;
+			}
+			return key;
 		});
+		// (filter: {date_created_func:{year: {_eq: 2009}}_and: {date_created_func: {day: {_eq: 23} }}})
+		// console.log(filters) =>
+		// directus: { date_created_func: 'year(date_created)', _and: '_and' }
+		// needs to be {year(date_created): {_eq: 2009}}, {day(date_created):{_eq: 23}}
 	} else {
 		filters = deepMap(filters, (val) => {
 			try {
@@ -150,12 +158,6 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 
 	filters = parseFilter(filters, accountability);
 	return filters;
-}
-
-function sanitizeFuncFilters(filterName: string, val) {
-	const funcOperator = Object.keys(val[filterName]);
-	const truncName = filterName.substring(0, filterName.length - 5);
-	return { [`${funcOperator}(${truncName})`]: val[filterName][funcOperator[0]] };
 }
 
 function sanitizeLimit(rawLimit: any) {
