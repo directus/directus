@@ -218,7 +218,7 @@ m2o_relationship: Relació Molts a Un
 o2m_relationship: Relació Un a molts
 m2m_relationship: Relació Molts a molts
 m2a_relationship: Relació Molts a qualsevol
-invalid_item: Item invàlid
+invalid_item: Element invàlid
 next: Següent
 field_name: Nom del camp
 translations: Traduccions
