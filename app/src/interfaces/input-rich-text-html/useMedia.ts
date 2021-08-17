@@ -7,6 +7,8 @@ type MediaSelection = {
 	source: string;
 	width?: number;
 	height?: number;
+	tag?: 'video' | 'audio';
+	type?: string;
 };
 
 type MediaButton = {
@@ -34,7 +36,7 @@ type UsableMedia = {
 export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
-	const openMediaTab = ref(['video']);
+	const openMediaTab = ref(['video', 'audio']);
 	const embed = ref('');
 	const startEmbed = ref('');
 
@@ -100,12 +102,15 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 	watch(mediaSelection, (vid) => {
 		if (embed.value === '') {
 			if (vid === null) return;
-			embed.value = `<video width="${vid.width}" height="${vid.height}" controls="controls"><source src="${vid.source}" /></video>`;
+			embed.value = `<${vid.tag} width="${vid.width}" height="${vid.height}" controls><source src="${vid.source}" type="${vid.type}" /></${vid.tag}>`;
 		} else {
 			embed.value = embed.value
 				.replace(/src=".*?"/g, `src="${vid?.source}"`)
 				.replace(/width=".*?"/g, `width="${vid?.width}"`)
-				.replace(/height=".*?"/g, `height="${vid?.height}"`);
+				.replace(/height=".*?"/g, `height="${vid?.height}"`)
+				.replace(/type=".*?"/g, `type="${vid?.type}"`)
+				.replaceAll(/<(video|audio)/g, `<${vid?.tag}`)
+				.replaceAll(/<\/(video|audio)/g, `</${vid?.tag}`);
 		}
 	});
 
@@ -113,16 +118,20 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		if (newEmbed === '') {
 			mediaSelection.value = null;
 		} else {
+			const tag = /<(video|audio)/g.exec(newEmbed)?.[1];
 			const source = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
+			const type = /type="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 
 			if (source === undefined) return;
 
 			mediaSelection.value = {
+				tag: tag === 'audio' ? 'audio' : 'video',
 				source,
 				width,
 				height,
+				type,
 			};
 		}
 	});
@@ -152,12 +161,15 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 
 	function onMediaSelect(media: Record<string, any>) {
 		const url = getPublicURL() + 'assets/' + media.id;
+		const tag = media.type.startsWith('audio') ? 'audio' : 'video';
 		const source = imageToken.value ? addTokenToURL(url, imageToken.value) : url;
 
 		mediaSelection.value = {
 			source,
 			width: media.width || 300,
 			height: media.height || 150,
+			tag,
+			type: media.type,
 		};
 	}
 
