@@ -40,7 +40,7 @@ leaf: Folha
 indeterminate: Indeterminado
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
 required: Obrigatório
@@ -49,7 +49,7 @@ requires_value: Requer valor
 create_preset: Criar predefinição
 create_role: Criar Função
 create_user: Criar usuário
-create_webhook: Criar Webhook
+create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
 invite: Convidar
@@ -71,7 +71,7 @@ delete_bookmark: Deletar Marcador
 delete_bookmark_copy: >-
   Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
-  SIGN_OUT: Deslogado
+  SIGN_OUT: Desconectado
   SESSION_EXPIRED: Sessão expirada
 public_label: Publico
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
