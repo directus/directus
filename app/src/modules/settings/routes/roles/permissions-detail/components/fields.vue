@@ -79,17 +79,10 @@ export default defineComponent({
 			},
 			set(newFields: string[] | null) {
 				if (newFields && newFields.length > 0) {
-					if (newFields.length === fieldsInCollection.value.length) {
-						internalPermission.value = {
-							...internalPermission.value,
-							fields: ['*'],
-						};
-					} else {
-						internalPermission.value = {
-							...internalPermission.value,
-							fields: newFields,
-						};
-					}
+					internalPermission.value = {
+						...internalPermission.value,
+						fields: newFields,
+					};
 				} else {
 					internalPermission.value = {
 						...internalPermission.value,
