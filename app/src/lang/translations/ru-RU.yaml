@@ -740,10 +740,10 @@ fields:
     title: Заголовок
     description: Описание
     tags: Теги
-    location: Местоположение
-    storage: Память
+    location: Локация
+    storage: Место хранения
     filename_disk: Имя файла (на диске)
-    filename_download: Имя файла (Загруженое)
+    filename_download: Имя файла (при загрузке)
     metadata: Метаданные
     type: MIME-тип
     filesize: Размер файла
@@ -765,7 +765,7 @@ fields:
     email: Email
     password: Пароль
     avatar: Аватар
-    location: Местоположение
+    location: Локация
     title: Заголовок
     description: Описание
     tags: Теги
@@ -988,7 +988,7 @@ interfaces:
     description: Выберите значение из выпадающего списка
     choices_placeholder: Добавить вариант
     allow_other: Разрешить другие
-    allow_other_label: Допускаются и другие значения
+    allow_other_label: Разрешить другие варианты
     allow_none: Может быть пустым
     allow_none_label: Можно не указывать значение
     choices_name_placeholder: Введите название...
