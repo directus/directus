@@ -1,5 +1,5 @@
 <template>
-	<v-list-group>
+	<v-list-group :clickable="clickable" :value="item.value">
 		<template #activator>
 			<select-list-item
 				:model-value="modelValue"
@@ -18,6 +18,7 @@
 				:multiple="multiple"
 				:allow-other="allowOther"
 				@update:model-value="$emit('update:modelValue', $event)"
+				:clickable="clickable"
 			/>
 			<select-list-item
 				v-else
@@ -56,6 +57,10 @@ export default defineComponent({
 			type: Boolean,
 			required: true,
 		},
+		clickable: {
+			type: Boolean,
+			default: false
+		}
 	},
 	emits: ['update:modelValue'],
 });

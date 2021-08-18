@@ -27,7 +27,7 @@
 			</v-input>
 		</template>
 
-		<v-list class="list">
+		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect">
 				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
@@ -51,6 +51,7 @@
 					:multiple="multiple"
 					:allow-other="allowOther"
 					@update:model-value="$emit('update:modelValue', $event)"
+					:clickable="groupsClickable"
 				/>
 				<select-list-item
 					v-else
@@ -158,6 +159,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		mandatory: {
+			type: Boolean,
+			default: true
+		},
 		placeholder: {
 			type: String,
 			default: null,
@@ -182,6 +187,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		groupsClickable: {
+			type: Boolean,
+			default: false
+		},
 		inline: {
 			type: Boolean,
 			default: false,
@@ -191,7 +200,7 @@ export default defineComponent({
 			default: 3,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'group-toggle'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

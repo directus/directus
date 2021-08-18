@@ -6,6 +6,7 @@
 		:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
 		:disabled="item.disabled"
 		clickable
+		:value="item.value"
 		@click="multiple ? null : $emit('update:modelValue', item.value)"
 	>
 		<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
