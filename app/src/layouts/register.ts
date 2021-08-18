@@ -6,22 +6,22 @@ import { LayoutConfig } from '@directus/shared/types';
 const { layoutsRaw } = getLayouts();
 
 export async function registerLayouts(app: App): Promise<void> {
-	const layoutModules = import.meta.globEager('./(tabular|cards|calendar)/**/index.ts');
+	const layoutModules = import.meta.globEager('./*/**/index.ts');
 
 	const layouts: LayoutConfig[] = Object.values(layoutModules).map((module) => module.default);
 
-	// try {
-	// 	const customLayouts: { default: LayoutConfig[] } = import.meta.env.DEV
-	// 		? await import('@directus-extensions-layout')
-	// 		: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
+	try {
+		const customLayouts: { default: LayoutConfig[] } = import.meta.env.DEV
+			? await import('@directus-extensions-layout')
+			: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
 
-	// 	layouts.push(...customLayouts.default);
-	// } catch (err: any) {
-	// 	// eslint-disable-next-line no-console
-	// 	console.warn(`Couldn't load custom layouts`);
-	// 	// eslint-disable-next-line no-console
-	// 	console.warn(err);
-	// }
+		layouts.push(...customLayouts.default);
+	} catch (err: any) {
+		// eslint-disable-next-line no-console
+		console.warn(`Couldn't load custom layouts`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
+	}
 
 	layoutsRaw.value = layouts;
 

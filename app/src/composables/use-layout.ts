@@ -2,6 +2,7 @@ import { getLayouts } from '@/layouts';
 import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, ComputedRef } from 'vue';
 import { AppFilter, Item, LayoutConfig } from '@directus/shared/types';
 
+const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery', 'filters', 'searchQuery'] as const;
 
 type WritableProp = typeof WRITABLE_PROPS[number];
@@ -12,7 +13,7 @@ function isWritableProp(prop: string): prop is WritableProp {
 
 function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 	return defineComponent({
-		name: layout.id,
+		name: `${layout.id}-${NAME_SUFFIX}`,
 		props: {
 			collection: {
 				type: String,
@@ -81,10 +82,10 @@ export function useLayout<Options = any, Query = any>(
 	const layoutWrappers = computed(() => layouts.value.map((layout) => createLayoutWrapper<Options, Query>(layout)));
 
 	const layoutWrapper = computed(() => {
-		const layout = layoutWrappers.value.find((layout) => layout.name === layoutId.value);
+		const layout = layoutWrappers.value.find((layout) => layout.name === `${layoutId.value}-${NAME_SUFFIX}`);
 
 		if (layout === undefined) {
-			return layoutWrappers.value.find((layout) => layout.name === 'tabular')!;
+			return layoutWrappers.value.find((layout) => layout.name === `tabular-${NAME_SUFFIX}`)!;
 		}
 
 		return layout;

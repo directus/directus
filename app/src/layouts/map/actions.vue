@@ -7,16 +7,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
-
-import { useLayoutState } from '@directus/shared/composables';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-	setup() {
-		const layoutState = useLayoutState();
-		const { itemCount, showingCount } = toRefs(layoutState.value);
-
-		return { itemCount, showingCount };
+	props: {
+		itemCount: {
+			type: Number,
+			default: null,
+		},
+		showingCount: {
+			type: String,
+			required: true,
+		},
 	},
 });
 </script>
