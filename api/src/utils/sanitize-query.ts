@@ -142,10 +142,6 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			}
 			return key;
 		});
-		// (filter: {date_created_func:{year: {_eq: 2009}}_and: {date_created_func: {day: {_eq: 23} }}})
-		// console.log(filters) =>
-		// directus: { date_created_func: 'year(date_created)', _and: '_and' }
-		// needs to be {year(date_created): {_eq: 2009}}, {day(date_created):{_eq: 23}}
 	} else {
 		filters = deepMap(filters, (val) => {
 			try {

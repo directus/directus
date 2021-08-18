@@ -28,11 +28,15 @@ export enum Meta {
 }
 
 export type Aggregated<T> = QueryMany<T> & {
-	sum?: string;
-	avg?: string;
-	count?: string;
-	min?: string;
-	max?: keyof ItemMetadata | '*';
+	groupBy?: string;
+	sum?: string[];
+	avg?: string[];
+	count?: string[];
+	min?: string[];
+	max?: string[];
+	sumDistinct?: string[];
+	avgDistinct?: string[];
+	countDistinct?: string[];
 };
 
 export type QueryOne<T> = {
