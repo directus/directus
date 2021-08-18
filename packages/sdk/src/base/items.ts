@@ -1,5 +1,5 @@
 import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
+import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem, Aggregated } from '../items';
 import { ID } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
@@ -9,6 +9,17 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	constructor(collection: string, transport: ITransport) {
 		this.transport = transport;
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
+	}
+
+	async aggregated(query: Aggregated<T>): Promise<ManyItems<T>> {
+		const params = Object.keys(query).reduce((acc, param) => {
+			acc[`aggregate[${param}]`] = query[param];
+			return acc;
+		}, {});
+		const response = await this.transport.get<T[]>(`${this.endpoint}`, {
+			params: params,
+		});
+		return response;
 	}
 
 	async readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>> {

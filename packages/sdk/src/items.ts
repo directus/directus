@@ -27,6 +27,14 @@ export enum Meta {
 	FILTER_COUNT = 'filter_count',
 }
 
+export type Aggregated<T> = QueryMany<T> & {
+	sum?: string;
+	avg?: string;
+	count?: string;
+	min?: string;
+	max?: keyof ItemMetadata | '*';
+};
+
 export type QueryOne<T> = {
 	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
@@ -73,6 +81,7 @@ export type Filter<T> = {
  * CRUD at its finest
  */
 export interface IItems<T extends Item> {
+	aggregated(query: Aggregated<T>): Promise<ManyItems<T>>;
 	createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
 	createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
 
