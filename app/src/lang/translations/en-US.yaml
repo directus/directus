@@ -23,10 +23,12 @@
 avatar: Avatar
 edit_field: Edit Field
 conditions: Conditions
+maps: Maps
 item_revision: Item Revision
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
+limit: Limit
 group: Group
 and: And
 or: Or
@@ -188,6 +190,7 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometry
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -387,6 +390,7 @@ no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: There are no webhooks yet.
 all_items: All Items
+any: Any
 csv: CSV
 no_collections: No Collections
 create_collection: Create Collection
@@ -397,6 +401,7 @@ display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
 active: Active
+inactive: Inactive
 users: Users
 activity: Activity
 webhooks: Webhooks
@@ -409,7 +414,7 @@ documentation: Documentation
 sidebar: Sidebar
 duration: Duration
 charset: Charset
-second: Second
+second: second
 file_moved: File Moved
 collection_created: Collection Created
 modified_on: Modified On
@@ -451,6 +456,7 @@ errors:
   UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
+security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
@@ -503,6 +509,7 @@ color: Color
 circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
+advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
@@ -529,6 +536,10 @@ operators:
   nempty: Isn't empty
   all: Contains these keys
   has: Contains some of these keys
+  intersects: Intersects
+  nintersects: Doesn't intersect
+  intersects_bbox: Intersects bounding box
+  nintersects_bbox: Doesn't intersect bounding box
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -572,6 +583,7 @@ user: User
 no_presets: No Presets
 no_presets_copy: No presets or bookmarks have been saved yet.
 no_presets_cta: Add Preset
+presets_only: Presets Only
 create: Create
 on_create: On Create
 on_update: On Update
@@ -587,6 +599,7 @@ label: Label
 image_url: Image Url
 alt_text: Alternative Text
 media: Media
+quality: Quality
 width: Width
 height: Height
 source: Source
@@ -787,12 +800,23 @@ fields:
     title: Title
     description: Description
     tags: Tags
+    user_preferences: User Preferences
     language: Language
     theme: Theme
+    theme_auto: Automatic (Based on System)
+    theme_light: Light Mode
+    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
+    admin_options: Admin Options
     status: Status
+    status_draft: Draft
+    status_invited: Inactive
+    status_active: Active
+    status_suspended: Suspended
+    status_archived: Archived
     role: Role
     token: Token
+    token_placeholder: Enter a secure access token...
     last_page: Last Page
     last_access: Last Access
   directus_settings:
@@ -800,13 +824,17 @@ fields:
     project_url: Project URL
     project_color: Project Color
     project_logo: Project Logo
+    public_pages: Public Pages
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
+    files_and_thumbnails: Files & Thumbnails
+    storage_default_folder: Storage Default Folder
     storage_asset_presets: Storage Asset Presets
     storage_asset_transform: Storage Asset Transform
+    overrides: App Overrides
     custom_css: Custom CSS
   directus_fields:
     collection: Collection Name
@@ -827,6 +855,14 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+  directus_webhooks:
+    name: Name
+    method: Method
+    status: Status
+    data: Data
+    data_label: Send Event Data
+    triggers: Triggers
+    actions: Actions
 field_options:
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
@@ -914,6 +950,7 @@ value: Value
 view_project: View Project
 weeks: {}
 report_error: Report Error
+start: Start
 interfaces:
   group-accordion:
     name: Accordion
@@ -922,6 +959,8 @@ interfaces:
     all_closed: All Closed
     first_opened: First Opened
     all_opened: All Opened
+    accordion_mode: Accordion Mode
+    max_one_section_open: Max 1 Section Open
   presentation-links:
     presentation-links: Button Links
     links: Links
@@ -1037,6 +1076,22 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+  map:
+    map: Map
+    description: Select a location on a map
+    zoom: Zoom
+    geometry_type: Geometry type
+    geometry_format: Geometry format
+    default_view: Default view
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Notice
     description: Display a short notice
@@ -1128,12 +1183,17 @@ interfaces:
     value_path: Value Path
     trigger: Trigger
     rate: Rate
-  group-standard:
-    name: Standard Group
-    description: Show the fields as normal with an optional group header.
+  group-raw:
+    name: Raw Group
+    description: Render the fields as-is
+  group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
     show_header: Show Group Header
     header_icon: Header Icon
     header_color: Header Color
+    start_open: Start Open
+    start_closed: Start Closed
 displays:
   boolean:
     boolean: Boolean
@@ -1241,3 +1301,16 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+  map:
+    map: Map
+    basemap: Basemap
+    layers: Layers
+    edit_custom_layers: Edit Layers
+    cluster_options: Clustering options
+    cluster: Activate clustering
+    cluster_radius: Cluster radius
+    cluster_minpoints: Cluster minimum size
+    cluster_maxzoom: Maximum zoom for clustering
+    fit_data: Fit data to view bounds
+    field: Geometry
+    invalid_geometry: Invalid geometry

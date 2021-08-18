@@ -2,7 +2,7 @@ import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
 import { Filter, Meta, Query, Sort } from '../types';
 import { Accountability } from '@directus/shared/types';
-import { parseFilter } from '@directus/shared/utils';
+import { parseFilter, deepMap } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -95,6 +95,14 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			logger.warn('Invalid value passed for filter query parameter.');
 		}
 	}
+
+	filters = deepMap(filters, (val) => {
+		try {
+			return JSON.parse(val);
+		} catch {
+			return val;
+		}
+	});
 
 	filters = parseFilter(filters, accountability);
 

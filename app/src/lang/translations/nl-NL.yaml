@@ -400,7 +400,6 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
-second: Seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -775,6 +774,7 @@ fields:
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
+    status_active: Actief
     role: Rol
     token: Token
     last_page: Laatste pagina
@@ -811,6 +811,9 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
+  directus_webhooks:
+    name: Naam
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
@@ -955,6 +958,8 @@ interfaces:
     customSyntax: Aangepaste blokken
     box: Blok / Inline
     imageToken: Afbeeldingstoken
+  map:
+    zoom: Zoom
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven

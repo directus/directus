@@ -1,18 +1,22 @@
 <template>
-	<div class="group-standard">
-		<v-divider
-			v-if="showHeader"
-			:style="{
-				'--v-divider-label-color': headerColor,
-			}"
-			:inline-title="false"
-			large
-		>
-			<template v-if="headerIcon" #icon><v-icon :name="headerIcon" /></template>
-			<template v-if="field.name">
-				<span class="title">{{ field.name }}</span>
-			</template>
-		</v-divider>
+	<v-detail :start-open="start === 'open'" class="group-detail">
+		<template #activator="{ toggle, active }">
+			<v-divider
+				:style="{
+					'--v-divider-label-color': headerColor,
+				}"
+				:class="{ active }"
+				:inline-title="false"
+				large
+				@click="toggle"
+			>
+				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+				<template v-if="field.name">
+					<span class="title">{{ field.name }}</span>
+				</template>
+				<v-icon class="expand-icon" name="expand_more" />
+			</v-divider>
+		</template>
 
 		<v-form
 			:initial-values="initialValues"
@@ -25,7 +29,7 @@
 			:batch-mode="batchMode"
 			@update:model-value="$emit('apply', $event)"
 		/>
-	</div>
+	</v-detail>
 </template>
 
 <script lang="ts">
@@ -77,9 +81,10 @@ export default defineComponent({
 			default: () => [],
 		},
 
-		showHeader: {
-			type: Boolean,
-			default: false,
+		start: {
+			type: String,
+			enum: ['open', 'closed'],
+			default: 'open',
 		},
 		headerIcon: {
 			type: String,
@@ -95,7 +100,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.v-form {
+	padding-top: calc(var(--form-vertical-gap) / 2);
+}
+
 .v-divider {
-	margin-bottom: calc(var(--form-vertical-gap) / 2);
+	cursor: pointer;
+}
+
+.v-divider .expand-icon {
+	float: right;
+	transform: rotate(90deg) !important;
+	transition: transform var(--fast) var(--transition);
+}
+
+.v-divider.active .expand-icon {
+	transform: rotate(0) !important;
+}
+
+.header-icon {
+	margin-right: 12px !important;
 }
 </style>

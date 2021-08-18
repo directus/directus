@@ -4,6 +4,7 @@ export * from './endpoints';
 export * from './extensions';
 export * from './fields';
 export * from './filter';
+export * from './geometry';
 export * from './hooks';
 export * from './interfaces';
 export * from './items';

@@ -388,7 +388,6 @@ documentation: Dokumentacija
 sidebar: Bočna traka
 duration: Trajanje
 charset: Set karaktera
-second: Sekundi
 file_moved: Fajl je premješten
 collection_created: Kolekcija Napravljena
 modified_on: Izmijenjeno
@@ -757,6 +756,7 @@ fields:
     theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
+    status_active: Aktivan
     role: Uloga
     token: Token
     last_page: Posljednja Stranica
@@ -793,6 +793,9 @@ fields:
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
     collection_list: Navigacija Kolekcije
+  directus_webhooks:
+    name: Ime
+    status: Status
 field_options:
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
@@ -981,6 +984,8 @@ interfaces:
     box: Blok / Linijski
     imageToken: Token Fotografije
     imageToken_label: Koji (statični) token prikačiti na izvore slika
+  map:
+    zoom: Uvеćanjе
   presentation-notice:
     notice: Napomеna
     description: Prikaži kratku napomenu

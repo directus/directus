@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { validateQuery } from '../utils/validate-query';
 import {
 	ArgumentNode,
 	BooleanValueNode,
@@ -91,6 +92,12 @@ const GraphQLVoid = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLGeoJSON = new GraphQLScalarType({
+	...GraphQLJSON,
+	name: 'GraphQLGeoJSON',
+	description: 'GeoJSON value',
 });
 
 export const GraphQLDate = new GraphQLScalarType({
@@ -537,6 +544,30 @@ export class GraphQLService {
 				},
 			});
 
+			const GeometryFilterOperators = schemaComposer.createInputTC({
+				name: 'geometry_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLGeoJSON,
+					},
+					_neq: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+				},
+			});
+
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -557,6 +588,9 @@ export class GraphQLService {
 								break;
 							case GraphQLDate:
 								filterOperatorType = DateFilterOperators;
+								break;
+							case GraphQLGeoJSON:
+								filterOperatorType = GeometryFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
@@ -1088,6 +1122,8 @@ export class GraphQLService {
 		};
 
 		query.fields = parseFields(selections);
+
+		validateQuery(query);
 
 		return query;
 	}

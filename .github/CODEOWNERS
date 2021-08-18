@@ -2,10 +2,6 @@
 
 /docs/*.md @benhaynes
 
-/packages/cli @WoLfulus
-/packages/sdk @WoLfulus
-/packages/gatsby-source-directus @WoLfulus
-
 /packages/shared @nickrum
 /packages/extension-sdk @nickrum
 /app/vite.config.js @nickrum

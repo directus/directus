@@ -14,7 +14,11 @@ export type FilterOperator =
 	| 'between'
 	| 'nbetween'
 	| 'empty'
-	| 'nempty';
+	| 'nempty'
+	| 'intersects'
+	| 'nintersects'
+	| 'intersects_bbox'
+	| 'nintersects_bbox';
 
 export type ClientFilterOperator = FilterOperator | 'starts_with' | 'nstarts_with' | 'ends_with' | 'nends_with';
 
@@ -44,6 +48,10 @@ export type FieldFilterOperator = {
 	_nbetween?: (string | number)[];
 	_empty?: boolean;
 	_nempty?: boolean;
+	_intersects?: string;
+	_nintersects?: string;
+	_intersects_bbox?: string;
+	_nintersects_bbox?: string;
 };
 
 export type FieldValidationOperator = {

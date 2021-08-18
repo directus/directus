@@ -1,6 +1,6 @@
 {
   "name": "@directus/auth-username",
-  "version": "9.0.0-rc.88",
+  "version": "9.0.0-rc.90",
   "description": "Username based auth driver for Directus",
   "license": "GPL-3.0",
   "main": "dist/index.js",
@@ -18,13 +18,16 @@
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
   },
   "dependencies": {
-    "@directus/auth": "9.0.0-rc.88"
+    "@directus/auth": "9.0.0-rc.90"
   },
   "devDependencies": {
     "jest": "27.0.6",
     "npm-run-all": "4.1.5",
     "ts-jest": "27.0.3",
     "typescript": "4.3.5"
+  },
+  "peerDependencies": {
+    "knex": "^0.95.6"
   },
   "publishConfig": {
     "access": "public"

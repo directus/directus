@@ -80,6 +80,8 @@ fields:
     display_template: Modelvorm
   directus_roles:
     description: Beskrywing
+  directus_webhooks:
+    status: Status
 comment: Kommentaar
 description: Beskrywing
 email: E-pos
