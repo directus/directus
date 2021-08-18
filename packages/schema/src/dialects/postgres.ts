@@ -58,7 +58,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 			, f_geometry_column as column_name
 			, type as data_type
         FROM geometries g
-        JOIN information_schema.tables
+        JOIN information_schema.tables t
 	        ON g.f_table_name = t.table_name
 	        AND t.table_type = 'BASE TABLE'
         WHERE f_table_schema in (?)
