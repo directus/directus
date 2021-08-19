@@ -13,7 +13,7 @@ export interface User {
 
 export interface AuthProviderConfig {
 	driver: string;
-	config: any;
+	config: Record<string, any>;
 }
 
 export interface AuthManagerConfig {

@@ -8,10 +8,9 @@ export interface AuthConstructor {
 	 * Auth constructor
 	 *
 	 * @param knex Database driver
-	 * @param provider Auth provider name
 	 * @param args Optional config args
 	 */
-	new (knex: Knex, provider: string, ...args: any[]): Auth;
+	new (knex: Knex, ...args: any[]): Auth;
 }
 
 export default abstract class Auth {

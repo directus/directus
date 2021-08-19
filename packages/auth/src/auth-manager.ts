@@ -49,19 +49,19 @@ export default class AuthManager {
 			return this._providers.get(name) as Auth;
 		}
 
-		const providerConfig = this.providerConfigs[name];
+		const config = this.providerConfigs[name];
 
-		if (!providerConfig) {
+		if (!config) {
 			throw new InvalidConfigException('Missing auth provider config', name);
 		}
 
-		const Driver = this._drivers.get(providerConfig.driver);
+		const Driver = this._drivers.get(config.driver);
 
 		if (!Driver) {
-			throw new DriverNotSupportedException('Driver not supported', providerConfig.driver);
+			throw new DriverNotSupportedException('Driver not supported', config.driver);
 		}
 
-		const provider = new Driver(this.knex, name, providerConfig.config);
+		const provider = new Driver(this.knex, { provider: name, ...config.config });
 		this._providers.set(name, provider);
 		return provider;
 	}
