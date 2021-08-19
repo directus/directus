@@ -12,10 +12,20 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	}
 
 	async aggregated(query: Aggregated<T>): Promise<ManyItems<T>> {
-		const params = Object.keys(query).reduce((acc, param) => {
-			acc[`aggregate[${param}]`] = query[param];
-			return acc;
-		}, {});
+		const params = Object.keys(query).reduce(
+			(acc, param: string) => {
+				while (Object.keys(query[param]).length > 0) {
+					if (['sum', 'avg', 'count', 'max', 'min'].includes(param)) {
+						acc.aggregate[param] = query[param];
+					} else if (param === 'groupBy') {
+						acc[param] = query[param];
+					}
+					query = query[param];
+				}
+				return acc;
+			},
+			{ aggregate: {} } as any
+		);
 		const response = await this.transport.get<T[]>(`${this.endpoint}`, {
 			params: params,
 		});
