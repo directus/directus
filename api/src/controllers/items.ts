@@ -97,10 +97,6 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
 
-		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
-		}
-
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -111,6 +107,7 @@ router.get(
 		res.locals.payload = {
 			data: result || null,
 		};
+
 		return next();
 	}),
 	respond
