@@ -54,7 +54,12 @@ export default function getDatabase(): Knex {
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
 			warn: (msg) => {
+				// Ignore warnings about returning not being supported in some DBs
 				if (msg.startsWith('.returning()')) return;
+
+				// Ignore warning about MySQL not supporting TRX for DDL
+				if (msg.startsWith('Transaction was implicitly committed, do not mix transactions and DDL with MySQL')) return;
+
 				return logger.warn(msg);
 			},
 			error: (msg) => logger.error(msg),
