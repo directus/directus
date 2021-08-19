@@ -218,6 +218,7 @@ export default defineComponent({
 					} else {
 						if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
 							loadValueFromProps();
+							controls.draw.changeMode('simple_select');
 						}
 					}
 					if (props.disabled) {
