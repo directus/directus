@@ -7,6 +7,7 @@ export interface LayoutConfig<Options = any, Query = any> {
 	name: string;
 	icon: string;
 	component: Component;
+	smallHeader?: boolean;
 	slots: {
 		options: Component;
 		sidebar: Component;

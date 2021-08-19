@@ -8,7 +8,8 @@ import { useI18n } from 'vue-i18n';
 import { toRefs, computed, ref, watch, Ref } from 'vue';
 
 import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { GeometryOptions, toGeoJSON } from '@/utils/geometry';
+import { toGeoJSON } from '@/utils/geometry';
+import { GeometryOptions } from '@directus/shared/types';
 import { layers } from './style';
 import { useRouter } from 'vue-router';
 import { Filter } from '@directus/shared/types';
@@ -56,7 +57,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const page = syncOption(layoutQuery, 'page', 1);
 		const limit = syncOption(layoutQuery, 'limit', 1000);
-		const sort = syncOption(layoutQuery, 'sort', fieldsInCollection.value[0].field);
+		const sort = syncOption(layoutQuery, 'sort', fieldsInCollection.value?.[0]?.field);
 
 		const customLayerDrawerOpen = ref(false);
 		const layoutElement = ref<HTMLElement | null>(null);
