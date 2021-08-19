@@ -5,7 +5,7 @@ import { cloneDeep, get, orderBy, set } from 'lodash';
 import { computed, Ref, ref, ComputedRef } from 'vue';
 
 type FieldTree = Record<string, FieldInfo>;
-type FieldInfo = { field: string; children: FieldTree; group?: string, collection: string }
+type FieldInfo = { name: string, field: string; children: FieldTree; group?: string, collection: string }
 type FieldOption = { name: string, field: string; key: string; children?: FieldOption[]; group?: string };
 
 export default function useFieldTreeAdvanced(
@@ -32,14 +32,14 @@ export default function useFieldTreeAdvanced(
 	return { tree,treeList, loadFieldRelations, getField, treeToList, getVisitedRelations, visitedRelations };
 
     function treeToList(tree: FieldTree, parentName?: string): FieldOption[] {
-        return Object.entries(tree).map(([name, value]) => {
-            const key = parentName ? `${parentName}.${name}` : name
-            const children = treeToList(value.children, key)
+        return Object.values(tree).map(field => {
+            const key = parentName ? `${parentName}.${field.field}` : field.field
+            const children = treeToList(field.children, key)
             return {
-                name,
+                name: field.name,
                 key,
-                field: value.field,
-                group: value.group,
+                field: field.field,
+                group: field.group,
                 children: children.length > 0? children : undefined
             }
         })
@@ -49,6 +49,7 @@ export default function useFieldTreeAdvanced(
         return fieldsStore.getFieldsForCollectionAlphabetical(collection).reduce((acc, field) => {
             acc[field.field] = {
                 field: field.field,
+                name: field.name,
                 collection: field.collection,
                 children: {}
             }
