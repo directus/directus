@@ -25,6 +25,7 @@ item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
+limit: Limite
 group: Groupe
 and: Et
 or: Ou
@@ -71,6 +72,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Déconnecté
   SESSION_EXPIRED: Votre session a expiré
+public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 not_allowed: Non autorisé
 directus_version: Version de Directus
@@ -116,6 +118,8 @@ no_access: Aucun accès
 use_custom: Personnalisé
 nullable: Peut être nul
 allow_null_value: Autoriser la valeur NULL
+allow_multiple: Autoriser Plusieurs
+allow_multiple_to_be_open: Autoriser l'ouverture de plusieurs éléments
 enter_value_to_replace_nulls: Veuillez entrer une nouvelle valeur pour remplacer les NULL actuellement dans ce champ.
 field_standard: Standard
 field_presentation: Présentation & Alias
@@ -179,6 +183,7 @@ time: Date et heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
+geometry: Géométrie
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -309,6 +314,7 @@ drag_mode: Mode Glisser/Déposer
 cancel_crop: Annuler le recadrage
 original: Initial
 url: URL
+import_label: Importer
 file_details: Détails du fichier
 dimensions: Dimensions
 size: Taille
@@ -376,6 +382,7 @@ no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
 no_webhooks_copy: Il n'y a pas encore de webhooks.
 all_items: Tous les éléments
+any: N'importe quel
 csv: CSV
 no_collections: Aucune collection
 create_collection: Créer une collection
@@ -386,6 +393,7 @@ display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
 active: Actif
+inactive: Inactif
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
@@ -398,6 +406,7 @@ documentation: Documentation
 sidebar: Barre latérale
 duration: Durée
 charset: Jeu de caractères
+second: seconde
 file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
@@ -436,8 +445,10 @@ errors:
   USER_SUSPENDED: Utilisateur suspendu
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   UNKNOWN: Erreur inconnue
+  UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
@@ -489,6 +500,7 @@ color: Couleur
 circle: Cercle
 empty_item: Élément vide
 log_in_with: 'Se connecter avec {provider}'
+advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
 change_advanced_filter_operator: Changer d'opérateur
@@ -515,6 +527,10 @@ operators:
   nempty: N'est pas vide
   all: Contient ces clés
   has: Contient certaines de ces clés
+  intersects: Intersectes
+  nintersects: Ne se croise pas
+  intersects_bbox: Boîte englobante d'intersectes
+  nintersects_bbox: Ne pas intersecter la boîte englobante
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
 item: Élément
@@ -558,6 +574,7 @@ user: Utilisateur
 no_presets: Aucun préréglage
 no_presets_copy: Aucun préréglage ou favori n'a encore été enregistré.
 no_presets_cta: Ajouter un préréglage
+presets_only: Préréglages uniquement
 create: Créer
 on_create: À la Création
 on_update: À la mise à jour
@@ -573,6 +590,7 @@ label: Étiquette
 image_url: Url de l’image
 alt_text: Texte alternatif
 media: Média
+quality: Qualité
 width: Largeur
 height: Hauteur
 source: Source
@@ -767,13 +785,23 @@ fields:
     title: Titre
     description: Description
     tags: Étiquettes
+    user_preferences: Préférences utilisateur
     language: Langue
     theme: Thème
+    theme_auto: Automatique (Basé sur le système)
+    theme_light: Mode Clair
+    theme_dark: Mode sombre
     tfa_secret: Authentification à deux facteurs
+    admin_options: Options d'Administration
     status: État
+    status_draft: Brouillon
+    status_invited: Inactif
     status_active: Actif
+    status_suspended: Suspendu
+    status_archived: Archivé
     role: Rôle
     token: Token
+    token_placeholder: Entrez un jeton d'accès sécurisé...
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
@@ -781,13 +809,17 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
+    public_pages: Pages Publiques
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
+    files_and_thumbnails: Fichiers et miniatures
+    storage_default_folder: Dossier de stockage par défaut
     storage_asset_presets: Préréglages des fichiers dans le stockage
     storage_asset_transform: Transformation des fichiers du stockage
+    overrides: Remplacer les applications
     custom_css: Personnalisation du CSS
   directus_fields:
     collection: Nom de la Collection
@@ -810,7 +842,12 @@ fields:
     collection_list: Navigation de la collection
   directus_webhooks:
     name: Nom
+    method: Méthode
     status: État
+    data: Données
+    data_label: Envoyer les données de l'événement
+    triggers: Déclencheurs
+    actions: Actions
 field_options:
   directus_collections:
     track_activity_revisions: Enregistrer les activités et l'historique
@@ -833,10 +870,13 @@ referential_action_cascade: Supprimer l'objet {collection} (cascade)
 referential_action_set_null: Vider le champ {field}
 referential_action_set_default: Remettre {field} à sa valeur par défaut
 choose_action: Choisir une action
+continue_label: Continuer
 continue_as: >-
   {name} est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
 creating_webhook: Création du Webhook
+default_label: Défaut
+delete_label: Supprimer
 delete_are_you_sure: >-
   Cette action est permanente et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
@@ -888,11 +928,22 @@ sort_direction: Ordre de tri
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
+require_value_to_be_set: Nécessite que la valeur soit définie
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
+start: Début
 interfaces:
+  group-accordion:
+    name: Accordéon
+    description: Afficher les champs ou les groupes en tant que sections d'accordéon
+    start: Début
+    all_closed: Tous fermés
+    first_opened: Premier consulté
+    all_opened: Tous ouverts
+    accordion_mode: Mode Accordion
+    max_one_section_open: Max 1 section ouverte
   presentation-links:
     presentation-links: Bouton de liens
     links: Liens
@@ -913,6 +964,7 @@ interfaces:
     description: Choisissez entre plusieurs options via des cases à cocher imbriquées
     value_combining: Combinaison de valeurs
     value_combining_note: Contrôle la valeur stockée lorsque des sélections imbriquées sont faites.
+    show_all: Tout afficher
   input-code:
     code: Code
     description: Écrire ou partager des extraits de code
@@ -1204,3 +1256,5 @@ layouts:
     calendar: Calendrier
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
+  map:
+    field: Géométrie
