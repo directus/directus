@@ -6,6 +6,8 @@ const { createRemoteFileNode } = require('gatsby-source-filesystem');
 const ms = require('ms');
 const chalk = require('chalk');
 
+let authToken;
+
 /**
  * Normalizes Directus urls.
  */
@@ -48,6 +50,9 @@ exports.sourceNodes = async (gatsby, options) => {
 
 	const hasAuth = !!auth;
 	const hasToken = auth?.token && auth?.token?.length > 0;
+	if (hasToken) {
+		authToken = auth?.token;
+	}
 	const hasEmail = auth?.email && auth?.email?.length > 0;
 	const hasPassword = auth?.password && auth?.password?.length > 0;
 	const hasCredentials = hasEmail && hasPassword;
@@ -84,7 +89,7 @@ exports.sourceNodes = async (gatsby, options) => {
 
 	let endpointParams = {};
 	if (hasAuth && hasToken) {
-		endpointParams.access_token = auth?.token;
+		endpointParams.access_token = authToken;
 	}
 
 	let endpoints = normalizeEndpoint(url, endpointParams);
@@ -106,6 +111,7 @@ exports.sourceNodes = async (gatsby, options) => {
 				email: auth?.email,
 				password: auth?.password,
 			});
+			authToken = authResult?.access_token;
 		} catch (err) {
 			throw new Error(`Directus authentication failed with: ${err.message}\nIs the credentials valid?`);
 		}
@@ -151,25 +157,25 @@ exports.sourceNodes = async (gatsby, options) => {
 exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, options) => {
 	const { createNode } = actions;
 
-	const { url, auth } = options;
+	const { url } = options;
 
 	let endpoints = normalizeEndpoint(url);
 
 	await createResolvers({
 		DirectusData_directus_files: {
 			imageFile: {
-				type: 'File',
-				async resolve(source) {
+				type: `File`,
+				resolve(source) {
 					if (!source || !source.id) {
 						return null;
 					}
-					return await createRemoteFileNode({
+					return createRemoteFileNode({
 						url: `${endpoints.base}assets/${source.id}`,
 						store,
 						cache,
 						createNode,
 						createNodeId,
-						httpHeaders: { Authorization: `Bearer ${auth.token}` },
+						httpHeaders: { Authorization: `Bearer ${authToken}` },
 						reporter,
 					});
 				},
