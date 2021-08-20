@@ -1,27 +1,10 @@
 const invariant = require('invariant');
-const Directus = require('@directus/sdk-js');
-const { sourceNodes } = require('@lnfusion/gatsby-source-graphql');
+const { Directus } = require('@directus/sdk');
+const { sourceNodes } = require('gatsby-source-graphql/gatsby-node');
 const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
 const ms = require('ms');
 const chalk = require('chalk');
-
-/**
- * Stores authentication data in memory
- */
-class MemoryStore {
-	constructor() {
-		this.values = {};
-	}
-
-	async getItem(key) {
-		return this.values[key];
-	}
-
-	async setItem(key, value) {
-		this.values[key] = value;
-	}
-}
 
 /**
  * Normalizes Directus urls.
@@ -114,17 +97,12 @@ exports.sourceNodes = async (gatsby, options) => {
 			`can be either a number (seconds) or a string (5s, 1m, ...)`
 	);
 
-	const directus = new Directus(endpoints.base, {
-		auth: {
-			mode: 'json',
-			autoRefresh: true,
-			storage: new MemoryStore(),
-		},
-	});
+	const directus = new Directus(endpoints.base);
 
+	let authResult;
 	if (hasAuth && !hasToken) {
 		try {
-			await directus.auth.login({
+			authResult = await directus.auth.login({
 				email: auth?.email,
 				password: auth?.password,
 			});
@@ -141,13 +119,17 @@ exports.sourceNodes = async (gatsby, options) => {
 			Object.assign(obj, (await graphql?.headers()) || {});
 		}
 
-		if (!hasToken) {
-			return obj;
+		if (hasToken) {
+			return Object.assign(obj, {
+				Authorization: `Bearer ${auth?.token}`,
+			});
 		}
 
-		return Object.assign(obj, {
-			Authorization: `Bearer ${auth?.token}`,
-		});
+		if (authResult?.access_token) {
+			return Object.assign(obj, {
+				Authorization: `Bearer ${authResult?.access_token}`,
+			});
+		}
 	};
 
 	return await sourceNodes(gatsby, {
