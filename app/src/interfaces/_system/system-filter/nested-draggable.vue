@@ -3,6 +3,7 @@
 		:group="{ name: 'g1' }"
 		:list="tree"
 		draggable=".row"
+		:disabled="depth === 1"
 		handle=".drag-handle"
 		item-key="id"
 		tag="ul"
@@ -11,11 +12,40 @@
 	>
 		<template #item="{ element, index }">
 			<li class="row">
-				<v-list-item block :class="{ field: element.type === 'field' }">
+				<div v-if="element.type === 'logic'" class="logic">
 					<div class="header">
 						<div class="header-start">
 							<v-icon name="drag_handle" class="drag-handle"></v-icon>
-							<span class="type">{{ element.type === 'field' ? 'Field: ' : 'Logic: ' }}</span>
+							<v-select
+								inline
+								:full-width="false"
+								:model-value="element.name"
+								:items="selectOptions"
+								item-text="name"
+								item-value="key"
+								:mandatory="false"
+								:groups-clickable="true"
+								@group-clicked="onToggle"
+								@update:modelValue="updateValue($event, index)"
+							/>
+						</div>
+						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
+					</div>
+					<nested-draggable
+						v-if="element.type === 'logic'"
+						:tree="element.values"
+						:collection="collection"
+						:depth="depth + 1"
+						@change="$emit('change', $event)"
+						@add-node="$emit('add-node', [index, ...$event])"
+						@remove-node="$emit('remove-node', [index, ...$event])"
+						@update:tree="updateNode(index, $event)"
+					/>
+				</div>
+				<v-list-item v-else block class="field">
+					<div class="header">
+						<div class="header-start">
+							<v-icon name="drag_handle" class="drag-handle"></v-icon>
 							<v-select
 								inline
 								:full-width="false"
@@ -29,41 +59,22 @@
 								@update:modelValue="updateValue($event, index)"
 							/>
 							<v-select
-								v-if="element.type === 'field'"
 								inline
 								:model-value="element.comparator"
 								:items="getCompareOptions(element.name)"
 								@update:modelValue="updateComparator(index, $event)"
 							></v-select>
 						</div>
-						<div class="header-end">
-							<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
-							<v-icon v-if="false" class="expand" name="expand_more" @click="element.open = !element.open"></v-icon>
-						</div>
+						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
 					</div>
-					<field-input
-						v-if="element.type === 'field'"
-						:field="element"
-						:collection="collection"
-						@update:field="updateNode(index, $event)"
-					/>
+					<field-input :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
 				</v-list-item>
-
-				<template v-if="element.open">
-					<nested-draggable
-						v-if="element.type === 'logic'"
-						:tree="element.values"
-						:collection="collection"
-						@change="$emit('change', $event)"
-						@add-node="$emit('add-node', [index, ...$event])"
-						@remove-node="$emit('remove-node', [index, ...$event])"
-						@update:tree="updateNode(index, $event)"
-					/>
-				</template>
 			</li>
 		</template>
 	</draggable>
-	<v-button class="add" small @click="$emit('add-node', [])">{{ t('interfaces.filter.add_node') }}</v-button>
+	<v-button v-if="(depth === 1 && tree.length === 0) || depth === 2" class="add" small @click="$emit('add-node', [])">
+		{{ t('interfaces.filter.add_node') }}
+	</v-button>
 </template>
 
 <script lang="ts">
@@ -97,6 +108,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		depth: {
+			type: Number,
+			default: 1,
+		},
 	},
 	emits: ['change', 'add-node', 'remove-node', 'update:tree'],
 	setup(props, { emit }) {
@@ -109,11 +124,11 @@ export default defineComponent({
 
 		const selectOptions = computed(() => [
 			{
-				name: 'AND',
+				name: t('interfaces.filter.and'),
 				key: '_and',
 			},
 			{
-				name: 'OR',
+				name: t('interfaces.filter.or'),
 				key: '_or',
 			},
 			...treeList.value,
@@ -224,7 +239,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-list-item.field {
+.v-list-item {
 	--input-height: auto;
 
 	display: flex;
@@ -232,16 +247,54 @@ export default defineComponent({
 	align-items: stretch;
 }
 
+.logic {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	padding-left: 4px;
+
+	&::before {
+		background-color: var(--primary);
+		opacity: 0.1;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		content: '';
+		pointer-events: none;
+	}
+
+	&::after {
+		background-color: var(--primary);
+		position: absolute;
+		top: 0;
+		left: 0px;
+		height: 100%;
+		width: 4px;
+		border-radius: 2px;
+		content: '';
+	}
+}
+
 .header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
+	height: 50px;
+}
+
+.logic > .header {
+	color: var(--primary);
+	padding-right: 8px;
+}
+
+.field > .header {
 	height: 40px;
 }
 
-.header-start,
-.header-end {
+.header-start {
 	display: flex;
 	gap: 10px;
 	align-items: center;
@@ -251,12 +304,9 @@ export default defineComponent({
 	margin-bottom: 10px;
 }
 
-.group {
-	margin-top: 10px;
-}
-
 .add {
-	margin-left: 24px;
+	margin-left: 8px;
+	margin-bottom: 12px;
 }
 
 .drag-handle {

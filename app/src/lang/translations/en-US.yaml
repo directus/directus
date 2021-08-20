@@ -955,6 +955,8 @@ interfaces:
     description: Configure a filter object.
     add_node: Add Node
     add_value: Add Value
+    and: "Logical: And"
+    or: "Logical: Or"
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

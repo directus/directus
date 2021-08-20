@@ -4,6 +4,7 @@
 			<nested-draggable
 				v-model:tree="innerValue"
 				:collection="collection"
+				:depth="1"
 				@add-node="addNode($event)"
 				@remove-node="removeNode($event)"
 			/>
@@ -207,7 +208,8 @@ export default defineComponent({
 	}
 
 	:deep(ul) {
-		margin-left: 24px;
+		margin-left: 8px;
+		padding-right: 8px;
 		padding-left: 0;
 	}
 
