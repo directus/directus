@@ -34,7 +34,7 @@ export class FieldsHandler<T = FieldItem> {
 	}
 
 	async updateOne(collection: string, field: string, item: PartialItem<T>): Promise<OneItem<T>> {
-		return (await this.transport.patch<PartialItem<T>>(`/fields/${collection}/${field}}`, item)).data;
+		return (await this.transport.patch<PartialItem<T>>(`/fields/${collection}/${field}`, item)).data;
 	}
 
 	async deleteOne(collection: string, field: string): Promise<void> {

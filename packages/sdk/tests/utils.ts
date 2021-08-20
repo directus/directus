@@ -28,9 +28,10 @@ export function test(name: string, test: Test, settings?: TestSettings): void {
 		}
 
 		// `clearImmediate` doesn't exist in the jsdom environment and nock throws ReferenceError
-		if (global.clearImmediate !== typeof 'function') {
+		if (typeof global.clearImmediate !== 'function') {
 			global.clearImmediate = clearImmediate;
 		}
+
 		nock.abortPendingRequests();
 		nock.cleanAll();
 	});
