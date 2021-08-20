@@ -20,11 +20,16 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Editar campo
+conditions: Condições
+maps: Mapas
 item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
+limit: Limite
 group: Grupos
+and: E
+or: Ou
 fill_width: Preencher
 field_name_translations: Traduções Dos Nomes Dos Campos
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
@@ -35,7 +40,7 @@ leaf: Folha
 indeterminate: Indeterminado
 exclusive: Exclusivo
 children: Filhos
-db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 show_archived_items: Mostrar itens arquivados
 edited: Valor editado
 required: Obrigatório
@@ -44,7 +49,7 @@ requires_value: Requer valor
 create_preset: Criar predefinição
 create_role: Criar Função
 create_user: Criar usuário
-create_webhook: Criar Webhook
+create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
 email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
 invite: Convidar
@@ -66,8 +71,9 @@ delete_bookmark: Deletar Marcador
 delete_bookmark_copy: >-
   Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
-  SIGN_OUT: Deslogado
+  SIGN_OUT: Desconectado
   SESSION_EXPIRED: Sessão expirada
+public_label: Publico
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
 directus_version: Versão do Directus
@@ -75,20 +81,20 @@ node_version: Versão Node
 node_uptime: Node Uptime
 os_type: Tipo de SO
 os_version: Versão do SO
-os_uptime: Uptime do SO
+os_uptime: Tempo de atividade do SO
 os_totalmem: Memória do SO
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
   Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
-reset_system_permissions_to: 'Redefinir permissões do sistema para:'
-reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Tem certeza?
-the_following_are_minimum_permissions: As seguintes são as permissões mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disto, mas não abaixo.
-app_access_minimum: Acesso ao App Mínimo
+reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Você tem certeza?
+the_following_are_minimum_permissions: As permissões seguintes, são as mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disso, mas não abaixo.
+app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Tem certeza de que deseja desarquivar este item?
-nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos para um nível acima.
 unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
 validationError:
   eq: O valor tem de ser {valid}
@@ -113,6 +119,8 @@ no_access: Sem acesso
 use_custom: Usar Personalizado
 nullable: Aceita nulos
 allow_null_value: Permitir valores NULL
+allow_multiple: Permitir Múltiplos
+allow_multiple_to_be_open: Permissão para abrir vários
 enter_value_to_replace_nulls: Por favor digite um novo valor que substituirá todos os NULLs presentes neste campo.
 field_standard: Padrão
 field_presentation: Apresentação e pseudônimos
@@ -176,6 +184,7 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -306,6 +315,7 @@ drag_mode: Modo de arrastar
 cancel_crop: Cancelar Recorte
 original: Original
 url: URL
+import_label: Importar
 file_details: Detalhes do Arquivo
 dimensions: Dimensões
 size: Tamanho
@@ -373,6 +383,7 @@ no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Ainda não possui Webhooks.
 all_items: Todos os itens
+any: Qualquer
 csv: CSV
 no_collections: Sem coleções
 create_collection: Criar Coleção
@@ -383,6 +394,7 @@ display_template_not_setup: A opção do modelo de exibição está configurada 
 collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
 select_a_collection: Selecione uma coleção
 active: Ativo
+inactive: Inativo
 users: Usuários
 activity: Atividade
 webhooks: Webhooks
@@ -395,6 +407,7 @@ documentation: Documentação
 sidebar: Barra lateral
 duration: Duração
 charset: Codificação de caracteres
+second: segundo
 file_moved: Arquivo movido
 collection_created: Coleção criada
 modified_on: Modificado em
@@ -433,8 +446,10 @@ errors:
   USER_SUSPENDED: Usuário suspenso
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   UNKNOWN: Erro inesperado
+  UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
   NOT_NULL_VIOLATION: Valor não pode ser nulo
+security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
@@ -486,6 +501,7 @@ color: Cor
 circle: Círculo
 empty_item: Item vazio
 log_in_with: 'Entrar com {provider}'
+advanced_settings: Configurações Avançadas
 advanced_filter: Filtro avançado
 delete_advanced_filter: Excluir Filtro
 change_advanced_filter_operator: Modificar Operador
@@ -512,6 +528,10 @@ operators:
   nempty: Não está vazio
   all: Contém essas chaves
   has: Contém algumas dessas chaves
+  intersects: Interseções
+  nintersects: Não interceptado
+  intersects_bbox: Cruza a caixa delimitadora
+  nintersects_bbox: Não cruza a caixa delimitadora
 loading: Carregando...
 drop_to_upload: Solte para enviar
 item: Item
@@ -550,10 +570,12 @@ no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
 clear_filters: Limpar filtros
 saves_automatically: Salva automaticamente
 role: Função
+rule: Regra
 user: Usuário
 no_presets: Sem predefinições
 no_presets_copy: Nenhuma predefinição ou marcador foi salvo ainda.
 no_presets_cta: Adicionar predefinição
+presets_only: Apenas predefinições
 create: Criar
 on_create: Ao Criar
 on_update: Pós-alteração
@@ -569,6 +591,7 @@ label: Rótulo
 image_url: URL da Imagem
 alt_text: Texto Alternativo
 media: Mídia
+quality: Qualidade
 width: Largura
 height: Altura
 source: Código
@@ -763,13 +786,23 @@ fields:
     title: Título
     description: Descrição
     tags: Tags
+    user_preferences: Preferências do Usuário
     language: Idioma
     theme: Tema
+    theme_auto: Automático (Baseado no Sistema)
+    theme_light: Modo Claro
+    theme_dark: Modo Escuro
     tfa_secret: Autenticação em Duas Etapas
+    admin_options: Opções do Admin
     status: Status
+    status_draft: Rascunho
+    status_invited: Inativo
     status_active: Ativo
+    status_suspended: Suspenso
+    status_archived: Arquivado
     role: Função
     token: Token
+    token_placeholder: Digite um token de acesso seguro...
     last_page: Última página
     last_access: Último acesso
   directus_settings:
@@ -777,13 +810,17 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    public_pages: Páginas Públicas
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
+    files_and_thumbnails: Arquivos e Miniaturas
+    storage_default_folder: Pasta de Armazenamento Padrão
     storage_asset_presets: Predefinições de armazenamento
     storage_asset_transform: Transformação de arquivos
+    overrides: Substituições de Aplicativos
     custom_css: CSS Personalizado
   directus_fields:
     collection: Nome da coleção
@@ -806,7 +843,12 @@ fields:
     collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
+    method: Método 
     status: Status
+    data: Dados
+    data_label: Enviar Dados do Evento
+    triggers: Gatilhos
+    actions: Ações
 field_options:
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
@@ -829,10 +871,13 @@ referential_action_cascade: Excluir o item {collection} (cascade)
 referential_action_set_null: Anular o campo {field}
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolha uma ação
+continue_label: Continuar
 continue_as: >-
   {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
 creating_webhook: Criando Webhook
+default_label: Padrão
+delete_label: Excluir
 delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 delete_field_are_you_sure: >-
@@ -884,11 +929,19 @@ sort_direction: Direção da ordenação
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
 template: Template
+require_value_to_be_set: Valor a ser definido é requerido
 translation: Tradução
 value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
+start: Início
 interfaces:
+  group-accordion:
+    name: Sanfonada
+    description: Exibir campos ou grupos como seções sanfonadas
+    start: Início
+    all_closed: Todos Fechados
+    first_opened: Primeiro Aberto
   presentation-links:
     presentation-links: Links do botão
     links: Links
@@ -1201,3 +1254,5 @@ layouts:
     calendar: Calendário
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
+  map:
+    field: Geometria
