@@ -1,5 +1,5 @@
 /**
- * @jest-environment jest-environment-jsdom-global
+ * @jest-environment jsdom
  */
 
 import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
@@ -73,7 +73,8 @@ describe('auth (browser)', function () {
 
 		await timers(async ({ tick, flush }) => {
 			const sdk = new Directus(url);
-			await sdk.auth.login(
+
+			const loginPromise = sdk.auth.login(
 				{
 					email: 'wolfulus@gmail.com',
 					password: 'password',
@@ -88,12 +89,16 @@ describe('auth (browser)', function () {
 
 			await tick(2000);
 
+			await loginPromise;
+
 			expect(scope.pendingMocks().length).toBe(1);
 			expect(sdk.auth.expiring).toBe(false);
-
-			await tick(500);
+			expect(sdk.storage.auth_token).toBe('access_token');
+			expect(sdk.storage.auth_expires).toBe(107000);
+			await tick(5000);
 
 			expect(scope.pendingMocks().length).toBe(1);
+			await flush();
 			expect(sdk.auth.expiring).toBe(true);
 
 			await new Promise((resolve) => {
@@ -102,9 +107,10 @@ describe('auth (browser)', function () {
 				});
 			});
 
-			expect(sdk.storage.auth_expires).toBe(107500);
-
+			expect(sdk.storage.auth_expires).toBe(112000);
 			expect(scope.pendingMocks().length).toBe(0);
+			expect(sdk.storage.auth_token).toBe('new_access_token');
+			expect(sdk.auth.expiring).toBe(false);
 		}, 100000);
 	});
 

@@ -236,6 +236,7 @@ export default defineComponent({
 						const conditions = [...field.meta.conditions].reverse();
 
 						const matchingCondition = conditions.find((condition) => {
+							if (!condition.rule) return;
 							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
 							return errors.length === 0;
 						});

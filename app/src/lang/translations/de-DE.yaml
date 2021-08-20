@@ -20,15 +20,25 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Feld bearbeiten
+conditions: Bedingungen
 item_revision: Element Revision
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
+limit: Limit
+group: Gruppe
+and: Und
+or: Oder
 fill_width: Breite füllen
 field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
+branch: Branch
+leaf: Blatt
+indeterminate: Unbestimmt
+exclusive: Exklusive
+children: Untergeordnete
 db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 edited: Bearbeiteter Wert
@@ -62,6 +72,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
+public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
@@ -107,6 +118,8 @@ no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 nullable: Nullbar
 allow_null_value: NULL-Wert erlauben
+allow_multiple: Mehrere zulassen
+allow_multiple_to_be_open: Gleichzeitiges Öffnen erlauben
 enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
 field_presentation: Darstellung & Aliasse
@@ -117,6 +130,7 @@ field_m2a: M2A Beziehung
 field_o2m: O2M Beziehung
 field_m2m: M2M Beziehung
 field_translations: Übersetzungen
+field_group: Feldgruppe
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
@@ -169,6 +183,7 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
+geometry: Dimensionen
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -299,6 +314,7 @@ drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
+import_label: Importieren
 file_details: Dateiinformationen
 dimensions: Dimensionen
 size: Größe
@@ -366,6 +382,7 @@ no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
 no_webhooks_copy: Es gibt noch keine Webhooks.
 all_items: Alle Elemente
+any: Irgendein
 csv: CSV
 no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
@@ -376,6 +393,7 @@ display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
+inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
@@ -388,6 +406,7 @@ documentation: Dokumentation
 sidebar: Seitenleiste
 duration: Dauer
 charset: Zeichensatz
+second: Sekunde
 file_moved: Datei verschoben
 collection_created: Sammlung erstellt
 modified_on: Geändert am
@@ -426,8 +445,10 @@ errors:
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
   UNKNOWN: Unerwarteter Fehler
+  UNPROCESSABLE_ENTITY: Unverarbeitbares Objekt
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
+security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
@@ -479,6 +500,7 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 log_in_with: 'Einloggen mit {provider}'
+advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
 change_advanced_filter_operator: Operator ändern
@@ -495,6 +517,7 @@ operators:
   nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  starts_with: Beginnt mit
   nstarts_with: Beginnt nicht mit
   ends_with: Endet mit
   nends_with: Endet nicht mit
@@ -504,6 +527,10 @@ operators:
   nempty: Ist nicht leer
   all: Enthält diese Schlüssel
   has: Enthält einige dieser Schlüssel
+  intersects: schneidet
+  nintersects: Schneidet nicht
+  intersects_bbox: Schneidet Begrenzung
+  nintersects_bbox: Schneidet nicht Begrenzung
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
 item: Element
@@ -542,10 +569,12 @@ no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
 saves_automatically: Automatisch speichern
 role: Rolle
+rule: Regel
 user: Benutzer
 no_presets: Keine Voreinstellungen
 no_presets_copy: Es wurden noch keine Voreinstellungen oder Lesezeichen gespeichert.
 no_presets_cta: Voreinstellung hinzufügen
+presets_only: Nur Vorlagen
 create: Erstellen
 on_create: Beim Erstellen
 on_update: Beim Aktualisieren
@@ -561,6 +590,7 @@ label: Label
 image_url: Bild-Url
 alt_text: Alternativ-Text
 media: Medien
+quality: Qualität
 width: Breite
 height: Höhe
 source: Quelle
@@ -755,13 +785,23 @@ fields:
     title: Titel
     description: Beschreibung
     tags: Stichwörter
+    user_preferences: Benutzereinstellungen
     language: Sprache
     theme: Design
+    theme_auto: Automatisch (Systemeinstellung verwenden)
+    theme_light: Heller Modus
+    theme_dark: Nachtmodus
     tfa_secret: Zwei-Faktor-Authentifizierung
+    admin_options: Admin-Optionen
     status: Status
+    status_draft: Entwurf
+    status_invited: Inaktiv
     status_active: Aktiv
+    status_suspended: Angehalten
+    status_archived: Archiviert
     role: Rolle
     token: Token
+    token_placeholder: Einen sicheren Zugangs-Token eingeben...
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -769,13 +809,17 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farbe
     project_logo: Projekt Logo
+    public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
+    files_and_thumbnails: Dateien & Vorschaubilder
+    storage_default_folder: Standardspeicherordner
     storage_asset_presets: Asset-Presets
     storage_asset_transform: Asset-Transformierung
+    overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
     collection: Sammlungsname
@@ -798,7 +842,12 @@ fields:
     collection_list: Sammlungsnavigation
   directus_webhooks:
     name: Name
+    method: Methode
     status: Status
+    data: Daten
+    data_label: Ereignisdaten senden
+    triggers: Auslöser
+    actions: Aktionen
 field_options:
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
@@ -821,10 +870,13 @@ referential_action_cascade: Lösche das {collection} Element (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
+continue_label: Weiter
 continue_as: >-
   {name} ist derzeit authentifiziert. Wenn du dieses Konto erkennst, drücke fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
+default_label: Standard
+delete_label: Löschen
 delete_are_you_sure: >-
   Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
@@ -876,11 +928,17 @@ sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
 template: Vorlage
+require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
 report_error: Fehler melden
+start: Start
 interfaces:
+  group-accordion:
+    name: Akkordeon
+    description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
+    start: Start
   presentation-links:
     presentation-links: Button-Links
     links: Links
@@ -1184,3 +1242,5 @@ layouts:
     calendar: Kalender
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
+  map:
+    field: Dimensionen
