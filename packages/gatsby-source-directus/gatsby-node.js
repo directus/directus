@@ -1,5 +1,5 @@
 const invariant = require('invariant');
-const Directus = require('@directus/sdk');
+const { Directus } = require('@directus/sdk');
 const { sourceNodes } = require('gatsby-source-graphql/gatsby-node');
 const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
