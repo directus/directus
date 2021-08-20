@@ -63,11 +63,19 @@ module.exports = function registerHook({ exceptions }) {
 			if (LOGIC_TO_CANCEL_EVENT) {
 				throw new InvalidPayloadException(WHAT_IS_WRONG);
 			}
-
-			return input;
 		},
 	};
 };
+```
+
+**Note on `items.create.before`**
+
+Do only return a result from your `items.create.before` hook if it changes the payload. The `ItemsService` reduces
+the final payload from all return values before writing it into the database.
+
+```js
+// api/src/services/items.ts#L120
+const payloadAfterHooks = hooksResult.length > 0 ? hooksResult.reduce((val, acc) => merge(acc, val)) : payload;
 ```
 
 ### Event Format Options
