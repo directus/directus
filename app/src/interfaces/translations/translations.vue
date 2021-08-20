@@ -275,6 +275,7 @@ export default defineComponent({
 			async function fetchKeyMap() {
 				if (!props.value) return;
 				if (keyMap.value) return;
+				if (!existingPrimaryKeys.value?.length) return;
 
 				const collection = translationsRelation.value?.collection;
 
@@ -293,6 +294,7 @@ export default defineComponent({
 									_in: existingPrimaryKeys.value,
 								},
 							},
+							limit: -1,
 						},
 					});
 
@@ -399,6 +401,7 @@ export default defineComponent({
 									_eq: props.primaryKey,
 								},
 							},
+							limit: -1,
 						},
 					});
 

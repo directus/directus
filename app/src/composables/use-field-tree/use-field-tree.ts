@@ -29,7 +29,7 @@ export default function useFieldTree(
 	function parseLevel(collection: string, parentPath: string | null, level = 0) {
 		const fieldsInLevel = orderBy(
 			[
-				...cloneDeep(fieldsStore.getFieldsForCollectionAlphabetical(collection)),
+				...cloneDeep(fieldsStore.getFieldsForCollection(collection)),
 				...(inject?.value?.fields.filter((field) => field.collection === collection) || []),
 			]
 				.filter((field: Field) => {

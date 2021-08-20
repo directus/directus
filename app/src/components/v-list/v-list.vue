@@ -73,6 +73,7 @@ export default defineComponent({
 	overflow: auto;
 	color: var(--v-list-color);
 	line-height: 22px;
+	list-style: none;
 	border-radius: var(--border-radius);
 }
 

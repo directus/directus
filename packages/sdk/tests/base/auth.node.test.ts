@@ -58,9 +58,12 @@ describe('auth (node)', function () {
 				},
 			});
 
+		expect(scope.pendingMocks().length).toBe(2);
+
 		await timers(async ({ tick, flush }) => {
 			const sdk = new Directus(url);
-			await sdk.auth.login(
+
+			const loginPromise = sdk.auth.login(
 				{
 					email: 'wolfulus@gmail.com',
 					password: 'password',
@@ -75,12 +78,16 @@ describe('auth (node)', function () {
 
 			await tick(2000);
 
+			await loginPromise;
+
 			expect(scope.pendingMocks().length).toBe(1);
 			expect(sdk.auth.expiring).toBe(false);
-
-			await tick(500);
+			expect(sdk.storage.auth_token).toBe('some_node_access_token');
+			expect(sdk.storage.auth_expires).toBe(107000);
+			await tick(5000);
 
 			expect(scope.pendingMocks().length).toBe(1);
+			await flush();
 			expect(sdk.auth.expiring).toBe(true);
 
 			await new Promise((resolve) => {
@@ -89,12 +96,11 @@ describe('auth (node)', function () {
 				});
 			});
 
-			expect(sdk.storage.auth_expires).toBe(107500);
-
+			expect(sdk.storage.auth_expires).toBe(112000);
+			expect(scope.pendingMocks().length).toBe(0);
+			expect(sdk.storage.auth_token).toBe('a_new_node_access_token');
 			expect(sdk.auth.expiring).toBe(false);
 		}, 100000);
-
-		expect(scope.pendingMocks().length).toBe(0);
 	});
 
 	test(`logout sends a refresh token in body`, async (url, nock) => {

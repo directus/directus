@@ -32,8 +32,8 @@
 		"@types/listr": "0.14.4",
 		"@types/node": "15.12.2",
 		"@types/supertest": "2.0.11",
-		"@typescript-eslint/eslint-plugin": "4.29.1",
-		"@typescript-eslint/parser": "4.29.1",
+		"@typescript-eslint/eslint-plugin": "4.29.2",
+		"@typescript-eslint/parser": "4.29.2",
 		"axios": "0.21.1",
 		"dockerode": "3.3.0",
 		"eslint": "7.32.0",
@@ -42,7 +42,7 @@
 		"eslint-plugin-vue": "7.16.0",
 		"globby": "11.0.4",
 		"jest": "27.0.6",
-		"knex": "0.95.9",
+		"knex": "0.95.10",
 		"lerna": "4.0.0",
 		"lint-staged": "11.1.2",
 		"listr": "0.14.3",
@@ -52,7 +52,7 @@
 		"oracledb": "5.2.0",
 		"pg": "8.7.1",
 		"prettier": "2.3.2",
-		"simple-git-hooks": "2.5.1",
+		"simple-git-hooks": "2.6.1",
 		"sqlite3": "5.0.2",
 		"stylelint": "13.13.1",
 		"stylelint-config-prettier": "8.0.2",
@@ -60,10 +60,10 @@
 		"stylelint-config-standard": "22.0.0",
 		"stylelint-order": "4.1.0",
 		"stylelint-scss": "3.20.1",
-		"supertest": "6.1.5",
+		"supertest": "6.1.6",
 		"tedious": "11.4.0",
 		"ts-jest": "27.0.4",
-		"ts-node": "10.2.0"
+		"ts-node": "10.2.1"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "npx lint-staged"
@@ -75,6 +75,6 @@
 	},
 	"volta": {
 		"node": "16.5.0",
-		"npm": "7.20.6"
+		"npm": "7.21.0"
 	}
 }

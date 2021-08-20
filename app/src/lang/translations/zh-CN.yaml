@@ -21,10 +21,12 @@
 #'Proxy', 'Intl'
 edit_field: 编辑
 conditions: 条件
+maps: 地图
 item_revision: 项目调整
 duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
+limit: 限制
 group: 群组
 and: 和
 or: 或
@@ -71,6 +73,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
+public_label: 公开
 public_description: 设置哪些API无需身份验证。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -116,6 +119,8 @@ no_access: 禁止访问
 use_custom: 自定义
 nullable: 允许为空
 allow_null_value: 允许NULL值
+allow_multiple: 允许多个
+allow_multiple_to_be_open: 允许打开多个
 enter_value_to_replace_nulls: 请输入一个新的值来替换当前在此字段内的任何NULL。
 field_standard: 基本设置
 field_presentation: 别名
@@ -179,6 +184,7 @@ time: 时间
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: 几何
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -309,6 +315,7 @@ drag_mode: 拖动模式
 cancel_crop: 取消裁剪。
 original: 原始
 url: URl
+import_label: 导入
 file_details: 文件信息
 dimensions: 尺寸
 size: 大小
@@ -376,6 +383,7 @@ no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
 no_webhooks_copy: 还没有任何web钩子。
 all_items: 所有项目
+any: 任意
 csv: CSV
 no_collections: 没有任何集合
 create_collection: 创建集合
@@ -386,6 +394,7 @@ display_template_not_setup: 显示的模板选项配置错误
 collection_field_not_setup: 集合的字段选项配置错误
 select_a_collection: 选择一个集合
 active: 激活
+inactive: 非活跃
 users: 用户
 activity: 活动
 webhooks: Webhook
@@ -398,6 +407,7 @@ documentation: 文档
 sidebar: 侧边栏
 duration: 持续时间
 charset: 字符集
+second: 秒
 file_moved: 文件已移动
 collection_created: 集合已创建
 modified_on: 修改于
@@ -439,6 +449,7 @@ errors:
   UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
+security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
@@ -490,6 +501,7 @@ color: 颜色
 circle: 圆圈
 empty_item: 空项
 log_in_with: '使用 {provider} 登录'
+advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
 change_advanced_filter_operator: 更改操作者
@@ -516,6 +528,10 @@ operators:
   nempty: 不是空的
   all: 包含这些关键词
   has: 包含其中之一的关键词
+  intersects: 相交
+  nintersects: 不相交
+  intersects_bbox: 相交边框
+  nintersects_bbox: 没有相交边框
 loading: 正在载入...
 drop_to_upload: 拖拽文件并上传
 item: 条目
@@ -559,6 +575,7 @@ user: 用户
 no_presets: 无预设
 no_presets_copy: 尚未保存预设或书签。
 no_presets_cta: 添加预设
+presets_only: 仅预设
 create: 创建
 on_create: 创建时
 on_update: 在更新操作上
@@ -574,6 +591,7 @@ label: 标签
 image_url: 图片 Url
 alt_text: 替代文本
 media: Media
+quality: 质量
 width: 宽
 height: 高度
 source: 来源
@@ -768,13 +786,23 @@ fields:
     title: 标题
     description: 描述
     tags: 标签
+    user_preferences: 用户设置
     language: 语言
     theme: 主题
+    theme_auto: 自动 (系统主题)
+    theme_light: 亮色模式
+    theme_dark: 暗色模式
     tfa_secret: 2FA（双因素身份验证）
+    admin_options: 管理员设置
     status: 状态
+    status_draft: 草稿
+    status_invited: 非活跃
     status_active: 激活
+    status_suspended: 已停用
+    status_archived: 已存档
     role: 角色
     token: Token
+    token_placeholder: 请输入安全访问令牌...
     last_page: 尾页
     last_access: 上次访问
   directus_settings:
@@ -782,13 +810,17 @@ fields:
     project_url: 项目URL
     project_color: 项目颜色
     project_logo: 项目 Logo
+    public_pages: 公开页面
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
+    files_and_thumbnails: 文件和缩略图
+    storage_default_folder: 默认存储文件夹
     storage_asset_presets: 存储资产预设
     storage_asset_transform: 存储资产转换
+    overrides: 应用设置覆盖
     custom_css: 自定义 CSS
   directus_fields:
     collection: 集合名称
@@ -811,7 +843,12 @@ fields:
     collection_list: 集合导航
   directus_webhooks:
     name: 名称
+    method: 方法
     status: 状态
+    data: 数据
+    data_label: 发送事件数据
+    triggers: 触发条件
+    actions: 操作
 field_options:
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本
@@ -892,11 +929,21 @@ sort_direction: 排序
 sort_asc: 升序
 sort_desc: 降序
 template: 模板
+require_value_to_be_set: 需要设置值
 translation: 翻译
 value: 值
 view_project: 查看项目
 report_error: 报告错误
+start: 开始
 interfaces:
+  group-accordion:
+    name: 折叠
+    description: 在折叠面板中显示字段或分组
+    start: 开始
+    all_closed: 全部已关闭
+    first_opened: 最早打开
+    all_opened: 全部已打开
+    accordion_mode: 折叠模式
   presentation-links:
     presentation-links: 按钮链接
     links: 链接
@@ -917,6 +964,8 @@ interfaces:
     description: 通过复选框选择多个选项
     value_combining: 组合值
     value_combining_note: 控制嵌套选择时存储的值。
+    show_all: 显示全部
+    show_selected: 显示所选
   input-code:
     code: 代码
     description: 编辑或分享代码片段
@@ -1011,7 +1060,20 @@ interfaces:
     imageToken: 图像Token
     imageToken_label: 添加到源图片的Token
   map:
+    map: 地图
+    description: 选择地图上的位置
     zoom: 缩放
+    geometry_type: 几何类型
+    geometry_format: 几何格式
+    default_view: 默认视图
+    invalid_options: 无效选项
+    invalid_format: 无效格式 ({format})
+    unexpected_geometry: 需要 {expected}，但收到 {got}。
+    native: 原生
+    geojson: GeoJSON
+    lnglat: 经度、纬度
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: 提示
     description: 显示一个快捷提示
@@ -1209,3 +1271,6 @@ layouts:
     calendar: 日历
     start_date_field: 开始日期
     end_date_field: 结束日期
+  map:
+    map: 地图
+    field: 几何
