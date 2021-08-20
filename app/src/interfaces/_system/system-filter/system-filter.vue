@@ -2,7 +2,7 @@
 	<div class="system-filter">
 		<v-list :mandatory="true">
 			<nested-draggable
-				:tree="innerValue"
+				v-model:tree="innerValue"
 				:collection="collection"
 				@add-node="addNode($event)"
 				@remove-node="removeNode($event)"

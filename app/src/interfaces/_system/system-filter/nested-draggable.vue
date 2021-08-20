@@ -45,7 +45,7 @@
 						v-if="element.type === 'field'"
 						:field="element"
 						:collection="collection"
-						@update:field="element = $event"
+						@update:field="updateNode(index, $event)"
 					/>
 				</v-list-item>
 
@@ -57,6 +57,7 @@
 						@change="$emit('change', $event)"
 						@add-node="$emit('add-node', [index, ...$event])"
 						@remove-node="$emit('remove-node', [index, ...$event])"
+						@update:tree="updateNode(index, $event)"
 					/>
 				</template>
 			</li>
@@ -71,10 +72,11 @@ import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import FieldInput from './field-input.vue';
 import Draggable from 'vuedraggable';
-import { LogicOperators, FilterOperators, FilterTree, Field } from './system-filter.vue';
+import { LogicOperators, FilterOperators, FilterTree, Field, Logic } from './system-filter.vue';
 import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
+import { cloneDeep } from 'lodash';
 
 export default defineComponent({
 	name: 'NestedDraggable',
@@ -96,8 +98,8 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['change', 'add-node', 'remove-node'],
-	setup(props) {
+	emits: ['change', 'add-node', 'remove-node', 'update:tree'],
+	setup(props, { emit }) {
 		const { collection, tree } = toRefs(props);
 		const { treeList, loadFieldRelations, getField } = useFieldTreeAdvanced(collection);
 		const fieldsStore = useFieldsStore();
@@ -125,7 +127,17 @@ export default defineComponent({
 			});
 		});
 
-		return { selectOptions, getCompareOptions, onToggle, updateValue, active, toggleActive, updateComparator, t };
+		return {
+			selectOptions,
+			getCompareOptions,
+			onToggle,
+			updateValue,
+			active,
+			toggleActive,
+			updateComparator,
+			t,
+			updateNode,
+		};
 
 		function updateComparator(index: number, newVal: FilterOperators) {
 			const field = tree.value[index] as Field;
@@ -138,7 +150,7 @@ export default defineComponent({
 				Array.isArray(field.value) === false &&
 				field.value.length !== 2
 			) {
-				field.value = ['', ''];
+				field.value = new Array(2);
 			} else if (Array.isArray(field.value)) {
 				field.value = [field.value].join(',');
 			}
@@ -170,6 +182,17 @@ export default defineComponent({
 					};
 				}
 			}
+		}
+
+		function updateNode(index: number, field: Field | FilterTree) {
+			const newTree = cloneDeep(props.tree);
+			const node = newTree[index];
+			if (node.type === 'logic' && Array.isArray(field)) {
+				node.values = field;
+			} else {
+				newTree[index] = field as Field;
+			}
+			emit('update:tree', newTree);
 		}
 
 		function getCompareOptions(name: string) {

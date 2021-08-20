@@ -22,14 +22,29 @@
 		</template>
 		<template v-else-if="['_in', '_nin'].includes(field.comparator)">
 			<div v-for="(val, index) in value" :key="index" class="value">
-				<component :is="interfaceType" :type="fieldInfo.type" :value="val" @input="value[index] = $event"></component>
+				<component
+					:is="interfaceType"
+					:type="fieldInfo.type"
+					:value="val"
+					@input="setValueAt(index, $event)"
+				></component>
 				<v-icon name="delete" @click="remove(index)"></v-icon>
 			</div>
 			<v-button x-small @click="value = [...value, '']">{{ t('interfaces.filter.add_value') }}</v-button>
 		</template>
 		<div v-else-if="['_between', '_nbetween'].includes(field.comparator)" class="between">
-			<component :is="interfaceType" :type="fieldInfo.type" :value="value[0]" @input="value[0] = $event"></component>
-			<component :is="interfaceType" :type="fieldInfo.type" :value="value[1]" @input="value[1] = $event"></component>
+			<component
+				:is="interfaceType"
+				:type="fieldInfo.type"
+				:value="value[0]"
+				@input="setValueAt(0, $event)"
+			></component>
+			<component
+				:is="interfaceType"
+				:type="fieldInfo.type"
+				:value="value[1]"
+				@input="setValueAt(1, $event)"
+			></component>
 		</div>
 	</div>
 </template>
@@ -41,6 +56,7 @@ import systemDisplayTemplate from '../system-display-template/system-display-tem
 import { useFieldsStore } from '@/stores';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { useI18n } from 'vue-i18n';
+import { clone } from 'lodash';
 
 export default defineComponent({
 	components: { systemDisplayTemplate },
@@ -77,13 +93,19 @@ export default defineComponent({
 				return props.field.value;
 			},
 			set(newVal) {
-				const newField = props.field.value;
+				const newField = clone(props.field);
 				newField.value = newVal;
 				emit('update:field', newField);
 			},
 		});
 
-		return { t, fieldInfo, interfaceType, remove, value };
+		function setValueAt(index: number, newVal: any) {
+			let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
+			newArray[index] = newVal;
+			value.value = newArray;
+		}
+
+		return { t, fieldInfo, interfaceType, remove, value, setValueAt };
 
 		function remove(index: number) {
 			value.value = value.value.filter((v: any, i: number) => i !== index);
