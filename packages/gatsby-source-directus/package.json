@@ -10,10 +10,10 @@
 		"directus"
 	],
 	"dependencies": {
-		"@directus/sdk-js": "9.0.0-rc.53",
-		"@lnfusion/gatsby-source-graphql": "0.0.4",
+		"@directus/sdk": "^9.0.0-rc.90",
 		"chalk": "4.1.2",
 		"gatsby-source-filesystem": "3.12.0",
+		"gatsby-source-graphql": "^3.12.0",
 		"invariant": "2.2.4",
 		"ms": "2.1.3"
 	},
