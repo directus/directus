@@ -1,67 +1,87 @@
 <template>
 	<draggable
-        :group="{ name: 'g1' }"
-        :list="tree"
-        draggable=".row"
-        item-key="id"
-        tag="ul"
-        class="group"
-        @change="$emit('change', $event)"
-    >
-        <template #item="{element, index}">
-            <li class="row">
-                <v-list-item class="header" block>
-                    <div class="header-start">
-                        <v-list-item-icon>
-                            <v-icon :name="element.type === 'logic'? 'rule' : 'extension'"></v-icon>
-                        </v-list-item-icon>
-                        <v-select
-                            inline
-                            :full-width="false"
-                            :model-value="element.name"
-                            :items="selectOptions"
-                            itemText="name"
-                            itemValue="key"
-                            :mandatory="false"
-                            :groupsClickable="true"
-                            @group-clicked="onToggle"
-                            @update:modelValue="updateValue($event, index)"
-                        />
-                    </div>
-                    <v-icon name="expand_more" @click="open(index)"></v-icon>
-                </v-list-item>
-                
-                <template v-if="active.has(index)">
-                    <field-input v-if="element.type === 'field'" :field="element" :collection="collection" />
-                    <nested-draggable
-                        v-else
-                        :tree="element.values"
-                        @change="$emit('change', $event)"
-                        :collection="collection"
-                    />
-                </template>
-            </li>
-        </template>
-    </draggable>
-    <v-button class="add" small @click="addField">Add field</v-button>
+		:group="{ name: 'g1' }"
+		:list="tree"
+		draggable=".row"
+		handle=".drag-handle"
+		item-key="id"
+		tag="ul"
+		class="group"
+		@change="$emit('change', $event)"
+	>
+		<template #item="{ element, index }">
+			<li class="row">
+				<v-list-item block :class="{ field: element.type === 'field' }">
+					<div class="header">
+						<div class="header-start">
+							<v-icon name="drag_handle" class="drag-handle"></v-icon>
+							<span class="type">{{ element.type === 'field' ? 'Field: ' : 'Logic: ' }}</span>
+							<v-select
+								inline
+								:full-width="false"
+								:model-value="element.name"
+								:items="selectOptions"
+								item-text="name"
+								item-value="key"
+								:mandatory="false"
+								:groups-clickable="true"
+								@group-clicked="onToggle"
+								@update:modelValue="updateValue($event, index)"
+							/>
+							<v-select
+								v-if="element.type === 'field'"
+								inline
+								:model-value="element.comparator"
+								:items="getCompareOptions(element.name)"
+								@update:modelValue="updateComparator(index, $event)"
+							></v-select>
+						</div>
+						<div class="header-end">
+							<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
+							<v-icon v-if="false" class="expand" name="expand_more" @click="element.open = !element.open"></v-icon>
+						</div>
+					</div>
+					<field-input
+						v-if="element.type === 'field'"
+						:field="element"
+						:collection="collection"
+						@update:field="element = $event"
+					/>
+				</v-list-item>
 
+				<template v-if="element.open">
+					<nested-draggable
+						v-if="element.type === 'logic'"
+						:tree="element.values"
+						:collection="collection"
+						@change="$emit('change', $event)"
+						@add-node="$emit('add-node', [index, ...$event])"
+						@remove-node="$emit('remove-node', [index, ...$event])"
+					/>
+				</template>
+			</li>
+		</template>
+	</draggable>
+	<v-button class="add" small @click="$emit('add-node', [])">{{ t('interfaces.filter.add_node') }}</v-button>
 </template>
 
 <script lang="ts">
-import { GroupableInstance, useGroupable } from '@/composables/groupable/groupable';
+import { GroupableInstance } from '@/composables/groupable/groupable';
 import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
-import FieldInput from './field-input.vue'
+import FieldInput from './field-input.vue';
 import Draggable from 'vuedraggable';
-import { Logic, LogicOperators, FilterOperators, FilterTree, Field } from './system-filter.vue';
+import { LogicOperators, FilterOperators, FilterTree, Field } from './system-filter.vue';
+import { useFieldsStore } from '@/stores';
+import { useI18n } from 'vue-i18n';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 
 export default defineComponent({
-    name: 'NestedDraggable',
-    components: {
-        Draggable,
-        FieldInput
-    },
-    emits: ['change', 'input'],
+	name: 'NestedDraggable',
+	components: {
+		Draggable,
+		FieldInput,
+	},
 	props: {
 		tree: {
 			type: Array as PropType<FilterTree>,
@@ -71,116 +91,165 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-        collection: {
-            type: String,
-            required: true
-        }
+		collection: {
+			type: String,
+			required: true,
+		},
 	},
+	emits: ['change', 'add-node', 'remove-node'],
 	setup(props) {
-		const {collection, tree} = toRefs(props)
-        const {treeList, loadFieldRelations, getField} = useFieldTreeAdvanced(collection)
+		const { collection, tree } = toRefs(props);
+		const { treeList, loadFieldRelations, getField } = useFieldTreeAdvanced(collection);
+		const fieldsStore = useFieldsStore();
+		const { t } = useI18n();
 
-        const active = ref<Set<number>>(new Set())
+		const active = ref<Set<number>>(new Set());
 
-        function open(index: number) {
-            if(active.value.has(index)) {
-                active.value.delete(index)
-            } else {
-                active.value.add(index)
-            }
-        }
+		const selectOptions = computed(() => [
+			{
+				name: 'AND',
+				key: '_and',
+			},
+			{
+				name: 'OR',
+				key: '_or',
+			},
+			...treeList.value,
+		]);
 
-        const selectOptions = computed(() => [
-            {
-                name: 'AND',
-                key: '_and'
-            },
-            {
-                name: 'OR',
-                key: '_or'
-            },
-            ...treeList.value,
-        ])
+		watch(tree, (newTree) => {
+			newTree.forEach((field) => {
+				if (field.type === 'field') {
+					loadFieldRelations(field.name);
+				}
+			});
+		});
 
-        watch(tree, (newTree) => {
-            newTree.forEach(field => {
-                if(field.type === 'field') {
-                    loadFieldRelations(field.name)
-                }
-            })
-        })
+		return { selectOptions, getCompareOptions, onToggle, updateValue, active, toggleActive, updateComparator, t };
 
-		return { selectOptions, onToggle, updateValue, addField, active, open };
+		function updateComparator(index: number, newVal: FilterOperators) {
+			const field = tree.value[index] as Field;
+			field.comparator = newVal;
 
-        function updateValue(newKey: string, index: number) {
-            let element = tree.value[index]
-            if(newKey.startsWith('_')) {
-                if(element.type === 'logic') {
-                    element.name = newKey as LogicOperators
-                } else {
-                    tree.value[index] = {
-                        type: 'logic',
-                        name: newKey as LogicOperators,
-                        values: []
-                    }
-                }
-            } else {
-                if(element.type === 'field') {
-                    element.name = newKey
-                } else {
-                    tree.value[index] = {
-                        type: 'field',
-                        name: newKey,
-                        comparator: '_eq',
-                        value: ''
-                    }
-                }
-            }
-        }
-
-        function onToggle(item: GroupableInstance) {
-			const field = getField(String(item.value))
-
-			field?.children?.forEach(child => {
-				console.log(child.key)
-				loadFieldRelations(child.key)
-			})
+			if (['_in', '_nin'].includes(newVal) && Array.isArray(field.value) === false) {
+				field.value = [field.value];
+			} else if (
+				['_between', '_nbetween'].includes(newVal) &&
+				Array.isArray(field.value) === false &&
+				field.value.length !== 2
+			) {
+				field.value = ['', ''];
+			} else if (Array.isArray(field.value)) {
+				field.value = [field.value].join(',');
+			}
 		}
 
-        function addField() {
-            props.tree.push({
-                type: 'logic',
-                name: '_and',
-                values: []
-            })
-        }
+		function updateValue(newKey: string, index: number) {
+			let element = tree.value[index];
+			if (newKey.startsWith('_')) {
+				if (element.type === 'logic') {
+					element.name = newKey as LogicOperators;
+				} else {
+					tree.value[index] = {
+						type: 'logic',
+						name: newKey as LogicOperators,
+						values: [],
+						open: element.open,
+					};
+				}
+			} else {
+				if (element.type === 'field') {
+					element.name = newKey;
+				} else {
+					tree.value[index] = {
+						type: 'field',
+						name: newKey,
+						comparator: '_eq',
+						value: '',
+						open: element.open,
+					};
+				}
+			}
+		}
+
+		function getCompareOptions(name: string) {
+			const fieldInfo = fieldsStore.getField(props.collection, name);
+			if (fieldInfo === null) return [];
+			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
+				text: t(`operators.${type}`),
+				value: `_${type}`,
+			}));
+		}
+
+		function onToggle(item: GroupableInstance) {
+			const field = getField(String(item.value));
+
+			field?.children?.forEach((child) => {
+				loadFieldRelations(child.key);
+			});
+		}
+
+		function toggleActive(index: number) {
+			if (active.value.has(index)) {
+				active.value.delete(index);
+			} else {
+				active.value.add(index);
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+.v-list-item.field {
+	--input-height: auto;
 
-.header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
-.header-start {
-    display: flex;
-    align-items: center;
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 40px;
+}
+
+.header-start,
+.header-end {
+	display: flex;
+	gap: 10px;
+	align-items: center;
 }
 
 .row {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .group {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .add {
-    margin-left: 24px;
+	margin-left: 24px;
+}
+
+.drag-handle {
+	cursor: grab;
+}
+
+.type {
+	color: var(--foreground-subdued);
+}
+
+.delete {
+	margin-right: 4px;
+	cursor: pointer;
+}
+
+.expand {
+	cursor: pointer;
 }
 </style>
