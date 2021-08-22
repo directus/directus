@@ -110,7 +110,6 @@ export default defineComponent({
 			GEOMETRY_TYPES,
 			geometryType,
 			mapContainer,
-			fitBounds,
 		};
 	},
 });
