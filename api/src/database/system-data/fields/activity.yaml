@@ -13,19 +13,19 @@ fields:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
       choices:
-        - text: Create
+        - text: $t:field_options.directus_activity.Create
           value: create
           foreground: 'var(--primary)'
           background: 'var(--primary-25)'
-        - text: Update
+        - text: $t:field_options.directus_activity.Update
           value: update
           foreground: 'var(--blue)'
           background: 'var(--blue-25)'
-        - text: Delete
+        - text: $t:field_options.directus_activity.Delete
           value: delete
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
-        - text: Login
+        - text: $t:field_options.directus_activity.Login
           value: authenticate
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
