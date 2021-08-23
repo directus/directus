@@ -772,6 +772,27 @@ fields:
   directus_webhooks:
     name: Namn
     status: Status
+field_options:
+  directus_collections:
+    collection_setup: Konfiguration av kollektion
+    singleton: Behandla som ett enskilt objekt
+    language: Språk
+    archive_divider: Arkivera
+    divider: Sortera
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Namn
+    collection_list:
+      fields:
+        type_name: Typ
+      collections_name: Kollektioner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Skapa
+    actions_update: Uppdatera
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
