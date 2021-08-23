@@ -267,7 +267,21 @@ export default defineComponent({
 			return { displayValue };
 
 			function getTextForValue(value: string | number) {
-				return internalItems.value.find((item) => item.value === value)?.['text'];
+				return findValue(internalItems.value);
+
+				function findValue(choices: Option[]): string | undefined {
+					let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+
+					for (const choice of choices) {
+						if (!textValue) {
+							if (choice.children) {
+								textValue = findValue(choice.children);
+							}
+						}
+					}
+
+					return textValue;
+				}
 			}
 		}
 	},
