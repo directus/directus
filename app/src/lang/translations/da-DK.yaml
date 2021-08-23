@@ -323,6 +323,19 @@ fields:
   directus_webhooks:
     name: Navn
     status: Status
+field_options:
+  directus_collections:
+    language: Sprog
+    archive_divider: Arkiver
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collection_list:
+      collections_name: Samlinger
+  directus_webhooks:
+    actions_create: Opret
+    actions_update: Opdater
 comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
