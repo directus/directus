@@ -51,7 +51,7 @@
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@types/fs-extra": "9.0.12",
-		"@types/jest": "26.0.24",
+		"@types/jest": "27.0.1",
 		"@types/node": "15.12.2",
 		"dotenv": "10.0.0",
 		"jest": "27.0.6",
