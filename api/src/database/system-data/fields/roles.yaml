@@ -126,7 +126,7 @@ fields:
           meta:
             interface: repeater
             options:
-              addLabel:
+              addLabel: $t:field_options.directus_roles.collections_addLabel
               template: '{{ collection }}'
               fields:
                 - name: $t:field_options.directus_roles.collections_name

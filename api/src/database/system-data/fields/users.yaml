@@ -64,7 +64,7 @@ fields:
     interface: divider
     options:
       icon: face
-      title: $t:field_options.directus_roles.directus_users.preferences_divider
+      title: $t:field_options.directus_users.preferences_divider
     special:
       - alias
       - no-data
@@ -79,11 +79,11 @@ fields:
     options:
       choices:
         - value: auto
-          text: $t:field_options.directus_roles.directus_users.dropdown_auto
+          text: $t:field_options.directus_users.dropdown_auto
         - value: light
-          text: $t:field_options.directus_roles.directus_users.dropdown_light
+          text: $t:field_options.directus_users.dropdown_light
         - value: dark
-          text: $t:field_options.directus_roles.directus_users.dropdown_dark
+          text: $t:field_options.directus_users.dropdown_dark
     width: half
 
   - field: tfa_secret
@@ -95,7 +95,7 @@ fields:
     interface: divider
     options:
       icon: verified_user
-      title: $t:field_options.directus_roles.directus_users.admin_divider
+      title: $t:field_options.directus_users.admin_divider
       color: '#E35169'
     special:
       - alias
@@ -106,15 +106,15 @@ fields:
     interface: dropdown
     options:
       choices:
-        - text: $t:field_options.directus_roles.directus_users.status_dropdown_draft
+        - text: $t:field_options.directus_users.status_dropdown_draft
           value: draft
-        - text: $t:field_options.directus_roles.directus_users.status_dropdown_invited
+        - text: $t:field_options.directus_users.status_dropdown_invited
           value: invited
-        - text: $t:field_options.directus_roles.directus_users.status_dropdown_active
+        - text: $t:field_options.directus_users.status_dropdown_active
           value: active
-        - text: $t:field_options.directus_roles.directus_users.status_dropdown_suspended
+        - text: $t:field_options.directus_users.status_dropdown_suspended
           value: suspended
-        - text: $t:field_options.directus_roles.directus_users.status_dropdown_archived
+        - text: $t:field_options.directus_users.status_dropdown_archived
           value: archived
     width: half
 
@@ -132,7 +132,7 @@ fields:
     interface: token
     options:
       iconRight: vpn_key
-      placeholder: $t:field_options.directus_roles.directus_users.token
+      placeholder: $t:field_options.directus_users.token
     width: full
 
   - field: id
