@@ -56,6 +56,9 @@ fields:
     description: აღწერა
   directus_webhooks:
     status: სტატუსი
+field_options:
+  directus_webhooks:
+    actions_create: შექმნა
 comment: კომენტარი
 description: აღწერა
 email: ელ-ფოსტა
