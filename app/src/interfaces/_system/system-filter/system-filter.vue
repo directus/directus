@@ -107,9 +107,7 @@ export default defineComponent({
 			{ deep: true }
 		);
 
-		const selected = ref('');
-
-		return { t, innerValue, selected, deconstructFilterTree, constructFilterTree, addNode, removeNode };
+		return { t, innerValue, deconstructFilterTree, constructFilterTree, addNode, removeNode };
 
 		function addNode(ids: number[]) {
 			if (ids.length === 0) {

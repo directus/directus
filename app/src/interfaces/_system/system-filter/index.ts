@@ -8,5 +8,5 @@ export default defineInterface({
 	component: InterfaceSystemFilter,
 	types: ['json'],
 	options: [],
-	system: false,
+	system: true,
 });

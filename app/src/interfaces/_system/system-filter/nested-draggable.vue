@@ -20,7 +20,7 @@
 								inline
 								:full-width="false"
 								:model-value="element.name"
-								:items="selectOptions"
+								:items="typeOptions"
 								item-text="name"
 								item-value="key"
 								:mandatory="false"
@@ -50,7 +50,7 @@
 								inline
 								:full-width="false"
 								:model-value="element.name"
-								:items="selectOptions"
+								:items="typeOptions"
 								item-text="name"
 								item-value="key"
 								:mandatory="false"
@@ -78,7 +78,6 @@
 </template>
 
 <script lang="ts">
-import { GroupableInstance } from '@/composables/groupable/groupable';
 import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import FieldInput from './field-input.vue';
@@ -88,6 +87,7 @@ import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
+import { GroupableInstance } from '@/composables/groupable/groupable';
 
 export default defineComponent({
 	name: 'NestedDraggable',
@@ -120,9 +120,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
 
-		const active = ref<Set<number>>(new Set());
-
-		const selectOptions = computed(() => [
+		const typeOptions = computed(() => [
 			{
 				name: t('interfaces.filter.and'),
 				key: '_and',
@@ -143,15 +141,13 @@ export default defineComponent({
 		});
 
 		return {
-			selectOptions,
+			typeOptions,
 			getCompareOptions,
-			onToggle,
 			updateValue,
-			active,
-			toggleActive,
 			updateComparator,
 			t,
 			updateNode,
+			onToggle,
 		};
 
 		function updateComparator(index: number, newVal: FilterOperators) {
@@ -225,14 +221,6 @@ export default defineComponent({
 			field?.children?.forEach((child) => {
 				loadFieldRelations(child.key);
 			});
-		}
-
-		function toggleActive(index: number) {
-			if (active.value.has(index)) {
-				active.value.delete(index);
-			} else {
-				active.value.add(index);
-			}
 		}
 	},
 });
