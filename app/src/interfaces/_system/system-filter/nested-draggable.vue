@@ -236,30 +236,30 @@ export default defineComponent({
 }
 
 .logic {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	position: relative;
 	padding-left: 4px;
 
 	&::before {
-		background-color: var(--primary);
-		opacity: 0.1;
 		position: absolute;
 		top: 0;
-		left: 0;
-		bottom: 0;
 		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: var(--primary);
+		opacity: 0.1;
 		content: '';
 		pointer-events: none;
 	}
 
 	&::after {
-		background-color: var(--primary);
 		position: absolute;
 		top: 0;
 		left: 0px;
-		height: 100%;
 		width: 4px;
+		height: 100%;
+		background-color: var(--primary);
 		border-radius: 2px;
 		content: '';
 	}
@@ -274,8 +274,8 @@ export default defineComponent({
 }
 
 .logic > .header {
-	color: var(--primary);
 	padding-right: 8px;
+	color: var(--primary);
 }
 
 .field > .header {
@@ -293,8 +293,8 @@ export default defineComponent({
 }
 
 .add {
-	margin-left: 8px;
 	margin-bottom: 12px;
+	margin-left: 8px;
 }
 
 .drag-handle {
