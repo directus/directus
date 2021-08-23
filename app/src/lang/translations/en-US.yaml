@@ -663,6 +663,22 @@ batch_delete_confirm: >-
 cancel: Cancel
 collection: Collection
 collections: Collections
+directus_collections:
+  directus_activity: Accountability logs for all events
+  directus_collections: Additional collection configuration and metadata
+  directus_fields: Additional field configuration and metadata
+  directus_files: Metadata for all managed file assets
+  directus_folders: Provides virtual directories for files
+  directus_migrations: What version of the database you're using
+  directus_permissions: Access permissions for each role
+  directus_presets: Presets for collection defaults and bookmarks
+  directus_relations: Relationship configuration and metadata
+  directus_revisions: Data snapshots for all activity
+  directus_roles: Permission groups for system users
+  directus_sessions: User session information
+  directus_settings: Project configuration options
+  directus_users: System users for the platform
+  directus_webhooks: Configuration for event-based HTTP requests
 singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
@@ -767,10 +783,57 @@ fields:
     module_list: Module Navigation
     collection_list: Collection Navigation
 field_options:
+  directus_activity:
+    Create: Create
+    Update: Update
+    Delete: Delete
+    Login: Login
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
     only_track_activity: Only Track Activity
     do_not_track_anything: Do Not Track Anything
+    collection_setup: Collection Setup
+    note_placeholder: A description of this collection...
+    hidden_label: Hide within the App
+    singleton: Treat as single object
+    language: Language
+    translation: Enter a translation...
+    archive_divider: Archive
+    archive_field: Choose a field...
+    archive_app_filter: Enable App Archive Filter
+    archive_value: Value set when archiving...
+    unarchive_value: Value set when unarchiving...
+    divider: Sort
+    sort_field: Choose a field...
+    accountability_divider: Accountability
+  directus_files:
+    title: A unique title...
+    description: An optional description...
+    location: An optional location...
+    storage_divider: File Naming
+    filename_disk: Name on disk storage...
+    filename_download: Name when downloading...
+  directus_roles:
+    name: The unique name for this role...
+    description: A description of this role...
+    ip_access: Add allowed IP addresses, leave empty to allow all...
+    fields:
+      icon_name: Icon
+      name_name: Name
+      name_placeholder: Enter a title...
+      link_name: Link
+      link_placeholder: Relative or absolute URL...
+    collection_list:
+      group_name_addLabel: Add New Group...
+      fields:
+        group_name: Group Name
+        group_placeholder: Label this group...
+        type_name: Type
+        choices_always: Always Open
+        choices_start_open: Start Open
+        choises_start_collapsed: Start Collapsed
+      collections_name: Collections
+      collections_addLabel: addLabel
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
@@ -784,12 +847,33 @@ field_options:
       strong_text: Strong – Upper / Lowercase / Numbers / Special
     storage_asset_presets:
       fit:
-       contain_text: Contain (preserve aspect ratio)
-       cover_text: Cover (forces exact size)
-       inside_text: Fit inside
-       outside_text: Fit outside
+        contain_text: Contain (preserve aspect ratio)
+        cover_text: Cover (forces exact size)
+        inside_text: Fit inside
+        outside_text: Fit outside
     files_divider_title: Files & Thumbnails
     overrides_divider_title: App Overrides
+  directus_users:
+    preferences_divider: User Preferences
+    dropdown_auto: Automatic (Based on System)
+    dropdown_light: Light Mode
+    dropdown_dark: Dark Mode
+    admin_divider: Admin Options
+    status_dropdown_draft: Draft
+    status_dropdown_invited: Invited
+    status_dropdown_active: Active
+    status_dropdown_suspended: Suspended
+    status_dropdown_archived: Archived
+    token: Enter a secure access token...
+  directus_webhooks:
+    status_options_active: Active
+    status_options_inactive: Inactive
+    data_label: Send Event Data
+    triggers_divider: Triggers
+    actions_create: Create
+    actions_update: Update
+    actions_delete: Delete
+    actions_login: Login
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID

@@ -38,26 +38,26 @@ fields:
       defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
-        - text: Active
+        - text: $t:field_options.directus_roles.directus_webhooks.status_options_active
           value: active
           foreground: 'var(--primary-10)'
           background: 'var(--primary)'
-        - text: Inactive
+        - text: $t:field_options.directus_roles.directus_webhooks.status_options_inactive
           value: inactive
           foreground: 'var(--foreground-normal)'
           background: 'var(--background-normal-alt)'
     options:
       choices:
-        - text: Active
+        - text: $t:field_options.directus_roles.directus_webhooks.status_options_active
           value: active
-        - text: Inactive
+        - text: $t:field_options.directus_roles.directus_webhooks.status_options_inactive
           value: inactive
     width: half
 
   - field: data
     interface: toggle
     options:
-      label: Send Event Data
+      label: $t:field_options.directus_roles.directus_webhooks.data_label
     special: boolean
     width: half
     display: boolean
@@ -66,7 +66,7 @@ fields:
     interface: divider
     options:
       icon: api
-      title: Triggers
+      title: $t:field_options.directus_roles.directus_webhooks.triggers_divider
     special:
       - alias
       - no-data
@@ -76,11 +76,11 @@ fields:
     interface: checkboxes
     options:
       choices:
-        - text: Create
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_create
           value: create
-        - text: Update
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_update
           value: update
-        - text: Delete
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_delete
           value: delete
     special: csv
     width: full
@@ -89,19 +89,19 @@ fields:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
       choices:
-        - text: Create
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_create
           value: create
           foreground: 'var(--primary)'
           background: 'var(--primary-25)'
-        - text: Update
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_update
           value: update
           foreground: 'var(--blue)'
           background: 'var(--blue-25)'
-        - text: Delete
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_delete
           value: delete
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
-        - text: Login
+        - text: $t:field_options.directus_roles.directus_webhooks.actions_login
           value: authenticate
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
