@@ -1,6 +1,21 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { IStorage } from '../../storage';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
+
+export type AxiosTransportRefreshHandler = () => Promise<void>;
+
+export type AxiosEjector = {
+	eject(): void;
+};
+
+export type AxiosInterceptorFunction<T> = (
+	onFulfilled?: (value: T) => T | Promise<T>,
+	onRejected?: (error: any) => any
+) => AxiosEjector;
+
+export type AxiosInterceptor<T> = {
+	intercept: AxiosInterceptorFunction<T>;
+};
 
 /**
  * Axios transport implementation
@@ -8,12 +23,14 @@ import { ITransport, TransportMethods, TransportResponse, TransportError, Transp
 export class AxiosTransport implements ITransport {
 	private _url: string;
 	private _storage: IStorage;
+	private _refresh: () => Promise<void>;
 	public _axios: AxiosInstance;
 
-	constructor(url: string, storage: IStorage) {
+	constructor(url: string, storage: IStorage, refresh: AxiosTransportRefreshHandler = () => Promise.resolve()) {
 		this._url = url;
 		this._storage = storage;
 		this._axios = null as any;
+		this._refresh = refresh;
 		this.url = url;
 	}
 
@@ -27,71 +44,90 @@ export class AxiosTransport implements ITransport {
 			baseURL: value,
 			withCredentials: true,
 		});
-		this._axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
 
 	get axios(): AxiosInstance {
 		return this._axios;
 	}
 
-	private async request<T = any, R = any>(
-		method: 'get',
+	get requests(): AxiosInterceptor<AxiosRequestConfig> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.request.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.request.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	get responses(): AxiosInterceptor<AxiosResponse> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.response.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.response.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	protected async request<T = any, R = any>(
+		method: TransportMethods,
 		path: string,
+		data?: Record<string, any>,
 		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'delete',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'head',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'options',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'post',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'put',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'patch',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<M extends TransportMethods, T = any, R = any>(
-		method: M,
-		path: string,
-		...args: any
 	): Promise<TransportResponse<T, R>> {
 		try {
-			const make = this.axios[method] as AxiosInstance[M];
-			const response = await make<TransportResponse<T>>(path, ...args);
-			const { data, meta, errors } = response.data;
+			options = options || {};
+			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
+			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? true;
+			options.headers = options.headers ?? {};
+			options.onUploadProgress = options.onUploadProgress ?? undefined;
+
+			if (options.refreshTokenIfNeeded) {
+				await this._refresh();
+			}
+
+			const config = {
+				method,
+				url: path,
+				data: data,
+				params: options.params,
+				headers: options.headers,
+				onUploadProgress: options.onUploadProgress,
+			};
+
+			const token = this._storage.auth_token;
+			const expiration = this._storage.auth_expires;
+			if (options.sendAuthorizationHeaders) {
+				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
+					if (token.startsWith(`Bearer `)) {
+						config.headers.Authorization = token;
+					} else {
+						config.headers.Authorization = `Bearer ${token}`;
+					}
+				}
+			}
+
+			const response = await this.axios.request(config);
+
+			const responseData = response.data;
 			const content = {
 				raw: response.data as any,
 				status: response.status,
 				statusText: response.statusText,
 				headers: response.headers,
-				data,
-				meta,
-				errors,
+				data: responseData.data,
+				meta: responseData.meta,
+				errors: responseData.errors,
 			};
 
-			if (errors) {
+			if (responseData.errors) {
 				throw new TransportError<T, R>(null, content);
 			}
 
@@ -114,19 +150,19 @@ export class AxiosTransport implements ITransport {
 	}
 
 	async get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('get', path, options);
-	}
-
-	async delete<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('delete', path, options);
+		return await this.request('get', path, undefined, options);
 	}
 
 	async head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('head', path, options);
+		return await this.request('head', path, undefined, options);
 	}
 
 	async options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('options', path, options);
+		return await this.request('options', path, undefined, options);
+	}
+
+	async delete<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
+		return await this.request('delete', path, data, options);
 	}
 
 	async put<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
@@ -139,20 +175,5 @@ export class AxiosTransport implements ITransport {
 
 	async patch<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
 		return await this.request('patch', path, data, options);
-	}
-
-	private createRequestConfig(config: AxiosRequestConfig): AxiosRequestConfig {
-		let token = this._storage.auth_token;
-		if (!token) {
-			return config;
-		}
-
-		if (token.startsWith(`Bearer `)) {
-			config.headers.Authorization = token;
-		} else {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
-
-		return config;
 	}
 }

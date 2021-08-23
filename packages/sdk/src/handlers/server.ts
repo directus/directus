@@ -5,29 +5,27 @@
 import { ITransport } from '../transport';
 
 export type ServerInfo = {
-	data: {
-		project: {
-			project_name: string;
-			project_logo: string | null;
-			project_color: string;
-			public_foreground: string | null;
-			public_background: string | null;
-			public_note: string;
-			custom_css: string;
-		};
-		directus?: {
-			version: string;
-		};
-		node?: {
-			version: string;
-			uptime: number;
-		};
-		os?: {
-			type: string;
-			version: string;
-			uptime: number;
-			totalmem: number;
-		};
+	project: {
+		project_name: string;
+		project_logo: string | null;
+		project_color: string;
+		public_foreground: string | null;
+		public_background: string | null;
+		public_note: string;
+		custom_css: string;
+	};
+	directus?: {
+		version: string;
+	};
+	node?: {
+		version: string;
+		uptime: number;
+	};
+	os?: {
+		type: string;
+		version: string;
+		uptime: number;
+		totalmem: number;
 	};
 };
 

@@ -8,6 +8,7 @@ defaults:
   note: null
   translations: null
   display_template: null
+  accountability: 'all'
 
 data:
   - collection: directus_activity
@@ -21,7 +22,7 @@ data:
   - collection: directus_files
     icon: folder
     note: $t:directus_collection.directus_files
-    display_template: '{{ title }}'
+    display_template: '{{ $thumbnail }} {{ title }}'
   - collection: directus_folders
     note: $t:directus_collection.directus_folders
     display_template: '{{ name }}'

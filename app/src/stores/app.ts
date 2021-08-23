@@ -1,6 +1,6 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 
-export const useAppStore = createStore({
+export const useAppStore = defineStore({
 	id: 'appStore',
 	state: () => ({
 		sidebarOpen: false,
@@ -8,5 +8,6 @@ export const useAppStore = createStore({
 		hydrating: false,
 		error: null,
 		authenticated: false,
+		basemap: 'OpenStreetMap',
 	}),
 });

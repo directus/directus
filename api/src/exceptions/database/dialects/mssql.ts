@@ -1,21 +1,11 @@
+import getDatabase from '../../../database';
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
-
-import database from '../../../database';
-
-type MSSQLError = {
-	message: string;
-	code: 'EREQUEST';
-	number: number;
-	state: number;
-	class: number;
-	serverName: string;
-	procName: string;
-	lineNumber: number;
-};
+import { ValueTooLongException } from '../value-too-long';
+import { MSSQLError } from './types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
@@ -25,7 +15,7 @@ enum MSSQLErrorCodes {
 	VALUE_LIMIT_VIOLATION = 2628,
 }
 
-export async function extractError(error: MSSQLError) {
+export async function extractError(error: MSSQLError): Promise<MSSQLError | Error> {
 	switch (error.number) {
 		case MSSQLErrorCodes.UNIQUE_VIOLATION:
 		case 2627:
@@ -56,27 +46,43 @@ async function uniqueViolation(error: MSSQLError) {
 	 * information_schema when this happens
 	 */
 
-	const betweenQuotes = /\'([^\']+)\'/;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenQuotes = /'([^']+)'/g;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	const quoteMatches = error.message.match(betweenQuotes);
 	const parenMatches = error.message.match(betweenParens);
 
 	if (!quoteMatches || !parenMatches) return error;
 
-	const keyName = quoteMatches[1];
+	const keyName = quoteMatches[1]?.slice(1, -1);
 
-	const constraintUsage = await database
-		.select('*')
-		.from('INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE')
-		.where({
-			CONSTRAINT_NAME: keyName,
-		})
-		.first();
+	let collection = quoteMatches[0]?.slice(1, -1);
+	let field: string | null = null;
 
-	const collection = constraintUsage.TABLE_NAME;
-	const field = constraintUsage.COLUMN_NAME;
-	const invalid = parenMatches[parenMatches.length - 1].slice(1, -1);
+	if (keyName) {
+		const database = getDatabase();
+
+		const constraintUsage = await database
+			.select('sys.columns.name as field', database.raw('OBJECT_NAME(??) as collection', ['sys.columns.object_id']))
+			.from('sys.indexes')
+			.innerJoin('sys.index_columns', (join) => {
+				join
+					.on('sys.indexes.object_id', '=', 'sys.index_columns.object_id')
+					.andOn('sys.indexes.index_id', '=', 'sys.index_columns.index_id');
+			})
+			.innerJoin('sys.columns', (join) => {
+				join
+					.on('sys.index_columns.object_id', '=', 'sys.columns.object_id')
+					.andOn('sys.index_columns.column_id', '=', 'sys.columns.column_id');
+			})
+			.where('sys.indexes.name', '=', keyName)
+			.first();
+
+		collection = constraintUsage?.collection;
+		field = constraintUsage?.field;
+	}
+
+	const invalid = parenMatches[parenMatches.length - 1]?.slice(1, -1);
 
 	return new RecordNotUniqueException(field, {
 		collection,
@@ -117,7 +123,7 @@ function numericValueOutOfRange(error: MSSQLError) {
 
 function valueLimitViolation(error: MSSQLError) {
 	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const bracketMatches = error.message.match(betweenBrackets);
 	const quoteMatches = error.message.match(betweenQuotes);
@@ -135,7 +141,7 @@ function valueLimitViolation(error: MSSQLError) {
 
 function notNullViolation(error: MSSQLError) {
 	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const bracketMatches = error.message.match(betweenBrackets);
 	const quoteMatches = error.message.match(betweenQuotes);
@@ -145,6 +151,10 @@ function notNullViolation(error: MSSQLError) {
 	const collection = bracketMatches[0].slice(1, -1);
 	const field = quoteMatches[0].slice(1, -1);
 
+	if (error.message.includes('Cannot insert the value NULL into column')) {
+		return new ContainsNullValuesException(field, { collection, field });
+	}
+
 	return new NotNullViolationException(field, {
 		collection,
 		field,
@@ -152,8 +162,8 @@ function notNullViolation(error: MSSQLError) {
 }
 
 function foreignKeyViolation(error: MSSQLError) {
-	const betweenUnderscores = /\_\_(.+)\_\_/g;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenUnderscores = /__(.+)__/g;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	// NOTE:
 	// Seeing that MS SQL doesn't return the offending column name, we have to extract it from the

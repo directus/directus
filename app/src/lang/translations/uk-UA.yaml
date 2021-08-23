@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Редагувати поле
 duplicate_field: Дублювати поле
 full_width: Повна ширина
@@ -13,7 +33,6 @@ delete_bookmark: Видалити закладку
 logoutReason:
   SIGN_OUT: Виконано вихід
   SESSION_EXPIRED: Час сеансу минув
-public: Публічний
 directus_version: Версія Directus
 node_version: Версія Node
 node_uptime: Час роботи Node
@@ -21,7 +40,14 @@ os_type: Тип ОС
 os_version: Версія ОС
 os_uptime: Час роботи ОС
 validationError:
+  eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
+  in: Значення повинно бути одним з {valid}
+  nin: Значення не може бути одним з {invalid}
+  contains: Значення повинно містити {substring}
+  ncontains: Значення не може містити {substring}
+  gt: Значення має бути більше {valid}
+  gte: Значення має бути більше або дорівнювати {valid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
@@ -86,6 +112,7 @@ user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
 status: Статус
+remove: Видалити
 errors:
   ROUTE_NOT_FOUND: Не знайдено
 create_bookmark: Створити закладку
@@ -194,10 +221,10 @@ fields:
   directus_roles:
     name: Назва ролі
     description: Опис
+  directus_webhooks:
+    name: Назва
+    status: Статус
 comment: Коментар
-continue: Далі
-default: За замовчуванням
-delete: Видалити
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
@@ -240,44 +267,30 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  checkboxes:
-    checkboxes: Прапорці
-  code:
+  input-code:
     code: Код
-    line_number: Номери рядків
-  collection:
+  system-collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
-  many-to-one:
-    many-to-one: Багато до одного
-  numeric:
-    numeric: Цифровий
-  one-to-many:
-    one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
-    text-input: Текстове поле
-    trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
-    custom_formats: Власне форматування
 displays:
   collection:
     collection: Колекція

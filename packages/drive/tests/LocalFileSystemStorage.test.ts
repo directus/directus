@@ -39,8 +39,6 @@ jest.mock('fs-extra', () => {
 				errors.map = map;
 				try {
 					await handler();
-				} catch (e) {
-					throw e;
 				} finally {
 					errors.map = {};
 				}

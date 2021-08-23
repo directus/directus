@@ -18,45 +18,45 @@
 			/>
 		</div>
 
-		<portal to="menu-outlet">
-			<div
-				v-if="isActive"
-				class="v-menu-popper"
-				:key="id"
-				:id="id"
-				:class="{ active: isActive, attached }"
-				:data-placement="popperPlacement"
-				:style="styles"
-				v-click-outside="{
-					handler: deactivate,
-					middleware: onClickOutsideMiddleware,
-					disabled: isActive === false || closeOnClick === false,
-					events: ['click'],
-				}"
-			>
-				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-				<div class="v-menu-content" @click.stop="onContentClick">
-					<slot
-						:active="isActive"
-						v-bind="{
-							toggle: toggle,
-							active: isActive,
-							activate: activate,
-							deactivate: deactivate,
-						}"
-					/>
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					:id="id"
+					:key="id"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: isActive === false || closeOnClick === false,
+						events: ['click'],
+					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div class="v-menu-content" @click.stop="onContentClick">
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
 				</div>
-			</div>
-		</portal>
+			</transition-bounce>
+		</teleport>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, PropType, computed, watch, nextTick } from 'vue';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
-import Vue from 'vue';
 
 export default defineComponent({
 	props: {
@@ -64,7 +64,7 @@ export default defineComponent({
 			type: String as PropType<Placement>,
 			default: 'bottom',
 		},
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -98,6 +98,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement | null>(null);
 		const reference = ref<HTMLElement | null>(null);
@@ -132,9 +133,9 @@ export default defineComponent({
 
 		watch(isActive, (newActive) => {
 			if (newActive === true) {
-				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+				reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
 
-				Vue.nextTick(() => {
+				nextTick(() => {
 					popper.value = document.getElementById(id.value);
 				});
 			}
@@ -169,15 +170,15 @@ export default defineComponent({
 
 			const isActive = computed<boolean>({
 				get() {
-					if (props.value !== undefined) {
-						return props.value;
+					if (props.modelValue !== undefined) {
+						return props.modelValue;
 					}
 
 					return localIsActive.value;
 				},
 				async set(newActive) {
 					localIsActive.value = newActive;
-					emit('input', newActive);
+					emit('update:modelValue', newActive);
 				},
 			});
 
@@ -227,8 +228,8 @@ export default defineComponent({
 			return !activator.value?.contains(e.target as Node);
 		}
 
-		function onContentClick() {
-			if (props.closeOnContentClick === true) {
+		function onContentClick(e: Event) {
+			if (props.closeOnContentClick === true && e.target !== e.currentTarget) {
 				deactivate();
 			}
 		}
@@ -322,7 +323,7 @@ body {
 
 	&::after {
 		background: var(--card-face-color);
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -331,7 +332,7 @@ body {
 
 	&::after {
 		bottom: 2px;
-		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -340,7 +341,7 @@ body {
 
 	&::after {
 		top: 2px;
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -349,7 +350,7 @@ body {
 
 	&::after {
 		left: 2px;
-		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -358,7 +359,7 @@ body {
 
 	&::after {
 		right: 2px;
-		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -367,11 +368,10 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-radius: var(--border-radius);
-	border: none;
 	background-color: var(--card-face-color);
-	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2),
-							0px 0px 12px 2px rgba(var(--card-shadow-color),0.05);
+	border: none;
+	border-radius: var(--border-radius);
+	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgba(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;

@@ -44,6 +44,7 @@ The user's one-time-password (if MFA is enabled).
 
 `mode`\
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
+Defaults to `json`.
 
 </div>
 
@@ -87,6 +88,10 @@ POST /auth/login
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 mutation {
@@ -152,6 +157,10 @@ POST /auth/refresh
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 mutation {
 	auth_refresh(refresh_token: "abc...def") {
@@ -199,6 +208,10 @@ POST /auth/logout
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 mutation {
@@ -250,6 +263,10 @@ POST /auth/password/request
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 mutation {
 	auth_password_request(email: "admin@example.com")
@@ -298,6 +315,10 @@ POST /auth/password/reset
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 mutation {

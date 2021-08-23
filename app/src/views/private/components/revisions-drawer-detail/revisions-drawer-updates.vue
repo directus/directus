@@ -1,12 +1,12 @@
 <template>
 	<div class="updates">
 		<v-notice type="info">
-			{{ $t('changes_made') }}
+			{{ t('changes_made') }}
 			<br />
-			{{ $t('no_relational_data') }}
+			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div class="change" v-for="change in changes" :key="change.name">
+		<div v-for="change in changes" :key="change.name" class="change">
 			<div class="type-label">{{ change.name }}</div>
 			<revisions-drawer-updates-change deleted :changes="change.changes" />
 			<revisions-drawer-updates-change added :changes="change.changes" />
@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
 import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
@@ -35,6 +36,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const previousRevision = computed(() => {
@@ -92,7 +95,7 @@ export default defineComponent({
 				.filter((change) => change);
 		});
 
-		return { changes, previousRevision };
+		return { t, changes, previousRevision };
 	},
 });
 </script>

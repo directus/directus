@@ -18,8 +18,8 @@ Will run Directus in an autoscaling environment with a load balancer. Makes sure
 replace individual instances in case of unexpected crashes.
 
 We recommend setting up a repo in GitHub (or another Git provider) and configuring it using
-[our manual installation flow](/guides/installation/manual/#installing-manually). This allows you to later hook up the repo to your Elastic
-Beanstalk instance through CodeDeploy.
+[our manual installation flow](/guides/installation/manual/#installing-manually). This allows you to later hook up the
+repo to your Elastic Beanstalk instance through CodeDeploy.
 
 See
 [Deploying Node.js applications to Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs.html)

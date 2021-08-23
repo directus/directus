@@ -1,35 +1,44 @@
 <template>
 	<div>
-
 		<div class="form">
-			<div class="field half-left" v-if="fieldData.meta">
-				<div class="label type-label">{{ $t('readonly') }}</div>
-				<v-checkbox v-model="fieldData.meta.readonly" :label="$t('disabled_editing_value')" block />
+			<div v-if="fieldData.meta" class="field half-left">
+				<div class="label type-label">{{ t('readonly') }}</div>
+				<v-checkbox v-model="fieldData.meta.readonly" :label="t('disabled_editing_value')" block />
 			</div>
 
-			<div class="field half-right" v-if="fieldData.meta">
-				<div class="label type-label">{{ $t('hidden') }}</div>
-				<v-checkbox v-model="fieldData.meta.hidden" :label="$t('hidden_on_detail')" block />
+			<div v-if="fieldData.meta" class="field half-right">
+				<div class="label type-label">{{ t('hidden') }}</div>
+				<v-checkbox v-model="fieldData.meta.hidden" :label="t('hidden_on_detail')" block />
+			</div>
+
+			<div v-if="fieldData.meta" class="field half-left">
+				<div class="label type-label">{{ t('required') }}</div>
+				<v-checkbox v-model="fieldData.meta.required" :label="t('require_value_to_be_set')" block />
+			</div>
+
+			<div v-if="type !== 'group'" class="field full">
+				<div class="label type-label">{{ t('note') }}</div>
+				<v-input v-model="fieldData.meta.note" :placeholder="t('add_note')" />
 			</div>
 
 			<div class="field full">
-				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
-			</div>
-
-			<div class="field full">
-				<div class="label type-label">{{ $t('field_name_translations') }}</div>
-				<interface-repeater
-					v-model="fieldData.meta.translations"
-					:template="'{{ translation }} ({{ language }})'"
+				<div class="label type-label">{{ t('field_name_translations') }}</div>
+				<interface-list
+					:value="fieldData.meta.translations"
+					:template="'[{{ language }}] {{ translation }}'"
 					:fields="[
 						{
 							field: 'language',
 							type: 'string',
-							name: $t('language'),
+							name: t('language'),
 							meta: {
 								interface: 'system-language',
 								width: 'half',
+								display: 'formatted-value',
+								display_options: {
+									font: 'monospace',
+									color: 'var(--foreground-subdued)',
+								},
 							},
 							schema: {
 								default_value: 'en-US',
@@ -38,9 +47,9 @@
 						{
 							field: 'translation',
 							type: 'string',
-							name: $t('translation'),
+							name: t('translation'),
 							meta: {
-								interface: 'text-input',
+								interface: 'input',
 								width: 'half',
 								options: {
 									placeholder: 'Enter a translation...',
@@ -48,6 +57,7 @@
 							},
 						},
 					]"
+					@input="fieldData.meta.translations = $event"
 				/>
 			</div>
 		</div>
@@ -55,10 +65,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
-import { types } from '@/types';
-import i18n from '@/lang';
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
 import { state } from '../store';
 
 export default defineComponent({
@@ -72,16 +80,15 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
-		return {
-			fieldData: state.fieldData,
-		};
+	setup() {
+		const { t } = useI18n();
+
+		return { t, fieldData: state.fieldData };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
 .type-title {

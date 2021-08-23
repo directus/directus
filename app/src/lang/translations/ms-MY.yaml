@@ -1,6 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+edit_field: Sunting halaman
+item_revision: Barang semakan
+duplicate_field: Halaman salinan
 required: Diperlukan
 create_role: Buat Peranan
+invite: Jemputan
+emails: Emel
+connection_excellent: Rangkaian bagus
+connection_good: Rangkaian baik
+connection_fair: Rangkaian sederhana
+connection_poor: Rangkaian lemah
+primary: Utama
+rename_folder: Tukar nama fail
+delete_folder: Padam fail
+prefix: Awalan
+suffix: Akhiran
+reset_bookmark: Tetapkan semula penanda buku
+rename_bookmark: Namakan semula penanda buku
+update_bookmark: Kemas kini penanda buku
 delete_bookmark: Padam Penanda Buku
 create_field: Cipta Medan
 hidden_on_detail: Tersembunyi di Butiran
@@ -33,6 +70,7 @@ activity: Aktiviti
 user_directory: Direktori pengguna
 duration: Durasi
 status: Status
+remove: Buang
 bookmarks: Penandabuku
 back: Kembali
 operators:
@@ -109,9 +147,10 @@ fields:
     note: Nota
   directus_roles:
     description: Penerangan
+  directus_webhooks:
+    name: Nama
+    status: Status
 comment: Komen
-default: Lalai
-delete: Padam
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
 description: Penerangan
@@ -142,16 +181,16 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
-  collection:
+  presentation-links:
+    primary: Utama
+  system-collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:

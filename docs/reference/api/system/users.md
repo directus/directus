@@ -121,9 +121,16 @@ will be an empty array.
 
 ```
 GET /users
+SEARCH /users
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -180,6 +187,10 @@ GET /users/72a1ce24-4748-47de-a05f-ce9af3033727
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	users_by_id(id: ID!): directus_users
@@ -228,6 +239,10 @@ GET /users/me
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -293,6 +308,10 @@ POST /users
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -369,6 +388,10 @@ POST /users
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_users_items(data: [create_directus_users_input!]!): [directus_users]
@@ -435,6 +458,10 @@ PATCH /users/:id
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -509,6 +536,10 @@ PATCH /users
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
@@ -561,6 +592,10 @@ DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -615,6 +650,10 @@ DELETE /users
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {
@@ -687,6 +726,10 @@ POST /users/invite
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	users_invite(email: String!, role: String!, invite_url: String): Boolean
@@ -753,6 +796,10 @@ POST /users/invite/accept
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	users_invite_accept(token: String!, password: String!): Boolean
@@ -772,7 +819,7 @@ mutation {
 
 ---
 
-## Enable Two-Factor Authentication
+## Generate Two-Factor Authentication Secret
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
@@ -806,6 +853,79 @@ OTP secret to be saved in the authenticator app.
 ### REST API
 
 ```
+POST /users/me/tfa/generate
+```
+
+##### Example
+
+```json
+// POST /users/me/tfa/generate
+{
+	"password": "d1r3ctu5"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_me_tfa_generate(password: "d1r3ctu5") {
+		secret
+		otpauth_url
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Enable Two-Factor Authentication
+
+Adds a TFA secret to the user account.
+
+<div class="two-up">
+<div class="left">
+
+### Request Body
+
+<div class="definitions">
+
+`secret` **Required**\
+The TFA secret from tfa/generate.
+
+`otp` **Required**\
+OTP generated with the secret, to recheck if the user has a correct TFA setup
+
+</div>
+
+### Returns
+
+<div class="definitions">
+
+Empty response.
+
+</div>
+
+</div>
+<div class="right">
+
+### REST API
+
+```
 POST /users/me/tfa/enable
 ```
 
@@ -814,15 +934,20 @@ POST /users/me/tfa/enable
 ```json
 // POST /users/me/tfa/enable
 {
-	"password": "d1r3ctu5"
+	"otp": "123456",
+	"secret": "3CtiutsNBmY3szHE"
 }
 ```
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
-	users_me_tfa_enable(password: String!): users_me_tfa_enable_data
+	users_me_tfa_enable(otp: String!, secret: String!): Boolean
 }
 ```
 
@@ -830,10 +955,7 @@ type Mutation {
 
 ```graphql
 mutation {
-	users_me_tfa_enable(password: "d1r3ctu5") {
-		secret
-		otpauth_url
-	}
+	users_me_tfa_enable(otp: "123456", secret: "3CtiutsNBmY3szHE")
 }
 ```
 
@@ -882,6 +1004,10 @@ POST /users/me/tfa/disable
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

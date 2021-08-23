@@ -1,15 +1,15 @@
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button class="toggle" @click="toggle" :class="{ open: active }">
+		<button class="toggle" :class="{ open: active }" @click="toggle">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" outline />
 				</v-badge>
 			</div>
-			<div class="title" v-show="sidebarOpen">
+			<div v-show="sidebarOpen" class="title">
 				{{ title }}
 			</div>
-			<div class="icon" v-if="!close">
+			<div v-if="!close" class="icon">
 				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
 			</div>
 		</button>
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 import { useGroupable } from '@/composables/groupable';
 
@@ -56,7 +56,7 @@ export default defineComponent({
 			group: 'sidebar-detail',
 		});
 		const appStore = useAppStore();
-		const { sidebarOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore);
 		return { active, toggle, sidebarOpen };
 	},
 });
@@ -103,6 +103,7 @@ body {
 		&.open,
 		&:hover {
 			color: var(--sidebar-detail-color-active);
+
 			.icon {
 				--v-icon-color: var(--sidebar-detail-color-active);
 			}
@@ -157,15 +158,14 @@ body {
 
 	.content {
 		padding: 16px;
-		::v-deep {
-			.page-description {
-				margin-bottom: 8px;
-				color: var(--foreground-subdued);
 
-				a {
-					color: var(--primary);
-				}
-			}
+		:deep(.page-description) {
+			margin-bottom: 8px;
+			color: var(--foreground-subdued);
+		}
+
+		:deep(.page-description a) {
+			color: var(--primary);
 		}
 	}
 

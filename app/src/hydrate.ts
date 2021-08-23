@@ -1,23 +1,23 @@
+import { Language } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
+import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
+import { getBasemapSources } from '@/utils/geometry/basemap';
 import {
 	useAppStore,
 	useCollectionsStore,
 	useFieldsStore,
-	useUserStore,
-	useRequestsStore,
-	usePresetsStore,
-	useSettingsStore,
-	useServerStore,
 	useLatencyStore,
-	useRelationsStore,
 	usePermissionsStore,
+	usePresetsStore,
+	useRelationsStore,
+	useRequestsStore,
+	useServerStore,
+	useSettingsStore,
+	useUserStore,
 } from '@/stores';
-import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
-
-import { Language } from '@/lang';
-import { setLanguage } from '@/lang/set-language';
 
 type GenericStore = {
-	id: string;
+	$id: string;
 	hydrate?: () => Promise<void>;
 	dehydrate?: () => Promise<void>;
 
@@ -37,19 +37,18 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 	]
-) {
+): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
-/* istanbul ignore next: useStores has a test already */
-export async function hydrate(stores = useStores()) {
+export async function hydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
 
-	if (appStore.state.hydrated) return;
-	if (appStore.state.hydrating) return;
+	if (appStore.hydrated) return;
+	if (appStore.hydrating) return;
 
-	appStore.state.hydrating = true;
+	appStore.hydrating = true;
 
 	try {
 		/**
@@ -60,25 +59,26 @@ export async function hydrate(stores = useStores()) {
 		 */
 		await userStore.hydrate();
 
-		if (userStore.state.currentUser?.role) {
+		if (userStore.currentUser?.role) {
+			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
-			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
-			await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
+			await setLanguage((userStore.currentUser?.language as Language) || 'en-US');
 		}
+
+		appStore.basemap = getBasemapSources()[0].name;
 	} catch (error) {
-		appStore.state.error = error;
+		appStore.error = error;
 	} finally {
-		appStore.state.hydrating = false;
+		appStore.hydrating = false;
 	}
 
-	appStore.state.hydrated = true;
+	appStore.hydrated = true;
 }
 
-/* istanbul ignore next: useStores has a test already */
-export async function dehydrate(stores = useStores()) {
+export async function dehydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 
-	if (appStore.state.hydrated === false) return;
+	if (appStore.hydrated === false) return;
 
 	for (const store of stores) {
 		await store.dehydrate?.();
@@ -86,5 +86,5 @@ export async function dehydrate(stores = useStores()) {
 
 	unregisterModules();
 
-	appStore.state.hydrated = false;
+	appStore.hydrated = false;
 }

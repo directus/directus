@@ -24,6 +24,7 @@ pageClass: page-reference
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
+- [Export](#export)
 
 </div>
 </div>
@@ -370,7 +371,7 @@ Skip the first `n` items in the response. Can be used for pagination.
 
 ### Examples
 
-Get items 100—200\
+Get items 101—200\
 `100`
 
 </div>
@@ -550,6 +551,35 @@ Returns the item count of the collection you're querying, taking the current fil
 ?meta=filter_count
 
 ?meta=*
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
+
+## Export
+
+Save the current API response to a file.
+
+<div class="two-up">
+<div class="left">
+
+Saves the API response to a file. Accepts one of `json`, `csv`, `xml`.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?export=json
+?export=csv
+?export=xml
 ```
 
 ### GraphQL

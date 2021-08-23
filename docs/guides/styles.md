@@ -48,7 +48,7 @@ body {
 ::: warning Action Styling
 
 The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the
-"Directus Blue". While it may be tempting to override this variable with your brand's color, please first review the
+"Directus Green". While it may be tempting to override this variable with your brand's color, please first review the
 following warnings:
 
 - Avoid using yellow, orange, or red hues that give a sense of "danger"

@@ -5,13 +5,13 @@ fields:
     hidden: true
 
   - field: name
-    interface: text-input
+    interface: input
     options:
       iconRight: title
     width: full
 
   - field: method
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'
@@ -25,62 +25,62 @@ fields:
     width: half
 
   - field: url
-    interface: text-input
+    interface: input
     options:
       iconRight: link
     width: half
 
   - field: status
-    interface: dropdown
+    interface: select-dropdown
     display: labels
     display_options:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
-        - text: $t:field_options.directus_roles.directus_webhooks.status_options_active
+        - text: $t:active
           value: active
           foreground: 'var(--primary-10)'
           background: 'var(--primary)'
-        - text: $t:field_options.directus_roles.directus_webhooks.status_options_inactive
+        - text: $t:inactive
           value: inactive
           foreground: 'var(--foreground-normal)'
           background: 'var(--background-normal-alt)'
     options:
       choices:
-        - text: $t:field_options.directus_roles.directus_webhooks.status_options_active
+        - text: $t:active
           value: active
-        - text: $t:field_options.directus_roles.directus_webhooks.status_options_inactive
+        - text: $t:inactive
           value: inactive
     width: half
 
   - field: data
-    interface: toggle
+    interface: boolean
     options:
-      label: $t:field_options.directus_roles.directus_webhooks.data_label
+      label: $t:fields.directus_webhooks.data_label
     special: boolean
     width: half
     display: boolean
 
   - field: triggers_divider
-    interface: divider
+    interface: presentation-divider
     options:
       icon: api
-      title: $t:field_options.directus_roles.directus_webhooks.triggers_divider
+      title: $t:fields.directus_webhooks.triggers
     special:
       - alias
       - no-data
     width: full
 
   - field: actions
-    interface: checkboxes
+    interface: select-multiple-checkbox
     options:
       choices:
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_create
+        - text: $t:create
           value: create
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_update
+        - text: $t:update
           value: update
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_delete
+        - text: $t:delete_label
           value: delete
     special: csv
     width: full
@@ -89,25 +89,25 @@ fields:
       defaultForeground: 'var(--foreground-normal)'
       defaultBackground: 'var(--background-normal-alt)'
       choices:
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_create
+        - text: $t:create
           value: create
           foreground: 'var(--primary)'
           background: 'var(--primary-25)'
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_update
+        - text: $t:update
           value: update
           foreground: 'var(--blue)'
           background: 'var(--blue-25)'
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_delete
+        - text: $t:delete_label
           value: delete
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
-        - text: $t:field_options.directus_roles.directus_webhooks.actions_login
+        - text: $t:login
           value: authenticate
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
 
   - field: collections
-    interface: collections
+    interface: system-collections
     special: csv
     width: full
     display: labels

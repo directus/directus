@@ -102,5 +102,3 @@ there are only two roles called `author` and `manager`.
 
 Finally, we would configure the permissions for these roles such that they are properly restricted to create content and
 update the status.
-
-<!-- @TODO -->

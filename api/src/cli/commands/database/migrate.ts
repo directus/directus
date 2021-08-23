@@ -1,14 +1,15 @@
+/* eslint-disable no-console */
+
 import run from '../../../database/migrations/run';
+import getDatabase from '../../../database';
 
-import ora from 'ora';
-
-export default async function migrate(direction: 'latest' | 'up' | 'down') {
-	const database = require('../../../database').default;
+export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
+	const database = getDatabase();
 
 	try {
-		const spinnerDriver = ora('Running migrations...').start();
+		console.log('✨ Running migrations...');
+
 		await run(database, direction);
-		spinnerDriver.stop();
 
 		if (direction === 'down') {
 			console.log('✨ Downgrade successful');

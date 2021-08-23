@@ -1,31 +1,28 @@
 <template>
 	<v-notice v-if="!availableFields || availableFields.length === 0">
-		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
+		{{ t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
 
 	<draggable
 		v-else
-		:force-fallback="true"
 		v-model="selectedFields"
+		:force-fallback="true"
+		item-key="field"
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		class="v-field-select"
 	>
-		<v-chip
-			v-for="(field, index) in selectedFields"
-			:key="index"
-			class="field draggable"
-			v-tooltip="field.field"
-			@click="removeField(field.field)"
-		>
-			{{ field.name }}
-		</v-chip>
+		<template #item="{ element }">
+			<v-chip v-tooltip="element.field" class="field draggable" @click="removeField(element.field)">
+				{{ element.name }}
+			</v-chip>
+		</template>
 
 		<template #footer>
-			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
+			<v-menu v-model="menuActive" show-arrow class="add" placement="bottom">
 				<template #activator="{ toggle }">
-					<v-button @click="toggle" small>
-						{{ $t('add_field') }}
+					<v-button small @click="toggle">
+						{{ t('add_field') }}
 						<v-icon small name="add" />
 					</v-button>
 				</template>
@@ -45,10 +42,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
-import { useFieldsStore } from '@/stores';
-import { Field, Collection, Relation } from '@/types';
+import { Collection, Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import Draggable from 'vuedraggable';
 import useFieldTree from '@/composables/use-field-tree';
 import useCollection from '@/composables/use-collection';
@@ -62,7 +60,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<string[]>,
 			default: null,
 		},
@@ -79,34 +77,34 @@ export default defineComponent({
 			default: () => ({ fields: [], collections: [], relations: [] }),
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const menuActive = ref(false);
-		const { collection } = toRefs(props);
+		const { collection, inject } = toRefs(props);
 
 		const { info } = useCollection(collection);
-		const { tree } = useFieldTree(collection, {
-			fields: props.inject?.fields.filter((field) => field.collection === props.collection) || [],
-			relations: props.inject?.relations || [],
-		});
+		const { tree } = useFieldTree(collection, false, inject);
 
-		const _value = computed({
+		const internalValue = computed({
 			get() {
-				return props.value || [];
+				return props.modelValue || [];
 			},
 			set(newVal: string[]) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
 		const selectedFields = computed({
 			get() {
-				return _value.value.map((field) => ({
+				return internalValue.value.map((field) => ({
 					field,
 					name: findTree(tree.value, field.split('.'))?.name as string,
 				}));
 			},
 			set(newVal: { field: string; name: string }[]) {
-				_value.value = newVal.map((field) => field.field);
+				internalValue.value = newVal.map((field) => field.field);
 			},
 		});
 
@@ -115,6 +113,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			menuActive,
 			addField,
 			removeField,
@@ -143,7 +142,7 @@ export default defineComponent({
 					name: field.name,
 					field: field.field,
 					key: field.key,
-					disabled: _value.value.includes(prefix + field.field),
+					disabled: internalValue.value.includes(prefix + field.field),
 					children: parseTree(field.children, prefix + field.field + '.'),
 				};
 			});
@@ -152,13 +151,13 @@ export default defineComponent({
 		}
 
 		function removeField(field: string) {
-			_value.value = _value.value.filter((f) => f !== field);
+			internalValue.value = internalValue.value.filter((f) => f !== field);
 		}
 
 		function addField(field: string) {
-			const newArray = _value.value;
+			const newArray = internalValue.value;
 			newArray.push(field);
-			_value.value = [...new Set(newArray)];
+			internalValue.value = [...new Set(newArray)];
 		}
 	},
 });

@@ -102,9 +102,16 @@ available, data will be an empty array.
 
 ```
 GET /revisions
+SEARCH /revisions
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -160,6 +167,10 @@ GET /revisions/322
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {

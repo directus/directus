@@ -1,7 +1,7 @@
 import { IStorage } from '../../../src/storage';
 
 export function createStorageTests(createStorage: () => IStorage) {
-	return function () {
+	return function (): void {
 		beforeEach(() => {
 			// These run both in node and browser mode
 			if (typeof localStorage !== 'undefined') {

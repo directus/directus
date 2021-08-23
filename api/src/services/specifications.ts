@@ -1,29 +1,19 @@
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	Field,
-	Permission,
-	Relation,
-	SchemaOverview,
-	types,
-} from '../types';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
 import formatTitle from '@directus/format-title';
+import openapi from '@directus/specs';
+import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import { RelationsService } from './relations';
-import env from '../env';
-import { OpenAPIObject, PathItemObject, OperationObject, TagObject, SchemaObject } from 'openapi3-ts';
-
+import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
-import openapi from '@directus/specs';
-
-import { Knex } from 'knex';
-import database from '../database';
+import getDatabase from '../database';
+import env from '../env';
+import { AbstractServiceOptions, Collection, Permission, Relation, SchemaOverview } from '../types';
+import { Accountability, Field, Type } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
+import { CollectionsService } from './collections';
+import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
+import { RelationsService } from './relations';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -39,7 +29,7 @@ export class SpecificationService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = new FieldsService(options);
@@ -82,7 +72,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.fieldsService = fieldsService;
@@ -93,7 +83,7 @@ class OASSpecsService implements SpecificationSubService {
 	async generate() {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
-		const relations = (await this.relationsService.readByQuery({})) as Relation[];
+		const relations = (await this.relationsService.readAll()) as Relation[];
 		const permissions = this.schema.permissions;
 
 		const tags = await this.generateTags(collections);
@@ -164,7 +154,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = tag.hasOwnProperty('x-collection') === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
@@ -176,7 +166,7 @@ class OASSpecsService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								tag.hasOwnProperty('x-collection') === false ||
+								'x-collection' in tag === false ||
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&
@@ -389,8 +379,8 @@ class OASSpecsService implements SpecificationSubService {
 
 		const relation = relations.find(
 			(relation) =>
-				(relation.many_collection === field.collection && relation.many_field === field.field) ||
-				(relation.one_collection === field.collection && relation.one_field === field.field)
+				(relation.collection === field.collection && relation.field === field.field) ||
+				(relation.related_collection === field.collection && relation.meta?.one_field === field.field)
 		);
 
 		if (!relation) {
@@ -406,9 +396,9 @@ class OASSpecsService implements SpecificationSubService {
 			});
 
 			if (relationType === 'm2o') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.one_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.related_collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.one_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.related_collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -422,9 +412,9 @@ class OASSpecsService implements SpecificationSubService {
 					},
 				];
 			} else if (relationType === 'o2m') {
-				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.many_collection);
+				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
 				const relatedPrimaryKeyField = fields.find(
-					(field) => field.collection === relation.many_collection && field.schema?.is_primary_key
+					(field) => field.collection === relation.collection && field.schema?.is_primary_key
 				);
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
@@ -441,7 +431,7 @@ class OASSpecsService implements SpecificationSubService {
 					],
 				};
 			} else if (relationType === 'm2a') {
-				const relatedTags = tags.filter((tag) => relation.one_allowed_collections!.includes(tag['x-collection']));
+				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
 				propertyObject.items = {
@@ -461,19 +451,32 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private fieldTypes: Record<
-		typeof types[number],
+		Type,
 		{
 			type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
 			format?: string;
 			items?: any;
 		}
 	> = {
+		alias: {
+			type: 'string',
+		},
 		bigInteger: {
 			type: 'integer',
 			format: 'int64',
 		},
+		binary: {
+			type: 'string',
+			format: 'binary',
+		},
 		boolean: {
 			type: 'boolean',
+		},
+		csv: {
+			type: 'array',
+			items: {
+				type: 'string',
+			},
 		},
 		date: {
 			type: 'string',
@@ -489,6 +492,9 @@ class OASSpecsService implements SpecificationSubService {
 		float: {
 			type: 'number',
 			format: 'float',
+		},
+		hash: {
+			type: 'string',
 		},
 		integer: {
 			type: 'integer',
@@ -513,21 +519,14 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		binary: {
-			type: 'string',
-			format: 'binary',
+		unknown: {
+			type: undefined,
 		},
 		uuid: {
 			type: 'string',
 			format: 'uuid',
 		},
-		csv: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
-		hash: {
+		geometry: {
 			type: 'string',
 		},
 	};
@@ -543,7 +542,7 @@ class GraphQLSpecsService implements SpecificationSubService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.schema = options.schema;
 
 		this.items = new GraphQLService({ ...options, scope: 'items' });

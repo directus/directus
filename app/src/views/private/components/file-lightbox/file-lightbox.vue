@@ -1,10 +1,10 @@
 <template>
-	<v-dialog v-model="_active" @esc="_active = false">
+	<v-dialog v-model="internalActive" @esc="internalActive = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<v-progress-circular indeterminate v-if="loading" />
+		<v-progress-circular v-if="loading" indeterminate />
 
 		<file-preview
 			v-else-if="file"
@@ -14,17 +14,17 @@
 			:height="file.height"
 			:title="file.title"
 			in-modal
-			@click="_active = false"
+			@click="internalActive = false"
 		/>
 
-		<v-button class="close" @click="_active = false" icon rounded>
+		<v-button class="close" icon rounded @click="internalActive = false">
 			<v-icon name="close" />
 		</v-button>
 	</v-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import api, { addTokenToURL } from '@/api';
 
 import { nanoid } from 'nanoid';
@@ -42,30 +42,27 @@ type File = {
 
 export default defineComponent({
 	components: { FilePreview },
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
 		id: {
 			type: String,
 			required: true,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const localActive = ref(false);
 
-		const _active = computed({
+		const internalActive = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
@@ -87,7 +84,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _active, cacheBuster, loading, file, fileSrc };
+		return { internalActive, cacheBuster, loading, file, fileSrc };
 
 		async function fetchFile() {
 			cacheBuster.value = nanoid();

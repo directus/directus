@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Rediger Felt
 item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
@@ -20,7 +40,6 @@ create_role: Opret Rolle
 create_user: Opret bruger
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
-email_examples: 'admin@eksempel.dk, bruger@eksempel.dk...'
 invite: Inviter
 emails: E-mail
 connection_excellent: Udmærket forbindelse
@@ -41,7 +60,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
-public: Offentlig
 public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
 not_allowed: Ikke tilladt
 directus_version: Directus Version
@@ -198,6 +216,9 @@ user_directory: Bruger Mappe
 duration: Varighed
 modified_on: Ændringsdato
 status: Status
+remove: Fjern
+errors:
+  NOT_NULL_VIOLATION: Værdien kan ikke være null
 bookmarks: Foretrukne
 back: Tilbage
 placeholder: Placeholder
@@ -299,10 +320,10 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
 comment: Kommenter
-continue: Forsæt
-default: Standard
-delete: Slet
 delete_field_are_you_sure: >-
   Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
 description: Beskrivelse
@@ -345,34 +366,24 @@ template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primær
-  checkboxes:
-    checkboxes: Afkrydsningsfelter
-    allow_other: Tillad Andre
-  code:
+  input-code:
     code: Kode
-    line_number: Linjenummer
-  collection:
+  system-collection:
     collection: Samling
-  collections:
+  system-collections:
     collections: Samlinger
-  color:
+  select-color:
     color: Farve
   datetime:
     datetime: Datotid
-  dropdown:
-    allow_other: Tillad Andre
   file:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
-  interface-options:
-    interface-options: Interface indstillinger
-  numeric:
-    numeric: Numerisk
   tags:
     tags: Tags
 displays:

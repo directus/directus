@@ -15,20 +15,21 @@ export type AuthResult = {
 };
 
 export type AuthLoginOptions = {
-	refresh: AuthRefreshOptions;
+	refresh?: AuthRefreshOptions;
 };
 
 export type AuthRefreshOptions = {
-	auto: boolean;
+	auto?: boolean;
 	time?: number;
 };
 
 export interface IAuth {
 	readonly token: string | null;
 	readonly password: PasswordsHandler;
+	readonly expiring: boolean;
 
 	login(credentials: AuthCredentials, options?: AuthLoginOptions): Promise<AuthResult>;
-	refresh(options?: AuthRefreshOptions): Promise<AuthResult>;
+	refresh(force?: boolean): Promise<AuthResult | false>;
 	static(token: AuthToken): Promise<boolean>;
 	logout(): Promise<void>;
 }

@@ -1,22 +1,17 @@
-import { ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
+import { Permission } from '@directus/shared/types';
+import { ref, Ref, watch } from 'vue';
 
-export type Permission = {
-	id?: number;
-	collection: string;
-	role: number;
-	status: null | string;
-	create: 'none' | 'full';
-	read: 'none' | 'mine' | 'role' | 'full';
-	update: 'none' | 'mine' | 'role' | 'full';
-	delete: 'none' | 'mine' | 'role' | 'full';
-	comment: 'none' | 'read' | 'create' | 'update' | 'full';
-	read_field_blacklist: null | string[];
-	write_field_blacklist: null | string[];
-	status_blacklist: null | string[];
+type UsablePermissions = {
+	loading: Ref<boolean>;
+	error: Ref<null>;
+	permissions: Ref<Permission[] | null>;
+	fetchPermissions: () => Promise<void>;
+	savePermission: (updates: Partial<Permission>) => Promise<void>;
+	saveAll: (create: Partial<Permission>[], update: Partial<Permission>[]) => Promise<void>;
 };
 
-export default function usePermissions(role: Ref<number>) {
+export default function usePermissions(role: Ref<number>): UsablePermissions {
 	const loading = ref(false);
 	const error = ref(null);
 	const permissions = ref<Permission[] | null>(null);

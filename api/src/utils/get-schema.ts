@@ -1,31 +1,59 @@
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { Accountability, SchemaOverview, Permission, RelationRaw } from '../types';
-import logger from '../logger';
-import { mergePermissions } from './merge-permissions';
-import { Knex } from 'knex';
 import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
 import { mapValues } from 'lodash';
-
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
-import { systemRelationRows } from '../database/system-data/relations';
-import getLocalType from './get-local-type';
+import logger from '../logger';
+import { RelationsService } from '../services';
+import { Permission, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import getDefaultValue from './get-default-value';
-import { toArray } from '../utils/to-array';
+import getLocalType from './get-local-type';
+import { mergePermissions } from './merge-permissions';
+import getDatabase from '../database';
+import { getCache } from '../cache';
+import env from '../env';
+import ms from 'ms';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
 }): Promise<SchemaOverview> {
-	// Allows for use in the CLI
-	const database = options?.database || (require('../database').default as Knex);
+	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
+	const { schemaCache } = getCache();
 
-	const result: SchemaOverview = {
-		collections: {},
-		relations: [],
-		permissions: [],
-	};
+	let result: SchemaOverview;
+
+	if (env.CACHE_SCHEMA !== false && schemaCache) {
+		let cachedSchema;
+
+		try {
+			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
+		} catch (err) {
+			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
+		}
+
+		if (cachedSchema) {
+			result = cachedSchema;
+		} else {
+			result = await getDatabaseSchema(database, schemaInspector);
+
+			try {
+				await schemaCache.set(
+					'schema',
+					result,
+					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
+				);
+			} catch (err) {
+				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
+			}
+		}
+	} else {
+		result = await getDatabaseSchema(database, schemaInspector);
+	}
 
 	let permissions: Permission[] = [];
 
@@ -65,6 +93,19 @@ export async function getSchema(options?: {
 
 	result.permissions = permissions;
 
+	return result;
+}
+
+async function getDatabaseSchema(
+	database: Knex,
+	schemaInspector: ReturnType<typeof SchemaInspector>
+): Promise<SchemaOverview> {
+	const result: SchemaOverview = {
+		collections: {},
+		relations: [],
+		permissions: [],
+	};
+
 	const schemaOverview = await schemaInspector.overview();
 
 	const collections = [
@@ -77,6 +118,11 @@ export async function getSchema(options?: {
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (!info.primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
+			continue;
+		}
+
+		if (collection.includes(' ')) {
+			logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
 			continue;
 		}
 
@@ -94,7 +140,8 @@ export async function getSchema(options?: {
 				field: column.column_name,
 				defaultValue: getDefaultValue(column) ?? null,
 				nullable: column.is_nullable ?? true,
-				type: getLocalType(column) || 'alias',
+				type: column ? getLocalType(column).type : ('alias' as const),
+				dbType: column.data_type,
 				precision: column.numeric_precision || null,
 				scale: column.numeric_scale || null,
 				special: [],
@@ -121,30 +168,26 @@ export async function getSchema(options?: {
 		if (!result.collections[field.collection]) continue;
 
 		const existing = result.collections[field.collection].fields[field.field];
+		const column = schemaOverview[field.collection].columns[field.field];
+		const special = field.special ? toArray(field.special) : [];
+		const { type = 'alias' } = existing && column ? getLocalType(column, { special }) : {};
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
-			type: existing
-				? getLocalType(schemaOverview[field.collection].columns[field.field], {
-						special: field.special ? toArray(field.special) : [],
-				  })
-				: 'alias',
+			type: type,
+			dbType: existing?.dbType || null,
 			precision: existing?.precision || null,
 			scale: existing?.scale || null,
-			special: field.special ? toArray(field.special) : [],
+			special: special,
 			note: field.note,
 			alias: existing?.alias ?? true,
 		};
 	}
 
-	const relations: RelationRaw[] = [...(await database.select('*').from('directus_relations')), ...systemRelationRows];
-
-	result.relations = relations.map((relation) => ({
-		...relation,
-		one_allowed_collections: relation.one_allowed_collections ? toArray(relation.one_allowed_collections) : null,
-	}));
+	const relationsService = new RelationsService({ knex: database, schema: result });
+	result.relations = await relationsService.readAll();
 
 	return result;
 }

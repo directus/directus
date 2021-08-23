@@ -80,25 +80,18 @@ fields:
     display_template: Modelvorm
   directus_roles:
     description: Beskrywing
+  directus_webhooks:
+    status: Status
 comment: Kommentaar
-continue: Gaan Voort
-default: Standaardwaarde
-delete: Verwyder
 description: Beskrywing
 email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
-  checkboxes:
-    checkboxes: Keuse Boksies
-    allow_other: Laat Ander Toe
-  code:
+  input-code:
     code: Kode
-    line_number: Lyn Nommer
-  collection:
+  system-collection:
     collection: Versameling
-  dropdown:
-    allow_other: Laat Ander Toe
   files:
     files: Lêers
   tags:

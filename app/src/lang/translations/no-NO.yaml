@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Rediger felt
 item_revision: Element revisjoner
 duplicate_field: Dupliser felt
@@ -20,7 +40,6 @@ create_role: Opprett rolle
 create_user: Opprett bruker
 create_webhook: Lag Webhook
 invite_users: Invitere brukere
-email_examples: 'admin@example.com, user@example.com...'
 invite: Inviter
 emails: E-post
 connection_excellent: Utmerket tilkobling
@@ -41,7 +60,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utlogget
   SESSION_EXPIRED: Økt utløpt
-public: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
 not_allowed: Ikke tillatt
 directus_version: Directus versjon
@@ -225,7 +243,6 @@ item_delete_success: Elementet ble slettet | Elementene ble slettet
 this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
-translations_collection: Oversettelseskolleksjon
 languages_collection: Språkkolleksjon
 export_data: Eksporter data
 format: Format
@@ -242,7 +259,7 @@ move_to_folder: Flytt til mappe
 move: Flytt
 system: System
 add_field_related: Legg til felt til relatert kolleksjon
-interface: Grensesnitt
+interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
@@ -300,7 +317,6 @@ users: Brukere
 activity: Aktivitet
 webhooks: Webhooks
 field_width: Feltbredde
-add_a_new_item: Legg til et nytt element...
 add_filter: Legg til filter
 upper_limit: Øvre grense...
 lower_limit: Nedre grense...
@@ -309,7 +325,6 @@ documentation: Dokumentasjon
 sidebar: Sidepanel
 duration: Varighet
 charset: Charset
-second: Sekund
 file_moved: Fil Flyttet
 collection_created: Kolleksjon opprettet
 modified_on: Modifisert den
@@ -318,6 +333,7 @@ sort_field: Sorter felt
 add_sort_field: Legg til sorteringsfelt
 sort: Sorter
 status: Status
+remove: Fjern
 toggle_manual_sorting: Veksle manuell sortering
 bookmark_doesnt_exist: Bokmerket finnes ikke
 bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.
@@ -338,6 +354,7 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
 back: Tilbake
 operators:
@@ -406,6 +423,7 @@ fields:
     tags: Etiketter
     language: Språk
     status: Status
+    status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
   directus_settings:
@@ -417,10 +435,10 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
 comment: Kommenter
-continue: Fortsett
-default: Standard
-delete: Slett
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse
@@ -457,30 +475,28 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
-  button-links:
+  presentation-links:
     primary: Primær
-  collection:
+  system-collection:
     collection: Kolleksjon
-  collections:
+  system-collections:
     collections: Kolleksjoner
-  display-template:
+  system-display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon
-  dropdown:
+  select-dropdown:
     choices_value_placeholder: Legg inn verdi...
   file:
     file: Fil
   files:
     files: Filer
-  icon:
+  select-icon:
     icon: Ikon
-  interface:
+  system-interface:
     interface: Grensesnitt
-  numeric:
-    numeric: Nummerisk
   tags:
     tags: Etiketter
-  toggle:
+  boolean:
     label_default: Aktivert
 displays:
   boolean:

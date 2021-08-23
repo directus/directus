@@ -26,7 +26,7 @@ import { LocalStorage, MemoryStorage } from './storage';
 import { TypeMap, TypeOf } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
-import { SingletonHandler } from './singleton';
+import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusOptions = {
 	auth?: IAuth;
@@ -48,11 +48,11 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _relations?: RelationsHandler<TypeOf<T, 'directus_relations'>>;
 	private _revisions?: RevisionsHandler<TypeOf<T, 'directus_revisions'>>;
 	private _roles?: RolesHandler<TypeOf<T, 'directus_roles'>>;
-	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 	private _users?: UsersHandler<TypeOf<T, 'directus_users'>>;
 	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
 	private _graphql?: GraphQLHandler;
+	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
@@ -64,7 +64,11 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 
 	constructor(url: string, options?: DirectusOptions) {
 		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
-		this._transport = options?.transport || new AxiosTransport(url, this._storage);
+		this._transport =
+			options?.transport ||
+			new AxiosTransport(url, this._storage, async () => {
+				await this._auth.refresh();
+			});
 		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
 		this._singletons = {};
@@ -128,14 +132,12 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		return this._roles || (this._roles = new RolesHandler<TypeOf<T, 'directus_roles'>>(this.transport));
 	}
 
-	get settings(): SettingsHandler<TypeOf<T, 'directus_settings'>> {
-		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'directus_settings'>>(this.transport));
-	}
-
 	get users(): UsersHandler<TypeOf<T, 'directus_users'>> {
 		return this._users || (this._users = new UsersHandler<TypeOf<T, 'directus_users'>>(this.transport));
 	}
-
+	get settings(): SettingsHandler<TypeOf<T, 'directus_settings'>> {
+		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'directus_settings'>>(this.transport));
+	}
 	get server(): ServerHandler {
 		return this._server || (this._server = new ServerHandler(this.transport));
 	}

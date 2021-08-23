@@ -1,0 +1,11 @@
+{
+	"labels": ["Dependencies"],
+	"extends": ["config:base"],
+	"force": {
+		"constraints": {
+			"node": ">=16.0.0",
+			"npm": ">=7.0.0"
+		}
+	},
+	"commitMessage": "{{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}} {{commitMessageSuffix}}"
+}

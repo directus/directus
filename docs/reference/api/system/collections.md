@@ -152,9 +152,16 @@ An array of [collection objects](#the-collection-object).
 
 ```
 GET /collections
+SEARCH /collections
 ```
 
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
+
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -208,6 +215,10 @@ GET /collections/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -278,6 +289,10 @@ POST /collections
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	create_collections_item(data: directus_collections): directus_collections
@@ -347,6 +362,10 @@ PATCH /collections/:collection
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Mutation {
 	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
@@ -397,6 +416,10 @@ DELETE /collections/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Mutation {

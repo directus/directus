@@ -52,13 +52,30 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		).data;
 	}
 
-	// TODO: needs to support submitting arrays
-	// async updateMany(ids: item: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>>;
+	async updateMany(ids: ID[], data: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>> {
+		return await this.transport.patch<PartialItem<T>[]>(
+			`${this.endpoint}`,
+			{
+				keys: ids,
+				data,
+			},
+			{
+				params: query,
+			}
+		);
+	}
 
-	async updateMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>> {
-		return await this.transport.patch<PartialItem<T>[]>(`${this.endpoint}`, items, {
-			params: query,
-		});
+	async updateByQuery(updateQuery: QueryMany<T>, data: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>> {
+		return await this.transport.patch<PartialItem<T>[]>(
+			`${this.endpoint}`,
+			{
+				query: updateQuery,
+				data,
+			},
+			{
+				params: query,
+			}
+		);
 	}
 
 	async deleteOne(id: ID): Promise<void> {

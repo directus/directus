@@ -1,8 +1,11 @@
-import { getSchema } from '../../../utils/get-schema';
+/* eslint-disable no-console */
 
-export default async function rolesCreate({ name, admin }: any) {
-	const { default: database } = require('../../../database/index');
-	const { RolesService } = require('../../../services/roles');
+import { getSchema } from '../../../utils/get-schema';
+import { RolesService } from '../../../services';
+import getDatabase from '../../../database';
+
+export default async function rolesCreate({ role: name, admin }: { role: string; admin: boolean }): Promise<void> {
+	const database = getDatabase();
 
 	if (!name) {
 		console.error('Name is required');
@@ -13,7 +16,7 @@ export default async function rolesCreate({ name, admin }: any) {
 		const schema = await getSchema();
 		const service = new RolesService({ schema: schema, knex: database });
 
-		const id = await service.create({ name, admin_access: admin });
+		const id = await service.createOne({ name, admin_access: admin });
 		console.log(id);
 		database.destroy();
 		process.exit(0);

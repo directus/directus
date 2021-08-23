@@ -1,12 +1,10 @@
-import { computed, ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import Vue from 'vue';
-import { isEqual } from 'lodash';
-import { Filter } from '@/types/';
+import { Filter, Item } from '@directus/shared/types';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
+import { isEqual, orderBy, throttle } from 'lodash';
+import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
 
 type Query = {
 	limit: Ref<number>;
@@ -17,22 +15,39 @@ type Query = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, query: Query) {
+type ManualSortData = {
+	item: string | number;
+	to: string | number;
+};
+
+type UsableItems = {
+	itemCount: Ref<number | null>;
+	totalCount: Ref<number | null>;
+	items: Ref<Item[]>;
+	totalPages: ComputedRef<number>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+	changeManualSort: (data: ManualSortData) => Promise<void>;
+	getItems: () => Promise<void>;
+};
+
+export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
-	let loadingTimeout: any = null;
+	let loadingTimeout: number | null = null;
 
 	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
+		if (!collection.value) return null;
 		return collection.value.startsWith('directus_')
 			? `/${collection.value.substring(9)}`
 			: `/items/${collection.value}`;
 	});
 
-	const items = ref<any>([]);
+	const items = ref<Item[]>([]);
 	const loading = ref(false);
-	const error = ref(null);
+	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
 	const totalCount = ref<number | null>(null);
@@ -43,7 +58,9 @@ export function useItems(collection: Ref<string>, query: Query) {
 		return Math.ceil(itemCount.value / limit.value);
 	});
 
-	getItems();
+	if (fetchOnInit) {
+		getItems();
+	}
 
 	watch(
 		collection,
@@ -54,11 +71,11 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 			// Waiting for the tick here makes sure the query have been adjusted for the new
 			// collection
-			await Vue.nextTick();
+			await nextTick();
 			reset();
 			getItems();
 		},
-		{ immediate: true }
+		{ immediate: fetchOnInit }
 	);
 
 	watch([page, fields], async (after, before) => {
@@ -66,7 +83,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -85,7 +102,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -96,7 +113,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 		page.value = 1;
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -110,7 +127,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 					return;
 				}
 				page.value = 1;
-				await Vue.nextTick();
+				await nextTick();
 				if (loading.value === false) {
 					getItems();
 				}
@@ -123,7 +140,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
-		if (loadingTimeout) return;
+		if (loadingTimeout || !endpoint.value) return;
 
 		error.value = null;
 
@@ -135,7 +152,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 		// Make sure the primary key is always fetched
 		if (
-			fields.value !== ['*'] &&
+			fields.value.includes('*') === false &&
 			primaryKeyField.value &&
 			fieldsToFetch.includes(primaryKeyField.value.field) === false
 		) {
@@ -143,7 +160,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 
 		// Make sure all fields that are used to filter are fetched
-		if (fields.value !== ['*']) {
+		if (fields.value.includes('*') === false) {
 			filters.value.forEach((filter) => {
 				if (fieldsToFetch.includes(filter.field) === false) {
 					fieldsToFetch.push(filter.field);
@@ -152,14 +169,14 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 
 		// Make sure that the field we're sorting on is fetched
-		if (fields.value !== ['*'] && sortField.value && sort.value) {
+		if (fields.value.includes('*') === false && sortField.value && sort.value) {
 			const sortFieldKey = sort.value.startsWith('-') ? sort.value.substring(1) : sort.value;
 			if (fieldsToFetch.includes(sortFieldKey) === false) {
 				fieldsToFetch.push(sortFieldKey);
 			}
 		}
 
-		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field
+		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
 		// on directus_files
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
@@ -184,13 +201,13 @@ export function useItems(collection: Ref<string>, query: Query) {
 			 * able to render out the directus_files collection (file library) using regular layouts
 			 *
 			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
-			 * only collection that doesn't have this (obviously). This fake $file field is used to
+			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
 			 */
 			if (collection.value === 'directus_files') {
 				fetchedItems = fetchedItems.map((file: any) => ({
 					...file,
-					$file: file,
+					$thumbnail: file,
 				}));
 			}
 
@@ -212,7 +229,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 	}
 
 	async function getItemCount() {
-		if (!primaryKeyField.value) return;
+		if (!primaryKeyField.value || !endpoint.value) return;
 
 		const response = await api.get(endpoint.value, {
 			params: {
@@ -239,11 +256,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 		const descending = sortBy.startsWith('-');
 		items.value = orderBy(items.value, [field], [descending ? 'desc' : 'asc']);
 	}
-
-	type ManualSortData = {
-		item: string | number;
-		to: string | number;
-	};
 
 	async function changeManualSort({ item, to }: ManualSortData) {
 		const pk = primaryKeyField.value?.field;

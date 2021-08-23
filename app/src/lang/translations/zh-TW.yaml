@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: 編輯欄位
 item_revision: 項目修改
 duplicate_field: 複製欄位
@@ -37,7 +57,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
-public: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -108,6 +127,8 @@ time: 時間
 uuid: UUID
 hash: 哈希
 create_translations: 創建翻譯
+refresh_interval: 重新整理間隔
+no_refresh: 不要重新整理
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
@@ -163,7 +184,6 @@ item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
-translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
 format: 格式
@@ -179,7 +199,7 @@ move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
-interface: 介面
+interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -201,7 +221,6 @@ months:
 cancel_crop: 取消裁切
 original: 原始
 url: URL
-import: 匯入
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
@@ -272,7 +291,6 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
-add_a_new_item: 添加新項目
 add_filter: 新增篩選器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -288,6 +306,7 @@ card_size: 卡片大小
 sort_field: 排序欄位
 sort: 排序
 status: 狀態
+remove: 移除
 toggle_manual_sorting: 啟用手動排序
 bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...
@@ -308,6 +327,8 @@ errors:
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
   UNKNOWN: 未預期的錯誤
+  INTERNAL_SERVER_ERROR: 未預期的錯誤
+  NOT_NULL_VIOLATION: 值不能為null
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
@@ -459,7 +480,6 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
-    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題
@@ -521,6 +541,9 @@ fields:
     description: 描述說明
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
+  directus_webhooks:
+    name: 名稱
+    status: 狀態
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
@@ -528,11 +551,8 @@ save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
 comment: 評論
-continue: 繼續
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
-default: 預設
-delete: 刪除
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
@@ -583,92 +603,47 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  checkboxes:
-    checkboxes: 複選框
-    allow_other: 允許其他選項
-  code:
+  input-code:
     code: 程式碼
-    line_number: 行號
-  collection:
+  system-collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 資料集
-  color:
+  select-color:
     color: 顏色
   datetime:
     datetime: 日期時間
-  display-template:
+  system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
-  divider:
+  presentation-divider:
     divider: 分隔線
-  dropdown:
-    allow_other: 允許其他選項
-    allow_other_label: 允許其他值
-    choices_name_placeholder: 輸入名稱...
+  select-dropdown:
     choices_value_placeholder: 請輸入...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉 (多個)
-    description: 從下拉選單選擇多個值
   file:
     file: 檔案
     description: 選擇或上傳檔案
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  hash:
+  input-hash:
     hash: 哈希
-    masked_label: 隱藏真實值
-  icon:
+  select-icon:
     icon: 圖示
-    description: 從下拉清單中選擇圖示
-    search_for_icon: 搜尋圖示...
-  image:
+  file-image:
     image: 圖像
-    description: 選擇或上傳圖像
-  interface:
+  system-interface:
     interface: 介面
-    description: 選擇現有介面
-    placeholder: 選擇一個介面...
-  interface-options:
-    interface-options: 介面選項
-  many-to-many:
-    many-to-many: 多對多
-  many-to-one:
-    many-to-one: 多對一
+  select-dropdown-m2o:
     display_template: 顯示模板
-  markdown:
-    markdown: Markdown
-    description: 輸入和預覽 Markdown
-    customSyntax_label: 新增自訂語法類型
-    customSyntax_add: 新增自訂語法
-    imageToken: 圖像權杖
-  notice:
-    notice: 通知
-    description: 顯示簡短通知
-    text: 在此輸入通知內容...
-  numeric:
-    numeric: 數字
-    description: 輸入一個數字
-    minimum_value: 最小值
-    maximum_value: 最大值
-  one-to-many:
-    one-to-many: 一對多
-    description: 選擇多個關聯項目
-    no_collection: 找不到該集合
-  radio-buttons:
-    radio-buttons: 單選按鈕
-  repeater:
-    repeater: 重複者
-    edit_fields: 編輯欄位
-    field_name_placeholder: 輸入欄位名稱...
-    field_note_placeholder: 輸入欄位備忘...
+  map:
+    zoom: 縮放
+  system-folder:
+    folder: 資料夾
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
     always_show_value: 永遠顯示值
-  slug:
-    slug: 網址片段
   tags:
     tags: 標籤
     description: 選擇或新增標籤
@@ -678,15 +653,7 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  text-input:
-    text-input: 文字輸入
-    description: 輸入單行文本
-    trim: 去除內容前後空格
-    trim_label: 修剪開頭與結尾
-  textarea:
-    textarea: 文本區
-    description: 輸入多行純文本
-  toggle:
+  boolean:
     toggle: 切換
     label_default: 已啟用
   translations:
@@ -697,9 +664,6 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  wysiwyg:
-    toolbar: 工具列
-    custom_formats: 自訂格式
 displays:
   boolean:
     description: 顯示開關狀態

@@ -3,27 +3,30 @@
 		<template v-if="providers && providers.length > 0">
 			<v-divider />
 
-			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
-				{{ $t('log_in_with', { provider: provider.name }) }}
+			<a v-for="provider in providers" :key="provider.name" class="sso-link" :href="provider.link">
+				{{ t('log_in_with', { provider: provider.name }) }}
 			</a>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, onMounted } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const { t } = useI18n();
+
 		const providers = ref([]);
 		const loading = ref(false);
 
 		onMounted(() => fetchProviders());
 
-		return { providers };
+		return { t, providers };
 
 		async function fetchProviders() {
 			loading.value = true;

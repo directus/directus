@@ -1,4 +1,4 @@
-import { RequestHandler, ErrorRequestHandler } from 'express';
+import { ErrorRequestHandler, RequestHandler } from 'express';
 
 /**
  * Handles promises in routes.

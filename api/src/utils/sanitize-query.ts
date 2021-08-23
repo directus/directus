@@ -1,9 +1,10 @@
-import { Accountability, Query, Sort, Filter, Meta } from '../types';
+import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { parseFilter } from '../utils/parse-filter';
-import { flatten, set, merge, get } from 'lodash';
+import { Filter, Meta, Query, Sort } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { parseFilter, deepMap } from '@directus/shared/utils';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -32,10 +33,6 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 
 	if (rawQuery.page) {
 		query.page = sanitizePage(rawQuery.page);
-	}
-
-	if (rawQuery.single || rawQuery.single === '') {
-		query.single = sanitizeSingle(rawQuery.single);
 	}
 
 	if (rawQuery.meta) {
@@ -99,6 +96,14 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		}
 	}
 
+	filters = deepMap(filters, (val) => {
+		try {
+			return JSON.parse(val);
+		} catch {
+			return val;
+		}
+	});
+
 	filters = parseFilter(filters, accountability);
 
 	return filters;
@@ -117,14 +122,6 @@ function sanitizePage(rawPage: any) {
 	return Number(rawPage);
 }
 
-function sanitizeSingle(rawSingle: any) {
-	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
-		return true;
-	}
-
-	return false;
-}
-
 function sanitizeMeta(rawMeta: any) {
 	if (rawMeta === '*') {
 		return Object.values(Meta);
@@ -141,7 +138,7 @@ function sanitizeMeta(rawMeta: any) {
 	return [rawMeta];
 }
 
-function sanitizeDeep(deep: Record<string, any>, accountability: Accountability | null) {
+function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {

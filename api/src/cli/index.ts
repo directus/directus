@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+/* eslint-disable no-console */
 
-const pkg = require('../../package.json');
-
+import { program } from 'commander';
 import start from '../start';
-import init from './commands/init';
+import bootstrap from './commands/bootstrap';
+import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
+import init from './commands/init';
+import rolesCreate from './commands/roles/create';
 import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
-import rolesCreate from './commands/roles/create';
-import count from './commands/count';
-import bootstrap from './commands/bootstrap';
+
+const pkg = require('../../package.json');
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -36,6 +37,7 @@ dbCommand
 	.action(() => dbMigrate('down'));
 
 const usersCommand = program.command('users');
+
 usersCommand
 	.command('create')
 	.description('Create a new user')
@@ -43,6 +45,7 @@ usersCommand
 	.option('--password <value>', `user's password`)
 	.option('--role <value>', `user's role`)
 	.action(usersCreate);
+
 usersCommand
 	.command('passwd')
 	.description('Set user password')
@@ -53,16 +56,18 @@ usersCommand
 const rolesCommand = program.command('roles');
 rolesCommand
 	.command('create')
-	.storeOptionsAsProperties(false)
-	.passCommandToAction(false)
 	.description('Create a new role')
-	.option('--name <value>', `name for the role`)
+	.option('--role <value>', `name for the role`)
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
 
 program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 
-program.command('bootstrap').description('Initialize or update the database').action(bootstrap);
+program
+	.command('bootstrap')
+	.description('Initialize or update the database')
+	.option('--skipAdminInit', 'Skips the creation of the default Admin Role and User')
+	.action(bootstrap);
 
 program.parseAsync(process.argv).catch((err) => {
 	console.error(err);

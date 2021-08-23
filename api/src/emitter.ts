@@ -15,7 +15,7 @@ const emitter = new EventEmitter2({
  * @param name
  * @param args
  */
-export async function emitAsyncSafe(name: string, ...args: any[]) {
+export async function emitAsyncSafe(name: string, ...args: any[]): Promise<any> {
 	try {
 		return await emitter.emitAsync(name, ...args);
 	} catch (err) {

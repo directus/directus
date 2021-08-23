@@ -1,10 +1,12 @@
 # Items
 
-> Item are objects within a Collection which contain values for one or more fields. Each collection represents a **record** in your database. [Learn more about Items](/concepts/items/).
+> Item are objects within a Collection which contain values for one or more fields. Each collection represents a
+> **record** in your database. [Learn more about Items](/concepts/items/).
 
 ::: warning Permissions
 
-The actions on this page assume the current user has permission to perform that action. However, certain features may be disabled or hidden based on permissions.
+The actions on this page assume the current user has permission to perform that action. However, certain features may be
+disabled or hidden based on permissions.
 
 :::
 
@@ -35,9 +37,9 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 To the right of the primary Save button there is a "..." icon which contains the following alternate save options:
 
-* Save and Stay (⌘S)
-* Save and Create New (⌘⇧S)
-* Save as Copy
+- Save and Stay (⌘S)
+- Save and Create New (⌘⇧S)
+- Save as Copy
 
 :::
 
@@ -111,8 +113,8 @@ icon) button located in the header.
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
 5. Drag items by their handle into a new position
 
-The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before navigating
-away from the page.
+The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before
+navigating away from the page.
 
 ::: warning Requires Configuration
 
@@ -126,12 +128,14 @@ This feature is only available if a Sort column has been configured in the Colle
 2. Navigate to a collection of items
 3. Choose a layout that supports manual ordering (eg: the default "table" mode)
 4. Set the Order Field and Order Direction
-    * Table Layout: Click on the field's column header, clicking again changes order direction
-    * Card Layout: Adjust the two dropdowns in the layout's subheader
+   - Table Layout: Click on the field's column header, clicking again changes order direction
+   - Card Layout: Adjust the two dropdowns in the layout's subheader
 
 ::: tip Sort vs Order
 
-**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or numerically. **Sorting** (when enabled) saves a value in a [Sort](/guides/collections/#sort) field, which can then be used to return data in a custom order.
+**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or
+numerically. **Sorting** (when enabled) saves a value in a [Sort](/guides/collections/#sort) field, which can then be
+used to return data in a custom order.
 
 :::
 

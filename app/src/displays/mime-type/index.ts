@@ -1,6 +1,6 @@
+import { defineDisplay } from '@directus/shared/utils';
 import readableMimeType from '@/utils/readable-mime-type';
-import { extension } from 'mime-types';
-import { defineDisplay } from '@/displays/define';
+import mime from 'mime/lite';
 
 export default defineDisplay({
 	id: 'mime-type',
@@ -13,7 +13,7 @@ export default defineDisplay({
 			name: '$t:displays.mime-type.extension_only',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.mime-type.extension_only_label',
 				},
@@ -26,7 +26,7 @@ export default defineDisplay({
 	types: ['string'],
 	handler: (value: string, options) => {
 		if (options && options.showAsExtension) {
-			return extension(value);
+			return mime.getExtension(value);
 		}
 
 		return readableMimeType(value);

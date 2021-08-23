@@ -1,8 +1,46 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: ערוך שדה
+half_width: חצי עמוד
 full_width: רוחב מלא
+fill_width: עמוד מלא
 add_field: הוסף שדה
+role_name: שם תפקיד
+branch: ענף
+exclusive: בלעדי
+children: ילדים
+edited: ערך נערך
+required: שדה חובה
+create_preset: יצירת הגדרה מראש
+create_role: צור תפקיד
+create_user: צור משתמש
+create_webhook: צור Webhook
+invite_users: הזמן משתמשים
+invite: הזמן
+not_allowed: לא מורשה
 directus_version: גרסת דירקטוס
+node_version: Node Version
+node_uptime: Node Uptime
+os_type: OS Type
 title: כותרת
 checksum: מחרוזת בדיקה
 users: משתמשים
@@ -49,13 +87,16 @@ fields:
     status: סטטוס
     role: תפקיד
   directus_roles:
+    name: שם תפקיד
     description: תיאור
+  directus_webhooks:
+    status: סטטוס
 comment: הערה
 description: תיאור
 email: דוא"ל
 password: סיסמה
 interfaces:
-  collection:
+  system-collection:
     collection: מאגר
   files:
     files: קבצים
@@ -64,8 +105,19 @@ interfaces:
 displays:
   collection:
     collection: מאגר
+  mime-type:
+    mime-type: MIME Type
+  rating:
+    rating: דירוג
+    simple: פשוט
   user:
     avatar: צלמית
+    both: שניהם
 layouts:
   cards:
     title: כותרת
+    subtitle: כותרת משנית
+  tabular:
+    fields: שדות
+  calendar:
+    calendar: לוח שנה

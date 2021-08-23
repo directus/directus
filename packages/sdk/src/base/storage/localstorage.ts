@@ -3,7 +3,7 @@ import { BaseStorage } from './base';
 export class LocalStorage extends BaseStorage {
 	private prefix: string;
 
-	constructor(prefix: string = '') {
+	constructor(prefix = '') {
 		super();
 		this.prefix = prefix;
 	}
@@ -24,7 +24,7 @@ export class LocalStorage extends BaseStorage {
 	delete(key: string): string | null {
 		const k = this.key(key);
 		const value = this.get(k);
-		if (!!value) {
+		if (value) {
 			localStorage.removeItem(k);
 		}
 		return value;

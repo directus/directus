@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayJsonValue from './formatted-json-value.vue';
 
 export default defineDisplay({
@@ -15,7 +15,7 @@ export default defineDisplay({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input',
+				interface: 'input',
 				options: {
 					placeholder: '{{ field }}',
 				},

@@ -72,13 +72,13 @@ export class LocalFileSystemStorage extends Storage {
 			const result = await fse.unlink(this._fullPath(location));
 			return { raw: result, wasDeleted: true };
 		} catch (e) {
-			e = handleError(e, location);
+			const error = handleError(e, location);
 
-			if (e instanceof FileNotFound) {
+			if (error instanceof FileNotFound) {
 				return { raw: undefined, wasDeleted: false };
 			}
 
-			throw e;
+			throw error;
 		}
 	}
 

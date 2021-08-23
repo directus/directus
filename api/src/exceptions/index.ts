@@ -1,8 +1,7 @@
-export * from './base';
-export * from './failed-validation';
 export * from './forbidden';
 export * from './graphql-validation';
 export * from './hit-rate-limit';
+export * from './illegal-asset-transformation';
 export * from './invalid-credentials';
 export * from './invalid-ip';
 export * from './invalid-otp';
@@ -13,3 +12,4 @@ export * from './range-not-satisfiable';
 export * from './route-not-found';
 export * from './service-unavailable';
 export * from './unprocessable-entity';
+export * from './user-suspended';

@@ -1,10 +1,11 @@
-import { Query } from '../types/query';
-import database from '../database';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { Knex } from 'knex';
-import { applyFilter, applySearch } from '../utils/apply-query';
+import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { parseFilter } from '../utils/parse-filter';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { Query } from '../types/query';
+import { applyFilter, applySearch } from '../utils/apply-query';
+import { parseFilter } from '@directus/shared/utils';
 
 export class MetaService {
 	knex: Knex;
@@ -12,12 +13,12 @@ export class MetaService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || database;
+		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}
 
-	async getMetaForQuery(collection: string, query: Query) {
+	async getMetaForQuery(collection: string, query: Query): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
 		const results = await Promise.all(
@@ -35,7 +36,7 @@ export class MetaService {
 		}, {});
 	}
 
-	async totalCount(collection: string) {
+	async totalCount(collection: string): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
 
 		if (this.accountability?.admin !== true) {
@@ -55,7 +56,7 @@ export class MetaService {
 		return Number(result?.count ?? 0);
 	}
 
-	async filterCount(collection: string, query: Query) {
+	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
 		let filter = query.filter || {};

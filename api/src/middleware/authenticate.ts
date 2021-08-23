@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express';
-import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
-import isJWT from '../utils/is-jwt';
-import database from '../database';
-import asyncHandler from '../utils/async-handler';
-import { InvalidCredentialsException } from '../exceptions';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import getDatabase from '../database';
 import env from '../env';
+import { InvalidCredentialsException } from '../exceptions';
+import asyncHandler from '../utils/async-handler';
+import isJWT from '../utils/is-jwt';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -20,6 +20,8 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	};
 
 	if (!req.token) return next();
+
+	const database = getDatabase();
 
 	if (isJWT(req.token)) {
 		let payload: { id: string };
@@ -74,10 +76,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
-	}
-
-	if (req.accountability?.user) {
-		await database('directus_users').update({ last_access: new Date() }).where({ id: req.accountability.user });
 	}
 
 	return next();

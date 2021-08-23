@@ -72,7 +72,8 @@ will be an empty array.
 
 #### Singleton
 
-If your collection is a singleton, this endpoint will return the item.
+If your collection is a singleton, this endpoint will return the item. If the item doesn't exist in the database, the
+default values will be returned.
 
 </div>
 <div class="right">
@@ -81,7 +82,10 @@ If your collection is a singleton, this endpoint will return the item.
 
 ```
 GET /items/:collection
+SEARCH /items/:collection
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ##### Example
 
@@ -90,6 +94,10 @@ GET /items/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Query {
@@ -148,6 +156,10 @@ GET /items/articles/15
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Query {
 	<collection>_by_id(id: ID!): <collection>
@@ -185,6 +197,13 @@ Supports all [global query parameters](/reference/api/query).
 
 An array of partial [item objects](#the-item-object).
 
+::: tip Nested Data (Relations)
+
+Relational data needs to be correctly nested to add new items successfully. Check out the
+[relational data section](/reference/api/introduction/#relational-data) for more information
+
+:::
+
 ### Returns
 
 Returns the [item objects](#the-item-object) of the item that were created.
@@ -212,6 +231,10 @@ POST /items/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -284,6 +307,10 @@ POST /items/articles
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Mutation {
 	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
@@ -352,6 +379,10 @@ PATCH /items/articles/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -424,6 +455,10 @@ PATCH /items/articles
 
 ### GraphQL
 
+```
+POST /graphql
+```
+
 ```graphql
 type Mutation {
 	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
@@ -473,6 +508,10 @@ DELETE /items/articles/15
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {
@@ -530,6 +569,10 @@ DELETE /items/articles
 ```
 
 ### GraphQL
+
+```
+POST /graphql
+```
 
 ```graphql
 type Mutation {

@@ -14,7 +14,7 @@ Fades items in or out depending if the get added or removed from the view.
 </template>
 
 <script lang="ts">
-	import { defineComponent, ref } from '@vue/composition-api';
+	import { defineComponent, ref } from 'vue';
 
 	export default defineComponent({
 		setup(props) {

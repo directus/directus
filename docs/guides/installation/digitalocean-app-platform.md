@@ -18,7 +18,10 @@ Make sure to select the database you created in step 2 during the configuration 
 
 ## 5. Setup the build-step
 
-While Directus itself doesn't have to be built from source in order to use it on App Platform, we do recommend adding `npx directus bootstrap` as the "build" step for DigitalOcean. This will automatically provision the database if it's empty, and migrate it to the latest version in case of upgrades. See [Command Line Interface](/reference/command-line-interface/#bootstrap-a-project) for more information.
+While Directus itself doesn't have to be built from source in order to use it on App Platform, we do recommend adding
+`npx directus bootstrap` as the "build" step for DigitalOcean. This will automatically provision the database if it's
+empty, and migrate it to the latest version in case of upgrades. See
+[Command Line Interface](/reference/command-line-interface/#bootstrap-a-project) for more information.
 
 ## 6. Configure the environment variables
 

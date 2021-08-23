@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayFile from './file.vue';
 
 export default defineDisplay({
@@ -9,5 +9,5 @@ export default defineDisplay({
 	handler: DisplayFile,
 	types: ['uuid'],
 	options: [],
-	fields: ['data', 'type', 'title'],
+	fields: ['id', 'type', 'title'],
 });

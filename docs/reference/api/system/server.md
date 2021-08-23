@@ -48,6 +48,10 @@ GET /server/specs/oas
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	server_specs_oas: String
@@ -116,6 +120,10 @@ GET /server/specs/graphql/system
 
 ### GraphQL
 
+```
+POST /graphql/system
+```
+
 ```graphql
 type Query {
 	server_specs_graphql(scope: graphql_sdl_scope): String
@@ -156,6 +164,10 @@ GET /server/ping
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -238,6 +250,10 @@ GET /server/info
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {
@@ -369,6 +385,10 @@ GET /server/health
 ```
 
 ### GraphQL
+
+```
+POST /graphql/system
+```
 
 ```graphql
 type Query {

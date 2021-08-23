@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { GraphQLService } from '../services';
-import { respond } from '../middleware/respond';
-import asyncHandler from '../utils/async-handler';
 import { parseGraphQL } from '../middleware/graphql';
+import { respond } from '../middleware/respond';
+import { GraphQLService } from '../services';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 

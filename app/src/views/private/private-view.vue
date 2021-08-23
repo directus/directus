@@ -1,6 +1,6 @@
 <template>
-	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
-		{{ $t('no_app_access_copy') }}
+	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
+		{{ t('no_app_access_copy') }}
 
 		<template #append>
 			<v-button to="/logout">Switch User</v-button>
@@ -18,14 +18,15 @@
 				</div>
 			</div>
 		</aside>
-		<div class="content" ref="contentEl">
+		<div ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
 			>
-				<template v-for="(_, scopedSlotName) in $scopedSlots" v-slot:[scopedSlotName]="slotData">
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -61,17 +62,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, provide, toRefs, computed } from 'vue';
 import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
-import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '@/stores';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useTitle from '@/composables/use-title';
 
 export default defineComponent({
@@ -80,7 +81,6 @@ export default defineComponent({
 		SidebarDetailGroup,
 		HeaderBar,
 		ProjectInfo,
-		SidebarButton,
 		NotificationsGroup,
 		NotificationsPreview,
 		NotificationDialogs,
@@ -90,8 +90,16 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		smallHeader: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { title } = toRefs(props);
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();
@@ -99,35 +107,27 @@ export default defineComponent({
 		const appStore = useAppStore();
 
 		const appAccess = computed(() => {
-			if (!userStore.state.currentUser) return true;
-			return userStore.state.currentUser?.role?.app_access || false;
+			if (!userStore.currentUser) return true;
+			return userStore.currentUser?.role?.app_access || false;
 		});
 
 		const notificationsPreviewActive = ref(false);
 
-		const { sidebarOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore);
 
 		const theme = computed(() => {
-			return userStore.state.currentUser?.theme || 'auto';
+			return userStore.currentUser?.theme || 'auto';
 		});
 
 		provide('main-element', contentEl);
 
-		router.afterEach(async (to, from) => {
+		router.afterEach(async () => {
 			contentEl.value?.scrollTo({ top: 0 });
 		});
 
 		useTitle(title);
 
-		return {
-			navOpen,
-			contentEl,
-			theme,
-			sidebarOpen,
-			openSidebar,
-			notificationsPreviewActive,
-			appAccess,
-		};
+		return { t, navOpen, contentEl, theme, sidebarOpen, openSidebar, notificationsPreviewActive, appAccess };
 
 		function openSidebar(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
@@ -139,8 +139,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
@@ -153,7 +151,7 @@ export default defineComponent({
 	.nav-overlay {
 		--v-overlay-z-index: 49;
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			display: none;
 		}
 	}
@@ -161,7 +159,7 @@ export default defineComponent({
 	.sidebar-overlay {
 		--v-overlay-z-index: 29;
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			display: none;
 		}
 	}
@@ -198,7 +196,7 @@ export default defineComponent({
 			}
 		}
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
 		}
@@ -226,11 +224,11 @@ export default defineComponent({
 		}
 
 		// Offset for partially visible sidebar
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			margin-right: 64px;
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			margin-right: 0;
 		}
 	}
@@ -262,11 +260,11 @@ export default defineComponent({
 			height: 100%;
 		}
 
-		@include breakpoint(medium) {
+		@media (min-width: 960px) {
 			transform: translateX(calc(100% - 64px));
 		}
 
-		@include breakpoint(large) {
+		@media (min-width: 1260px) {
 			position: relative;
 			flex-basis: 64px;
 			flex-shrink: 0;
@@ -280,7 +278,7 @@ export default defineComponent({
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		--content-padding: 32px;
 		--content-padding-bottom: 132px;
 	}

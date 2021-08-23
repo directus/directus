@@ -1,11 +1,19 @@
 /**
- * @jest-environment jest-environment-jsdom-global
+ * @jest-environment jsdom
  */
 
 import { Auth, AxiosTransport, Directus, MemoryStorage } from '../../src';
-import { test } from '../utils';
+import { test, timers } from '../utils';
 
 describe('auth (browser)', function () {
+	beforeEach(() => {
+		localStorage.clear();
+	});
+
+	afterEach(() => {
+		localStorage.clear();
+	});
+
 	test(`sets default auth mode to cookie`, async (url) => {
 		const storage = new MemoryStorage();
 		const transport = new AxiosTransport(url, storage);
@@ -34,8 +42,6 @@ describe('auth (browser)', function () {
 	});
 
 	test(`authentication should auto refresh after specified period`, async (url, nock) => {
-		jest.useFakeTimers();
-
 		const scope = nock();
 
 		scope
@@ -45,7 +51,7 @@ describe('auth (browser)', function () {
 				{
 					data: {
 						access_token: 'access_token',
-						expires: 60000,
+						expires: 5000,
 					},
 				},
 				{
@@ -59,39 +65,53 @@ describe('auth (browser)', function () {
 			.reply(200, {
 				data: {
 					access_token: 'new_access_token',
-					expires: 60000,
+					expires: 5000,
 				},
 			});
 
-		const sdk = new Directus(url);
-		await sdk.auth.login(
-			{
-				email: 'wolfulus@gmail.com',
-				password: 'password',
-			},
-			{
-				refresh: {
-					auto: true,
+		expect(scope.pendingMocks().length).toBe(2);
+
+		await timers(async ({ tick, flush }) => {
+			const sdk = new Directus(url);
+
+			const loginPromise = sdk.auth.login(
+				{
+					email: 'wolfulus@gmail.com',
+					password: 'password',
 				},
-			}
-		);
+				{
+					refresh: {
+						auto: true,
+						time: 2500,
+					},
+				}
+			);
 
-		jest.advanceTimersByTime(30000);
-		expect(scope.pendingMocks().length).toBe(1);
+			await tick(2000);
 
-		jest.advanceTimersByTime(25000);
+			await loginPromise;
 
-		// Refresh is done in background, need to wait for it to complete
-		await new Promise((resolve) => {
-			jest.useRealTimers();
-			setTimeout(resolve, 100);
-			jest.useFakeTimers();
-		});
+			expect(scope.pendingMocks().length).toBe(1);
+			expect(sdk.auth.expiring).toBe(false);
+			expect(sdk.storage.auth_token).toBe('access_token');
+			expect(sdk.storage.auth_expires).toBe(107000);
+			await tick(5000);
 
-		expect(scope.pendingMocks().length).toBe(0);
-		expect(sdk.auth.token).toBe('new_access_token');
+			expect(scope.pendingMocks().length).toBe(1);
+			await flush();
+			expect(sdk.auth.expiring).toBe(true);
 
-		jest.clearAllTimers();
+			await new Promise((resolve) => {
+				scope.once('replied', () => {
+					flush().then(resolve);
+				});
+			});
+
+			expect(sdk.storage.auth_expires).toBe(112000);
+			expect(scope.pendingMocks().length).toBe(0);
+			expect(sdk.storage.auth_token).toBe('new_access_token');
+			expect(sdk.auth.expiring).toBe(false);
+		}, 100000);
 	});
 
 	test(`logout doesn't send a refresh token due to cookie mode`, async (url, nock) => {

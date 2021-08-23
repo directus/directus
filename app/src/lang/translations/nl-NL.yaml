@@ -1,16 +1,46 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Veld Bewerken
+conditions: Voorwaarden
 item_revision: Item revisie
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
+group: Groep
+and: En
+or: Of
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
 add_field: Voeg Veld Toe
 role_name: Rol Naam
+branch: Tak
+leaf: Blad
+indeterminate: Onbepaald
+exclusive: Exclusief
+children: Onderliggende
 db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
+edited: Waarde bewerkt
 required: Vereist
 required_for_app_access: Vereist voor toegang tot de app
 requires_value: Vereist waarde
@@ -19,8 +49,9 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: 'admin@example.nl, gebruiker@example.nl...'
+email_examples: "admin{'@'}voorbeeld.nl, gebruiker{'@'}voorbeeld.nl..."
 invite: Nodig uit
+email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
 connection_excellent: Uitstekende Verbinding
 connection_good: Goede Verbinding
@@ -40,7 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
-public: Openbaar
+public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
@@ -80,9 +111,13 @@ validationError:
   nnull: Waarde kan niet "null" zijn
   required: Waarde is vereist
   unique: Waarde moet uniek zijn
+  regex: Waarde heeft niet de juiste vorm
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
+nullable: Mag NULL zijn
+allow_null_value: NULL waarde toestaan
+enter_value_to_replace_nulls: Voer een nieuwe waarde in om alle NULL's in dit veld te vervangen.
 field_standard: Standaard
 field_presentation: Presentatie & Aliasen
 field_file: Enkel bestand
@@ -92,6 +127,7 @@ field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
 field_translations: Vertalingen
+field_group: Veld-Groep
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
 field_validation: Veld Validatie
@@ -137,6 +173,7 @@ decimal: Decimaal
 float: Float
 integer: Integer
 json: JSON
+xml: XML
 string: String
 text: Tekst
 time: Tijd
@@ -145,6 +182,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
+auto_refresh: Automatische verversen
+refresh_interval: Verversingsinterval
+no_refresh: Niet verversen
+refresh_interval_seconds: Ververs onmiddellijk | Elke seconde | Elke {seconds} seconden
+refresh_interval_minutes: Elke minuut | Elke {minutes} minuten
 auto_generate: Genereer automatisch
 this_will_auto_setup_fields_relations: Dit zal automatisch alle vereiste velden en relaties instellen.
 click_here: Klik hier
@@ -152,7 +194,9 @@ to_manually_setup_translations: om de vertalingen handmatig in te stellen.
 click_to_manage_translated_fields: >-
   Er zijn nog geen vertaalde velden. Klik hier om ze aan te maken. | Er is één vertaald veld. Klik hier om het te beheren. | Er zijn {count} vertaalde velden. Klik hier om ze te beheren.
 fields_group: Veld-Groep
+no_collections_found: Geen collecties gevonden.
 new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
+search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
 add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
@@ -219,7 +263,7 @@ item_delete_success: Item Verwijderd | Items Verwijderd
 this_collection: Deze collectie
 related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
-translations_collection: Vertalingen Collectie
+translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
 export_data: Gegevens exporteren
 format: Format
@@ -236,7 +280,7 @@ move_to_folder: Verplaats naar map
 move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
-interface: Interface
+interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -266,7 +310,7 @@ drag_mode: Sleep modus
 cancel_crop: Annuleer bijsnijden
 original: Origineel
 url: URL
-import: Importeren
+import_label: Importeren
 file_details: Bestand Details
 dimensions: Afmetingen
 size: Grootte
@@ -306,6 +350,10 @@ save_and_create_new: Opslaan en nieuwe aanmaken
 save_and_stay: Sla op en blijf bewerken
 save_as_copy: Sla op als een kopie
 add_existing: Bestaande toevoegen
+creating_items: Items aanmaken
+enable_create_button: Aanmaakknop inschakelen
+selecting_items: Items selecteren
+enable_select_button: Selecteerknop inschakelen
 comments: Reacties
 no_comments: Nog geen reacties
 click_to_expand: Klik om uit te breiden
@@ -320,7 +368,7 @@ interface_not_found: 'Interface "{interface}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
-m2a_builder: Bouwer (M2A)
+list-m2a: Bouwer (M2A)
 item_count: 'Geen items | Één item | {count} items'
 no_items_copy: Er zijn nog geen items in deze collectie.
 file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
@@ -344,7 +392,6 @@ users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
 field_width: Veld breedte
-add_a_new_item: Nieuw item toevoegen...
 add_filter: Filter toevoegen
 upper_limit: Bovengrens...
 lower_limit: Lagere limiet...
@@ -353,7 +400,6 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
-second: Seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -362,6 +408,7 @@ sort_field: Sorteerveld
 add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
 status: Status
+remove: Verwijder
 toggle_manual_sorting: Activeer handmatige volgorde
 bookmark_doesnt_exist: Bladwijzer bestaat niet
 bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.
@@ -387,7 +434,13 @@ errors:
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
+  RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
+  USER_SUSPENDED: Gebruiker geschorst
+  CONTAINS_NULL_VALUES: Veld bevat NULL waarden
   UNKNOWN: Onverwachte fout
+  UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
+  INTERNAL_SERVER_ERROR: Onverwachte fout
+  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
@@ -455,6 +508,10 @@ operators:
   nnull: Is niet null
   contains: Bevat
   ncontains: Bevat niet
+  starts_with: Begint met
+  nstarts_with: Begint niet met
+  ends_with: Eindigt met
+  nends_with: Eindigt niet met
   between: Is tussen
   nbetween: Ligt niet tussen
   empty: Is leeg
@@ -463,6 +520,8 @@ operators:
   has: Bevat enkele van deze keys
 loading: Aan het laden...
 drop_to_upload: Sleep hier om te uploaden
+item: Item
+items: Items
 upload_file: Upload Bestand
 upload_file_indeterminate: Bestand uploaden...
 upload_file_success: Bestand geüpload
@@ -471,6 +530,7 @@ upload_files_success: '{count} bestanden geüpload'
 upload_pending: Uploaden in afwachting
 drag_file_here: Sleep een bestand hierheen
 click_to_browse: Klik om te bladeren
+interface_options: Interface-opties
 layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
@@ -480,6 +540,8 @@ value_unique: Waarde moet uniek zijn
 all_activity: Alle activiteiten
 create_item: Item aanmaken
 display_template: Weergavesjabloon
+language_display_template: Taalweergavesjabloon
+translations_display_template: Vertalingsweergavesjabloon
 n_items_selected: 'Geen Items Geselecteerd | 1 Item Geselecteerd | {n} Items Geselecteerd'
 per_page: Per pagina
 all_files: Alle bestanden
@@ -494,6 +556,7 @@ no_results_copy: Pas de zoekfilters aan om resultaten te zien.
 clear_filters: Filters wissen
 saves_automatically: Slaat automatisch op
 role: Rol
+rule: Regel
 user: Gebruiker
 no_presets: Geen Voorkeuren
 no_presets_copy: Geen voorkeuren of bladwijzers.
@@ -510,8 +573,21 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+image_url: Afbeeldings-url
+alt_text: Alternatieve tekst
+media: Media
 width: Breedte
 height: Hoogte
+source: Bron
+url_placeholder: Voer een URL in...
+display_text: Weergegeven tekst
+display_text_placeholder: Enter weergegeven tekst...
+tooltip: Tooltip
+tooltip_placeholder: Voer een tooltip in...
+unlimited: Onbeperkt
+open_link_in: Open link in
+new_tab: Nieuw tabblad
+current_tab: Huidig tabblad
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -531,7 +607,10 @@ wysiwyg_options:
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
+  link: Link toevoegen/bewerken
   unlink: Link verwijderen
+  media: Media toevoegen/bewerken
+  image: Afbeelding toevoegen/bewerken
   copy: Kopieer
   cut: Knippen
   paste: Plakken
@@ -553,6 +632,7 @@ wysiwyg_options:
   selectall: Alles selecteren
   table: Tabel
   visualaid: Onzichtbare elementen weergeven
+  source_code: Broncode bewerken
   fullscreen: Volledig scherm
   directionality: Richting
 dropdown: Keuzemenu
@@ -565,6 +645,8 @@ adding_user: Gebruiker toevoegen
 unknown_user: Onbekende gebruiker
 creating_in: 'Item maken in {collection}'
 editing_in: 'Item bewerken in {collection}'
+creating_unit: '{unit} aan het aanmaken'
+editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
 no_options_available: Geen opties beschikbaar
 settings_data_model: Data model
@@ -572,9 +654,13 @@ settings_permissions: Rollen & Permissies
 settings_project: Project Instellingen
 settings_webhooks: Webhooks
 settings_presets: Voorkeuren & Bladwijzers
+one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
+select: Selecteer...
 layout: Lay-out
+tree_view: Boomstructuurweergave
 changes_are_permanent: Wijzigingen zijn permanent
+preset_name_placeholder: Standaardwaarde...
 preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
@@ -649,7 +735,9 @@ fields:
     archive_value: Archiveer waarde
     unarchive_value: Dearchiveer waarde
     sort_field: Sorteerveld
+    accountability: Activiteit & Revisie Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Titel
     description: Beschrijving
     tags: Tags
@@ -686,6 +774,7 @@ fields:
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     status: Status
+    status_active: Actief
     role: Rol
     token: Token
     last_page: Laatste pagina
@@ -722,6 +811,14 @@ fields:
     users: Gebruikers in rol
     module_list: Module Navigatie
     collection_list: Collectie navigatie
+  directus_webhooks:
+    name: Naam
+    status: Status
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activiteiten & Revisies
+    only_track_activity: Track alleen activiteiten
+    do_not_track_anything: Niets tracken
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
@@ -731,13 +828,13 @@ save_current_datetime: Huidige datum/tijd opslaan
 block: Blok
 inline: Doorlopend
 comment: Reactie
-continue: Doorgaan
-continue_as: >-
-  <b>{name}</b> is momenteel ingelogd. Als je dit account herkent, druk dan op 'Doorgaan'.
+relational_triggers: Relationele triggers
+referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
+referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
+referential_action_no_action: Voorkom de verwijdering
+referential_action_cascade: Verwijder het {collection} item (cascade)
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
-default: Standaard
-delete: Verwijder
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
@@ -794,145 +891,89 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
-  button-links:
-    button-links: Knopkoppelingen
-    links: Koppelingen
-    description: Configureerbare linkknoppen voor het openen van dynamische URL's
-    style: Stijl
+  presentation-links:
     primary: Primair
-    link: Koppelingen
-    button: Knoppen
-    error: Kan actie niet uitvoeren
-  checkboxes:
-    checkboxes: Vinkjes
-    description: Kies tussen meerdere opties via selectievakjes
-    allow_other: Andere toestaan
-    show_more: 'Toon {count} meer'
-    items_shown: Items weergegeven
-  code:
+  input-code:
     code: Code
-    description: Schrijf of deel code snippets
-    line_number: Regelnummer
-    placeholder: Voer code in...
-  collection:
+  system-collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  collections:
+  system-collections:
     collections: Collecties
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
-  color:
+  select-color:
     color: Kleur
-    description: Voer in of selecteer een kleurwaarde
-    placeholder: Kies een kleur...
-    preset_colors: Voorafbepaalde kleuren
-    preset_colors_add_label: Nieuwe kleur toevoegen...
-    name_placeholder: Voer kleurnaam in...
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
-  display-template:
+  system-display-template:
     display-template: Weergavesjabloon
-    description: Mix statische tekst en dynamische veld waarden
-    collection_field: Collectie veld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
-  divider:
+  presentation-divider:
     divider: Scheidingslijn
-    description: Label en verdeel velden in secties
-    title_placeholder: Voer een titel in...
-    inline_title: Inline titel
-    inline_title_label: Toon titel binnen regel
-    margin_top: Marge boven
-    margin_top_label: Verhoog Top Marge
-  dropdown:
-    description: Selecteer een waarde uit een dropdown
-    choices_placeholder: Voeg een nieuwe keuze toe
-    allow_other: Andere toestaan
-    allow_other_label: Andere waarden toestaan
-    allow_none: Niets toestaan
-    allow_none_label: Geen selectie toestaan
-    choices_name_placeholder: Naam invoeren...
+  select-dropdown:
+    choices_name_placeholder: Voer een naam in...
     choices_value_placeholder: Voer een waarde in...
-  dropdown-multiselect:
-    dropdown-multiselect: Dropdown (meerdere)
-    description: Selecteer meerdere waarden uit een dropdown
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (meerdere)
+    description: Selecteer meerdere waarden in een dropdown
   file:
     file: Bestand
     description: Selecteer of upload een bestand
   files:
     files: Bestanden
     description: Selecteer of upload meerdere bestanden
-  hash:
+  input-hash:
     hash: Hash
     description: Voer een waarde in om te hashen
     masked: Gemaskeerd
-    masked_label: Verberg de waarde
-  icon:
+    masked_label: Verberg de echte waarden
+  select-icon:
     icon: Icoon
-    description: Selecteer een icoon uit een dropdown
+    description: Selecteer een waarde in een dropdown
     search_for_icon: Zoek naar een icoon...
-  image:
+  file-image:
     image: Afbeelding
     description: Selecteer of upload een afbeelding
-  interface:
+  system-interface:
     interface: Interface
     description: Selecteer een bestaande interface
     placeholder: Selecteer een interface...
-  interface-options:
-    interface-options: Interface opties
-    description: Een modal voor het selecteren van opties van een interface
-  many-to-many:
-    many-to-many: Veel op Veel
+  system-interface-options:
+    interface-options: Interface-opties
+    description: Een modal voor het selecteren van een interface
+  list-m2m:
     description: Selecteer meerdere gerelateerde items
-  many-to-one:
-    many-to-one: Veel op één
+  select-dropdown-m2o:
     description: Selecteer één gerelateerd item
     display_template: Weergavesjabloon
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
-    description: Markdown invoeren en bekijken
     customSyntax: Aangepaste blokken
-    customSyntax_label: Voeg aangepaste syntaxistypes toe
-    customSyntax_add: Aangepaste syntax toevoegen
     box: Blok / Inline
     imageToken: Afbeeldingstoken
-    imageToken_label: Welke (statische) token toe te voegen aan afbeeldingsbronnen
-  notice:
+  map:
+    zoom: Zoom
+  presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
-    text: Voer melding bericht hier in...
-  numeric:
-    numeric: Nummer
-    description: Voer een nummer in
-    minimum_value: Minimale Waarde
-    maximum_value: Maximale waarde
-    step_interval: Stap Interval
-  one-to-many:
-    one-to-many: Één op veel
-    description: Selecteer meerdere gerelateerde items
-    no_collection: De collectie kon niet worden gevonden
-  radio-buttons:
+  system-folder:
+    folder: Map
+  select-radio:
     radio-buttons: Keuzerondjes
-    description: Selecteer een van de meerdere keuzes
-  repeater:
+  list:
     repeater: Herhaler
-    description: Meerdere invoergegevens van dezelfde structuur aanmaken
     edit_fields: Velden bewerken
-    add_label: '"Nieuwe regel toevoegen" label'
-    field_name_placeholder: Voer een veldnaam in...
-    field_note_placeholder: Veldnotitie invoeren...
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
     always_show_value: Waarde altijd weergeven
-  slug:
-    slug: Url
-    description: Voer een woord in dat is verbonden met streepjes
   tags:
     tags: Tags
     description: Selecteer of voeg tags toe
@@ -947,19 +988,14 @@ interfaces:
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
     add_tags: Tags toevoegen...
-  text-input:
-    text-input: Tekstinvoer
-    description: Voer een tekst van een enkele regel in
-    trim: Bijsnijden
-    trim_label: Begin en einde bijsnijden
+  input:
     mask: Gemaskeerd
-    mask_label: De echte waarde verbergen
-  textarea:
-    textarea: Tekstvlak
-    description: Voer multiline tekst in
-  toggle:
+    mask_label: Verberg de werkelijke waarde
+    clear_label: Opslaan als lege tekst
+    minimum_value: Minimale waarde
+    maximum_value: Maximale waarde
+  boolean:
     toggle: Schakel
-    description: Schakel tussen aan en uit
     label_placeholder: Voer een label in...
     label_default: Ingeschakeld
   translations:
@@ -973,12 +1009,11 @@ interfaces:
       auto: Automatisch
       dropdown: Keuzemenu
       modal: Modal
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: Een tekstverwerker die HTML-inhoud schrijft
     toolbar: Werkbalk
-    custom_formats: Aangepaste formaten
-    options_override: Opties overschrijven
+    custom_formats: Aangepaste vorm
+    options_override: Overschrijf opties
 displays:
   boolean:
     boolean: Boolean
@@ -1081,3 +1116,5 @@ layouts:
     comfortable: Comfortabel
     compact: Compact
     cozy: Knus
+  calendar:
+    calendar: Kalender

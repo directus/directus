@@ -9,7 +9,7 @@
 ::: tip Uploading Files
 
 To learn more about uploading files, see the [Upload a File](/reference/api/system/files/#upload-a-file) and
-[Import a File](<(/reference/api/system/files/#import-a-file)>) endpoints.
+[Import a File](/reference/api/system/files/#import-a-file) endpoints.
 
 :::
 
@@ -35,9 +35,15 @@ permissions and other built-in features.
 
 ## Requesting a Thumbnail
 
-Fetching thumbnails is as easy as adding query parameters to the original file's URL. If a requested thumbnail doesn't
-yet exist, it is dynamically generated and immediately returned. When requesting a thumbnail, the following parameters
-are all required, supports thumbnail for `jpeg`,`png` and `webp`
+Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Admin App, you can
+configure different asset presets that control the output of any given image. If a requested thumbnail doesn't yet
+exist, it is dynamically generated and immediately returned.
+
+- **`key`** — This **key** of the [Storage Asset Preset](/guides/files#creating-thumbnail-presets), a shortcut for the
+  below parameters
+
+Alternatively, if you have "Storage Asset Transform" set to all, you can use the following parameters for more fine
+grained control:
 
 - **`fit`** — The **fit** of the thumbnail while always preserving the aspect ratio, can be any of the following
   options:
@@ -51,22 +57,30 @@ are all required, supports thumbnail for `jpeg`,`png` and `webp`
 - **`height`** — The **height** of the thumbnail in pixels
 - **`quality`** — The **quality** of the thumbnail (`1` to `100`) is `Optional`
 - **`withoutEnlargement`** — Disable image up-scaling
-- **`download`** — Add `Content-Disposition` header and force browser to download file
+- **`format`** — What file format to return the thumbnail in. One of `jpg`, `png`, `webp`, `tiff`
 
 ```
 example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
 example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&height=200&quality=80
 ```
 
-Alternatively, you can reference a specific thumbnail by its preset key.
-
-- **`key`** — This **key** of the [Storage Asset Preset](/guides/files#creating-thumbnail-presets), a shortcut for the
-  above parameters
+For even more advanced control over the file generation, Directus exposes
+[the full `sharp` API](https://sharp.pixelplumbing.com/api-operation) through the `transform` query parameter. This
+parameter accepts a two-dimensional array with the format `[Operation, ...arguments]`, for example:
 
 ```
-example.com/assets/<file-id>?key=<preset-key>
-example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?key=card
+?transforms=[
+	["blur", 45],
+	["tint", "rgb(255, 0, 0)"],
+	["expand", { "right": 200, "bottom": 150 }]
+]
 ```
+
+### Downloading an asset
+
+To automatically download the file when opening it in a browser, add the `download` query parameter.
+
+- **`download`** — Add `Content-Disposition` header and force browser to download file
 
 ### Cover vs Contain
 

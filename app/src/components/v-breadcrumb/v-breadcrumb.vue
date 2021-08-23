@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 
 interface Breadcrumb {
 	to: string;
@@ -46,8 +46,6 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-
 .v-breadcrumb {
 	display: flex;
 	align-items: center;
@@ -93,7 +91,7 @@ body {
 		}
 	}
 
-	@include breakpoint(small) {
+	@media (min-width: 600px) {
 		font-size: inherit;
 	}
 }

@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.string('sort_field');
 	});
@@ -26,7 +26,7 @@ export async function up(knex: Knex) {
 	}
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.dropColumn('sort_field');
 	});

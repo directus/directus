@@ -6,7 +6,7 @@ function useSync<T, K extends keyof T>(
 	key: K,
 
 	emit: (event: string, ...args: any[]) => void
-): Ref<Readonly<T[K]>>
+): Ref<Readonly<T[K]>>;
 ```
 
 Small utility composition that allows you to easily setup the two-way binding with the prop:
@@ -14,18 +14,18 @@ Small utility composition that allows you to easily setup the two-way binding wi
 ```ts
 // Before
 
-const _options = computed({
+const internalOptions = computed({
 	get() {
 		return props.options;
 	},
 	set(val) {
 		emit('update:options', val);
-	}
+	},
 });
 ```
 
 ```ts
 // after
 
-const _options = useSync(props, 'options', emit);
+const internalOptions = useSync(props, 'options', emit);
 ```

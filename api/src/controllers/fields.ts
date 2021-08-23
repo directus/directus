@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { FieldsService } from '../services/fields';
-import validateCollection from '../middleware/collection-exists';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
-import { types, Field } from '../types';
-import useCollection from '../middleware/use-collection';
-import { respond } from '../middleware/respond';
 import { ALIAS_TYPES } from '../constants';
-import { reduceSchema } from '../utils/reduce-schema';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import validateCollection from '../middleware/collection-exists';
+import { respond } from '../middleware/respond';
+import useCollection from '../middleware/use-collection';
+import { FieldsService } from '../services/fields';
+import { Field, Type } from '@directus/shared/types';
+import { TYPES } from '@directus/shared/constants';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
@@ -66,9 +66,9 @@ const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
 	type: Joi.string()
-		.valid(...types, ...ALIAS_TYPES)
+		.valid(...TYPES, ...ALIAS_TYPES)
 		.allow(null)
-		.required(),
+		.optional(),
 	schema: Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
@@ -94,7 +94,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
 		await service.createField(req.params.collection, field);
 
@@ -132,7 +132,7 @@ router.patch(
 		}
 
 		try {
-			let results: any = [];
+			const results: any = [];
 			for (const field of req.body) {
 				const updatedField = await service.readOne(req.params.collection, field.field);
 				results.push(updatedField);
@@ -153,7 +153,7 @@ router.patch(
 
 const updateSchema = Joi.object({
 	type: Joi.string()
-		.valid(...types, ...ALIAS_TYPES)
+		.valid(...TYPES, ...ALIAS_TYPES)
 		.allow(null),
 	schema: Joi.object({
 		default_value: Joi.any(),
@@ -184,7 +184,7 @@ router.patch(
 			throw new InvalidPayloadException(`You need to provide "type" when providing "schema".`);
 		}
 
-		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+		const fieldData: Partial<Field> & { field: string; type: Type } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 

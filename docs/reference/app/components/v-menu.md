@@ -4,7 +4,7 @@ Renders a dropdown menu. Can be attached to an activator element or free floatin
 
 **NOTE**
 
-Due to the fact that a menu is rendered through a portal, dialogs don't work great when rendered from within a menu.
+Due to the fact that a menu is rendered through a teleport, dialogs don't work great when rendered from within a menu.
 
 ## Reference
 

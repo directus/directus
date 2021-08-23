@@ -1,6 +1,9 @@
 import KnexSQLite from 'knex-schema-inspector/dist/dialects/sqlite';
+import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
+import extractType from 'knex-schema-inspector/dist/utils/extract-type';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
+import { stripQuotes } from '../utils/strip-quotes';
 
 type RawColumn = {
 	cid: number;
@@ -12,7 +15,7 @@ type RawColumn = {
 };
 
 export default class SQLite extends KnexSQLite implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const tablesWithAutoIncrementPrimaryKeys = (
 			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 		).map(({ name }) => name);
@@ -25,7 +28,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 
 			if (table in overview === false) {
 				overview[table] = {
-					primary: columns.find((column) => column.pk == 1)?.name!,
+					primary: columns.find((column) => column.pk == 1)!.name!,
 					columns: {},
 				};
 			}
@@ -37,9 +40,10 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 					default_value:
 						column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
 							? 'AUTO_INCREMENT'
-							: column.dflt_value,
+							: stripQuotes(column.dflt_value),
 					is_nullable: column.notnull == 0,
-					data_type: column.type,
+					data_type: extractType(column.type),
+					max_length: extractMaxLength(column.type),
 					numeric_precision: null,
 					numeric_scale: null,
 				};

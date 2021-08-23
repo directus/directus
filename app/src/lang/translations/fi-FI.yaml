@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Muokkaa kenttää
 item_revision: Kohteen versio
 duplicate_field: Monista kenttä
@@ -20,8 +40,8 @@ create_role: Luo rooli
 create_user: Luo käyttäjä
 create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
-email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
+email_already_invited: Sähköposti "{email}" on jo kutsuttu
 emails: Sähköpostit
 connection_excellent: Erinomainen yhteys
 connection_good: Hyvä yhteys
@@ -41,7 +61,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kirjauduttu ulos
   SESSION_EXPIRED: Istunto vanheutunut
-public: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
 not_allowed: Ei sallittu
 directus_version: Directus-versio
@@ -85,6 +104,9 @@ validationError:
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
+nullable: Nullable
+allow_null_value: Salli NULL-arvo
+enter_value_to_replace_nulls: Syötä uusi arvo korvataksesi kaikki NULL:it, jotka tällä hetkellä kuuluvat tähän kenttään.
 field_standard: Vakio
 field_presentation: Esitystapa & aliakset
 field_file: Yksittäinen tiedosto
@@ -139,6 +161,7 @@ decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
 json: JSON
+xml: XML
 string: Merkkijono
 text: Teksti
 time: Aika
@@ -228,7 +251,7 @@ item_delete_success: Kohde poistettu | Kohteet poistettu
 this_collection: Tämä kokoelma
 related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
-translations_collection: Käännösten kokoelma
+translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 export_data: Vie tiedot
 format: Muoto
@@ -245,7 +268,7 @@ move_to_folder: Siirrä kansioon
 move: Siirrä
 system: Järjestelmä
 add_field_related: Lisää kenttä liittyvään kokoelmaan
-interface: Käyttöliittymä
+interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
@@ -275,7 +298,6 @@ drag_mode: Raahaustila
 cancel_crop: Peruuta rajaus
 original: Alkuperäinen
 url: URL
-import: Tuo
 file_details: Tiedoston tiedot
 dimensions: Mitat
 size: Koko
@@ -315,6 +337,10 @@ save_and_create_new: Tallenna ja luo uusi
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 add_existing: Lisää olemassaoleva
+creating_items: Luodaan kohteita
+enable_create_button: Ota käyttöön luontinappula
+selecting_items: Valitaan kohteita
+enable_select_button: Ota käyttöön valintanappula
 comments: Kommentit
 no_comments: Ei vielä kommentteja
 click_to_expand: Klikkaa laajentaaksesi
@@ -329,7 +355,7 @@ interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
-m2a_builder: Rakentaja (M2A, useampi kaikkiin)
+list-m2a: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
@@ -353,7 +379,6 @@ users: Käyttäjät
 activity: Tapahtuma
 webhooks: Webhookit
 field_width: Kentän leveys
-add_a_new_item: Lisää uusi kohde...
 add_filter: Lisää suodatin
 upper_limit: Yläraja...
 lower_limit: Alaraja...
@@ -362,7 +387,6 @@ documentation: Dokumentaatio
 sidebar: Sivupalkki
 duration: Kesto
 charset: Merkistö
-second: Sekunti
 file_moved: Tiedosto siirretty
 collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
@@ -371,6 +395,7 @@ sort_field: Lajittelukenttä
 add_sort_field: Lisää lajittelukenttä
 sort: Järjestä
 status: Tila
+remove: Poista
 toggle_manual_sorting: Vaihda manuaalinen lajittelu
 bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
 bookmark_doesnt_exist_copy: Kirjanmerkkiä, jota yrität avata, ei löytynyt.
@@ -397,7 +422,11 @@ errors:
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
+  USER_SUSPENDED: Käyttäjä jäädytetty
+  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   UNKNOWN: Odottamaton virhe
+  INTERNAL_SERVER_ERROR: Odottamaton virhe
+  NOT_NULL_VIOLATION: Arvo ei voi olla null
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
@@ -473,6 +502,8 @@ operators:
   has: Sisältää joitakin näistä avaimista
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
+item: Kohde
+items: Kohteet
 upload_file: Lähetä tiedosto
 upload_file_indeterminate: Ladataan Tiedostoa...
 upload_file_success: Tiedosto ladattu
@@ -481,6 +512,7 @@ upload_files_success: '{count} tiedostoa ladattu'
 upload_pending: Lähetys odottaa
 drag_file_here: Vedä ja pudota tiedosto tähän
 click_to_browse: Klikkaa selataksesi
+interface_options: Liittymän asetukset
 layout_options: Asetteluasetukset
 rows: Rivit
 columns: Sarakkeita
@@ -531,6 +563,7 @@ display_text: Näyttöteksti
 display_text_placeholder: Syötä näyttöteksti...
 tooltip: Työkaluvihje
 tooltip_placeholder: Syötä työkaluvihje...
+unlimited: Rajoittamaton
 open_link_in: Avaa linkki
 new_tab: Uusi välilehti
 current_tab: Nykyinen välilehti
@@ -591,6 +624,8 @@ adding_user: Lisätään käyttäjää
 unknown_user: Tuntematon käyttäjä
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
 editing_in: 'Muokataan kohdetta: {collection}'
+creating_unit: 'Luodaan {unit}'
+editing_unit: 'Muokataan {unit}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
@@ -598,6 +633,7 @@ settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
 settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
+one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
 scope: Laajuus
 select: Valitse...
 layout: Asettelu
@@ -673,12 +709,14 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
-    translations: Kokoelman nimen käännökset
+    translations: Kokoelman nimeämisten käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo
     sort_field: Lajittelukenttä
+    accountability: Tapahtumien ja versioiden seuranta
   directus_files:
+    $thumbnail: Pikkukuva
     title: Otsikko
     description: Kuvaus
     tags: Tunnisteet
@@ -715,6 +753,7 @@ fields:
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
+    status_active: Aktiivinen
     role: Rooli
     token: Token
     last_page: Viimeinen sivu
@@ -751,6 +790,14 @@ fields:
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
     collection_list: Kokoelman navigointi
+  directus_webhooks:
+    name: Nimi
+    status: Tila
+field_options:
+  directus_collections:
+    track_activity_revisions: Seuraa tapahtumia ja versioita
+    only_track_activity: Seuraa vain tapahtumia
+    do_not_track_anything: Älä seuraa mitään
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
 generate_and_save_uuid: Luo ja tallenna UUID
@@ -760,13 +807,11 @@ save_current_datetime: Tallenna nykyinen päivämäärä/aika
 block: Estä
 inline: Rivitetty
 comment: Kommentti
-continue: Jatka
-continue_as: >-
-  <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
+relational_triggers: Relatiiviset käynnistimet
+referential_action_no_action: Estä poisto
+choose_action: Valitse toiminto
 editing_role: '{role} rooli'
 creating_webhook: Luodaan webhook
-default: Oletus
-delete: Poista
 delete_are_you_sure: >-
   Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
 delete_field_are_you_sure: >-
@@ -821,38 +866,37 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
-  button-links:
-    button-links: Painikkeen linkit
+  presentation-links:
+    presentation-links: Painikelinkit
     links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
+    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien avaamiseen
     style: Tyyli
     primary: Ensisijainen
     link: Linkit
     button: Painikkeet
     error: Toimintoa ei voi suorittaa
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Valintaruudut
-    description: Valitse useista vaihtoehdoista valintaruutujen kautta
+    description: Valitse useista vaihtoehdoista valintaruuduilla
     allow_other: Salli muut
     show_more: 'Näytä {count} lisää'
     items_shown: Näytettävät kohteet
-  code:
+  input-code:
     code: Koodi
-    description: Kirjoita tai jaa koodipätkä
+    description: Kirjoita tai jaa koodipätkiä
     line_number: Rivinumero
     placeholder: Syötä koodi tähän...
-  collection:
+  system-collection:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  collections:
+  system-collections:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
     include_system_collections: Sisällytä järjestelmäkokoelmat
-  color:
+  select-color:
     color: Väri
     description: Syötä tai valitse väriarvo
     placeholder: Valitse väri...
@@ -865,13 +909,13 @@ interfaces:
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
-  display-template:
+  system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
-    collection_field: Kokoeilmakenttä
+    collection_field: Kokoelmakenttä
     collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
     select_a_collection: Valitse kokoelma
-  divider:
+  presentation-divider:
     divider: Jakaja
     description: Merkitse ja jaa kentät osiin
     title_placeholder: Syötä otsikko...
@@ -879,7 +923,7 @@ interfaces:
     inline_title_label: Näytä otsikko rivin sisällä
     margin_top: Ylämarginaali
     margin_top_label: Suurenna ylämarginaalia
-  dropdown:
+  select-dropdown:
     description: Valitse arvo pudotusvalikosta
     choices_placeholder: Lisää uusi valinta
     allow_other: Salli muut
@@ -888,8 +932,8 @@ interfaces:
     allow_none_label: Salli ei valintaa
     choices_name_placeholder: Syötä nimi...
     choices_value_placeholder: Syötä arvo...
-  dropdown-multiselect:
-    dropdown-multiselect: Pudotusvalikko (useampi)
+  select-multiple-dropdown:
+    select-multiple-dropdown: Pudotusvalikko (useampi)
     description: Valitse useita arvoja pudotusvalikosta
   file:
     file: Tiedosto
@@ -897,72 +941,67 @@ interfaces:
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
-  hash:
+  input-hash:
     hash: Tiiviste
     description: Syötä arvo, josta luodaan tiiviste
     masked: Maskeerattu
-    masked_label: Piilota todelliset arvot
-  icon:
+    masked_label: Piilota totuus-arvot
+  select-icon:
     icon: Kuvake
     description: Valitse kuvake pudotusvalikosta
     search_for_icon: Etsi kuvakkeita...
-  image:
+  file-image:
     image: Kuva
     description: Valitse tai lataa kuva
-  interface:
+  system-interface:
     interface: Käyttöliittymä
     description: Valitse olemassa oleva liittymä
     placeholder: Valitse liittymä...
-  interface-options:
+  system-interface-options:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
-  many-to-many:
+  list-m2m:
     many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
-  many-to-one:
+  select-dropdown-m2o:
     many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
     display_template: Esitysmalli
-  markdown:
+  input-rich-text-md:
     markdown: Markdown
-    description: Syötä ja esikatsele markdown
+    description: Syötä ja esikatsele markdownia
     customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
     box: Lohko / rivillä
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
-  notice:
+  map:
+    zoom: Lähennä
+  presentation-notice:
     notice: Ilmoitus
     description: Näytä lyhyt ilmoitus
     text: Syötä ilmoituksen sisältö tähän...
-  numeric:
-    numeric: Numeerinen
-    description: Syötä numero
-    minimum_value: Vähimmäisarvo
-    maximum_value: Enimmäisarvo
-    step_interval: Askelväli
-  one-to-many:
+  list-o2m:
     one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
-  radio-buttons:
+  system-folder:
+    folder: Kansio
+  select-radio:
     radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
-  repeater:
+  list:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
-    add_label: '"Lisää Uusi Rivi" -tunniste'
+    add_label: '"Luo uusi"-tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
     always_show_value: Näytä aina arvo
-  slug:
-    slug: Slug
-    description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
     description: Valitse tai lisää tunnisteita
@@ -977,28 +1016,33 @@ interfaces:
     alphabetize: Aakkosjärjestyksessä
     alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
-  text-input:
-    text-input: Tekstinsyöttö
-    description: Syötä yhden rivin teksti
+  input:
+    input: Syöte
+    description: Manuaalisesti syötetty arvo
     trim: Leikkaa
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
     clear: Tyhjennetty arvo
     clear_label: Tallenna tyhjänä merkkijonona
-  textarea:
+    minimum_value: Vähimmäisarvo
+    maximum_value: Enimmäisarvo
+    step_interval: Askelväli
+    slug: Slugify
+    slug_label: Tee syötetystä arvosta URL-osoiteturvallinen
+  input-multiline:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
-  toggle:
+  boolean:
     toggle: Vaihda
     description: Vaihda päälle ja pois päältä
-    label_placeholder: Syötä otsikko...
+    label_placeholder: Syötä tunniste...
     label_default: Käytössä
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
-  tree-view:
-    description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
+  list-o2m-tree-view:
+    description: Puunäkymä sisäkkäisille ja rekursiivisille yksi monille (O2M) -kohteille
     recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
     user: Käyttäjänimi
@@ -1008,12 +1052,19 @@ interfaces:
       auto: Automaattinen
       dropdown: Pudotusvalikko
       modal: Modaali
-  wysiwyg:
+  input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Rikastekstieditori HTML-sisällön kirjoitukseen
     toolbar: Työkalupalkki
     custom_formats: Mukautetut muodot
-    options_override: Ohita valinnat
+    options_override: Valintojen ohitus
+  input-autocomplete-api:
+    input-autocomplete-api: Automaattitäydennyskenttä (API)
+    description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
+    results_path: Tulosten polku
+    value_path: Arvon polku
+    trigger: Laukaisija
+    rate: Rajoita
 displays:
   boolean:
     boolean: Totuusarvo
@@ -1116,3 +1167,7 @@ layouts:
     comfortable: Mukava
     compact: Kompakti
     cozy: Kodikas
+  calendar:
+    calendar: Kalenteri
+    start_date_field: Aloituspäivämäärän kenttä
+    end_date_field: Päättymispäivämäärän kenttä

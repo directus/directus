@@ -54,13 +54,14 @@ fields:
     role: როლი
   directus_roles:
     description: აღწერა
+  directus_webhooks:
+    status: სტატუსი
 comment: კომენტარი
-continue: გაგრძელება
 description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
 interfaces:
-  collection:
+  system-collection:
     collection: კოლექცია
   files:
     files: ფაილები

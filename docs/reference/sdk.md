@@ -68,40 +68,46 @@ The storage implementation. See [Storage](#storage) for more information.
 
 Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
 
+**NOTE:**
+
+If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
+unpredictable behaviors. This scenario might be a case while writing tests.
+
+For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
+Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
+scenario by granting false access rights to your previous logged-in users.
+
+Adding prefixes to your Storage instances would solve this error:
+
+```js
+import { Directus, MemoryStorage } from '@directus/sdk';
+import { randomBytes } from 'crypto';
+
+// ...
+
+const prefix = randomBytes(8).toString('hex');
+const storage = new MemoryStorage(prefix);
+const url = `http://${host}:${port}`;
+const directus = new Directus(url, { storage });
+```
+
 #### `options.transport`
 
 The transport implementation. See [Transport](#transport) for more information.
 
 Defaults to an instance of `AxiosTransport`.
 
-### Full Example
+### Example
 
 ```js
-const url = 'http://api.example.com/';
-
-// Storage adapter where refresh tokens are stored in JSON mode.
-const storage = new MemoryStorage();
-
-// Transport used to communicate with the server.
-const transport = new AxiosTransport(url, storage);
-
-// Auth is how authentication is handled, stored, and refreshed.
-const auth = new Auth(transport, storage, {
-	mode: 'json', // or cookie, depends on your use  case
-});
-
-const directus = new Directus(url, {
-	auth,
-	storage,
-	transport,
-});
+const directus = new Directus('http://api.example.com/');
 ```
 
 ### Get / Set API URL
 
 ```js
 // Get the API base URL
-console.log(directus.url); // => https://api.example.com/
+console.log(directus.transport.url); // => https://api.example.com/
 
 // Set the API base URL
 directus.transport.url = 'https://api2.example.com';
@@ -111,6 +117,30 @@ directus.transport.url = 'https://api2.example.com';
 
 You can tap into the transport through `directus.transport`. If you are using the (default) `AxiosTransport`, you can
 access axios through `directus.transport.axios`.
+
+#### Intercepting requests and responses
+
+Axios transport offers a wrapper around Axios interceptors to make it easy for you to inject/eject interceptors.
+
+```ts
+const requestInterceptor = directus.transport.requests.intercept((config) => {
+	config.headers['My-Custom-Header'] = 'Header value';
+	return config;
+});
+
+// If you don't want the interceptor anymore, remove it
+requestInterceptor.eject();
+```
+
+```ts
+const responseInterceptor = directus.transport.responses.intercept((response) => {
+	console.log('Response received', { response });
+	return response;
+});
+
+// If you don't want the interceptor anymore, remove it
+responseInterceptor.eject();
+```
 
 ## Items
 
@@ -214,53 +244,28 @@ await articles.readOne(15);
 Supports optional query:
 
 ```js
-// One
 await articles.readOne(15, { fields: ['title'] });
-```
-
-Supports optional query:
-
-```js
-await articles.updateOne(15, { title: 'An Updated title' }, { fields: ['title'] });
-
-await articles.updateMany(
-	[
-		/*...*/
-	],
-	{ fields: ['title'] }
-);
 ```
 
 ### Update Multiple Items
 
 ```js
-await articles.updateMany([
-	{
-		id: 15,
-		title: 'Article 15',
-	},
-	{
-		id: 42,
-		title: 'Article 42',
-	},
-]);
+await articles.updateMany([15, 42], {
+	title: 'Both articles now have the same title',
+});
 ```
 
 Supports optional query:
 
 ```js
 await articles.updateMany(
-	[
-		{
-			id: 15,
-			title: 'Article 15',
-		},
-		{
-			id: 42,
-			title: 'Article 42',
-		},
-	],
-	{ fields: ['title'] }
+	[15, 42],
+	{
+		title: 'Both articles now have the same title',
+	},
+	{
+		fields: ['title'],
+	}
 );
 ```
 
@@ -365,7 +370,9 @@ The storage responsible for storing authentication and sdk state.
 
 When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
 
-#### options.mode
+#### options
+
+##### options.mode
 
 Accepts `cookie` or `json`.
 
@@ -378,30 +385,9 @@ When you can't rely on cookies, or need more control over handling the storage o
 
 Defaults to `cookie` in browsers, `json` in node.js.
 
-### Full example
+##### options.refresh
 
-```js
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '@directus/sdk';
-
-const url = 'http://directus';
-
-const storage = new MemoryStorage();
-const transport = new AxiosTransport(url, storage);
-const auth = new Auth(transport, storage, {
-	mode: 'json',
-});
-
-const directus = new Directus(url, {
-	auth,
-	storage,
-	transport,
-});
-
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'password',
-});
-```
+See [Refresh auth token](#refresh-auth-token).
 
 ### Get current token
 
@@ -444,7 +430,8 @@ await directus.auth.login(
 );
 ```
 
-You can also set how much time before the expiration you want to auto-refresh the token.
+You can also set how much time before the expiration you want to auto-refresh the token. When not specified, 30 sec is
+the default time.
 
 ```js
 await directus.auth.login(
@@ -463,20 +450,27 @@ await directus.auth.login(
 
 ### Refresh Auth Token
 
-You can manually refresh the authentication token.
+You can manually refresh the authentication token. This won't try to refresh the token if it's still valid in the eyes
+of the SDK.
+
+Also worth mentioning that any concurrent refreshes (trying to refresh while a there's an existing refresh running),
+will result in only a single refresh hitting the server, and promises resolving/rejecting with the result from the first
+call. This depends on the implementation of IAuth you're using.
 
 ```js
 await directus.auth.refresh();
 ```
 
+You can force the refresh by passing true in the first parameter.
+
 An optional parameter will accept auto-refresh information.
 
 ```js
-await directus.auth.refresh({
-	auto: true,
-	time: 30000, // refesh the token 30 secs before the expiration
-});
+await directus.auth.refresh(true);
 ```
+
+This function can either return the `AuthResult` in case a refresh was made, `false` in case SDK thinks it's not needed,
+or throw an error in case refresh fails.
 
 ### Logout
 
@@ -521,14 +515,16 @@ interface ITransport {
 
 ### AxiosTransport
 
-The default transport used in both browser and node deployments.
+The default transport used in both browser and node deployments. It supports auto refresh on request.
 
 #### Options
 
 AxiosTransport requires a base URL and a storage implementation to work.
 
 ```ts
-const transport = new AxiosTransport('http://example.com', new MemoryStorage());
+const transport = new AxiosTransport('http://example.com', new MemoryStorage(), async () => {
+	await sdk.auth.refresh();
+});
 await transport.get('/server/info');
 ```
 

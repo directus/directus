@@ -6,18 +6,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import LatencyIndicator from '../latency-indicator';
-import { useServerStore, useLatencyStore } from '@/stores/';
-import { sortBy } from 'lodash';
+import { useServerStore } from '@/stores/';
 
 export default defineComponent({
 	components: { LatencyIndicator },
 	setup() {
-		const latencyStore = useLatencyStore();
 		const serverStore = useServerStore();
 
-		const name = computed(() => serverStore.state.info?.project?.project_name);
+		const name = computed(() => serverStore.info?.project?.project_name);
 
 		return { name };
 	},

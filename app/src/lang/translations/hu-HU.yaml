@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Mező szerkesztése
 duplicate_field: Mező másolása
 half_width: Fél szélesség
@@ -15,7 +35,6 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
@@ -36,7 +55,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
-public: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
@@ -155,7 +173,6 @@ leave_comment: Hozzászólás írása...
 this_collection: Ez a gyűjtemény
 related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
-translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
 format: Formátum
@@ -172,7 +189,7 @@ move_to_folder: Áthelyezés mappába
 move: Áthelyezés
 system: Rendszer
 add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
-interface: Kezelőfelület
+interface_label: Kezelőfelület
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
@@ -197,7 +214,6 @@ drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
-import: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
 size: Méret
@@ -263,7 +279,6 @@ users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
 field_width: Mező szélessége
-add_a_new_item: Új elem hozzáadása...
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
 lower_limit: Alsó határ...
@@ -272,7 +287,6 @@ documentation: Dokumentáció
 sidebar: Oldalsáv
 duration: Időtartam
 charset: Karakterkészlet
-second: Másodperc
 file_moved: A fájl átmozgatva
 collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
@@ -280,6 +294,7 @@ card_size: Kártya mérete
 sort_field: Rendezési mező
 sort: Rendezés
 status: Állapot
+remove: Eltávolítás
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
 bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.
@@ -304,6 +319,7 @@ errors:
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
   UNKNOWN: Váratlan hiba történt
+  INTERNAL_SERVER_ERROR: Váratlan hiba történt
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -541,6 +557,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
+    status_active: aktív
     role: Szerepkör
     token: Token
     last_page: Utolsó oldal
@@ -569,14 +586,14 @@ fields:
     admin_access: Admin hozzáférés
     ip_access: IP cím
     collection_list: Gyűjtemény navigáció
+  directus_webhooks:
+    name: Név
+    status: Állapot
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
 block: Blokk
 comment: Hozzászólás
-continue: Tovább
 creating_webhook: Webhook létrehozása
-default: Alapértelmezett
-delete: Törlés
 delete_field_are_you_sure: >-
   Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
 description: Leírás
@@ -628,86 +645,47 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
-  button-links:
-    button-links: Gomb hivatkozás
+  presentation-links:
     primary: Elsődleges
-    button: Gombok
-  checkboxes:
-    checkboxes: Jelölőnégyzetek
-    show_more: '{count} további mutatása'
-    items_shown: Megjelenített elemek
-  code:
+  input-code:
     code: Kód
-    line_number: Sorszám
-  collection:
+  system-collection:
     collection: Gyűjtemény
-  collections:
+  system-collections:
     collections: Gyűjtemények
-  color:
+  select-color:
     color: Szín
-    placeholder: Szín választása...
-    preset_colors_add_label: Új szín hozzáadása...
-    name_placeholder: Szín elnevezése...
   datetime:
     datetime: Dátum és idő
     description: Dátum és idő beállítása
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
-  display-template:
+  system-display-template:
     display-template: Megjelenítési sablon
-    collection_field: Gyűjtemény mező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
-  divider:
+  presentation-divider:
     divider: Elválasztó
-    title_placeholder: Írja be a címet...
-    margin_top: Felső margó
-    margin_top_label: Felső margó növelése
-  dropdown:
-    description: Válasszon elemet a listából
-    choices_placeholder: Új lehetőség hozzáadása
-    choices_name_placeholder: Adjon meg egy nevet...
-  dropdown-multiselect:
-    dropdown-multiselect: Lenyíló lista (többválasztós)
-    description: Válasszon elemeket a listából
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
   files:
     files: Fájlok
     description: Válasszon vagy töltsön fel fájlokat
-  hash:
+  input-hash:
     hash: Hash
-  icon:
+  select-icon:
     icon: Ikon
-  image:
+  file-image:
     image: Kép
-  interface:
+  system-interface:
     interface: Kezelőfelület
-  interface-options:
-    interface-options: Kinézet beállításai
-  many-to-one:
+  select-dropdown-m2o:
     display_template: Megjelenítési sablon
-  markdown:
-    customSyntax: Egyéni blokkok
-  notice:
-    notice: Megjegyzés
-  numeric:
-    numeric: Szám
-    description: Szám megadása
-    minimum_value: Minimum érték
-    maximum_value: Maximum érték
-    step_interval: Lépésköz
-  one-to-many:
-    no_collection: A gyűjtemény nem található
-  radio-buttons:
-    radio-buttons: Választó gombok
-    description: Válasszon ki egy vagy több elemet
-  repeater:
-    repeater: Ismétlés
-    edit_fields: Mezők szerkesztése
-    field_name_placeholder: Név megadása...
-    field_note_placeholder: Megjegyzés megadása...
+  map:
+    zoom: Nagyítás
+  system-folder:
+    folder: Könyvtár
   slider:
     slider: Csúszka
   tags:
@@ -719,14 +697,8 @@ interfaces:
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
-  text-input:
-    text-input: Szövegmező
-    trim: Vágás
-  textarea:
-    textarea: Szövegdoboz
-  toggle:
+  boolean:
     toggle: Váltás
-    label_placeholder: Írja be a címkét...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
@@ -738,11 +710,6 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
-  wysiwyg:
-    wysiwyg: WYSIWYG
-    toolbar: Eszköztár
-    custom_formats: Egyéni formátum
-    options_override: Beállítás felülírása
 displays:
   boolean:
     boolean: Logikai

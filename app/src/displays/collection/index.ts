@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayCollection from './collection.vue';
 
 export default defineDisplay({
@@ -14,7 +14,7 @@ export default defineDisplay({
 			name: '$t:icon',
 			type: 'boolean',
 			meta: {
-				interface: 'toggle',
+				interface: 'boolean',
 				options: {
 					label: '$t:displays.collection.icon_label',
 				},

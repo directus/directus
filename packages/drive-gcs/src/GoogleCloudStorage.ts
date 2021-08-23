@@ -63,7 +63,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
+	protected _fullPath(filePath: string): string {
 		return normalize(path.join(this.$root, filePath));
 	}
 
@@ -94,13 +94,13 @@ export class GoogleCloudStorage extends Storage {
 			const result = await this._file(location).delete();
 			return { raw: result, wasDeleted: true };
 		} catch (e) {
-			e = handleError(e, location);
+			const error = handleError(e, location);
 
-			if (e instanceof FileNotFound) {
+			if (error instanceof FileNotFound) {
 				return { raw: undefined, wasDeleted: false };
 			}
 
-			throw e;
+			throw error;
 		}
 	}
 
@@ -220,7 +220,7 @@ export class GoogleCloudStorage extends Storage {
 
 		try {
 			if (isReadableStream(content)) {
-				const destStream = file.createWriteStream();
+				const destStream = file.createWriteStream({ resumable: false });
 				await pipeline(content, destStream);
 				return { raw: undefined };
 			}
