@@ -95,7 +95,7 @@
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload from-url :folder="folder" :type="type" @input="onUpload" />
+					<v-upload from-url :folder="folder" :type="[mediaType]" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
@@ -167,7 +167,7 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
-		type: {
+		mediaType: {
 			type: String,
 			default: undefined,
 		},

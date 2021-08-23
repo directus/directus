@@ -25,7 +25,7 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'type',
+			field: 'mediaType',
 			name: '$t:interfaces.system-folder.type',
 			type: 'string',
 			meta: {
@@ -34,18 +34,19 @@ export default defineInterface({
 				note: '$t:interfaces.system-folder.type_hint',
 				options: {
 					allowNone: true,
+					allowOther: true,
 					choices: [
 						{
 							text: '$t:interfaces.system-folder.type_image',
-							value: 'image',
+							value: 'image/*',
 						},
 						{
 							text: '$t:interfaces.system-folder.type_video',
-							value: 'video',
+							value: 'video/*',
 						},
 						{
 							text: '$t:interfaces.system-folder.type_audio',
-							value: 'audio',
+							value: 'audio/*',
 						},
 					],
 				},

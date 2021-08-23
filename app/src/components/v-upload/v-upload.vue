@@ -28,7 +28,13 @@
 		<template v-else>
 			<p class="type-label">{{ t('drag_file_here') }}</p>
 			<p class="type-text">{{ t('click_to_browse') }}</p>
-			<p v-if="type && wrongFileType" class="wrong-type">{{ t(`file_must_be_${type}`) }}</p>
+			<p v-if="wrongFiles.length > 0" class="wrong-type">
+				{{
+					t(wrongFiles.length === 1 ? 'file_is_wrong_type' : 'files_are_wrong_type', {
+						files: wrongFiles.map((f) => f.name).join(', '),
+					})
+				}}
+			</p>
 			<input class="browse" type="file" :multiple="multiple" :accept="accept" @input="onBrowseSelect" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
@@ -123,8 +129,8 @@ export default defineComponent({
 			default: undefined,
 		},
 		type: {
-			type: String as PropType<'image' | 'audio' | 'video'>,
-			default: undefined,
+			type: Array as PropType<string[]>,
+			default: () => [],
 		},
 	},
 	emits: ['input'],
@@ -136,9 +142,9 @@ export default defineComponent({
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
-		const wrongFileType = ref(false);
+		const wrongFiles = ref<File[]>([]);
 
-		const accept = computed(() => `${props.type}/*`);
+		const accept = computed(() => props.type.join(','));
 
 		return {
 			t,
@@ -158,7 +164,7 @@ export default defineComponent({
 			importFromURL,
 			setSelection,
 			accept,
-			wrongFileType,
+			wrongFiles,
 		};
 
 		function useUpload() {
@@ -223,23 +229,16 @@ export default defineComponent({
 				const files = (event.target as HTMLInputElement)?.files;
 				if (files === null) return;
 
-				wrongFileType.value = hasWrongFileType(files);
-				if (wrongFileType.value) return;
+				wrongFiles.value = getFilesWithWrongType(files);
+				if (wrongFiles.value.length > 0) return;
 
 				upload(files);
 			}
 		}
 
-		function hasWrongFileType(files: FileList) {
-			if (props.type !== undefined) {
-				for (let i = 0; i < files.length; i++) {
-					if (files.item(i)?.type.startsWith(props.type) !== true) {
-						return true;
-					}
-				}
-			}
-
-			return false;
+		function getFilesWithWrongType(files: FileList) {
+			const regex = new RegExp(`(${props.type.map((t) => t.replaceAll('*', '.*?')).join('|')})`);
+			return Array.from(files).filter((file) => file.type.match(regex) === null);
 		}
 
 		function useDragging() {
@@ -272,8 +271,8 @@ export default defineComponent({
 				const files = event.dataTransfer?.files;
 				if (files === undefined) return;
 
-				wrongFileType.value = hasWrongFileType(files);
-				if (wrongFileType.value) return;
+				wrongFiles.value = getFilesWithWrongType(files);
+				if (wrongFiles.value.length > 0) return;
 
 				upload(files);
 			}
