@@ -28,7 +28,8 @@
 		<template v-else>
 			<p class="type-label">{{ t('drag_file_here') }}</p>
 			<p class="type-text">{{ t('click_to_browse') }}</p>
-			<input class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+			<p v-if="type && wrongFileType" class="wrong-type">{{ t(`file_must_be_${type}`) }}</p>
+			<input class="browse" type="file" :multiple="multiple" :accept="accept" @input="onBrowseSelect" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<v-menu show-arrow placement="bottom-end">
@@ -87,7 +88,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, PropType } from 'vue';
 import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
@@ -121,6 +122,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		type: {
+			type: String as PropType<'image' | 'audio' | 'video'>,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -131,6 +136,9 @@ export default defineComponent({
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
+		const wrongFileType = ref(false);
+
+		const accept = computed(() => `${props.type}/*`);
 
 		return {
 			t,
@@ -149,6 +157,8 @@ export default defineComponent({
 			urlLoading,
 			importFromURL,
 			setSelection,
+			accept,
+			wrongFileType,
 		};
 
 		function useUpload() {
@@ -211,11 +221,25 @@ export default defineComponent({
 
 			function onBrowseSelect(event: InputEvent) {
 				const files = (event.target as HTMLInputElement)?.files;
+				if (files === null) return;
 
-				if (files) {
-					upload(files);
+				wrongFileType.value = hasWrongFileType(files);
+				if (wrongFileType.value) return;
+
+				upload(files);
+			}
+		}
+
+		function hasWrongFileType(files: FileList) {
+			if (props.type !== undefined) {
+				for (let i = 0; i < files.length; i++) {
+					if (files.item(i)?.type.startsWith(props.type) !== true) {
+						return true;
+					}
 				}
 			}
+
+			return false;
 		}
 
 		function useDragging() {
@@ -246,10 +270,12 @@ export default defineComponent({
 				dragging.value = false;
 
 				const files = event.dataTransfer?.files;
+				if (files === undefined) return;
 
-				if (files) {
-					upload(files);
-				}
+				wrongFileType.value = hasWrongFileType(files);
+				if (wrongFileType.value) return;
+
+				upload(files);
 			}
 		}
 
@@ -335,8 +361,11 @@ export default defineComponent({
 		color: var(--primary);
 		border-color: var(--primary);
 	}
-}
 
+	.wrong-type {
+		color: var(--danger);
+	}
+}
 .browse {
 	position: absolute;
 	top: 0;

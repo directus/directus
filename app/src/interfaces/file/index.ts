@@ -16,9 +16,39 @@ export default defineInterface({
 			name: '$t:interfaces.system-folder.folder',
 			type: 'uuid',
 			meta: {
-				width: 'full',
+				width: 'half',
 				interface: 'system-folder',
 				note: '$t:interfaces.system-folder.field_hint',
+			},
+			schema: {
+				default_value: undefined,
+			},
+		},
+		{
+			field: 'type',
+			name: '$t:interfaces.system-folder.type',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				note: '$t:interfaces.system-folder.type_hint',
+				options: {
+					allowNone: true,
+					choices: [
+						{
+							text: '$t:interfaces.system-folder.type_image',
+							value: 'image',
+						},
+						{
+							text: '$t:interfaces.system-folder.type_video',
+							value: 'video',
+						},
+						{
+							text: '$t:interfaces.system-folder.type_audio',
+							value: 'audio',
+						},
+					],
+				},
 			},
 			schema: {
 				default_value: undefined,

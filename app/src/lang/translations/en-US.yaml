@@ -551,6 +551,9 @@ upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
+file_must_be_image: You can only upload images here.
+file_must_be_video: You can only upload audio files here.
+file_must_be_audio: You can only upload videos here.
 interface_options: Interface Options
 layout_options: Layout Options
 rows: Rows
@@ -1104,6 +1107,11 @@ interfaces:
     field_hint: Puts newly uploaded files in selected folder. Does not affect existing files that are selected.
     root_name: File Library Root
     system_default: System Defaults
+    type: File Type
+    type_hint: Restrict the types of files you can upload.
+    type_image: Only Images
+    type_video: Only Videos
+    type_audio: Only Audio Files
   select-radio:
     radio-buttons: Radio Buttons
     description: Select one of multiple choices
