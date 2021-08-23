@@ -838,6 +838,17 @@ fields:
     last_page: Last Page
     last_access: Last Access
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemanps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    additional_transforms: Additional Transformations
     project_name: Project Name
     project_url: Project URL
     project_color: Project Color
