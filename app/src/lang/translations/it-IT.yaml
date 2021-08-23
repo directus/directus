@@ -21,10 +21,12 @@
 #'Proxy', 'Intl'
 edit_field: Modifica campo
 conditions: Condizioni
+maps: Mappe
 item_revision: Revisione elemento
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
+limit: Limite
 group: Gruppo
 and: E
 or: O
@@ -171,17 +173,18 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
-decimal: Decimale
+decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
 xml: XML
 string: String
-text: Testo
+text: Text
 time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -380,6 +383,7 @@ no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non ci sono ancora webhook.
 all_items: Tutti gli Elementi
+any: Qualsiasi
 csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
@@ -497,6 +501,7 @@ color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
 log_in_with: 'Accedi con {provider}'
+advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
@@ -523,6 +528,10 @@ operators:
   nempty: Non è vuoto
   all: Contiene queste chiavi
   has: Contiene alcune di queste chiavi
+  intersects: Interseca
+  nintersects: Non interseca
+  intersects_bbox: Interseca il riquadro di delimitazione
+  nintersects_bbox: Non interseca il riquadro di delimitazione
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
 item: Elemento
@@ -747,7 +756,7 @@ fields:
     $thumbnail: Miniatura
     title: Titolo
     description: Descrizione
-    tags: Tags
+    tags: Tag
     location: Percorso
     storage: Archiviazione
     filename_disk: Nome File (Disco)
@@ -776,7 +785,7 @@ fields:
     location: Percorso
     title: Titolo
     description: Descrizione
-    tags: Tags
+    tags: Tag
     user_preferences: Preferenze utente
     language: Linguaggio
     theme: Tema
@@ -924,6 +933,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1052,7 +1062,21 @@ interfaces:
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
   map:
+    map: Mappa
+    description: Seleziona una posizione su una mappa
     zoom: Zoom
+    geometry_type: Tipo di geometria
+    geometry_format: Formato geometria
+    default_view: Vista predefinita
+    invalid_options: Opzioni non valide
+    invalid_format: Formato non valido ({format})
+    unexpected_geometry: Atteso {expected}, ricevuto {got}.
+    fit_bounds: Adatta la vista ai dati
+    native: Nativa
+    geojson: GeoJSON
+    lnglat: Longitudine, Latitudine
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1082,13 +1106,13 @@ interfaces:
     description: Seleziona un numero usando un cursore
     always_show_value: Mostra sempre il valore
   tags:
-    tags: Tags
+    tags: Tag
     description: Seleziona o aggiungi tag
     whitespace: Spazio
     hyphen: Sostituisci con trattino
     underscore: Sostituisci con trattino basso
     remove: Rimuovi gli spazi
-    capitalization: Capitalizzazione
+    capitalization: Maiuscole/minuscole
     uppercase: Converti Maiuscole
     lowercase: Converti Minuscole
     auto_formatter: Usa la formattazione automatica del titolo
@@ -1261,3 +1285,16 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
+  map:
+    map: Mappa
+    basemap: Mappa base
+    layers: Livelli
+    edit_custom_layers: Modifica i livelli
+    cluster_options: Opzioni di clustering
+    cluster: Attiva il clustering
+    cluster_radius: Raggio del Cluster
+    cluster_minpoints: Dimensione minima del cluster
+    cluster_maxzoom: Zoom massimo per il clustering
+    fit_data: Adatta i dati ai limiti della vista
+    field: Geometria
+    invalid_geometry: Geometria non valida
