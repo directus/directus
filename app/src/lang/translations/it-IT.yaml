@@ -173,13 +173,13 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
-decimal: Decimale
+decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
 xml: XML
 string: String
-text: Testo
+text: Text
 time: Ora
 timestamp: Timestamp
 uuid: UUID
