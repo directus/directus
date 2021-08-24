@@ -286,6 +286,22 @@ export default defineComponent({
 
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
+					const url = getPublicURL();
+					const remove_token = newValue.replace(
+						new RegExp(
+							`(<[^=]+=")(${escapeRegExp(
+								url
+							)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
+							'gi'
+						),
+						(_, pre, matchedUrl, post) => {
+							const matched = new URL(matchedUrl);
+							const params = new URLSearchParams(matched.search);
+							params.delete('amp;access_token');
+							params.delete('access_token');
+							return `${pre}${matched.origin}${matched.pathname}${params}${post}`;
+						}
+					);
 					emit('input', newValue);
 				}
 			},
