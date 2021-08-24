@@ -237,7 +237,12 @@ export default defineComponent({
 
 						const matchingCondition = conditions.find((condition) => {
 							if (!condition.rule) return;
-							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
+							let errors = [];
+							try {
+								errors = validatePayload(condition.rule, values.value, { requireAll: true });
+							} catch (error) {
+								errors = [error];
+							}
 							return errors.length === 0;
 						});
 
