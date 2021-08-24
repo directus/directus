@@ -87,11 +87,11 @@ archive_confirm_count: >-
   Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
+the_following_are_minimum_permissions: Estos son los permisos mínimos requeridos cuando "Acceso a la App" está activado. Puedes ampliar los permisos un poco más, pero no menos que esto.
 app_access_minimum: Minimo Acceso a la Aplicación
 recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
-unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
+unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
 unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
