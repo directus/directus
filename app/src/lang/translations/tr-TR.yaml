@@ -630,6 +630,25 @@ fields:
   directus_webhooks:
     name: İsim
     status: Durum
+field_options:
+  directus_collections:
+    language: Dil
+    archive_divider: Arşiv
+    divider: Sırala
+  directus_roles:
+    fields:
+      icon_name: İkon
+      name_name: İsim
+    collection_list:
+      fields:
+        type_name: Tür
+      collections_name: Koleksiyonlar
+  directus_users:
+    status_dropdown_active: Aktif
+  directus_webhooks:
+    status_options_active: Aktif
+    actions_create: Oluştur
+    actions_update: Güncelle
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum

@@ -801,6 +801,27 @@ field_options:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
     do_not_track_anything: Ära jälgi midagi
+    collection_setup: Andmekogu seadistus
+    singleton: Käsitle üksiku objektina
+    language: Keel
+    archive_divider: Arhiiv
+    divider: Sorteeri
+  directus_roles:
+    fields:
+      icon_name: Ikoon
+      name_name: Nimi
+      name_placeholder: Sisesta pealkiri...
+    collection_list:
+      fields:
+        type_name: Tüüp
+      collections_name: Kogud
+  directus_users:
+    status_dropdown_active: aktiivne
+    status_dropdown_archived: Arhiveeritud
+  directus_webhooks:
+    status_options_active: aktiivne
+    actions_create: Loo
+    actions_update: Uuenda
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Rediger Felt
+conditions: Betingelser
 item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
@@ -149,6 +150,7 @@ boolean: Boolean
 date: Dato
 text: Tekst
 auto_generate: Auto- Generér
+new_field: 'Nyt felt'
 add_note: Tilføj en nyttig note til brugere...
 default_value: Standardværdi
 next: Næste
@@ -161,8 +163,10 @@ clear_value: Nulstil værdi
 reset_to_default: Nulstil til standard
 undo_changes: Fortryd ændringer
 notifications: Notifikationer
+show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
+settings_update_success: Indstillinger opdateret
 title: Titel
 revision_delta_created: Oprettet
 revision_delta_created_externally: Oprettet Eksternt
@@ -180,8 +184,15 @@ item_create_success: Element oprettet | Elementer oprettet
 item_update_success: Element opdateret | Elementer opdateret
 this_collection: Denne Samling
 related_collection: Relateret Samling
+export_data: Eksporter data
 format: Format
+last_page: Sidste side
 submit: Send
+system: System
+delete_comment: Slet kommentar
+month: Måned
+year: År
+select_all: Vælg alle
 months:
   january: Januar
   february: Februar
@@ -195,7 +206,14 @@ months:
   october: Oktober
   november: November
   december: December
+drag_mode: Træktilstand
+cancel_crop: Annuller beskæring
+original: Original
+url: URL
+import_label: Importér
+dimensions: Dimensioner
 created: Oprettet
+modified: Ændret
 checksum: Kontrolsum
 owner: Ejer
 download: Download
@@ -246,6 +264,7 @@ height: Højde
 wysiwyg_options:
   codeblock: Kode
   remove: Fjern
+  selectall: Vælg alle
   table: Tabel
 choices: Valgmuligheder
 deselect: Afmarkér
@@ -310,6 +329,7 @@ fields:
     tfa_secret: To-faktor godkendelse
     status: Status
     role: Rolle
+    last_page: Sidste side
   directus_settings:
     project_name: Projektnavn
   directus_fields:
@@ -323,6 +343,19 @@ fields:
   directus_webhooks:
     name: Navn
     status: Status
+field_options:
+  directus_collections:
+    language: Sprog
+    archive_divider: Arkiver
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collection_list:
+      collections_name: Samlinger
+  directus_webhooks:
+    actions_create: Opret
+    actions_update: Opdater
 comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
