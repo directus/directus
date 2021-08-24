@@ -48,11 +48,10 @@ import FieldListItem from '../v-field-template/field-list-item.vue';
 import { Collection, Relation } from '@/types';
 import { Field } from '@directus/shared/types';
 import Draggable from 'vuedraggable';
-import useFieldTree from '@/composables/use-field-tree';
 import useCollection from '@/composables/use-collection';
 import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
-import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem, Draggable },
@@ -86,7 +85,7 @@ export default defineComponent({
 		const { collection, inject } = toRefs(props);
 
 		const { info } = useCollection(collection);
-		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(collection, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		const internalValue = computed({
 			get() {

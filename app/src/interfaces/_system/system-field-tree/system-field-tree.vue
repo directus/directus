@@ -22,7 +22,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType } from 'vue';
-import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
+import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({
 	props: {
@@ -59,7 +59,7 @@ export default defineComponent({
 
 		const chosenCollection = computed(() => values.value[props.collectionField] || props.collection);
 
-		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(chosenCollection);
+		const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 
 		return { t, values, treeList, chosenCollection, loadFieldRelations };
 	},

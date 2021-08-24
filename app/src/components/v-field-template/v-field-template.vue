@@ -34,8 +34,7 @@ import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Relation } from '@/types';
 import { Field } from '@directus/shared/types';
-import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
-import { GroupableInstance } from '@/composables/groupable/groupable';
+import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -76,7 +75,7 @@ export default defineComponent({
 		const menuActive = ref(false);
 
 		const { collection, inject } = toRefs(props);
-		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(collection, inject);
+		const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 
 		watch(() => props.modelValue, setContent, { immediate: true });
 

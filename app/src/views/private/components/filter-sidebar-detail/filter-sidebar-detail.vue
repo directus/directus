@@ -51,7 +51,7 @@ import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
-import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
+import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
@@ -78,7 +78,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
 
-		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(collection);
+		const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 		const localFilters = ref<Filter[]>([]);
 
