@@ -1,4 +1,9 @@
 <template>
+	<div class="field">
+		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
+		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+	</div>
+
 	<template v-if="geometryFields.length == 0">
 		<div class="field">
 			<v-input type="text" disabled :prefix="'No compatible fields'"></v-input>
@@ -13,11 +18,6 @@
 			/>
 		</div>
 	</template>
-
-	<div class="field">
-		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
-		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
-	</div>
 
 	<div class="field">
 		<v-checkbox
