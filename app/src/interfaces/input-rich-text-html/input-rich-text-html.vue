@@ -302,7 +302,7 @@ export default defineComponent({
 							return `${pre}${matched.origin}${matched.pathname}${params}${post}`;
 						}
 					);
-					emit('input', newValue);
+					emit('input', remove_token);
 				}
 			},
 		});
