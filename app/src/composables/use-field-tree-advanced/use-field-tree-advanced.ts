@@ -97,7 +97,16 @@ export default function useFieldTreeAdvanced(
 		return getFieldRecursive(path, treeList.value);
 	}
 
-	function loadFieldRelations(fieldPath: string) {
+	function loadFieldRelations(fieldPath: string, depth = 0) {
+		_loadFieldRelations(fieldPath);
+		if (depth === 0) return;
+		const field = getField(fieldPath);
+		if (!field) return;
+
+		field.children?.forEach((child) => loadFieldRelations(child.key, depth - 1));
+	}
+
+	function _loadFieldRelations(fieldPath: string) {
 		const path = fieldPath.replaceAll('.', '.children.');
 		const field = get(tree.value, path) as FieldInfo | undefined;
 		if (field === undefined || Object.keys(field.children).length > 0) return;

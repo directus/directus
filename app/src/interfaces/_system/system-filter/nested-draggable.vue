@@ -116,7 +116,7 @@ export default defineComponent({
 	emits: ['change', 'add-node', 'remove-node', 'update:tree'],
 	setup(props, { emit }) {
 		const { collection, tree } = toRefs(props);
-		const { treeList, loadFieldRelations, getField } = useFieldTreeAdvanced(collection);
+		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(collection);
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
 
@@ -216,11 +216,7 @@ export default defineComponent({
 		}
 
 		function onToggle(item: GroupableInstance) {
-			const field = getField(String(item.value));
-
-			field?.children?.forEach((child) => {
-				loadFieldRelations(child.key);
-			});
+			loadFieldRelations(String(item.value), 1);
 		}
 	},
 });
