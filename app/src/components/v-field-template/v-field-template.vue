@@ -22,7 +22,7 @@
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFields">
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value, 1)">
 			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
@@ -93,11 +93,7 @@ export default defineComponent({
 			}
 		});
 
-		return { treeList, addField, onInput, contentEl, onClick, onKeyDown, menuActive, onSelect, loadFields };
-
-		function loadFields(item: GroupableInstance) {
-			loadFieldRelations(String(item.value), 1);
-		}
+		return { treeList, addField, onInput, contentEl, onClick, loadFieldRelations };
 
 		function onInput() {
 			if (!contentEl.value) return;
