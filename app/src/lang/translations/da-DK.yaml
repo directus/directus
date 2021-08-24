@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Rediger Felt
+conditions: Betingelser
 item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
