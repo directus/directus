@@ -853,6 +853,43 @@ field_options:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
     only_track_activity: Nur Aktivitäten verfolgen
     do_not_track_anything: Nichts verfolgen
+    collection_setup: Einrichtung Sammlung
+    singleton: Als einzelnes Objekt behandeln
+    language: Sprache
+    archive_divider: Archivieren
+    divider: Sortieren
+  directus_roles:
+    fields:
+      icon_name: Symbol
+      name_name: Name
+      name_placeholder: Titel eingeben...
+    collection_list:
+      fields:
+        type_name: Typ
+      collections_name: Sammlungen
+    public_divider_title: Öffentliche Seiten
+    security_divider_title: Sicherheit
+    files_divider_title: Dateien & Vorschaubilder
+    overrides_divider_title: App-Überschreibungen
+  directus_users:
+    preferences_divider: Benutzereinstellungen
+    dropdown_auto: Automatisch (Systemeinstellung verwenden)
+    dropdown_light: Heller Modus
+    dropdown_dark: Nachtmodus
+    admin_divider: Admin-Optionen
+    status_dropdown_draft: Entwurf
+    status_dropdown_active: Aktiv
+    status_dropdown_suspended: Angehalten
+    status_dropdown_archived: Archiviert
+    token: Einen sicheren Zugangs-Token eingeben...
+  directus_webhooks:
+    status_options_active: Aktiv
+    status_options_inactive: Inaktiv
+    data_label: Ereignisdaten senden
+    triggers_divider: Auslöser
+    actions_create: Erstellen
+    actions_update: Aktualisieren
+    actions_delete: Löschen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern

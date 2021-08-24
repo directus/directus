@@ -552,6 +552,25 @@ fields:
   directus_webhooks:
     name: Tên
     status: Trạng thái
+field_options:
+  directus_collections:
+    language: Ngôn ngữ
+    archive_divider: Lưu trữ
+    divider: Sắp xếp
+  directus_roles:
+    fields:
+      icon_name: Biểu tượng
+      name_name: Tên
+    collection_list:
+      fields:
+        type_name: Kiểu
+      collections_name: Danh mục
+  directus_users:
+    status_dropdown_active: Kích hoạt
+  directus_webhooks:
+    status_options_active: Kích hoạt
+    actions_create: Tạo
+    actions_update: Cập nhật
 comment: Bình luận
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.

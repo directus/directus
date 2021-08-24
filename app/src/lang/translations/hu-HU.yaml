@@ -589,6 +589,26 @@ fields:
   directus_webhooks:
     name: Név
     status: Állapot
+field_options:
+  directus_collections:
+    collection_setup: Gyűjtemény beállítások
+    language: Nyelv
+    archive_divider: Archívum
+    divider: Rendezés
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Név
+    collection_list:
+      fields:
+        type_name: Típus
+      collections_name: Gyűjtemények
+  directus_users:
+    status_dropdown_active: aktív
+  directus_webhooks:
+    status_options_active: aktív
+    actions_create: Létrehozás
+    actions_update: Frissítés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
 block: Blokk

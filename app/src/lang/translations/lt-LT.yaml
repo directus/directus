@@ -737,6 +737,27 @@ fields:
   directus_webhooks:
     name: Pavadinimas
     status: Būsena
+field_options:
+  directus_collections:
+    collection_setup: Kolekcijos konfigūracija
+    singleton: Laikyti vienu objektu
+    language: Kalba
+    archive_divider: Archyvuoti
+    divider: Rūšiuoti
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Pavadinimas
+    collection_list:
+      fields:
+        type_name: Tipas
+      collections_name: Kolekcijos
+  directus_users:
+    status_dropdown_active: Aktyvus
+  directus_webhooks:
+    status_options_active: Aktyvus
+    actions_create: Kurti
+    actions_update: Atnaujinti
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID

@@ -852,6 +852,44 @@ field_options:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността
     do_not_track_anything: Без следене
+    collection_setup: Настройки на колекция
+    singleton: Използване като единствен запис
+    language: Език
+    archive_divider: Архивиране
+    divider: Сортиране
+  directus_roles:
+    fields:
+      icon_name: Икона
+      name_name: Име
+      name_placeholder: Въвеждане на заглавие...
+    collection_list:
+      fields:
+        type_name: Тип
+        choices_start_open: Отворена в началото
+      collections_name: Колекции
+    public_divider_title: Публични страници
+    security_divider_title: Сигурност
+    files_divider_title: Файлове и картинки
+    overrides_divider_title: Отмяна
+  directus_users:
+    preferences_divider: Потребителски настройки
+    dropdown_auto: Автоматично (според системата)
+    dropdown_light: Светъл режим
+    dropdown_dark: Тъмен режим
+    admin_divider: Административни настройки
+    status_dropdown_draft: Чернова
+    status_dropdown_active: Активен
+    status_dropdown_suspended: Замразен
+    status_dropdown_archived: Архивиран
+    token: Въвеждане на сигурен токен...
+  directus_webhooks:
+    status_options_active: Активен
+    status_options_inactive: Неактивен
+    data_label: Изпращане на данните
+    triggers_divider: Тригери
+    actions_create: Създаване
+    actions_update: Обновяване
+    actions_delete: Изтриване
 no_fields_in_collection: 'Все още няма полета в {collection}'
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID

@@ -854,6 +854,44 @@ field_options:
     track_activity_revisions: Traça l'activitat i revisions
     only_track_activity: Només traça l'activitat
     do_not_track_anything: No tracis res
+    collection_setup: Configuració de la col·lecció
+    singleton: Tracta com un objecte únic
+    language: Idioma
+    archive_divider: Arxiu
+    divider: Ordre
+  directus_roles:
+    fields:
+      icon_name: Icona
+      name_name: Nom
+      name_placeholder: Introdueix un títol...
+    collection_list:
+      fields:
+        type_name: Tipus
+        choices_start_open: Comença obert
+      collections_name: Col·leccions
+    public_divider_title: Pàgines públiques
+    security_divider_title: Seguretat
+    files_divider_title: Fitxers i miniatures
+    overrides_divider_title: Substitucións de l'aplicació
+  directus_users:
+    preferences_divider: Preferències de l'usuari
+    dropdown_auto: Automàtic (basat en el sistema)
+    dropdown_light: Mode clar
+    dropdown_dark: Mode fosc
+    admin_divider: Opcions d'administrador
+    status_dropdown_draft: Esborrany
+    status_dropdown_active: Activa
+    status_dropdown_suspended: Suspès
+    status_dropdown_archived: Arxivat
+    token: Entra un testimoni d'accés (token) segur...
+  directus_webhooks:
+    status_options_active: Activa
+    status_options_inactive: Inactiva
+    data_label: Envia les dades de l'event
+    triggers_divider: Disparadors
+    actions_create: Crear
+    actions_update: Actualitzar
+    actions_delete: Elimina
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
@@ -933,7 +971,6 @@ require_value_to_be_set: Requereix un valor
 translation: Traducció
 value: Valor
 view_project: Veure el projecte
-weeks: { }
 report_error: Notifica un error
 start: Comença
 interfaces:
