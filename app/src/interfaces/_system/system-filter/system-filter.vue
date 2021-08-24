@@ -3,7 +3,7 @@
 		<v-list :mandatory="true">
 			<nested-draggable
 				v-model:tree="innerValue"
-				:collection="collection"
+				:collection="collectionName"
 				:depth="1"
 				@add-node="addNode($event)"
 				@remove-node="removeNode($event)"
@@ -75,7 +75,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		collection: {
+		collectionName: {
 			type: String,
 			default: null,
 		},
