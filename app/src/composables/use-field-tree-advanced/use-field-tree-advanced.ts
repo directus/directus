@@ -1,24 +1,29 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { getRelationType } from '@/utils/get-relation-type';
 import { get, set } from 'lodash';
 import { computed, Ref, ref } from 'vue';
 
 type FieldTree = Record<string, FieldInfo>;
-type FieldInfo = { name: string; field: string; children: FieldTree; group?: string; collection: string };
-type FieldOption = { name: string; field: string; key: string; children?: FieldOption[]; group?: string };
+type FieldInfo = { name: string; field: string; children: FieldTree; collection: string; type: string };
+type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
-export default function useFieldTreeAdvanced(collection: Ref<string | null>) {
+export default function useFieldTreeAdvanced(
+	collection: Ref<string | null>,
+	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
+	filter: (field: Field) => boolean = () => true
+) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
 	const tree = ref<FieldTree>({});
 
 	if (collection.value) {
-		tree.value = getFieldTreeForCollection(collection.value);
+		tree.value = getFieldTreeForCollection(collection.value, 'any');
 	}
 
-	const visitedRelations = computed(() => getVisitedRelations(tree.value));
+	const visitedRelations = ref<SimpleRelation[]>([]);
 
 	Object.values(tree.value).forEach((value) => {
 		loadFieldRelations(value.field);
@@ -26,30 +31,54 @@ export default function useFieldTreeAdvanced(collection: Ref<string | null>) {
 
 	const treeList = computed(() => treeToList(tree.value));
 
-	return { tree, treeList, loadFieldRelations, getField, treeToList, getVisitedRelations, visitedRelations };
+	return { tree, treeList, loadFieldRelations, getField, treeToList, visitedRelations };
 
 	function treeToList(tree: FieldTree, parentName?: string): FieldOption[] {
 		return Object.values(tree).map((field) => {
-			const key = parentName ? `${parentName}.${field.field}` : field.field;
+			const fieldName = field.type === 'm2a' ? `${field.field}:${field.collection}` : field.field;
+			const key = parentName ? `${parentName}.${fieldName}` : fieldName;
 			const children = treeToList(field.children, key);
 			return {
 				name: field.name,
 				key,
-				field: field.field,
-				group: field.group,
+				field: fieldName,
 				children: children.length > 0 ? children : undefined,
 			};
 		});
 	}
 
-	function getFieldTreeForCollection(collection: string) {
-		return fieldsStore.getFieldsForCollectionAlphabetical(collection).reduce((acc, field) => {
-			acc[field.field] = {
-				field: field.field,
-				name: field.name,
-				collection: field.collection,
-				children: {},
-			};
+	function getFieldTreeForCollection(collection: string, type: string) {
+		const fields = [
+			...fieldsStore.getFieldsForCollection(collection),
+			...(inject?.value?.fields.filter((field) => field.collection === collection) || []),
+		]
+			.filter((field: Field) => {
+				const shown =
+					field.meta?.special?.includes('alias') !== true && field.meta?.special?.includes('no-data') !== true;
+				return shown;
+			})
+			.filter(filter);
+
+		return fields.reduce((acc, field) => {
+			if (type === 'm2a') {
+				const fieldName = `${field.field}:${collection}`;
+				acc[fieldName] = {
+					field: field.field,
+					name: `${field.name} (${field.collection})`,
+					collection: field.collection,
+					type,
+					children: {},
+				};
+			} else {
+				acc[field.field] = {
+					field: field.field,
+					name: field.name,
+					collection: field.collection,
+					type,
+					children: {},
+				};
+			}
+
 			return acc;
 		}, {} as FieldTree);
 	}
@@ -71,36 +100,67 @@ export default function useFieldTreeAdvanced(collection: Ref<string | null>) {
 	function loadFieldRelations(fieldPath: string) {
 		const path = fieldPath.replaceAll('.', '.children.');
 		const field = get(tree.value, path) as FieldInfo | undefined;
-		if (field === undefined) return;
+		if (field === undefined || Object.keys(field.children).length > 0) return;
 
-		const relations = relationsStore.getRelationsForField(field.collection, field.field);
-		if (relations.length === 0) return;
+		const relations = [
+			...relationsStore.getRelationsForField(field.collection, field.field),
+			...(inject?.value?.relations || []),
+		];
+		const relation = getRelation(relations, field.collection, field.field);
 
-		relations.forEach((relation) => {
-			if (relationVisited(relation)) return;
+		if (relations.length === 0 || !relation || !relation.meta) return;
 
-			const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
-			if (relation.meta === undefined) return;
+		if (relationVisited(relation)) return;
 
-			if (relationType === 'o2m') {
-				set(tree.value, `${path}.children`, getFieldTreeForCollection(relation.meta.many_collection));
-			} else if (relationType === 'm2o') {
-				set(tree.value, `${path}.children`, getFieldTreeForCollection(relation.meta.one_collection));
-			}
+		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
+		if (relation.meta === undefined) return;
+
+		let children: FieldTree = {};
+
+		if (relationType === 'o2m') {
+			children = getFieldTreeForCollection(relation.meta.many_collection, relationType);
+		} else if (relationType === 'm2o') {
+			children = getFieldTreeForCollection(relation.meta.one_collection, relationType);
+		} else if (relationType === 'm2a') {
+			children =
+				relation.meta.one_allowed_collections?.reduce((acc, collection) => {
+					return { ...acc, ...getFieldTreeForCollection(collection, relationType) };
+				}, {}) || {};
+		}
+
+		Object.values(children).forEach((child) => {
+			const relation: SimpleRelation = [field.collection, field.field, child.collection, child.field];
+			const exists = visitedRelations.value.findIndex((rel) => relationEquals(rel, relation)) !== -1;
+
+			if (exists === false) visitedRelations.value.push(relation);
 		});
+
+		set(tree.value, `${path}.children`, children);
 	}
 
-	type SimpleRelation = [string, string, string, string];
+	type SimpleRelation = string[];
 
 	function relationVisited(relation: Relation) {
-		if (relation.meta === undefined) return;
+		if (!relation.meta) return;
+
+		if (relation.meta.one_collection_field !== null && relation.meta.one_allowed_collections !== null) return false;
+
 		const simpleRelation: SimpleRelation = [
 			relation.meta.many_collection,
 			relation.meta.one_collection,
 			relation.meta.many_field,
 			relation.meta.one_field || '',
 		];
+
 		return visitedRelations.value.find((relation) => relationEquals(simpleRelation, relation)) !== undefined;
+	}
+
+	function getRelation(relations: Relation[], collection: string, field: string) {
+		return relations.find(
+			(relation: Relation) =>
+				(relation.collection === collection && relation.field === field) ||
+				(relation.related_collection === collection && relation.meta?.one_field === field)
+		);
 	}
 
 	function relationEquals(rel1: SimpleRelation, rel2: SimpleRelation) {
@@ -108,28 +168,5 @@ export default function useFieldTreeAdvanced(collection: Ref<string | null>) {
 			if (rel2.includes(rel) === false) return false;
 		}
 		return true;
-	}
-
-	function getVisitedRelations(tree: FieldTree) {
-		function getVisitedRelationsR(tree: FieldTree) {
-			const relations: SimpleRelation[] = [];
-
-			Object.values(tree).forEach((value) => {
-				Object.values(value.children).forEach((value2) => {
-					relations.push([value.collection, value.field, value2.collection, value2.field]);
-				});
-				getVisitedRelationsR(value.children).forEach((relation) => {
-					relations.push(relation);
-				});
-			});
-
-			return relations;
-		}
-
-		return getVisitedRelationsR(tree).reduce((acc, rel1) => {
-			const exists = acc.findIndex((rel2) => relationEquals(rel1, rel2));
-			if (exists === -1) acc.push(rel1);
-			return acc;
-		}, [] as SimpleRelation[]);
 	}
 }
