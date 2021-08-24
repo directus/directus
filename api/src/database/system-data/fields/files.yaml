@@ -106,6 +106,7 @@ fields:
     display: user
     width: half
     hidden: true
+    special: user-created
 
   - field: uploaded_on
     display: datetime
