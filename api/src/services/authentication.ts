@@ -83,7 +83,13 @@ export class AuthenticationService {
 		});
 
 		if (updatedUser) {
-			user = updatedUser.length > 0 ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
+			user =
+				updatedUser.length > 0
+					? merge(
+							updatedUser.reduce((val, acc) => merge(acc, val)),
+							user
+					  )
+					: user;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
