@@ -1402,6 +1402,7 @@ layouts:
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
-    fit_data: Fit data to view bounds
     field: Geometry
     invalid_geometry: Invalid geometry
+    auto_location_filter: Always filter data to view bounds
+    search_this_area: Search this area

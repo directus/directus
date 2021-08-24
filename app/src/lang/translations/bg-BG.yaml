@@ -1328,6 +1328,6 @@ layouts:
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
-    fit_data: Напасване към рамката
+    auto_location_filter: Напасване към рамката
     field: Геометрия
     invalid_geometry: Невалидна геометрия
