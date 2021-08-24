@@ -12,12 +12,6 @@
 				"ignorePseudoClasses": ["deep", "slotted", "global"]
 			}
 		],
-		"selector-pseudo-element-no-unknown": [
-			true,
-			{
-				"ignorePseudoElements": ["v-deep"]
-			}
-		],
 		"string-quotes": "single",
 		"length-zero-no-unit": null,
 		"no-descending-specificity": true,

@@ -230,7 +230,7 @@ export default defineComponent({
 	pointer-events: none;
 }
 
-.v-info > ::v-deep(.v-button) {
+.v-info > :deep(.v-button) {
 	pointer-events: initial;
 }
 
