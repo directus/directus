@@ -812,6 +812,7 @@ fields:
     tiff: Tiff
     basemaps_style: Style de Mapbox
     mapbox_key: Jeton d'accès Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Nom du projet
     project_url: URL du projet
     project_color: Couleur du projet
@@ -874,14 +875,20 @@ field_options:
     sort_field: Choisissez un champ...
   directus_files:
     title: Un titre unique...
+    description: Une description optionnelle...
+    location: Un emplacement optionnel...
     storage_divider: Nommage des fichiers
     filename_disk: Nom sur le stockage disque...
     filename_download: Nom lors du téléchargement...
   directus_roles:
+    name: Le nom unique de ce rôle...
+    description: Une description pour ce rôle...
     fields:
       icon_name: Icône
       name_name: Nom
       name_placeholder: Entrez un titre...
+      link_name: Lien
+      link_placeholder: URL relative ou absolue...
     collection_list:
       fields:
         group_name: Nom du groupe
@@ -889,8 +896,11 @@ field_options:
         choices_always: Toujours ouvert
         choises_start_collapsed: Commencer réduit
       collections_name: Collections
+    project_name_placeholder: Mon projet...
     public_divider_title: Pages Publiques
     security_divider_title: Sécurité
+    auth_password_policy:
+      weak_text: Faible - 8 caractères minimum
     files_divider_title: Fichiers et miniatures
     overrides_divider_title: Remplacer les applications
   directus_users:
@@ -913,6 +923,7 @@ field_options:
     actions_create: Créer
     actions_update: Mettre à jour
     actions_delete: Supprimer
+    actions_login: Identifiant
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 do_nothing: Ne rien faire
 generate_and_save_uuid: Générer et Enregistrer l'UUID
@@ -1119,7 +1130,9 @@ interfaces:
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
+    map: Carte
     zoom: Zoom
+    native: Natif
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1210,6 +1223,8 @@ interfaces:
     value_path: Chemin de la valeur
     trigger: Déclencheur
     rate: Débit
+  group-raw:
+    name: Groupe brut
 displays:
   boolean:
     boolean: Booléen
@@ -1317,4 +1332,5 @@ layouts:
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
   map:
+    map: Carte
     field: Géométrie
