@@ -93,6 +93,7 @@ import FieldsManagement from './components/fields-management.vue';
 import useItem from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -131,6 +132,8 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
+		useShortcut('meta+a', gotoCollectionView);
+
 		return {
 			t,
 			collectionInfo,
@@ -151,6 +154,10 @@ export default defineComponent({
 			saveAndQuit,
 			hasEdits,
 		};
+
+		function gotoCollectionView() {
+			router.push(`/collections/${collection.value}`);
+		}
 
 		async function deleteAndQuit() {
 			await remove();
@@ -177,6 +184,11 @@ export default defineComponent({
 		margin-left: 4px;
 		color: var(--warning);
 	}
+}
+
+.view-collection {
+	margin-left: 8px;
+	color: var(--foreground-normal-alt);
 }
 
 .collections-item {
