@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 edit_field: Modifier le champ
 conditions: Conditions
+maps: Cartes
 item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
@@ -805,6 +806,12 @@ fields:
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_style: Style de Mapbox
+    mapbox_key: Jeton d'accès Mapbox
     project_name: Nom du projet
     project_url: URL du projet
     project_color: Couleur du projet
@@ -854,10 +861,22 @@ field_options:
     only_track_activity: Enregistrer seulement l'activité
     do_not_track_anything: Ne rien enregistrer
     collection_setup: Configuration de la collection
+    hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
+    translation: Entrez une nouvelle traduction...
     archive_divider: Archiver
+    archive_field: Choisissez un champ...
+    archive_app_filter: Activer le filtre des archives d'applications
+    archive_value: Valeur définie lors de l'archivage...
+    unarchive_value: Valeur définie lors de la désarchivage...
     divider: Trier
+    sort_field: Choisissez un champ...
+  directus_files:
+    title: Un titre unique...
+    storage_divider: Nommage des fichiers
+    filename_disk: Nom sur le stockage disque...
+    filename_download: Nom lors du téléchargement...
   directus_roles:
     fields:
       icon_name: Icône
@@ -865,7 +884,10 @@ field_options:
       name_placeholder: Entrez un titre...
     collection_list:
       fields:
+        group_name: Nom du groupe
         type_name: Type
+        choices_always: Toujours ouvert
+        choises_start_collapsed: Commencer réduit
       collections_name: Collections
     public_divider_title: Pages Publiques
     security_divider_title: Sécurité
@@ -878,6 +900,7 @@ field_options:
     dropdown_dark: Mode sombre
     admin_divider: Options d'Administration
     status_dropdown_draft: Brouillon
+    status_dropdown_invited: Invité·e
     status_dropdown_active: Actif
     status_dropdown_suspended: Suspendu
     status_dropdown_archived: Archivé
