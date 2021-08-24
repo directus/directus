@@ -256,6 +256,11 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
+	pointer-events: none;
+}
+
+.v-info > :deep(.v-button) {
+	pointer-events: initial;
 }
 
 .footer {
