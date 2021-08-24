@@ -166,11 +166,13 @@ import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
 import getEditorStyles from './get-editor-styles';
-
+import { escapeRegExp } from 'lodash';
 import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
+import { addTokenToURL } from '@/api';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type CustomFormat = {
 	title: string;
@@ -262,8 +264,26 @@ export default defineComponent({
 
 		const internalValue = computed({
 			get() {
+				const url = getPublicURL();
+				if (props.value) {
+					return props.value.replace(
+						new RegExp(
+							`(<[^=]+=")(${escapeRegExp(
+								url
+							)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
+							'gi'
+						),
+						(_, pre, matchedUrl, post) => {
+							if (!matchedUrl.includes('access_token')) {
+								return `${pre}${addTokenToURL(matchedUrl)}${post}`;
+							}
+							return `${pre}${matchedUrl}${post}`;
+						}
+					);
+				}
 				return props.value;
 			},
+
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
 					emit('input', newValue);
@@ -409,3 +429,5 @@ export default defineComponent({
 	font-size: 24px;
 }
 </style>
+
+function getPublicPath() { throw new Error('Function not implemented.'); }
