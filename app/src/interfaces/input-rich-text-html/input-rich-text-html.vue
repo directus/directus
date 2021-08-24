@@ -1,3 +1,4 @@
+/* eslint-disable no-console */ /* eslint-disable no-console */
 <template>
 	<div class="wysiwyg" :class="{ disabled }">
 		<editor
@@ -171,7 +172,7 @@ import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
-import { addTokenToURL } from '@/api';
+import { getToken } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
 
 type CustomFormat = {
@@ -262,47 +263,46 @@ export default defineComponent({
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
+		const replaceTokens = (value: string, token: string | null) => {
+			const url = getPublicURL();
+
+			return value.replace(
+				new RegExp(
+					`(<[^=]+=")(${escapeRegExp(
+						url
+					)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
+					'gi'
+				),
+				(_, pre, matchedUrl, post) => {
+					const matched = new URL(matchedUrl);
+					const params = new URLSearchParams(matched.search);
+
+					if (!token) {
+						params.delete('access_token');
+					} else {
+						params.set('access_token', token);
+					}
+
+					params.set('example', 'rijk');
+
+					console.log(pre, matched.origin, matched.pathname, params.toString(), post);
+
+					return `${pre}${matched.origin}${matched.pathname}?${params.toString()}${post}`;
+				}
+			);
+		};
+
 		const internalValue = computed({
 			get() {
-				const url = getPublicURL();
 				if (props.value) {
-					return props.value.replace(
-						new RegExp(
-							`(<[^=]+=")(${escapeRegExp(
-								url
-							)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
-							'gi'
-						),
-						(_, pre, matchedUrl, post) => {
-							if (!matchedUrl.includes('access_token')) {
-								return `${pre}${addTokenToURL(matchedUrl)}${post}`;
-							}
-							return `${pre}${matchedUrl}${post}`;
-						}
-					);
+					console.log(replaceTokens(props.value, getToken()));
+					return replaceTokens(props.value, getToken());
 				}
 				return props.value;
 			},
-
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					const url = getPublicURL();
-					const removeToken = newValue.replace(
-						new RegExp(
-							`(<[^=]+=")(${escapeRegExp(
-								url
-							)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
-							'gi'
-						),
-						(_, pre, matchedUrl, post) => {
-							const matched = new URL(matchedUrl);
-							const params = new URLSearchParams(matched.search);
-							params.delete('amp;access_token');
-							params.delete('access_token');
-							if (props.imageToken) params.set('access_token', props.imageToken);
-							return `${pre}${matched.origin}${matched.pathname}${params}${post}`;
-						}
-					);
+					const removeToken = replaceTokens(newValue, props.imageToken);
 					emit('input', removeToken);
 				}
 			},
