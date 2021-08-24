@@ -59,7 +59,7 @@
 		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
 			<div class="content">
 				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.imageUrl" />
+					<img class="image-preview" :src="imageSelection.previewUrl" />
 					<div class="grid">
 						<div class="field half">
 							<div class="type-label">{{ t('image_url') }}</div>
