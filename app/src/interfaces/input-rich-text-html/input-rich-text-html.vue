@@ -287,7 +287,7 @@ export default defineComponent({
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
 					const url = getPublicURL();
-					const remove_token = newValue.replace(
+					const removeToken = newValue.replace(
 						new RegExp(
 							`(<[^=]+=")(${escapeRegExp(
 								url
@@ -299,10 +299,12 @@ export default defineComponent({
 							const params = new URLSearchParams(matched.search);
 							params.delete('amp;access_token');
 							params.delete('access_token');
-							return `${pre}${matched.origin}${matched.pathname}${params}${post}`;
+							return `${pre}${matched.origin}${matched.pathname}${
+								props.imageToken ? props.imageToken : ''
+							}${params}${post}`;
 						}
 					);
-					emit('input', remove_token);
+					emit('input', removeToken);
 				}
 			},
 		});
@@ -445,5 +447,3 @@ export default defineComponent({
 	font-size: 24px;
 }
 </style>
-
-function getPublicPath() { throw new Error('Function not implemented.'); }
