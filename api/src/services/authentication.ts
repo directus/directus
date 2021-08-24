@@ -86,7 +86,7 @@ export class AuthenticationService {
 			user =
 				updatedUser.length > 0
 					? merge(
-							updatedUser.reduce((val, acc) => merge(acc, val)),
+							updatedUser.reduce((acc, val) => merge(acc, val), {}),
 							user
 					  )
 					: user;
