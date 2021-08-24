@@ -63,7 +63,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	emits: ['moveend', 'featureclick', 'featureselect'],
+	emits: ['moveend', 'featureclick', 'featureselect', 'fitdata'],
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		let map: Map;
@@ -91,7 +91,7 @@ export default defineComponent({
 		const navigationControl = new NavigationControl();
 		const geolocateControl = new GeolocateControl();
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
-			emit('moveend', null);
+			emit('fitdata');
 		});
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'selection-box',
@@ -365,6 +365,10 @@ export default defineComponent({
 		text-rendering: auto;
 		-webkit-font-smoothing: antialiased;
 	}
+}
+
+.maplibregl-ctrl-top-right {
+	max-width: 80%;
 }
 
 .mapboxgl-ctrl-zoom-in::after {

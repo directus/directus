@@ -1386,6 +1386,6 @@ layouts:
     cluster_radius: Raggio del Cluster
     cluster_minpoints: Dimensione minima del cluster
     cluster_maxzoom: Zoom massimo per il clustering
-    fit_data: Adatta i dati ai limiti della vista
+    auto_location_filter: Adatta i dati ai limiti della vista
     field: Geometria
     invalid_geometry: Geometria non valida
