@@ -1,4 +1,3 @@
-/* eslint-disable no-console */ /* eslint-disable no-console */
 <template>
 	<div class="wysiwyg" :class="{ disabled }">
 		<editor
