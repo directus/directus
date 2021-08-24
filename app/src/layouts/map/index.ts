@@ -32,7 +32,7 @@ type LayoutOptions = {
 	customLayers?: Array<AnyLayer>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
-	fitDataToView?: boolean;
+	autoLocationFilter?: boolean;
 	clusterData?: boolean;
 	animateOptions?: any;
 };
@@ -64,7 +64,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const cameraOptions = syncOption(layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(layoutOptions, 'customLayers', layers);
-		const fitDataToView = syncOption(layoutOptions, 'fitDataToView', true);
+		const autoLocationFilter = syncOption(layoutOptions, 'autoLocationFilter', false);
 		const clusterData = syncOption(layoutOptions, 'clusterData', false);
 		const geometryField = syncOption(layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat | undefined>({
@@ -118,7 +118,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			() => geometryOptions.value,
 			(options, _) => {
 				if (options?.geometryFormat !== 'native') {
-					fitDataToView.value = false;
+					autoLocationFilter.value = false;
 				}
 			}
 		);
@@ -134,7 +134,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		const viewBoundsFilter = computed<Filter | undefined>(() => {
+		const _filters = ref(filters.value);
+
+		const locationFilterOutdated = ref(false);
+
+		function getLocationFilter(useTileBBox?: boolean): Filter | undefined {
+			if (geometryOptions.value?.geometryFormat !== 'native') {
+				return;
+			}
 			if (!geometryField.value || !cameraOptions.value) {
 				return;
 			}
@@ -147,7 +154,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				[bbox[0], bbox[1]],
 			];
 			return {
-				key: 'bbox-filter',
+				key: 'location-filter',
 				field: geometryField.value,
 				operator: 'intersects_bbox',
 				value: {
@@ -155,15 +162,31 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					coordinates: [bboxPolygon],
 				} as any,
 			} as Filter;
-		});
+		}
+
+		function updateLocationFilter(useTileBBox?: boolean) {
+			const locationFilter = getLocationFilter(useTileBBox);
+			locationFilterOutdated.value = false;
+			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
+		}
+
+		function removeLocationFilter() {
+			shouldUpdateCamera.value = true;
+			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter');
+		}
 
 		const shouldUpdateCamera = ref(false);
-		const _filters = computed(() => {
-			if (geometryOptions.value?.geometryFormat === 'native' && fitDataToView.value) {
-				return filters.value.concat(viewBoundsFilter.value ?? []);
+
+		watch(
+			() => cameraOptions.value,
+			() => {
+				shouldUpdateCamera.value = false;
+				locationFilterOutdated.value = true;
+				if (autoLocationFilter.value) {
+					updateLocationFilter(true);
+				}
 			}
-			return filters.value;
-		});
+		);
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
@@ -178,13 +201,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref(false);
-
-		watch(
-			() => cameraOptions.value,
-			() => {
-				shouldUpdateCamera.value = false;
-			}
-		);
 
 		watch(() => searchQuery.value, onQueryChange);
 		watch(() => collection.value, onQueryChange);
@@ -315,7 +331,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryFormat,
 			geometryField,
 			cameraOptions,
-			fitDataToView,
+			autoLocationFilter,
 			clusterData,
 			updateSelection,
 			items,
@@ -337,6 +353,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			resetPresetAndRefresh,
 			geometryFields,
 			customLayerDrawerOpen,
+			locationFilterOutdated,
+			updateLocationFilter,
+			removeLocationFilter,
 		};
 
 		async function resetPresetAndRefresh() {
