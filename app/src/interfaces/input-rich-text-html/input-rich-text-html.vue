@@ -265,44 +265,38 @@ export default defineComponent({
 
 		const replaceTokens = (value: string, token: string | null) => {
 			const url = getPublicURL();
-
-			return value.replace(
-				new RegExp(
-					`(<[^=]+=")(${escapeRegExp(
-						url
-					)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
-					'gi'
-				),
-				(_, pre, matchedUrl, post) => {
-					const matched = new URL(matchedUrl);
-					const params = new URLSearchParams(matched.search);
-
-					if (!token) {
-						params.delete('access_token');
-					} else {
-						params.set('access_token', token);
-					}
-
-					params.set('example', 'rijk');
-
-					console.log(pre, matched.origin, matched.pathname, params.toString(), post);
-
-					return `${pre}${matched.origin}${matched.pathname}?${params.toString()}${post}`;
-				}
+			const regex = new RegExp(
+				`(<[^=]+=")(${escapeRegExp(
+					url
+				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\??[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
+				'gi'
 			);
+
+			return value.replace(regex, (_, pre, matchedUrl, post) => {
+				const matched = new URL(matchedUrl);
+				const params = new URLSearchParams(matched.search);
+
+				if (!token) {
+					params.delete('access_token');
+				} else {
+					params.set('access_token', token);
+				}
+
+				return `${pre}${matched.origin}${matched.pathname}?${params.toString()}${post}`;
+			});
 		};
 
 		const internalValue = computed({
 			get() {
 				if (props.value) {
-					console.log(replaceTokens(props.value, getToken()));
 					return replaceTokens(props.value, getToken());
 				}
+
 				return props.value;
 			},
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					const removeToken = replaceTokens(newValue, props.imageToken);
+					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
 					emit('input', removeToken);
 				}
 			},
