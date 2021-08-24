@@ -813,6 +813,8 @@ fields:
     basemaps_style: Style de Mapbox
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
+    additional_transforms: Transformations supplémentaires
     project_name: Nom du projet
     project_url: URL du projet
     project_color: Couleur du projet
@@ -862,6 +864,7 @@ field_options:
     only_track_activity: Enregistrer seulement l'activité
     do_not_track_anything: Ne rien enregistrer
     collection_setup: Configuration de la collection
+    note_placeholder: Une description de cette collection...
     hidden_label: Cacher dans l'application
     singleton: Est un objet unique
     language: Langue
@@ -873,6 +876,7 @@ field_options:
     unarchive_value: Valeur définie lors de la désarchivage...
     divider: Trier
     sort_field: Choisissez un champ...
+    accountability_divider: Responsabilité
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
@@ -883,6 +887,7 @@ field_options:
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
+    ip_access: Ajoutez des adresses IP autorisées, laissez vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -890,16 +895,21 @@ field_options:
       link_name: Lien
       link_placeholder: URL relative ou absolue...
     collection_list:
+      group_name_addLabel: Ajouter un nouveau groupe...
       fields:
         group_name: Nom du groupe
+        group_placeholder: Étiquetez ce groupe...
         type_name: Type
         choices_always: Toujours ouvert
         choises_start_collapsed: Commencer réduit
       collections_name: Collections
     project_name_placeholder: Mon projet...
+    project_color_note: Connexion et arrière-plan du logo
     public_divider_title: Pages Publiques
+    public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
+      none_text: Aucun - Non recommandé
       weak_text: Faible - 8 caractères minimum
     files_divider_title: Fichiers et miniatures
     overrides_divider_title: Remplacer les applications
