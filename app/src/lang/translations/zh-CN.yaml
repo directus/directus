@@ -854,6 +854,43 @@ field_options:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动
     do_not_track_anything: 不跟踪任何内容
+    collection_setup: 集合设置
+    singleton: 视为单个对象
+    language: 语言
+    archive_divider: 存档
+    divider: 排序
+  directus_roles:
+    fields:
+      icon_name: 图标
+      name_name: 名称
+      name_placeholder: 输入标题...
+    collection_list:
+      fields:
+        type_name: 类型
+      collections_name: 集合
+    public_divider_title: 公开页面
+    security_divider_title: 安全
+    files_divider_title: 文件和缩略图
+    overrides_divider_title: 应用设置覆盖
+  directus_users:
+    preferences_divider: 用户设置
+    dropdown_auto: 自动 (系统主题)
+    dropdown_light: 亮色模式
+    dropdown_dark: 暗色模式
+    admin_divider: 管理员设置
+    status_dropdown_draft: 草稿
+    status_dropdown_active: 激活
+    status_dropdown_suspended: 已停用
+    status_dropdown_archived: 已存档
+    token: 请输入安全访问令牌...
+  directus_webhooks:
+    status_options_active: 激活
+    status_options_inactive: 非活跃
+    data_label: 发送事件数据
+    triggers_divider: 触发条件
+    actions_create: 创建
+    actions_update: 更新
+    actions_delete: 删除
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 do_nothing: 什么都不做
 generate_and_save_uuid: 生成并保存 UUID

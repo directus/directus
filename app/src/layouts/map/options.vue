@@ -21,8 +21,8 @@
 
 	<div class="field">
 		<v-checkbox
-			v-model="fitDataToView"
-			:label="t('layouts.map.fit_data')"
+			v-model="autoLocationFilter"
+			:label="t('layouts.map.auto_location_filter')"
 			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
 		/>
 	</div>
@@ -81,7 +81,7 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitDataToView,
+			autoLocationFilter,
 			geometryOptions,
 			clusterData,
 			customLayerDrawerOpen,
@@ -95,7 +95,7 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitDataToView,
+			autoLocationFilter,
 			geometryOptions,
 			clusterData,
 			customLayerDrawerOpen,

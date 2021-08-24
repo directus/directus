@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 edit_field: Modifier le champ
 conditions: Conditions
+maps: Cartes
 item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
@@ -805,6 +806,13 @@ fields:
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_style: Style de Mapbox
+    mapbox_key: Jeton d'accès Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Nom du projet
     project_url: URL du projet
     project_color: Couleur du projet
@@ -853,6 +861,69 @@ field_options:
     track_activity_revisions: Enregistrer les activités et l'historique
     only_track_activity: Enregistrer seulement l'activité
     do_not_track_anything: Ne rien enregistrer
+    collection_setup: Configuration de la collection
+    hidden_label: Cacher dans l'application
+    singleton: Est un objet unique
+    language: Langue
+    translation: Entrez une nouvelle traduction...
+    archive_divider: Archiver
+    archive_field: Choisissez un champ...
+    archive_app_filter: Activer le filtre des archives d'applications
+    archive_value: Valeur définie lors de l'archivage...
+    unarchive_value: Valeur définie lors de la désarchivage...
+    divider: Trier
+    sort_field: Choisissez un champ...
+  directus_files:
+    title: Un titre unique...
+    description: Une description optionnelle...
+    location: Un emplacement optionnel...
+    storage_divider: Nommage des fichiers
+    filename_disk: Nom sur le stockage disque...
+    filename_download: Nom lors du téléchargement...
+  directus_roles:
+    name: Le nom unique de ce rôle...
+    description: Une description pour ce rôle...
+    fields:
+      icon_name: Icône
+      name_name: Nom
+      name_placeholder: Entrez un titre...
+      link_name: Lien
+      link_placeholder: URL relative ou absolue...
+    collection_list:
+      fields:
+        group_name: Nom du groupe
+        type_name: Type
+        choices_always: Toujours ouvert
+        choises_start_collapsed: Commencer réduit
+      collections_name: Collections
+    project_name_placeholder: Mon projet...
+    public_divider_title: Pages Publiques
+    security_divider_title: Sécurité
+    auth_password_policy:
+      weak_text: Faible - 8 caractères minimum
+    files_divider_title: Fichiers et miniatures
+    overrides_divider_title: Remplacer les applications
+  directus_users:
+    preferences_divider: Préférences utilisateur
+    dropdown_auto: Automatique (Basé sur le système)
+    dropdown_light: Mode Clair
+    dropdown_dark: Mode sombre
+    admin_divider: Options d'Administration
+    status_dropdown_draft: Brouillon
+    status_dropdown_invited: Invité·e
+    status_dropdown_active: Actif
+    status_dropdown_suspended: Suspendu
+    status_dropdown_archived: Archivé
+    token: Entrez un jeton d'accès sécurisé...
+  directus_webhooks:
+    status_options_active: Actif
+    status_options_inactive: Inactif
+    data_label: Envoyer les données de l'événement
+    triggers_divider: Déclencheurs
+    actions_create: Créer
+    actions_update: Mettre à jour
+    actions_delete: Supprimer
+    actions_login: Identifiant
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 do_nothing: Ne rien faire
 generate_and_save_uuid: Générer et Enregistrer l'UUID
@@ -1059,7 +1130,9 @@ interfaces:
     imageToken: Token d'image
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
+    map: Carte
     zoom: Zoom
+    native: Natif
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1150,6 +1223,8 @@ interfaces:
     value_path: Chemin de la valeur
     trigger: Déclencheur
     rate: Débit
+  group-raw:
+    name: Groupe brut
 displays:
   boolean:
     boolean: Booléen
@@ -1257,4 +1332,5 @@ layouts:
     start_date_field: Champ Date de début
     end_date_field: Champ Date de fin
   map:
+    map: Carte
     field: Géométrie
