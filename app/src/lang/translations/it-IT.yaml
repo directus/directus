@@ -806,6 +806,17 @@ fields:
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stile Mapbox
+    mapbox_key: Access Token di Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
+    additional_transforms: Trasformazioni aggiuntive
     project_name: Nome del progetto
     project_url: URL del Progetto
     project_color: Colore del Progetto
@@ -854,6 +865,87 @@ field_options:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
     do_not_track_anything: Non Tracciare nulla
+    collection_setup: Configurazione Raccolta
+    note_placeholder: Una descrizione di questa raccolta...
+    hidden_label: Nascondi nell'app
+    singleton: Tratta come oggetto singolo
+    language: Linguaggio
+    translation: Inserisci una traduzione...
+    archive_divider: Archivio
+    archive_field: Scegli un campo...
+    archive_app_filter: Abilita filtro archiviati in app
+    archive_value: Valore impostato all'archiviazione...
+    unarchive_value: Valore impostato al ripristino...
+    divider: Ordina
+    sort_field: Scegli un campo...
+    accountability_divider: Autorizzazioni
+  directus_files:
+    title: Un titolo unico...
+    description: Una descrizione opzionale...
+    location: Una posizione opzionale...
+    storage_divider: Denominazione File
+    filename_disk: Nome sul disco...
+    filename_download: Nome al download...
+  directus_roles:
+    name: Nome unico per questo ruolo...
+    description: Una descrizione per questo ruolo...
+    ip_access: Aggiungi gli indirizzi IP consentiti, lascia vuoto per consentirli tutti...
+    fields:
+      icon_name: Icona
+      name_name: Nome
+      name_placeholder: Inserisci un titolo...
+      link_name: Link
+      link_placeholder: URL relativo o assoluto...
+    collection_list:
+      group_name_addLabel: Aggiungi Nuovo Gruppo...
+      fields:
+        group_name: Nome del gruppo
+        group_placeholder: Etichetta questo gruppo...
+        type_name: Tipo
+        choices_always: Sempre aperto
+        choices_start_open: Inizia aperto
+        choises_start_collapsed: Inizia chiuso
+      collections_name: Raccolte
+      collections_addLabel: Aggiungi etichetta
+    project_name_placeholder: Il mio progetto...
+    project_color_note: Sfondo per l'accesso e il logo
+    project_logo_note: SVG/PNG 40x40 bianca
+    public_divider_title: Pagine pubbliche
+    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
+    security_divider_title: Sicurezza
+    auth_password_policy:
+      none_text: Nessuna – non consigliato
+      weak_text: Debole – minimo 8 caratteri
+      strong_text: Forte – maiuscole / minuscole / numeri / simboli
+    storage_asset_presets:
+      fit:
+        contain_text: Contieni (preserva le proporzioni)
+        cover_text: Ricopri (forza dimensione esatta)
+        inside_text: Adatta all'interno
+        outside_text: Adatta all'esterno
+    files_divider_title: File e miniature
+    overrides_divider_title: Personalizzazioni App
+  directus_users:
+    preferences_divider: Preferenze utente
+    dropdown_auto: Automatico (in base al sistema)
+    dropdown_light: Tema chiaro
+    dropdown_dark: Tema scuro
+    admin_divider: Opzioni Amministratore
+    status_dropdown_draft: Bozza
+    status_dropdown_invited: Invitato
+    status_dropdown_active: Attivo
+    status_dropdown_suspended: Sospeso
+    status_dropdown_archived: Archiviato
+    token: Inserisci un token di accesso sicuro...
+  directus_webhooks:
+    status_options_active: Attivo
+    status_options_inactive: Disattivato
+    data_label: Invia dati evento
+    triggers_divider: Trigger
+    actions_create: Creare
+    actions_update: Aggiornare
+    actions_delete: Elimina
+    actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
@@ -933,7 +1025,6 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

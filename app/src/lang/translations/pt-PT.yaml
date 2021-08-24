@@ -641,6 +641,20 @@ field_options:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Apenas rastrear Atividade
     do_not_track_anything: Não rastrear nada
+    collection_setup: Configuração da coleção
+    language: Idioma
+    archive_divider: Arquivar
+    divider: Ordenar
+  directus_roles:
+    fields:
+      name_name: Nome
+    collection_list:
+      fields:
+        type_name: Tipo
+  directus_users:
+    status_dropdown_active: Ativar
+  directus_webhooks:
+    status_options_active: Ativar
 no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e guardar UUID
