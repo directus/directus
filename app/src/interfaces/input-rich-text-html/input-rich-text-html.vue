@@ -299,9 +299,8 @@ export default defineComponent({
 							const params = new URLSearchParams(matched.search);
 							params.delete('amp;access_token');
 							params.delete('access_token');
-							return `${pre}${matched.origin}${matched.pathname}${
-								props.imageToken ? props.imageToken : ''
-							}${params}${post}`;
+							if (props.imageToken) params.set('access_token', props.imageToken);
+							return `${pre}${matched.origin}${matched.pathname}${params}${post}`;
 						}
 					);
 					emit('input', removeToken);
