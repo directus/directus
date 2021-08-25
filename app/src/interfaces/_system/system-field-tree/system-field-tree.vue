@@ -9,11 +9,12 @@
 		<v-checkbox-tree
 			:model-value="value"
 			:disabled="disabled"
-			:choices="tree"
+			:choices="treeList"
 			item-text="name"
 			item-value="key"
 			value-combining="exclusive"
 			@update:model-value="$emit('input', $event)"
+			@group-clicked="loadFieldRelations($event.value, 1)"
 		/>
 	</div>
 </template>
@@ -21,7 +22,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType } from 'vue';
-import { useFieldTree } from '@/composables/use-field-tree';
+import useFieldTree from '@/composables/use-field-tree';
 
 export default defineComponent({
 	props: {
@@ -58,9 +59,9 @@ export default defineComponent({
 
 		const chosenCollection = computed(() => values.value[props.collectionField] || props.collection);
 
-		const { tree } = useFieldTree(chosenCollection);
+		const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 
-		return { t, values, tree, chosenCollection };
+		return { t, values, treeList, chosenCollection, loadFieldRelations };
 	},
 });
 </script>

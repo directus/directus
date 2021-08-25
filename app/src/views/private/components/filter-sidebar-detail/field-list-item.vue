@@ -1,17 +1,12 @@
 <template>
-	<v-list-item
-		v-if="field.children === undefined"
-		clickable
-		@click="$emit('add', `${parent ? parent + '.' : ''}${field.field}`)"
-	>
+	<v-list-item v-if="field.children === undefined" clickable @click="$emit('add', field.key)">
 		<v-list-item-content>{{ field.name }}</v-list-item-content>
 	</v-list-item>
-	<v-list-group v-else>
+	<v-list-group v-else :value="field.key" clickable @click="$emit('add', field.key)">
 		<template #activator>{{ field.name }}</template>
 		<field-list-item
 			v-for="childField in field.children"
 			:key="childField.field"
-			:parent="`${parent ? parent + '.' : ''}${field.field}`"
 			:field="childField"
 			@add="$emit('add', $event)"
 		/>
@@ -28,10 +23,6 @@ export default defineComponent({
 		field: {
 			type: Object as PropType<FieldTree>,
 			required: true,
-		},
-		parent: {
-			type: String,
-			default: null,
 		},
 	},
 	emits: ['add'],

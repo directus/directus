@@ -25,7 +25,7 @@
 								item-value="key"
 								:mandatory="false"
 								:groups-clickable="true"
-								@group-clicked="onToggle"
+								@group-clicked="loadFieldRelations($event.value, 1)"
 								@update:modelValue="updateValue($event, index)"
 							/>
 						</div>
@@ -55,7 +55,7 @@
 								item-value="key"
 								:mandatory="false"
 								:groups-clickable="true"
-								@group-clicked="onToggle"
+								@group-clicked="loadFieldRelations($event.value, 1)"
 								@update:modelValue="updateValue($event, index)"
 							/>
 							<v-select
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import useFieldTreeAdvanced from '@/composables/use-field-tree-advanced';
+import useFieldTree from '@/composables/use-field-tree';
 import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import FieldInput from './field-input.vue';
 import Draggable from 'vuedraggable';
@@ -87,7 +87,6 @@ import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
-import { GroupableInstance } from '@/composables/groupable/groupable';
 
 export default defineComponent({
 	name: 'NestedDraggable',
@@ -116,7 +115,7 @@ export default defineComponent({
 	emits: ['change', 'add-node', 'remove-node', 'update:tree'],
 	setup(props, { emit }) {
 		const { collection, tree } = toRefs(props);
-		const { treeList, loadFieldRelations } = useFieldTreeAdvanced(collection);
+		const { treeList, loadFieldRelations } = useFieldTree(collection);
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
 
@@ -147,7 +146,6 @@ export default defineComponent({
 			updateComparator,
 			t,
 			updateNode,
-			onToggle,
 		};
 
 		function updateComparator(index: number, newVal: FilterOperators) {
@@ -213,10 +211,6 @@ export default defineComponent({
 				text: t(`operators.${type}`),
 				value: `_${type}`,
 			}));
-		}
-
-		function onToggle(item: GroupableInstance) {
-			loadFieldRelations(String(item.value), 1);
 		}
 	},
 });

@@ -1,5 +1,5 @@
 <template>
-	<v-list v-model="openSelection" :mandatory="false">
+	<v-list v-model="openSelection" :mandatory="false" @toggle="$emit('group-clicked', $event)">
 		<v-checkbox-tree-checkbox
 			v-for="choice in choices"
 			:key="choice[itemValue]"
@@ -63,7 +63,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'group-clicked'],
 	setup(props, { emit }) {
 		const value = computed({
 			get() {
