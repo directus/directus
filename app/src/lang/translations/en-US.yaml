@@ -1046,10 +1046,13 @@ interfaces:
   filter:
     name: Filter,
     description: Configure a filter object.
-    add_node: Add Node
+    add_filter: Add Filter
+    add_group: Add Group
     add_value: Add Value
-    and: "Logical: And"
-    or: "Logical: Or"
+    all: All
+    any: Any
+    and: and
+    of_the_following: of the following
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

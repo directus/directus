@@ -1,73 +1,74 @@
 <template>
-	<div class="field-input">
-		<template
-			v-if="
-				[
-					'_eq',
-					'_neq',
-					'_lt',
-					'_gt',
-					'_lte',
-					'_gte',
-					'_contains',
-					'_ncontains',
-					'_starts_with',
-					'_nstarts_with',
-					'_ends_with',
-					'_nends_with',
-				].includes(field.comparator)
-			"
-		>
-			<component :is="interfaceType" :type="fieldInfo.type" :value="value" @input="value = $event"></component>
-		</template>
-		<template v-else-if="['_in', '_nin'].includes(field.comparator)">
-			<div v-for="(val, index) in value" :key="index" class="value">
-				<component
-					:is="interfaceType"
-					:type="fieldInfo.type"
-					:value="val"
-					@input="setValueAt(index, $event)"
-				></component>
-				<v-icon name="delete" @click="remove(index)"></v-icon>
-			</div>
-			<v-button x-small @click="value = [...value, '']">{{ t('interfaces.filter.add_value') }}</v-button>
-		</template>
-		<div v-else-if="['_between', '_nbetween'].includes(field.comparator)" class="between">
-			<component
+	<template
+		v-if="
+			[
+				'_eq',
+				'_neq',
+				'_lt',
+				'_gt',
+				'_lte',
+				'_gte',
+				'_contains',
+				'_ncontains',
+				'_starts_with',
+				'_nstarts_with',
+				'_ends_with',
+				'_nends_with',
+			].includes(field.comparator)
+		"
+	>
+		<input-component
+			:is="interfaceType"
+			:type="fieldInfo.type"
+			:value="replaceEmpty(value)"
+			@input="value = $event"
+		></input-component>
+	</template>
+	<template v-else-if="['_in', '_nin'].includes(field.comparator)">
+		<div v-for="(val, index) in value" :key="index" class="value">
+			<input-component
 				:is="interfaceType"
 				:type="fieldInfo.type"
-				:value="value[0]"
-				@input="setValueAt(0, $event)"
-			></component>
-			<component
-				:is="interfaceType"
-				:type="fieldInfo.type"
-				:value="value[1]"
-				@input="setValueAt(1, $event)"
-			></component>
+				:value="replaceEmpty(val)"
+				@input="setValueAt(index, $event)"
+			></input-component>
+			<v-icon name="delete" @click="remove(index)"></v-icon>
 		</div>
-	</div>
+		<v-icon class="add-value" name="add" @click="value = [...value, null]">
+			{{ t('interfaces.filter.add_value') }}
+		</v-icon>
+	</template>
+	<template v-else-if="['_between', '_nbetween'].includes(field.comparator)" class="between">
+		<input-component
+			:is="interfaceType"
+			:type="fieldInfo.type"
+			:value="replaceEmpty(value[0])"
+			@input="setValueAt(0, $event)"
+		></input-component>
+		<div class="and">{{ t('interfaces.filter.and') }}</div>
+		<input-component
+			:is="interfaceType"
+			:type="fieldInfo.type"
+			:value="replaceEmpty(value[1])"
+			@input="setValueAt(1, $event)"
+		></input-component>
+	</template>
 </template>
 
 <script lang="ts">
 import { Field } from './system-filter.vue';
 import { computed, defineComponent, PropType } from 'vue';
-import systemDisplayTemplate from '../system-display-template/system-display-template.vue';
 import { useFieldsStore } from '@/stores';
-import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { useI18n } from 'vue-i18n';
 import { clone } from 'lodash';
+import InputComponent from './input-component.vue';
 
 export default defineComponent({
-	components: { systemDisplayTemplate },
+	components: { InputComponent },
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
 		},
 		collection: {
 			type: String,
@@ -84,8 +85,27 @@ export default defineComponent({
 		});
 
 		const interfaceType = computed(() => {
-			if (fieldInfo.value?.type === 'csv') return 'interface-input';
-			return 'interface-' + getDefaultInterfaceForType(fieldInfo.value?.type || 'string');
+			const types: Record<string, string> = {
+				bigInteger: 'input',
+				binary: 'input',
+				boolean: 'boolean',
+				date: 'datetime',
+				dateTime: 'datetime',
+				decimal: 'input',
+				float: 'input',
+				integer: 'input',
+				json: 'input-code',
+				string: 'input',
+				text: 'input',
+				time: 'datetime',
+				timestamp: 'datetime',
+				uuid: 'input',
+				csv: 'input',
+				hash: 'input-hash',
+				geometry: 'map',
+			};
+
+			return 'interface-' + types[fieldInfo.value?.type || 'string'];
 		});
 
 		const value = computed<any | any[]>({
@@ -99,13 +119,17 @@ export default defineComponent({
 			},
 		});
 
+		function replaceEmpty(value: any) {
+			return value === null ? '##' : value;
+		}
+
 		function setValueAt(index: number, newVal: any) {
 			let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 			newArray[index] = newVal;
 			value.value = newArray;
 		}
 
-		return { t, fieldInfo, interfaceType, remove, value, setValueAt };
+		return { t, fieldInfo, interfaceType, remove, value, setValueAt, replaceEmpty };
 
 		function remove(index: number) {
 			value.value = value.value.filter((v: any, i: number) => i !== index);
@@ -115,10 +139,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.field-input > * {
-	margin-top: 8px;
-}
-
 .value {
 	display: flex;
 	align-items: center;
@@ -135,8 +155,11 @@ export default defineComponent({
 	}
 }
 
-.between {
-	display: flex;
-	gap: 20px;
+.add-value {
+	color: var(--primary);
+}
+
+.and {
+	margin: 0px 8px;
 }
 </style>

@@ -9,10 +9,19 @@
 				@remove-node="removeNode($event)"
 			/>
 		</v-list>
+		<div class="buttons">
+			<div class="add" @click="addNode('field')">
+				{{ t('interfaces.filter.add_filter') }}
+			</div>
+			<div class="add" @click="addNode('logic')">
+				{{ t('interfaces.filter.add_group') }}
+			</div>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { useFieldsStore } from '@/stores';
 import { get, set, isEqual, debounce } from 'lodash';
 import { defineComponent, ref, PropType, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +33,6 @@ export type Logic = {
 	type: 'logic';
 	name: LogicOperators;
 	values: FilterTree;
-	open: boolean;
 };
 
 export type Field = {
@@ -32,7 +40,6 @@ export type Field = {
 	name: string;
 	comparator: FilterOperators;
 	value: any;
-	open: boolean;
 };
 
 export const logicOperators = ['and', 'or'] as const;
@@ -84,6 +91,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const innerValue = ref<FilterTree>([]);
 		const { t } = useI18n();
+		const fieldsStore = useFieldsStore();
 
 		watch(
 			() => props.value,
@@ -92,16 +100,21 @@ export default defineComponent({
 					innerValue.value = [];
 					return;
 				}
-				const newFilter = [constructFilterTree(newVal)];
-				if (isEqual(innerValue.value, newFilter) === false) innerValue.value = newFilter;
+				const newFilter = constructFilterTree(newVal);
+				if (isEqual(innerValue.value, newFilter) === false && newFilter.type === 'logic')
+					innerValue.value = newFilter.values;
 			},
 			{ immediate: true }
 		);
 
 		watch(
 			innerValue,
-			debounce((newVal) => {
-				const newFilter = deconstructFilterTree(newVal[0]);
+			debounce((newVal: FilterTree) => {
+				const newFilter = deconstructFilterTree({
+					type: 'logic',
+					name: '_and',
+					values: newVal,
+				});
 				if (isEqual(newFilter, props.value) === false) emit('input', newFilter);
 			}, 200),
 			{ deep: true }
@@ -109,28 +122,24 @@ export default defineComponent({
 
 		return { t, innerValue, deconstructFilterTree, constructFilterTree, addNode, removeNode };
 
-		function addNode(ids: number[]) {
-			if (ids.length === 0) {
-				const list = innerValue.value;
+		function addNode(type: 'logic' | 'field') {
+			const list = innerValue.value;
+
+			if (type === 'logic') {
 				list.push({
 					type: 'logic',
 					name: '_and',
 					values: [],
-					open: true,
 				});
-				innerValue.value = list;
-				return;
+			} else {
+				list.push({
+					type: 'field',
+					name: fieldsStore.getPrimaryKeyFieldForCollection(props.collectionName).field,
+					comparator: '_eq',
+					value: 0,
+				});
 			}
-
-			const list = get(innerValue.value, idsToPath(ids));
-
-			list.push({
-				type: 'logic',
-				name: '_and',
-				values: [],
-			});
-
-			innerValue.value = set(innerValue.value, idsToPath(ids), list);
+			innerValue.value = list;
 		}
 
 		function removeNode(ids: number[]) {
@@ -157,6 +166,7 @@ export default defineComponent({
 					[tree.name]: tree.values.map((value) => deconstructFilterTree(value)),
 				};
 			} else {
+				if (!tree.name) return null;
 				return set({}, tree.name, {
 					[tree.comparator]: tree.value,
 				});
@@ -172,7 +182,6 @@ export default defineComponent({
 					values: (tree[key] as Record<string, any>[]).map((subTree, index) =>
 						constructFilterTree(subTree, [...id, index])
 					),
-					open: true,
 				};
 			} else {
 				let destructTree = tree;
@@ -190,7 +199,6 @@ export default defineComponent({
 					name: fieldList.join('.'),
 					comparator: key as FilterOperators,
 					value: destructTree[key],
-					open: true,
 				};
 			}
 		}
@@ -200,14 +208,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .system-filter {
+	width: fit-content;
+	padding: 0 10px;
+
 	:deep(ul),
 	:deep(li) {
 		list-style: none;
 	}
 
 	:deep(ul) {
-		margin-left: 8px;
-		padding-right: 8px;
+		margin-left: 28px;
 		padding-left: 0;
 	}
 
@@ -217,6 +227,18 @@ export default defineComponent({
 		& > :deep(.group),
 		& > :deep(.add) {
 			margin-left: 0px;
+		}
+	}
+
+	.buttons {
+		display: flex;
+		gap: 10px;
+		padding: 0 10px;
+		color: var(--primary);
+		font-weight: 700;
+
+		.add {
+			cursor: pointer;
 		}
 	}
 }

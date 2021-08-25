@@ -3,7 +3,6 @@
 		:group="{ name: 'g1' }"
 		:list="tree"
 		draggable=".row"
-		:disabled="depth === 1"
 		handle=".drag-handle"
 		item-key="id"
 		tag="ul"
@@ -12,22 +11,14 @@
 	>
 		<template #item="{ element, index }">
 			<li class="row">
-				<div v-if="element.type === 'logic'" class="logic">
+				<div v-if="element.type === 'logic'" class="node logic">
 					<div class="header">
-						<div class="header-start">
-							<v-icon name="drag_handle" class="drag-handle"></v-icon>
-							<v-select
-								inline
-								:full-width="false"
-								:model-value="element.name"
-								:items="typeOptions"
-								item-text="name"
-								item-value="key"
-								:mandatory="false"
-								:groups-clickable="true"
-								@group-clicked="loadFieldRelations($event.value, 1)"
-								@update:modelValue="updateValue($event, index)"
-							/>
+						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
+						<div class="logic-type" :class="{ blue: element.name === '_or' }">
+							<span class="key" @click="toggleLogic(index)">
+								{{ element.name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any') }}
+							</span>
+							<span class="text">{{ t('interfaces.filter.of_the_following') }}</span>
 						</div>
 						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
 					</div>
@@ -37,52 +28,48 @@
 						:collection="collection"
 						:depth="depth + 1"
 						@change="$emit('change', $event)"
-						@add-node="$emit('add-node', [index, ...$event])"
 						@remove-node="$emit('remove-node', [index, ...$event])"
 						@update:tree="updateNode(index, $event)"
 					/>
 				</div>
-				<v-list-item v-else block class="field">
+				<div v-else block class="node field">
 					<div class="header">
-						<div class="header-start">
-							<v-icon name="drag_handle" class="drag-handle"></v-icon>
-							<v-select
-								inline
-								:full-width="false"
-								:model-value="element.name"
-								:items="typeOptions"
-								item-text="name"
-								item-value="key"
-								:mandatory="false"
-								:groups-clickable="true"
-								@group-clicked="loadFieldRelations($event.value, 1)"
-								@update:modelValue="updateValue($event, index)"
-							/>
-							<v-select
-								inline
-								:model-value="element.comparator"
-								:items="getCompareOptions(element.name)"
-								@update:modelValue="updateComparator(index, $event)"
-							></v-select>
-						</div>
+						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
+						<v-select
+							inline
+							class="name"
+							:full-width="false"
+							:model-value="element.name"
+							:items="fieldOptions"
+							item-text="name"
+							item-value="key"
+							:mandatory="false"
+							:groups-clickable="true"
+							@group-clicked="loadFieldRelations($event.value, 1)"
+							@update:modelValue="updateField($event, index)"
+						/>
+						<v-select
+							inline
+							class="comparator"
+							:model-value="element.comparator"
+							:items="getCompareOptions(element.name)"
+							@update:modelValue="updateComparator(index, $event)"
+						></v-select>
+						<field-input :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
 						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
 					</div>
-					<field-input :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
-				</v-list-item>
+				</div>
 			</li>
 		</template>
 	</draggable>
-	<v-button v-if="(depth === 1 && tree.length === 0) || depth === 2" class="add" small @click="$emit('add-node', [])">
-		{{ t('interfaces.filter.add_node') }}
-	</v-button>
 </template>
 
 <script lang="ts">
 import useFieldTree from '@/composables/use-field-tree';
-import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { defineComponent, PropType, toRefs, watch } from 'vue';
 import FieldInput from './field-input.vue';
 import Draggable from 'vuedraggable';
-import { LogicOperators, FilterOperators, FilterTree, Field, Logic } from './system-filter.vue';
+import { FilterOperators, FilterTree, Field } from './system-filter.vue';
 import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
@@ -99,10 +86,6 @@ export default defineComponent({
 			type: Array as PropType<FilterTree>,
 			default: null,
 		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
 		collection: {
 			type: String,
 			required: true,
@@ -112,85 +95,58 @@ export default defineComponent({
 			default: 1,
 		},
 	},
-	emits: ['change', 'add-node', 'remove-node', 'update:tree'],
+	emits: ['change', 'remove-node', 'update:tree'],
 	setup(props, { emit }) {
 		const { collection, tree } = toRefs(props);
-		const { treeList, loadFieldRelations } = useFieldTree(collection);
+		const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
 
-		const typeOptions = computed(() => [
-			{
-				name: t('interfaces.filter.and'),
-				key: '_and',
-			},
-			{
-				name: t('interfaces.filter.or'),
-				key: '_or',
-			},
-			...treeList.value,
-		]);
-
 		watch(tree, (newTree) => {
 			newTree.forEach((field) => {
-				if (field.type === 'field') {
+				if (field.type === 'field' && field.name !== null) {
 					loadFieldRelations(field.name);
 				}
 			});
 		});
 
 		return {
-			typeOptions,
+			fieldOptions,
 			getCompareOptions,
-			updateValue,
+			updateField,
 			updateComparator,
 			t,
 			updateNode,
+			toggleLogic,
+			loadFieldRelations,
 		};
+
+		function toggleLogic(index: number) {
+			if (tree.value[index].name === '_and') {
+				tree.value[index].name = '_or';
+			} else {
+				tree.value[index].name = '_and';
+			}
+		}
 
 		function updateComparator(index: number, newVal: FilterOperators) {
 			const field = tree.value[index] as Field;
 			field.comparator = newVal;
 
-			if (['_in', '_nin'].includes(newVal) && Array.isArray(field.value) === false) {
-				field.value = [field.value];
-			} else if (
-				['_between', '_nbetween'].includes(newVal) &&
-				Array.isArray(field.value) === false &&
-				field.value.length !== 2
-			) {
-				field.value = new Array(2);
-			} else if (Array.isArray(field.value)) {
-				field.value = [field.value].join(',');
+			if (['_in', '_nin'].includes(newVal)) {
+				if (Array.isArray(field.value) === false) field.value = [field.value];
+			} else if (['_between', '_nbetween'].includes(newVal)) {
+				if (Array.isArray(field.value) && field.value.length >= 2) field.value = [field.value[0], field.value[1]];
+				else field.value = [null, null];
+			} else if (Array.isArray(field.value) && field.value.length > 0) {
+				field.value = field.value[0];
 			}
+
+			emit('update:tree', tree.value);
 		}
 
-		function updateValue(newKey: string, index: number) {
-			let element = tree.value[index];
-			if (newKey.startsWith('_')) {
-				if (element.type === 'logic') {
-					element.name = newKey as LogicOperators;
-				} else {
-					tree.value[index] = {
-						type: 'logic',
-						name: newKey as LogicOperators,
-						values: [],
-						open: element.open,
-					};
-				}
-			} else {
-				if (element.type === 'field') {
-					element.name = newKey;
-				} else {
-					tree.value[index] = {
-						type: 'field',
-						name: newKey,
-						comparator: '_eq',
-						value: '',
-						open: element.open,
-					};
-				}
-			}
+		function updateField(newKey: string, index: number) {
+			tree.value[index].name = newKey;
 		}
 
 		function updateNode(index: number, field: Field | FilterTree) {
@@ -205,6 +161,7 @@ export default defineComponent({
 		}
 
 		function getCompareOptions(name: string) {
+			// TODO: Support m2a fields
 			const fieldInfo = fieldsStore.getField(props.collection, name);
 			if (fieldInfo === null) return [];
 			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({
@@ -217,90 +174,73 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-list-item {
-	--input-height: auto;
-
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-}
-
-.logic {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	padding-left: 4px;
-
-	&::before {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		background-color: var(--primary);
-		opacity: 0.1;
-		content: '';
-		pointer-events: none;
-	}
-
-	&::after {
-		position: absolute;
-		top: 0;
-		left: 0px;
-		width: 4px;
-		height: 100%;
-		background-color: var(--primary);
-		border-radius: 2px;
-		content: '';
-	}
-}
-
 .header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	height: 50px;
-}
+	width: fit-content;
+	margin-bottom: 8px;
+	padding: 8px 12px;
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: 100px;
 
-.logic > .header {
-	padding-right: 8px;
-	color: var(--primary);
-}
+	.logic-type {
+		font-weight: 600;
 
-.field > .header {
-	height: 40px;
-}
+		.key {
+			margin-right: 4px;
+			padding: 2px 6px;
+			color: var(--green);
+			background-color: var(--green-25);
+			border-radius: 6px;
+			cursor: pointer;
+		}
 
-.header-start {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-}
+		&.blue .key {
+			color: var(--blue);
+			background-color: var(--blue-25);
+		}
+	}
 
-.row {
-	margin-bottom: 10px;
-}
+	:deep(.inline-display) {
+		padding-right: 0px;
 
-.add {
-	margin-bottom: 12px;
-	margin-left: 8px;
-}
+		.v-icon {
+			display: none;
+		}
+	}
 
-.drag-handle {
-	cursor: grab;
-}
+	.name {
+		display: inline-block;
+		margin-right: 8px;
+	}
 
-.type {
-	color: var(--foreground-subdued);
-}
+	.comparator {
+		display: inline-block;
+		margin-right: 8px;
+		font-weight: 600;
+	}
 
-.delete {
-	margin-right: 4px;
-	cursor: pointer;
-}
+	.value {
+		color: var(--green);
+	}
 
-.expand {
-	cursor: pointer;
+	.delete {
+		display: none;
+		margin-left: 8px;
+		color: var(--danger);
+		cursor: pointer;
+	}
+
+	&:hover {
+		.delete {
+			display: block;
+		}
+	}
+
+	.drag-handle {
+		margin-right: 6px;
+		color: var(--foreground-subdued);
+		cursor: grab;
+	}
 }
 </style>
