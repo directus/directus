@@ -267,7 +267,7 @@ export default defineComponent({
 			const regex = new RegExp(
 				`(<[^=]+=")(${escapeRegExp(
 					url
-				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\??[^#"]+)?(?:#[^"]*)?)("[^>]*>)`,
+				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
 				'gi'
 			);
 
