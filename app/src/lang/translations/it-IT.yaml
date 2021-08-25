@@ -1388,3 +1388,5 @@ layouts:
     cluster_maxzoom: Zoom massimo per il clustering
     field: Geometria
     invalid_geometry: Geometria non valida
+    auto_location_filter: Filtra sempre i dati al rettangolo di selezione
+    search_this_area: Cerca in quest'area
