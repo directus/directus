@@ -9,7 +9,7 @@ fields:
   - field: name
     interface: input
     options:
-      placeholder: The unique name for this role...
+      placeholder: $t:field_options.directus_roles.name
     width: half
 
   - field: icon
@@ -20,7 +20,7 @@ fields:
   - field: description
     interface: input
     options:
-      placeholder: A description of this role...
+      placeholder: $t:field_options.directus_roles.description
     width: full
 
   - field: app_access
@@ -36,7 +36,7 @@ fields:
   - field: ip_access
     interface: tags
     options:
-      placeholder: Add allowed IP addresses, leave empty to allow all...
+      placeholder: $t:field_options.directus_roles.ip_access
     special: csv
     width: full
 
@@ -60,13 +60,13 @@ fields:
       template: '{{ name }}'
       addLabel: Add New Module...
       fields:
-        - name: Icon
+        - name: $t:field_options.directus_roles.fields.icon_name
           field: icon
           type: string
           meta:
             interface: select-icon
             width: half
-        - name: Name
+        - name: $t:field_options.directus_roles.fields.name_name
           field: name
           type: string
           meta:
@@ -74,8 +74,8 @@ fields:
             width: half
             options:
               iconRight: title
-              placeholder: Enter a title...
-        - name: Link
+              placeholder:
+        - name: $t:field_options.directus_roles.fields.link_name
           field: link
           type: string
           meta:
@@ -83,7 +83,7 @@ fields:
             width: full
             options:
               iconRight: link
-              placeholder: Relative or absolute URL...
+              placeholder: $t:field_options.directus_roles.fields.link_placeholder
     special: json
     width: full
 
@@ -91,9 +91,9 @@ fields:
     interface: list
     options:
       template: '{{ group_name }}'
-      addLabel: Add New Group...
+      addLabel: $t:field_options.directus_roles.collection_list.group_name_addLabel
       fields:
-        - name: Group Name
+        - name: $t:field_options.directus_roles.collection_list.fields.group_name
           field: group_name
           type: string
           meta:
@@ -101,10 +101,10 @@ fields:
             interface: input
             options:
               iconRight: title
-              placeholder: Label this group...
+              placeholder: $t:field_options.directus_roles.collection_list.fields.group_placeholder
           schema:
             is_nullable: false
-        - name: Type
+        - name: $t:field_options.directus_roles.collection_list.fields.type_name
           field: accordion
           type: string
           schema:
@@ -115,21 +115,21 @@ fields:
             options:
               choices:
                 - value: always_open
-                  text: Always Open
+                  text: $t:field_options.directus_roles.collection_list.fields.choices_always
                 - value: start_open
-                  text: Start Open
+                  text: $t:field_options.directus_roles.collection_list.fields.choices_start_open
                 - value: start_collapsed
-                  text: Start Collapsed
-        - name: Collections
+                  text: $t:field_options.directus_roles.collection_list.fields.choices_start_collapsed
+        - name: $t:field_options.directus_roles.collections_name
           field: collections
           type: JSON
           meta:
             interface: list
             options:
-              addLabel: Add New Collection...
+              addLabel: $t:field_options.directus_roles.collections_addLabel
               template: '{{ collection }}'
               fields:
-                - name: Collection
+                - name: $t:field_options.directus_roles.collections_name
                   field: collection
                   type: string
                   meta:

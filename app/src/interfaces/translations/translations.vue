@@ -275,6 +275,7 @@ export default defineComponent({
 			async function fetchKeyMap() {
 				if (!props.value) return;
 				if (keyMap.value) return;
+				if (!existingPrimaryKeys.value?.length) return;
 
 				const collection = translationsRelation.value?.collection;
 

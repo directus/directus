@@ -819,6 +819,25 @@ field_options:
     track_activity_revisions: Track Activiteiten & Revisies
     only_track_activity: Track alleen activiteiten
     do_not_track_anything: Niets tracken
+    collection_setup: Collectie setup
+    singleton: Behandel als één object
+    language: Taal
+    archive_divider: Archiveren
+    divider: Sorteren
+  directus_roles:
+    fields:
+      icon_name: Icoon
+      name_name: Naam
+    collection_list:
+      fields:
+        type_name: Type
+      collections_name: Collecties
+  directus_users:
+    status_dropdown_active: Actief
+  directus_webhooks:
+    status_options_active: Actief
+    actions_create: Maak
+    actions_update: Updaten
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID

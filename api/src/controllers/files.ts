@@ -55,10 +55,6 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			payload.title = formatTitle(path.parse(filename).name);
 		}
 
-		if (req.accountability?.user) {
-			payload.uploaded_by = req.accountability.user;
-		}
-
 		const payloadWithRequiredFields: Partial<File> & {
 			filename_download: string;
 			type: string;

@@ -414,15 +414,6 @@ export class CollectionsService {
 				if (relation.related_collection === collectionKey) {
 					await fieldsService.deleteField(relation.collection, relation.field);
 				}
-
-				const isM2O = relation.collection === collectionKey;
-
-				// Delete any fields that have a relationship to/from the current collection
-				if (isM2O && relation.related_collection && relation.meta?.one_field) {
-					await fieldsService.deleteField(relation.related_collection!, relation.meta.one_field);
-				} else {
-					await fieldsService.deleteField(relation.collection, relation.field);
-				}
 			}
 
 			const m2aRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
