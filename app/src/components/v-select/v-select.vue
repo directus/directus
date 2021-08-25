@@ -50,8 +50,8 @@
 					:model-value="modelValue"
 					:multiple="multiple"
 					:allow-other="allowOther"
-					@update:model-value="$emit('update:modelValue', $event)"
 					:clickable="groupsClickable"
+					@update:model-value="$emit('update:modelValue', $event)"
 				/>
 				<select-list-item
 					v-else
@@ -161,7 +161,7 @@ export default defineComponent({
 		},
 		mandatory: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		placeholder: {
 			type: String,
@@ -189,7 +189,7 @@ export default defineComponent({
 		},
 		groupsClickable: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		inline: {
 			type: Boolean,
@@ -276,7 +276,21 @@ export default defineComponent({
 			return { displayValue };
 
 			function getTextForValue(value: string | number) {
-				return internalItems.value.find((item) => item.value === value)?.['text'];
+				return findValue(internalItems.value);
+
+				function findValue(choices: Option[]): string | undefined {
+					let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+
+					for (const choice of choices) {
+						if (!textValue) {
+							if (choice.children) {
+								textValue = findValue(choice.children);
+							}
+						}
+					}
+
+					return textValue;
+				}
 			}
 		}
 	},

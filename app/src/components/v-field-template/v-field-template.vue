@@ -247,10 +247,8 @@ export default defineComponent({
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
-				if (tag) {
-					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
-					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
-				}
+				if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				else if ('textContent' in el) return (acc += el.textContent);
 
 				return (acc += '');
 			}, '');
