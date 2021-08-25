@@ -37,7 +37,7 @@ ADMIN_PASSWORD="password"
 ::: tip Choosing a Port
 
 Since Plesk uses the [Phusion Passenger](https://www.phusionpassenger.com/) application server to serve Node.js apps you
-do not have worry about choosing a specific port. Just use an arbitrary number. To quote the Passenger docs:
+do not need to worry about choosing a specific port. Just use an arbitrary number. To quote the Passenger docs:
 
 > When run in Passenger, the port number that you pass to listen() is irrelevant and has no effect. Passenger always
 > makes the app listen on a random Unix domain socket.
