@@ -8,6 +8,7 @@ type ImageSelection = {
 	alt: string;
 	width?: number;
 	height?: number;
+	previewUrl?: string;
 };
 
 type ImageButton = {
@@ -50,6 +51,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 					alt,
 					width: Number(node.getAttribute('width')) || undefined,
 					height: Number(node.getAttribute('height')) || undefined,
+					previewUrl: addTokenToURL(imageUrl),
 				};
 			} else {
 				imageSelection.value = null;
@@ -87,6 +89,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 			alt: image.title,
 			width: image.width,
 			height: image.height,
+			previewUrl: addTokenToURL(imageUrl),
 		};
 	}
 
