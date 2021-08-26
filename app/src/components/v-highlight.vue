@@ -1,7 +1,7 @@
 <template>
-	<template v-for="({ highlighted, text }, index) in parts">
-		<mark v-if="highlighted" :key="index" class="highlight">{{ text }}</mark>
-		<template v-else>{{ text }}</template>
+	<template v-for="({ highlighted, text: part }, index) in parts">
+		<mark v-if="highlighted" :key="index" class="highlight">{{ part }}</mark>
+		<template v-else>{{ part }}</template>
 	</template>
 </template>
 
