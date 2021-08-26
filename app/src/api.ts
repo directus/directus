@@ -95,13 +95,13 @@ api.interceptors.response.use(onResponse, onError);
 
 export default api;
 
-export function getToken(): string {
+export function getToken(): string | null {
 	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {
-	token = token || getToken();
-	if (!token) return url;
+	const accessToken = token || getToken();
+	if (!accessToken) return url;
 
-	return addQueryToPath(url, { access_token: token });
+	return addQueryToPath(url, { access_token: accessToken });
 }
