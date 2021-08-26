@@ -1,5 +1,5 @@
 <template>
-	<v-notice type="warning" v-if="relation.collection !== relation.related_collection">
+	<v-notice v-if="relation.collection !== relation.related_collection" type="warning">
 		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
@@ -17,7 +17,7 @@
 			@input="emitValue"
 		/>
 
-		<div class="actions" v-if="!disabled">
+		<div v-if="!disabled" class="actions">
 			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect" @click="selectDrawer = true">
 				{{ t('add_existing') }}
@@ -41,8 +41,8 @@
 			:collection="collection"
 			:selection="[]"
 			:filters="selectionFilters"
-			@input="stageSelection"
 			multiple
+			@input="stageSelection"
 		/>
 	</div>
 </template>
@@ -62,7 +62,6 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
-	emits: ['input'],
 	components: { NestedDraggable, DrawerCollection, DrawerItem },
 	props: {
 		value: {
@@ -98,6 +97,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -210,7 +210,7 @@ export default defineComponent({
 					return (value || []).map((item, index) => {
 						return {
 							...item,
-							[relation.value.meta!.sort_field!]: index,
+							[relation.value.meta!.sort_field!]: index + 1,
 							[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
 						};
 					});
@@ -227,7 +227,7 @@ export default defineComponent({
 		}
 
 		function onDraggableChange() {
-			emit('input', stagedValues.value);
+			emitValue(stagedValues.value);
 		}
 
 		function useSelection() {

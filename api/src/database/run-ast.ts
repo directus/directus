@@ -4,8 +4,10 @@ import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
 import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
 import applyQuery from '../utils/apply-query';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import getDatabase from './index';
+import { isNativeGeometry } from '../utils/geometry';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 type RunASTOptions = {
 	/**
@@ -143,6 +145,17 @@ async function parseCurrentLevel(
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
 
+function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
+	const helper = getGeometryHelper();
+	return function (column: string): Knex.Raw<string> {
+		const field = schema.collections[table].fields[column];
+		if (isNativeGeometry(field)) {
+			return helper.asText(table, column);
+		}
+		return knex.raw('??.??', [table, column]);
+	};
+}
+
 function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
@@ -151,8 +164,8 @@ function getDBQuery(
 	query: Query,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
-
+	const preProcess = getColumnPreprocessor(knex, schema, table);
+	const dbQuery = knex.select(columns.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;

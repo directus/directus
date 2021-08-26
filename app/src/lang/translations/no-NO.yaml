@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Rediger felt
 item_revision: Element revisjoner
 duplicate_field: Dupliser felt
@@ -40,7 +60,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utlogget
   SESSION_EXPIRED: Økt utløpt
-public: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
 not_allowed: Ikke tillatt
 directus_version: Directus versjon
@@ -240,7 +259,7 @@ move_to_folder: Flytt til mappe
 move: Flytt
 system: System
 add_field_related: Legg til felt til relatert kolleksjon
-interface: Grensesnitt
+interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
@@ -306,7 +325,6 @@ documentation: Dokumentasjon
 sidebar: Sidepanel
 duration: Varighet
 charset: Charset
-second: Sekund
 file_moved: Fil Flyttet
 collection_created: Kolleksjon opprettet
 modified_on: Modifisert den
@@ -336,6 +354,7 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
 back: Tilbake
 operators:
@@ -404,6 +423,7 @@ fields:
     tags: Etiketter
     language: Språk
     status: Status
+    status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
   directus_settings:
@@ -415,10 +435,27 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
+field_options:
+  directus_collections:
+    language: Språk
+    archive_divider: Arkiv
+    divider: Sorter
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collection_list:
+      collections_name: Kolleksjoner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Opprett
+    actions_update: Oppdater
 comment: Kommenter
-continue: Fortsett
-default: Standard
-delete: Slett
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse

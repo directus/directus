@@ -1,6 +1,6 @@
-import { types } from '@/types';
+import { Type } from '@directus/shared/types';
 
-export function getJSType(type: typeof types[number]): string {
+export function getJSType(type: Type): string {
 	if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) return 'number';
 	if (['string', 'text', 'uuid', 'hash'].includes(type)) return 'string';
 	if (['boolean'].includes(type)) return 'boolean';

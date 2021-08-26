@@ -2,11 +2,11 @@
 	<tr
 		class="table-row"
 		:class="{ subdued: subdued, clickable: hasClickListener }"
-		@click="$emit('click')"
 		:style="{
 			'--table-row-height': height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
+		@click="$emit('click')"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
@@ -16,7 +16,7 @@
 			<v-checkbox :model-value="isSelected" @update:model-value="$emit('item-selected', $event)" />
 		</td>
 
-		<td class="cell" :class="`align-${header.align}`" v-for="header in headers" :key="header.value">
+		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
 			<slot :name="`item.${header.value}`" :item="item">
 				<v-text-overflow
 					v-if="
@@ -46,7 +46,6 @@ import { defineComponent, PropType } from 'vue';
 import { Header } from '../types';
 
 export default defineComponent({
-	emits: ['click', 'item-selected'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
@@ -85,6 +84,7 @@ export default defineComponent({
 			default: 48,
 		},
 	},
+	emits: ['click', 'item-selected'],
 });
 </script>
 

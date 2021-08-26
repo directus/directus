@@ -1,4 +1,4 @@
-import { defineInterface } from '@/interfaces/define';
+import { defineInterface } from '@directus/shared/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';
@@ -33,7 +33,7 @@ export default defineInterface({
 	description: '$t:interfaces.input-code.description',
 	icon: 'code',
 	component: InterfaceCode,
-	types: ['string', 'json', 'text'],
+	types: ['string', 'json', 'text', 'geometry'],
 	options: [
 		{
 			field: 'language',

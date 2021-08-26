@@ -6,9 +6,9 @@
 			:value="field.field"
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span @click="toggle" v-tooltip="edited ? t('edited') : null">
+		<span v-tooltip="edited ? t('edited') : null" @click="toggle">
 			{{ field.name }}
-			<v-icon class="required" sup name="star" v-if="field.schema && field.schema.is_nullable === false" />
+			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
 	</div>
@@ -17,10 +17,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
-import { Field } from '@/types/';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['toggle-batch'],
 	props: {
 		batchMode: {
 			type: Boolean,
@@ -55,6 +54,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['toggle-batch'],
 	setup() {
 		const { t } = useI18n();
 		return { t };

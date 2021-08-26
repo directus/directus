@@ -7,8 +7,8 @@
 		:text="displayInfo.handler(value, options, { type })"
 	/>
 	<component
-		v-else
 		:is="`display-${display}`"
+		v-else
 		v-bind="options"
 		:interface="interface"
 		:interface-options="interfaceOptions"
@@ -23,7 +23,7 @@
 import { defineComponent, computed } from 'vue';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig } from '@/displays/types';
+import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { ValueNull },

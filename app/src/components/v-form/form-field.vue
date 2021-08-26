@@ -1,9 +1,5 @@
 <template>
-	<div
-		class="field"
-		:key="field.field"
-		:class="[(field.meta && field.meta.width) || 'full', { invalid: validationError }]"
-	>
+	<div :key="field.field" class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow :disabled="isDisabled">
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -28,7 +24,7 @@
 				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
-		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
+		<div v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" class="label-spacer" />
 
 		<form-field-interface
 			:autofocus="autofocus"
@@ -46,7 +42,7 @@
 			<v-card>
 				<v-card-title>{{ t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
-					<v-textarea class="raw-value" v-model="rawValue" :placeholder="t('enter_raw_value')" />
+					<v-textarea v-model="rawValue" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
@@ -54,9 +50,9 @@
 			</v-card>
 		</v-dialog>
 
-		<small class="note" v-if="field.meta && field.meta.note" v-html="md(field.meta.note)" />
+		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="note" />
 
-		<small class="validation-error" v-if="validationError">
+		<small v-if="validationError" class="validation-error">
 			{{ validationMessage }}
 		</small>
 	</div>
@@ -65,8 +61,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Field } from '@/types/';
-import { md } from '@/utils/md';
+import { Field } from '@directus/shared/types';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
@@ -75,7 +70,6 @@ import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
-	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
 	props: {
 		field: {
@@ -119,6 +113,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -130,10 +125,10 @@ export default defineComponent({
 		});
 
 		const defaultValue = computed(() => {
-			const value = props.field.schema?.default_value;
+			const value = props.field?.schema?.default_value;
 
 			if (value !== undefined) return value;
-			return null;
+			return undefined;
 		});
 
 		const internalValue = computed(() => {
@@ -158,7 +153,7 @@ export default defineComponent({
 			}
 		});
 
-		return { t, isDisabled, md, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
+		return { t, isDisabled, internalValue, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (

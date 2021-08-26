@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { validateQuery } from '../utils/validate-query';
 import {
 	ArgumentNode,
 	BooleanValueNode,
@@ -44,11 +45,14 @@ import {
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
 import ms from 'ms';
+import { getCache } from '../cache';
 import getDatabase from '../database';
 import env from '../env';
-import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
+import { BaseException } from '@directus/shared/exceptions';
 import { listExtensions } from '../extensions';
-import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { AbstractServiceOptions, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
@@ -87,6 +91,12 @@ const GraphQLVoid = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLGeoJSON = new GraphQLScalarType({
+	...GraphQLJSON,
+	name: 'GraphQLGeoJSON',
+	description: 'GeoJSON value',
 });
 
 export const GraphQLDate = new GraphQLScalarType({
@@ -533,6 +543,30 @@ export class GraphQLService {
 				},
 			});
 
+			const GeometryFilterOperators = schemaComposer.createInputTC({
+				name: 'geometry_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLGeoJSON,
+					},
+					_neq: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+				},
+			});
+
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -553,6 +587,9 @@ export class GraphQLService {
 								break;
 							case GraphQLDate:
 								filterOperatorType = DateFilterOperators;
+								break;
+							case GraphQLGeoJSON:
+								filterOperatorType = GeometryFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
@@ -1085,6 +1122,8 @@ export class GraphQLService {
 
 		query.fields = parseFields(selections);
 
+		validateQuery(query);
+
 		return query;
 	}
 
@@ -1103,7 +1142,7 @@ export class GraphQLService {
 	 * Select the correct service for the given collection. This allows the individual services to run
 	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
 	 */
-	getService(collection: string): RolesService {
+	getService(collection: string): ItemsService {
 		const opts = {
 			knex: this.knex,
 			accountability: this.accountability,
@@ -1376,7 +1415,7 @@ export class GraphQLService {
 						userAgent: req?.get('user-agent'),
 					});
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1407,13 +1446,13 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
 					const result = await authenticationService.refresh(currentRefreshToken);
 					if (args.mode === 'cookie') {
-						res?.cookie('directus_refresh_token', result.refreshToken, {
+						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
@@ -1443,7 +1482,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
@@ -1607,6 +1646,21 @@ export class GraphQLService {
 					});
 					await service.revert(args.revision);
 					return true;
+				},
+			},
+			utils_cache_clear: {
+				type: GraphQLVoid,
+				resolve: async () => {
+					if (this.accountability?.admin !== true) {
+						throw new ForbiddenException();
+					}
+
+					const { cache, schemaCache } = getCache();
+
+					await cache?.clear();
+					await schemaCache?.clear();
+
+					return;
 				},
 			},
 			users_invite_accept: {

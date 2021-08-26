@@ -22,7 +22,6 @@ import { defineComponent, inject, ref, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -37,6 +36,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const { t } = useI18n();
 

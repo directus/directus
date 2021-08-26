@@ -18,14 +18,15 @@
 				</div>
 			</div>
 		</aside>
-		<div class="content" ref="contentEl">
+		<div ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
 			>
-				<template v-for="(_, scopedSlotName) in $slots" v-slot:[scopedSlotName]="slotData">
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -88,6 +89,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			default: null,
+		},
+		smallHeader: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

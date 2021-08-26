@@ -9,12 +9,12 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<v-button @click="save" icon rounded v-tooltip.bottom="t('save')">
+			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
-		<component class="layout" :is="`layout-${localLayout}`">
+		<component :is="`layout-${localLayout}`" class="layout">
 			<template #no-results>
 				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
@@ -36,7 +36,6 @@ import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
-	emits: ['update:filters', 'update:active', 'input'],
 	components: { SearchInput },
 	props: {
 		active: {
@@ -60,6 +59,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['update:filters', 'update:active', 'input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

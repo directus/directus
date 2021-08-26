@@ -420,13 +420,13 @@ Returns the [relation object](#the-relation-object) for the created relation.
 ### REST API
 
 ```
-PATCH /relations/:id
+PATCH /relations/:collection/:field
 ```
 
 ##### Example
 
 ```json
-// PATCH /relations/15
+// PATCH /relations/articles/author
 
 {
 	"meta": {
@@ -443,7 +443,7 @@ POST /graphql/system
 
 ```graphql
 type Mutation {
-	update_relations_item(id: ID!, data: update_directus_relations_input!): directus_relations
+	update_relations_item(collection: String!, field: String!, data: update_directus_relations_input!): directus_relations
 }
 ```
 
@@ -451,7 +451,7 @@ type Mutation {
 
 ```graphql
 mutation {
-	update_relations_item(id: 15, data: { meta: { one_field: "articles" } }) {
+	update_relations_item(collection: "articles", field: "author", data: { meta: { one_field: "articles" } }) {
 		collection
 		field
 		related_collection
@@ -481,13 +481,13 @@ Empty body.
 ### REST API
 
 ```
-DELETE /relations/:id
+DELETE /relations/:collection/:field
 ```
 
 ##### Example
 
 ```
-DELETE /relations/15
+DELETE /relations/articles/author
 ```
 
 ### GraphQL
@@ -498,7 +498,7 @@ POST /graphql/system
 
 ```graphql
 type Mutation {
-	delete_relations_item(id: ID!): delete_one
+	delete_relations_item(collection: String!, field: String!): delete_one
 }
 ```
 
@@ -506,8 +506,9 @@ type Mutation {
 
 ```graphql
 mutation {
-	delete_relations_item(id: 15) {
-		id
+	delete_relations_item(collection: "articles", field: "author") {
+		collection
+		field
 	}
 }
 ```

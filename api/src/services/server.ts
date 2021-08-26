@@ -12,8 +12,9 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
 

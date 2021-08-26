@@ -9,7 +9,6 @@ import { defineComponent, PropType, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: Array as PropType<(number | string)[]>,
@@ -28,6 +27,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { modelValue, multiple, mandatory } = toRefs(props);
 		useGroupableParent(
@@ -73,6 +73,7 @@ export default defineComponent({
 	overflow: auto;
 	color: var(--v-list-color);
 	line-height: 22px;
+	list-style: none;
 	border-radius: var(--border-radius);
 }
 

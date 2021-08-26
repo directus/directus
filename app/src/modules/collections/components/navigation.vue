@@ -3,8 +3,8 @@
 		ref="listComponent"
 		large
 		class="collections-navigation"
-		@contextmenu.prevent.stop="activateContextMenu"
 		:mandatory="false"
+		@contextmenu.prevent.stop="activateContextMenu"
 	>
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems" :key="group.name">
@@ -38,8 +38,8 @@
 		</template>
 
 		<v-list-item
-			v-else
 			v-for="navItem in navItems"
+			v-else
 			:key="navItem.to"
 			:to="navItem.to"
 			query
@@ -62,7 +62,7 @@
 				<em>{{ t('no_collections_found') }}</em>
 			</template>
 			<template v-else-if="isAdmin">
-				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
+				<v-button full-width outlined dashed to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
 				{{ t('no_collections_copy') }}
@@ -73,9 +73,9 @@
 			<v-divider />
 
 			<v-list-item
-				class="hidden-collection"
 				v-for="navItem in hiddenNavItems"
 				:key="navItem.to"
+				class="hidden-collection"
 				:to="navItem.to"
 				query
 				@contextmenu.prevent.stop="activateContextMenu($event, navItem.to)"

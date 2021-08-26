@@ -3,18 +3,17 @@ import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions, getAppExtensionSource } from '../extensions';
 import { respond } from '../middleware/respond';
-import { depluralize } from '@directus/shared/utils';
-import { AppExtensionType, Plural } from '@directus/shared/types';
-import { APP_EXTENSION_TYPES } from '@directus/shared/constants';
+import { depluralize, isAppExtension } from '@directus/shared/utils';
+import { Plural } from '@directus/shared/types';
 
 const router = Router();
 
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params.type as Plural<AppExtensionType>);
+		const type = depluralize(req.params.type as Plural<string>);
 
-		if (APP_EXTENSION_TYPES.includes(type) === false) {
+		if (!isAppExtension(type)) {
 			throw new RouteNotFoundException(req.path);
 		}
 
@@ -32,9 +31,9 @@ router.get(
 router.get(
 	'/:type/index.js',
 	asyncHandler(async (req, res) => {
-		const type = depluralize(req.params.type as Plural<AppExtensionType>);
+		const type = depluralize(req.params.type as Plural<string>);
 
-		if (APP_EXTENSION_TYPES.includes(type) === false) {
+		if (!isAppExtension(type)) {
 			throw new RouteNotFoundException(req.path);
 		}
 

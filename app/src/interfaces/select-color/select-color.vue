@@ -2,24 +2,24 @@
 	<v-menu attached :disabled="disabled" :close-on-content-click="false">
 		<template #activator="{ activate }">
 			<v-input
+				v-model="hex"
 				:disabled="disabled"
 				:placeholder="t('interfaces.select-color.placeholder')"
-				v-model="hex"
 				:pattern="/#([a-f\d]{2}){3}/i"
 				class="color-input"
 				maxlength="7"
 				@focus="activate"
 			>
 				<template #prepend>
-					<v-input type="color" class="html-color-select" v-model="hex" ref="htmlColorInput" />
+					<v-input ref="htmlColorInput" v-model="hex" type="color" class="html-color-select" />
 					<v-button
-						@click="activateColorPicker"
 						class="swatch"
 						:icon="true"
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
 							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
 						}"
+						@click="activateColorPicker"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
 					</v-button>
@@ -32,48 +32,48 @@
 
 		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
 			<div class="color-data-input color-type">
-				<v-select :items="colorTypes" v-model="colorType" />
+				<v-select v-model="colorType" :items="colorTypes" />
 			</div>
 			<template v-if="colorType === 'RGB'">
 				<v-input
-					type="number"
 					v-for="(val, i) in rgb"
 					:key="i"
+					type="number"
 					:model-value="val"
-					@update:model-value="setValue('rgb', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="255"
 					:step="1"
 					maxlength="3"
+					@update:model-value="setValue('rgb', i, $event)"
 				/>
 			</template>
 			<template v-if="colorType === 'HSL'">
 				<v-input
-					type="number"
 					v-for="(val, i) in hsl"
 					:key="i"
+					type="number"
 					:model-value="val"
-					@update:model-value="setValue('hsl', i, $event)"
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
 					:max="i === 0 ? 360 : 100"
 					:step="1"
 					maxlength="3"
+					@update:model-value="setValue('hsl', i, $event)"
 				/>
 			</template>
 		</div>
-		<div class="presets" v-if="presets">
+		<div v-if="presets" class="presets">
 			<v-button
 				v-for="preset in presets"
 				:key="preset.color"
+				v-tooltip="preset.name"
 				class="preset"
 				rounded
 				icon
 				:style="{ '--v-button-background-color': preset.color }"
-				v-tooltip="preset.name"
 				@click="() => (hex = preset.color)"
 			/>
 		</div>
@@ -86,7 +86,6 @@ import { isHex } from '@/utils/color';
 import Color from 'color';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -139,6 +138,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

@@ -3,25 +3,25 @@
 		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle }">
 				<div>
-					<v-skeleton-loader type="input" v-if="loading" />
+					<v-skeleton-loader v-if="loading" type="input" />
 					<v-input
 						v-else
 						clickable
-						@click="toggle"
 						readonly
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
+						@click="toggle"
 					>
 						<template #prepend>
 							<div
 								class="preview"
 								:class="{
 									'has-file': file,
-									'is-svg': file && file.type.includes('svg'),
+									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
 								<img v-if="imageThumbnail" :src="imageThumbnail" :alt="file.title" />
-								<span class="extension" v-else-if="fileExtension">
+								<span v-else-if="fileExtension" class="extension">
 									{{ fileExtension }}
 								</span>
 								<v-icon v-else name="folder_open" />
@@ -29,13 +29,13 @@
 						</template>
 						<template #append>
 							<template v-if="file">
-								<v-icon name="open_in_new" class="edit" v-tooltip="t('edit')" @click.stop="editDrawerActive = true" />
+								<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editDrawerActive = true" />
 								<v-icon
 									v-if="!disabled"
+									v-tooltip="t('deselect')"
 									class="deselect"
 									name="close"
 									@click.stop="$emit('input', null)"
-									v-tooltip="t('deselect')"
 								/>
 							</template>
 							<v-icon v-else name="attach_file" />
@@ -95,10 +95,10 @@
 			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onUpload" from-url />
+					<v-upload from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="activeDialog = null" secondary>{{ t('cancel') }}</v-button>
+					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -112,21 +112,21 @@
 
 		<v-dialog
 			:model-value="activeDialog === 'url'"
+			:persistent="urlLoading"
 			@update:model-value="activeDialog = null"
 			@esc="activeDialog = null"
-			:persistent="urlLoading"
 		>
 			<v-card>
 				<v-card-title>{{ t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input :placeholder="t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
+					<v-input v-model="url" :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
+					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :loading="urlLoading" @click="importFromURL" :disabled="isValidURL === false">
-						{{ t('import') }}
+					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+						{{ t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -153,7 +153,6 @@ type FileInfo = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {
@@ -164,7 +163,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		folder: {
+			type: String,
+			default: undefined,
+		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -289,6 +293,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					file.value = response.data.data;

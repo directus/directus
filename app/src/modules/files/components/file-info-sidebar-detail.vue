@@ -80,39 +80,48 @@
 				</dd>
 			</div>
 
-			<template v-if="file.metadata && file.metadata.exif && file.metadata.exif.exif && file.metadata.exif.image">
+			<template
+				v-if="
+					file.metadata.ifd0?.Make ||
+					file.metadata.ifd0?.Model ||
+					file.metadata.exif?.FNumber ||
+					file.metadata.exif?.ExposureTime ||
+					file.metadata.exif?.FocalLength ||
+					file.metadata.exif?.ISO
+				"
+			>
 				<v-divider />
 
-				<div v-if="file.metadata.exif.image.Make && file.metadata.exif.image.Model">
+				<div v-if="file.metadata.ifd0?.Make && file.metadata.ifd0?.Model">
 					<dt>{{ t('camera') }}</dt>
-					<dd>{{ file.metadata.exif.image.Make }} {{ file.metadata.exif.image.Model }}</dd>
+					<dd>{{ file.metadata.ifd0.Make }} {{ file.metadata.ifd0.Model }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif.exif.FNumber">
+				<div v-if="file.metadata.exif?.FNumber">
 					<dt>{{ t('exposure') }}</dt>
-					<dd>ƒ/{{ file.metadata.exif.exif.FNumber }}</dd>
+					<dd>ƒ/{{ file.metadata.exif.FNumber }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif.exif.ExposureTime">
+				<div v-if="file.metadata.exif?.ExposureTime">
 					<dt>{{ t('shutter') }}</dt>
-					<dd>1/{{ Math.round(1 / +file.metadata.exif.exif.ExposureTime) }} {{ t('second') }}</dd>
+					<dd>1/{{ Math.round(1 / +file.metadata.exif.ExposureTime) }} {{ t('second') }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif.exif.FocalLength">
+				<div v-if="file.metadata.exif?.FocalLength">
 					<dt>{{ t('focal_length') }}</dt>
-					<dd>{{ file.metadata.exif.exif.FocalLength }}mm</dd>
+					<dd>{{ file.metadata.exif.FocalLength }}mm</dd>
 				</div>
 
-				<div v-if="file.metadata.exif.exif.ISO">
+				<div v-if="file.metadata.exif?.ISO">
 					<dt>{{ t('iso') }}</dt>
-					<dd>{{ file.metadata.exif.exif.ISO }}</dd>
+					<dd>{{ file.metadata.exif.ISO }}</dd>
 				</div>
 			</template>
 		</dl>
 
 		<v-divider />
 
-		<div class="page-description" v-html="md(t('page_help_files_item'))" />
+		<div v-md="t('page_help_files_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 
@@ -121,7 +130,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
-import { md } from '@/utils/md';
 import localizedFormat from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -167,7 +175,6 @@ export default defineComponent({
 			userCreated,
 			userModified,
 			folder,
-			md,
 			folderLink,
 			getRootPath,
 			fileLink,
