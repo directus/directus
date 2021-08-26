@@ -3,7 +3,7 @@
 	<private-view
 		v-else
 		:title="bookmark ? bookmarkTitle : currentCollection.name"
-		:small-header="currentLayout.smallHeader"
+		:small-header="currentLayout?.smallHeader"
 	>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
