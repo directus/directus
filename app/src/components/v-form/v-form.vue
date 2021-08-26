@@ -237,13 +237,10 @@ export default defineComponent({
 						const conditions = [...field.meta.conditions].reverse();
 
 						const matchingCondition = conditions.find((condition) => {
-							if (!condition.rule) return;
-							let errors = [];
-							try {
-								errors = validatePayload(condition.rule, values.value, { requireAll: true });
-							} catch (error) {
-								errors = [error];
-							}
+							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
+
+							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
+
 							return errors.length === 0;
 						});
 
