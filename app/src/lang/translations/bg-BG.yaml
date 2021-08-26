@@ -530,6 +530,8 @@ operators:
   has: Съдържа някои от
   intersects: Пресичане
   nintersects: Няма пресичане
+  intersects_bbox: Прилежащи към границите
+  nintersects_bbox: Не са прилежащи към границите
 loading: Зареждане...
 drop_to_upload: Пускане за качване
 item: Запис
@@ -804,6 +806,15 @@ fields:
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Растер
+    basemaps_tile: Растерен TileJSON
+    basemaps_style: Стил на географската карта
+    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
     project_url: URL на проекта
     project_color: Цвят на проекта
@@ -853,22 +864,60 @@ field_options:
     only_track_activity: Проследяване само на активността
     do_not_track_anything: Без следене
     collection_setup: Настройки на колекция
+    note_placeholder: Описание на колекцията...
+    hidden_label: Скриване в приложението
     singleton: Използване като единствен запис
     language: Език
+    translation: Въвеждане на превод...
     archive_divider: Архивиране
+    archive_field: Избор на поле...
+    archive_value: Задаване на стойност при архивиране...
+    unarchive_value: Задаване на стойност при разархивиране...
     divider: Сортиране
+    sort_field: Избор на поле...
+  directus_files:
+    title: Уникално заглавие...
+    description: Незадължително описание...
+    location: Незадължително местоположение...
+    storage_divider: Име на файл
+    filename_disk: Име при запис...
+    filename_download: Име при изтегляне...
   directus_roles:
+    name: Уникално име за ролята...
+    description: Описание на ролята...
+    ip_access: Позволяване на определни IP адреси, оставяне на празно за всички...
     fields:
       icon_name: Икона
       name_name: Име
       name_placeholder: Въвеждане на заглавие...
+      link_name: Връзка
+      link_placeholder: Релативен или абсолютен URL...
     collection_list:
+      group_name_addLabel: Добавяне на група...
       fields:
+        group_name: Име на група
+        group_placeholder: Именуване на групата...
         type_name: Тип
+        choices_always: Винаги отворена
         choices_start_open: Отворена в началото
+        choises_start_collapsed: Затворена в началото
       collections_name: Колекции
+    project_name_placeholder: Моят проект...
+    project_color_note: Фонт за логото и вход-а
+    project_logo_note: Бяло 40x40 SVG/PNG
     public_divider_title: Публични страници
+    public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
+    auth_password_policy:
+      none_text: Без - не се препоръчва
+      weak_text: Слаба - минимум от 8 символа
+      strong_text: Силна - главни, малки, числа и специални символи 
+    storage_asset_presets:
+      fit:
+        contain_text: Напасване (запазване на съотношението)
+        cover_text: Обложка (точни размери)
+        inside_text: Напасване отвътре
+        outside_text: Напасване отвън
     files_divider_title: Файлове и картинки
     overrides_divider_title: Отмяна
   directus_users:
@@ -878,6 +927,7 @@ field_options:
     dropdown_dark: Тъмен режим
     admin_divider: Административни настройки
     status_dropdown_draft: Чернова
+    status_dropdown_invited: Поканен
     status_dropdown_active: Активен
     status_dropdown_suspended: Замразен
     status_dropdown_archived: Архивиран
@@ -890,6 +940,7 @@ field_options:
     actions_create: Създаване
     actions_update: Обновяване
     actions_delete: Изтриване
+    actions_login: Вход
 no_fields_in_collection: 'Все още няма полета в {collection}'
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
@@ -1098,7 +1149,7 @@ interfaces:
     imageToken_label: Какъв (статичен) токън да се добави, към адресите на изображенията
   map:
     map: Географска карта
-    description: Избор на позиция по картата
+    description: Избор на местоположение по картата
     zoom: Мащабиране
     geometry_type: Тип
     geometry_format: Формат
@@ -1321,6 +1372,7 @@ layouts:
     end_date_field: Крайна дата
   map:
     map: Географска карта
+    basemap: Основна карта
     layers: Слоеве
     edit_custom_layers: Редактиране на слоевете
     cluster_options: Настройки за групиране
@@ -1331,3 +1383,5 @@ layouts:
     auto_location_filter: Напасване към рамката
     field: Геометрия
     invalid_geometry: Невалидна геометрия
+    auto_location_filter: Филтриране на данните спрямо границите
+    search_this_area: Търсене в тази зона

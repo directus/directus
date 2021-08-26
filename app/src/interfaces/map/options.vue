@@ -31,6 +31,7 @@ import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/b
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
 import { useAppStore } from '@/stores';
+import getSetting from '@/utils/get-setting';
 
 export default defineComponent({
 	props: {
@@ -73,6 +74,7 @@ export default defineComponent({
 		const mapContainer = ref<HTMLElement | null>(null);
 		let map: Map;
 
+		const mapboxKey = getSetting('mapbox_key');
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
@@ -87,6 +89,7 @@ export default defineComponent({
 				style: style.value,
 				attributionControl: false,
 				...(defaultView.value || {}),
+				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
 			map.on('moveend', () => {
 				defaultView.value = {

@@ -65,13 +65,13 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		let user = await this.knex
+		const user = await this.knex
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
-		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
+		const updatedOptions = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
@@ -82,8 +82,8 @@ export class AuthenticationService {
 			database: this.knex,
 		});
 
-		if (updatedUser) {
-			user = updatedUser.length > 0 ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
+		if (updatedOptions) {
+			options = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : options;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {

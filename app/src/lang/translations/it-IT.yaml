@@ -1389,3 +1389,5 @@ layouts:
     auto_location_filter: Adatta i dati ai limiti della vista
     field: Geometria
     invalid_geometry: Geometria non valida
+    auto_location_filter: Filtra sempre i dati al rettangolo di selezione
+    search_this_area: Cerca in quest'area
