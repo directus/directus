@@ -100,10 +100,8 @@ export default defineComponent({
 			if (image.value.type.includes('svg')) {
 				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
-
 			if (image.value.type.includes('image')) {
 				const url = getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
-
 				return addTokenToURL(url);
 			}
 

@@ -59,7 +59,7 @@
 		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
 			<div class="content">
 				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.imageUrl" />
+					<img class="image-preview" :src="imageSelection.previewUrl" />
 					<div class="grid">
 						<div class="field half">
 							<div class="type-label">{{ t('image_url') }}</div>
@@ -166,11 +166,13 @@ import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
 import getEditorStyles from './get-editor-styles';
-
+import { escapeRegExp } from 'lodash';
 import useImage from './useImage';
 import useMedia from './useMedia';
 import useLink from './useLink';
 import useSourceCode from './useSourceCode';
+import { getToken } from '@/api';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type CustomFormat = {
 	title: string;
@@ -260,13 +262,43 @@ export default defineComponent({
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
+		const replaceTokens = (value: string, token: string | null) => {
+			const url = getPublicURL();
+			const regex = new RegExp(
+				`(<[^=]+=")(${escapeRegExp(
+					url
+				)}assets/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\\?[^#"]*)?(?:#[^"]*)?)("[^>]*>)`,
+				'gi'
+			);
+
+			return value.replace(regex, (_, pre, matchedUrl, post) => {
+				const matched = new URL(matchedUrl);
+				const params = new URLSearchParams(matched.search);
+
+				if (!token) {
+					params.delete('access_token');
+				} else {
+					params.set('access_token', token);
+				}
+
+				const paramsString = params.toString().length > 0 ? `?${params.toString()}` : '';
+
+				return `${pre}${matched.origin}${matched.pathname}${paramsString}${post}`;
+			});
+		};
+
 		const internalValue = computed({
 			get() {
+				if (props.value) {
+					return replaceTokens(props.value, getToken());
+				}
+
 				return props.value;
 			},
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
-					emit('input', newValue);
+					const removeToken = replaceTokens(newValue, props.imageToken ?? null);
+					emit('input', removeToken);
 				}
 			},
 		});

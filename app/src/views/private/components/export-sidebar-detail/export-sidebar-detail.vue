@@ -25,7 +25,7 @@
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ t('export_collection', { collection }) }}
+					{{ t('export_collection', { collection: collectionName }) }}
 				</v-button>
 			</div>
 		</div>
@@ -34,11 +34,12 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import filtersToQuery from '@/utils/filters-to-query';
+import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -65,13 +66,16 @@ export default defineComponent({
 			required: true,
 		},
 	},
+
 	setup(props) {
 		const { t } = useI18n();
 
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const collectionsStore = useCollectionsStore();
+		const collectionName = computed(() => collectionsStore.getCollection(props.collection).name);
 
-		return { t, format, useFilters, exportData };
+		return { t, format, useFilters, exportData, collectionName };
 
 		function exportData() {
 			const endpoint = props.collection.startsWith('directus_')

@@ -7,7 +7,7 @@
 			</div>
 
 			<transition-expand>
-				<div v-show="active" class="fields">
+				<div v-if="active" class="fields">
 					<v-form
 						:initial-values="initialValues"
 						:fields="fieldsInSection"

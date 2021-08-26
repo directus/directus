@@ -221,6 +221,21 @@ fields:
   directus_roles:
     name: Назва ролі
     description: Опис
+  directus_webhooks:
+    name: Назва
+    status: Статус
+field_options:
+  directus_collections:
+    language: Мова
+  directus_roles:
+    fields:
+      icon_name: Іконка
+      name_name: Назва
+    collection_list:
+      collections_name: Колекції
+  directus_webhooks:
+    actions_create: Створити
+    actions_update: Оновити
 comment: Коментар
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.

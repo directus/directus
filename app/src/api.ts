@@ -95,7 +95,7 @@ api.interceptors.response.use(onResponse, onError);
 
 export default api;
 
-function getToken() {
+export function getToken() {
 	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 }
 

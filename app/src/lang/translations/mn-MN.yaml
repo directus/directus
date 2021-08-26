@@ -83,6 +83,9 @@ fields:
     translation: Талбарын нэрний орчуулга
   directus_roles:
     name: Үүргийн нэр
+field_options:
+  directus_collections:
+    archive_divider: Архивлах
 interfaces:
   presentation-links:
     primary: Үндсэн

@@ -526,6 +526,9 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'uuid',
 		},
+		geometry: {
+			type: 'string',
+		},
 	};
 }
 

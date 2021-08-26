@@ -52,7 +52,6 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory', ttl: numbe
 
 		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'), {
 			commandTimeout: 500,
-			retryStrategy: false,
 		});
 	}
 

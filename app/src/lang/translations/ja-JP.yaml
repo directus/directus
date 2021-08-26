@@ -379,6 +379,27 @@ fields:
     description: 説明
     ip_access: IP アクセス
     enforce_tfa: 二段階認証が必要
+  directus_webhooks:
+    name: 名前
+    status: ステータス
+field_options:
+  directus_collections:
+    collection_setup: コレクションの作成
+    singleton: シングルオブジェクトに設定する
+    language: 言語
+    archive_divider: アーカイブ
+    divider: 並べ替え
+  directus_roles:
+    fields:
+      icon_name: アイコン
+      name_name: 名前
+    collection_list:
+      fields:
+        type_name: タイプ
+      collections_name: コレクション
+  directus_webhooks:
+    actions_create: 作成
+    actions_update: 更新
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存

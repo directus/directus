@@ -776,6 +776,7 @@ fields:
     theme: ธีม
     tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
     status: สถานะ
+    status_active: เปิดใช้งาน
     role: บทบาท
     token: โทเค็น
     last_page: หน้าสุดท้าย
@@ -812,11 +813,34 @@ fields:
     users: ผู้ใช้ในบทบาทนี้
     module_list: รายการโมดูล
     collection_list: รายการคอลเลกชัน
+  directus_webhooks:
+    name: ชื่อ
+    status: สถานะ
 field_options:
   directus_collections:
     track_activity_revisions: ติดตามกิจกรรมและการแก้ไข
     only_track_activity: ติดตามกิจกรรมเท่านั้น
     do_not_track_anything: อย่าติดตามอะไรเลย
+    collection_setup: การตั้งค่าคอลเลกชัน
+    singleton: ทำเสมือนว่ามีออปเจ็คเดียว
+    language: ภาษา
+    archive_divider: เก็บถาวร
+    divider: เรียง
+  directus_roles:
+    fields:
+      icon_name: ไอคอน
+      name_name: ชื่อ
+      name_placeholder: ป้อนชื่อเรื่อง
+    collection_list:
+      fields:
+        type_name: ชนิด
+      collections_name: คอลเลกชัน
+  directus_users:
+    status_dropdown_active: เปิดใช้งาน
+  directus_webhooks:
+    status_options_active: เปิดใช้งาน
+    actions_create: สร้าง
+    actions_update: แก้ไข
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 do_nothing: ไม่ต้องทำอะไร
 generate_and_save_uuid: สร้างและบันทึก UUID โดยอัตโนมัติ
@@ -1001,6 +1025,8 @@ interfaces:
     box: กล่อง/บรรทัดเดียวกัน
     imageToken: Image Token
     imageToken_label: Image Token ที่จะถูกต่อเข้าไปที่แห่งที่มาของรูปภาพ
+  map:
+    zoom: ซูม
   presentation-notice:
     notice: แจ้งให้ทราบ
     description: แสดงการแจ้งให้ทราบแบบย่อ

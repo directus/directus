@@ -20,6 +20,7 @@
 		</aside>
 		<div ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
@@ -88,6 +89,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			default: null,
+		},
+		smallHeader: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

@@ -147,6 +147,18 @@ fields:
     note: Nota
   directus_roles:
     description: Penerangan
+  directus_webhooks:
+    name: Nama
+    status: Status
+field_options:
+  directus_roles:
+    fields:
+      name_name: Nama
+    collection_list:
+      collections_name: Koleksi-koleksi
+  directus_webhooks:
+    actions_create: Cipta
+    actions_update: Kemaskini
 comment: Komen
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.

@@ -160,6 +160,18 @@ fields:
   directus_roles:
     name: Nume de rol
     description: Descriere
+  directus_webhooks:
+    status: Stare
+field_options:
+  directus_collections:
+    archive_divider: Arhivează
+  directus_roles:
+    fields:
+      icon_name: Iconiță
+    collection_list:
+      collections_name: Colecții
+  directus_webhooks:
+    actions_create: Creează
 comment: Comentariu
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.

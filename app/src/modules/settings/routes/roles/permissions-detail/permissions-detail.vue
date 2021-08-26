@@ -39,7 +39,7 @@
 		</div>
 
 		<template v-if="!loading" #actions>
-			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
+			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
 		</template>
 	</v-drawer>
 </template>
@@ -61,6 +61,7 @@ import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appMinimalPermissions } from '../app-permissions';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { isPermissionEmpty } from '@/utils/is-permission-empty';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
@@ -175,7 +176,11 @@ export default defineComponent({
 
 		return { isOpen, permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
 
-		function close() {
+		async function close() {
+			if (permission.value && isPermissionEmpty(permission.value)) {
+				await api.delete(`/permissions/${permission.value.id}`);
+			}
+
 			router.push(`/settings/roles/${props.roleKey || 'public'}`);
 		}
 
