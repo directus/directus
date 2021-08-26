@@ -32,6 +32,7 @@ import { rollup } from 'rollup';
 // @ts-expect-error
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
+import { Url } from './utils/url';
 
 let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
@@ -120,14 +121,15 @@ async function generateExtensionBundles() {
 
 async function getSharedDepsMapping(deps: string[]) {
 	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
-	const adminUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL + 'admin' : env.PUBLIC_URL + '/admin';
 
 	const depsMapping: Record<string, string> = {};
 	for (const dep of deps) {
 		const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
 
 		if (depName) {
-			depsMapping[dep] = `${adminUrl}/${depName}`;
+			const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+
+			depsMapping[dep] = depUrl.toString({ rootRelative: true });
 		} else {
 			logger.warn(`Couldn't find shared extension dependency "${dep}"`);
 		}

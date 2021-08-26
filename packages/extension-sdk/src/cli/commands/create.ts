@@ -72,7 +72,7 @@ export default async function create(type: string, name: string): Promise<void> 
 
 	await execa('npm', ['install'], { cwd: targetPath });
 
-	spinner.succeed('Done');
+	spinner.succeed(chalk.bold('Done'));
 
 	log(`
 Your ${type} extension has been created at ${chalk.green(targetPath)}

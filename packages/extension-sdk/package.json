@@ -4,8 +4,14 @@
 	"description": "A toolkit to develop extensions to extend Directus.",
 	"main": "dist/cjs/index.js",
 	"exports": {
-		"import": "./dist/esm/index.js",
-		"require": "./dist/cjs/index.js"
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
+		},
+		"./cli": {
+			"import": "./dist/esm/cli/index.js",
+			"require": "./dist/cjs/cli/index.js"
+		}
 	},
 	"bin": {
 		"directus-extension": "cli.js"

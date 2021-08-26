@@ -73,7 +73,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	await bundle.close();
 
-	spinner.succeed('Done');
+	spinner.succeed(chalk.bold('Done'));
 }
 
 function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = []): RollupOptions {

@@ -138,7 +138,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const locationFilterOutdated = ref(false);
 
-		function getLocationFilter(useTileBBox?: boolean): Filter | undefined {
+		function getLocationFilter(): Filter | undefined {
 			if (geometryOptions.value?.geometryFormat !== 'native') {
 				return;
 			}
