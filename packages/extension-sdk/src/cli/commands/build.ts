@@ -5,6 +5,8 @@ import ora from 'ora';
 import { OutputOptions as RollupOutputOptions, rollup, RollupOptions, Plugin } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
@@ -85,6 +87,13 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 				...plugins,
 				nodeResolve({ browser: true }),
 				commonjs({ esmExternals: true, sourceMap: false }),
+				json(),
+				replace({
+					values: {
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+					preventAssignment: true,
+				}),
 				terser(),
 			],
 		};
@@ -92,7 +101,19 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 		return {
 			input,
 			external: API_SHARED_DEPS,
-			plugins: [...plugins, nodeResolve(), commonjs({ sourceMap: false }), terser()],
+			plugins: [
+				...plugins,
+				nodeResolve(),
+				commonjs({ sourceMap: false }),
+				json(),
+				replace({
+					values: {
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+					preventAssignment: true,
+				}),
+				terser(),
+			],
 		};
 	}
 }

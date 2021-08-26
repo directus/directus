@@ -25,7 +25,9 @@
 	"dependencies": {
 		"@directus/shared": "9.0.0-rc.91",
 		"@rollup/plugin-commonjs": "^20.0.0",
+		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
+		"@rollup/plugin-replace": "^3.0.0",
 		"@vue/compiler-sfc": "^3.1.1",
 		"chalk": "^4.1.1",
 		"commander": "^8.0.0",
