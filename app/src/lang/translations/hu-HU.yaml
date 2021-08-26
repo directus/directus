@@ -239,19 +239,30 @@ undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
+page_not_found_body: Úgy tűnik, hogy a keresett oldal nem létezik.
 confirm_revert: Visszavonás elfogadása
+confirm_revert_body: Ez visszaállítja az elemet a kiválasztott állapotba.
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
 revision_delta_created: Létrehozva
+revision_delta_created_externally: Külsőleg létrehozva
+revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
 revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 private_user: Privát felhasználó
+revision_preview: Felülvizsgálati előnézet
+updates_made: Végrehajtott frissítések
 leave_comment: Hozzászólás írása...
+post_comment_success: Közzétett hozzászólások
+item_create_success: Létrehozott Elem | Létrehozott Elemek
+item_update_success: Frissített Elem | Frissített Elemek
+item_delete_success: Törölt Elem | Törölt Elemek
 this_collection: Ez a gyűjtemény
 related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
+translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
 format: Formátum
@@ -273,6 +284,8 @@ today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
 date-fns_date: PPP
+date-fns_time: 'ó:pp:mpmp de/du'
+date-fns_time_no_seconds: 'ó:pp de/du'
 month: hónap
 year: év
 select_all: Összes kijelölése
@@ -293,6 +306,7 @@ drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
+import_label: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
 size: Méret
@@ -308,6 +322,12 @@ open: Megnyitás
 open_in_new_window: Megnyitás új ablakban
 foreground_color: Előtérszín
 background_color: Háttérszín
+upload_from_device: Fájl feltöltése Eszközről
+choose_from_library: Fájl választása Könyvtárból
+import_from_url: Fájl importálása URL-ből
+replace_from_device: Fájl cseréje Eszközről
+replace_from_library: Fájl cseréje Könyvtárból
+replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
 collection_key: Gyűjtemény kulcsa
@@ -317,6 +337,7 @@ type: Típus
 creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
+creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
