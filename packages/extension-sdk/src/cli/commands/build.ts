@@ -5,6 +5,7 @@ import ora from 'ora';
 import { OutputOptions as RollupOutputOptions, rollup, RollupOptions, Plugin } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
@@ -86,6 +87,7 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 				...plugins,
 				nodeResolve(),
 				commonjs({ esmExternals: true, sourceMap: false }),
+				json(),
 				replace({
 					values: {
 						'process.env.NODE_ENV': JSON.stringify('production'),
@@ -103,6 +105,7 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 				...plugins,
 				nodeResolve(),
 				commonjs({ sourceMap: false }),
+				json(),
 				replace({
 					values: {
 						'process.env.NODE_ENV': JSON.stringify('production'),
