@@ -164,8 +164,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			} as Filter;
 		}
 
-		function updateLocationFilter(useTileBBox?: boolean) {
-			const locationFilter = getLocationFilter(useTileBBox);
+		function updateLocationFilter() {
+			const locationFilter = getLocationFilter();
 			locationFilterOutdated.value = false;
 			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
 		}
@@ -183,7 +183,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				shouldUpdateCamera.value = false;
 				locationFilterOutdated.value = true;
 				if (autoLocationFilter.value) {
-					updateLocationFilter(true);
+					updateLocationFilter();
 				}
 			}
 		);
