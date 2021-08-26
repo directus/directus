@@ -20,22 +20,40 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Mező szerkesztése
+conditions: Feltételek
+maps: Térképek
+item_revision: Nézet revíziója
 duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
+limit: Korlát
+group: Csoport
+and: És
+or: Vagy
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
 enter_password_to_enable_tfa: Írd be a jelszót a kétfaktoros ellenőrzés bekapcsolásához
 add_field: Új mező
 role_name: Szerepkör neve
+branch: Ág
+leaf: Falevél / Leaf
+indeterminate: Meghatározatlan
+exclusive: Kizárólagos
+children: Gyermekek
+db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához '
 show_archived_items: Archivált elemek megjelenítése
+edited: Érték szerkesztve
 required: Kötelező
+required_for_app_access: Alkalmazás-hozzáféréshez szükséges
 requires_value: Kötelező adat
+create_preset: Alapértelmezések létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Meghívás
+email_already_invited: Az "{email}" e-mail címet már meghívták
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
@@ -55,6 +73,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
+public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
@@ -68,27 +87,66 @@ archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
+reset_system_permissions_to: 'Rendszerjogosultságok visszaállítása a következőkre:'
+reset_system_permissions_copy: Ez a művelet felülírja a rendszergyűjteményekre alkalmazott egyéni engedélyeid. Biztos vagy benne?
+the_following_are_minimum_permissions: Az alábbi minimális engedélyek szükségesek, ha az "Alkalmazás-hozzáférés" engedélyezve van. A jogosultságok ezen felül kiterjeszthetőek, de nem szűkíthetőek.
+app_access_minimum: App hozzáférés minimuma
+recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+unknown_validation_errors: 'A következő rejtett mezőknél érvényesítési hibák merültek fel:'
 validationError:
+  eq: Az érték {valid} kell legyen
+  neq: Az érték nem lehet {invalid}
+  in: 'Lehetséges értékek: {valid}'
+  nin: 'Nem felvehető értékek: {invalid}'
+  contains: Az {substring} része kell legyen az értéknek
+  ncontains: A {substring} nem lehet része az értéknek
+  gt: Az értéknek nagyobbnak kell lennie, mint {valid}
+  gte: Az értéknek nagyobbnak vagy egyenlőnek kell lennie, mint {valid}
+  lt: Az értéknek kevesebbnek kell lennie, mint {valid}
+  lte: Az értéknek kevesebbnek vagy egyenlőnek kell lennie, mint {valid}
+  empty: Üres értéknek kell lennie
+  nempty: Nem lehet üres érték
+  null: null kell legyen
+  nnull: Az érték nem lehet null
+  required: Érték szükséges
   unique: Egyedi érték szükséges
+  regex: Az érték nem megfelelő formátumú
 all_access: Összes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
+nullable: Lehet null
+allow_null_value: NULL érték engedélyezése
+allow_multiple: Többszörös engedélyezése
+allow_multiple_to_be_open: Nyitott Többszörös engedélyezése
+enter_value_to_replace_nulls: Kérjük, adjon meg egy új értéket a mezőben jelenleg található NULL-ok cseréjére!
 field_standard: Normál
+field_presentation: Prezentációk és Aliasok
 field_file: Egyetlen fájl
 field_files: Több fájl egyidejű hozzáadása
 field_m2o: M2O kapcsolat
+field_m2a: M2A kapcsolat
 field_o2m: O2M kapcsolat
 field_m2m: M2M kapcsolat
 field_translations: Fordítások
+field_group: Mezőcsoport
 item_permissions: Elem engedélyek
 field_permissions: Mező engedélyek
+field_validation: Mező érvényesítés
+field_presets: Mező alapérték
+presentation_and_aliases: Prezentációk és Aliasok
+revision_post_update: Ez az elem így nézett ki a frissítés után...
+changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
+no_relational_data: Ne feledd, ez nem tartalmaz relációs adatokat!
+hide_field_on_detail: Mező elrejtése a Részleteken
+show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
 fields_and_layout: Mezők és elrendezések
 field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
+duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -97,8 +155,10 @@ exposure: Megvilágítás
 shutter: Exponálógomb
 iso: ISO
 focal_length: Fókusztávolság
+schema_setup_key: Ezen mező adatbázis-oszlopának neve és API-kulcsa
 create_field: Mező létrehozása
 creating_new_field: 'Új mező ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
@@ -113,14 +173,21 @@ decimal: Tizedes szám
 float: Törtszám
 integer: Egész szám
 json: JSON
+xml: XML
 string: Karaktersor
 text: Szöveg
 time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
+auto_refresh: Automatikus frissítés
+refresh_interval: Frissítés időköz
+no_refresh: Ne frissítsd
+refresh_interval_seconds: Azonnali frissítés | Minden másodpercben | {seconds} másodpercenként
+refresh_interval_minutes: Minden percben | {minutes} percenként
 auto_generate: Automatikusan generált
 this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes szükséges mezőt és kapcsolatokat.
 click_here: Kattints ide
@@ -128,6 +195,9 @@ to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
+no_collections_found: Nem található gyűjtemény.
+new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
+search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
 add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
@@ -140,18 +210,27 @@ default_value: Alapértelmezett érték
 standard_field: Általános mező
 single_file: Egyetlen fájl
 multiple_files: Több fájl egyidejű hozzáadása
+m2o_relationship: Több az Egyhez kapcsolat
+o2m_relationship: Egy a Többhöz kapcsolat
+m2m_relationship: Több a Többhöz kapcsolat
+invalid_item: Érvénytelen elem
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
 note: Jegyzet
+enter_a_value: Adjon meg egy értéket...
+enter_a_placeholder: Adjon meg egy helyőrzőt...
 length: Hossz
+precision_scale: Pontosság és lépték
 readonly: Csak olvasható
 unique: Egyedi
 updated_on: Frissítve
 updated_by: Frissítette
 primary_key: Elsődleges kulcs
+foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
+raw_value: Nyers érték
 edit_raw_value: Érték szerkesztése
 enter_raw_value: Érték megadása...
 clear_value: Érték törlése
@@ -160,19 +239,30 @@ undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
+page_not_found_body: Úgy tűnik, hogy a keresett oldal nem létezik.
 confirm_revert: Visszavonás elfogadása
+confirm_revert_body: Ez visszaállítja az elemet a kiválasztott állapotba.
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
 revision_delta_created: Létrehozva
+revision_delta_created_externally: Külsőleg létrehozva
+revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
 revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 private_user: Privát felhasználó
+revision_preview: Felülvizsgálati előnézet
+updates_made: Végrehajtott frissítések
 leave_comment: Hozzászólás írása...
+post_comment_success: Közzétett hozzászólások
+item_create_success: Létrehozott Elem | Létrehozott Elemek
+item_update_success: Frissített Elem | Frissített Elemek
+item_delete_success: Törölt Elem | Törölt Elemek
 this_collection: Ez a gyűjtemény
 related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
+translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
 format: Formátum
@@ -194,6 +284,8 @@ today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
 date-fns_date: PPP
+date-fns_time: 'ó:pp:mpmp de/du'
+date-fns_time_no_seconds: 'ó:pp de/du'
 month: hónap
 year: év
 select_all: Összes kijelölése
@@ -214,6 +306,7 @@ drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
+import_label: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
 size: Méret
@@ -229,6 +322,12 @@ open: Megnyitás
 open_in_new_window: Megnyitás új ablakban
 foreground_color: Előtérszín
 background_color: Háttérszín
+upload_from_device: Fájl feltöltése Eszközről
+choose_from_library: Fájl választása Könyvtárból
+import_from_url: Fájl importálása URL-ből
+replace_from_device: Fájl cseréje Eszközről
+replace_from_library: Fájl cseréje Könyvtárból
+replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
 collection_key: Gyűjtemény kulcsa
@@ -238,6 +337,7 @@ type: Típus
 creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
+creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
@@ -320,6 +420,7 @@ errors:
   ROUTE_NOT_FOUND: Nem található
   UNKNOWN: Váratlan hiba történt
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
+  NOT_NULL_VIOLATION: Az érték nem lehet null
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -686,6 +787,8 @@ interfaces:
     select_a_collection: Gyűjtemény kiválasztása
   presentation-divider:
     divider: Elválasztó
+  select-dropdown:
+    choices_value_placeholder: Adjon meg egy értéket...
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
@@ -776,6 +879,7 @@ displays:
     default_foreground: Alapértelmezett előtér
     default_background: Alapértelmezett háttér
     format_label: Mindegyik címke formázása
+    choices_value_placeholder: Adjon meg egy értéket...
     choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
@@ -807,3 +911,5 @@ layouts:
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
+  map:
+    field: Geometria

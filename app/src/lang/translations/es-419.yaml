@@ -87,11 +87,11 @@ archive_confirm_count: >-
   Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
+the_following_are_minimum_permissions: Estos son los permisos mínimos requeridos cuando "Acceso a la App" está activado. Puedes ampliar los permisos un poco más, pero no menos que esto.
 app_access_minimum: Minimo Acceso a la Aplicación
 recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
-unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
+unarchive_confirm: '¿Está seguro que desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
 unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
 validationError:
@@ -117,7 +117,7 @@ no_access: Sin acceso
 use_custom: Usar personalizado
 nullable: Deshabilitable
 allow_null_value: Permitir valor NULL
-enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
+enter_value_to_replace_nulls: Ingrese un nuevo valor para reemplazar cualquier valor NULL que se encuentre actualmente en este campo.
 field_standard: Standar
 field_presentation: Presentación y Alias
 field_file: Un solo Archivo
@@ -134,18 +134,18 @@ field_presets: Predefinidos para Campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
-presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
+presets_for_role: 'Valor del campo por defecto para el rol {role}.'
 presentation_and_aliases: Presentación y Alias
-revision_post_update: Así se vería el elemento después de la actualización...
+revision_post_update: Así es como se vería este artículo después de la actualización...
 changes_made: Estos son los cambios específicos que se hicieron...
-no_relational_data: Tener en cuenta que esto no incluye datos relacionales.
-hide_field_on_detail: Ocultar campo en el Detalle
-show_field_on_detail: Mostrar campo en el Detalle
+no_relational_data: Ten en cuenta que esto no incluye datos relacionales.
+hide_field_on_detail: Oculto en Detalle
+show_field_on_detail: Mostrar en Detalle
 delete_field: Borrar Campo
 fields_and_layout: Campos y Diseño
 field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
-duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
+duplicate_where_to: '¿Dónde le gustaría duplicar este campo?'
 language: Idioma
 global: Global
 admins_have_all_permissions: Los Administradores tienen todos los permisos
@@ -158,9 +158,9 @@ schema_setup_key: Nombre de columna de este campo de la base de datos y clave AP
 create_field: Crear campo
 creating_new_field: 'Nuevo campo ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Restablecer Preferencias de Página
+reset_page_preferences: Reestablecer Preferencias de la Página
 hidden_field: Campo oculto
-hidden_on_detail: Oculto en el Detalle
+hidden_on_detail: Oculto en Detalle
 disabled_editing_value: Deshabilitar la edición del valor
 key: Llave
 alias: Alias
@@ -184,12 +184,12 @@ create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
 refresh_interval: Intervalo de actualización
 no_refresh: No actualizar
-refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
+refresh_interval_seconds: Actualizar al Instante | Cada Segundo | Cada {seconds} Segundos
 refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
 auto_generate: Auto Generado
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
-to_manually_setup_translations: configurar manualmente las traducciones.
+to_manually_setup_translations: para configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
@@ -233,7 +233,7 @@ raw_value: Valor sin interpretar
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
-reset_to_default: Restablecer ajustes
+reset_to_default: Restablecer ajustes por defecto
 undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Mostrar Toda La Actividad
