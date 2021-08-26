@@ -83,7 +83,7 @@ function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = [])
 				vue({ preprocessStyles: true }),
 				styles(),
 				...plugins,
-				nodeResolve(),
+				nodeResolve({ browser: true }),
 				commonjs({ esmExternals: true, sourceMap: false }),
 				terser(),
 			],
