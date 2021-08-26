@@ -14,7 +14,9 @@
 				:label="text"
 				:value="value"
 				:disabled="disabled"
-			/>
+			>
+				<v-highlight :text="text" :query="search" />
+			</v-checkbox>
 		</template>
 
 		<v-checkbox-tree-checkbox
@@ -38,7 +40,9 @@
 	</v-list-group>
 
 	<v-list-item v-else-if="!children" v-show="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value" />
+		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
+			<v-highlight :text="text" :query="search" />
+		</v-checkbox>
 	</v-list-item>
 </template>
 

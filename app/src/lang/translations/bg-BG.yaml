@@ -1380,6 +1380,7 @@ layouts:
     cluster_radius: Радиус за групиране
     cluster_minpoints: Минимален размер при групиране
     cluster_maxzoom: Максимално увеличение при групиране
+    auto_location_filter: Напасване към рамката
     field: Геометрия
     invalid_geometry: Невалидна геометрия
     auto_location_filter: Филтриране на данните спрямо границите
