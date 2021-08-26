@@ -1,5 +1,5 @@
 <template>
-	<v-detail class="group-detail">
+	<v-detail :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
 			<v-divider
 				:style="{
@@ -7,7 +7,6 @@
 				}"
 				:class="{ active }"
 				:inline-title="false"
-				:start-open="start === 'open'"
 				large
 				@click="toggle"
 			>

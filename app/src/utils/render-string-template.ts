@@ -1,5 +1,6 @@
+import { cloneDeep } from 'lodash';
 import { render } from 'micromustache';
-import { computed, ComputedRef, Ref } from 'vue';
+import { computed, ComputedRef, Ref, unref } from 'vue';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
 type StringTemplate = {
@@ -9,17 +10,23 @@ type StringTemplate = {
 
 export function renderStringTemplate(
 	template: Ref<string | null> | string,
-	item: Ref<Record<string, any> | undefined | null>
+	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
 ): StringTemplate {
-	const templateString = computed(() => (typeof template === 'string' ? template : template.value));
+	const values = cloneDeep(unref(item));
 
-	const fieldsInTemplate = computed(() => getFieldsFromTemplate(templateString.value));
+	for (const key in values) {
+		if (typeof values[key] === 'object') values[key] = JSON.stringify(values[key]);
+	}
+
+	const templateString = unref(template);
+
+	const fieldsInTemplate = computed(() => getFieldsFromTemplate(templateString));
 
 	const displayValue = computed(() => {
-		if (!item.value || !templateString.value || !fieldsInTemplate.value) return false;
+		if (!values || !templateString || !fieldsInTemplate.value) return false;
 
 		try {
-			return render(templateString.value, item.value, { propsExist: true });
+			return render(templateString, values, { propsExist: true });
 		} catch {
 			return false;
 		}

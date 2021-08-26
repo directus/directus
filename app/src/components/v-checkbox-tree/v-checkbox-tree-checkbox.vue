@@ -14,7 +14,9 @@
 				:label="text"
 				:value="value"
 				:disabled="disabled"
-			/>
+			>
+				<v-highlight :text="text" :query="search" />
+			</v-checkbox>
 		</template>
 
 		<v-checkbox-tree-checkbox
@@ -33,11 +35,14 @@
 			:children="choice[itemChildren]"
 			:disabled="disabled"
 			:show-selection-only="showSelectionOnly"
+			:parent-value="value"
 		/>
 	</v-list-group>
 
 	<v-list-item v-else-if="!children" v-show="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value" />
+		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
+			<v-highlight :text="text" :query="search" />
+		</v-checkbox>
 	</v-list-item>
 </template>
 
@@ -105,6 +110,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		parentValue: {
+			type: [String, Number],
+			default: null,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
@@ -122,7 +131,9 @@ export default defineComponent({
 			if (props.showSelectionOnly) {
 				options = options.filter(
 					(child) =>
-						props.modelValue.includes(child[props.itemValue]) || childrenHaveValueMatch(child[props.itemChildren])
+						props.modelValue.includes(child[props.itemValue]) ||
+						childrenHaveValueMatch(child[props.itemChildren]) ||
+						props.modelValue.includes(props.parentValue)
 				);
 			}
 

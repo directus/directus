@@ -21,10 +21,12 @@
 #'Proxy', 'Intl'
 edit_field: Modifica campo
 conditions: Condizioni
+maps: Mappe
 item_revision: Revisione elemento
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
+limit: Limite
 group: Gruppo
 and: E
 or: O
@@ -171,17 +173,18 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 datetime: DateTime
-decimal: Decimale
+decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
 xml: XML
 string: String
-text: Testo
+text: Text
 time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -380,6 +383,7 @@ no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non ci sono ancora webhook.
 all_items: Tutti gli Elementi
+any: Qualsiasi
 csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
@@ -390,6 +394,7 @@ display_template_not_setup: L'opzione del modello di visualizzazione non è conf
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
 active: Attivo
+inactive: Disattivato
 users: Utenti
 activity: Attività
 webhooks: Webhooks
@@ -444,6 +449,7 @@ errors:
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
@@ -495,6 +501,7 @@ color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
 log_in_with: 'Accedi con {provider}'
+advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
 change_advanced_filter_operator: Cambia Operatore
@@ -521,6 +528,10 @@ operators:
   nempty: Non è vuoto
   all: Contiene queste chiavi
   has: Contiene alcune di queste chiavi
+  intersects: Interseca
+  nintersects: Non interseca
+  intersects_bbox: Interseca il riquadro di delimitazione
+  nintersects_bbox: Non interseca il riquadro di delimitazione
 loading: Caricamento in corso...
 drop_to_upload: Rilascia per caricare
 item: Elemento
@@ -564,6 +575,7 @@ user: Utente
 no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
+presets_only: Solo Preset
 create: Creare
 on_create: Alla Creazione
 on_update: In aggiornamento
@@ -579,6 +591,7 @@ label: Etichetta
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
+quality: Qualità
 width: Larghezza
 height: Altezza
 source: Sorgente
@@ -743,7 +756,7 @@ fields:
     $thumbnail: Miniatura
     title: Titolo
     description: Descrizione
-    tags: Tags
+    tags: Tag
     location: Percorso
     storage: Archiviazione
     filename_disk: Nome File (Disco)
@@ -772,27 +785,53 @@ fields:
     location: Percorso
     title: Titolo
     description: Descrizione
-    tags: Tags
+    tags: Tag
+    user_preferences: Preferenze utente
     language: Linguaggio
     theme: Tema
+    theme_auto: Automatico (in base al sistema)
+    theme_light: Tema chiaro
+    theme_dark: Tema scuro
     tfa_secret: Autenticazione a due fattori
+    admin_options: Opzioni Amministratore
     status: Stato
+    status_draft: Bozza
+    status_invited: Disattivato
+    status_active: Attivo
+    status_suspended: Sospeso
+    status_archived: Archiviato
     role: Ruolo
     token: Token
+    token_placeholder: Inserisci un token di accesso sicuro...
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stile Mapbox
+    mapbox_key: Access Token di Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
+    additional_transforms: Trasformazioni aggiuntive
     project_name: Nome del progetto
     project_url: URL del Progetto
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
+    public_pages: Pagine pubbliche
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     auth_password_policy: Criteri Password di accesso
     auth_login_attempts: Tentativi di accesso
+    files_and_thumbnails: File e miniature
+    storage_default_folder: Cartella predefinita di archiviazione
     storage_asset_presets: Preimpostazioni salvataggio risorse
     storage_asset_transform: Trasformazione salvataggio risorse
+    overrides: Personalizzazioni App
     custom_css: CSS personalizzato
   directus_fields:
     collection: Nome della Raccolta
@@ -813,11 +852,100 @@ fields:
     users: Utenti nel ruolo
     module_list: Navigazione del modulo
     collection_list: Navigazione Raccolte
+  directus_webhooks:
+    name: Nome
+    method: Metodo
+    status: Stato
+    data: Dati
+    data_label: Invia dati evento
+    triggers: Trigger
+    actions: Azioni
 field_options:
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
     do_not_track_anything: Non Tracciare nulla
+    collection_setup: Configurazione Raccolta
+    note_placeholder: Una descrizione di questa raccolta...
+    hidden_label: Nascondi nell'app
+    singleton: Tratta come oggetto singolo
+    language: Linguaggio
+    translation: Inserisci una traduzione...
+    archive_divider: Archivio
+    archive_field: Scegli un campo...
+    archive_app_filter: Abilita filtro archiviati in app
+    archive_value: Valore impostato all'archiviazione...
+    unarchive_value: Valore impostato al ripristino...
+    divider: Ordina
+    sort_field: Scegli un campo...
+    accountability_divider: Autorizzazioni
+  directus_files:
+    title: Un titolo unico...
+    description: Una descrizione opzionale...
+    location: Una posizione opzionale...
+    storage_divider: Denominazione File
+    filename_disk: Nome sul disco...
+    filename_download: Nome al download...
+  directus_roles:
+    name: Nome unico per questo ruolo...
+    description: Una descrizione per questo ruolo...
+    ip_access: Aggiungi gli indirizzi IP consentiti, lascia vuoto per consentirli tutti...
+    fields:
+      icon_name: Icona
+      name_name: Nome
+      name_placeholder: Inserisci un titolo...
+      link_name: Link
+      link_placeholder: URL relativo o assoluto...
+    collection_list:
+      group_name_addLabel: Aggiungi Nuovo Gruppo...
+      fields:
+        group_name: Nome del gruppo
+        group_placeholder: Etichetta questo gruppo...
+        type_name: Tipo
+        choices_always: Sempre aperto
+        choices_start_open: Inizia aperto
+        choises_start_collapsed: Inizia chiuso
+      collections_name: Raccolte
+      collections_addLabel: Aggiungi etichetta
+    project_name_placeholder: Il mio progetto...
+    project_color_note: Sfondo per l'accesso e il logo
+    project_logo_note: SVG/PNG 40x40 bianca
+    public_divider_title: Pagine pubbliche
+    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
+    security_divider_title: Sicurezza
+    auth_password_policy:
+      none_text: Nessuna – non consigliato
+      weak_text: Debole – minimo 8 caratteri
+      strong_text: Forte – maiuscole / minuscole / numeri / simboli
+    storage_asset_presets:
+      fit:
+        contain_text: Contieni (preserva le proporzioni)
+        cover_text: Ricopri (forza dimensione esatta)
+        inside_text: Adatta all'interno
+        outside_text: Adatta all'esterno
+    files_divider_title: File e miniature
+    overrides_divider_title: Personalizzazioni App
+  directus_users:
+    preferences_divider: Preferenze utente
+    dropdown_auto: Automatico (in base al sistema)
+    dropdown_light: Tema chiaro
+    dropdown_dark: Tema scuro
+    admin_divider: Opzioni Amministratore
+    status_dropdown_draft: Bozza
+    status_dropdown_invited: Invitato
+    status_dropdown_active: Attivo
+    status_dropdown_suspended: Sospeso
+    status_dropdown_archived: Archiviato
+    token: Inserisci un token di accesso sicuro...
+  directus_webhooks:
+    status_options_active: Attivo
+    status_options_inactive: Disattivato
+    data_label: Invia dati evento
+    triggers_divider: Trigger
+    actions_create: Creare
+    actions_update: Aggiornare
+    actions_delete: Elimina
+    actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
@@ -897,13 +1025,13 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
   group-accordion:
     name: Accordion
     description: Mostra i campi o i gruppi come sezioni in un accordion
+    start: Inizio
     all_closed: Tutto chiuso
     first_opened: Apri la prima sezione
     all_opened: Tutto aperto
@@ -1024,6 +1152,22 @@ interfaces:
     box: Blocco / In linea
     imageToken: Token Immagine
     imageToken_label: Token (statico) da aggiungere alle sorgenti delle immagini
+  map:
+    map: Mappa
+    description: Seleziona una posizione su una mappa
+    zoom: Zoom
+    geometry_type: Tipo di geometria
+    geometry_format: Formato geometria
+    default_view: Vista predefinita
+    invalid_options: Opzioni non valide
+    invalid_format: Formato non valido ({format})
+    unexpected_geometry: Atteso {expected}, ricevuto {got}.
+    fit_bounds: Adatta la vista ai dati
+    native: Nativa
+    geojson: GeoJSON
+    lnglat: Longitudine, Latitudine
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Avviso
     description: Mostra un avviso breve
@@ -1053,13 +1197,13 @@ interfaces:
     description: Seleziona un numero usando un cursore
     always_show_value: Mostra sempre il valore
   tags:
-    tags: Tags
+    tags: Tag
     description: Seleziona o aggiungi tag
     whitespace: Spazio
     hyphen: Sostituisci con trattino
     underscore: Sostituisci con trattino basso
     remove: Rimuovi gli spazi
-    capitalization: Capitalizzazione
+    capitalization: Maiuscole/minuscole
     uppercase: Converti Maiuscole
     lowercase: Converti Minuscole
     auto_formatter: Usa la formattazione automatica del titolo
@@ -1113,7 +1257,7 @@ interfaces:
     description: Una ricerca durante la digitazione per valori API esterni.
     results_path: Percorso dei risultati
     value_path: Percorso del valore
-    trigger: Attivazione
+    trigger: Trigger
     rate: Intervallo
   group-raw:
     name: Gruppo grezzo
@@ -1232,3 +1376,17 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Data inizio
     end_date_field: Campo Data fine
+  map:
+    map: Mappa
+    basemap: Mappa base
+    layers: Livelli
+    edit_custom_layers: Modifica i livelli
+    cluster_options: Opzioni di clustering
+    cluster: Attiva il clustering
+    cluster_radius: Raggio del Cluster
+    cluster_minpoints: Dimensione minima del cluster
+    cluster_maxzoom: Zoom massimo per il clustering
+    field: Geometria
+    invalid_geometry: Geometria non valida
+    auto_location_filter: Filtra sempre i dati al rettangolo di selezione
+    search_this_area: Cerca in quest'area

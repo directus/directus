@@ -700,6 +700,7 @@ fields:
     theme: السمة
     tfa_secret: التحقق بخطوتين
     status: حالة
+    status_active: مفعل
     role: الدور
     last_page: آخر صفحة
     last_access: آخر وصول
@@ -720,11 +721,34 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+  directus_webhooks:
+    name: الاسم
+    status: حالة
 field_options:
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
+    collection_setup: لا توجد مجموعات الإعداد
+    singleton: معاملته ككائن واحد
+    language: لغة
+    archive_divider: أرشفة
+    divider: رتب
+  directus_roles:
+    fields:
+      icon_name: أيقونة
+      name_name: الاسم
+      name_placeholder: أدخل عنوانًا...
+    collection_list:
+      fields:
+        type_name: النوع
+      collections_name: مجموعات
+  directus_users:
+    status_dropdown_active: مفعل
+  directus_webhooks:
+    status_options_active: مفعل
+    actions_create: انشاء
+    actions_update: تحديث
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
@@ -868,6 +892,8 @@ interfaces:
     display_template: عرض القالب
   input-rich-text-md:
     description: أدخل و معاينة markdown
+  map:
+    zoom: تكبير/تصغير
   list-o2m:
     description: حدد عدة عناصر ذات صلة
   system-folder:

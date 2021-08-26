@@ -5,6 +5,7 @@ import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
 import { Filter, Query, Relation, SchemaOverview } from '../types';
 import { getRelationType } from './get-relation-type';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -86,6 +87,7 @@ export default function applyQuery(
  *   )
  * ```
  */
+
 export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
@@ -298,15 +300,13 @@ export function applyFilter(
 
 			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
+					query.where(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
+					query.where(key, '!=', '');
 				});
 			}
 
@@ -402,6 +402,23 @@ export function applyFilter(
 				if (typeof value === 'string') value = value.split(',');
 
 				dbQuery[logical].whereNotBetween(key, value);
+			}
+
+			const geometryHelper = getGeometryHelper();
+
+			if (operator == '_intersects') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+			}
+
+			if (operator == '_nintersects') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+			}
+			if (operator == '_intersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+			}
+
+			if (operator == '_nintersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
 			}
 		}
 

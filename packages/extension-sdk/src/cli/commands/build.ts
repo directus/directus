@@ -2,9 +2,11 @@ import path from 'path';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
-import { OutputOptions as RollupOutputOptions, rollup, RollupOptions } from 'rollup';
+import { OutputOptions as RollupOutputOptions, rollup, RollupOptions, Plugin } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
@@ -12,6 +14,7 @@ import { EXTENSION_PKG_KEY, EXTENSION_TYPES, APP_SHARED_DEPS, API_SHARED_DEPS } 
 import { isAppExtension, isExtension, validateExtensionManifest } from '@directus/shared/utils';
 import { ExtensionManifestRaw } from '@directus/shared/types';
 import log from '../utils/logger';
+import loadConfig from '../utils/load-config';
 
 type BuildOptions = { type: string; input: string; output: string; force: boolean };
 
@@ -55,11 +58,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 		process.exit(1);
 	}
 
+	const config = await loadConfig();
+
 	const isApp = isAppExtension(type);
 
 	const spinner = ora('Building Directus extension...').start();
 
-	const rollupOptions = getRollupOptions(isApp, input);
+	const rollupOptions = getRollupOptions(isApp, input, config.plugins);
 	const rollupOutputOptions = getRollupOutputOptions(isApp, output);
 
 	const bundle = await rollup(rollupOptions);
@@ -71,7 +76,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 	spinner.succeed(chalk.bold('Done'));
 }
 
-function getRollupOptions(isApp: boolean, input: string): RollupOptions {
+function getRollupOptions(isApp: boolean, input: string, plugins: Plugin[] = []): RollupOptions {
 	if (isApp) {
 		return {
 			input,
@@ -79,8 +84,16 @@ function getRollupOptions(isApp: boolean, input: string): RollupOptions {
 			plugins: [
 				vue({ preprocessStyles: true }),
 				styles(),
-				nodeResolve(),
+				...plugins,
+				nodeResolve({ browser: true }),
 				commonjs({ esmExternals: true, sourceMap: false }),
+				json(),
+				replace({
+					values: {
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+					preventAssignment: true,
+				}),
 				terser(),
 			],
 		};
@@ -88,7 +101,19 @@ function getRollupOptions(isApp: boolean, input: string): RollupOptions {
 		return {
 			input,
 			external: API_SHARED_DEPS,
-			plugins: [nodeResolve(), commonjs({ sourceMap: false }), terser()],
+			plugins: [
+				...plugins,
+				nodeResolve(),
+				commonjs({ sourceMap: false }),
+				json(),
+				replace({
+					values: {
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+					preventAssignment: true,
+				}),
+				terser(),
+			],
 		};
 	}
 }

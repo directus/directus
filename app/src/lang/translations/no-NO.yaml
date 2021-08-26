@@ -423,6 +423,7 @@ fields:
     tags: Etiketter
     language: Språk
     status: Status
+    status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
   directus_settings:
@@ -434,6 +435,26 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
+field_options:
+  directus_collections:
+    language: Språk
+    archive_divider: Arkiv
+    divider: Sorter
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collection_list:
+      collections_name: Kolleksjoner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Opprett
+    actions_update: Oppdater
 comment: Kommenter
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..

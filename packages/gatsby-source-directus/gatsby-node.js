@@ -1,27 +1,12 @@
 const invariant = require('invariant');
-const Directus = require('@directus/sdk-js');
-const { sourceNodes } = require('@lnfusion/gatsby-source-graphql');
+const { Directus } = require('@directus/sdk');
+const { sourceNodes } = require('gatsby-source-graphql/gatsby-node');
 const { createRemoteFileNode } = require('gatsby-source-filesystem');
 
 const ms = require('ms');
 const chalk = require('chalk');
 
-/**
- * Stores authentication data in memory
- */
-class MemoryStore {
-	constructor() {
-		this.values = {};
-	}
-
-	async getItem(key) {
-		return this.values[key];
-	}
-
-	async setItem(key, value) {
-		this.values[key] = value;
-	}
-}
+let authToken;
 
 /**
  * Normalizes Directus urls.
@@ -65,6 +50,9 @@ exports.sourceNodes = async (gatsby, options) => {
 
 	const hasAuth = !!auth;
 	const hasToken = auth?.token && auth?.token?.length > 0;
+	if (hasToken) {
+		authToken = auth?.token;
+	}
 	const hasEmail = auth?.email && auth?.email?.length > 0;
 	const hasPassword = auth?.password && auth?.password?.length > 0;
 	const hasCredentials = hasEmail && hasPassword;
@@ -101,7 +89,7 @@ exports.sourceNodes = async (gatsby, options) => {
 
 	let endpointParams = {};
 	if (hasAuth && hasToken) {
-		endpointParams.access_token = auth?.token;
+		endpointParams.access_token = authToken;
 	}
 
 	let endpoints = normalizeEndpoint(url, endpointParams);
@@ -114,20 +102,16 @@ exports.sourceNodes = async (gatsby, options) => {
 			`can be either a number (seconds) or a string (5s, 1m, ...)`
 	);
 
-	const directus = new Directus(endpoints.base, {
-		auth: {
-			mode: 'json',
-			autoRefresh: true,
-			storage: new MemoryStore(),
-		},
-	});
+	const directus = new Directus(endpoints.base);
 
+	let authResult;
 	if (hasAuth && !hasToken) {
 		try {
-			await directus.auth.login({
+			authResult = await directus.auth.login({
 				email: auth?.email,
 				password: auth?.password,
 			});
+			authToken = authResult?.access_token;
 		} catch (err) {
 			throw new Error(`Directus authentication failed with: ${err.message}\nIs the credentials valid?`);
 		}
@@ -141,13 +125,17 @@ exports.sourceNodes = async (gatsby, options) => {
 			Object.assign(obj, (await graphql?.headers()) || {});
 		}
 
-		if (!hasToken) {
-			return obj;
+		if (hasToken) {
+			return Object.assign(obj, {
+				Authorization: `Bearer ${auth?.token}`,
+			});
 		}
 
-		return Object.assign(obj, {
-			Authorization: `Bearer ${auth?.token}`,
-		});
+		if (authResult?.access_token) {
+			return Object.assign(obj, {
+				Authorization: `Bearer ${authResult?.access_token}`,
+			});
+		}
 	};
 
 	return await sourceNodes(gatsby, {
@@ -169,25 +157,25 @@ exports.sourceNodes = async (gatsby, options) => {
 exports.createResolvers = async ({ actions, cache, createNodeId, createResolvers, store, reporter }, options) => {
 	const { createNode } = actions;
 
-	const { url, auth } = options;
+	const { url } = options;
 
 	let endpoints = normalizeEndpoint(url);
 
 	await createResolvers({
 		DirectusData_directus_files: {
 			imageFile: {
-				type: 'File',
-				async resolve(source) {
+				type: `File`,
+				resolve(source) {
 					if (!source || !source.id) {
 						return null;
 					}
-					return await createRemoteFileNode({
+					return createRemoteFileNode({
 						url: `${endpoints.base}assets/${source.id}`,
 						store,
 						cache,
 						createNode,
 						createNodeId,
-						httpHeaders: { Authorization: `Bearer ${auth.token}` },
+						httpHeaders: { Authorization: `Bearer ${authToken}` },
 						reporter,
 					});
 				},
