@@ -1,5 +1,5 @@
 import { IStorage } from '../../storage';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
 
 export type AxiosTransportRefreshHandler = () => Promise<void>;
@@ -133,9 +133,14 @@ export class AxiosTransport implements ITransport {
 
 			return content;
 		} catch (err) {
+			if (!err || err instanceof Error === false) {
+				throw err;
+			}
+
 			if (axios.isAxiosError(err)) {
 				const data = err.response?.data;
-				throw new TransportError<T>(err, {
+
+				throw new TransportError<T>(err as AxiosError, {
 					raw: err.response?.data,
 					status: err.response?.status,
 					statusText: err.response?.statusText,
@@ -145,7 +150,8 @@ export class AxiosTransport implements ITransport {
 					errors: data?.errors,
 				});
 			}
-			throw new TransportError<T>(err);
+
+			throw new TransportError<T>(err as Error);
 		}
 	}
 
