@@ -86,7 +86,7 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 					path: extensionPath,
 					name: extensionName,
 					type: extensionType,
-					entrypoint: 'index.js',
+					entrypoint: 'index.cjs',
 					local: true,
 					root: true,
 				});

@@ -9,7 +9,7 @@ Custom endpoints are dynamically loaded from within your project's `/extensions/
 extensions directory is configurable within your env file, and may be located elsewhere.
 
 Each endpoint is registered using a registration function within a scoped directory. For example, to create a custom
-`/my-endpoint/` endpoint, you would add the following function to `/extensions/endpoints/my-endpoint/index.js`.
+`/my-endpoint/` endpoint, you would add the following function to `/extensions/endpoints/my-endpoint/index.cjs`.
 
 ```js
 module.exports = function registerEndpoint(router) {
@@ -52,7 +52,7 @@ npx directus start
 ## Full Example:
 
 ```js
-// extensions/endpoints/recipes/index.js
+// extensions/endpoints/recipes/index.cjs
 
 module.exports = function registerEndpoint(router, { services, exceptions }) {
 	const { ItemsService } = services;

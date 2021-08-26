@@ -11,7 +11,7 @@ Custom hooks are dynamically loaded from within your extensions folder. By defau
 ### Default Standalone Hook Location
 
 ```
-/extensions/hooks/<hook-id>/index.js
+/extensions/hooks/<hook-id>/index.cjs
 ```
 
 ## 2. Define the Event
@@ -215,7 +215,7 @@ npx directus start
 
 ## Full Example
 
-`extensions/hooks/sync-with-external/index.js`:
+`extensions/hooks/sync-with-external/index.cjs`:
 
 ```js
 const axios = require('axios');
