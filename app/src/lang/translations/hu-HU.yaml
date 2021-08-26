@@ -210,6 +210,9 @@ default_value: Alapértelmezett érték
 standard_field: Általános mező
 single_file: Egyetlen fájl
 multiple_files: Több fájl egyidejű hozzáadása
+m2o_relationship: Több az Egyhez kapcsolat
+o2m_relationship: Egy a Többhöz kapcsolat
+m2m_relationship: Több a Többhöz kapcsolat
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
