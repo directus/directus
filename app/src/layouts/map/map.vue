@@ -14,7 +14,17 @@
 			@featureclick="handleClick"
 			@featureselect="updateSelection"
 			@moveend="cameraOptions = $event"
+			@fitdata="removeLocationFilter"
 		/>
+
+		<v-button
+			v-if="!autoLocationFilter && locationFilterOutdated"
+			small
+			class="location-filter"
+			@click="updateLocationFilter"
+		>
+			{{ t('layouts.map.search_this_area') }}
+		</v-button>
 
 		<transition name="fade">
 			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
@@ -36,7 +46,10 @@
 				{{ geojsonError }}
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-			<slot v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0)" name="no-results" />
+			<slot
+				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
+				name="no-results"
+			/>
 		</transition>
 
 		<template v-if="loading || itemCount > 0">
@@ -118,6 +131,10 @@ export default defineComponent({
 			page,
 			toPage,
 			limit,
+			autoLocationFilter,
+			locationFilterOutdated,
+			updateLocationFilter,
+			removeLocationFilter,
 		} = toRefs(layoutState.value);
 
 		return {
@@ -145,6 +162,10 @@ export default defineComponent({
 			toPage,
 			limit,
 			n,
+			autoLocationFilter,
+			locationFilterOutdated,
+			updateLocationFilter,
+			removeLocationFilter,
 		};
 	},
 });
@@ -189,6 +210,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout-map {
+	position: relative;
 	width: 100%;
 	height: calc(100% - 65px);
 }
@@ -199,6 +221,13 @@ export default defineComponent({
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
+}
+
+.location-filter {
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	transform: translate(-50%, 0%);
 }
 
 .v-progress-circular {
@@ -227,6 +256,11 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
+	pointer-events: none;
+}
+
+.v-info > :deep(.v-button) {
+	pointer-events: initial;
 }
 
 .footer {
@@ -238,7 +272,6 @@ export default defineComponent({
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
-	padding-top: 40px;
 	overflow: hidden;
 	background-color: transparent !important;
 
