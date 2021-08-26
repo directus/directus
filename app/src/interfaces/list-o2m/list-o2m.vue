@@ -298,7 +298,9 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				async () => {
+				async (newVal, oldVal) => {
+					if (isEqual(newVal, oldVal)) return;
+
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 

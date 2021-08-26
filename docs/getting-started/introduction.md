@@ -169,4 +169,5 @@ by our Core Team and community contributors.
 
 ### Awesome List
 
-Head to [awesome-directus](https://github.com/directus-community/awesome-directus) for a list of awesome things related to Directus.
+Head to [awesome-directus](https://github.com/directus-community/awesome-directus) for a list of awesome things related
+to Directus.

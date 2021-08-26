@@ -144,6 +144,13 @@ fields:
     translation: 항목 명 번역
   directus_roles:
     name: 권한 이름
+field_options:
+  directus_collections:
+    language: 언어
+  directus_roles:
+    collection_list:
+      fields:
+        type_name: 타입
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력

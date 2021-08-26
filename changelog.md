@@ -7,127 +7,212 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 ### :sparkles: New Features
 
 - **Extensions**
-  - [#7332](https://github.com/directus/directus/pull/7332) Add basic support for a config file to extension building ([@nickrum](https://github.com/nickrum))
+  - [#7332](https://github.com/directus/directus/pull/7332) Add basic support for a config file to extension building
+    ([@nickrum](https://github.com/nickrum))
 - **API**
-  - [#5684](https://github.com/directus/directus/pull/5684) Add support for Geometry type, add Map Layout & Interface ([@Oreilles](https://github.com/Oreilles))
+  - [#5684](https://github.com/directus/directus/pull/5684) Add support for Geometry type, add Map Layout & Interface
+    ([@Oreilles](https://github.com/Oreilles))
 - **App**
-  - [#5684](https://github.com/directus/directus/pull/5684) Add support for Geometry type, add Map Layout & Interface ([@Oreilles](https://github.com/Oreilles))
+  - [#5684](https://github.com/directus/directus/pull/5684) Add support for Geometry type, add Map Layout & Interface
+    ([@Oreilles](https://github.com/Oreilles))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#7552](https://github.com/directus/directus/pull/7552) Improve stability of tree-view select interface ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7505](https://github.com/directus/directus/pull/7505) Set simple_select mode in map interface when the value is loaded. ([@Oreilles](https://github.com/Oreilles))
-  - [#7462](https://github.com/directus/directus/pull/7462) Improve conditional fields ([@Nitwel](https://github.com/Nitwel))
-  - [#7459](https://github.com/directus/directus/pull/7459) Allow cancelling the creation of custom permissions ([@Nitwel](https://github.com/Nitwel))
-  - [#7456](https://github.com/directus/directus/pull/7456) Render href attributes on router-link ([@nickrum](https://github.com/nickrum))
+  - [#7552](https://github.com/directus/directus/pull/7552) Improve stability of tree-view select interface
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7505](https://github.com/directus/directus/pull/7505) Set simple_select mode in map interface when the value is
+    loaded. ([@Oreilles](https://github.com/Oreilles))
+  - [#7462](https://github.com/directus/directus/pull/7462) Improve conditional fields
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7459](https://github.com/directus/directus/pull/7459) Allow cancelling the creation of custom permissions
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7456](https://github.com/directus/directus/pull/7456) Render href attributes on router-link
+    ([@nickrum](https://github.com/nickrum))
 - **gatsby-source-directus**
-  - [#7528](https://github.com/directus/directus/pull/7528) Image auth ([@jacobrienstra](https://github.com/jacobrienstra))
+  - [#7528](https://github.com/directus/directus/pull/7528) Image auth
+    ([@jacobrienstra](https://github.com/jacobrienstra))
 - **API**
-  - [#7501](https://github.com/directus/directus/pull/7501) Don't allow `empty` filter for non-string types. Add `null` filter where appropriate. ([@Oreilles](https://github.com/Oreilles))
-  - [#7416](https://github.com/directus/directus/pull/7416) Fixes for GraphQL variables in HTTP GET requests ([@smilledge](https://github.com/smilledge))
+  - [#7501](https://github.com/directus/directus/pull/7501) Don't allow `empty` filter for non-string types. Add `null`
+    filter where appropriate. ([@Oreilles](https://github.com/Oreilles))
+  - [#7416](https://github.com/directus/directus/pull/7416) Fixes for GraphQL variables in HTTP GET requests
+    ([@smilledge](https://github.com/smilledge))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#7549](https://github.com/directus/directus/pull/7549) Fix field template removing text ([@Nitwel](https://github.com/Nitwel))
-  - [#7543](https://github.com/directus/directus/pull/7543) Fix running useFieldTree on every keypress ([@Nitwel](https://github.com/Nitwel))
-  - [#7525](https://github.com/directus/directus/pull/7525) Don't sort filters alphabetical ([@Nitwel](https://github.com/Nitwel))
-  - [#7515](https://github.com/directus/directus/pull/7515)  Hide filter input when filter operator is null/nnull.  ([@Oreilles](https://github.com/Oreilles))
-  - [#7513](https://github.com/directus/directus/pull/7513) Prevent 400 error on translations load for to-be-created items ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7512](https://github.com/directus/directus/pull/7512) Explicitly nullify user/role when the other is set in presets ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7509](https://github.com/directus/directus/pull/7509) Allow fetching singleton content through pk route ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7462](https://github.com/directus/directus/pull/7462) Improve conditional fields ([@Nitwel](https://github.com/Nitwel))
-  - [#7460](https://github.com/directus/directus/pull/7460) Add edge case using mysql for tinyint as boolean ([@Nitwel](https://github.com/Nitwel))
-  - [#7459](https://github.com/directus/directus/pull/7459) Allow cancelling the creation of custom permissions ([@Nitwel](https://github.com/Nitwel))
-  - [#7452](https://github.com/directus/directus/pull/7452) Add simple audio support for WYSIWYG ([@Nitwel](https://github.com/Nitwel))
-  - [#7439](https://github.com/directus/directus/pull/7439) remove list-style for v-list ([@azrikahar](https://github.com/azrikahar))
-  - [#7379](https://github.com/directus/directus/pull/7379) Export Collection button now shows collection name not table name ([@jaycammarano](https://github.com/jaycammarano))
-  - [#7371](https://github.com/directus/directus/pull/7371) Fix english string after #7358 ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#7549](https://github.com/directus/directus/pull/7549) Fix field template removing text
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7543](https://github.com/directus/directus/pull/7543) Fix running useFieldTree on every keypress
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7525](https://github.com/directus/directus/pull/7525) Don't sort filters alphabetical
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7515](https://github.com/directus/directus/pull/7515) Hide filter input when filter operator is null/nnull.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#7513](https://github.com/directus/directus/pull/7513) Prevent 400 error on translations load for to-be-created
+    items ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7512](https://github.com/directus/directus/pull/7512) Explicitly nullify user/role when the other is set in
+    presets ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7509](https://github.com/directus/directus/pull/7509) Allow fetching singleton content through pk route
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7462](https://github.com/directus/directus/pull/7462) Improve conditional fields
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7460](https://github.com/directus/directus/pull/7460) Add edge case using mysql for tinyint as boolean
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7459](https://github.com/directus/directus/pull/7459) Allow cancelling the creation of custom permissions
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7452](https://github.com/directus/directus/pull/7452) Add simple audio support for WYSIWYG
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7439](https://github.com/directus/directus/pull/7439) remove list-style for v-list
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#7379](https://github.com/directus/directus/pull/7379) Export Collection button now shows collection name not table
+    name ([@jaycammarano](https://github.com/jaycammarano))
+  - [#7371](https://github.com/directus/directus/pull/7371) Fix english string after #7358
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
 - **sdk**
-  - [#7514](https://github.com/directus/directus/pull/7514) Fix SDK request URL when updating fields ([@smilledge](https://github.com/smilledge))
+  - [#7514](https://github.com/directus/directus/pull/7514) Fix SDK request URL when updating fields
+    ([@smilledge](https://github.com/smilledge))
 - **API**
-  - [#7501](https://github.com/directus/directus/pull/7501) Don't allow `empty` filter for non-string types. Add `null` filter where appropriate. ([@Oreilles](https://github.com/Oreilles))
-  - [#7486](https://github.com/directus/directus/pull/7486) Fix server error when a postgres view contains geometry columns ([@Oreilles](https://github.com/Oreilles))
-  - [#7416](https://github.com/directus/directus/pull/7416) Fixes for GraphQL variables in HTTP GET requests ([@smilledge](https://github.com/smilledge))
-  - [#7392](https://github.com/directus/directus/pull/7392) Fix typecasting of required field ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7501](https://github.com/directus/directus/pull/7501) Don't allow `empty` filter for non-string types. Add `null`
+    filter where appropriate. ([@Oreilles](https://github.com/Oreilles))
+  - [#7486](https://github.com/directus/directus/pull/7486) Fix server error when a postgres view contains geometry
+    columns ([@Oreilles](https://github.com/Oreilles))
+  - [#7416](https://github.com/directus/directus/pull/7416) Fixes for GraphQL variables in HTTP GET requests
+    ([@smilledge](https://github.com/smilledge))
+  - [#7392](https://github.com/directus/directus/pull/7392) Fix typecasting of required field
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 
 ### :memo: Documentation
 
-- [#7516](https://github.com/directus/directus/pull/7516) Link to awesome-directus in introduction doc ([@paescuj](https://github.com/paescuj))
-- [#7479](https://github.com/directus/directus/pull/7479) Add docker compose update instructions ([@tanc](https://github.com/tanc))
+- [#7516](https://github.com/directus/directus/pull/7516) Link to awesome-directus in introduction doc
+  ([@paescuj](https://github.com/paescuj))
+- [#7479](https://github.com/directus/directus/pull/7479) Add docker compose update instructions
+  ([@tanc](https://github.com/tanc))
 
 ### :package: Dependency Updates
 
-- [#7548](https://github.com/directus/directus/pull/7548) update dependency tedious to v12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7547](https://github.com/directus/directus/pull/7547) update dependency tedious to v11.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7542](https://github.com/directus/directus/pull/7542) update dependency rollup to v2.56.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7539](https://github.com/directus/directus/pull/7539) update dependency vuedraggable to v4.1.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7536](https://github.com/directus/directus/pull/7536) update dependency pino-http to v5.7.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7534](https://github.com/directus/directus/pull/7534) update dependency pino to v6.13.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7532](https://github.com/directus/directus/pull/7532) update dependency eslint-plugin-prettier to v3.4.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7530](https://github.com/directus/directus/pull/7530) update dependency nock to v13.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7529](https://github.com/directus/directus/pull/7529) update dependency @types/js-yaml to v4.0.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7524](https://github.com/directus/directus/pull/7524) pin dependency gatsby-source-graphql to 3.12.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7523](https://github.com/directus/directus/pull/7523) Update dependencies of gatsby-source-directus ([@jacobrienstra](https://github.com/jacobrienstra))
-- [#7521](https://github.com/directus/directus/pull/7521) update dependency knex to v0.95.10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7520](https://github.com/directus/directus/pull/7520) update dependency codemirror to v5.62.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7510](https://github.com/directus/directus/pull/7510) update dependency @types/jsonwebtoken to v8.5.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7504](https://github.com/directus/directus/pull/7504) pin dependency jest-environment-jsdom to 27.0.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7503](https://github.com/directus/directus/pull/7503) update dependency pinia to v2.0.0-rc.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7495](https://github.com/directus/directus/pull/7495) update dependency ts-node to v10.2.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7482](https://github.com/directus/directus/pull/7482) update dependency gatsby-source-filesystem to v3.12.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7472](https://github.com/directus/directus/pull/7472) update dependency supertest to v6.1.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7467](https://github.com/directus/directus/pull/7467) update vue monorepo to v3.2.4 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7461](https://github.com/directus/directus/pull/7461) update dependency sharp to ^0.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7453](https://github.com/directus/directus/pull/7453) update dependency ts-jest to v27.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7449](https://github.com/directus/directus/pull/7449) update dependency simple-git-hooks to v2.6.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7448](https://github.com/directus/directus/pull/7448) update dependency sass to v1.38.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7444](https://github.com/directus/directus/pull/7444) update vue monorepo to v3.2.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7440](https://github.com/directus/directus/pull/7440) update dependency @types/mime-types to v2.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7438](https://github.com/directus/directus/pull/7438) update typescript-eslint monorepo to v4.29.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7437](https://github.com/directus/directus/pull/7437) update dependency @mapbox/mapbox-gl-geocoder to v4.7.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7425](https://github.com/directus/directus/pull/7425) update dependency vite to v2.5.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7424](https://github.com/directus/directus/pull/7424) update dependency marked to v3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7418](https://github.com/directus/directus/pull/7418) update dependency @types/markdown-it to v12.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7407](https://github.com/directus/directus/pull/7407) update dependency dompurify to v2.3.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7387](https://github.com/directus/directus/pull/7387) update dependency npm to v7.20.6 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7384](https://github.com/directus/directus/pull/7384) pin dependencies ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7381](https://github.com/directus/directus/pull/7381) update dependency macos-release to v3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7380](https://github.com/directus/directus/pull/7380) update dependency directory-tree to v2.3.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7376](https://github.com/directus/directus/pull/7376) update dependency directory-tree to v2.3.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7375](https://github.com/directus/directus/pull/7375) update dependency nanoid to v3.1.25 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7365](https://github.com/directus/directus/pull/7365) update dependency nanoid to v3.1.24 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7360](https://github.com/directus/directus/pull/7360) update dependency supertest to v6.1.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7355](https://github.com/directus/directus/pull/7355) update vue monorepo to v3.2.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7548](https://github.com/directus/directus/pull/7548) update dependency tedious to v12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7547](https://github.com/directus/directus/pull/7547) update dependency tedious to v11.8.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7542](https://github.com/directus/directus/pull/7542) update dependency rollup to v2.56.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7539](https://github.com/directus/directus/pull/7539) update dependency vuedraggable to v4.1.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7536](https://github.com/directus/directus/pull/7536) update dependency pino-http to v5.7.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7534](https://github.com/directus/directus/pull/7534) update dependency pino to v6.13.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7532](https://github.com/directus/directus/pull/7532) update dependency eslint-plugin-prettier to v3.4.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7530](https://github.com/directus/directus/pull/7530) update dependency nock to v13.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7529](https://github.com/directus/directus/pull/7529) update dependency @types/js-yaml to v4.0.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7524](https://github.com/directus/directus/pull/7524) pin dependency gatsby-source-graphql to 3.12.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7523](https://github.com/directus/directus/pull/7523) Update dependencies of gatsby-source-directus
+  ([@jacobrienstra](https://github.com/jacobrienstra))
+- [#7521](https://github.com/directus/directus/pull/7521) update dependency knex to v0.95.10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7520](https://github.com/directus/directus/pull/7520) update dependency codemirror to v5.62.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7510](https://github.com/directus/directus/pull/7510) update dependency @types/jsonwebtoken to v8.5.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7504](https://github.com/directus/directus/pull/7504) pin dependency jest-environment-jsdom to 27.0.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7503](https://github.com/directus/directus/pull/7503) update dependency pinia to v2.0.0-rc.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7495](https://github.com/directus/directus/pull/7495) update dependency ts-node to v10.2.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7482](https://github.com/directus/directus/pull/7482) update dependency gatsby-source-filesystem to v3.12.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7472](https://github.com/directus/directus/pull/7472) update dependency supertest to v6.1.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7467](https://github.com/directus/directus/pull/7467) update vue monorepo to v3.2.4
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7461](https://github.com/directus/directus/pull/7461) update dependency sharp to ^0.29.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7453](https://github.com/directus/directus/pull/7453) update dependency ts-jest to v27.0.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7449](https://github.com/directus/directus/pull/7449) update dependency simple-git-hooks to v2.6.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7448](https://github.com/directus/directus/pull/7448) update dependency sass to v1.38.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7444](https://github.com/directus/directus/pull/7444) update vue monorepo to v3.2.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7440](https://github.com/directus/directus/pull/7440) update dependency @types/mime-types to v2.1.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7438](https://github.com/directus/directus/pull/7438) update typescript-eslint monorepo to v4.29.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7437](https://github.com/directus/directus/pull/7437) update dependency @mapbox/mapbox-gl-geocoder to v4.7.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7425](https://github.com/directus/directus/pull/7425) update dependency vite to v2.5.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7424](https://github.com/directus/directus/pull/7424) update dependency marked to v3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7418](https://github.com/directus/directus/pull/7418) update dependency @types/markdown-it to v12.2.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7407](https://github.com/directus/directus/pull/7407) update dependency dompurify to v2.3.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7387](https://github.com/directus/directus/pull/7387) update dependency npm to v7.20.6
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7384](https://github.com/directus/directus/pull/7384) pin dependencies
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7381](https://github.com/directus/directus/pull/7381) update dependency macos-release to v3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7380](https://github.com/directus/directus/pull/7380) update dependency directory-tree to v2.3.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7376](https://github.com/directus/directus/pull/7376) update dependency directory-tree to v2.3.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7375](https://github.com/directus/directus/pull/7375) update dependency nanoid to v3.1.25
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7365](https://github.com/directus/directus/pull/7365) update dependency nanoid to v3.1.24
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7360](https://github.com/directus/directus/pull/7360) update dependency supertest to v6.1.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7355](https://github.com/directus/directus/pull/7355) update vue monorepo to v3.2.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.90 (August 11, 2021)
 
 ### :rocket: Improvements
 
 - **App**
-  - [#7358](https://github.com/directus/directus/pull/7358) Add missing translations ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#7358](https://github.com/directus/directus/pull/7358) Add missing translations
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
 - **API**
-  - [#7310](https://github.com/directus/directus/pull/7310) Add permission check for sqlite, upload and extensions directories ([@paescuj](https://github.com/paescuj))
+  - [#7310](https://github.com/directus/directus/pull/7310) Add permission check for sqlite, upload and extensions
+    directories ([@paescuj](https://github.com/paescuj))
 
 ### :bug: Bug Fixes
 
 - **API**
-  - [#7331](https://github.com/directus/directus/pull/7331) Check for non-existing parent pk records ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7323](https://github.com/directus/directus/pull/7323) Check for related collection before creation relation ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7319](https://github.com/directus/directus/pull/7319) Fix graphql GET request cache query extraction ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7315](https://github.com/directus/directus/pull/7315) Clear the file payload after file upload ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7312](https://github.com/directus/directus/pull/7312) Fix uuid resolving in DBs without returning support ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7331](https://github.com/directus/directus/pull/7331) Check for non-existing parent pk records
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7323](https://github.com/directus/directus/pull/7323) Check for related collection before creation relation
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7319](https://github.com/directus/directus/pull/7319) Fix graphql GET request cache query extraction
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7315](https://github.com/directus/directus/pull/7315) Clear the file payload after file upload
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7312](https://github.com/directus/directus/pull/7312) Fix uuid resolving in DBs without returning support
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **App**
-  - [#7327](https://github.com/directus/directus/pull/7327) Fix schema field types not being translated in the app ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
-  - [#7322](https://github.com/directus/directus/pull/7322) Fix colors on different types ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#7327](https://github.com/directus/directus/pull/7327) Fix schema field types not being translated in the app
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
+  - [#7322](https://github.com/directus/directus/pull/7322) Fix colors on different types
+    ([@dimitrov-adrian](https://github.com/dimitrov-adrian))
 - **sdk**
-  - [#7304](https://github.com/directus/directus/pull/7304) Fix HTTP method for collections.createMany in SDK ([@paescuj](https://github.com/paescuj))
+  - [#7304](https://github.com/directus/directus/pull/7304) Fix HTTP method for collections.createMany in SDK
+    ([@paescuj](https://github.com/paescuj))
 
 ### :package: Dependency Updates
 
-- [#7303](https://github.com/directus/directus/pull/7303) update dependency rollup to v2.56.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7300](https://github.com/directus/directus/pull/7300) update dependency eslint-plugin-vue to v7.16.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7303](https://github.com/directus/directus/pull/7303) update dependency rollup to v2.56.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7300](https://github.com/directus/directus/pull/7300) update dependency eslint-plugin-vue to v7.16.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.89 (August 9, 2021)
 
