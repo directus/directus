@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { render } from 'micromustache';
 import { computed, ComputedRef, Ref, unref } from 'vue';
 import { getFieldsFromTemplate } from './get-fields-from-template';
@@ -11,7 +12,7 @@ export function renderStringTemplate(
 	template: Ref<string | null> | string,
 	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
 ): StringTemplate {
-	const values = unref(item);
+	const values = cloneDeep(unref(item));
 
 	for (const key in values) {
 		if (typeof values[key] === 'object') values[key] = JSON.stringify(values[key]);
