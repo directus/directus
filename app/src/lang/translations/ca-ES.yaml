@@ -1332,6 +1332,5 @@ layouts:
     cluster_radius: Radi del cluster
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
-    auto_location_filter: Ajusta les dades als límits de la vista
     field: Geometria
     invalid_geometry: Geometria invàlida
