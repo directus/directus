@@ -213,18 +213,24 @@ multiple_files: Több fájl egyidejű hozzáadása
 m2o_relationship: Több az Egyhez kapcsolat
 o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
+invalid_item: Érvénytelen elem
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
 note: Jegyzet
+enter_a_value: Adjon meg egy értéket...
+enter_a_placeholder: Adjon meg egy helyőrzőt...
 length: Hossz
+precision_scale: Pontosság és lépték
 readonly: Csak olvasható
 unique: Egyedi
 updated_on: Frissítve
 updated_by: Frissítette
 primary_key: Elsődleges kulcs
+foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
+raw_value: Nyers érték
 edit_raw_value: Érték szerkesztése
 enter_raw_value: Érték megadása...
 clear_value: Érték törlése
@@ -760,6 +766,8 @@ interfaces:
     select_a_collection: Gyűjtemény kiválasztása
   presentation-divider:
     divider: Elválasztó
+  select-dropdown:
+    choices_value_placeholder: Adjon meg egy értéket...
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
@@ -850,6 +858,7 @@ displays:
     default_foreground: Alapértelmezett előtér
     default_background: Alapértelmezett háttér
     format_label: Mindegyik címke formázása
+    choices_value_placeholder: Adjon meg egy értéket...
     choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
