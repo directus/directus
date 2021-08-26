@@ -257,7 +257,6 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getLayouts } from '@/layouts';
-import useShortcut from '@/composables/use-shortcut';
 
 type Item = {
 	[field: string]: any;

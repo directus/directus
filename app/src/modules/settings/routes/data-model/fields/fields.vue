@@ -8,16 +8,6 @@
 		</template>
 
 		<template #actions>
-			<v-button
-				v-tooltip.bottom="t('preview_collection')"
-				rounded
-				icon
-				class="action-preview"
-				:to="`/collections/${collection}`"
-			>
-				<v-icon name="visibility" />
-			</v-button>
-
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -103,7 +93,6 @@ import FieldsManagement from './components/fields-management.vue';
 import useItem from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -190,11 +179,6 @@ export default defineComponent({
 	}
 }
 
-.view-collection {
-	margin-left: 8px;
-	color: var(--foreground-normal-alt);
-}
-
 .collections-item {
 	padding: var(--content-padding);
 	padding-top: 0;
@@ -211,15 +195,6 @@ export default defineComponent({
 	--v-button-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
-}
-
-.action-preview {
-	--v-button-color: var(--primary);
-	--v-button-color-hover: var(--primary);
-	--v-button-color-active: var(--primary);
-	--v-button-background-color: var(--primary-10);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-background-color-active: var(--primary-25);
 }
 
 .action-delete {
