@@ -137,10 +137,16 @@ field_permissions: Mező engedélyek
 field_validation: Mező érvényesítés
 field_presets: Mező alapérték
 presentation_and_aliases: Prezentációk és Aliasok
+revision_post_update: Ez az elem így nézett ki a frissítés után...
+changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
+no_relational_data: Ne feledd, ez nem tartalmaz relációs adatokat!
+hide_field_on_detail: Mező elrejtése a Részleteken
+show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
 fields_and_layout: Mezők és elrendezések
 field_create_success: 'Létrehozott mező: "{field}"'
 field_update_success: 'Módosított mező: "{field}"'
+duplicate_where_to: Hová szeretné duplikálni ezt a mezőt?
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -149,8 +155,10 @@ exposure: Megvilágítás
 shutter: Exponálógomb
 iso: ISO
 focal_length: Fókusztávolság
+schema_setup_key: Ezen mező adatbázis-oszlopának neve és API-kulcsa
 create_field: Mező létrehozása
 creating_new_field: 'Új mező ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
@@ -165,14 +173,21 @@ decimal: Tizedes szám
 float: Törtszám
 integer: Egész szám
 json: JSON
+xml: XML
 string: Karaktersor
 text: Szöveg
 time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
+auto_refresh: Automatikus frissítés
+refresh_interval: Frissítés időköz
+no_refresh: Ne frissítsd
+refresh_interval_seconds: Azonnali frissítés | Minden másodpercben | {seconds} másodpercenként
+refresh_interval_minutes: Minden percben | {minutes} percenként
 auto_generate: Automatikusan generált
 this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes szükséges mezőt és kapcsolatokat.
 click_here: Kattints ide
@@ -180,6 +195,9 @@ to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
+no_collections_found: Nem található gyűjtemény.
+new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
+search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
 add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
@@ -860,3 +878,5 @@ layouts:
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
+  map:
+    field: Geometria
