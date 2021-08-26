@@ -363,8 +363,6 @@ export default defineComponent({
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
-		useShortcut('meta+a', gotoModalView);
-
 		return {
 			t,
 			addNewLink,
@@ -408,10 +406,6 @@ export default defineComponent({
 			refreshInterval,
 			currentLayout,
 		};
-
-		function gotoModalView() {
-			router.push(`/settings/data-model/${collection.value}`);
-		}
 
 		function refresh() {
 			layoutState.value.refresh();

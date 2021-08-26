@@ -8,6 +8,16 @@
 		</template>
 
 		<template #actions>
+			<v-button
+				v-tooltip.bottom="t('preview_collection')"
+				rounded
+				icon
+				class="action-preview"
+				:to="`/collections/${collection}`"
+			>
+				<v-icon name="visibility" />
+			</v-button>
+
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -132,8 +142,6 @@ export default defineComponent({
 
 		const confirmDelete = ref(false);
 
-		useShortcut('meta+a', gotoCollectionView);
-
 		return {
 			t,
 			collectionInfo,
@@ -154,10 +162,6 @@ export default defineComponent({
 			saveAndQuit,
 			hasEdits,
 		};
-
-		function gotoCollectionView() {
-			router.push(`/collections/${collection.value}`);
-		}
 
 		async function deleteAndQuit() {
 			await remove();
@@ -207,6 +211,15 @@ export default defineComponent({
 	--v-button-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
+}
+
+.action-preview {
+	--v-button-color: var(--primary);
+	--v-button-color-hover: var(--primary);
+	--v-button-color-active: var(--primary);
+	--v-button-background-color: var(--primary-10);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-background-color-active: var(--primary-25);
 }
 
 .action-delete {

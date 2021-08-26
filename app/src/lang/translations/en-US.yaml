@@ -478,6 +478,7 @@ flip_vertical: Flip Vertical
 aspect_ratio: Aspect Ratio
 rotate: Rotate
 all_users: All Users
+preview_collection: Preview Collection
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
