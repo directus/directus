@@ -44,12 +44,16 @@ db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beáll
 show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
+required_for_app_access: Alkalmazás-hozzáféréshez szükséges
 requires_value: Kötelező adat
+create_preset: Alapértelmezések létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Meghívás
+email_already_invited: Az "{email}" e-mail címet már meghívták
 emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
@@ -69,6 +73,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kijelentkezve
   SESSION_EXPIRED: A munkamenet lejárt
+public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 not_allowed: Nem engedélyezett
 directus_version: Directus verzió
@@ -82,10 +87,18 @@ archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
+reset_system_permissions_to: 'Rendszerjogosultságok visszaállítása a következőkre:'
+reset_system_permissions_copy: Ez a művelet felülírja a rendszergyűjteményekre alkalmazott egyéni engedélyeid. Biztos vagy benne?
+the_following_are_minimum_permissions: Az alábbi minimális engedélyek szükségesek, ha az "Alkalmazás-hozzáférés" engedélyezve van. A jogosultságok ezen felül kiterjeszthetőek, de nem szűkíthetőek.
+app_access_minimum: App hozzáférés minimuma
+recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+unknown_validation_errors: 'A következő rejtett mezőknél érvényesítési hibák merültek fel:'
 validationError:
+  eq: Az érték {érvényes} kell legyen
+  neq: Az érték nem lehet {invalid}
   unique: Egyedi érték szükséges
 all_access: Összes hozzáférés
 no_access: Nincs hozzáférés
