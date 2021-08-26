@@ -97,21 +97,46 @@ unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválás
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
 unknown_validation_errors: 'A következő rejtett mezőknél érvényesítési hibák merültek fel:'
 validationError:
-  eq: Az érték {érvényes} kell legyen
+  eq: Az érték {valid} kell legyen
   neq: Az érték nem lehet {invalid}
+  in: 'Lehetséges értékek: {valid}'
+  nin: 'Nem felvehető értékek: {invalid}'
+  contains: Az {substring} része kell legyen az értéknek
+  ncontains: A {substring} nem lehet része az értéknek
+  gt: Az értéknek nagyobbnak kell lennie, mint {valid}
+  gte: Az értéknek nagyobbnak vagy egyenlőnek kell lennie, mint {valid}
+  lt: Az értéknek kevesebbnek kell lennie, mint {valid}
+  lte: Az értéknek kevesebbnek vagy egyenlőnek kell lennie, mint {valid}
+  empty: Üres értéknek kell lennie
+  nempty: Nem lehet üres érték
+  null: null kell legyen
+  nnull: Az érték nem lehet null
+  required: Érték szükséges
   unique: Egyedi érték szükséges
+  regex: Az érték nem megfelelő formátumú
 all_access: Összes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
+nullable: Lehet null
+allow_null_value: NULL érték engedélyezése
+allow_multiple: Többszörös engedélyezése
+allow_multiple_to_be_open: Nyitott Többszörös engedélyezése
+enter_value_to_replace_nulls: Kérjük, adjon meg egy új értéket a mezőben jelenleg található NULL-ok cseréjére!
 field_standard: Normál
+field_presentation: Prezentációk és Aliasok
 field_file: Egyetlen fájl
 field_files: Több fájl egyidejű hozzáadása
 field_m2o: M2O kapcsolat
+field_m2a: M2A kapcsolat
 field_o2m: O2M kapcsolat
 field_m2m: M2M kapcsolat
 field_translations: Fordítások
+field_group: Mezőcsoport
 item_permissions: Elem engedélyek
 field_permissions: Mező engedélyek
+field_validation: Mező érvényesítés
+field_presets: Mező alapérték
+presentation_and_aliases: Prezentációk és Aliasok
 delete_field: Mező törlése
 fields_and_layout: Mezők és elrendezések
 field_create_success: 'Létrehozott mező: "{field}"'
@@ -347,6 +372,7 @@ errors:
   ROUTE_NOT_FOUND: Nem található
   UNKNOWN: Váratlan hiba történt
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
+  NOT_NULL_VIOLATION: Az érték nem lehet null
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
