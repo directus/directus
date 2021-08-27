@@ -4,7 +4,7 @@
 
 <script>
 import { toRefs } from 'vue';
-import { useLayoutState } from '@directus/extension-sdk';
+import { useLayoutState } from '@directus/extensions-sdk';
 
 export default {
 	setup() {

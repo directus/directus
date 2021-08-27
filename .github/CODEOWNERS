@@ -3,6 +3,6 @@
 /docs/*.md @benhaynes
 
 /packages/shared @nickrum
-/packages/extension-sdk @nickrum
+/packages/extensions-sdk @nickrum
 /packages/create-directus-extension @nickrum
 /app/vite.config.js @nickrum
