@@ -15,8 +15,8 @@
 	"license": "GPL-3.0-only",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"@directus/extension-sdk": "9.0.0-rc.89",
-		"@directus/shared": "9.0.0-rc.89",
+		"@directus/extension-sdk": "9.0.0-rc.91",
+		"@directus/shared": "9.0.0-rc.91",
 		"inquirer": "^8.1.2"
 	}
 }
