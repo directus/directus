@@ -348,6 +348,7 @@ add_existing: Létező tartalom hozzáadása
 creating_items: Elemek létrehozása
 enable_create_button: Létrehozás gomb engedélyezése
 selecting_items: Elemek kiválasztása
+enable_select_button: Kiválasztás gomb engedélyezése
 comments: Hozzászólások
 no_comments: Még nincs hozzászólás
 click_to_expand: Kattintson a kibontáshoz
@@ -358,6 +359,7 @@ disabled: Letiltva
 information: Információ
 report_bug: Hibajelentés
 request_feature: Funkció ajánlása
+interface_not_found: 'Hiányzó interfész: "{interface}".'
 reset_interface: Felhasználói felület visszaállítása
 reset_display: Megjelenés alaphelyzetbe
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
@@ -369,6 +371,7 @@ no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok.
 all_items: Minden elem
+any: Bármely
 csv: CSV
 no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
@@ -379,6 +382,7 @@ display_template_not_setup: A megjelenítő sablon nem megfelelően van beállí
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
 active: aktív
+inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
@@ -662,6 +666,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
+    status_invited: Inaktív
     status_active: aktív
     role: Szerepkör
     token: Token
@@ -712,6 +717,7 @@ field_options:
     status_dropdown_active: aktív
   directus_webhooks:
     status_options_active: aktív
+    status_options_inactive: Inaktív
     actions_create: Létrehozás
     actions_update: Frissítés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
