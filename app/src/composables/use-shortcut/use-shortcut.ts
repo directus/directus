@@ -4,6 +4,7 @@ type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | 
 
 const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
+const ignoredTags: string[] = ['INPUT', 'TEXTAREA'];
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
@@ -24,6 +25,7 @@ export default function useShortcut(
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
+		if (document.activeElement && ignoredTags.includes(document.activeElement.tagName)) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
 		if (
