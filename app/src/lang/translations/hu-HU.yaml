@@ -609,19 +609,37 @@ unknown_user: Ismeretlen felhasználó
 creating_in: 'Elem hozzáadása ide: {collection}'
 editing_in: 'Elem szerkesztése itt: {collection}'
 creating_unit: '{unit} létrehozása'
+editing_unit: '{unit} szerkesztése'
 editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adat model
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
+settings_presets: Alapértelmezések és Könyvjelzők
+one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
+select: Válasszon...
 layout: Elrendezés
+tree_view: Fa nézet
+changes_are_permanent: A változtatások nem visszavonhatóak
+preset_name_placeholder: Alapértelmezettként szolgál, ha üres...
+editing_preset: Alapértelmezés szerkesztése
+layout_preview: Elrendezés előnézet
 layout_setup: Elrendezés beállítás
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
 keep_editing: Szerkesztés folytatása
+page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
+page_help_collections_collection: >-
+  **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
+page_help_collections_item: >-
+  **Elem részletei** - Ezen elem megtekintésére és kezelésére szolgáló űrlap. Ez az oldalsáv tartalmazza a revíziók teljes előzményeit és a beágyazott megjegyzéseket is.
+page_help_activity_collection: >-
+  **Böngészési tevékenység** - A felhasználók összes rendszer- és tartalomtevékenységének átfogó listája.
+page_help_docs_global: >-
+  **Dokumentációs áttekintés** - Kifejezetten ezen projekt verziójára és sémájára szabott dokumentumok.
 add_new: Új hozzáadása
 create_new: Új létrehozása
 all: Összes
