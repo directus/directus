@@ -338,12 +338,16 @@ creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
 creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
+auto_increment_integer: Automatikusan növekvő egész szám
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
 save_and_stay: Mentés és marad
 save_as_copy: Mentés másolatként
 add_existing: Létező tartalom hozzáadása
+creating_items: Elemek létrehozása
+enable_create_button: Létrehozás gomb engedélyezése
+selecting_items: Elemek kiválasztása
 comments: Hozzászólások
 no_comments: Még nincs hozzászólás
 click_to_expand: Kattintson a kibontáshoz
