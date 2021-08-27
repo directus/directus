@@ -38,6 +38,7 @@ role_name: Nome ruolo
 branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
+edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
