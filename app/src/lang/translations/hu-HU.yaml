@@ -658,10 +658,14 @@ page_help_settings_presets_item: >-
 page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A projektben található összes webhook listája.'
 page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
 page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
+page_help_users_item: >-
+  **Felhasználók Részletek** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
+activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
 all: Összes
 none: Egyik sem
+no_layout_collection_selected_yet: Még nem választott elrendezést/gyűjteményt
 batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
