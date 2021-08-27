@@ -238,7 +238,7 @@ export default defineComponent({
 					await presetsStore.hydrate();
 
 					edits.value = {};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					saving.value = false;
@@ -259,7 +259,7 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;
@@ -391,7 +391,7 @@ export default defineComponent({
 					const response = await api.get(`/presets/${props.id}`);
 
 					preset.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

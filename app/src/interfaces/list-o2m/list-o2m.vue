@@ -352,7 +352,7 @@ export default defineComponent({
 								return item;
 							})
 							.concat(...newItems);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					} finally {
 						loading.value = false;

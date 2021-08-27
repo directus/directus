@@ -217,7 +217,7 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		commandResult.result = result.data;
 		commandResult.error = result.error;
 		commandResult.output = output;
-	} catch (err) {
+	} catch {
 		//
 	}
 

@@ -200,7 +200,7 @@ export default defineComponent({
 
 						uploadedFile && emit('input', uploadedFile);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					uploading.value = false;
@@ -301,7 +301,7 @@ export default defineComponent({
 
 					activeDialog.value = null;
 					url.value = '';
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

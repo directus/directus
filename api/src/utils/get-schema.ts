@@ -32,7 +32,7 @@ export async function getSchema(options?: {
 
 		try {
 			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
 
@@ -47,7 +47,7 @@ export async function getSchema(options?: {
 					result,
 					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
 				);
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}
 		}

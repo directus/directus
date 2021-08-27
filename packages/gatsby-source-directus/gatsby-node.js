@@ -36,7 +36,7 @@ function normalizeEndpoint(endpoint, query = {}) {
 			graphql: graphql.toString(),
 			base: base.toString(),
 		};
-	} catch (err) {
+	} catch {
 		return null;
 	}
 }

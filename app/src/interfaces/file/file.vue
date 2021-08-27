@@ -250,7 +250,7 @@ export default defineComponent({
 					} else {
 						file.value = response.data.data;
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -303,7 +303,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 					emit('input', file.value?.id);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

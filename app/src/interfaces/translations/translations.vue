@@ -208,7 +208,7 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields, limit: -1 } });
 					languages.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -299,7 +299,7 @@ export default defineComponent({
 					});
 
 					keyMap.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -424,7 +424,7 @@ export default defineComponent({
 							...existingEdit,
 						};
 					});
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 					previewItems.value = [];
 				} finally {
