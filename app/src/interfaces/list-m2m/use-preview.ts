@@ -82,7 +82,10 @@ export default function usePreview(
 				// Replace existing items with it's updated counterparts
 				responseData = responseData
 					.map((item) => {
-						const updatedItem = updatedItems.find((updated) => updated[junctionPkField] === item[junctionPkField]);
+						const updatedItem = updatedItems.find(
+							(updated) =>
+								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
 					})
