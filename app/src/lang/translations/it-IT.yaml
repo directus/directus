@@ -862,6 +862,26 @@ fields:
     triggers: Trigger
     actions: Azioni
 field_options:
+  directus_settings:
+    project_name_placeholder: Il mio progetto...
+    project_logo_note: Sfondo per l'accesso e il logo
+    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
+    auth_password_policy:
+      weak_text: Debole – minimo 8 caratteri
+      strong_text: Forte – maiuscole / minuscole / numeri / simboli
+    storage_asset_presets:
+      fit:
+        contain_text: Contieni (preserva le proporzioni)
+        cover_text: Ricopri (forza dimensione esatta)
+        fit_text: Adatta all'interno
+        outside_text: Adatta all'esterno
+    additional_transforms: Trasformazioni aggiuntive
+    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
+    mapbox_key: Access Token di Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stile Mapbox
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
