@@ -7,7 +7,7 @@
 ## Monorepo
 
 The primary Directus repository is located at [`directus/directus`](https://github.com/directus/directus) and houses the
-Admin App (Vue.js 2 w/ Composition API), API (Node.js), project documentation (Markdown), API Specification (OpenAPI),
+Admin App (Vue.js 3 w/ Composition API), API (Node.js), project documentation (Markdown), API Specification (OpenAPI),
 and other smaller packages used internally. Directus follows a monorepo design similar to React or Babel — this page
 will outline our monorepo's design and structure.
 
@@ -54,7 +54,7 @@ Utility functions
 
 ## `/app`
 
-Contains the Directus Admin App, written in Vue.js 2 w/ the Composition API.
+Contains the Directus Admin App, written in Vue.js 3 w/ the Composition API.
 
 ## `/app/public`
 
