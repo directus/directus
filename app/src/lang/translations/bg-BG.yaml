@@ -859,6 +859,24 @@ fields:
     triggers: Тригери
     actions: Действия
 field_options:
+  directus_settings:
+    project_name_placeholder: Моят проект...
+    project_logo_note: Фонт за логото и вход-а
+    public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
+    auth_password_policy:
+      weak_text: Слаба - минимум от 8 символа
+      strong_text: Силна - главни, малки, числа и специални символи 
+    storage_asset_presets:
+      fit:
+        contain_text: Напасване (запазване на съотношението)
+        cover_text: Обложка (точни размери)
+        fit_text: Напасване отвътре
+        outside_text: Напасване отвън
+    additional_transforms: Допълнителни трансформации
+    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    basemaps_raster: Растер
+    basemaps_tile: Растерен TileJSON
+    basemaps_style: Стил на географската карта
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността
