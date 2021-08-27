@@ -146,6 +146,10 @@ export default defineComponent({
 			type: String,
 			default: 'disabled',
 		},
+		itemSelectable: {
+			type: String,
+			default: 'selectable',
+		},
 		itemChildren: {
 			type: String,
 			default: 'children',
@@ -228,6 +232,7 @@ export default defineComponent({
 						value: get(item, props.itemValue),
 						icon: get(item, props.itemIcon),
 						disabled: get(item, props.itemDisabled),
+						selectable: get(item, props.itemSelectable),
 						children,
 					};
 				};
