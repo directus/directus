@@ -41,7 +41,7 @@ export async function initializeExtensions(): Promise<void> {
 	try {
 		await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
 		extensions = await getExtensions();
-	} catch (err) {
+	} catch (err: any) {
 		logger.warn(`Couldn't load extensions`);
 		logger.warn(err);
 	}
@@ -142,7 +142,7 @@ function registerHooks(hooks: Extension[]) {
 	for (const hook of hooks) {
 		try {
 			registerHook(hook);
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Couldn't register hook "${hook.name}"`);
 			logger.warn(error);
 		}
@@ -181,7 +181,7 @@ function registerEndpoints(endpoints: Extension[], router: Router) {
 	for (const endpoint of endpoints) {
 		try {
 			registerEndpoint(endpoint);
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 			logger.warn(error);
 		}

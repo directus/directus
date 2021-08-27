@@ -35,7 +35,7 @@ router.patch(
 		try {
 			const record = await service.readSingleton(req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

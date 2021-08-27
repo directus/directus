@@ -18,7 +18,7 @@ const emitter = new EventEmitter2({
 export async function emitAsyncSafe(name: string, ...args: any[]): Promise<any> {
 	try {
 		return await emitter.emitAsync(name, ...args);
-	} catch (err) {
+	} catch (err: any) {
 		logger.warn(`An error was thrown while executing hook "${name}"`);
 		logger.warn(err);
 	}

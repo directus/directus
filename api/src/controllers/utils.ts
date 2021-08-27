@@ -103,7 +103,7 @@ router.post(
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
 			try {
 				await service.import(req.params.collection, mimetype, fileStream);
-			} catch (err) {
+			} catch (err: any) {
 				return next(err);
 			}
 

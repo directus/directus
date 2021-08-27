@@ -132,7 +132,7 @@ export class AxiosTransport implements ITransport {
 			}
 
 			return content;
-		} catch (err) {
+		} catch (err: any) {
 			if (!err || err instanceof Error === false) {
 				throw err;
 			}

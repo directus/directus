@@ -360,7 +360,7 @@ export default defineComponent({
 
 					selection.value = [];
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					deleting.value = false;
@@ -435,7 +435,7 @@ export default defineComponent({
 
 					await nextTick();
 					await refresh();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

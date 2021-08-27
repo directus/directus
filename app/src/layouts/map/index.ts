@@ -230,7 +230,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
-				} catch (error) {
+				} catch (error: any) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
 					geojson.value = { type: 'FeatureCollection', features: [] };

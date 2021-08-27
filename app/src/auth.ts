@@ -92,7 +92,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		appStore.authenticated = true;
 
 		return accessToken;
-	} catch (error) {
+	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	}
 }

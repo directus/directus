@@ -89,7 +89,7 @@ export default function usePreview(
 					.concat(...newItems);
 
 				items.value = responseData;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -177,7 +177,7 @@ export default function usePreview(
 
 			// Add all items that already had the id of it's related item
 			return data.concat(...getNewSelectedItems(), ...updatedItems);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		}
 		return [];

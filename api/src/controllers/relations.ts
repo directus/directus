@@ -90,7 +90,7 @@ router.post(
 		try {
 			const createdRelation = await service.readOne(req.body.collection, req.body.field);
 			res.locals.payload = { data: createdRelation || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -135,7 +135,7 @@ router.patch(
 		try {
 			const updatedField = await service.readOne(req.params.collection, req.params.field);
 			res.locals.payload = { data: updatedField || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

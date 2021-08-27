@@ -25,7 +25,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 			const translations = await import(`./translations/${lang}.yaml`);
 			i18n.global.mergeLocaleMessage(lang, translations);
 			loadedLanguages.push(lang);
-		} catch (err) {
+		} catch (err: any) {
 			// eslint-disable-next-line no-console
 			console.warn(err);
 		}
