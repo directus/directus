@@ -10,6 +10,8 @@ export const APP_EXTENSION_PACKAGE_TYPES = [...APP_EXTENSION_TYPES, EXTENSION_PA
 export const API_EXTENSION_PACKAGE_TYPES = [...API_EXTENSION_TYPES, EXTENSION_PACK_TYPE] as const;
 export const EXTENSION_PACKAGE_TYPES = [...EXTENSION_TYPES, EXTENSION_PACK_TYPE] as const;
 
+export const EXTENSION_LANGUAGES = ['javascript', 'typescript'] as const;
+
 export const EXTENSION_NAME_REGEX = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-).+$/;
 
 export const EXTENSION_PKG_KEY = 'directus:extension';

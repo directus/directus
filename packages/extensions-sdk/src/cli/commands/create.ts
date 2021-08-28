@@ -3,13 +3,12 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
-import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
+import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
 import { isAppExtension, isExtension } from '@directus/shared/utils';
 import { ExtensionType } from '@directus/shared/types';
 import log from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
-import { LANGUAGES } from '../constants';
 import { Language } from '../types';
 import getPackageVersion from '../utils/get-package-version';
 
@@ -50,7 +49,7 @@ export default async function create(type: string, name: string, options: Create
 
 	if (!isLanguage(options.language)) {
 		log(
-			`Language ${chalk.bold(options.language)} is not supported. Available languages: ${LANGUAGES.map((t) =>
+			`Language ${chalk.bold(options.language)} is not supported. Available languages: ${EXTENSION_LANGUAGES.map((t) =>
 				chalk.bold.magenta(t)
 			).join(', ')}.`,
 			'error'

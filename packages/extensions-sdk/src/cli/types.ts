@@ -1,4 +1,4 @@
-import { LANGUAGES, LANGUAGES_SHORT } from './constants';
+import { EXTENSION_LANGUAGES } from '@directus/shared/constants';
 
-export type Language = typeof LANGUAGES[number];
-export type LanguageShort = typeof LANGUAGES_SHORT[number];
+export type Language = typeof EXTENSION_LANGUAGES[number];
+export type LanguageShort = 'js' | 'ts';
