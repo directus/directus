@@ -38,6 +38,7 @@ role_name: Име на роля
 branch: Клон
 leaf: Листо
 indeterminate: Неопределен
+edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
 db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация '
@@ -864,6 +865,7 @@ field_options:
     project_logo_note: Фонт за логото и вход-а
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     auth_password_policy:
+      none_text: Без - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
       strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
