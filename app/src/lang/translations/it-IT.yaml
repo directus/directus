@@ -867,6 +867,7 @@ field_options:
     project_logo_note: Sfondo per l'accesso e il logo
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     auth_password_policy:
+      none_text: Nessuna – non consigliato
       weak_text: Debole – minimo 8 caratteri
       strong_text: Forte – maiuscole / minuscole / numeri / simboli
     storage_asset_presets:
