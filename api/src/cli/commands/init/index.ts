@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import argon2 from 'argon2';
 import chalk from 'chalk';
 import execa from 'execa';
@@ -9,6 +7,7 @@ import ora from 'ora';
 import { v4 as uuidV4 } from 'uuid';
 import runMigrations from '../../../database/migrations/run';
 import runSeed from '../../../database/seeds/run';
+import logger from '../../../logger';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import createEnv from '../../utils/create-env';
 import { drivers, getDriverForClient } from '../../utils/drivers';
@@ -49,19 +48,19 @@ export default async function init(): Promise<void> {
 			await runSeed(db);
 			await runMigrations(db, 'latest');
 		} catch (err: any) {
-			console.log();
-			console.log('Something went wrong while seeding the database:');
-			console.log();
-			console.log(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
-			console.log();
-			console.log('Please try again');
-			console.log();
+			logger.info('');
+			logger.info('Something went wrong while seeding the database:');
+			logger.info('');
+			logger.info(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
+			logger.info('');
+			logger.info('Please try again');
+			logger.info('');
 			attemptsRemaining--;
 
 			if (attemptsRemaining > 0) {
 				return await trySeed();
 			} else {
-				console.log(`Couldn't seed the database. Exiting.`);
+				logger.error(`Couldn't seed the database. Exiting.`);
 				process.exit(1);
 			}
 		}
@@ -71,10 +70,9 @@ export default async function init(): Promise<void> {
 
 	await createEnv(dbClient, credentials!, rootPath);
 
-	console.log();
-	console.log();
-
-	console.log(`Create your first admin user:`);
+	logger.info('');
+	logger.info('');
+	logger.info(`Create your first admin user:`);
 
 	const firstUser = await inquirer.prompt([
 		{
@@ -120,7 +118,7 @@ export default async function init(): Promise<void> {
 
 	await db.destroy();
 
-	console.log(`
+	logger.info(`
 Your project has been created at ${chalk.green(rootPath)}.
 
 The configuration can be found in ${chalk.green(rootPath + '/.env')}
