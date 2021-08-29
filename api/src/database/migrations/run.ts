@@ -61,7 +61,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = require(nextVersion.file);
 
-		logger.info(`✨ Applying ${nextVersion.name}...`);
+		logger.info(`Applying ${nextVersion.name}...`);
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
@@ -82,7 +82,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { down } = require(migration.file);
 
-		logger.info(`✨ Undoing ${migration.name}...`);
+		logger.info(`Undoing ${migration.name}...`);
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
@@ -93,7 +93,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				const { up } = require(migration.file);
 
-				logger.info(`✨ Applying ${migration.name}...`);
+				logger.info(`Applying ${migration.name}...`);
 
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
