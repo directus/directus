@@ -35,7 +35,7 @@ export default defineComponent({
 	components: { Repeater },
 	props: {
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},

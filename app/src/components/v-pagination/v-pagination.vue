@@ -75,7 +75,7 @@ export default defineComponent({
 		},
 		totalVisible: {
 			type: Number,
-			default: undefined,
+			default: 0,
 			validator: (val: number) => val >= 0,
 		},
 		modelValue: {

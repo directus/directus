@@ -19,7 +19,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: Array as PropType<(string | number)[]>,
-			default: undefined,
+			default: null,
 		},
 	},
 	emits: ['update:modelValue'],
