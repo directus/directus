@@ -772,7 +772,7 @@ field_options:
     collection_list:
       fields:
         type_name: Típus
-      collections_name: Gyűjtemények
+    collections_name: Gyűjtemények
   directus_users:
     status_dropdown_active: aktív
   directus_webhooks:
