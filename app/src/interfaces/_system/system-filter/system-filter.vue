@@ -216,17 +216,20 @@ export default defineComponent({
 		list-style: none;
 	}
 
-	:deep(ul) {
-		margin-left: 28px;
-		padding-left: 0;
+	:deep(.group) {
+		margin-left: 18px;
+		padding-left: 10px;
+		border-left: var(--border-width) solid var(--border-normal);
 	}
 
 	.v-list {
-		margin-left: 0px;
+		margin: 0px;
+		padding: 0px;
 
-		& > :deep(.group),
-		& > :deep(.add) {
+		& > :deep(.group) {
 			margin-left: 0px;
+			padding-left: 0px;
+			border-left: none;
 		}
 	}
 
