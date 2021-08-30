@@ -767,6 +767,8 @@ fields:
     name: الاسم
     status: حالة
 field_options:
+  directus_settings:
+    security_divider_title: الأمان
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
@@ -784,8 +786,7 @@ field_options:
     collection_list:
       fields:
         type_name: النوع
-      collections_name: مجموعات
-    security_divider_title: الأمان
+    collections_name: مجموعات
   directus_users:
     status_dropdown_active: مفعل
   directus_webhooks:
