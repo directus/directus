@@ -61,11 +61,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Field } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
-import { ValidationError } from '@/types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
 

@@ -152,7 +152,7 @@ export default defineComponent({
 			keydown: processValue,
 			blur: (e: Event) => {
 				trimIfEnabled();
-				attrs?.onBlur?.(e);
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 			},
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));

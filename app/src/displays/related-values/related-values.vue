@@ -48,7 +48,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {
