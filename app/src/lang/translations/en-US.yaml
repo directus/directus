@@ -737,6 +737,7 @@ batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
+no_upscale: Don't upscale images
 collection: Collection
 collections: Collections
 singleton: Singleton
@@ -879,6 +880,7 @@ field_options:
     project_name_placeholder: My project...
     project_logo_note: Login & Logo Background
     public_note_placeholder: A short, public message that supports markdown formatting...
+    security_divider_title: Security
     auth_password_policy:
       none_text: None – Not Recommended
       weak_text: Weak – Minimum 8 Characters
@@ -896,6 +898,8 @@ field_options:
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Style
+    files_divider_title: Files & Thumbnails
+    overrides_divider_title: App Overrides
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
     only_track_activity: Only Track Activity
@@ -939,28 +943,9 @@ field_options:
         type_name: Type
         choices_always: Always Open
         choices_start_open: Start Open
-        choises_start_collapsed: Start Collapsed
-      collections_name: Collections
-      collections_addLabel: addLabel
-      directus_settings:
-    project_name_placeholder: My project...
-    project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
-    public_divider_title: Public Pages
-    public_note_placeholder: A short, public message that supports markdown formatting...
-    security_divider_title: Security
-    auth_password_policy:
-      none_text: None – Not Recommended
-      weak_text: Weak – Minimum 8 Characters
-      strong_text: Strong – Upper / Lowercase / Numbers / Special
-    storage_asset_presets:
-      fit:
-        contain_text: Contain (preserve aspect ratio)
-        cover_text: Cover (forces exact size)
-        inside_text: Fit inside
-        outside_text: Fit outside
-    files_divider_title: Files & Thumbnails
-    overrides_divider_title: App Overrides
+        choices_start_collapsed: Start Collapsed
+    collections_name: Collections
+    collections_addLabel: addLabel
   directus_users:
     preferences_divider: User Preferences
     dropdown_auto: Automatic (Based on System)
