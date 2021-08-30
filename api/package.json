@@ -127,7 +127,7 @@
 		"nodemailer": "^6.6.1",
 		"object-hash": "^2.2.0",
 		"openapi3-ts": "^2.0.0",
-		"ora": "^5.4.0",
+		"ora": "^6.0.0",
 		"otplib": "^12.0.1",
 		"pino": "6.13.1",
 		"pino-colada": "^2.1.0",
