@@ -24,6 +24,7 @@
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
+						:class="{ empty: group.name === null || group.name === undefined }"
 						@update:model-value="toggleActive(group.name)"
 					>
 						<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
@@ -229,6 +230,20 @@ export default defineComponent({
 
 .collections-navigation {
 	--v-list-min-height: calc(100% - 64px);
+
+	.v-detail {
+		:deep(.v-divider) {
+			margin: 0px;
+		}
+
+		&:not(:first-child) :deep(.v-divider) {
+			margin-top: 8px;
+		}
+
+		&.empty :deep(.v-divider) {
+			margin-bottom: 8px;
+		}
+	}
 }
 
 .hidden-collection {
