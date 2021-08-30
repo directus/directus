@@ -1,3 +1,5 @@
 import { ApiExtensionContext } from './extensions';
 
-export type HookRegisterFunction = (context: ApiExtensionContext) => Record<string, (...values: any[]) => void>;
+type HookHandlerFunction = (context: ApiExtensionContext) => Record<string, (...values: any[]) => void>;
+
+export type HookConfig = HookHandlerFunction;
