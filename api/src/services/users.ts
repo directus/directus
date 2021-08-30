@@ -149,7 +149,7 @@ export class UsersService extends ItemsService {
 		await Promise.all(
 			data.map(async (user) => {
 				const provider = auth.getProvider(user.provider ?? DEFAULT_AUTH_PROVIDER);
-				await provider.createUser(user);
+				await provider.createUser({ ...user });
 			})
 		);
 
@@ -254,7 +254,7 @@ export class UsersService extends ItemsService {
 		await Promise.all(
 			users.map(async (user: User) => {
 				const provider = auth.getProvider(user.provider);
-				await provider.deleteUser(user);
+				await provider.deleteUser({ ...user });
 			})
 		);
 

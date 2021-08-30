@@ -146,7 +146,7 @@ export class AuthenticationService {
 
 		if (password !== undefined) {
 			try {
-				await provider.verify(user, password);
+				await provider.verify({ ...user }, password);
 			} catch (e) {
 				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);
@@ -250,7 +250,7 @@ export class AuthenticationService {
 		}
 
 		const provider = auth.getProvider(record.provider);
-		await provider.refresh(record);
+		await provider.refresh({ ...record });
 
 		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -294,7 +294,7 @@ export class AuthenticationService {
 
 		if (user) {
 			const provider = auth.getProvider(user.provider);
-			await provider.logout(user);
+			await provider.logout({ ...user });
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
@@ -323,6 +323,6 @@ export class AuthenticationService {
 		}
 
 		const provider = auth.getProvider(user.provider);
-		await provider.verify(user, password);
+		await provider.verify({ ...user }, password);
 	}
 }
