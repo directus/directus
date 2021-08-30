@@ -9,7 +9,7 @@ Custom endpoints are dynamically loaded from within your project's `/extensions/
 extensions directory is configurable within your env file, and may be located elsewhere.
 
 Each endpoint is registered using a registration function within a scoped directory. For example, to create a custom
-`/custom/my-endpoint/` endpoint, you would add the following function to `/extensions/endpoints/my-endpoint/index.js`.
+`/my-endpoint/` endpoint, you would add the following function to `/extensions/endpoints/my-endpoint/index.js`.
 
 ```js
 module.exports = function registerEndpoint(router) {
@@ -20,9 +20,9 @@ module.exports = function registerEndpoint(router) {
 You can also create several scoped endpoints within a single function:
 
 ```js
-// /custom/my-endpoint/
-// /custom/my-endpoint/intro
-// /custom/my-endpoint/goodbye
+// /my-endpoint/
+// /my-endpoint/intro
+// /my-endpoint/goodbye
 module.exports = function registerEndpoint(router) {
 	router.get('/', (req, res) => res.send('Hello, World!'));
 	router.get('/intro', (req, res) => res.send('Nice to meet you.'));
@@ -33,7 +33,7 @@ module.exports = function registerEndpoint(router) {
 ## 2. Develop your Custom Endpoint
 
 The `registerEndpoint` function receives two parameters: `router` and `context`. Router is an express Router instance
-that is scoped to `/custom/<extension-name>`, while `context` holds the following properties:
+that is scoped to `/<extension-name>`, while `context` holds the following properties:
 
 - `services` — All API internal services.
 - `exceptions` — API exception objects that can be used to throw "proper" errors.

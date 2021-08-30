@@ -168,7 +168,7 @@ export default defineComponent({
 					});
 
 					stagedValues.value = response.data.data?.[relation.value.meta!.one_field!] ?? [];
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;

@@ -12,7 +12,7 @@
 			<v-icon :name="item.icon" />
 		</v-list-item-icon>
 		<v-list-item-content>
-			<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
+			<span v-if="multiple === false || item.selectable === false" class="item-text">{{ item.text }}</span>
 			<v-checkbox
 				v-else
 				:model-value="modelValue || []"

@@ -278,7 +278,7 @@ export default defineComponent({
 
 					selection.value = [];
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					deleting.value = false;

@@ -255,7 +255,7 @@ export default defineComponent({
 					});
 
 					currentItem.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -301,7 +301,7 @@ export default defineComponent({
 					});
 
 					items.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

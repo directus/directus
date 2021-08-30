@@ -99,7 +99,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -140,7 +140,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -203,7 +203,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
@@ -253,7 +253,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -273,7 +273,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {

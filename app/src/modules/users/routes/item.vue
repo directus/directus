@@ -474,7 +474,7 @@ export default defineComponent({
 						: null;
 
 					roleName.value = response.data.data?.role?.name;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

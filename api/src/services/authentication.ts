@@ -121,7 +121,7 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch (err) {
+			} catch {
 				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 

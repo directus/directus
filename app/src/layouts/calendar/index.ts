@@ -223,7 +223,7 @@ export default defineLayout<LayoutOptions>({
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				},

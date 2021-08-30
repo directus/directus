@@ -20,7 +20,7 @@
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue"
+					:value="modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
 				/>
 			</slot>

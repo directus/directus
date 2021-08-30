@@ -17,6 +17,7 @@ import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview } from 
 import { Accountability } from '@directus/shared/types';
 import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
+import { Url } from '../utils/url';
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
@@ -305,9 +306,9 @@ export class UsersService extends ItemsService {
 
 				const payload = { email, scope: 'invite' };
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
-				const acceptURL = inviteURL + '?token=' + token;
-				const subjectLine = subject ? subject : "You've been invited";
+				const subjectLine = subject ?? "You've been invited";
+				const inviteURL = url ? new Url(url) : new Url(env.PUBLIC_URL).addPath('admin', 'accept-invite');
+				inviteURL.setQuery('token', token);
 
 				await mailService.send({
 					to: email,
@@ -315,7 +316,7 @@ export class UsersService extends ItemsService {
 					template: {
 						name: 'user-invitation',
 						data: {
-							url: acceptURL,
+							url: inviteURL.toString(),
 							email,
 						},
 					},

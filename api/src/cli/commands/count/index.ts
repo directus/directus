@@ -17,7 +17,7 @@ export default async function count(collection: string): Promise<void> {
 		console.log(count);
 		database.destroy();
 		process.exit(0);
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err);
 		database.destroy();
 		process.exit(1);

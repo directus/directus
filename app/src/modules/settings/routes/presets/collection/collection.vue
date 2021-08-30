@@ -209,7 +209,7 @@ export default defineComponent({
 						},
 					});
 					presetsRaw.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

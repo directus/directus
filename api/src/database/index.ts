@@ -137,7 +137,7 @@ export async function validateDBConnection(database?: Knex): Promise<void> {
 		} else {
 			await database.raw('SELECT 1');
 		}
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Can't connect to the database.`);
 		logger.error(error);
 		process.exit(1);
@@ -178,7 +178,7 @@ export async function validateMigrations(): Promise<boolean> {
 		);
 
 		return requiredVersions.every((version) => completedVersions.includes(version));
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Database migrations cannot be found`);
 		logger.error(error);
 		throw process.exit(1);

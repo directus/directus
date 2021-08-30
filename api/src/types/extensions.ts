@@ -14,5 +14,14 @@ export type ExtensionContext = {
 	getSchema: typeof getSchema;
 };
 
-export type HookRegisterFunction = (context: ExtensionContext) => Record<string, ListenerFn>;
-export type EndpointRegisterFunction = (router: Router, context: ExtensionContext) => void;
+type HookHandlerFunction = (context: ExtensionContext) => Record<string, ListenerFn>;
+
+export type HookConfig = HookHandlerFunction;
+
+type EndpointHandlerFunction = (router: Router, context: ExtensionContext) => void;
+interface EndpointAdvancedConfig {
+	id: string;
+	handler: EndpointHandlerFunction;
+}
+
+export type EndpointConfig = EndpointHandlerFunction | EndpointAdvancedConfig;

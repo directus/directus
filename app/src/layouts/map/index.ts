@@ -138,7 +138,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const locationFilterOutdated = ref(false);
 
-		function getLocationFilter(useTileBBox?: boolean): Filter | undefined {
+		function getLocationFilter(): Filter | undefined {
 			if (geometryOptions.value?.geometryFormat !== 'native') {
 				return;
 			}
@@ -164,8 +164,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			} as Filter;
 		}
 
-		function updateLocationFilter(useTileBBox?: boolean) {
-			const locationFilter = getLocationFilter(useTileBBox);
+		function updateLocationFilter() {
+			const locationFilter = getLocationFilter();
 			locationFilterOutdated.value = false;
 			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
 		}
@@ -183,7 +183,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				shouldUpdateCamera.value = false;
 				locationFilterOutdated.value = true;
 				if (autoLocationFilter.value) {
-					updateLocationFilter(true);
+					updateLocationFilter();
 				}
 			}
 		);
@@ -230,7 +230,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
-				} catch (error) {
+				} catch (error: any) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
 					geojson.value = { type: 'FeatureCollection', features: [] };
