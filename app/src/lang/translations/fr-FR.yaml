@@ -859,6 +859,20 @@ fields:
     triggers: Déclencheurs
     actions: Actions
 field_options:
+  directus_settings:
+    project_name_placeholder: Mon projet...
+    project_logo_note: Connexion et arrière-plan du logo
+    public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
+    security_divider_title: Sécurité
+    auth_password_policy:
+      weak_text: Faible - 8 caractères minimum
+    additional_transforms: Transformations supplémentaires
+    transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
+    mapbox_key: Jeton d'accès Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_style: Style de Mapbox
+    files_divider_title: Fichiers et miniatures
+    overrides_divider_title: Remplacer les applications
   directus_collections:
     track_activity_revisions: Enregistrer les activités et l'historique
     only_track_activity: Enregistrer seulement l'activité
@@ -901,18 +915,7 @@ field_options:
         group_placeholder: Étiquetez ce groupe...
         type_name: Type
         choices_always: Toujours ouvert
-        choises_start_collapsed: Commencer réduit
-      collections_name: Collections
-    project_name_placeholder: Mon projet...
-    project_color_note: Connexion et arrière-plan du logo
-    public_divider_title: Pages Publiques
-    public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
-    security_divider_title: Sécurité
-    auth_password_policy:
-      none_text: Aucun - Non recommandé
-      weak_text: Faible - 8 caractères minimum
-    files_divider_title: Fichiers et miniatures
-    overrides_divider_title: Remplacer les applications
+    collections_name: Collections
   directus_users:
     preferences_divider: Préférences utilisateur
     dropdown_auto: Automatique (Basé sur le système)

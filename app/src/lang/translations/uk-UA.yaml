@@ -231,8 +231,7 @@ field_options:
     fields:
       icon_name: Іконка
       name_name: Назва
-    collection_list:
-      collections_name: Колекції
+    collections_name: Колекції
   directus_webhooks:
     actions_create: Створити
     actions_update: Оновити

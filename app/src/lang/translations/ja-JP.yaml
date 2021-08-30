@@ -396,7 +396,7 @@ field_options:
     collection_list:
       fields:
         type_name: タイプ
-      collections_name: コレクション
+    collections_name: コレクション
   directus_webhooks:
     actions_create: 作成
     actions_update: 更新

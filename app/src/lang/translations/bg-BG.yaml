@@ -38,6 +38,7 @@ role_name: Име на роля
 branch: Клон
 leaf: Листо
 indeterminate: Неопределен
+edit_collection: Редактиране на колекция
 exclusive: Изключително
 children: Дъщерен
 db_only_click_to_configure: 'Само в базата от данни: Кликнете за конфигурация '
@@ -859,6 +860,28 @@ fields:
     triggers: Тригери
     actions: Действия
 field_options:
+  directus_settings:
+    project_name_placeholder: Моят проект...
+    project_logo_note: Фонт за логото и вход-а
+    public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
+    security_divider_title: Сигурност
+    auth_password_policy:
+      none_text: Без - не се препоръчва
+      weak_text: Слаба - минимум от 8 символа
+      strong_text: Силна - главни, малки, числа и специални символи 
+    storage_asset_presets:
+      fit:
+        contain_text: Напасване (запазване на съотношението)
+        cover_text: Обложка (точни размери)
+        fit_text: Напасване отвътре
+        outside_text: Напасване отвън
+    additional_transforms: Допълнителни трансформации
+    transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    basemaps_raster: Растер
+    basemaps_tile: Растерен TileJSON
+    basemaps_style: Стил на географската карта
+    files_divider_title: Файлове и картинки
+    overrides_divider_title: Отмяна
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността
@@ -900,26 +923,7 @@ field_options:
         type_name: Тип
         choices_always: Винаги отворена
         choices_start_open: Отворена в началото
-        choises_start_collapsed: Затворена в началото
-      collections_name: Колекции
-    project_name_placeholder: Моят проект...
-    project_color_note: Фонт за логото и вход-а
-    project_logo_note: Бяло 40x40 SVG/PNG
-    public_divider_title: Публични страници
-    public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
-    security_divider_title: Сигурност
-    auth_password_policy:
-      none_text: Без - не се препоръчва
-      weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи
-    storage_asset_presets:
-      fit:
-        contain_text: Напасване (запазване на съотношението)
-        cover_text: Обложка (точни размери)
-        inside_text: Напасване отвътре
-        outside_text: Напасване отвън
-    files_divider_title: Файлове и картинки
-    overrides_divider_title: Отмяна
+    collections_name: Колекции
   directus_users:
     preferences_divider: Потребителски настройки
     dropdown_auto: Автоматично (според системата)

@@ -38,6 +38,7 @@ role_name: Nome ruolo
 branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
+edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
@@ -862,6 +863,30 @@ fields:
     triggers: Trigger
     actions: Azioni
 field_options:
+  directus_settings:
+    project_name_placeholder: Il mio progetto...
+    project_logo_note: Sfondo per l'accesso e il logo
+    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
+    security_divider_title: Sicurezza
+    auth_password_policy:
+      none_text: Nessuna – non consigliato
+      weak_text: Debole – minimo 8 caratteri
+      strong_text: Forte – maiuscole / minuscole / numeri / simboli
+    storage_asset_presets:
+      fit:
+        contain_text: Contieni (preserva le proporzioni)
+        cover_text: Ricopri (forza dimensione esatta)
+        fit_text: Adatta all'interno
+        outside_text: Adatta all'esterno
+    additional_transforms: Trasformazioni aggiuntive
+    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
+    mapbox_key: Access Token di Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stile Mapbox
+    files_divider_title: File e miniature
+    overrides_divider_title: Personalizzazioni App
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -905,27 +930,7 @@ field_options:
         type_name: Tipo
         choices_always: Sempre aperto
         choices_start_open: Inizia aperto
-        choises_start_collapsed: Inizia chiuso
-      collections_name: Raccolte
-      collections_addLabel: Aggiungi etichetta
-    project_name_placeholder: Il mio progetto...
-    project_color_note: Sfondo per l'accesso e il logo
-    project_logo_note: SVG/PNG 40x40 bianca
-    public_divider_title: Pagine pubbliche
-    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
-    security_divider_title: Sicurezza
-    auth_password_policy:
-      none_text: Nessuna – non consigliato
-      weak_text: Debole – minimo 8 caratteri
-      strong_text: Forte – maiuscole / minuscole / numeri / simboli
-    storage_asset_presets:
-      fit:
-        contain_text: Contieni (preserva le proporzioni)
-        cover_text: Ricopri (forza dimensione esatta)
-        inside_text: Adatta all'interno
-        outside_text: Adatta all'esterno
-    files_divider_title: File e miniature
-    overrides_divider_title: Personalizzazioni App
+    collections_name: Raccolte
   directus_users:
     preferences_divider: Preferenze utente
     dropdown_auto: Automatico (in base al sistema)

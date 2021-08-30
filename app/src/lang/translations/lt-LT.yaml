@@ -751,7 +751,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipas
-      collections_name: Kolekcijos
+    collections_name: Kolekcijos
   directus_users:
     status_dropdown_active: Aktyvus
   directus_webhooks:
