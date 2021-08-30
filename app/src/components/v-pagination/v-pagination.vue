@@ -75,7 +75,7 @@ export default defineComponent({
 		},
 		totalVisible: {
 			type: Number,
-			default: 0,
+			default: undefined,
 			validator: (val: number) => val >= 0,
 		},
 		modelValue: {
@@ -90,6 +90,8 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const visiblePages = computed<number[]>(() => {
+			if (props.totalVisible === undefined) return [];
+
 			let startPage: number;
 			let endPage: number;
 

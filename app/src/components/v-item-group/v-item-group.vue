@@ -24,7 +24,7 @@ export default defineComponent({
 		},
 		modelValue: {
 			type: Array as PropType<(string | number)[]>,
-			default: null,
+			default: undefined,
 		},
 		scope: {
 			type: String,
