@@ -54,7 +54,12 @@ export default function getDatabase(): Knex {
 		connection: env.DB_CONNECTION_STRING || connectionConfig,
 		log: {
 			warn: (msg) => {
+				// Ignore warnings about returning not being supported in some DBs
 				if (msg.startsWith('.returning()')) return;
+
+				// Ignore warning about MySQL not supporting TRX for DDL
+				if (msg.startsWith('Transaction was implicitly committed, do not mix transactions and DDL with MySQL')) return;
+
 				return logger.warn(msg);
 			},
 			error: (msg) => logger.error(msg),
@@ -132,7 +137,7 @@ export async function validateDBConnection(database?: Knex): Promise<void> {
 		} else {
 			await database.raw('SELECT 1');
 		}
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Can't connect to the database.`);
 		logger.error(error);
 		process.exit(1);
@@ -173,7 +178,7 @@ export async function validateMigrations(): Promise<boolean> {
 		);
 
 		return requiredVersions.every((version) => completedVersions.includes(version));
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(`Database migrations cannot be found`);
 		logger.error(error);
 		throw process.exit(1);

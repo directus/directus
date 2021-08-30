@@ -539,6 +539,22 @@ fields:
   directus_webhooks:
     name: Nama
     status: Status
+field_options:
+  directus_collections:
+    language: Bahasa
+    archive_divider: Arsip
+    divider: Sortir
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Nama
+    collection_list:
+      fields:
+        type_name: Tipe
+      collections_name: Pengumpulan
+  directus_webhooks:
+    actions_create: Buat
+    actions_update: Perbarui
 comment: Komentar
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.

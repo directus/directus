@@ -185,7 +185,7 @@ router.post(
 		try {
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
-		} catch (err) {
+		} catch (err: any) {
 			if (err instanceof InvalidPayloadException) {
 				throw err;
 			} else {
@@ -350,7 +350,7 @@ router.get(
 				identifier: email,
 				provider: DEFAULT_AUTH_PROVIDER,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			emitStatus('fail');
 
 			logger.warn(error);

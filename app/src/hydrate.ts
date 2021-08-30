@@ -66,7 +66,7 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		}
 
 		appStore.basemap = getBasemapSources()[0].name;
-	} catch (error) {
+	} catch (error: any) {
 		appStore.error = error;
 	} finally {
 		appStore.hydrating = false;

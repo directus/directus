@@ -50,7 +50,7 @@ export default defineComponent({
 				} else {
 					return [render(props.format || '', props.value)];
 				}
-			} catch (error) {
+			} catch {
 				return null;
 			}
 		});

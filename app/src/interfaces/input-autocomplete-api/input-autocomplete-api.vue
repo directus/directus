@@ -109,7 +109,7 @@ export default defineComponent({
 						.map((result: Record<string, unknown>) => (props.valuePath ? get(result, props.valuePath) : result))
 						.filter((val: unknown) => val);
 				}
-			} catch (err) {
+			} catch (err: any) {
 				// eslint-disable-next-line no-console
 				console.warn(err);
 			}

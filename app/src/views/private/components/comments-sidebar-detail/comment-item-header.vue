@@ -117,7 +117,7 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;

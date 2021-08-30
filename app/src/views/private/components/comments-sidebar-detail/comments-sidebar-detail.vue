@@ -117,7 +117,7 @@ export default defineComponent({
 					}
 
 					activity.value = orderBy(activityGrouped, ['date'], ['desc']);
-				} catch (error) {
+				} catch (error: any) {
 					error.value = error;
 				} finally {
 					loading.value = false;

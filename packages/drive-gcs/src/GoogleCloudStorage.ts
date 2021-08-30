@@ -81,7 +81,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await srcFile.copy(destFile);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src);
 		}
 	}
@@ -93,7 +93,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).delete();
 			return { raw: result, wasDeleted: true };
-		} catch (e) {
+		} catch (e: any) {
 			const error = handleError(e, location);
 
 			if (error instanceof FileNotFound) {
@@ -118,7 +118,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).exists();
 			return { exists: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -131,7 +131,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0].toString(encoding), raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -143,7 +143,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -159,7 +159,7 @@ export class GoogleCloudStorage extends Storage {
 				expires: Date.now() + expiry * 1000,
 			});
 			return { signedUrl: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -175,7 +175,7 @@ export class GoogleCloudStorage extends Storage {
 				modified: new Date(result[0].updated),
 				raw: result,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -206,7 +206,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await srcFile.move(destFile);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src);
 		}
 	}
@@ -227,7 +227,7 @@ export class GoogleCloudStorage extends Storage {
 
 			const result = await file.save(content, { resumable: false });
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -255,7 +255,7 @@ export class GoogleCloudStorage extends Storage {
 						path: file.name.substring(this.$root.length),
 					};
 				}
-			} catch (e) {
+			} catch (e: any) {
 				throw handleError(e, prefix);
 			}
 		} while (nextQuery);

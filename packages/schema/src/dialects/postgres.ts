@@ -57,7 +57,10 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
         SELECT f_table_name as table_name
 			, f_geometry_column as column_name
 			, type as data_type
-        FROM geometries
+        FROM geometries g
+        JOIN information_schema.tables t
+	        ON g.f_table_name = t.table_name
+	        AND t.table_type = 'BASE TABLE'
         WHERE f_table_schema in (?)
       `,
 					[this.explodedSchema.join(',')]
@@ -108,7 +111,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		}
 		try {
 			await this.knex.raw('select postgis_version()');
-		} catch (error) {
+		} catch {
 			return columns;
 		}
 

@@ -3,7 +3,7 @@
 	<private-view
 		v-else
 		:title="bookmark ? bookmarkTitle : currentCollection.name"
-		:small-header="currentLayout.smallHeader"
+		:small-header="currentLayout?.smallHeader"
 	>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
@@ -460,7 +460,7 @@ export default defineComponent({
 
 					selection.value = [];
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					deleting.value = false;
@@ -484,7 +484,7 @@ export default defineComponent({
 					selection.value = [];
 
 					await layoutState.value?.refresh?.();
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					archiving.value = false;
@@ -525,7 +525,7 @@ export default defineComponent({
 					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					creatingBookmark.value = false;

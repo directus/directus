@@ -298,7 +298,9 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				async () => {
+				async (newVal, oldVal) => {
+					if (isEqual(newVal, oldVal)) return;
+
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 
@@ -350,7 +352,7 @@ export default defineComponent({
 								return item;
 							})
 							.concat(...newItems);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					} finally {
 						loading.value = false;

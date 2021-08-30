@@ -1,6 +1,6 @@
 {
   "name": "@directus/auth",
-  "version": "9.0.0-rc.90",
+  "version": "9.0.0-rc.91",
   "description": "Directus auth driver",
   "license": "GPL-3.0",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
     "dev": "npm run build -- -w --preserveWatchOutput --incremental"
   },
   "dependencies": {
-    "@directus/shared": "9.0.0-rc.90",
+    "@directus/shared": "9.0.0-rc.91",
     "argon2": "^0.28.1"
   },
   "devDependencies": {

@@ -318,6 +318,21 @@ fields:
   directus_webhooks:
     name: Jméno
     status: Stav
+field_options:
+  directus_collections:
+    language: Jazyk
+    archive_divider: Archivovat
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Jméno
+    collection_list:
+      fields:
+        type_name: Typ
+      collections_name: Kategorie
+  directus_webhooks:
+    actions_create: Vytořit
+    actions_update: Úpravy
 comment: Komentář
 delete_field_are_you_sure: >-
   Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.

@@ -300,15 +300,13 @@ export function applyFilter(
 
 			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
+					query.where(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
+					query.where(key, '!=', '');
 				});
 			}
 

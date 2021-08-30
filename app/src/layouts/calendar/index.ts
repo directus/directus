@@ -201,9 +201,9 @@ export default defineLayout<LayoutOptions>({
 
 						const endpoint = collection.value.startsWith('directus')
 							? collection.value.substring(9)
-							: `/collections/${collection.value}`;
+							: `collections/${collection.value}`;
 
-						router.push(`${endpoint}/${primaryKey}`);
+						router.push(`/${endpoint}/${primaryKey}`);
 					}
 				},
 				async eventChange(info) {
@@ -223,7 +223,7 @@ export default defineLayout<LayoutOptions>({
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				},

@@ -48,7 +48,7 @@ export default defineComponent({
 
 				emit('refresh');
 				router.push(`/settings/roles/${props.roleKey || 'public'}`);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

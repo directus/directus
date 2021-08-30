@@ -93,7 +93,7 @@ function setMapboxAccessToken(styleURL: string): void {
 			const token = url.searchParams.get('access_token');
 			if (token) maplibre.accessToken = token;
 		}
-	} catch (e) {
+	} catch {
 		return;
 	}
 }

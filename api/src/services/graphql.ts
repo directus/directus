@@ -158,7 +158,7 @@ export class GraphQLService {
 				variableValues: variables,
 				operationName,
 			});
-		} catch (err) {
+		} catch (err: any) {
 			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
@@ -971,7 +971,7 @@ export class GraphQLService {
 					return { ids: keys };
 				}
 			}
-		} catch (err) {
+		} catch (err: any) {
 			this.formatError(err);
 		}
 	}
@@ -1008,7 +1008,7 @@ export class GraphQLService {
 			}
 
 			return true;
-		} catch (err) {
+		} catch (err: any) {
 			throw this.formatError(err);
 		}
 	}
@@ -1513,7 +1513,7 @@ export class GraphQLService {
 
 					try {
 						await service.requestPasswordReset(args.email, args.reset_url || null);
-					} catch (err) {
+					} catch (err: any) {
 						if (err instanceof InvalidPayloadException) {
 							throw err;
 						}

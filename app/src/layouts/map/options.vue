@@ -1,4 +1,9 @@
 <template>
+	<div class="field">
+		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
+		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+	</div>
+
 	<template v-if="geometryFields.length == 0">
 		<div class="field">
 			<v-input type="text" disabled :prefix="'No compatible fields'"></v-input>
@@ -15,14 +20,9 @@
 	</template>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
-		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
-	</div>
-
-	<div class="field">
 		<v-checkbox
-			v-model="fitDataToView"
-			:label="t('layouts.map.fit_data')"
+			v-model="autoLocationFilter"
+			:label="t('layouts.map.auto_location_filter')"
 			:disabled="geometryOptions && geometryOptions.geometryFormat !== 'native'"
 		/>
 	</div>
@@ -81,7 +81,7 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitDataToView,
+			autoLocationFilter,
 			geometryOptions,
 			clusterData,
 			customLayerDrawerOpen,
@@ -95,7 +95,7 @@ export default defineComponent({
 			props,
 			geometryFields,
 			geometryField,
-			fitDataToView,
+			autoLocationFilter,
 			geometryOptions,
 			clusterData,
 			customLayerDrawerOpen,

@@ -729,6 +729,26 @@ field_options:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
+    collection_setup: لا توجد مجموعات الإعداد
+    singleton: معاملته ككائن واحد
+    language: لغة
+    archive_divider: أرشفة
+    divider: رتب
+  directus_roles:
+    fields:
+      icon_name: أيقونة
+      name_name: الاسم
+      name_placeholder: أدخل عنوانًا...
+    collection_list:
+      fields:
+        type_name: النوع
+      collections_name: مجموعات
+  directus_users:
+    status_dropdown_active: مفعل
+  directus_webhooks:
+    status_options_active: مفعل
+    actions_create: انشاء
+    actions_update: تحديث
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي

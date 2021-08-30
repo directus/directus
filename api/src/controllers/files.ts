@@ -56,10 +56,6 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			payload.title = formatTitle(path.parse(filename).name);
 		}
 
-		if (req.accountability?.user) {
-			payload.uploaded_by = req.accountability.user;
-		}
-
 		const payloadWithRequiredFields: Partial<File> & {
 			filename_download: string;
 			type: string;
@@ -78,7 +74,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 			savedFiles.push(primaryKey);
 			tryDone();
-		} catch (error) {
+		} catch (error: any) {
 			busboy.emit('error', error);
 		}
 	});
@@ -132,7 +128,7 @@ router.post(
 					data: record,
 				};
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -169,7 +165,7 @@ router.post(
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -247,7 +243,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -274,7 +270,7 @@ router.patch(
 		try {
 			const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

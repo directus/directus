@@ -139,6 +139,15 @@ fields:
   directus_webhooks:
     name: Име
     status: Стање
+field_options:
+  directus_collections:
+    language: Језик
+    archive_divider: Архивирај
+  directus_roles:
+    fields:
+      name_name: Име
+  directus_webhooks:
+    actions_create: Креирај
 comment: Коментар
 description: Опис
 done: Завршено

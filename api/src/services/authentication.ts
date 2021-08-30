@@ -61,7 +61,7 @@ export class AuthenticationService {
 		const providerName = options.provider ?? DEFAULT_AUTH_PROVIDER;
 		const provider = auth.getProvider(providerName);
 
-		let user = await this.knex
+		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
 				'id',
 				'first_name',
@@ -80,7 +80,7 @@ export class AuthenticationService {
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
+		const updatedOptions = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
@@ -91,8 +91,8 @@ export class AuthenticationService {
 			database: this.knex,
 		});
 
-		if (updatedUser) {
-			user = updatedUser.length ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
+		if (updatedOptions) {
+			options = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : options;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -135,7 +135,7 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch (err) {
+			} catch {
 				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 

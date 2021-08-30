@@ -102,7 +102,7 @@ router.post(
 		try {
 			const createdField = await service.readOne(req.params.collection, field.field);
 			res.locals.payload = { data: createdField || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -139,7 +139,7 @@ router.patch(
 				results.push(updatedField);
 				res.locals.payload = { data: results || null };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -194,7 +194,7 @@ router.patch(
 		try {
 			const updatedField = await service.readOne(req.params.collection, req.params.field);
 			res.locals.payload = { data: updatedField || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

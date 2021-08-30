@@ -28,7 +28,7 @@ export default async function usersCreate({
 		console.log(id);
 		database.destroy();
 		process.exit(0);
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err);
 		process.exit(1);
 	}

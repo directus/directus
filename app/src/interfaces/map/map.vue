@@ -139,7 +139,7 @@ export default defineComponent({
 		try {
 			parse = getParser({ geometryFormat, geometryField: 'value' });
 			serialize = getSerializer({ geometryFormat, geometryField: 'value' });
-		} catch (error) {
+		} catch (error: any) {
 			geometryOptionsError.value = error;
 		}
 
@@ -218,6 +218,7 @@ export default defineComponent({
 					} else {
 						if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
 							loadValueFromProps();
+							controls.draw.changeMode('simple_select');
 						}
 					}
 					if (props.disabled) {
@@ -325,7 +326,7 @@ export default defineComponent({
 				} else {
 					fitDataBounds({ duration: 0 });
 				}
-			} catch (error) {
+			} catch (error: any) {
 				geometryParsingError.value = error;
 			}
 		}

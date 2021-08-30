@@ -183,7 +183,7 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						name: renameValue.value,
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
@@ -207,7 +207,7 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						parent: moveValue.value,
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveSaving.value = false;
@@ -279,7 +279,7 @@ export default defineComponent({
 					}
 
 					deleteActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					await fetchFolders();
