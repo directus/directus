@@ -857,9 +857,12 @@ fields:
     actions: Ações
 field_options:
   directus_settings:
+    security_divider_title: Segurança
     auth_password_policy:
       none_text: Nenhum – Não Recomendado
     additional_transforms: Transformações Adicionais
+    files_divider_title: Arquivos e Miniaturas
+    overrides_divider_title: Substituições de Aplicativos
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade
@@ -877,11 +880,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipo
-      collections_name: Coleções
-    public_divider_title: Páginas Públicas
-    security_divider_title: Segurança
-    files_divider_title: Arquivos e Miniaturas
-    overrides_divider_title: Substituições de Aplicativos
+    collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
     dropdown_auto: Automático (Baseado no Sistema)
