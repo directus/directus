@@ -20,8 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Редагувати поле
+conditions: Умови
+maps: Мапи
+item_revision: Перегляд об'єкта
 duplicate_field: Дублювати поле
+half_width: Ширина ряду на половину
 full_width: Повна ширина
+limit: Обмеження
+group: Група
+and: Й
+or: Або
+fill_width: Ширина заповнення
+field_name_translations: Переклад назви поля
+enter_password_to_enable_tfa: Введіть свій пароль, щоб увімкнути двофакторну аутентифікацію
 add_field: Додати поле
 role_name: Назва ролі
 required: Обов'язкове
@@ -217,6 +228,7 @@ fields:
   directus_fields:
     note: Примітка
     hidden: Приховано
+    translation: Переклад назви поля
     display_template: Шаблон
   directus_roles:
     name: Назва ролі
