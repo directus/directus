@@ -92,6 +92,7 @@ import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
+import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -292,6 +293,8 @@ export default defineComponent({
 							folder: props.folder,
 						},
 					});
+
+					emitter.emit(Events.upload);
 
 					if (props.multiple) {
 						emit('input', [response.data.data]);
