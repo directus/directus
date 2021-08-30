@@ -240,7 +240,7 @@ export default defineComponent({
 			margin-top: 8px;
 		}
 
-		.empty :deep(.v-divider) {
+		&.empty :deep(.v-divider) {
 			margin-bottom: 8px;
 		}
 	}
