@@ -1,5 +1,5 @@
 <template>
-	<v-divider @click="toggleExpand" showExpandIcon :expand="expand">
+	<v-divider show-expand-icon :expand="expand" @click="toggleExpand">
 		{{ group.dateFormatted }}
 	</v-divider>
 
@@ -10,7 +10,7 @@
 				:key="item.id"
 				:revision="item"
 				:last="index === group.revisions.length - 1"
-				@click="openModal(item.id)"
+				@click="$emit('click', item.id)"
 			/>
 		</div>
 	</transition-expand>
@@ -28,11 +28,8 @@ export default defineComponent({
 			type: Object,
 			required: true,
 		},
-		openModal: {
-			type: Function,
-			required: true,
-		},
 	},
+	emits: ['click'],
 	setup() {
 		const expand = ref(true);
 

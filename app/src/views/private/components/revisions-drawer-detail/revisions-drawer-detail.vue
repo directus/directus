@@ -8,7 +8,7 @@
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<RevisionsDateGroup :group="group" :openModal="openModal" />
+				<RevisionsDateGroup :group="group" @click="openModal" />
 			</template>
 
 			<template v-if="page == pagesCount && !created">
@@ -18,7 +18,7 @@
 					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
-			<v-pagination v-if="pagesCount > 1" :length="pagesCount" :totalVisible="1" v-model="page" :showFirstLast="true" />
+			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="2" show-first-last />
 		</template>
 
 		<revisions-drawer
