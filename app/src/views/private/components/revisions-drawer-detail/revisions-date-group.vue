@@ -1,5 +1,8 @@
 <template>
-	<v-divider show-expand-icon :expand="expand" @click="toggleExpand">
+	<v-divider show-expand-icon :expand="expand" @click="expand = !expand">
+		<template #icon>
+			<v-icon :name="expand ? 'expand_less' : 'expand_more'" />
+		</template>
 		{{ group.dateFormatted }}
 	</v-divider>
 
@@ -33,14 +36,7 @@ export default defineComponent({
 	setup() {
 		const expand = ref(true);
 
-		return {
-			expand,
-			toggleExpand,
-		};
-
-		function toggleExpand() {
-			expand.value = !expand.value;
-		}
+		return { expand };
 	},
 });
 </script>

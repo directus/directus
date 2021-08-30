@@ -18,7 +18,7 @@
 					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
-			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="2" show-first-last />
+			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="2" />
 		</template>
 
 		<revisions-drawer
