@@ -551,7 +551,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipe
-      collections_name: Pengumpulan
+    collections_name: Pengumpulan
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui
