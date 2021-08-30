@@ -86,7 +86,6 @@ os_uptime: Uptime sistema operativo
 os_totalmem: Memoria sistema operativo
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
-edit_collection: Modifica Collezione
 archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
