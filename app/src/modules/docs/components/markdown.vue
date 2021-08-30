@@ -27,7 +27,7 @@ const md = new MarkdownIt({
 		if (lang && hljs.getLanguage(lang)) {
 			try {
 				return hljs.highlight(str, { language: lang }).value;
-			} catch (err) {
+			} catch (err: any) {
 				// eslint-disable-next-line no-console
 				console.warn('There was an error highlighting in Markdown');
 				// eslint-disable-next-line no-console

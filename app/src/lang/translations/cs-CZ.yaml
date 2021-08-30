@@ -329,7 +329,7 @@ field_options:
     collection_list:
       fields:
         type_name: Typ
-      collections_name: Kategorie
+    collections_name: Kategorie
   directus_webhooks:
     actions_create: Vytořit
     actions_update: Úpravy

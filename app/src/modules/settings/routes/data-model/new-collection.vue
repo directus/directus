@@ -248,7 +248,7 @@ export default defineComponent({
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

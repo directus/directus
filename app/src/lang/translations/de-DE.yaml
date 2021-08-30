@@ -849,6 +849,10 @@ fields:
     triggers: Auslöser
     actions: Aktionen
 field_options:
+  directus_settings:
+    security_divider_title: Sicherheit
+    files_divider_title: Dateien & Vorschaubilder
+    overrides_divider_title: App-Überschreibungen
   directus_collections:
     track_activity_revisions: Verfolge Aktivitäten und Änderungen
     only_track_activity: Nur Aktivitäten verfolgen
@@ -866,11 +870,7 @@ field_options:
     collection_list:
       fields:
         type_name: Typ
-      collections_name: Sammlungen
-    public_divider_title: Öffentliche Seiten
-    security_divider_title: Sicherheit
-    files_divider_title: Dateien & Vorschaubilder
-    overrides_divider_title: App-Überschreibungen
+    collections_name: Sammlungen
   directus_users:
     preferences_divider: Benutzereinstellungen
     dropdown_auto: Automatisch (Systemeinstellung verwenden)

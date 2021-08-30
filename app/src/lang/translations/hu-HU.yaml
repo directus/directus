@@ -338,12 +338,17 @@ creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
 creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
+auto_increment_integer: Automatikusan növekvő egész szám
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
 save_and_stay: Mentés és marad
 save_as_copy: Mentés másolatként
 add_existing: Létező tartalom hozzáadása
+creating_items: Elemek létrehozása
+enable_create_button: Létrehozás gomb engedélyezése
+selecting_items: Elemek kiválasztása
+enable_select_button: Kiválasztás gomb engedélyezése
 comments: Hozzászólások
 no_comments: Még nincs hozzászólás
 click_to_expand: Kattintson a kibontáshoz
@@ -354,6 +359,7 @@ disabled: Letiltva
 information: Információ
 report_bug: Hibajelentés
 request_feature: Funkció ajánlása
+interface_not_found: 'Hiányzó interfész: "{interface}".'
 reset_interface: Felhasználói felület visszaállítása
 reset_display: Megjelenés alaphelyzetbe
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
@@ -365,6 +371,7 @@ no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok.
 all_items: Minden elem
+any: Bármely
 csv: CSV
 no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
@@ -375,6 +382,7 @@ display_template_not_setup: A megjelenítő sablon nem megfelelően van beállí
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
 active: aktív
+inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
@@ -392,6 +400,7 @@ collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
 card_size: Kártya mérete
 sort_field: Rendezési mező
+add_sort_field: Rendezési Mező hozzáadása
 sort: Rendezés
 status: Állapot
 remove: Eltávolítás
@@ -415,6 +424,7 @@ errors:
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
   INVALID_OTP: Helytelen az egyszer használatos jelszó
+  INVALID_PAYLOAD: Érvénytelen payload
   INVALID_QUERY: Érvénytelen lekérdezés
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
@@ -529,12 +539,24 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+media: Média
+quality: Minőség
 width: Szélesség
 height: Magasság
+source: Forrás
+url_placeholder: Írjon be egy url-t...
+display_text: Szöveg megjelenítése
+display_text_placeholder: Írjon be egy megjelenítendő szöveget...
+tooltip: Buboréksúgó
+tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
+unlimited: Korlátlan
+new_tab: Új fül
+current_tab: Jelenlegi fül
 wysiwyg_options:
   aligncenter: Középre igazítás
   alignjustify: Sorkizárt
   alignleft: Balra igazítás
+  alignnone: Rendezés nélkül
   alignright: Jobbra igazítás
   forecolor: Előtérszín
   backcolor: Háttérszín
@@ -549,7 +571,10 @@ wysiwyg_options:
   bullist: Felsorolás lista
   numlist: Számozott lista
   hr: Vízszintes vonal
+  link: Link hozzáadása/szerkesztése
   unlink: Hivatkozás törlése
+  media: Média hozzáadása/szerkesztése
+  image: Kép hozzáadása/szerkesztése
   copy: Másolás
   cut: Kivágás
   paste: Beillesztés
@@ -571,9 +596,11 @@ wysiwyg_options:
   selectall: Összes kijelölése
   table: Táblázat
   visualaid: Láthatatlan elemek mutatása
+  source_code: Forráskód szerkesztése
   fullscreen: Teljes képernyő
 dropdown: Legördülő lista
 choices: Lehetőségek
+choices_option_configured_incorrectly: Helytelenül konfigurált választási ehetőségek
 deselect: Kijelölés megszüntetése
 deselect_all: Összes kijelölés törlése
 other: Egyéb...
@@ -581,23 +608,64 @@ adding_user: Hozzáadott felhasználó
 unknown_user: Ismeretlen felhasználó
 creating_in: 'Elem hozzáadása ide: {collection}'
 editing_in: 'Elem szerkesztése itt: {collection}'
+creating_unit: '{unit} létrehozása'
+editing_unit: '{unit} szerkesztése'
 editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adat model
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
+settings_presets: Alapértelmezések és Könyvjelzők
+one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
+select: Válasszon...
 layout: Elrendezés
+tree_view: Fa nézet
+changes_are_permanent: A változtatások nem visszavonhatóak
+preset_name_placeholder: Alapértelmezettként szolgál, ha üres...
+editing_preset: Alapértelmezés szerkesztése
+layout_preview: Elrendezés előnézet
 layout_setup: Elrendezés beállítás
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
 keep_editing: Szerkesztés folytatása
+page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
+page_help_collections_collection: >-
+  **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
+page_help_collections_item: >-
+  **Elem részletei** - Ezen elem megtekintésére és kezelésére szolgáló űrlap. Ez az oldalsáv tartalmazza a revíziók teljes előzményeit és a beágyazott megjegyzéseket is.
+page_help_activity_collection: >-
+  **Böngészési tevékenység** - A felhasználók összes rendszer- és tartalomtevékenységének átfogó listája.
+page_help_docs_global: >-
+  **Dokumentációs áttekintés** - Kifejezetten ezen projekt verziójára és sémájára szabott dokumentumok.
+page_help_files_collection: >-
+  **Fájlok könyvtára** - A projektbe feltöltött összes fájleszköz listája. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
+page_help_files_item: >-
+  **File Részletek** - A fájl metaadatainak kezelésére, az eredeti eszköz szerkesztésére és a hozzáférési beállítások frissítésére szolgáló űrlap.
+page_help_settings_project: "**Projektbeállítások** - A projektje globális konfigurációs beállításai."
+page_help_settings_datamodel_collections: >-
+  **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
+page_help_settings_datamodel_fields: >-
+  **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
+page_help_settings_roles_collection: '**Szerepkörök böngészése** - A Rendszergazda, a Nyilvános és az egyéni Felhasználói Szerepkörök listája.'
+page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
+page_help_settings_presets_collection: >-
+  **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
+page_help_settings_presets_item: >-
+  **Alapbeállítások Részletei** - Könyvjelzők és alapértelmezett gyűjteménybeállítások kezelésére szolgáló űrlap.
+page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A projektben található összes webhook listája.'
+page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
+page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
+page_help_users_item: >-
+  **Felhasználók Részletek** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
+activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
 all: Összes
 none: Egyik sem
+no_layout_collection_selected_yet: Még nem választott elrendezést/gyűjteményt
 batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
@@ -658,6 +726,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
+    status_invited: Inaktív
     status_active: aktív
     role: Szerepkör
     token: Token
@@ -703,11 +772,12 @@ field_options:
     collection_list:
       fields:
         type_name: Típus
-      collections_name: Gyűjtemények
+    collections_name: Gyűjtemények
   directus_users:
     status_dropdown_active: aktív
   directus_webhooks:
     status_options_active: aktív
+    status_options_inactive: Inaktív
     actions_create: Létrehozás
     actions_update: Frissítés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'

@@ -80,7 +80,7 @@ export default defineComponent({
 					}
 
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					saving.value = false;

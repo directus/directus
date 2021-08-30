@@ -16,12 +16,12 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
 				<v-list-item-content>
 					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>

@@ -40,7 +40,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 	try {
 		document = parse(new Source(query));
-	} catch (err) {
+	} catch (err: any) {
 		throw new InvalidPayloadException(`GraphQL schema validation error.`, {
 			graphqlErrors: [err],
 		});

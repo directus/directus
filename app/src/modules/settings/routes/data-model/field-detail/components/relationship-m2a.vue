@@ -375,9 +375,21 @@ export default defineComponent({
 
 		const availableCollections = computed(() => {
 			return orderBy(
-				collectionsStore.collections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === false;
-				}),
+				[
+					...collectionsStore.collections.filter((collection) => {
+						return collection.collection.startsWith('directus_') === false;
+					}),
+					{
+						divider: true,
+					},
+					{
+						name: t('system'),
+						selectable: false,
+						children: collectionsStore.collections.filter((collection) => {
+							return collection.collection.startsWith('directus_') === true;
+						}),
+					},
+				],
 				['collection'],
 				['asc']
 			);
