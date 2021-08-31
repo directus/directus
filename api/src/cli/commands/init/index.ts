@@ -7,7 +7,6 @@ import ora from 'ora';
 import { v4 as uuidV4 } from 'uuid';
 import runMigrations from '../../../database/migrations/run';
 import runSeed from '../../../database/seeds/run';
-import logger from '../../../logger';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import createEnv from '../../utils/create-env';
 import { drivers, getDriverForClient } from '../../utils/drivers';
@@ -48,19 +47,16 @@ export default async function init(): Promise<void> {
 			await runSeed(db);
 			await runMigrations(db, 'latest');
 		} catch (err: any) {
-			logger.info(err, `
-Something went wrong while seeding the database:
+			process.stdout.write('\nSomething went wrong while seeding the database:\n');
+			process.stdout.write(`\n${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}\n`);
+			process.stdout.write('\nPlease try again\n\n');
 
-${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}
-
-Please try again
-			`);
 			attemptsRemaining--;
 
 			if (attemptsRemaining > 0) {
 				return await trySeed();
 			} else {
-				logger.error(`Couldn't seed the database. Exiting.`);
+				process.stdout.write("Couldn't seed the database. Exiting.\n");
 				process.exit(1);
 			}
 		}
@@ -70,10 +66,7 @@ Please try again
 
 	await createEnv(dbClient, credentials!, rootPath);
 
-	logger.info(`
-
-
-Create your first admin user:`);
+	process.stdout.write('\nCreate your first admin user:\n\n');
 
 	const firstUser = await inquirer.prompt([
 		{
@@ -119,15 +112,11 @@ Create your first admin user:`);
 
 	await db.destroy();
 
-	logger.info(`
-Your project has been created at ${chalk.green(rootPath)}.
-
-The configuration can be found in ${chalk.green(rootPath + '/.env')}
-
-Start Directus by running:
-  ${chalk.blue('cd')} ${rootPath}
-  ${chalk.blue('npx directus')} start
-`);
+	process.stdout.write(`\nYour project has been created at ${chalk.green(rootPath)}.\n`);
+	process.stdout.write(`\nThe configuration can be found in ${chalk.green(rootPath + '/.env')}\n`);
+	process.stdout.write(`\nStart Directus by running:\n`);
+	process.stdout.write(`  ${chalk.blue('cd')} ${rootPath}\n`);
+	process.stdout.write(`  ${chalk.blue('npx directus')} start\n`);
 
 	process.exit(0);
 }
