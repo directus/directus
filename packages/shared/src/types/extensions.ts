@@ -1,3 +1,4 @@
+import { Knex } from 'knex';
 import {
 	API_EXTENSION_PACKAGE_TYPES,
 	API_EXTENSION_TYPES,
@@ -7,6 +8,7 @@ import {
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 } from '../constants';
+import { Accountability } from './accountability';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -61,7 +63,7 @@ export type ExtensionManifest = {
 export type ApiExtensionContext = {
 	services: any;
 	exceptions: any;
-	database: any;
-	env: any;
-	getSchema: any;
+	database: Knex;
+	env: Record<string, any>;
+	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
