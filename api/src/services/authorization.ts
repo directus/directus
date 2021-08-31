@@ -291,7 +291,7 @@ export class AuthorizationService {
 		};
 
 		if (Array.isArray(pk)) {
-			const result = await itemsService.readMany(pk, query, { permissionsAction: action });
+			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
 			if (!result) throw new ForbiddenException();
 			if (result.length !== pk.length) throw new ForbiddenException();
 		} else {
