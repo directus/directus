@@ -724,6 +724,7 @@ no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
+no_upscale: Non ingrandire le immagini
 collection: Raccolta
 collections: Raccolte
 singleton: Singleton
@@ -929,7 +930,9 @@ field_options:
         type_name: Tipo
         choices_always: Sempre aperto
         choices_start_open: Inizia aperto
+        choices_start_collapsed: Inizia chiuse
     collections_name: Raccolte
+    collections_addLabel: Aggiungi raccolta...
   directus_users:
     preferences_divider: Preferenze utente
     dropdown_auto: Automatico (in base al sistema)
@@ -1030,6 +1033,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
