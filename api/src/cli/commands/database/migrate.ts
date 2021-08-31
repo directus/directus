@@ -18,7 +18,7 @@ export default async function migrate(direction: 'latest' | 'up' | 'down'): Prom
 		}
 		database.destroy();
 		process.exit();
-	} catch (err) {
+	} catch (err: any) {
 		console.log(err);
 		database.destroy();
 		process.exit(1);

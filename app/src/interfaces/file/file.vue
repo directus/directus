@@ -136,7 +136,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed } from 'vue';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
@@ -156,7 +156,7 @@ export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {
-			type: [String, Object],
+			type: [String, Object] as PropType<string | Record<string, any>>,
 			default: null,
 		},
 		disabled: {
@@ -183,7 +183,7 @@ export default defineComponent({
 		});
 
 		const assetURL = computed(() => {
-			const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+			const id = typeof props.value === 'string' ? props.value : props.value?.id;
 			return addTokenToURL(getRootPath() + `assets/${id}`);
 		});
 
@@ -250,7 +250,7 @@ export default defineComponent({
 					} else {
 						file.value = response.data.data;
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -303,7 +303,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 					emit('input', file.value?.id);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

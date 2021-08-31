@@ -834,7 +834,7 @@ field_options:
     collection_list:
       fields:
         type_name: ชนิด
-      collections_name: คอลเลกชัน
+    collections_name: คอลเลกชัน
   directus_users:
     status_dropdown_active: เปิดใช้งาน
   directus_webhooks:

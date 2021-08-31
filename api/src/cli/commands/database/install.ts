@@ -12,7 +12,7 @@ export default async function start(): Promise<void> {
 		await runMigrations(database, 'latest');
 		database.destroy();
 		process.exit(0);
-	} catch (err) {
+	} catch (err: any) {
 		console.log(err);
 		database.destroy();
 		process.exit(1);

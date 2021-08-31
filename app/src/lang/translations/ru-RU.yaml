@@ -833,6 +833,10 @@ fields:
     triggers: Триггеры
     actions: Действия
 field_options:
+  directus_settings:
+    security_divider_title: Безопасность
+    files_divider_title: Файлы и миниатюры
+    overrides_divider_title: Переопределить заводские настройки
   directus_collections:
     track_activity_revisions: Отслеживание активности и изменений
     only_track_activity: Отслеживать только активность
@@ -851,11 +855,7 @@ field_options:
       fields:
         type_name: Тип
         choices_start_open: Раскрыта
-      collections_name: Коллекции
-    public_divider_title: Публичные страницы
-    security_divider_title: Безопасность
-    files_divider_title: Файлы и миниатюры
-    overrides_divider_title: Переопределить заводские настройки
+    collections_name: Коллекции
   directus_users:
     preferences_divider: Пользовательские настройки
     dropdown_auto: Автоматически (как в системе)

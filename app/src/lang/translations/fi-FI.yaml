@@ -811,7 +811,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tyyppi
-      collections_name: Kokoelmat
+    collections_name: Kokoelmat
   directus_users:
     status_dropdown_active: Aktiivinen
   directus_webhooks:

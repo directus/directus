@@ -28,7 +28,7 @@ export default async function usersPasswd({ email, password }: { email?: string;
 
 		await database.destroy();
 		process.exit(user ? 0 : 1);
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err);
 		process.exit(1);
 	}

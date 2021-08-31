@@ -850,6 +850,10 @@ fields:
     triggers: Sprožilci
     actions: Dejanja
 field_options:
+  directus_settings:
+    security_divider_title: Varnost
+    files_divider_title: Datoteke & sličice
+    overrides_divider_title: Aplikacijske preglasitve
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
     only_track_activity: Sledi samo aktivnosti
@@ -868,11 +872,7 @@ field_options:
       fields:
         type_name: Tip
         choices_start_open: Začni odprto
-      collections_name: Zbirke
-    public_divider_title: Javne strani
-    security_divider_title: Varnost
-    files_divider_title: Datoteke & sličice
-    overrides_divider_title: Aplikacijske preglasitve
+    collections_name: Zbirke
   directus_users:
     preferences_divider: Uporabniške nastavitve
     dropdown_auto: Avtomatsko (sistemsko)
@@ -1332,6 +1332,5 @@ layouts:
     cluster_radius: Polmer gruče
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
-    auto_location_filter: Prilagodi podatke pogledu
     field: Geometrija
     invalid_geometry: Neveljavna geometrija

@@ -15,7 +15,7 @@ export default function isJWT(string: string): boolean {
 		atob(parts[0]);
 		atob(parts[1]);
 		atob(parts[2]);
-	} catch (err) {
+	} catch (err: any) {
 		logger.error(err);
 		return false;
 	}

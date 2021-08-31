@@ -48,7 +48,7 @@ export default async function init(): Promise<void> {
 		try {
 			await runSeed(db);
 			await runMigrations(db, 'latest');
-		} catch (err) {
+		} catch (err: any) {
 			console.log();
 			console.log('Something went wrong while seeding the database:');
 			console.log();

@@ -564,7 +564,7 @@ field_options:
     collection_list:
       fields:
         type_name: Kiểu
-      collections_name: Danh mục
+    collections_name: Danh mục
   directus_users:
     status_dropdown_active: Kích hoạt
   directus_webhooks:

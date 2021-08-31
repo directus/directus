@@ -277,7 +277,7 @@ export class FieldsService {
 						if (!field.schema) return;
 						this.addColumnToTable(table, field, existingColumn);
 					});
-				} catch (err) {
+				} catch (err: any) {
 					throw await translateDatabaseError(err);
 				}
 			}

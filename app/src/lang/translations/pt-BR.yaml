@@ -38,6 +38,7 @@ role_name: Nome do cargo
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
+edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
@@ -806,6 +807,11 @@ fields:
     last_page: Última página
     last_access: Último acesso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
     project_url: URL do projeto
     project_color: Cor do projeto
@@ -850,6 +856,13 @@ fields:
     triggers: Gatilhos
     actions: Ações
 field_options:
+  directus_settings:
+    security_divider_title: Segurança
+    auth_password_policy:
+      none_text: Nenhum – Não Recomendado
+    additional_transforms: Transformações Adicionais
+    files_divider_title: Arquivos e Miniaturas
+    overrides_divider_title: Substituições de Aplicativos
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade
@@ -867,11 +880,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipo
-      collections_name: Coleções
-    public_divider_title: Páginas Públicas
-    security_divider_title: Segurança
-    files_divider_title: Arquivos e Miniaturas
-    overrides_divider_title: Substituições de Aplicativos
+    collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
     dropdown_auto: Automático (Baseado no Sistema)
@@ -879,6 +888,7 @@ field_options:
     dropdown_dark: Modo Escuro
     admin_divider: Opções do Admin
     status_dropdown_draft: Rascunho
+    status_dropdown_invited: Convidado
     status_dropdown_active: Ativo
     status_dropdown_suspended: Suspenso
     status_dropdown_archived: Arquivado
@@ -1094,6 +1104,12 @@ interfaces:
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
     zoom: Zoom
+    geometry_type: Tipo de geometria
+    geometry_format: Formato da geometria
+    default_view: Visualização padrão
+    invalid_options: Opções inválidas
+    invalid_format: Formato inválido ({format})
+    unexpected_geometry: Esperado {expected}, obtido {got}.
   presentation-notice:
     notice: Aviso
     description: Mostrar um breve aviso

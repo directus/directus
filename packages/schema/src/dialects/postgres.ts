@@ -111,7 +111,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		}
 		try {
 			await this.knex.raw('select postgis_version()');
-		} catch (error) {
+		} catch {
 			return columns;
 		}
 

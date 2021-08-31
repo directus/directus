@@ -32,7 +32,7 @@ export const useUserStore = defineStore({
 				});
 
 				this.currentUser = data.data;
-			} catch (error) {
+			} catch (error: any) {
 				this.error = error;
 			} finally {
 				this.loading = false;

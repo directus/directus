@@ -195,7 +195,7 @@ export default defineComponent({
 
 				const response = await api.get(`/permissions/${props.permissionKey}`);
 				permission.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				if (err?.response?.status === 403) {
 					router.push(`/settings/roles/${props.roleKey || 'public'}`);
 				} else {
