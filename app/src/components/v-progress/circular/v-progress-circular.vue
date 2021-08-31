@@ -18,7 +18,7 @@
 				transform="translate(2.5 2.5)"
 			/>
 		</svg>
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
