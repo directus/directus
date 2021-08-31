@@ -289,8 +289,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'codemirror/addon/lint/lint.css';
-
 .input-code {
 	position: relative;
 	width: 100%;
