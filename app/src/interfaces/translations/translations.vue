@@ -22,8 +22,14 @@
 			/>
 			<div class="spacer" />
 		</v-list-item>
-
-		<drawer-item
+		<i-translations
+			v-if="editing"
+			:collection="translationsCollection"
+			:languages="languages"
+			:template="internalLanguageTemplate"
+			:preview-items="previewItems"
+		/>
+		<!-- <drawer-item
 			v-if="editing"
 			active
 			:collection="translationsCollection"
@@ -32,7 +38,7 @@
 			:circular-field="translationsRelation.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
-		/>
+		/> -->
 	</v-list>
 </template>
 
@@ -42,13 +48,13 @@ import { useRelationsStore, useFieldsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { isPlainObject } from 'lodash';
+import ITranslations from './translations-interface.vue';
 
 export default defineComponent({
-	components: { DrawerItem },
+	components: { ITranslations },
 	props: {
 		collection: {
 			type: String,
@@ -94,7 +100,6 @@ export default defineComponent({
 		const { languages, loading: languagesLoading, template: internalLanguageTemplate } = useLanguages();
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 		const { previewItems, template: internalTranslationsTemplate, loading: previewLoading } = usePreview();
-
 		return {
 			relationsForField,
 			translationsRelation,
