@@ -48,13 +48,13 @@ export default async function init(): Promise<void> {
 			await runSeed(db);
 			await runMigrations(db, 'latest');
 		} catch (err: any) {
-			logger.info('');
-			logger.info('Something went wrong while seeding the database:');
-			logger.info('');
-			logger.info(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
-			logger.info('');
-			logger.info('Please try again');
-			logger.info('');
+			logger.info(err, `
+Something went wrong while seeding the database:
+
+${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}
+
+Please try again
+			`);
 			attemptsRemaining--;
 
 			if (attemptsRemaining > 0) {
@@ -70,9 +70,10 @@ export default async function init(): Promise<void> {
 
 	await createEnv(dbClient, credentials!, rootPath);
 
-	logger.info('');
-	logger.info('');
-	logger.info(`Create your first admin user:`);
+	logger.info(`
+
+
+Create your first admin user:`);
 
 	const firstUser = await inquirer.prompt([
 		{
