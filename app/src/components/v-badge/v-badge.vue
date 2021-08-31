@@ -5,7 +5,7 @@
 			<span v-else>{{ value }}</span>
 		</span>
 
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 

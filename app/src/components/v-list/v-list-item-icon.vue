@@ -1,6 +1,6 @@
 <template>
 	<div class="v-list-item-icon" :class="{ center }">
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
