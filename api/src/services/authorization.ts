@@ -171,15 +171,6 @@ export class AuthorizationService {
 				}
 
 				if (query.filter._and.length === 0) delete query.filter._and;
-
-				if (permissions.limit && query.limit && query.limit > permissions.limit) {
-					throw new ForbiddenException();
-				}
-
-				// Default to the permissions limit if limit hasn't been set
-				if (permissions.limit && !query.limit) {
-					query.limit = permissions.limit;
-				}
 			}
 		}
 	}
@@ -200,7 +191,6 @@ export class AuthorizationService {
 				action,
 				permissions: {},
 				validation: {},
-				limit: null,
 				fields: ['*'],
 				presets: {},
 			};
