@@ -11,7 +11,8 @@
 		"./cli": {
 			"import": "./dist/esm/cli/index.js",
 			"require": "./dist/cjs/cli/index.js"
-		}
+		},
+		"./package.json": "./package.json"
 	},
 	"types": "dist/esm/index.d.ts",
 	"bin": {
