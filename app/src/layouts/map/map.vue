@@ -1,5 +1,5 @@
 <template>
-	<div ref="layoutElement" class="layout-map">
+	<div class="layout-map">
 		<map-component
 			ref="map"
 			class="mapboxgl-map"
@@ -13,7 +13,7 @@
 			:layers="directusLayers"
 			@featureclick="handleClick"
 			@featureselect="updateSelection"
-			@moveend="cameraOptions = $event"
+			@moveend="cameraOptionsWritable = $event"
 			@fitdata="removeLocationFilter"
 		/>
 
@@ -87,7 +87,7 @@
 							},
 						]"
 						inline
-						@update:model-value="limit = +$event"
+						@update:model-value="limitWritable = +$event"
 					/>
 				</div>
 			</div>
@@ -97,76 +97,128 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
-import { useLayoutState } from '@directus/shared/composables';
+import useSync from '@/composables/use-sync';
+import { GeometryOptions, Item } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { MapComponent },
-	setup() {
+	props: {
+		selection: {
+			type: Array as PropType<Item[]>,
+			default: () => [],
+		},
+		searchQuery: {
+			type: String as PropType<string | null>,
+			default: null,
+		},
+		loading: {
+			type: Boolean,
+			required: true,
+		},
+		error: {
+			type: Object as PropType<any>,
+			default: null,
+		},
+		geojsonError: {
+			type: String,
+			default: null,
+		},
+		geometryOptions: {
+			type: Object as PropType<GeometryOptions>,
+			default: undefined,
+		},
+		geojson: {
+			type: Object as PropType<any>,
+			required: true,
+		},
+		featureId: {
+			type: String,
+			default: null,
+		},
+		geojsonBounds: {
+			type: Object as PropType<any>,
+			default: undefined,
+		},
+		directusSource: {
+			type: Object as PropType<any>,
+			required: true,
+		},
+		directusLayers: {
+			type: Array as PropType<any[]>,
+			required: true,
+		},
+		handleClick: {
+			type: Function as PropType<(key: number | string) => void>,
+			required: true,
+		},
+		updateSelection: {
+			type: Function as PropType<(selected: Array<string | number> | null) => void>,
+			required: true,
+		},
+		cameraOptions: {
+			type: Object as PropType<any>,
+			default: undefined,
+		},
+		resetPresetAndRefresh: {
+			type: Function as PropType<() => Promise<void>>,
+			required: true,
+		},
+		geojsonLoading: {
+			type: Boolean,
+			required: true,
+		},
+		itemCount: {
+			type: Number,
+			default: null,
+		},
+		activeFilterCount: {
+			type: Number,
+			required: true,
+		},
+		totalPages: {
+			type: Number,
+			required: true,
+		},
+		page: {
+			type: Number,
+			required: true,
+		},
+		toPage: {
+			type: Function as PropType<(newPage: number) => void>,
+			required: true,
+		},
+		limit: {
+			type: Number,
+			required: true,
+		},
+		autoLocationFilter: {
+			type: Boolean,
+			default: undefined,
+		},
+		locationFilterOutdated: {
+			type: Boolean,
+			required: true,
+		},
+		updateLocationFilter: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+		removeLocationFilter: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+	},
+	emits: ['update:cameraOptions', 'update:limit'],
+	setup(props, { emit }) {
 		const { t, n } = useI18n();
-		const layoutState = useLayoutState();
 
-		const {
-			loading,
-			error,
-			geojsonError,
-			geometryOptions,
-			geojson,
-			featureId,
-			selection,
-			geojsonBounds,
-			directusSource,
-			directusLayers,
-			handleClick,
-			updateSelection,
-			cameraOptions,
-			resetPresetAndRefresh,
-			geojsonLoading,
-			itemCount,
-			searchQuery,
-			activeFilterCount,
-			totalPages,
-			page,
-			toPage,
-			limit,
-			autoLocationFilter,
-			locationFilterOutdated,
-			updateLocationFilter,
-			removeLocationFilter,
-		} = toRefs(layoutState.value);
+		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
+		const limitWritable = useSync(props, 'limit', emit);
 
-		return {
-			t,
-			loading,
-			error,
-			geojsonError,
-			geometryOptions,
-			geojson,
-			featureId,
-			selection,
-			cameraOptions,
-			geojsonBounds,
-			directusSource,
-			directusLayers,
-			handleClick,
-			updateSelection,
-			resetPresetAndRefresh,
-			geojsonLoading,
-			itemCount,
-			searchQuery,
-			activeFilterCount,
-			totalPages,
-			page,
-			toPage,
-			limit,
-			n,
-			autoLocationFilter,
-			locationFilterOutdated,
-			updateLocationFilter,
-			removeLocationFilter,
-		};
+		return { t, n, cameraOptionsWritable, limitWritable };
 	},
 });
 </script>

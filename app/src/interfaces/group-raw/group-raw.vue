@@ -14,9 +14,8 @@
 </template>
 
 <script lang="ts">
-import { Field } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import { defineComponent, PropType } from 'vue';
-import { ValidationError } from '@/types';
 export default defineComponent({
 	name: 'InterfaceGroupRaw',
 	props: {

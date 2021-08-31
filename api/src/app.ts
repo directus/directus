@@ -184,7 +184,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
-	app.use('/custom', customRouter);
+
+	app.use(customRouter);
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });

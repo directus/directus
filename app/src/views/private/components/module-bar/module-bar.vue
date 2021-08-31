@@ -35,8 +35,6 @@ import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
 import { ModuleConfig } from '@directus/shared/types';
-import useShortcut from '@/composables/use-shortcut';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	components: {
@@ -44,7 +42,6 @@ export default defineComponent({
 		ModuleBarAvatar,
 	},
 	setup() {
-		const router = useRouter();
 		const userStore = useUserStore();
 		const { modules } = getModules();
 
@@ -88,14 +85,6 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-
-		for (let i = 0; i < internalModules.value.length && i < 10; i++) {
-			useShortcut(`shift+${i + 1}`, () => {
-				const module = internalModules.value[i];
-				if ('to' in module) router.push(module.to);
-			});
-		}
-
 		return { internalModules, modules };
 	},
 });

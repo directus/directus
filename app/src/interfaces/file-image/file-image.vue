@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed } from 'vue';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import FileLightbox from '@/views/private/components/file-lightbox';
@@ -71,7 +71,7 @@ export default defineComponent({
 	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
-			type: [String, Object],
+			type: [String, Object] as PropType<string | Record<string, any>>,
 			default: null,
 		},
 		disabled: {
@@ -162,7 +162,7 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+				const id = typeof props.value === 'string' ? props.value : props.value?.id;
 
 				const response = await api.get(`/files/${id}`, {
 					params: {

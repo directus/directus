@@ -21,7 +21,7 @@ import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import logger from './logger';
-import { HookRegisterFunction, EndpointRegisterFunction } from './types';
+import { HookConfig, EndpointConfig } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
@@ -33,6 +33,7 @@ import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
+import getModuleDefault from './utils/get-module-default';
 
 let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
@@ -150,14 +151,9 @@ function registerHooks(hooks: Extension[]) {
 
 	function registerHook(hook: Extension) {
 		const hookPath = path.resolve(hook.path, hook.entrypoint || '');
-		const hookInstance: HookRegisterFunction | { default?: HookRegisterFunction } = require(hookPath);
+		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
 
-		let register: HookRegisterFunction = hookInstance as HookRegisterFunction;
-		if (typeof hookInstance !== 'function') {
-			if (hookInstance.default) {
-				register = hookInstance.default;
-			}
-		}
+		const register = getModuleDefault(hookInstance);
 
 		const events = register({ services, exceptions, env, database: getDatabase(), getSchema });
 
@@ -189,17 +185,15 @@ function registerEndpoints(endpoints: Extension[], router: Router) {
 
 	function registerEndpoint(endpoint: Extension) {
 		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint || '');
-		const endpointInstance: EndpointRegisterFunction | { default?: EndpointRegisterFunction } = require(endpointPath);
+		const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
 
-		let register: EndpointRegisterFunction = endpointInstance as EndpointRegisterFunction;
-		if (typeof endpointInstance !== 'function') {
-			if (endpointInstance.default) {
-				register = endpointInstance.default;
-			}
-		}
+		const mod = getModuleDefault(endpointInstance);
+
+		const register = typeof mod === 'function' ? mod : mod.handler;
+		const pathName = typeof mod === 'function' ? endpoint.name : mod.id;
 
 		const scopedRouter = express.Router();
-		router.use(`/${endpoint.name}/`, scopedRouter);
+		router.use(`/${pathName}`, scopedRouter);
 
 		register(scopedRouter, { services, exceptions, env, database: getDatabase(), getSchema });
 	}

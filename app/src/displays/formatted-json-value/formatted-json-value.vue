@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import { render } from 'micromustache';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
 		value: {
-			type: [Object, Array],
+			type: [Object, Array] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		format: {

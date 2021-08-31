@@ -447,8 +447,7 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Navn
-    collection_list:
-      collections_name: Kolleksjoner
+    collections_name: Kolleksjoner
   directus_users:
     status_dropdown_active: Aktiv
   directus_webhooks:

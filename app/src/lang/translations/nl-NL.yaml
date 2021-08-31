@@ -831,7 +831,7 @@ field_options:
     collection_list:
       fields:
         type_name: Type
-      collections_name: Collecties
+    collections_name: Collecties
   directus_users:
     status_dropdown_active: Actief
   directus_webhooks:

@@ -1,23 +1,43 @@
 <template>
-	<filter-sidebar-detail v-model="props.filters" :collection="props.collection" :loading="loading" />
-	<export-sidebar-detail
-		:filters="filtersWithCalendarView"
-		:search-query="props.searchQuery"
-		:collection="props.collection"
-	/>
+	<filter-sidebar-detail v-model="filtersWritable" :collection="collection" :loading="loading" />
+	<export-sidebar-detail :filters="filtersWithCalendarView" :search-query="searchQuery" :collection="collection" />
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
-import { useLayoutState } from '@directus/shared/composables';
+import { AppFilter } from '@directus/shared/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	setup() {
-		const layoutState = useLayoutState();
-		const { props, loading, filtersWithCalendarView } = toRefs(layoutState.value);
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		filters: {
+			type: Array as PropType<AppFilter[]>,
+			default: () => [],
+		},
+		searchQuery: {
+			type: String as PropType<string | null>,
+			default: null,
+		},
+		loading: {
+			type: Boolean,
+			required: true,
+		},
+		filtersWithCalendarView: {
+			type: Array as PropType<AppFilter[]>,
+			required: true,
+		},
+	},
+	emits: ['update:filters'],
+	setup(props, { emit }) {
+		const filtersWritable = useSync(props, 'filters', emit);
 
-		return { props, loading, filtersWithCalendarView };
+		return { filtersWritable };
 	},
 });
 </script>

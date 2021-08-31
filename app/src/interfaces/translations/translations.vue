@@ -141,7 +141,7 @@ export default defineComponent({
 				return translationsRelation.value.collection;
 			});
 
-			const translationsPrimaryKeyField = computed<string>(() => {
+			const translationsPrimaryKeyField = computed<string | null>(() => {
 				if (!translationsRelation.value) return null;
 				return fieldsStore.getPrimaryKeyFieldForCollection(translationsRelation.value.collection).field;
 			});
@@ -156,8 +156,8 @@ export default defineComponent({
 				return languagesRelation.value.related_collection;
 			});
 
-			const languagesPrimaryKeyField = computed<string>(() => {
-				if (!languagesRelation.value) return null;
+			const languagesPrimaryKeyField = computed<string | null>(() => {
+				if (!languagesRelation.value || !languagesRelation.value.related_collection) return null;
 				return fieldsStore.getPrimaryKeyFieldForCollection(languagesRelation.value.related_collection).field;
 			});
 
@@ -200,7 +200,7 @@ export default defineComponent({
 			return { languages, loading, error, template };
 
 			async function fetchLanguages() {
-				if (!languagesCollection.value) return;
+				if (!languagesCollection.value || !languagesPrimaryKeyField.value) return;
 
 				const fields = getFieldsFromTemplate(template.value);
 
@@ -231,10 +231,12 @@ export default defineComponent({
 			const edits = ref<Record<string, any>>();
 
 			const existingPrimaryKeys = computed(() => {
+				const pkField = translationsPrimaryKeyField.value;
+				if (!pkField) return [];
 				return (props.value || [])
 					.map((value) => {
 						if (typeof value === 'string' || typeof value === 'number') return value;
-						return value[translationsPrimaryKeyField.value];
+						return value[pkField];
 					})
 					.filter((key) => key);
 			});
@@ -244,7 +246,7 @@ export default defineComponent({
 			return { startEditing, editing, edits, stageEdits, cancelEdit };
 
 			function startEditing(language: string | number) {
-				if (!translationsLanguageField.value) return;
+				if (!translationsLanguageField.value || !translationsPrimaryKeyField.value) return;
 
 				edits.value = {
 					[translationsLanguageField.value]: language,
@@ -281,12 +283,14 @@ export default defineComponent({
 				if (!props.value) return;
 				if (keyMap.value) return;
 				if (!existingPrimaryKeys.value?.length) return;
+				const pkField = translationsPrimaryKeyField.value;
+				if (!pkField) return;
 
 				const collection = translationsRelation.value?.collection;
 
 				if (!collection) return;
 
-				const fields = [translationsPrimaryKeyField.value, translationsLanguageField.value];
+				const fields = [pkField, translationsLanguageField.value];
 
 				loading.value = true;
 
@@ -295,7 +299,7 @@ export default defineComponent({
 						params: {
 							fields,
 							filter: {
-								[translationsPrimaryKeyField.value]: {
+								[pkField]: {
 									_in: existingPrimaryKeys.value,
 								},
 							},
@@ -313,6 +317,8 @@ export default defineComponent({
 
 			function stageEdits(edits: any) {
 				if (!translationsLanguageField.value) return;
+				const pkField = translationsPrimaryKeyField.value;
+				if (!pkField) return;
 
 				const editedLanguage = edits[translationsLanguageField.value];
 
@@ -344,7 +350,7 @@ export default defineComponent({
 								if (typeof val === 'string' || typeof val === 'number') {
 									if (val === editing.value) return edits;
 								} else {
-									if (val[translationsPrimaryKeyField.value] === editing.value) return edits;
+									if (val[pkField] === editing.value) return edits;
 								}
 
 								return val;
@@ -411,20 +417,21 @@ export default defineComponent({
 					});
 
 					previewItems.value = languages.value.map((language) => {
+						const pkField = languagesPrimaryKeyField.value;
+						if (!pkField) return;
+
 						const existingEdit =
 							props.value && Array.isArray(props.value)
 								? (props.value.find(
 										(edit) =>
 											isPlainObject(edit) &&
-											(edit as Record<string, any>)[languagesRelation.value!.field] ===
-												language[languagesPrimaryKeyField.value]
+											(edit as Record<string, any>)[languagesRelation.value!.field] === language[pkField]
 								  ) as Record<string, any>)
 								: {};
 
 						return {
 							...(existing.data.data?.find(
-								(item: Record<string, any>) =>
-									item[languagesRelation.value!.field] === language[languagesPrimaryKeyField.value]
+								(item: Record<string, any>) => item[languagesRelation.value!.field] === language[pkField]
 							) ?? {}),
 							...existingEdit,
 						};

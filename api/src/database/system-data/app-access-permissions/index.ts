@@ -8,7 +8,6 @@ const defaults: Partial<Permission> = {
 	validation: null,
 	presets: null,
 	fields: ['*'],
-	limit: null,
 	system: true,
 };
 

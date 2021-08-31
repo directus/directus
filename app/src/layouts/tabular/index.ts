@@ -5,7 +5,7 @@ import TabularSidebar from './sidebar.vue';
 import TabularActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
-import { ref, computed, inject, watch, toRefs, ComponentPublicInstance } from 'vue';
+import { ref, computed, inject, watch, toRefs } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
@@ -15,23 +15,9 @@ import useCollection from '@/composables/use-collection';
 import useItems from '@/composables/use-items';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
-import useShortcut from '@/composables/use-shortcut';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-
-type LayoutOptions = {
-	widths?: {
-		[field: string]: number;
-	};
-	limit?: number;
-	spacing?: 'comfortable' | 'cozy' | 'compact';
-};
-
-type LayoutQuery = {
-	fields?: string[];
-	sort?: string;
-	page?: number;
-	limit?: number;
-};
+import useSync from '@/composables/use-sync';
+import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -43,15 +29,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: TabularSidebar,
 		actions: TabularActions,
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
 		const router = useRouter();
 
-		const table = ref<ComponentPublicInstance>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
-		const { collection, searchQuery, selection, layoutOptions, layoutQuery, filters } = toRefs(props);
+		const selection = useSync(props, 'selection', emit);
+		const layoutOptions = useSync(props, 'layoutOptions', emit);
+		const layoutQuery = useSync(props, 'layoutQuery', emit);
+		const filters = useSync(props, 'filters', emit);
+		const searchQuery = useSync(props, 'searchQuery', emit);
+
+		const { collection } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -105,18 +96,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return fieldsInCollection.value.filter((field: Field) => field.meta?.special?.includes('no-data') !== true);
 		});
 
-		useShortcut(
-			'meta+a',
-			() => {
-				if (!primaryKeyField.value) return;
-				const pk = primaryKeyField.value;
-				selection.value = clone(items.value).map((item) => item[pk.field]);
-			},
-			table
-		);
-
 		return {
-			table,
 			tableHeaders,
 			items,
 			loading,
@@ -144,6 +124,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
+			selectAll,
 			availableFields,
 		};
 
@@ -162,6 +143,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				top: 0,
 				behavior: 'smooth',
 			});
+		}
+
+		function selectAll() {
+			if (!primaryKeyField.value) return;
+			const pk = primaryKeyField.value;
+			selection.value = clone(items.value).map((item) => item[pk.field]);
 		}
 
 		function useItemOptions() {
@@ -354,14 +341,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			function onRowClick(item: Item) {
 				if (props.readonly === true || !primaryKeyField.value) return;
 
-				if (props.selectMode || selection.value?.length > 0) {
-					(table.value as any).onItemSelected({
-						item,
-						value: selection.value?.includes(item[primaryKeyField.value.field]) === false,
-					});
-				} else {
-					const primaryKey = item[primaryKeyField.value.field];
+				const primaryKey = item[primaryKeyField.value.field];
 
+				if (props.selectMode || selection.value?.length > 0) {
+					if (selection.value?.includes(primaryKey) === false) {
+						selection.value.push(primaryKey);
+					} else {
+						selection.value = selection.value.filter((item) => item !== primaryKey);
+					}
+				} else {
 					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
 				}
 			}

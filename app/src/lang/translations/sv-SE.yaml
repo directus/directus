@@ -786,7 +786,7 @@ field_options:
     collection_list:
       fields:
         type_name: Typ
-      collections_name: Kollektioner
+    collections_name: Kollektioner
   directus_users:
     status_dropdown_active: Aktiv
   directus_webhooks:
