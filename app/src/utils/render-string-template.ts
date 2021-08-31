@@ -12,11 +12,7 @@ export function renderStringTemplate(
 	template: Ref<string | null> | string,
 	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
 ): StringTemplate {
-	const values = cloneDeep(unref(item));
-
-	for (const key in values) {
-		if (typeof values[key] === 'object') values[key] = JSON.stringify(values[key]);
-	}
+	const values = unref(item);
 
 	const templateString = unref(template);
 
