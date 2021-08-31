@@ -13,22 +13,8 @@ import { useRelationsStore } from '@/stores/';
 
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { clone } from 'lodash';
-
-type LayoutOptions = {
-	size?: number;
-	icon?: string;
-	imageSource?: string;
-	title?: string;
-	subtitle?: string;
-	imageFit?: 'crop' | 'contain';
-};
-
-type LayoutQuery = {
-	fields?: string[];
-	sort?: string;
-	limit?: number;
-	page?: number;
-};
+import useSync from '@/composables/use-sync';
+import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
@@ -40,15 +26,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: CardsSidebar,
 		actions: CardsActions,
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
 		const relationsStore = useRelationsStore();
 
-		const layoutElement = ref<HTMLElement>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
-		const { collection, searchQuery, selection, layoutOptions, layoutQuery, filters } = toRefs(props);
+		const selection = useSync(props, 'selection', emit);
+		const layoutOptions = useSync(props, 'layoutOptions', emit);
+		const layoutQuery = useSync(props, 'layoutQuery', emit);
+		const filters = useSync(props, 'filters', emit);
+		const searchQuery = useSync(props, 'searchQuery', emit);
+
+		const { collection } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -78,10 +69,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			fields: fields,
 			filters: filters,
 			searchQuery: searchQuery,
-		});
-
-		const newLink = computed(() => {
-			return `/collections/${collection.value}/+`;
 		});
 
 		const showingCount = computed(() => {
@@ -137,12 +124,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			getLinkForItem,
 			imageFit,
 			sort,
-			newLink,
 			info,
 			showingCount,
 			isSingleRow,
 			width,
-			layoutElement,
 			activeFilterCount,
 			refresh,
 			selectAll,
@@ -168,10 +153,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function useLayoutOptions() {
 			const size = createViewOption<number>('size', 4);
-			const icon = createViewOption('icon', 'box');
-			const title = createViewOption<string>('title', null);
-			const subtitle = createViewOption<string>('subtitle', null);
-			const imageSource = createViewOption<string>('imageSource', fileFields.value[0]?.field ?? null);
+			const icon = createViewOption<string>('icon', 'box');
+			const title = createViewOption<string | null>('title', null);
+			const subtitle = createViewOption<string | null>('subtitle', null);
+			const imageSource = createViewOption<string | null>('imageSource', fileFields.value[0]?.field ?? null);
 			const imageFit = createViewOption<string>('imageFit', 'crop');
 
 			return { size, icon, imageSource, title, subtitle, imageFit };
