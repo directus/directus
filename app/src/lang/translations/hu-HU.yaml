@@ -723,7 +723,10 @@ fields:
     item: Elem elsődleges kulcsa
     action: Művelet
     collection: Gyűjtemény
+    timestamp: Művelet időpontja
+    user: Művelet kezdeményezője
     comment: Hozzászólás
+    user_agent: Felhasználói ügynök
     ip: IP cím
     revisions: Változatok
   directus_collections:
@@ -735,8 +738,11 @@ fields:
     singleton: Egyedüli
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
+    unarchive_value: Archiválás megszüntetése utáni érték
     sort_field: Rendezési mező
+    accountability: Tevékenység és revízió nyomkövetése
   directus_files:
+    $thumbnail: Miniatűr
     title: Cím
     description: Leírás
     tags: Cimkék
@@ -794,6 +800,11 @@ fields:
     webP: WebP
     tiff: Tiff
     basemaps_raster: Raszter
+    basemaps_tile: Raszter TileJSON
+    basemaps_style: Mapbox stílus
+    mapbox_key: Mapbox hozzáférési token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
     additional_transforms: További transzformációk
     project_name: Projekt neve
     project_url: Projekt webcíme
@@ -831,8 +842,10 @@ fields:
     collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
+    method: Metódus
     status: Állapot
     data: Adat
+    data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
 field_options:
@@ -842,6 +855,7 @@ field_options:
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
+      none_text: Nincs - Nem ajánlott
       weak_text: Gyenge - Minimum 8 karakter
       strong_text: Erős - Nagybetű / Kisbetű / Számok / Speciális karakterek
     storage_asset_presets:
@@ -851,7 +865,12 @@ field_options:
         fit_text: Illeszkedjen bele
         outside_text: Illeszkedjen külsőleg
     additional_transforms: További transzformációk
+    transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
+    mapbox_key: Mapbox hozzáférési token
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_raster: Raszter
+    basemaps_tile: Raszter TileJSON
+    basemaps_style: Mapbox stílus
     files_divider_title: Fájlok és miniatűrök
     overrides_divider_title: Alkalmazás felülbírálások
   directus_collections:
@@ -875,11 +894,18 @@ field_options:
     title: Egy egyedi cím...
     description: Egy opcionális leírás...
     location: Egy opcionális helyszín...
+    storage_divider: Fájl elnevezése
+    filename_download: Elnevezés letöltés esetén...
   directus_roles:
+    name: E szerepkör egyedi neve...
+    description: A szerepkör leírása...
+    ip_access: Adja hozzá az engedélyezett IP-címeket, minden IP engedélyezéséhez hagyja üresen...
     fields:
       icon_name: Ikon
       name_name: Név
       name_placeholder: Írjon be egy címet...
+      link_name: Hivatkozás
+      link_placeholder: Relatív vagy abszolút URL...
     collection_list:
       group_name_addLabel: Új csoport hozzáadása...
       fields:
@@ -887,6 +913,7 @@ field_options:
         group_placeholder: Címkézze fel ezt a csoportot...
         type_name: Típus
         choices_always: Mindig nyitva
+        choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
@@ -904,6 +931,7 @@ field_options:
   directus_webhooks:
     status_options_active: aktív
     status_options_inactive: Inaktív
+    data_label: Eseményadatok küldése
     triggers_divider: Triggerek
     actions_create: Létrehozás
     actions_update: Frissítés
@@ -997,6 +1025,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
+    presentation-links: Gomb hivatkozások
     links: Linkek
     description: Konfigurálható linkgombok dinamikus URL-ek indításához
     style: Stílus
@@ -1062,6 +1091,7 @@ interfaces:
     choices_placeholder: Új lehetőség hozzáadása
     allow_other: Egyéb engedélyezése
     allow_other_label: Egyéb érték engedélyezése
+    allow_none: Egyik sem engedélyezett
     choices_name_placeholder: Adjon meg egy nevet...
     choices_value_placeholder: Adjon meg egy értéket...
   select-multiple-dropdown:
