@@ -1075,12 +1075,29 @@ interfaces:
     description: Válasszon egy mappát
     field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
     root_name: Fájlok gyökérkönyvtára
+    system_default: Rendszer alapértelmezései
+  select-radio:
+    radio-buttons: Rádiógombok
+    description: Válasszon egyet a több lehetőség közül
+  list:
+    repeater: Repeater
+    description: Ugyanazon struktúra több bejegyzésének létrehozása
+    edit_fields: Mezők szerkesztése
+    add_label: '"Új létrehozása" címke'
+    field_name_placeholder: Mezőnév megadása...
+    field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
   slider:
     slider: Csúszka
+    description: Válasszon számot csúszka segítségével
+    always_show_value: Mindig mutassa az értéket
   tags:
     tags: Cimkék
     description: Címke megadása vagy kiválasztása
     whitespace: Szóköz
+    hyphen: Helyettesítse kötőjellel
+    underscore: Helyettesítse aláhúzással
+    remove: Szóközök eltávolítása
+    capitalization: Nagybetűs írásmód
     uppercase: Nagybetűsre konvertálás
     lowercase: Kisbetűsre konvertálás
     alphabetize: ABC sorrend
