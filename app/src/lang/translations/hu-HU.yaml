@@ -396,6 +396,7 @@ documentation: Dokumentáció
 sidebar: Oldalsáv
 duration: Időtartam
 charset: Karakterkészlet
+second: másodperc
 file_moved: A fájl átmozgatva
 collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
@@ -427,11 +428,16 @@ errors:
   INVALID_OTP: Helytelen az egyszer használatos jelszó
   INVALID_PAYLOAD: Érvénytelen payload
   INVALID_QUERY: Érvénytelen lekérdezés
+  ITEM_LIMIT_REACHED: Elérte az elemek maximális számát
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
+  USER_SUSPENDED: Felhasználó felfüggesztve
+  CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
   UNKNOWN: Váratlan hiba történt
+  UNPROCESSABLE_ENTITY: Feldolgozhatatlan entitás
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
+security: Biztonság
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -761,6 +767,8 @@ fields:
     name: Név
     status: Állapot
 field_options:
+  directus_settings:
+    security_divider_title: Biztonság
   directus_collections:
     collection_setup: Gyűjtemény beállítások
     language: Nyelv
