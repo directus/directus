@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 edit_field: Feld bearbeiten
 conditions: Bedingungen
+maps: Karten
 item_revision: Element Revision
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -37,6 +38,7 @@ role_name: Rollenname
 branch: Branch
 leaf: Blatt
 indeterminate: Unbestimmt
+edit_collection: Sammlung bearbeiten
 exclusive: Exklusive
 children: Untergeordnete
 db_only_click_to_configure: 'Nur in der Datenbank: Zum Konfigurieren klicken '
@@ -722,6 +724,7 @@ no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewä
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
+no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
 collections: Sammlungen
 singleton: Einzelnes Element
@@ -805,6 +808,17 @@ fields:
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox-Stil
+    mapbox_key: Mapbox Zugangs-Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
+    additional_transforms: Zusätzliche Umwandlungen
     project_name: Projektname
     project_url: Projekt URL
     project_color: Projekt Farbe
@@ -850,7 +864,27 @@ fields:
     actions: Aktionen
 field_options:
   directus_settings:
+    project_name_placeholder: Mein Projekt...
+    project_logo_note: Login & Logo Hintergrund
+    public_note_placeholder: Eine kurze, öffentliche Nachricht welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
+    auth_password_policy:
+      none_text: Keine - Nicht empfohlen
+      weak_text: Schwach - Minimum 8 Zeichen
+      strong_text: Stark - Groß / Klein / Zahlen / Spezialzeichen
+    storage_asset_presets:
+      fit:
+        contain_text: Enthalten (Seitenverhältnis beibehalten)
+        cover_text: Abdeckung (erzwingt exakte Grösse)
+        fit_text: Passform innen
+        outside_text: Passform außen
+    additional_transforms: Zusätzliche Umwandlungen
+    transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
+    mapbox_key: Mapbox Zugangs-Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox-Stil
     files_divider_title: Dateien & Vorschaubilder
     overrides_divider_title: App-Überschreibungen
   directus_collections:
@@ -858,19 +892,46 @@ field_options:
     only_track_activity: Nur Aktivitäten verfolgen
     do_not_track_anything: Nichts verfolgen
     collection_setup: Einrichtung Sammlung
+    note_placeholder: Eine Beschreibung dieser Sammlung...
+    hidden_label: Innerhalb der App verstecken
     singleton: Als einzelnes Objekt behandeln
     language: Sprache
+    translation: Übersetzung eingeben...
     archive_divider: Archivieren
+    archive_field: Wählen Sie ein Feld...
+    archive_app_filter: App-Archivfilter aktivieren
+    archive_value: Gesetzter Wert während der Archivierung...
+    unarchive_value: Gesetzter Wert während der Wiederherstellung...
     divider: Sortieren
+    sort_field: Wählen Sie ein Feld...
+    accountability_divider: Verantwortung
+  directus_files:
+    title: Ein einzigartiger Titel...
+    description: Eine optionale Beschreibung...
+    location: Eine optionale Position...
+    storage_divider: Dateibenennung
+    filename_disk: Name auf Festplatte...
+    filename_download: Name während des Downloads...
   directus_roles:
+    name: Der einzigartige Name für diese Rolle...
+    description: Eine Beschreibung von dieser Rolle...
+    ip_access: Erlaubte IP-Adressen hinzufügen, leer lassen um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
       name_placeholder: Titel eingeben...
+      link_name: Link
+      link_placeholder: Relative oder absolute URL...
     collection_list:
+      group_name_addLabel: Neue Gruppe hinzufügen...
       fields:
+        group_name: Gruppen-Name
+        group_placeholder: Diese Gruppe benennen...
         type_name: Typ
+        choices_always: Immer geöffnet
+        choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
+    collections_addLabel: Sammlung hinzufügen...
   directus_users:
     preferences_divider: Benutzereinstellungen
     dropdown_auto: Automatisch (Systemeinstellung verwenden)
@@ -878,6 +939,7 @@ field_options:
     dropdown_dark: Nachtmodus
     admin_divider: Admin-Optionen
     status_dropdown_draft: Entwurf
+    status_dropdown_invited: Eingeladen
     status_dropdown_active: Aktiv
     status_dropdown_suspended: Angehalten
     status_dropdown_archived: Archiviert

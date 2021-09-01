@@ -796,7 +796,6 @@ fields:
     admin_options: 管理员设置
     status: 状态
     status_draft: 草稿
-    status_invited: 受邀
     status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档

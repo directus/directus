@@ -796,7 +796,7 @@ fields:
     admin_options: Options d'Administration
     status: État
     status_draft: Brouillon
-    status_invited: Invité
+    status_invited: Invité·e
     status_active: Actif
     status_suspended: Suspendu
     status_archived: Archivé
