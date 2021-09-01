@@ -6,8 +6,8 @@
 			:init="editorOptions"
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@onFocusIn="setFocus(true)"
-			@onFocusOut="setFocus(false)"
+			@focusin="setFocus(true)"
+			@focusout="setFocus(false)"
 		/>
 
 		<v-dialog v-model="linkDrawerOpen">
