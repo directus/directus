@@ -1220,16 +1220,23 @@ displays:
     circle_label: Megjelenítés körszegéllyel
   labels:
     labels: Feliratok
+    description: Egyetlen címke vagy címkék listájának megjelenítése
     default_foreground: Alapértelmezett előtér
     default_background: Alapértelmezett háttér
     format_label: Mindegyik címke formázása
+    show_as_dot: Pontszerű megjelenítés
     choices_value_placeholder: Adjon meg egy értéket...
     choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
+    description: A fájl MIME-típusának megjelenítése
+    extension_only: Csak a kiterjesztés
+    extension_only_label: Csak a fájlkiterjesztés megjelenítése
   rating:
     rating: Értékelés
+    description: Egy számérték viszonylagos megjelenítése max-értékéhez képest, csillagokkal ábrázolva
     simple: Egyszerű
+    simple_label: Csillagok megjelenítése egyszerű formátumban
   raw:
     raw: Nyers érték
   related-values:
@@ -1237,9 +1244,11 @@ displays:
     description: Hasonló értékek megjelenítése
   user:
     user: Felhasználó
+    description: Egy directus felhasználó megjelenítése
     avatar: Profilkép
     name: Név
     both: Mindkettő
+    circle_label: Felhasználó megjelenítése körszegéllyel
 layouts:
   cards:
     cards: Kártya
@@ -1255,6 +1264,9 @@ layouts:
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
+    cozy: Kényelmes
+  calendar:
+    calendar: Naptár
   map:
     map: Térkép
     field: Geometria
