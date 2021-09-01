@@ -137,6 +137,8 @@ item_permissions: Elem engedélyek
 field_permissions: Mező engedélyek
 field_validation: Mező érvényesítés
 field_presets: Mező alapérték
+permissions_for_role: 'A {role} szerepkör elemei a következő funkciót hajthatják végre: {action}.'
+fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják végre: {action}.'
 presentation_and_aliases: Prezentációk és Aliasok
 revision_post_update: Ez az elem így nézett ki a frissítés után...
 changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
@@ -526,6 +528,7 @@ upload_files_success: '{count} fájl feltöltve'
 upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
 click_to_browse: Kattints a böngészéshez
+interface_options: Interfész opciók
 layout_options: Elrendezési beállítások
 rows: Sorok
 columns: Oszlopok
@@ -1076,10 +1079,38 @@ interfaces:
     interface: Kezelőfelület
     description: Már létező interfész kiválasztása
     placeholder: Válasszon egy interfészt...
+  system-interface-options:
+    interface-options: Interfész opciók
+    description: Egy modál egy interfész opcióinak kiválasztásához
+  list-m2m:
+    many-to-many: Sok a sokhoz
+    description: Több kapcsolódó csomóponti elem kiválasztása
   select-dropdown-m2o:
+    many-to-one: Sok az egyhez
+    description: Egyetlen kapcsolódó elem kiválasztása
     display_template: Megjelenítési sablon
+  input-rich-text-md:
+    markdown: Markdown
+    description: Markdown bevitele és előnézete
+    customSyntax: Egyedi blokkok
+    customSyntax_label: Egyéni szintaxistípusok hozzáadása
+    customSyntax_add: Egyéni szintaxis hozzáadása
+    box: Block / Inline
+    imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   map:
+    map: Térkép
+    description: Hely megadása térképen
     zoom: Nagyítás
+    default_view: Alapértelmezett nézet
+    invalid_options: Érvénytelen opciók
+    invalid_format: Érvénytelen formátum ({format})
+    unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
+    fit_bounds: Nézet hozzáigazítása az adathoz
+    native: Natív
+    geojson: GeoJSON
+    lnglat: Hosszúság, Szélesség
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     description: Rövid értesítés megjelenítése
     text: Írja ide az értesítés tartalmát...
@@ -1121,6 +1152,7 @@ interfaces:
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
   input:
+    input: Bevitel
     mask: Maszkolt
   boolean:
     toggle: Váltás
@@ -1160,6 +1192,7 @@ displays:
     long: Hosszú
     short: Rövid
     relative: Relatív
+    relative_label: 'Relatív idő megjelenítése, pl.: 5 perccel ezelőtt'
   file:
     file: File
     description: Fájlok megjelenítése
@@ -1214,4 +1247,5 @@ layouts:
     comfortable: Kényelmes
     compact: Kompakt
   map:
+    map: Térkép
     field: Geometria
