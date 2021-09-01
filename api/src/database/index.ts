@@ -8,7 +8,6 @@ import { validateEnv } from '../utils/validate-env';
 import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
-import { toArray } from '@directus/shared/utils';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
