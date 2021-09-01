@@ -74,6 +74,38 @@ your project and API on different domains, make sure to verify your configuratio
 
 :::
 
+## Argon2
+
+| Variable               | Description                                                                                                                       | Default Value       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `HASH_MEMORY_COST`     | How much memory to use when generating a hash for user passwords.                                                                 | `4096` (4 MiB)      |
+| `HASH_LENGTH`          | The length of the hash function output in bytes.                                                                                  | `32`                |
+| `HASH_TIME_COST`       | The amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute.  | `3`                 |
+| `HASH_PARALLELISM`     | The amount of threads to compute the hash on. Each thread has a memory pool with memoryCost size.                                 | `1` (single thread) |
+| `HASH_TYPE`            | The variant of the hash function (`0`: argon2d, `1`: argon2i, or `2`: argon2id).                                                  | `1` (argon2i)       |
+| `HASH_VERSION`         | The Argon2 version to use. Currently available are versions `16` AKA 1.0/0x10 and `19` AKA 1.3/0x13. See **WARNINGS** below.      | `19` (AKA 1.3/0x13) |
+| `HASH_SALT`            | The salt to use for ALL password hashes. **You shouldn't set your own salt.** See **WARNINGS** below.                             | -- (random)         |
+| `HASH_SALT_LENGTH`     | The length (in bytes) of the cryptographically secure random salt to generate. See **WARNINGS** below.                            | `16`                |
+| `HASH_ASSOCIATED_DATA` | An extra and optional non-secret binary value. The value will be included as B64 encoded in the parameters portion of the digest. | --                  |
+
+These options will be passed to the `argon2.hash` function when hashing user passwords. See the
+[node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.
+
+::: tip WARNINGS
+
+1. Modifying `HASH_MEMORY_COST` and/or `HASH_PARALLELISM` will affect the amount of memory directus uses when computing
+   hashes; each thread gets `HASH_MEMORY_COST` amount of memory, so the total additional memory will be these two values
+   multiplied. This may cause out of memory errors, especially when running in containerized environments;
+2. Unless you absolutely know what you are doing, you should not override the default settings for `HASH_VERSION`,
+   `HASH_SALT`, and `HASH_SALT_LENGTH`. Setting `HASH_SALT` will use the **same salt for all user password hashes**
+   which is almost certainly not what you want. Setting `HASH_VERSION` and `HASH_SALT_LENGTH` are specifically advised
+   against on the [node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options).
+
+Side note: if you believe that you absolutely know what you are doing with these settings, you are either wrong or Bruce
+Schneier.
+
+:::
+
 ## CORS
 
 | Variable               | Description                                                                                                                                            | Default Value                |
