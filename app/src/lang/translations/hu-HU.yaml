@@ -781,13 +781,16 @@ fields:
     webP: WebP
     tiff: Tiff
     basemaps_raster: Raszter
+    additional_transforms: További transzformációk
     project_name: Projekt neve
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
+    public_pages: Nyilvános oldalak
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
+    auth_password_policy: Hitelesítési jelszóházirend
     custom_css: Egyéni CSS
   directus_fields:
     collection: Gyűjtemény neve
@@ -825,15 +828,28 @@ field_options:
         cover_text: Fedje (pontos méretre kényszerítés)
         fit_text: Illeszkedjen bele
         outside_text: Illeszkedjen külsőleg
+    additional_transforms: További transzformációk
     basemaps_raster: Raszter
   directus_collections:
     track_activity_revisions: Tevékenységek és módosítások nyomon követése
     only_track_activity: Csak a tevékenység nyomon követése
     do_not_track_anything: Minden nyomkövetés tiltása
     collection_setup: Gyűjtemény beállítások
+    note_placeholder: A gyűjtemény leírása pár szóban...
+    hidden_label: Legyen rejtett az alkalmazásban
     language: Nyelv
+    translation: Fordítás megadása...
     archive_divider: Archívum
+    archive_field: Mező kiválasztása...
+    archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
+    archive_value: Archiváláskor beállított érték...
+    unarchive_value: Az archiválás visszavonásakor beállított érték...
     divider: Rendezés
+    sort_field: Mező kiválasztása...
+  directus_files:
+    title: Egy egyedi cím...
+    description: Egy opcionális leírás...
+    location: Egy opcionális helyszín...
   directus_roles:
     fields:
       icon_name: Ikon
