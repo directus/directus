@@ -343,6 +343,7 @@ creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
 creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
+creating_collection_system: Engedélyezze és nevezze át ezen opcionális mezők bármelyikét!
 auto_increment_integer: Automatikusan növekvő egész szám
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
@@ -490,9 +491,11 @@ divider: Elválasztó
 color: Szín
 circle: Kör
 empty_item: Üres elem
+log_in_with: 'Bejelentkezés {provider} profillal'
 advanced_settings: Haladó beállítások
 advanced_filter: Bővített szűrés
 delete_advanced_filter: Szűrő törlése
+change_advanced_filter_operator: Operátor cseréje
 operators:
   eq: Egyenlő
   neq: Nem egyenlő
@@ -559,6 +562,7 @@ user: Felhasználó
 no_presets: Presetek
 no_presets_copy: Még egy preset vagy könyvjelző sem lett elmentve.
 no_presets_cta: Preset hozzáadása
+presets_only: Csak alapbeállítások
 create: Létrehozás
 on_create: Létrehozáskor
 on_update: Módosításkor
@@ -710,6 +714,7 @@ no_upscale: Ne méretezze fel a képeket
 collection: Gyűjtemény
 collections: Gyűjtemények
 singleton: Egyedüli
+singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
 fields:
   directus_activity:
@@ -854,6 +859,7 @@ field_options:
     collection_setup: Gyűjtemény beállítások
     note_placeholder: A gyűjtemény leírása pár szóban...
     hidden_label: Legyen rejtett az alkalmazásban
+    singleton: Egyetlen objektumként kezelendő
     language: Nyelv
     translation: Fordítás megadása...
     archive_divider: Archívum
