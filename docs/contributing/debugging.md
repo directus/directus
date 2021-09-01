@@ -39,5 +39,8 @@ You first have to setup the config for starting the debugger. Create the followi
 }
 ```
 
+::: warning Disable Cache Make sure that you have caching disabled as it otherwise returns the cached response. To
+disable this, goto your `.env` file in the api and set `CACHE_ENABLED` to `false`. :::
+
 Now you can start the api by going to the debugger view in VS Code, select to debug the Api and press `Start Debugging`.
 This runs the api and allows you to set breakpoints.
