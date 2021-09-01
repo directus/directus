@@ -438,13 +438,19 @@ errors:
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
 security: Biztonság
+value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
+presets: Alapbeállítások
 unexpected_error: Váratlan hiba történt
+unexpected_error_copy: Váratlan hiba történt. Kérjük, próbálja meg később újra!
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
+no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
+password_reset_sent: Küldtünk egy biztonságos linket a jelszó visszaállításához
+password_reset_successful: Jelszó sikeres visszaállítása
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
@@ -459,6 +465,8 @@ update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
+delete_collection_are_you_sure: >-
+  Biztos, hogy törölni szeretné ezt a gyűjteményt? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Elrejtett gyűjtemények
@@ -466,6 +474,7 @@ show_hidden_collections: Rejtett gyűjtemények mutatása
 hide_hidden_collections: Rejtett gyűjtemények rejtése
 unmanaged_collections: Nem beállított gyűjtemények
 system_collections: Rendszer gyűjtemények
+placeholder: Helyőrző
 icon_left: Ikon balra
 icon_right: Ikon jobbra
 font: Betűtípus
@@ -476,6 +485,7 @@ divider: Elválasztó
 color: Szín
 circle: Kör
 empty_item: Üres elem
+advanced_settings: Haladó beállítások
 advanced_filter: Bővített szűrés
 delete_advanced_filter: Szűrő törlése
 operators:
@@ -491,14 +501,22 @@ operators:
   nnull: nem null
   contains: Tartalmaz
   ncontains: nem tartalmaz
+  starts_with: Ezzel kezdődik
+  nstarts_with: Nem ezzel kezdődik
+  ends_with: Ezzel végződik
+  nends_with: Nem ezzel végződik
   between: között
   nbetween: nincs ezek között
   empty: üres
   nempty: nem üres
   all: Tartalmazza ezeket a kulcsokat
   has: Néhányat ezek közül a kulcsok közül tartalmaz
+  intersects: Metszi
+  nintersects: Nem metszi
 loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
+item: Elem
+items: Elemek
 upload_file: Fájl feltöltése
 upload_file_indeterminate: Fájl feltöltése...
 upload_file_success: Fájl feltöltve
@@ -530,6 +548,7 @@ no_results_copy: Módosítsd vagy töröld a keresési szűrőket a találatoké
 clear_filters: Szűrök törlése
 saves_automatically: Automatikus mentés
 role: Szerepkör
+rule: Szabály
 user: Felhasználó
 no_presets: Presetek
 no_presets_copy: Még egy preset vagy könyvjelző sem lett elmentve.
@@ -546,6 +565,8 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+image_url: Kép URL
+alt_text: Alternatív szöveg
 media: Média
 quality: Minőség
 width: Szélesség
@@ -557,6 +578,7 @@ display_text_placeholder: Írjon be egy megjelenítendő szöveget...
 tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
 unlimited: Korlátlan
+open_link_in: Hivatkozás megnyitása itt
 new_tab: Új fül
 current_tab: Jelenlegi fül
 wysiwyg_options:
@@ -605,6 +627,7 @@ wysiwyg_options:
   visualaid: Láthatatlan elemek mutatása
   source_code: Forráskód szerkesztése
   fullscreen: Teljes képernyő
+  directionality: Irányítottság
 dropdown: Legördülő lista
 choices: Lehetőségek
 choices_option_configured_incorrectly: Helytelenül konfigurált választási ehetőségek
@@ -631,6 +654,7 @@ layout: Elrendezés
 tree_view: Fa nézet
 changes_are_permanent: A változtatások nem visszavonhatóak
 preset_name_placeholder: Alapértelmezettként szolgál, ha üres...
+preset_search_placeholder: Keresési lekérdezés...
 editing_preset: Alapértelmezés szerkesztése
 layout_preview: Elrendezés előnézet
 layout_setup: Elrendezés beállítás
@@ -676,9 +700,11 @@ no_layout_collection_selected_yet: Még nem választott elrendezést/gyűjtemén
 batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
+no_upscale: Ne méretezze fel a képeket
 collection: Gyűjtemény
 collections: Gyűjtemények
 singleton: Egyedüli
+system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
