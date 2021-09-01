@@ -139,6 +139,8 @@ field_validation: Mező érvényesítés
 field_presets: Mező alapérték
 permissions_for_role: 'A {role} szerepkör elemei a következő funkciót hajthatják végre: {action}.'
 fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják végre: {action}.'
+validation_for_role: 'A {action} mező szabályozza a {role} szerepek által követendő viselkedést.'
+presets_for_role: 'A {role} szerepkör mezőértékeinek alapértelmezései.'
 presentation_and_aliases: Prezentációk és Aliasok
 revision_post_update: Ez az elem így nézett ki a frissítés után...
 changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
