@@ -14,7 +14,12 @@
 				<template v-if="field.name">
 					<span class="title">{{ field.name }}</span>
 				</template>
-				<v-icon v-if="!active && validationMessages" v-tooltip="validationMessages" class="warning" name="warning" />
+				<v-icon
+					v-if="!active && validationMessages"
+					v-tooltip="validationMessages"
+					class="warning"
+					name="error_outline"
+				/>
 				<v-icon class="expand-icon" name="expand_more" />
 			</v-divider>
 		</template>
