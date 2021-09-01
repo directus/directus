@@ -6,7 +6,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
-import getDatabase, { isInstalled, validateDBConnection, hasDatabaseConnection } from '../../../database';
+import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database';
 import { SchemaOverview } from '../../../types';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
@@ -59,7 +59,7 @@ async function waitForDatabase(database: Knex) {
 	}
 
 	// This will throw and exit the process if the database is not available
-	await validateDBConnection(database);
+	await validateDatabaseConnection(database);
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
