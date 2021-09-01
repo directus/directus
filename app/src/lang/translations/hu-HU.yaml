@@ -431,6 +431,7 @@ errors:
   ITEM_LIMIT_REACHED: Elérte az elemek maximális számát
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
+  RECORD_NOT_UNIQUE: Ismétlődő értéket észleltem
   USER_SUSPENDED: Felhasználó felfüggesztve
   CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
   UNKNOWN: Váratlan hiba történt
@@ -867,6 +868,7 @@ field_options:
       name_name: Név
       name_placeholder: Írjon be egy címet...
     collection_list:
+      group_name_addLabel: Új csoport hozzáadása...
       fields:
         group_name: Csoportnév
         group_placeholder: Címkézze fel ezt a csoportot...
@@ -988,6 +990,7 @@ interfaces:
     primary: Elsődleges
     link: Linkek
     button: Gombok
+    error: A művelet nem hajtható végre
   select-multiple-checkbox:
     checkboxes: Jelölőnégyzetek
     description: Válasszon akár több lehetőséget is a jelölőnégyzetek segítségével
@@ -998,6 +1001,7 @@ interfaces:
     name: Jelölőnégyzetek (Fa)
     description: Válasszon akár több lehetőséget is az egymásba ágyazott jelölőnégyzetek segítségével
     value_combining: Érték kombinálása
+    value_combining_note: Szabályozza, hogy a beágyazott kiválasztáskor milyen érték kerüljön tárolásra.
     show_all: Mind megjelenítése
     show_selected: Kiválasztottak megjelenítése
   input-code:
@@ -1044,6 +1048,7 @@ interfaces:
     description: Válasszon értéket legördülő listából
     choices_placeholder: Új lehetőség hozzáadása
     allow_other: Egyéb engedélyezése
+    allow_other_label: Egyéb érték engedélyezése
     choices_value_placeholder: Adjon meg egy értéket...
   file:
     file: File
