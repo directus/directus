@@ -38,6 +38,7 @@ role_name: Szerepkör neve
 branch: Ág
 leaf: Falevél / Leaf
 indeterminate: Meghatározatlan
+edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
 children: Gyermekek
 db_only_click_to_configure: 'Csak az adatbázisban szerepel: Klikkeljen a beállításához '
