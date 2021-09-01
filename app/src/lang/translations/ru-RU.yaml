@@ -783,7 +783,7 @@ fields:
     admin_options: Настройки администратора
     status: Статус
     status_draft: Черновик
-    status_invited: Приглашен
+    status_invited: Приглашен(а)
     status_active: Активный
     status_suspended: Приостановлен
     status_archived: В архиве

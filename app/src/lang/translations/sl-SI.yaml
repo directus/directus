@@ -796,7 +796,6 @@ fields:
     admin_options: Administracijske opcije
     status: Stanje
     status_draft: Osnutek
-    status_invited: Vabljeni
     status_active: Aktivno
     status_suspended: Zaustavljeno
     status_archived: Arhivirano

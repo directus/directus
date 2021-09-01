@@ -741,7 +741,6 @@ fields:
     theme: السمة
     tfa_secret: التحقق بخطوتين
     status: حالة
-    status_invited: مدعو
     status_active: مفعل
     role: الدور
     last_page: آخر صفحة

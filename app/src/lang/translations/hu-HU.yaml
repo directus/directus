@@ -292,6 +292,8 @@ delete_comment: Hozzászólás törlése
 date-fns_date: PPP
 date-fns_time: 'ó:pp:mpmp de/du'
 date-fns_time_no_seconds: 'ó:pp de/du'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
 month: hónap
 year: év
@@ -523,6 +525,8 @@ operators:
   has: Néhányat ezek közül a kulcsok közül tartalmaz
   intersects: Metszi
   nintersects: Nem metszi
+  intersects_bbox: Metszi a határoló dobozt
+  nintersects_bbox: Nem metszi a határoló dobozt
 loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
 item: Elem
@@ -723,7 +727,10 @@ fields:
     item: Elem elsődleges kulcsa
     action: Művelet
     collection: Gyűjtemény
+    timestamp: Művelet időpontja
+    user: Művelet kezdeményezője
     comment: Hozzászólás
+    user_agent: Felhasználói ügynök
     ip: IP cím
     revisions: Változatok
   directus_collections:
@@ -735,8 +742,11 @@ fields:
     singleton: Egyedüli
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
+    unarchive_value: Archiválás megszüntetése utáni érték
     sort_field: Rendezési mező
+    accountability: Tevékenység és revízió nyomkövetése
   directus_files:
+    $thumbnail: Miniatűr
     title: Cím
     description: Leírás
     tags: Cimkék
@@ -794,6 +804,11 @@ fields:
     webP: WebP
     tiff: Tiff
     basemaps_raster: Raszter
+    basemaps_tile: Raszter TileJSON
+    basemaps_style: Mapbox stílus
+    mapbox_key: Mapbox hozzáférési token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
     additional_transforms: További transzformációk
     project_name: Projekt neve
     project_url: Projekt webcíme
@@ -831,8 +846,10 @@ fields:
     collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
+    method: Metódus
     status: Állapot
     data: Adat
+    data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
 field_options:
@@ -842,6 +859,7 @@ field_options:
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
+      none_text: Nincs - Nem ajánlott
       weak_text: Gyenge - Minimum 8 karakter
       strong_text: Erős - Nagybetű / Kisbetű / Számok / Speciális karakterek
     storage_asset_presets:
@@ -851,7 +869,12 @@ field_options:
         fit_text: Illeszkedjen bele
         outside_text: Illeszkedjen külsőleg
     additional_transforms: További transzformációk
+    transforms_note: 'A Sharp módszer neve és argumentumai. További információért lásd: https://sharp.pixelplumbing.com/api-constructor'
+    mapbox_key: Mapbox hozzáférési token
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_raster: Raszter
+    basemaps_tile: Raszter TileJSON
+    basemaps_style: Mapbox stílus
     files_divider_title: Fájlok és miniatűrök
     overrides_divider_title: Alkalmazás felülbírálások
   directus_collections:
@@ -875,11 +898,18 @@ field_options:
     title: Egy egyedi cím...
     description: Egy opcionális leírás...
     location: Egy opcionális helyszín...
+    storage_divider: Fájl elnevezése
+    filename_download: Elnevezés letöltés esetén...
   directus_roles:
+    name: E szerepkör egyedi neve...
+    description: A szerepkör leírása...
+    ip_access: Adja hozzá az engedélyezett IP-címeket, minden IP engedélyezéséhez hagyja üresen...
     fields:
       icon_name: Ikon
       name_name: Név
       name_placeholder: Írjon be egy címet...
+      link_name: Hivatkozás
+      link_placeholder: Relatív vagy abszolút URL...
     collection_list:
       group_name_addLabel: Új csoport hozzáadása...
       fields:
@@ -887,6 +917,8 @@ field_options:
         group_placeholder: Címkézze fel ezt a csoportot...
         type_name: Típus
         choices_always: Mindig nyitva
+        choices_start_open: Indíts nyitva!
+        choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
@@ -904,6 +936,7 @@ field_options:
   directus_webhooks:
     status_options_active: aktív
     status_options_inactive: Inaktív
+    data_label: Eseményadatok küldése
     triggers_divider: Triggerek
     actions_create: Létrehozás
     actions_update: Frissítés
@@ -997,6 +1030,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
+    presentation-links: Gomb hivatkozások
     links: Linkek
     description: Konfigurálható linkgombok dinamikus URL-ek indításához
     style: Stílus
@@ -1062,6 +1096,8 @@ interfaces:
     choices_placeholder: Új lehetőség hozzáadása
     allow_other: Egyéb engedélyezése
     allow_other_label: Egyéb érték engedélyezése
+    allow_none: Egyik sem engedélyezett
+    allow_none_label: Nem kötelező választani
     choices_name_placeholder: Adjon meg egy nevet...
     choices_value_placeholder: Adjon meg egy értéket...
   select-multiple-dropdown:
@@ -1111,6 +1147,8 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
+    geometry_type: Geometria típusa
+    geometry_format: Geometria formátuma
     default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
@@ -1122,6 +1160,7 @@ interfaces:
     wkt: WKT
     wkb: WKB
   presentation-notice:
+    notice: Értesítés
     description: Rövid értesítés megjelenítése
     text: Írja ide az értesítés tartalmát...
   list-o2m:
@@ -1163,7 +1202,17 @@ interfaces:
     add_tags: Címke hozzáadása...
   input:
     input: Bevitel
+    description: Manuálisan határozzon meg egy értéket!
+    trim: Vágás
     mask: Maszkolt
+    mask_label: Valós érték elrejtése
+    clear: Törölt érték
+    clear_label: Mentés üres karakterláncként
+    minimum_value: Minimumérték
+    maximum_value: Maximumérték
+    step_interval: Lépésköz
+  input-multiline:
+    textarea: Szövegmező
   boolean:
     toggle: Váltás
     label_default: Engedélyezve
@@ -1177,9 +1226,24 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
+  input-rich-text-html:
+    toolbar: Eszköztár
+    custom_formats: Egyéni formátumok
+  input-autocomplete-api:
+    rate: Értékelés
+  group-raw:
+    description: A mezők megjelenítése a jelenlegi állapotnak megfelelően
+  group-detail:
+    description: A mezők renderelése összecsukható szakaszként
+    show_header: Csoportfejléc megjelenítése
+    header_icon: Fejléc ikon
+    header_color: Fejléc színe
+    start_open: Indíts nyitva!
+    start_closed: Indíts zárva!
 displays:
   boolean:
     boolean: Logikai
+    description: Be- és kikapcsolt állapotok megjelenítése
     label_on: Címke be
     label_on_placeholder: Címke megadása...
     label_off: Címke ki
@@ -1198,6 +1262,7 @@ displays:
     default_color: Alapértelmezett szín
   datetime:
     datetime: Dátum és idő
+    description: Az idővel kapcsolatos értékek megjelenítése
     format: Formátum
     long: Hosszú
     short: Rövid
@@ -1208,16 +1273,24 @@ displays:
     description: Fájlok megjelenítése
   filesize:
     filesize: Fájlméret
+    description: Fájl méretének megjelenítése
   formatted-value:
     formatted-value: Formázott érték
+    description: A szöveg formázott változatának megjelenítése
+    format_title: Cím formázása
+    format_title_label: Automatikus nagybetű / kisbetű
     bold_label: Vastag stílus használata
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
+    description: Az objektum formázott változatának megjelenítése
   icon:
     icon: Ikon
+    description: Egy ikon megjelenítése
     filled: Kitöltve
+    filled_label: Használja a kitöltött változatot
   image:
     image: Kép
+    description: Egy apró előnézeti kép megjelenítése
     circle: Kör
     circle_label: Megjelenítés körszegéllyel
   labels:
