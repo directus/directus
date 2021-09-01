@@ -133,7 +133,8 @@ export default defineComponent({
 					(child) =>
 						props.modelValue.includes(child[props.itemValue]) ||
 						childrenHaveValueMatch(child[props.itemChildren]) ||
-						props.modelValue.includes(props.parentValue)
+						props.modelValue.includes(props.parentValue) ||
+						props.modelValue.includes(props.value)
 				);
 			}
 
