@@ -324,16 +324,25 @@ export default defineComponent({
 				props.modelValue.includes(props.value) &&
 				allChildrenRecursive.some((childVal) => rawValue.includes(childVal))
 			) {
+				const childThatContainsSelection = props.children.find((child) => {
+					const childNestedValues = getRecursiveChildrenValues('all', child[props.itemChildren]);
+					return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === true;
+				});
+
 				const newValue = [
 					...rawValue.filter((val) => val !== props.value),
 					...(props.children || [])
 						.filter((child) => {
 							if (!child[props.itemChildren]) return true;
-
-							const childNestedValues = getRecursiveChildrenValues('all', child[props.itemChildren]);
-							return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === false;
+							return child[props.itemValue] !== childThatContainsSelection?.[props.itemValue];
 						})
 						.map((child) => child[props.itemValue]),
+					...(childThatContainsSelection?.[props.itemChildren] ?? [])
+						.filter((grandChild: Record<string, any>) => {
+							const childNestedValues = getRecursiveChildrenValues('all', grandChild[props.itemChildren]);
+							return rawValue.some((rawVal) => childNestedValues.includes(rawVal)) === false;
+						})
+						.map((grandChild: Record<string, any>) => grandChild[props.itemValue]),
 				];
 
 				return emitValue(newValue);
