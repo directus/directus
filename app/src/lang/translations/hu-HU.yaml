@@ -257,6 +257,7 @@ revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
 revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
+revision_delta_by: '{date} {user} által'
 private_user: Privát felhasználó
 revision_preview: Felülvizsgálati előnézet
 updates_made: Végrehajtott frissítések
@@ -986,6 +987,7 @@ normal: Normál
 success: Sikeres
 warning: Figyelmeztetés
 danger: Veszély
+junction_collection: Csomópont gyűjtemény
 latency: Késleltetés
 login: Belépés
 my_activity: Saját tevékenységek
@@ -1142,6 +1144,7 @@ interfaces:
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
     box: Block / Inline
+    imageToken: Kép token
     imageToken_label: Milyen (statikus) tokent csatoljunk a képforrásokhoz
   map:
     map: Térkép
@@ -1197,6 +1200,7 @@ interfaces:
     capitalization: Nagybetűs írásmód
     uppercase: Nagybetűsre konvertálás
     lowercase: Kisbetűsre konvertálás
+    auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
@@ -1211,25 +1215,42 @@ interfaces:
     minimum_value: Minimumérték
     maximum_value: Maximumérték
     step_interval: Lépésköz
+    slug: Slugify
+    slug_label: A beírt érték URL-kompatibilissá tétel
   input-multiline:
     textarea: Szövegmező
+    description: Többsoros egyszerű szöveg (multiline plain-text) bevitele
   boolean:
     toggle: Váltás
+    description: Be- és kikapcsolás közti váltás
+    label_placeholder: Címke beírása...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
+  list-o2m-tree-view:
+    description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
+    recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
   user:
     user: Felhasználó
+    description: Válasszon ki egy létező directus felhasználót!
     select_mode: Kiválasztott mód
     modes:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Rich-text editor HTML tartalom írásához
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
+    options_override: Beállítások felülírása
   input-autocomplete-api:
+    input-autocomplete-api: Automatikus kiegészítés (API)
+    description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
+    results_path: Eredmények útvonala
+    value_path: Érték útvonala
+    trigger: Eseményindító
     rate: Értékelés
   group-raw:
     description: A mezők megjelenítése a jelenlegi állapotnak megfelelően
@@ -1264,6 +1285,8 @@ displays:
     datetime: Dátum és idő
     description: Az idővel kapcsolatos értékek megjelenítése
     format: Formátum
+    format_note: >-
+      Az egyéni formátum elfogadja a __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Hosszú
     short: Rövid
     relative: Relatív
