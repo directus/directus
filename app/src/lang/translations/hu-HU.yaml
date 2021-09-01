@@ -1049,7 +1049,11 @@ interfaces:
     choices_placeholder: Új lehetőség hozzáadása
     allow_other: Egyéb engedélyezése
     allow_other_label: Egyéb érték engedélyezése
+    choices_name_placeholder: Adjon meg egy nevet...
     choices_value_placeholder: Adjon meg egy értéket...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Legördülő lista (többválasztós)
+    description: Válasszon több értéket legördülő listából
   file:
     file: File
     description: Válasszon vagy töltsön fel fájlt
@@ -1058,12 +1062,20 @@ interfaces:
     description: Válasszon vagy töltsön fel fájlokat
   input-hash:
     hash: Hash
+    description: Adjon meg egy hashelni kívánt értéket
+    masked: Maszkolt
+    masked_label: Valós értékek elrejtése
   select-icon:
     icon: Ikon
+    description: Válasszon egy ikont legördülő listából
+    search_for_icon: Ikon keresése...
   file-image:
     image: Kép
+    description: Válasszon vagy töltsön fel egy képet
   system-interface:
     interface: Kezelőfelület
+    description: Már létező interfész kiválasztása
+    placeholder: Válasszon egy interfészt...
   select-dropdown-m2o:
     display_template: Megjelenítési sablon
   map:
@@ -1108,6 +1120,8 @@ interfaces:
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
     add_tags: Címke hozzáadása...
+  input:
+    mask: Maszkolt
   boolean:
     toggle: Váltás
     label_default: Engedélyezve
