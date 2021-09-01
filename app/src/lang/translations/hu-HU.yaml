@@ -373,6 +373,7 @@ request_feature: Funkció ajánlása
 interface_not_found: 'Hiányzó interfész: "{interface}".'
 reset_interface: Felhasználói felület visszaállítása
 reset_display: Megjelenés alaphelyzetbe
+list-m2a: Builder (M2A)
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
@@ -474,6 +475,8 @@ all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+start_end_of_count_items: '{start}-{end} {count} elemből'
+start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
 delete_collection_are_you_sure: >-
@@ -488,6 +491,7 @@ system_collections: Rendszer gyűjtemények
 placeholder: Helyőrző
 icon_left: Ikon balra
 icon_right: Ikon jobbra
+count_other_revisions: '{count} egyéb módosítás'
 font: Betűtípus
 sans_serif: Sans Serif
 serif: Talpas
@@ -956,6 +960,7 @@ relational_triggers: Relációs triggerek
 referential_action_field_label_m2o: '{collection} törlésekor...'
 referential_action_field_label_o2m: '{collection} kiválasztásának megszüntetésekor...'
 referential_action_no_action: A törlés megakadályozása
+referential_action_cascade: A {collection} elem kaszkád törlése
 referential_action_set_null: A {field} mező állapotának nullra állítása
 referential_action_set_default: '{field} beállítása alapértelmezett értékére'
 choose_action: Művelet választása
