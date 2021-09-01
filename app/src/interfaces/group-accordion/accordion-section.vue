@@ -4,6 +4,7 @@
 			<div class="label type-title" :class="{ active }" @click="handleModifier($event, toggle)">
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				{{ field.name }}
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="warning" />
 			</div>
 
 			<transition-expand>
@@ -30,6 +31,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { merge } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { ValidationError } from '@directus/shared/types';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'AccordionSection',
@@ -86,6 +88,8 @@ export default defineComponent({
 	},
 	emits: ['apply', 'toggleAll'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsInSection = computed(() => {
 			return props.fields
 				.filter((field) => {
@@ -103,7 +107,18 @@ export default defineComponent({
 				});
 		});
 
-		return { fieldsInSection, handleModifier };
+		const validationMessage = computed(() => {
+			const validationError = props.validationErrors.find((error) => error.field === props.field.field);
+			if (validationError === undefined) return;
+
+			if (validationError.code === 'RECORD_NOT_UNIQUE') {
+				return t('validationError.unique');
+			} else {
+				return t(`validationError.${validationError.type}`, validationError);
+			}
+		});
+
+		return { fieldsInSection, handleModifier, validationMessage };
 
 		function handleModifier(event: MouseEvent, toggle: () => void) {
 			if (props.multiple === false) {
@@ -152,6 +167,11 @@ export default defineComponent({
 
 .icon.active {
 	transform: rotate(0);
+}
+
+.warning {
+	margin-left: 8px;
+	color: var(--danger);
 }
 
 .fields {
