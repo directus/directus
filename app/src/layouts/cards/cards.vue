@@ -91,6 +91,7 @@ import { Collection } from '@/types';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
+	inheritAttrs: false,
 	props: {
 		collection: {
 			type: String,

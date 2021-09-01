@@ -10,6 +10,7 @@ import { defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
 import '@fullcalendar/core/vdom';
 
 export default defineComponent({
+	inheritAttrs: false,
 	props: {
 		createCalendar: {
 			type: Function as PropType<(calendarElement: HTMLElement) => void>,

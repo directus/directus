@@ -89,6 +89,7 @@ import { HeaderRaw } from '@/components/v-table/types';
 import { Collection } from '@/types';
 
 export default defineComponent({
+	inheritAttrs: false,
 	props: {
 		collection: {
 			type: String,

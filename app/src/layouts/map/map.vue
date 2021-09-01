@@ -105,6 +105,7 @@ import { GeometryOptions, Item } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { MapComponent },
+	inheritAttrs: false,
 	props: {
 		selection: {
 			type: Array as PropType<Item[]>,
