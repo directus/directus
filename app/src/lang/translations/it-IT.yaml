@@ -798,7 +798,7 @@ fields:
     admin_options: Opzioni Amministratore
     status: Stato
     status_draft: Bozza
-    status_invited: Disattivato
+    status_invited: Invitato
     status_active: Attivo
     status_suspended: Sospeso
     status_archived: Archiviato

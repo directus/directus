@@ -796,7 +796,7 @@ fields:
     admin_options: Opcions d'administrador
     status: Estat
     status_draft: Esborrany
-    status_invited: Inactiva
+    status_invited: Convidat
     status_active: Activa
     status_suspended: Suspès
     status_archived: Arxivat
