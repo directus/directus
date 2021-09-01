@@ -613,7 +613,7 @@ creating_unit: '{unit} létrehozása'
 editing_unit: '{unit} szerkesztése'
 editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
-settings_data_model: Adat model
+settings_data_model: Adatmodell
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
