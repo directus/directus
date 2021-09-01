@@ -23,7 +23,6 @@ export default function getDatabase(): Knex {
 		'DB_SEARCH_PATH',
 		'DB_CONNECTION_STRING',
 		'DB_POOL',
-		'DB_SQLITE_EXTENSIONS',
 	]);
 
 	const poolConfig = getConfigFromEnv('DB_POOL');
