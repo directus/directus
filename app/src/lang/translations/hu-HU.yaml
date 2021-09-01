@@ -865,6 +865,7 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Név
+      name_placeholder: Írjon be egy címet...
     collection_list:
       fields:
         group_name: Csoportnév
@@ -987,26 +988,62 @@ interfaces:
     primary: Elsődleges
     link: Linkek
     button: Gombok
+  select-multiple-checkbox:
+    checkboxes: Jelölőnégyzetek
+    description: Válasszon akár több lehetőséget is a jelölőnégyzetek segítségével
+    allow_other: Egyéb engedélyezése
+    show_more: 'További {count} mutatása'
+    items_shown: Megjelenített elemek
+  select-multiple-checkbox-tree:
+    name: Jelölőnégyzetek (Fa)
+    description: Válasszon akár több lehetőséget is az egymásba ágyazott jelölőnégyzetek segítségével
+    value_combining: Érték kombinálása
+    show_all: Mind megjelenítése
+    show_selected: Kiválasztottak megjelenítése
   input-code:
     code: Kód
+    description: Kódrészletek írása vagy megosztása
+    line_number: Sorok számozása
+    placeholder: Kód beírása...
   system-collection:
     collection: Gyűjtemény
+    description: Választás meglévő gyűjteményekből
+    include_system_collections: Beleértve a rendszergyűjteményeket
   system-collections:
     collections: Gyűjtemények
+    description: Választás meglévő gyűjteményekből
+    include_system_collections: Beleértve a rendszergyűjteményeket
   select-color:
     color: Szín
+    description: Írjon be vagy válasszon egy színértéket
+    placeholder: Szín választása...
+    preset_colors: Alapértelmezett színek
+    preset_colors_add_label: Új szín hozzáadása...
+    name_placeholder: Szín elnevezése...
   datetime:
     datetime: Dátum és idő
     description: Dátum és idő beállítása
+    include_seconds: Beleértve a másodperceket
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
   system-display-template:
     display-template: Megjelenítési sablon
+    description: Statikus szöveg és dinamikus mezőértékek keverése
+    collection_field: Gyűjteménymező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
   presentation-divider:
     divider: Elválasztó
+    description: A mezők felcímkézése és szakaszokra osztása
+    title_placeholder: Írjon be egy címet...
+    inline_title: Inline cím
+    inline_title_label: Cím megjelenítése a soron belül
+    margin_top: Felső margó
+    margin_top_label: Felső margó növelése
   select-dropdown:
+    description: Válasszon értéket legördülő listából
+    choices_placeholder: Új lehetőség hozzáadása
+    allow_other: Egyéb engedélyezése
     choices_value_placeholder: Adjon meg egy értéket...
   file:
     file: File
@@ -1026,8 +1063,18 @@ interfaces:
     display_template: Megjelenítési sablon
   map:
     zoom: Nagyítás
+  presentation-notice:
+    description: Rövid értesítés megjelenítése
+    text: Írja ide az értesítés tartalmát...
+  list-o2m:
+    one-to-many: Egy a sokhoz
+    description: Több kapcsolódó elem választása
+    no_collection: A gyűjtemény nem található
   system-folder:
     folder: Könyvtár
+    description: Válasszon egy mappát
+    field_hint: Az újonnan feltöltött fájlokat a kiválasztott mappába helyezi. Nem érinti a kiválasztott, de már létező fájlokat.
+    root_name: Fájlok gyökérkönyvtára
   slider:
     slider: Csúszka
   tags:
