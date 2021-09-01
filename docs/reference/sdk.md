@@ -480,8 +480,20 @@ await directus.auth.logout();
 
 ### Request a Password Reset
 
+By default, the address defined in `PUBLIC_URL` on `.env` file is used for the link to the reset password page sent in
+the email:
+
 ```js
 await directus.auth.password.request('admin@example.com');
+```
+
+But a custom address can be passed as second argument:
+
+```js
+await directus.auth.password.request(
+	'admin@example.com',
+	'https://myapp.com' // In this case, the link will be https://myapp.com?token=FEE0A...
+);
 ```
 
 ### Reset a Password

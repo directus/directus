@@ -779,7 +779,7 @@ fields:
     admin_options: Admin beállítások
     status: Állapot
     status_draft: Vázlat
-    status_invited: Inaktív
+    status_invited: Meghívott
     status_active: aktív
     status_suspended: Felfüggesztve
     status_archived: Archiválva
