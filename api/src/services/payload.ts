@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
@@ -13,6 +12,7 @@ import { ItemsService } from './items';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
+import { generatePasswordHash } from '../utils/generate-password-hash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -50,7 +50,7 @@ export class PayloadService {
 			if (!value) return;
 
 			if (action === 'create' || action === 'update') {
-				return await argon2.hash(String(value));
+				return await generatePasswordHash(value);
 			}
 
 			return value;

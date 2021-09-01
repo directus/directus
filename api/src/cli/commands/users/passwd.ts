@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-import argon2 from 'argon2';
 import { getSchema } from '../../../utils/get-schema';
+import { generatePasswordHash } from '../../../utils/generate-password-hash';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';
 
@@ -14,7 +14,7 @@ export default async function usersPasswd({ email, password }: { email?: string;
 	}
 
 	try {
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = await generatePasswordHash(password);
 		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });
 
