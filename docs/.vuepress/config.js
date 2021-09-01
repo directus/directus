@@ -807,6 +807,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/contributing/debugging',
+						title: 'Debugging',
+					},
+					{
+						type: 'page',
 						path: '/contributing/github-ci',
 						title: 'GitHub CI',
 					},
