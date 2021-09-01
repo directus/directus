@@ -24,11 +24,14 @@ item_revision: Revize položky
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
+and: A
+or: Nebo
 fill_width: Plná šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
 role_name: Jméno role
+indeterminate: Neurčitý
 db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
