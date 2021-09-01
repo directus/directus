@@ -133,6 +133,7 @@ export default defineComponent({
 		const internalValue = computed(() => {
 			if (props.modelValue !== undefined) return props.modelValue;
 			if (props.initialValue !== undefined) return props.initialValue;
+			if (props.field.meta?.interface === 'input-rich-text-html') return '';
 			return defaultValue.value;
 		});
 
