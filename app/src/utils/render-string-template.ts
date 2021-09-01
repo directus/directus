@@ -1,4 +1,4 @@
-import { render } from 'micromustache';
+import { render, renderFn, get } from 'micromustache';
 import { computed, ComputedRef, Ref, unref } from 'vue';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
@@ -6,6 +6,11 @@ type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
 	displayValue: ComputedRef<string | false>;
 };
+
+function resolve(path: string, scope: any) {
+	const value = get(scope, path);
+	return typeof value === 'object' ? JSON.stringify(value) : value;
+}
 
 export function renderStringTemplate(
 	template: Ref<string | null> | string,
@@ -21,7 +26,7 @@ export function renderStringTemplate(
 		if (!values || !templateString || !fieldsInTemplate.value) return false;
 
 		try {
-			return render(templateString, values, { propsExist: true });
+			return renderFn(templateString, resolve, values, { propsExist: true });
 		} catch {
 			return false;
 		}
