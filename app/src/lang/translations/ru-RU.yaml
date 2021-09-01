@@ -36,6 +36,7 @@ enter_password_to_enable_tfa: Введите свой пароль для вкл
 add_field: Добавить поле
 role_name: Название роли
 branch: Ветка
+edit_collection: Изменить коллекцию
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать элементы в архиве
@@ -118,6 +119,7 @@ nullable: Разрешить NULL значение
 allow_null_value: Разрешить NULL значение
 allow_multiple: Разрешить несколько
 allow_multiple_to_be_open: Можно открыть несколько
+enter_value_to_replace_nulls: Пожалуйста, введите новое значение для замены всех NULL в текущем поле.
 field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
@@ -185,6 +187,7 @@ create_translations: Создать Переводы
 auto_refresh: Авто обновление
 refresh_interval: Интервал обновления
 no_refresh: Не обновлять
+refresh_interval_seconds: Мгновенное обновление | Каждую секунду | Каждые {seconds} секунд
 refresh_interval_minutes: Каждую минуту | Каждые {minutes} минут
 auto_generate: Авто-Генерация
 this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
@@ -468,6 +471,7 @@ delete_collection: Удалить Коллекцию
 update_collection_success: Коллекция Обновлена
 delete_collection_success: Коллекция Удалена
 start_end_of_count_items: '{start}-{end} из {count} элементов'
+start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
@@ -789,6 +793,10 @@ fields:
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
     project_name: Название проекта
     project_url: URL проекта
     project_color: Цвет Проекта
@@ -844,8 +852,14 @@ field_options:
     collection_setup: Настройки Коллекции
     singleton: Считать одним объектом
     language: Язык
+    translation: Введите перевод...
     archive_divider: Архив
+    archive_field: Выберите поле...
     divider: Сортировать
+    sort_field: Выберите поле...
+  directus_files:
+    title: Уникальное название...
+    description: Описание (необязательно)...
   directus_roles:
     fields:
       icon_name: Иконка
@@ -856,6 +870,7 @@ field_options:
         type_name: Тип
         choices_start_open: Раскрыта
     collections_name: Коллекции
+    collections_addLabel: Добавить коллекцию...
   directus_users:
     preferences_divider: Пользовательские настройки
     dropdown_auto: Автоматически (как в системе)
@@ -863,6 +878,7 @@ field_options:
     dropdown_dark: Тёмная тема
     admin_divider: Настройки администратора
     status_dropdown_draft: Черновик
+    status_dropdown_invited: Приглашен(а)
     status_dropdown_active: Активный
     status_dropdown_suspended: Приостановлен
     status_dropdown_archived: В архиве
@@ -875,6 +891,7 @@ field_options:
     actions_create: Создать
     actions_update: Обновить
     actions_delete: Удалить
+    actions_login: Войти
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
 do_nothing: Ничего не Делать
 generate_and_save_uuid: Создать и Сохранить UUID
@@ -1177,7 +1194,9 @@ interfaces:
     results_path: Путь к результатам
     value_path: Путь значения
     trigger: Триггер
+    rate: Рейтинг
   group-detail:
+    description: Отображать поля как сворачиваемую секцию
     show_header: Показывать заголовок группы
     header_icon: Иконка заголовка
     header_color: Цвет заголовка
@@ -1299,3 +1318,4 @@ layouts:
     cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геометрия
     invalid_geometry: Некорректная геометрия
+    search_this_area: Искать в этой области
