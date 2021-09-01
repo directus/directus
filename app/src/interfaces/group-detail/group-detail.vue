@@ -19,6 +19,7 @@
 					v-tooltip="validationMessages"
 					class="warning"
 					name="error_outline"
+					small
 				/>
 				<v-icon class="expand-icon" name="expand_more" />
 			</v-divider>
