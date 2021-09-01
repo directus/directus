@@ -726,7 +726,7 @@ fields:
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
-    status_invited: Inaktív
+    status_invited: Meghívott
     status_active: aktív
     role: Szerepkör
     token: Token
