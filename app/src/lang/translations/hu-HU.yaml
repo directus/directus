@@ -819,8 +819,17 @@ field_options:
     auth_password_policy:
       weak_text: Gyenge - Minimum 8 karakter
       strong_text: Erős - Nagybetű / Kisbetű / Számok / Speciális karakterek
+    storage_asset_presets:
+      fit:
+        contain_text: Tartalmazza (a képarány megőrzése)
+        cover_text: Fedje (pontos méretre kényszerítés)
+        fit_text: Illeszkedjen bele
+        outside_text: Illeszkedjen külsőleg
     basemaps_raster: Raszter
   directus_collections:
+    track_activity_revisions: Tevékenységek és módosítások nyomon követése
+    only_track_activity: Csak a tevékenység nyomon követése
+    do_not_track_anything: Minden nyomkövetés tiltása
     collection_setup: Gyűjtemény beállítások
     language: Nyelv
     archive_divider: Archívum
