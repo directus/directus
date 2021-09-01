@@ -218,6 +218,7 @@ multiple_files: Több fájl egyidejű hozzáadása
 m2o_relationship: Több az Egyhez kapcsolat
 o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
+m2a_relationship: M2A kapcsolat (polimorf asszociációs leképezéshez több táblából)
 invalid_item: Érvénytelen elem
 next: Következő
 field_name: Mezőnév
@@ -291,6 +292,7 @@ delete_comment: Hozzászólás törlése
 date-fns_date: PPP
 date-fns_time: 'ó:pp:mpmp de/du'
 date-fns_time_no_seconds: 'ó:pp de/du'
+date-fns_date_short_no_year: MMM. d.
 month: hónap
 year: év
 select_all: Összes kijelölése
@@ -1267,6 +1269,19 @@ layouts:
     cozy: Kényelmes
   calendar:
     calendar: Naptár
+    start_date_field: Kezdő dátum mező
+    end_date_field: Záró dátum mező
   map:
     map: Térkép
+    basemap: Alaptérkép
+    layers: Rétegek
+    edit_custom_layers: Rétegek szerkesztése
+    cluster_options: Klaszterezés beállításai
+    cluster: Klaszterezés aktiválása
+    cluster_radius: Klaszter sugara
+    cluster_minpoints: Minimális klaszter méret
+    cluster_maxzoom: Maximális zoom a klaszterezéshez
     field: Geometria
+    invalid_geometry: Érvénytelen geometria
+    auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
+    search_this_area: Keresés ezen a területen
