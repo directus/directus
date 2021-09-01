@@ -791,6 +791,12 @@ fields:
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
+    auth_login_attempts: Bejelentkezési kísérletek
+    files_and_thumbnails: Fájlok és miniatűrök
+    storage_default_folder: Tároló alapértelmezett mappája
+    storage_asset_presets: Tárolóeszköz alapbeállításai
+    storage_asset_transform: Tárolóeszközök transzformáció
+    overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
   directus_fields:
     collection: Gyűjtemény neve
@@ -802,10 +808,13 @@ fields:
     display_template: Sablon
   directus_roles:
     name: Szerepkör neve
+    icon: Szerep ikonja
     description: Leírás
     app_access: Alkalmazás hozzáférés
     admin_access: Admin hozzáférés
     ip_access: IP cím
+    enforce_tfa: 2FA megkövetelése
+    users: Felhasználók a szerepkörben
     collection_list: Gyűjtemény navigáció
   directus_webhooks:
     name: Név
@@ -830,6 +839,8 @@ field_options:
         outside_text: Illeszkedjen külsőleg
     additional_transforms: További transzformációk
     basemaps_raster: Raszter
+    files_divider_title: Fájlok és miniatűrök
+    overrides_divider_title: Alkalmazás felülbírálások
   directus_collections:
     track_activity_revisions: Tevékenységek és módosítások nyomon követése
     only_track_activity: Csak a tevékenység nyomon követése
@@ -856,8 +867,12 @@ field_options:
       name_name: Név
     collection_list:
       fields:
+        group_name: Csoportnév
+        group_placeholder: Címkézze fel ezt a csoportot...
         type_name: Típus
+        choices_always: Mindig nyitva
     collections_name: Gyűjtemények
+    collections_addLabel: Gyűjtemény hozzáadása...
   directus_users:
     preferences_divider: Felhasználói beállítások
     dropdown_auto: Automatikus (A rendszeren alapuló)
@@ -865,6 +880,7 @@ field_options:
     dropdown_dark: Sötét mód
     admin_divider: Admin beállítások
     status_dropdown_draft: Vázlat
+    status_dropdown_invited: Meghívott
     status_dropdown_active: aktív
     status_dropdown_suspended: Felfüggesztve
     status_dropdown_archived: Archiválva
@@ -875,10 +891,21 @@ field_options:
     triggers_divider: Triggerek
     actions_create: Létrehozás
     actions_update: Frissítés
+    actions_login: Bejelentkezés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
+generate_and_save_uuid: UUID generálása és mentése
+save_current_user_id: Jelenlegi felhasználói azonosító mentése
+save_current_user_role: Jelenlegi felhasználói szerepkör mentése
+save_current_datetime: Aktuális dátum/idő mentése
 block: Blokk
+inline: Inline
 comment: Hozzászólás
+relational_triggers: Relációs triggerek
+referential_action_field_label_m2o: '{collection} törlésekor...'
+referential_action_field_label_o2m: '{collection} kiválasztásának megszüntetésekor...'
+referential_action_no_action: A törlés megakadályozása
+referential_action_set_null: A {field} mező állapotának nullra állítása
 creating_webhook: Webhook létrehozása
 delete_field_are_you_sure: >-
   Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
