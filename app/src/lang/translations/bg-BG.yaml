@@ -797,7 +797,7 @@ fields:
     admin_options: Административни настройки
     status: Статус
     status_draft: Чернова
-    status_invited: Неактивен
+    status_invited: Поканен
     status_active: Активен
     status_suspended: Замразен
     status_archived: Архивиран

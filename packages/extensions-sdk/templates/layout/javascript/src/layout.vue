@@ -7,6 +7,7 @@
 
 <script>
 export default {
+	inheritAttrs: false,
 	props: {
 		collection: {
 			type: String,
