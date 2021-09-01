@@ -1217,6 +1217,7 @@ displays:
   image:
     image: Kép
     circle: Kör
+    circle_label: Megjelenítés körszegéllyel
   labels:
     labels: Feliratok
     default_foreground: Alapértelmezett előtér
