@@ -728,6 +728,7 @@ fields:
     description: Leírás
     tags: Cimkék
     location: Pozíció
+    storage: Tároló
     filename_disk: Fájlnév (tárhely)
     filename_download: Fájlnév (letöltött)
     metadata: Metadata
@@ -755,17 +756,31 @@ fields:
     title: Cím
     description: Leírás
     tags: Cimkék
+    user_preferences: Felhasználói beállítások
     language: Nyelv
     theme: Téma
+    theme_auto: Automatikus (A rendszeren alapuló)
+    theme_light: Világos mód
+    theme_dark: Sötét mód
     tfa_secret: Kétlépcsős hitelesítés
+    admin_options: Admin beállítások
     status: Állapot
+    status_draft: Vázlat
     status_invited: Inaktív
     status_active: aktív
+    status_suspended: Felfüggesztve
+    status_archived: Archiválva
     role: Szerepkör
     token: Token
+    token_placeholder: Írja be a biztonságos hozzáférés tokenjét...
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: Raszter
     project_name: Projekt neve
     project_url: Projekt webcíme
     project_color: Projekt színe
@@ -792,9 +807,19 @@ fields:
   directus_webhooks:
     name: Név
     status: Állapot
+    data: Adat
+    triggers: Triggerek
+    actions: Műveletek
 field_options:
   directus_settings:
+    project_name_placeholder: Saját projektem...
+    project_logo_note: Bejelentkezés és logó háttere
+    public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
+    auth_password_policy:
+      weak_text: Gyenge - Minimum 8 karakter
+      strong_text: Erős - Nagybetű / Kisbetű / Számok / Speciális karakterek
+    basemaps_raster: Raszter
   directus_collections:
     collection_setup: Gyűjtemény beállítások
     language: Nyelv
@@ -809,10 +834,20 @@ field_options:
         type_name: Típus
     collections_name: Gyűjtemények
   directus_users:
+    preferences_divider: Felhasználói beállítások
+    dropdown_auto: Automatikus (A rendszeren alapuló)
+    dropdown_light: Világos mód
+    dropdown_dark: Sötét mód
+    admin_divider: Admin beállítások
+    status_dropdown_draft: Vázlat
     status_dropdown_active: aktív
+    status_dropdown_suspended: Felfüggesztve
+    status_dropdown_archived: Archiválva
+    token: Írja be a biztonságos hozzáférés tokenjét...
   directus_webhooks:
     status_options_active: aktív
     status_options_inactive: Inaktív
+    triggers_divider: Triggerek
     actions_create: Létrehozás
     actions_update: Frissítés
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
