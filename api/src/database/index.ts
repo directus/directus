@@ -71,8 +71,22 @@ export default function getDatabase(): Knex {
 
 	if (env.DB_CLIENT === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
-		poolConfig.afterCreate = (conn: any, cb: any) => {
-			conn.run('PRAGMA foreign_keys = ON', cb);
+
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Enabling SQLite Foreign Keys support...');
+
+			await run('PRAGMA foreign_keys = ON');
+
+			callback(null, conn);
+
+			async function run(sql: string): Promise<any> {
+				return new Promise((resolve, reject) => {
+					conn.run(sql, (err: Error | null, result: any) => {
+						if (err) return reject(err);
+						resolve(result);
+					});
+				});
+			}
 		};
 	}
 
@@ -116,7 +130,7 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 	database = database ?? getDatabase();
 
 	try {
-		if (env.DB_CLIENT === 'oracledb') {
+		if (getDatabaseClient(database) === 'oracle') {
 			await database.raw('select 1 from DUAL');
 		} else {
 			await database.raw('SELECT 1');
@@ -128,11 +142,11 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 	}
 }
 
-export async function validateDBConnection(database?: Knex): Promise<void> {
+export async function validateDatabaseConnection(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 
 	try {
-		if (env.DB_CLIENT === 'oracledb') {
+		if (getDatabaseClient(database) === 'oracle') {
 			await database.raw('select 1 from DUAL');
 		} else {
 			await database.raw('SELECT 1');
@@ -144,12 +158,32 @@ export async function validateDBConnection(database?: Knex): Promise<void> {
 	}
 }
 
+export function getDatabaseClient(database?: Knex): 'mysql' | 'postgres' | 'sqlite' | 'oracle' | 'mssql' {
+	database = database ?? getDatabase();
+
+	switch (database.client.constructor.name) {
+		case 'Client_MySQL':
+			return 'mysql';
+		case 'Client_PG':
+			return 'postgres';
+		case 'Client_SQLite3':
+			return 'sqlite';
+		case 'Client_Oracledb':
+		case 'Client_Oracle':
+			return 'oracle';
+		case 'Client_MSSQL':
+			return 'mssql';
+	}
+
+	throw new Error(`Couldn't extract database client`);
+}
+
 export async function isInstalled(): Promise<boolean> {
 	const inspector = getSchemaInspector();
 
 	// The existence of a directus_collections table alone isn't a "proper" check to see if everything
 	// is installed correctly of course, but it's safe enough to assume that this collection only
-	// exists when using the installer CLI.
+	// exists when Directus is properly installed.
 	return await inspector.hasTable('directus_collections');
 }
 
@@ -182,5 +216,41 @@ export async function validateMigrations(): Promise<boolean> {
 		logger.error(`Database migrations cannot be found`);
 		logger.error(error);
 		throw process.exit(1);
+	}
+}
+
+/**
+ * These database extensions should be optional, so we don't throw or return any problem states when they don't
+ */
+export async function validateDatabaseExtensions(): Promise<void> {
+	const database = getDatabase();
+	const databaseClient = getDatabaseClient(database);
+
+	if (databaseClient === 'postgres') {
+		let available = false;
+		let installed = false;
+
+		const exists = await database.raw(`SELECT name FROM pg_available_extensions WHERE name = 'postgis';`);
+
+		if (exists.length === 0) {
+			available = true;
+		}
+
+		if (available) {
+			try {
+				await database.raw(`SELECT PostGIS_version();`);
+				installed = true;
+			} catch {
+				installed = false;
+			}
+		}
+
+		if (available === false) {
+			logger.warn(`PostGIS isn't installed. Geometry type support will be limited.`);
+		} else if (available === true && installed === false) {
+			logger.warn(
+				`PostGIS is installed, but hasn't been activated on this database. Geometry type support will be limited.`
+			);
+		}
 	}
 }
