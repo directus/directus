@@ -292,6 +292,8 @@ delete_comment: Hozzászólás törlése
 date-fns_date: PPP
 date-fns_time: 'ó:pp:mpmp de/du'
 date-fns_time_no_seconds: 'ó:pp de/du'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
 month: hónap
 year: év
@@ -523,6 +525,8 @@ operators:
   has: Néhányat ezek közül a kulcsok közül tartalmaz
   intersects: Metszi
   nintersects: Nem metszi
+  intersects_bbox: Metszi a határoló dobozt
+  nintersects_bbox: Nem metszi a határoló dobozt
 loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
 item: Elem
@@ -913,6 +917,7 @@ field_options:
         group_placeholder: Címkézze fel ezt a csoportot...
         type_name: Típus
         choices_always: Mindig nyitva
+        choices_start_open: Indíts nyitva!
         choices_start_collapsed: Kezdetben összecsukva
     collections_name: Gyűjtemények
     collections_addLabel: Gyűjtemény hozzáadása...
@@ -1092,6 +1097,7 @@ interfaces:
     allow_other: Egyéb engedélyezése
     allow_other_label: Egyéb érték engedélyezése
     allow_none: Egyik sem engedélyezett
+    allow_none_label: Nem kötelező választani
     choices_name_placeholder: Adjon meg egy nevet...
     choices_value_placeholder: Adjon meg egy értéket...
   select-multiple-dropdown:
@@ -1141,6 +1147,8 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
+    geometry_type: Geometria típusa
+    geometry_format: Geometria formátuma
     default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
@@ -1152,6 +1160,7 @@ interfaces:
     wkt: WKT
     wkb: WKB
   presentation-notice:
+    notice: Értesítés
     description: Rövid értesítés megjelenítése
     text: Írja ide az értesítés tartalmát...
   list-o2m:
@@ -1193,7 +1202,17 @@ interfaces:
     add_tags: Címke hozzáadása...
   input:
     input: Bevitel
+    description: Manuálisan határozzon meg egy értéket!
+    trim: Vágás
     mask: Maszkolt
+    mask_label: Valós érték elrejtése
+    clear: Törölt érték
+    clear_label: Mentés üres karakterláncként
+    minimum_value: Minimumérték
+    maximum_value: Maximumérték
+    step_interval: Lépésköz
+  input-multiline:
+    textarea: Szövegmező
   boolean:
     toggle: Váltás
     label_default: Engedélyezve
@@ -1207,9 +1226,24 @@ interfaces:
       auto: Automatikus
       dropdown: Legördülő lista
       modal: Ablak
+  input-rich-text-html:
+    toolbar: Eszköztár
+    custom_formats: Egyéni formátumok
+  input-autocomplete-api:
+    rate: Értékelés
+  group-raw:
+    description: A mezők megjelenítése a jelenlegi állapotnak megfelelően
+  group-detail:
+    description: A mezők renderelése összecsukható szakaszként
+    show_header: Csoportfejléc megjelenítése
+    header_icon: Fejléc ikon
+    header_color: Fejléc színe
+    start_open: Indíts nyitva!
+    start_closed: Indíts zárva!
 displays:
   boolean:
     boolean: Logikai
+    description: Be- és kikapcsolt állapotok megjelenítése
     label_on: Címke be
     label_on_placeholder: Címke megadása...
     label_off: Címke ki
@@ -1228,6 +1262,7 @@ displays:
     default_color: Alapértelmezett szín
   datetime:
     datetime: Dátum és idő
+    description: Az idővel kapcsolatos értékek megjelenítése
     format: Formátum
     long: Hosszú
     short: Rövid
@@ -1238,16 +1273,24 @@ displays:
     description: Fájlok megjelenítése
   filesize:
     filesize: Fájlméret
+    description: Fájl méretének megjelenítése
   formatted-value:
     formatted-value: Formázott érték
+    description: A szöveg formázott változatának megjelenítése
+    format_title: Cím formázása
+    format_title_label: Automatikus nagybetű / kisbetű
     bold_label: Vastag stílus használata
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
+    description: Az objektum formázott változatának megjelenítése
   icon:
     icon: Ikon
+    description: Egy ikon megjelenítése
     filled: Kitöltve
+    filled_label: Használja a kitöltött változatot
   image:
     image: Kép
+    description: Egy apró előnézeti kép megjelenítése
     circle: Kör
     circle_label: Megjelenítés körszegéllyel
   labels:
