@@ -232,7 +232,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 
 		const exists = await database.raw(`SELECT name FROM pg_available_extensions WHERE name = 'postgis';`);
 
-		if (exists.length === 0) {
+		if (exists.rows.length > 0) {
 			available = true;
 		}
 
