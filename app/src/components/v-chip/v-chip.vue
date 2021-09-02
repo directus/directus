@@ -44,6 +44,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		color: {
+			type: String,
+			default: 'primary',
+		},
 		...sizeProps,
 	},
 	emits: ['update:active', 'click', 'close'],

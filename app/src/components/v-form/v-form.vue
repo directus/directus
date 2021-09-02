@@ -42,6 +42,7 @@
 				v-else
 				v-show="!field.meta?.hidden"
 				:key="field.field"
+				:badge="badge"
 				:field="field"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[field.field]"
@@ -123,6 +124,10 @@ export default defineComponent({
 		group: {
 			type: Number,
 			default: null,
+		},
+		badge: {
+			type: String,
+			default: '',
 		},
 	},
 	emits: ['update:modelValue'],
