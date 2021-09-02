@@ -171,17 +171,17 @@ export default defineComponent({
 
 	.header {
 		position: relative;
+		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		z-index: 1;
 		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
-		border-width: 0px;
-		border-style: solid;
 		border-color: var(--primary-50);
+		border-style: solid;
+		border-width: 0px;
+		border-radius: var(--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {
@@ -253,14 +253,14 @@ export default defineComponent({
 		position: absolute;
 		top: 7px;
 		left: 7px;
+		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--white);
-		content: '';
-		z-index: 2;
+		background-color: var(--background-page);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
+		content: '';
 	}
 
 	.selector {
@@ -270,9 +270,9 @@ export default defineComponent({
 		position: absolute;
 		top: 0px;
 		left: 0px;
+		z-index: 3;
 		margin: 4px;
 		opacity: 0.5;
-		z-index: 3;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 
 		&:hover {
@@ -284,11 +284,14 @@ export default defineComponent({
 		&::before {
 			opacity: 1;
 		}
+
 		.selector {
-			opacity: 1;
 			--v-icon-color: var(--primary);
 			--v-icon-color-hover: var(--primary);
+
+			opacity: 1;
 		}
+
 		.header {
 			border-width: 12px;
 		}
@@ -298,6 +301,7 @@ export default defineComponent({
 		.selector {
 			opacity: 1;
 		}
+
 		.header {
 			.selection-indicator {
 				opacity: 1;
@@ -325,7 +329,7 @@ export default defineComponent({
 }
 
 .subtitle {
-	color: var(--foreground-subdued);
 	margin-top: 0px;
+	color: var(--foreground-subdued);
 }
 </style>
