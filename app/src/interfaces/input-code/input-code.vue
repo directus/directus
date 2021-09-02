@@ -111,7 +111,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (props.type === 'json') {
+			if (typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
