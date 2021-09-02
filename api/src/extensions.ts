@@ -155,7 +155,7 @@ function registerHooks(hooks: Extension[]) {
 
 		const register = getModuleDefault(hookInstance);
 
-		const events = register({ services, exceptions, env, database: getDatabase(), getSchema });
+		const events = register({ services, exceptions, env, database: getDatabase(), logger, getSchema });
 
 		for (const [event, handler] of Object.entries(events)) {
 			if (event.startsWith('cron(')) {
@@ -195,6 +195,6 @@ function registerEndpoints(endpoints: Extension[], router: Router) {
 		const scopedRouter = express.Router();
 		router.use(`/${pathName}`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database: getDatabase(), getSchema });
+		register(scopedRouter, { services, exceptions, env, database: getDatabase(), logger, getSchema });
 	}
 }

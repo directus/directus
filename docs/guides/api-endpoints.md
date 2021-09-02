@@ -40,6 +40,7 @@ that is scoped to `/<extension-name>`, while `context` holds the following prope
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
 ## 3. Restart the API
 

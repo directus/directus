@@ -54,6 +54,7 @@
 		"knex": "0.95.10",
 		"knex-schema-inspector": "1.6.0",
 		"lodash": "4.17.21",
+		"pino": "6.13.1",
 		"vue": "3.2.7",
 		"vue-router": "4.0.11"
 	},
