@@ -33,7 +33,7 @@ or: Vagy
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
 enter_password_to_enable_tfa: Írd be a jelszót a kétfaktoros ellenőrzés bekapcsolásához
-add_field: Új mező
+add_field: Mező Hozzáadása
 role_name: Szerepkör neve
 branch: Ág
 leaf: Falevél / Leaf
@@ -205,12 +205,12 @@ new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
 search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
-add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_m2o_to_collection: 'Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_o2m_to_collection: 'Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_m2m_to_collection: 'Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
-add_note: Segítő jelzés a kitöltő felhasználónak...
+add_note: Felhasználóknak szóló hasznos megjegyzés hozzáadása...
 default_value: Alapértelmezett érték
 standard_field: Általános mező
 single_file: Egyetlen fájl
@@ -355,7 +355,7 @@ manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
 save_and_stay: Mentés és marad
 save_as_copy: Mentés másolatként
-add_existing: Létező tartalom hozzáadása
+add_existing: Létező hozzáadása
 creating_items: Elemek létrehozása
 enable_create_button: Létrehozás gomb engedélyezése
 selecting_items: Elemek kiválasztása
@@ -413,7 +413,7 @@ collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
 card_size: Kártya mérete
 sort_field: Rendezési mező
-add_sort_field: Rendezési Mező hozzáadása
+add_sort_field: Rendezési mező hozzáadása
 sort: Rendezés
 status: Állapot
 remove: Eltávolítás
@@ -483,9 +483,9 @@ delete_collection_are_you_sure: >-
   Biztos, hogy törölni szeretné ezt a gyűjteményt? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
-hidden_collections: Elrejtett gyűjtemények
+hidden_collections: Rejtett gyűjtemények
 show_hidden_collections: Rejtett gyűjtemények mutatása
-hide_hidden_collections: Rejtett gyűjtemények rejtése
+hide_hidden_collections: Rejtett gyűjtemények elrejtése
 unmanaged_collections: Nem beállított gyűjtemények
 system_collections: Rendszer gyűjtemények
 placeholder: Helyőrző
@@ -572,7 +572,7 @@ rule: Szabály
 user: Felhasználó
 no_presets: Presetek
 no_presets_copy: Még egy preset vagy könyvjelző sem lett elmentve.
-no_presets_cta: Preset hozzáadása
+no_presets_cta: Alapértelmezés hozzáadása
 presets_only: Csak alapbeállítások
 create: Létrehozás
 on_create: Létrehozáskor
@@ -655,7 +655,7 @@ choices_option_configured_incorrectly: Helytelenül konfigurált választási eh
 deselect: Kijelölés megszüntetése
 deselect_all: Összes kijelölés törlése
 other: Egyéb...
-adding_user: Hozzáadott felhasználó
+adding_user: Felhasználó hozzáadása
 unknown_user: Ismeretlen felhasználó
 creating_in: 'Elem hozzáadása ide: {collection}'
 editing_in: 'Elem szerkesztése itt: {collection}'
@@ -1208,7 +1208,7 @@ interfaces:
     auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
-    add_tags: Címke hozzáadása...
+    add_tags: Címkék hozzáadása...
   input:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
