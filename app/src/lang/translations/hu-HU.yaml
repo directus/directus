@@ -84,7 +84,7 @@ os_type: Operációs rendszer típusa
 os_version: Operációs rendszer verziója
 os_uptime: Operációs rendszer futásideje
 os_totalmem: Operációs rendszer memóriája
-archive: Archívum
+archive: Archiválás
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
@@ -115,7 +115,7 @@ validationError:
   required: Érték szükséges
   unique: Egyedi érték szükséges
   regex: Az érték nem megfelelő formátumú
-all_access: Összes hozzáférés
+all_access: Teljes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
 nullable: Lehet null
@@ -167,7 +167,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
-disabled_editing_value: Szerkesztés tiltása
+disabled_editing_value: Érték szerkeszthetőségének kikapcsolása
 key: Kulcs
 alias: Álnév
 bigInteger: Nagy egész számok
@@ -237,8 +237,8 @@ foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
 raw_value: Nyers érték
-edit_raw_value: Érték szerkesztése
-enter_raw_value: Érték megadása...
+edit_raw_value: Nyers érték szerkesztése
+enter_raw_value: Nyers érték megadása...
 clear_value: Érték törlése
 reset_to_default: Visszaállítás alaphelyzetbe
 undo_changes: Változások visszavonása
@@ -466,7 +466,7 @@ password_reset_successful: Jelszó sikeres visszaállítása
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
-free: Ingyenes
+free: Szabadon választott
 flip_horizontal: Vízszintes tükrözés
 flip_vertical: Függőleges tükrözés
 aspect_ratio: Méretarány
@@ -711,7 +711,7 @@ page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A proje
 page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
 page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
 page_help_users_item: >-
-  **Felhasználók Részletek** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
+  **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -892,7 +892,7 @@ field_options:
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
     translation: Fordítás megadása...
-    archive_divider: Archívum
+    archive_divider: Archiválás
     archive_field: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
