@@ -48,7 +48,6 @@ type File = {
 };
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		icon: {
 			type: String,
@@ -91,6 +90,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const router = useRouter();
 
