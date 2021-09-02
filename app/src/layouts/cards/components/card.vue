@@ -1,9 +1,12 @@
 <template>
-	<div class="card" :class="{ loading, readonly }" @click="handleClick">
-		<div class="header" :class="{ selected: item && modelValue.includes(item[itemKey]) }">
-			<div class="selection-indicator" :class="{ 'select-mode': selectMode }">
-				<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
-			</div>
+	<div
+		class="card"
+		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]) }"
+		@click="handleClick"
+	>
+		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
+		<div class="header">
+			<div class="selection-indicator" :class="{ 'select-mode': selectMode }"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
 				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
@@ -45,6 +48,7 @@ type File = {
 };
 
 export default defineComponent({
+	emits: ['update:modelValue'],
 	props: {
 		icon: {
 			type: String,
@@ -87,7 +91,6 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const router = useRouter();
 
@@ -163,6 +166,7 @@ export default defineComponent({
 }
 
 .card {
+	position: relative;
 	cursor: pointer;
 
 	.header {
@@ -172,8 +176,13 @@ export default defineComponent({
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
+		z-index: 1;
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
+		border-width: 0px;
+		border-style: solid;
+		border-color: var(--primary-50);
+		transition: border-width var(--fast) var(--transition);
 
 		&::after {
 			display: block;
@@ -230,38 +239,65 @@ export default defineComponent({
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.2) 10%, rgba(38, 50, 56, 0));
+				background-image: linear-gradient(-180deg, rgba(38, 50, 56, 0.1) 10%, rgba(38, 50, 56, 0));
 				content: '';
 			}
 
 			&.select-mode {
 				opacity: 1;
 			}
-
-			.selector {
-				--v-icon-color: var(--white);
-				--v-icon-color-hover: var(--white);
-
-				margin: 8px;
-				opacity: 0.5;
-				transition: opacity var(--fast) var(--transition);
-
-				&:hover {
-					opacity: 1;
-				}
-			}
 		}
+	}
 
-		&.selected {
-			.selection-indicator {
-				.selector {
-					opacity: 1;
-				}
-			}
+	&::before {
+		position: absolute;
+		top: 7px;
+		left: 7px;
+		width: 18px;
+		height: 18px;
+		background-color: var(--white);
+		content: '';
+		z-index: 2;
+		border-radius: 24px;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+	}
+
+	.selector {
+		--v-icon-color: var(--white);
+		--v-icon-color-hover: var(--white);
+
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		margin: 4px;
+		opacity: 0.5;
+		z-index: 3;
+		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	&.selected {
+		&::before {
+			opacity: 1;
+		}
+		.selector {
+			opacity: 1;
+			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--primary);
+		}
+		.header {
+			border-width: 12px;
 		}
 	}
 
 	&:hover {
+		.selector {
+			opacity: 1;
+		}
 		.header {
 			.selection-indicator {
 				opacity: 1;
@@ -281,7 +317,7 @@ export default defineComponent({
 	align-items: center;
 	width: 100%;
 	height: 20px;
-	margin-top: 4px;
+	margin-top: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
@@ -290,5 +326,6 @@ export default defineComponent({
 
 .subtitle {
 	color: var(--foreground-subdued);
+	margin-top: 0px;
 }
 </style>
