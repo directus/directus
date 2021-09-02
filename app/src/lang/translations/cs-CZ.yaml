@@ -20,15 +20,25 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Upravit pole
+conditions: Podmínky
+maps: Mapy
 item_revision: Revize položky
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
+group: Skupina
+and: A
+or: Nebo
 fill_width: Plná šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
 role_name: Jméno role
+branch: Větev
+leaf: List
+indeterminate: Neurčitý
+edit_collection: Upravit kolekci
+children: Potomci
 db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
 edited: Hodnota upravena
@@ -61,6 +71,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Odhlášen
   SESSION_EXPIRED: Relace vypršela
+public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
 not_allowed: Nepovoleno
 directus_version: Verze Directusu
@@ -103,7 +114,10 @@ validationError:
 all_access: Veškerý přístup
 no_access: Žádný přístup
 use_custom: Použít vlastní
+nullable: Nulovatelný
 allow_null_value: Povolit NULL hodnotu
+allow_multiple: Povolit více
+allow_multiple_to_be_open: Povolit více otevřených
 enter_value_to_replace_nulls: Zadejte novou hodnotu, která nahradí všechny NULL, které jsou aktuálně v tomto poli.
 field_standard: Standardní
 field_m2o: M2O vazba
@@ -115,13 +129,31 @@ field_permissions: Oprávnění pole
 field_validation: Validace pole
 permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
+hide_field_on_detail: Skrýt pole v detailu
+show_field_on_detail: Zobrazit pole v detailu
 delete_field: Smazat pole
+fields_and_layout: Pole a rozložení
+field_create_success: 'Vytvořeno pole: "{field}"'
+field_update_success: 'Aktualizováno pole: "{field}"'
+duplicate_where_to: Kam chcete zkopírovat toto pole?
 language: Jazyk
 global: Globální
 admins_have_all_permissions: Administrátoři mají všechna oprávnění
+camera: Fotoaparát
+exposure: Expozice
+shutter: Závěrka
+iso: ISO
+focal_length: Ohnisková vzdálenost
+schema_setup_key: Název databázového sloupce tohoto pole a API klíč
 create_field: Vytvořit pole
+creating_new_field: 'Nové pole ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Obnovit předvolby stránky
 hidden_field: Skryté pole
 hidden_on_detail: Skryté v detailu
+disabled_editing_value: Zakázat úpravy hodnoty
+key: Klíč
+alias: Alias
 date: Datum
 text: Text
 auto_generate: Auto-generování
