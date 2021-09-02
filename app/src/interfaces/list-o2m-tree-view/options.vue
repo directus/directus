@@ -40,7 +40,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},

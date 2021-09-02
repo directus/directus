@@ -30,8 +30,8 @@ export default {
 		sidebar: () => null,
 		actions: () => null,
 	},
-	setup(props) {
-		const name = ref('Custom layout state');
+	setup() {
+		const name = ref('Custom Layout');
 
 		return { name };
 	},
@@ -55,19 +55,24 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>{{ name }} - Collection: {{ props.collection }}</div>
+	<div>
+		<p>Name: {{ name }}</p>
+		<p>Collection: {{ collection }}</p>
+	</div>
 </template>
 
 <script>
-import { toRefs } from 'vue';
-import { useLayoutState } from '@directus/extensions-sdk';
-
 export default {
-	setup() {
-		const layoutState = useLayoutState();
-		const { props, name } = toRefs(layoutState.value);
-
-		return { props, name };
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
 	},
 };
 </script>

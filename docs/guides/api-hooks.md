@@ -155,6 +155,7 @@ The `registerHook` function receives a context parameter with the following prop
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
 ### Event Handler Function
 

@@ -1,106 +1,125 @@
 <template>
-	<private-view :title="t('editing_preset')">
-		<template #headline>{{ t('settings_presets') }}</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="backLink">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		v-model:filters="layoutFilters"
+		v-model:search-query="searchQuery"
+		:collection="values.collection"
+		readonly
+	>
+		<private-view :title="t('editing_preset')">
+			<template #headline>{{ t('settings_presets') }}</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon exact :to="backLink">
+					<v-icon name="arrow_back" />
+				</v-button>
+			</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
+			<template #navigation>
+				<settings-navigation />
+			</template>
 
-		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="t('delete_label')"
-						rounded
-						icon
-						class="action-delete"
-						:disabled="preset === null || id === '+'"
-						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+			<template #actions>
+				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="t('delete_label')"
+							rounded
+							icon
+							class="action-delete"
+							:disabled="preset === null || id === '+'"
+							@click="on"
+						>
+							<v-icon name="delete" outline />
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button
-				v-tooltip.bottom="t('save')"
-				icon
-				rounded
-				:disabled="hasEdits === false"
-				:loading="saving"
-				@click="save"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="preset-item">
-			<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
-
-			<div class="layout">
-				<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection">
-					<template #no-results>
-						<v-info :title="t('no_results')" icon="search" center>
-							{{ t('no_results_copy') }}
-						</v-info>
 					</template>
 
-					<template #no-items>
-						<v-info :title="t('item_count', 0)" center>
-							{{ t('no_items_copy') }}
-						</v-info>
-					</template>
-				</component>
+					<v-card>
+						<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
-				<v-notice v-else>
-					{{ t('no_layout_collection_selected_yet') }}
-				</v-notice>
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-tooltip.bottom="t('save')"
+					icon
+					rounded
+					:disabled="hasEdits === false"
+					:loading="saving"
+					@click="save"
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="preset-item">
+				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
+
+				<div class="layout">
+					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
+						<template #no-results>
+							<v-info :title="t('no_results')" icon="search" center>
+								{{ t('no_results_copy') }}
+							</v-info>
+						</template>
+
+						<template #no-items>
+							<v-info :title="t('item_count', 0)" center>
+								{{ t('no_items_copy') }}
+							</v-info>
+						</template>
+					</component>
+
+					<v-notice v-else>
+						{{ t('no_layout_collection_selected_yet') }}
+					</v-notice>
+				</div>
 			</div>
-		</div>
 
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_settings_presets_item')" class="page-description" />
-			</sidebar-detail>
-
-			<div class="layout-sidebar">
-				<sidebar-detail icon="search" :title="t('search')">
-					<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+			<template #sidebar>
+				<sidebar-detail icon="info_outline" :title="t('information')" close>
+					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 				</sidebar-detail>
 
-				<component :is="`layout-sidebar-${values.layout}`" v-if="values.layout && values.collection" />
+				<div class="layout-sidebar">
+					<sidebar-detail icon="search" :title="t('search')">
+						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+					</sidebar-detail>
 
-				<sidebar-detail icon="layers" :title="t('layout_options')">
-					<div class="layout-options">
-						<component :is="`layout-options-${values.layout}`" v-if="values.layout && values.collection" />
-					</div>
-				</sidebar-detail>
-			</div>
-		</template>
-	</private-view>
+					<component
+						:is="`layout-sidebar-${values.layout}`"
+						v-if="values.layout && values.collection"
+						v-bind="layoutState"
+					/>
+
+					<sidebar-detail icon="layers" :title="t('layout_options')">
+						<div class="layout-options">
+							<component
+								:is="`layout-options-${values.layout}`"
+								v-if="values.layout && values.collection"
+								v-bind="layoutState"
+							/>
+						</div>
+					</sidebar-detail>
+				</div>
+			</template>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, reactive } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@directus/shared/types';
@@ -161,19 +180,9 @@ export default defineComponent({
 			},
 		});
 
-		useLayout(
-			computed(() => values.value.layout || 'tabular'),
-			reactive({
-				collection: computed(() => values.value.collection),
-				selection: [],
-				layoutOptions,
-				layoutQuery,
-				filters: layoutFilters,
-				searchQuery,
-				selectMode: false,
-				readonly: true,
-			})
-		);
+		const layout = computed(() => values.value.layout);
+
+		const { layoutWrapper } = useLayout(layout);
 
 		return {
 			t,
@@ -186,8 +195,10 @@ export default defineComponent({
 			initialValues,
 			saving,
 			save,
+			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
+			layoutFilters,
 			hasEdits,
 			deleting,
 			deleteAndQuit,

@@ -8,7 +8,7 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, Filter, Item } from '@directus/shared/types';
+import { Field, Item } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -21,16 +21,8 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import CalendarSidebar from './sidebar.vue';
-
-type LayoutOptions = {
-	template?: string;
-	startDateField?: string;
-	endDateField?: string;
-	viewInfo?: {
-		type: string;
-		startDateStr: string;
-	};
-};
+import useSync from '@/composables/use-sync';
+import { LayoutOptions } from './types';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -42,15 +34,18 @@ export default defineLayout<LayoutOptions>({
 		sidebar: CalendarSidebar,
 		actions: CalendarActions,
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const { t, locale } = useI18n();
 
-		const calendarEl = ref<HTMLElement>();
 		const calendar = ref<Calendar>();
 
 		const appStore = useAppStore();
 
-		const { selection, collection, searchQuery, layoutOptions, filters } = toRefs(props);
+		const layoutOptions = useSync(props, 'layoutOptions', emit);
+		const filters = useSync(props, 'filters', emit);
+		const searchQuery = useSync(props, 'searchQuery', emit);
+
+		const { selection, collection } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -60,7 +55,7 @@ export default defineLayout<LayoutOptions>({
 			})
 		);
 
-		const filtersWithCalendarView = computed<Filter[]>(() => {
+		const filtersWithCalendarView = computed(() => {
 			if (!calendar.value || !startDateField.value) return filters.value;
 
 			return [
@@ -84,12 +79,12 @@ export default defineLayout<LayoutOptions>({
 
 		const template = computed({
 			get() {
-				return layoutOptions.value?.template;
+				return layoutOptions.value?.template ?? null;
 			},
-			set(newTemplate: string | undefined) {
+			set(newTemplate: string | null) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
-					template: newTemplate,
+					template: newTemplate ?? undefined,
 				};
 			},
 		});
@@ -108,12 +103,12 @@ export default defineLayout<LayoutOptions>({
 
 		const startDateField = computed({
 			get() {
-				return layoutOptions.value?.startDateField;
+				return layoutOptions.value?.startDateField ?? null;
 			},
-			set(newStartDateField: string | undefined) {
+			set(newStartDateField: string | null) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
-					startDateField: newStartDateField,
+					startDateField: newStartDateField ?? undefined,
 				};
 			},
 		});
@@ -124,12 +119,12 @@ export default defineLayout<LayoutOptions>({
 
 		const endDateField = computed({
 			get() {
-				return layoutOptions.value?.endDateField;
+				return layoutOptions.value?.endDateField ?? null;
 			},
-			set(newEndDateField: string | undefined) {
+			set(newEndDateField: string | null) {
 				layoutOptions.value = {
 					...(layoutOptions.value || {}),
-					endDateField: newEndDateField,
+					endDateField: newEndDateField ?? undefined,
 				};
 			},
 		});
@@ -266,7 +261,6 @@ export default defineLayout<LayoutOptions>({
 		});
 
 		return {
-			calendarEl,
 			items,
 			loading,
 			error,
@@ -294,8 +288,8 @@ export default defineLayout<LayoutOptions>({
 			}
 		}
 
-		function createCalendar() {
-			calendar.value = new Calendar(calendarEl.value!, fullFullCalendarOptions.value);
+		function createCalendar(calendarElement: HTMLElement) {
+			calendar.value = new Calendar(calendarElement, fullFullCalendarOptions.value);
 
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {

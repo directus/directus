@@ -556,7 +556,7 @@ field_options:
     collection_list:
       fields:
         type_name: 類型
-      collections_name: 資料集
+    collections_name: 資料集
   directus_webhooks:
     actions_create: 新建
     actions_update: 更新

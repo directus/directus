@@ -814,7 +814,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tip
-      collections_name: Kolekcije
+    collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan
   directus_webhooks:
