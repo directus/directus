@@ -10,7 +10,7 @@
 	<span v-else-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true">
 		<template #activator="{ toggle }">
-			<div class="preview" @click="toggle">{{ value }}</div>
+			<div class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
 			<component
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -47,7 +47,9 @@ export default defineComponent({
 	setup(props) {
 		const active = ref(false);
 
-		return { active };
+		const displayValue = computed(() => (props.value === null ? '##' : props.value));
+
+		return { active, displayValue };
 	},
 });
 </script>

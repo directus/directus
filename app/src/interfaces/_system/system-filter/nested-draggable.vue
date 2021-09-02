@@ -179,7 +179,7 @@ export default defineComponent({
 	align-items: center;
 	width: fit-content;
 	margin-bottom: 8px;
-	padding: 8px 12px;
+	padding: 8px 12px 8px 6px;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: 100px;
 

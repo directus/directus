@@ -20,7 +20,7 @@
 		<input-component
 			:is="interfaceType"
 			:type="fieldInfo.type"
-			:value="replaceEmpty(value)"
+			:value="value"
 			@input="value = $event"
 		></input-component>
 	</template>
@@ -29,7 +29,7 @@
 			<input-component
 				:is="interfaceType"
 				:type="fieldInfo.type"
-				:value="replaceEmpty(val)"
+				:value="val"
 				@input="setValueAt(index, $event)"
 			></input-component>
 			<v-icon name="delete" @click="remove(index)"></v-icon>
@@ -42,14 +42,14 @@
 		<input-component
 			:is="interfaceType"
 			:type="fieldInfo.type"
-			:value="replaceEmpty(value[0])"
+			:value="value[0]"
 			@input="setValueAt(0, $event)"
 		></input-component>
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
 		<input-component
 			:is="interfaceType"
 			:type="fieldInfo.type"
-			:value="replaceEmpty(value[1])"
+			:value="value[1]"
 			@input="setValueAt(1, $event)"
 		></input-component>
 	</template>
@@ -119,17 +119,13 @@ export default defineComponent({
 			},
 		});
 
-		function replaceEmpty(value: any) {
-			return value === null ? '##' : value;
-		}
-
 		function setValueAt(index: number, newVal: any) {
 			let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 			newArray[index] = newVal;
 			value.value = newArray;
 		}
 
-		return { t, fieldInfo, interfaceType, remove, value, setValueAt, replaceEmpty };
+		return { t, fieldInfo, interfaceType, remove, value, setValueAt };
 
 		function remove(index: number) {
 			value.value = value.value.filter((v: any, i: number) => i !== index);
