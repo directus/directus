@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { Logger } from 'pino';
 import {
 	API_EXTENSION_PACKAGE_TYPES,
 	API_EXTENSION_TYPES,
@@ -65,5 +66,6 @@ export type ApiExtensionContext = {
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
+	logger: Logger;
 	getSchema: (options?: { accountability?: Accountability; database?: Knex }) => Promise<Record<string, any>>;
 };
