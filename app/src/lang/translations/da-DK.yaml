@@ -351,8 +351,7 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Navn
-    collection_list:
-      collections_name: Samlinger
+    collections_name: Samlinger
   directus_webhooks:
     actions_create: Opret
     actions_update: Opdater

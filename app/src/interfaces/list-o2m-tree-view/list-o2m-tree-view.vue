@@ -112,7 +112,7 @@ export default defineComponent({
 		const { addNewActive, addNew } = useAddNew();
 
 		const template = computed(() => {
-			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
+			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`;
 		});
 
 		onMounted(fetchValues);
@@ -178,7 +178,7 @@ export default defineComponent({
 			function getFieldsToFetch() {
 				const fields = [
 					...new Set([
-						primaryKeyField.value.field,
+						primaryKeyField.value?.field,
 						relation.value.meta!.one_field,
 						...getFieldsFromTemplate(template.value),
 					]),
@@ -234,28 +234,28 @@ export default defineComponent({
 			const selectDrawer = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (stagedValues.value === null) return [];
-
-				const pkField = primaryKeyField.value.field;
+				const pkField = primaryKeyField.value?.field;
+				if (stagedValues.value === null || !pkField || !props.primaryKey) return [];
 
 				return [props.primaryKey, ...getPKs(stagedValues.value)];
 
 				function getPKs(values: Record<string, any>[]): (string | number)[] {
 					const pks = [];
 
-					for (const value of values) {
-						if (!value[pkField]) continue;
-						pks.push(value[pkField]);
-						const childPKs = getPKs(value[relation.value.meta!.one_field!]);
-						pks.push(...childPKs);
-					}
+					if (pkField)
+						for (const value of values) {
+							if (!value[pkField]) continue;
+							pks.push(value[pkField]);
+							const childPKs = getPKs(value[relation.value.meta!.one_field!]);
+							pks.push(...childPKs);
+						}
 
 					return pks;
 				}
 			});
 
 			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = primaryKeyField.value.field;
+				const pkField = primaryKeyField.value?.field;
 
 				if (selectedPrimaryKeys.value.length === 0) return [];
 
@@ -286,7 +286,7 @@ export default defineComponent({
 
 				const fields = [
 					...new Set([
-						primaryKeyField.value.field,
+						primaryKeyField.value?.field,
 						relation.value.meta!.one_field,
 						...getFieldsFromTemplate(template.value),
 					]),
@@ -302,11 +302,13 @@ export default defineComponent({
 					}
 				}
 
+				if (!primaryKeyField.value?.field) return;
+
 				const response = await api.get(`/items/${props.collection}`, {
 					params: {
 						fields: [...fields, ...result],
 						filter: {
-							[primaryKeyField.value.field]: {
+							[primaryKeyField.value?.field]: {
 								_in: selection,
 							},
 						},

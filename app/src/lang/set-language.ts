@@ -17,23 +17,24 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	const fieldsStore = useFieldsStore();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
-		return false;
-	}
-
-	if (loadedLanguages.includes(lang) === false) {
-		try {
-			const translations = await import(`./translations/${lang}.yaml`);
-			i18n.global.mergeLocaleMessage(lang, translations);
-			loadedLanguages.push(lang);
-		} catch (err: any) {
-			// eslint-disable-next-line no-console
-			console.warn(err);
+		// eslint-disable-next-line no-console
+		console.warn(`"${lang}" is not an available language in the Directus app.`);
+	} else {
+		if (loadedLanguages.includes(lang) === false) {
+			try {
+				const translations = await import(`./translations/${lang}.yaml`);
+				i18n.global.mergeLocaleMessage(lang, translations);
+				loadedLanguages.push(lang);
+			} catch (err: any) {
+				// eslint-disable-next-line no-console
+				console.warn(err);
+			}
 		}
+
+		i18n.global.locale.value = lang;
+
+		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
-
-	i18n.global.locale.value = lang;
-
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 
 	modules.value = translate(modulesRaw.value);
 	layouts.value = translate(layoutsRaw.value);

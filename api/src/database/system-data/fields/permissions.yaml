@@ -15,9 +15,6 @@ fields:
   - field: role
     width: half
 
-  - field: limit
-    width: half
-
   - field: collection
     width: half
 
