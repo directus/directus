@@ -18,7 +18,7 @@ import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
 import { AuthenticationService } from './authentication';
-import { generatePasswordHash } from '../utils/generate-password-hash';
+import { generateHash } from '../utils/generate-hash';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -339,7 +339,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		const passwordHashed = generatePasswordHash(password);
+		const passwordHashed = generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
@@ -403,7 +403,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		const passwordHashed = await generatePasswordHash(password);
+		const passwordHashed = await generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
