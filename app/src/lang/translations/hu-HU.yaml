@@ -754,7 +754,7 @@ fields:
     $thumbnail: Miniatűr
     title: Cím
     description: Leírás
-    tags: Cimkék
+    tags: Címkék
     location: Pozíció
     storage: Tároló
     filename_disk: Fájlnév (tárhely)
@@ -783,7 +783,7 @@ fields:
     location: Pozíció
     title: Cím
     description: Leírás
-    tags: Cimkék
+    tags: Címkék
     user_preferences: Felhasználói beállítások
     language: Nyelv
     theme: Téma
@@ -1196,7 +1196,7 @@ interfaces:
     description: Válasszon számot csúszka segítségével
     always_show_value: Mindig mutassa az értéket
   tags:
-    tags: Cimkék
+    tags: Címkék
     description: Címke megadása vagy kiválasztása
     whitespace: Szóköz
     hyphen: Helyettesítse kötőjellel
