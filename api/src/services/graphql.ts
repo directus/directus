@@ -971,7 +971,7 @@ export class GraphQLService {
 				}
 			}
 		} catch (err: any) {
-			this.formatError(err);
+			return this.formatError(err);
 		}
 	}
 
