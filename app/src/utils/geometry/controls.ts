@@ -73,7 +73,7 @@ export class BoxSelectControl {
 		this.unselectButton = new ButtonControl(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
 			this.reset();
 			this.activate(false);
-			this.map!.fire('select.end');
+			this.map!.fire('select.end', { features: [] });
 		});
 		this.groupElement.appendChild(this.selectButton.element);
 		this.groupElement.appendChild(this.unselectButton.element);
@@ -126,7 +126,7 @@ export class BoxSelectControl {
 		if (event.key == 'Escape') {
 			this.reset();
 			this.activate(false);
-			this.map!.fire('select.end');
+			this.map!.fire('select.end', { features: [] });
 		}
 	}
 
@@ -169,12 +169,12 @@ export class BoxSelectControl {
 		this.updateBoxStyle({ transform, width, height });
 	}
 
-	onMouseUp(): void {
+	onMouseUp(event: MouseEvent): void {
 		this.reset();
 		const features = this.map!.queryRenderedFeatures([this.startPos!, this.lastPos!], {
 			layers: this.layers,
 		});
-		this.map!.fire('select.end', { features });
+		this.map!.fire('select.end', { features, alt: event.altKey });
 	}
 
 	reset(): void {

@@ -12,7 +12,7 @@
 			:source="directusSource"
 			:layers="directusLayers"
 			@featureclick="handleClick"
-			@featureselect="updateSelection"
+			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
 			@fitdata="removeLocationFilter"
 		/>
@@ -152,11 +152,11 @@ export default defineComponent({
 			required: true,
 		},
 		handleClick: {
-			type: Function as PropType<(key: number | string) => void>,
+			type: Function as PropType<(event: { id: string | number; replace: boolean }) => void>,
 			required: true,
 		},
-		updateSelection: {
-			type: Function as PropType<(selected: Array<string | number> | null) => void>,
+		handleSelect: {
+			type: Function as PropType<(event: { ids: Array<string | number>; replace: boolean }) => void>,
 			required: true,
 		},
 		cameraOptions: {
