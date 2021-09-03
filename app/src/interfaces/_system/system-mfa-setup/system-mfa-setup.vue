@@ -28,7 +28,7 @@
 				<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
 
 				<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
-					<form @submit.prevent="enableTFA">
+					<form @submit.prevent="enable">
 						<v-card-title>
 							{{ t('tfa_scan_code') }}
 						</v-card-title>
@@ -40,7 +40,7 @@
 						</v-card-text>
 						<v-card-actions>
 							<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
-							<v-button type="submit" :disabled="otp.length !== 6" @click="enableTFA">{{ t('done') }}</v-button>
+							<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ t('done') }}</v-button>
 						</v-card-actions>
 					</form>
 				</div>
@@ -49,7 +49,7 @@
 
 		<v-dialog v-model="disableActive" @esc="disableActive = false">
 			<v-card>
-				<form @submit.prevent="disableTFA">
+				<form @submit.prevent="disable">
 					<v-card-title>
 						{{ t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
@@ -70,11 +70,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, onMounted, computed } from 'vue';
-import api from '@/api';
-import qrcode from 'qrcode';
-import { nanoid } from 'nanoid';
+import { defineComponent, ref, watch, computed } from 'vue';
 import { useUserStore } from '@/stores';
+import { useTFASetup } from '@/composables/use-tfa-setup';
 
 export default defineComponent({
 	props: {
@@ -91,20 +89,24 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const userStore = useUserStore();
-		const tfaEnabled = ref(!!props.value);
-		const tfaGenerated = ref(false);
 		const enableActive = ref(false);
 		const disableActive = ref(false);
-		const loading = ref(false);
-		const canvasID = nanoid();
-		const secret = ref<string>();
-		const otp = ref('');
-		const error = ref<any>();
-		const password = ref('');
 
-		onMounted(() => {
-			password.value = '';
-		});
+		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
+
+		const {
+			generateTFA,
+			enableTFA,
+			disableTFA,
+			loading,
+			password,
+			tfaEnabled,
+			tfaGenerated,
+			secret,
+			otp,
+			error,
+			canvasID,
+		} = useTFASetup(!!props.value);
 
 		watch(
 			() => props.value,
@@ -113,7 +115,6 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
-		const isCurrentUser = computed(() => userStore.currentUser?.id === props.primaryKey);
 
 		return {
 			t,
@@ -121,7 +122,7 @@ export default defineComponent({
 			tfaGenerated,
 			generateTFA,
 			cancelAndClose,
-			enableTFA,
+			enable,
 			toggle,
 			password,
 			enableActive,
@@ -129,11 +130,21 @@ export default defineComponent({
 			loading,
 			canvasID,
 			secret,
-			disableTFA,
+			disable,
 			otp,
 			error,
 			isCurrentUser,
 		};
+
+		async function enable() {
+			await enableTFA();
+			enableActive.value = false;
+		}
+
+		async function disable() {
+			await disableTFA();
+			disableActive.value = false;
+		}
 
 		function toggle() {
 			if (tfaEnabled.value === false) {
@@ -143,68 +154,12 @@ export default defineComponent({
 			}
 		}
 
-		async function generateTFA() {
-			if (loading.value === true) return;
-
-			loading.value = true;
-
-			try {
-				const response = await api.post('/users/me/tfa/generate', { password: password.value });
-				const url = response.data.data.otpauth_url;
-				secret.value = response.data.data.secret;
-				await qrcode.toCanvas(document.getElementById(canvasID), url);
-				tfaGenerated.value = true;
-				error.value = null;
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
-
 		function cancelAndClose() {
 			tfaGenerated.value = false;
 			enableActive.value = false;
 			password.value = '';
 			otp.value = '';
 			secret.value = '';
-		}
-
-		async function enableTFA() {
-			if (loading.value === true) return;
-
-			loading.value = true;
-
-			try {
-				await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
-				tfaEnabled.value = true;
-				tfaGenerated.value = false;
-				enableActive.value = false;
-				password.value = '';
-				otp.value = '';
-				secret.value = '';
-				error.value = null;
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		async function disableTFA() {
-			loading.value = true;
-
-			try {
-				await api.post('/users/me/tfa/disable', { otp: otp.value });
-
-				tfaEnabled.value = false;
-				disableActive.value = false;
-				otp.value = '';
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
 		}
 	},
 });

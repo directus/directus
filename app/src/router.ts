@@ -1,5 +1,6 @@
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
+import TFASetup from '@/routes/tfa-setup';
 import AcceptInviteRoute from '@/routes/accept-invite';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
@@ -43,6 +44,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
+		name: 'tfa-setup',
+		path: '/tfa-setup',
+		component: TFASetup,
+		meta: {
+			track: false,
+		},
+	},
+	{
 		name: 'logout',
 		path: '/logout',
 		component: LogoutRoute,
@@ -65,6 +74,7 @@ export const router = createRouter({
 export const onBeforeEach: NavigationGuard = async (to, from) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
+	const userStore = useUserStore();
 
 	// First load
 	if (from.name === undefined) {
@@ -82,11 +92,17 @@ export const onBeforeEach: NavigationGuard = async (to, from) => {
 
 	if (to.meta?.public !== true && appStore.hydrated === false) {
 		appStore.hydrating = false;
-		if (appStore.authenticated === true && appStore.hydrating === false) {
+		if (appStore.authenticated === true) {
 			await hydrate();
 			return to.fullPath;
 		} else {
 			return '/login';
+		}
+	}
+
+	if (to.meta?.public !== true && userStore.currentUser && to.fullPath !== '/tfa-setup') {
+		if (userStore.currentUser.role.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+			return '/tfa-setup';
 		}
 	}
 };
@@ -96,7 +112,7 @@ let trackTimeout: number | null = null;
 export const onAfterEach: NavigationHookAfter = (to) => {
 	const userStore = useUserStore();
 
-	if (to.meta.public !== true) {
+	if (to.meta.public !== true && to.meta.track !== false) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
 		// this call while more important things are loading
 
