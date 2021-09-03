@@ -289,11 +289,8 @@ export default defineComponent({
 
 		const internalValue = computed({
 			get() {
-				if (props.value) {
-					return replaceTokens(props.value, getToken());
-				}
-
-				return props.value;
+				if (!props.value) return '';
+				return replaceTokens(props.value, getToken());
 			},
 			set(newValue: string) {
 				if (newValue !== props.value && (props.value === null && newValue === '') === false) {
