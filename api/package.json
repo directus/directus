@@ -71,8 +71,6 @@
 	],
 	"dependencies": {
 		"@directus/app": "9.0.0-rc.91",
-		"@directus/auth": "9.0.0-rc.91",
-		"@directus/auth-username": "9.0.0-rc.91",
 		"@directus/drive": "9.0.0-rc.91",
 		"@directus/drive-azure": "9.0.0-rc.91",
 		"@directus/drive-gcs": "9.0.0-rc.91",

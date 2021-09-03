@@ -1,8 +1,9 @@
-import { BasicAuth, AuthManager, AuthManagerConfig, AuthConstructor } from '@directus/auth';
-import { UsernameAuth } from '@directus/auth-username';
 import getDatabase from './database';
 import env from './env';
 import logger from './logger';
+import AuthManager from './auth/auth-manager';
+import { AuthConstructor, LocalAuth } from './auth/providers';
+import { AuthManagerConfig } from './types';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from '@directus/shared/utils';
@@ -62,10 +63,8 @@ const registerDrivers = (manager: AuthManager): void => {
 
 const getAuthDriver = (driver: string): AuthConstructor | undefined => {
 	switch (driver) {
-		case 'basic':
-			return BasicAuth;
-		case 'username':
-			return UsernameAuth;
+		case 'local':
+			return LocalAuth;
 	}
 };
 

@@ -1,8 +1,8 @@
 import { Knex } from 'knex';
-import Auth, { AuthConstructor } from './auth';
-import BasicAuth from './basic-auth';
-import { InvalidConfigException, DriverNotSupportedException } from './exceptions';
-import { AuthManagerConfig, AuthProviderConfig } from './types';
+import Auth, { AuthConstructor } from './providers/auth';
+import LocalAuth from './providers/local';
+import { InvalidConfigException, DriverNotSupportedException } from '../exceptions';
+import { AuthManagerConfig, AuthProviderConfig } from '../types';
 
 export default class AuthManager {
 	private knex: Knex;
@@ -15,7 +15,7 @@ export default class AuthManager {
 		this.knex = knex;
 		this.defaultProvider = config.default;
 		this.providerConfigs = config.providers || {};
-		this.registerDriver('basic', BasicAuth);
+		this.registerDriver('local', LocalAuth);
 	}
 
 	/**

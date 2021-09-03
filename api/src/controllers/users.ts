@@ -1,8 +1,7 @@
 import express from 'express';
 import Joi from 'joi';
-import { InvalidCredentialsException } from '@directus/auth';
 import { InvalidPayloadException } from '@directus/shared/exceptions';
-import { ForbiddenException } from '../exceptions';
+import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
