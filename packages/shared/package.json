@@ -51,7 +51,7 @@
 		"fs-extra": "10.0.0",
 		"geojson": "0.5.0",
 		"joi": "17.4.2",
-		"knex": "0.95.10",
+		"knex": "0.95.11",
 		"knex-schema-inspector": "1.6.0",
 		"lodash": "4.17.21",
 		"pino": "6.13.1",
