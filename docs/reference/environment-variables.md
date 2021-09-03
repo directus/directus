@@ -34,7 +34,7 @@ needs to be publicly available on the internet.
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
-| `DB_IGNORE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
+| `DB_EXCLUDE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
 
 ::: tip Additional Database Variables
 
