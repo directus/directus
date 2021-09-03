@@ -12,7 +12,7 @@ export default function filtersToQuery(filters: readonly Filter[]): { filter: Re
 			value = true;
 		}
 
-		if (!value) continue;
+		if (value === undefined) continue;
 
 		if (field.includes('.')) {
 			let filter: Record<string, any> = { [`_${operator}`]: value };
