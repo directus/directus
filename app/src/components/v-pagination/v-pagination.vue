@@ -90,6 +90,8 @@ export default defineComponent({
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const visiblePages = computed<number[]>(() => {
+			if (props.totalVisible === undefined) return [];
+
 			let startPage: number;
 			let endPage: number;
 

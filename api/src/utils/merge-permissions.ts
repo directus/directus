@@ -25,7 +25,6 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 	let validation = currentPerm.validation;
 	let fields = currentPerm.fields;
 	let presets = currentPerm.presets;
-	let limit = currentPerm.limit;
 
 	if (newPerm.permissions) {
 		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === '_or') {
@@ -73,16 +72,11 @@ function mergePerm(currentPerm: Permission, newPerm: Permission) {
 		presets = merge({}, presets, newPerm.presets);
 	}
 
-	if (newPerm.limit && newPerm.limit > (currentPerm.limit || 0)) {
-		limit = newPerm.limit;
-	}
-
 	return {
 		...currentPerm,
 		permissions,
 		validation,
 		fields,
 		presets,
-		limit,
 	};
 }

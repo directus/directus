@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
-
 import { getSchema } from '../../../utils/get-schema';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';
+import logger from '../../../logger';
 
 export default async function usersCreate({
 	email,
@@ -16,7 +15,7 @@ export default async function usersCreate({
 	const database = getDatabase();
 
 	if (!email || !password || !role) {
-		console.error('Email, password, role are required');
+		logger.error('Email, password, role are required');
 		process.exit(1);
 	}
 
@@ -25,11 +24,11 @@ export default async function usersCreate({
 		const service = new UsersService({ schema, knex: database });
 
 		const id = await service.createOne({ email, password, role, status: 'active' });
-		console.log(id);
+		process.stdout.write(`${String(id)}\n`);
 		database.destroy();
 		process.exit(0);
 	} catch (err: any) {
-		console.error(err);
+		logger.error(err);
 		process.exit(1);
 	}
 }

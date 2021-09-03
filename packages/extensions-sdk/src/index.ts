@@ -6,4 +6,4 @@ export {
 	defineHook,
 	defineEndpoint,
 } from '@directus/shared/utils';
-export { useLayoutState, useStores, useApi } from '@directus/shared/composables';
+export { useStores, useApi } from '@directus/shared/composables';

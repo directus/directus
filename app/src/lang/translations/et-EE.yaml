@@ -814,7 +814,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tüüp
-      collections_name: Kogud
+    collections_name: Kogud
   directus_users:
     status_dropdown_active: aktiivne
     status_dropdown_archived: Arhiveeritud

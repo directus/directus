@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "9.0.0-rc.91",
+	"version": "9.0.0-rc.92",
 	"description": "A toolkit to develop extensions to extend Directus.",
 	"main": "dist/cjs/index.js",
 	"exports": {
@@ -11,8 +11,10 @@
 		"./cli": {
 			"import": "./dist/esm/cli/index.js",
 			"require": "./dist/cjs/cli/index.js"
-		}
+		},
+		"./package.json": "./package.json"
 	},
+	"types": "dist/esm/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
@@ -29,7 +31,7 @@
 	"author": "Nicola Krumschmidt",
 	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
-		"@directus/shared": "9.0.0-rc.91",
+		"@directus/shared": "9.0.0-rc.92",
 		"@rollup/plugin-commonjs": "^20.0.0",
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^13.0.0",
@@ -43,6 +45,7 @@
 		"rollup": "^2.51.2",
 		"rollup-plugin-styles": "^3.14.1",
 		"rollup-plugin-terser": "^7.0.2",
+		"rollup-plugin-typescript2": "^0.30.0",
 		"rollup-plugin-vue": "^6.0.0"
 	},
 	"devDependencies": {

@@ -4,10 +4,13 @@
 
 <script>
 export default {
-	emits: ['input'],
 	props: {
-		value: String,
+		value: {
+			type: String,
+			required: true,
+		},
 	},
+	emits: ['input'],
 	methods: {
 		handleChange(value) {
 			this.$emit('input', value);

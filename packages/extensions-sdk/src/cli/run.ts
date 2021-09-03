@@ -9,7 +9,12 @@ const program = new Command();
 program.name('directus-extension').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
 
-program.command('create').arguments('<type> <name>').description('Scaffold a new Directus extension').action(create);
+program
+	.command('create')
+	.arguments('<type> <name>')
+	.description('Scaffold a new Directus extension')
+	.option('-l, --language <language>', 'specify the language to use', 'javascript')
+	.action(create);
 
 program
 	.command('build')
@@ -17,6 +22,7 @@ program
 	.option('-t, --type <type>', 'overwrite the extension type read from package manifest')
 	.option('-i, --input <file>', 'overwrite the entrypoint read from package manifest')
 	.option('-o, --output <file>', 'overwrite the output file read from package manifest')
+	.option('-l, --language <language>', 'overwrite the language to use')
 	.option('-f, --force', 'ignore the package manifest')
 	.action(build);
 

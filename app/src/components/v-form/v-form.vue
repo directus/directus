@@ -46,7 +46,7 @@
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[field.field]"
 				:initial-value="(initialValues || {})[field.field]"
-				:disabled="disabled"
+				:disabled="isDisabled(field)"
 				:batch-mode="batchMode"
 				:batch-active="batchActiveFields.includes(field.field)"
 				:primary-key="primaryKey"
@@ -149,7 +149,7 @@ export default defineComponent({
 			}
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup } = useForm();
+		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -200,6 +200,7 @@ export default defineComponent({
 			omit,
 			getFieldsForGroup,
 			fieldsForGroup,
+			isDisabled,
 		};
 
 		function useForm() {
@@ -282,6 +283,7 @@ export default defineComponent({
 					props.loading ||
 					props.disabled === true ||
 					field.meta?.readonly === true ||
+					field.schema?.is_generated === true ||
 					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 				);
 			}
