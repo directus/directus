@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
 import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
-import { InvalidPayloadException } from '@directus/shared/exceptions';
-import { InvalidQueryException, MethodNotAllowedException } from '../exceptions';
+import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
 import { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
 

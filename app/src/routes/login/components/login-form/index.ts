@@ -1,1 +1,1 @@
-export { default as LocalLogin } from './local-login.vue';
+export { default as LoginForm } from './login-form.vue';

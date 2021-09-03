@@ -27,7 +27,7 @@ import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
-import { InvalidPayloadException } from '@directus/shared/exceptions';
+import { InvalidPayloadException } from './exceptions';
 import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';

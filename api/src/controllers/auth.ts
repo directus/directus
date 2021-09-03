@@ -6,8 +6,12 @@ import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import getDatabase from '../database';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { InvalidPayloadException } from '@directus/shared/exceptions';
-import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
+import {
+	InvalidCredentialsException,
+	RouteNotFoundException,
+	ServiceUnavailableException,
+	InvalidPayloadException,
+} from '../exceptions';
 import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
@@ -18,7 +22,7 @@ import logger from '../logger';
 
 const router = Router();
 
-const localLoginSchema = Joi.object({
+const loginSchema = Joi.object({
 	email: Joi.string().required(),
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
@@ -26,7 +30,7 @@ const localLoginSchema = Joi.object({
 	provider: Joi.string(),
 }).unknown();
 
-const localLoginHandler = async (req: any, res: any, next: any) => {
+const loginHandler = async (req: any, res: any, next: any) => {
 	const accountability = {
 		ip: req.ip,
 		userAgent: req.get('user-agent'),
@@ -38,7 +42,7 @@ const localLoginHandler = async (req: any, res: any, next: any) => {
 		schema: req.schema,
 	});
 
-	const { error } = localLoginSchema.validate(req.body);
+	const { error } = loginSchema.validate(req.body);
 	if (error) throw new InvalidPayloadException(error.message);
 
 	const mode = req.body.mode || 'json';
@@ -76,9 +80,9 @@ const localLoginHandler = async (req: any, res: any, next: any) => {
 	return next();
 };
 
-router.post('/login', asyncHandler(localLoginHandler), respond);
+router.post('/login', asyncHandler(loginHandler), respond);
 
-router.post('/local/:provider/login', asyncHandler(localLoginHandler), respond);
+router.post('/:provider/login', asyncHandler(loginHandler), respond);
 
 router.post(
 	'/refresh',

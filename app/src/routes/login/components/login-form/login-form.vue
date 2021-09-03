@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import authLinks from '../auth-links.vue';
-import { localLogin } from '@/auth';
+import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores';
@@ -103,7 +103,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await localLogin(credentials, provider.value);
+				await login(credentials, provider.value);
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;

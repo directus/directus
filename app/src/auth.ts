@@ -11,10 +11,10 @@ export type LocalLoginCredentials = {
 	otp?: string;
 };
 
-export async function localLogin(credentials: LocalLoginCredentials, provider?: string): Promise<void> {
+export async function login(credentials: LocalLoginCredentials, provider?: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(provider ? `/auth/local/${provider}/login` : '/auth/login', {
+	const response = await api.post(provider ? `/auth/${provider}/login` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});
