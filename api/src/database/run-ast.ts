@@ -8,6 +8,7 @@ import { toArray } from '@directus/shared/utils';
 import getDatabase from './index';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
+import { InvalidQueryException } from '../exceptions';
 
 type RunASTOptions = {
 	/**
@@ -64,7 +65,12 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
+		let dbQuery;
+		try {
+			dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
+		} catch (error) {
+			throw new InvalidQueryException(error);
+		}
 
 		const rawItems: Item | Item[] = await dbQuery;
 
