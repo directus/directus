@@ -18,7 +18,7 @@ if (env.RATE_LIMITER_ENABLED === true) {
 	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
 			await rateLimiter.consume(req.ip, 1);
-		} catch (rateLimiterRes) {
+		} catch (rateLimiterRes: any) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
 			res.set('Retry-After', String(rateLimiterRes.msBeforeNext / 1000));

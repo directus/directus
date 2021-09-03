@@ -17,8 +17,7 @@ const defaultBasemap: BasemapSource = {
 
 const baseStyle: Style = {
 	version: 8,
-	glyphs:
-		'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_GCS_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
+	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
 
 export function getBasemapSources(): BasemapSource[] {
@@ -93,7 +92,7 @@ function setMapboxAccessToken(styleURL: string): void {
 			const token = url.searchParams.get('access_token');
 			if (token) maplibre.accessToken = token;
 		}
-	} catch (e) {
+	} catch {
 		return;
 	}
 }

@@ -68,7 +68,7 @@ export async function up(knex: Knex): Promise<void> {
 				await knex(constraint.many_collection)
 					.update({ [constraint.many_field]: null })
 					.whereIn(currentPrimaryKeyField, ids);
-			} catch (err) {
+			} catch (err: any) {
 				logger.error(
 					`${constraint.many_collection}.${constraint.many_field} contains illegal foreign keys which couldn't be set to NULL. Please fix these references and rerun this migration to complete the upgrade.`
 				);
@@ -111,7 +111,7 @@ export async function up(knex: Knex): Promise<void> {
 					builder.onDelete('SET NULL');
 				}
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(
 				`Couldn't add foreign key constraint for ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection}`
 			);
@@ -140,7 +140,7 @@ export async function down(knex: Knex): Promise<void> {
 			await knex.schema.alterTable(relation.many_collection, (table) => {
 				table.dropForeign([relation.many_field]);
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(
 				`Couldn't drop foreign key constraint for ${relation.many_collection}.${relation.many_field}<->${relation.one_collection}`
 			);

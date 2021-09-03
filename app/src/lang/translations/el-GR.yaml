@@ -232,8 +232,7 @@ field_options:
     fields:
       icon_name: Εικονίδιο
       name_name: Όνομα
-    collection_list:
-      collections_name: Συλλογές
+    collections_name: Συλλογές
   directus_webhooks:
     actions_create: Δημιουργία
     actions_update: Ενημέρωση

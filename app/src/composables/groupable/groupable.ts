@@ -92,7 +92,7 @@ export function useGroupable(options?: GroupableOptions): UsableGroupable {
 }
 
 type GroupableParentState = {
-	selection?: Ref<(string | number)[]> | Ref<readonly (string | number)[]>;
+	selection?: Ref<(string | number)[] | undefined> | Ref<readonly (string | number)[] | undefined>;
 	onSelectionChange?: (newSelectionValues: readonly (string | number)[]) => void;
 };
 

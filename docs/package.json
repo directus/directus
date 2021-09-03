@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.91",
+	"version": "9.0.0-rc.92",
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
@@ -32,7 +32,7 @@
 		"directory-tree": "2.3.1",
 		"fs-extra": "10.0.0",
 		"lodash.get": "4.4.2",
-		"micromark": "3.0.0",
+		"micromark": "3.0.5",
 		"npm-watch": "0.11.0",
 		"slugify": "1.6.0",
 		"vuepress": "1.8.2",

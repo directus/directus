@@ -92,6 +92,7 @@ import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
+import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -200,7 +201,7 @@ export default defineComponent({
 
 						uploadedFile && emit('input', uploadedFile);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					uploading.value = false;
@@ -293,6 +294,8 @@ export default defineComponent({
 						},
 					});
 
+					emitter.emit(Events.upload);
+
 					if (props.multiple) {
 						emit('input', [response.data.data]);
 					} else {
@@ -301,7 +304,7 @@ export default defineComponent({
 
 					activeDialog.value = null;
 					url.value = '';
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

@@ -48,7 +48,7 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -64,7 +64,7 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -84,7 +84,7 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete(`/permissions/${permission.id}`);
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();
@@ -117,7 +117,7 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				} else {
@@ -130,7 +130,7 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				}
@@ -148,7 +148,7 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();

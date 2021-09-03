@@ -147,7 +147,7 @@ export default defineComponent({
 				map.on('select.disable', () => (selectMode.value = false));
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
-					emit('featureselect', ids);
+					emit('featureselect', { ids, replace: !event.alt });
 				});
 				map.on('moveend', (event) => {
 					if (!event.originalEvent) {
@@ -249,11 +249,12 @@ export default defineComponent({
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
+			const replace = !event.originalEvent.altKey;
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
-					emit('featureselect', [feature.id]);
+					emit('featureselect', { ids: [feature.id], replace });
 				} else {
-					emit('featureclick', feature.id);
+					emit('featureclick', { id: feature.id, replace });
 				}
 			}
 		}

@@ -1,34 +1,46 @@
 <template>
-	<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
-		<template #subtitle>
-			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
-		</template>
-
-		<template #actions:prepend><component :is="`layout-actions-${localLayout}`" /></template>
-
-		<template #actions>
-			<search-input v-model="searchQuery" />
-
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<component :is="`layout-${localLayout}`" class="layout">
-			<template #no-results>
-				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:selection="layoutSelection"
+		v-model:layout-options="localOptions"
+		v-model:layout-query="localQuery"
+		v-model:filters="layoutFilters"
+		v-model:search-query="searchQuery"
+		:collection="collection"
+		select-mode
+	>
+		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
+			<template #subtitle>
+				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
 
-			<template #no-items>
-				<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
+
+			<template #actions>
+				<search-input v-model="searchQuery" />
+
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+					<v-icon name="check" />
+				</v-button>
 			</template>
-		</component>
-	</v-drawer>
+
+			<component :is="`layout-${localLayout}`" class="layout" v-bind="layoutState">
+				<template #no-results>
+					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+				</template>
+			</component>
+		</v-drawer>
+	</component>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, reactive, computed, toRefs, watch } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
@@ -65,7 +77,7 @@ export default defineComponent({
 
 		const { save, cancel } = useActions();
 		const { internalActive } = useActiveState();
-		const { internalSelection, localSelection, onSelect } = useSelection();
+		const { internalSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
@@ -96,30 +108,19 @@ export default defineComponent({
 			},
 		});
 
-		useLayout(
-			localLayout,
-			reactive({
-				collection,
-				selection: layoutSelection,
-				layoutOptions: localOptions,
-				layoutQuery: localQuery,
-				filters: layoutFilters,
-				searchQuery,
-				selectMode: true,
-				readonly: false,
-			})
-		);
+		const { layoutWrapper } = useLayout(layout);
 
 		return {
 			t,
 			save,
 			cancel,
 			internalActive,
-			internalSelection,
-			localSelection,
-			onSelect,
+			layoutWrapper,
+			layoutSelection,
+			layoutFilters,
 			localLayout,
 			localOptions,
+			localQuery,
 			collectionInfo,
 			searchQuery,
 		};
@@ -163,7 +164,7 @@ export default defineComponent({
 				}
 			);
 
-			return { internalSelection, localSelection, onSelect };
+			return { internalSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {

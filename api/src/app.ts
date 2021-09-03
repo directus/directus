@@ -24,7 +24,7 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import { isInstalled, validateDBConnection, validateMigrations } from './database';
+import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
@@ -45,20 +45,19 @@ import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
 import { flushCaches } from './cache';
-import { URL } from 'url';
+import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
-	try {
-		new URL(env.PUBLIC_URL);
-	} catch {
-		logger.warn('PUBLIC_URL is not a valid URL');
+	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
 	await validateStorage();
 
-	await validateDBConnection();
+	await validateDatabaseConnection();
+	await validateDatabaseExtensions();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);
@@ -126,11 +125,14 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
-		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
+		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
 		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(/<meta charset="utf-8" \/>/, `<meta charset="utf-8" />\n\t\t<base href="${publicUrl}admin/">`);
+		html = html.replace(
+			/<meta charset="utf-8" \/>/,
+			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
+		);
 
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
@@ -183,7 +185,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
-	app.use('/custom', customRouter);
+
+	app.use(customRouter);
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });

@@ -50,7 +50,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				expect(err).toBeInstanceOf(TransportError);
 			}
 		});
@@ -74,7 +74,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
 				expect(terr.response?.status).toBe(403);
@@ -95,7 +95,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
 				expect(terr.response).toBeUndefined();
@@ -123,7 +123,7 @@ describe('axios transport', function () {
 		try {
 			await transport.get('/route');
 			fail();
-		} catch (err) {
+		} catch (err: any) {
 			const terr = err as TransportError;
 			expect(terr).toBeInstanceOf(TransportError);
 			expect(terr.response).toBeUndefined();

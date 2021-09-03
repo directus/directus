@@ -111,7 +111,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (props.type === 'json') {
+			if (typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -289,8 +289,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'codemirror/addon/lint/lint.css';
-
 .input-code {
 	position: relative;
 	width: 100%;

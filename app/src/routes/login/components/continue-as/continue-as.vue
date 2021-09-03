@@ -51,7 +51,7 @@ export default defineComponent({
 
 				name.value = userName(response.data.data);
 				lastPage.value = response.data.data.last_page;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

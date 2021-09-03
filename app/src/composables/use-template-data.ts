@@ -43,7 +43,7 @@ export default function useTemplateData(
 			});
 
 			templateData.value = result.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;

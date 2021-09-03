@@ -13,7 +13,7 @@ export interface LayoutConfig<Options = any, Query = any> {
 		sidebar: Component;
 		actions: Component;
 	};
-	setup: (LayoutOptions: LayoutProps<Options, Query>) => any;
+	setup: (props: LayoutProps<Options, Query>, ctx: LayoutContext) => Record<string, unknown>;
 }
 
 export interface LayoutProps<Options = any, Query = any> {
@@ -26,6 +26,13 @@ export interface LayoutProps<Options = any, Query = any> {
 	selectMode: boolean;
 	readonly: boolean;
 	resetPreset?: () => Promise<void>;
+}
+
+interface LayoutContext {
+	emit: (
+		event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery' | 'update:filters' | 'update:searchQuery',
+		...args: any[]
+	) => void;
 }
 
 export type LayoutState<T, Options, Query> = {

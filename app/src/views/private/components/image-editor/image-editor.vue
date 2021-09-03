@@ -242,7 +242,7 @@ export default defineComponent({
 					});
 
 					imageData.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -269,7 +269,7 @@ export default defineComponent({
 							await api.patch(`/files/${props.id}`, formData);
 							emit('refresh');
 							internalActive.value = false;
-						} catch (err) {
+						} catch (err: any) {
 							unexpectedError(err);
 						} finally {
 							saving.value = false;

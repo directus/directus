@@ -20,7 +20,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 			return next();
 		}
 		next(new RouteNotFoundException(req.path));
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
