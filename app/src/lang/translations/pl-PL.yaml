@@ -20,11 +20,15 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 edit_field: Edytuj pole
+maps: Mapy
 item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
+limit: Limit
 group: Grupa
+and: I
+or: Lub
 fill_width: Szerokość wypełnienia
 field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
@@ -33,6 +37,7 @@ role_name: Nazwa roli
 branch: Gałąź
 leaf: Arkusz
 indeterminate: Nieokreślony
+edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
@@ -68,6 +73,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
+public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
@@ -113,6 +119,8 @@ no_access: Brak dostępu
 use_custom: Użyj niestandardowych
 nullable: Bez wartości
 allow_null_value: Zezwalaj na wartość NULL
+allow_multiple: Zezwalaj na wiele
+allow_multiple_to_be_open: Zezwalaj na otwieranie wielu
 enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
 field_standard: Standard
 field_presentation: Prezentacja i aliasy
@@ -176,6 +184,7 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -306,6 +315,7 @@ drag_mode: Tryb przeciągania
 cancel_crop: Anuluj przycinanie
 original: Oryginalny
 url: Adres URL
+import_label: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
@@ -373,6 +383,7 @@ no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
 no_webhooks_copy: Brak webhooków.
 all_items: Wszystkie elementy
+any: Dowolny
 csv: CSV
 no_collections: Brak kolekcji
 create_collection: Stwórz kolekcję
@@ -383,6 +394,7 @@ display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo sko
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
 active: Aktywne
+inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
 webhooks: Webhooki
@@ -486,6 +498,7 @@ color: Kolor
 circle: Okrąg
 empty_item: Pusty element
 log_in_with: 'Zaloguj się za pomocą {provider}'
+advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
 change_advanced_filter_operator: Zmień operatora
@@ -766,6 +779,7 @@ fields:
     language: Język
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
+    admin_options: Opcje administratora
     status: Status
     status_active: Aktywne
     role: Rola
@@ -827,9 +841,11 @@ field_options:
         type_name: Typ
     collections_name: Kolekcje
   directus_users:
+    admin_divider: Opcje administratora
     status_dropdown_active: Aktywne
   directus_webhooks:
     status_options_active: Aktywne
+    status_options_inactive: Nieaktywny
     actions_create: Stwórz
     actions_update: Zaktualizuj
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
@@ -1217,3 +1233,5 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
+  map:
+    field: Geometria

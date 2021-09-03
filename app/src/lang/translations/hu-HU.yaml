@@ -32,8 +32,8 @@ and: És
 or: Vagy
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
-enter_password_to_enable_tfa: Írd be a jelszót a kétfaktoros ellenőrzés bekapcsolásához
-add_field: Új mező
+enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés bekapcsolásához
+add_field: Mező Hozzáadása
 role_name: Szerepkör neve
 branch: Ág
 leaf: Falevél / Leaf
@@ -46,8 +46,8 @@ show_archived_items: Archivált elemek megjelenítése
 edited: Érték szerkesztve
 required: Kötelező
 required_for_app_access: Alkalmazás-hozzáféréshez szükséges
-requires_value: Kötelező adat
-create_preset: Alapértelmezések létrehozása
+requires_value: Kötelező érték
+create_preset: Alapértelmezés létrehozása
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
@@ -84,7 +84,7 @@ os_type: Operációs rendszer típusa
 os_version: Operációs rendszer verziója
 os_uptime: Operációs rendszer futásideje
 os_totalmem: Operációs rendszer memóriája
-archive: Archívum
+archive: Archiválás
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
@@ -115,7 +115,7 @@ validationError:
   required: Érték szükséges
   unique: Egyedi érték szükséges
   regex: Az érték nem megfelelő formátumú
-all_access: Összes hozzáférés
+all_access: Teljes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
 nullable: Lehet null
@@ -167,7 +167,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
-disabled_editing_value: Szerkesztés tiltása
+disabled_editing_value: Érték szerkeszthetőségének kikapcsolása
 key: Kulcs
 alias: Álnév
 bigInteger: Nagy egész számok
@@ -205,12 +205,12 @@ new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
 search_collection: Keresés a Gyűjteményben...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
-add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
-add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_m2o_to_collection: 'Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_o2m_to_collection: 'Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_m2m_to_collection: 'Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
-add_note: Segítő jelzés a kitöltő felhasználónak...
+add_note: Felhasználóknak szóló hasznos megjegyzés hozzáadása...
 default_value: Alapértelmezett érték
 standard_field: Általános mező
 single_file: Egyetlen fájl
@@ -237,8 +237,8 @@ foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
 raw_value: Nyers érték
-edit_raw_value: Érték szerkesztése
-enter_raw_value: Érték megadása...
+edit_raw_value: Nyers érték szerkesztése
+enter_raw_value: Nyers érték megadása...
 clear_value: Érték törlése
 reset_to_default: Visszaállítás alaphelyzetbe
 undo_changes: Változások visszavonása
@@ -291,8 +291,8 @@ today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
 date-fns_date: PPP
-date-fns_time: 'ó:pp:mpmp de/du'
-date-fns_time_no_seconds: 'ó:pp de/du'
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM. d.
@@ -355,7 +355,7 @@ manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
 save_and_stay: Mentés és marad
 save_as_copy: Mentés másolatként
-add_existing: Létező tartalom hozzáadása
+add_existing: Létező hozzáadása
 creating_items: Elemek létrehozása
 enable_create_button: Létrehozás gomb engedélyezése
 selecting_items: Elemek kiválasztása
@@ -373,6 +373,7 @@ request_feature: Funkció ajánlása
 interface_not_found: 'Hiányzó interfész: "{interface}".'
 reset_interface: Felhasználói felület visszaállítása
 reset_display: Megjelenés alaphelyzetbe
+list-m2a: Builder (M2A)
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
@@ -392,7 +393,7 @@ relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
-active: aktív
+active: Aktív
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
@@ -412,7 +413,7 @@ collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
 card_size: Kártya mérete
 sort_field: Rendezési mező
-add_sort_field: Rendezési Mező hozzáadása
+add_sort_field: Rendezési mező hozzáadása
 sort: Rendezés
 status: Állapot
 remove: Eltávolítás
@@ -461,11 +462,11 @@ copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
 no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
 password_reset_sent: Küldtünk egy biztonságos linket a jelszó visszaállításához
-password_reset_successful: Jelszó sikeres visszaállítása
+password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
-free: Ingyenes
+free: Szabadon választott
 flip_horizontal: Vízszintes tükrözés
 flip_vertical: Függőleges tükrözés
 aspect_ratio: Méretarány
@@ -474,20 +475,23 @@ all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+start_end_of_count_items: '{start}-{end} {count} elemből'
+start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
 one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
 delete_collection_are_you_sure: >-
   Biztos, hogy törölni szeretné ezt a gyűjteményt? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
-hidden_collections: Elrejtett gyűjtemények
+hidden_collections: Rejtett gyűjtemények
 show_hidden_collections: Rejtett gyűjtemények mutatása
-hide_hidden_collections: Rejtett gyűjtemények rejtése
+hide_hidden_collections: Rejtett gyűjtemények elrejtése
 unmanaged_collections: Nem beállított gyűjtemények
 system_collections: Rendszer gyűjtemények
 placeholder: Helyőrző
 icon_left: Ikon balra
 icon_right: Ikon jobbra
+count_other_revisions: '{count} egyéb módosítás'
 font: Betűtípus
 sans_serif: Sans Serif
 serif: Talpas
@@ -568,7 +572,7 @@ rule: Szabály
 user: Felhasználó
 no_presets: Presetek
 no_presets_copy: Még egy preset vagy könyvjelző sem lett elmentve.
-no_presets_cta: Preset hozzáadása
+no_presets_cta: Alapértelmezés hozzáadása
 presets_only: Csak alapbeállítások
 create: Létrehozás
 on_create: Létrehozáskor
@@ -651,7 +655,7 @@ choices_option_configured_incorrectly: Helytelenül konfigurált választási eh
 deselect: Kijelölés megszüntetése
 deselect_all: Összes kijelölés törlése
 other: Egyéb...
-adding_user: Hozzáadott felhasználó
+adding_user: Felhasználó hozzáadása
 unknown_user: Ismeretlen felhasználó
 creating_in: 'Elem hozzáadása ide: {collection}'
 editing_in: 'Elem szerkesztése itt: {collection}'
@@ -707,7 +711,7 @@ page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A proje
 page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
 page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
 page_help_users_item: >-
-  **Felhasználók Részletek** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
+  **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -791,7 +795,7 @@ fields:
     status: Állapot
     status_draft: Vázlat
     status_invited: Meghívott
-    status_active: aktív
+    status_active: Aktív
     status_suspended: Felfüggesztve
     status_archived: Archiválva
     role: Szerepkör
@@ -888,7 +892,7 @@ field_options:
     singleton: Egyetlen objektumként kezelendő
     language: Nyelv
     translation: Fordítás megadása...
-    archive_divider: Archívum
+    archive_divider: Archiválás
     archive_field: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
     archive_value: Archiváláskor beállított érték...
@@ -930,12 +934,12 @@ field_options:
     admin_divider: Admin beállítások
     status_dropdown_draft: Vázlat
     status_dropdown_invited: Meghívott
-    status_dropdown_active: aktív
+    status_dropdown_active: Aktív
     status_dropdown_suspended: Felfüggesztve
     status_dropdown_archived: Archiválva
     token: Írja be a biztonságos hozzáférés tokenjét...
   directus_webhooks:
-    status_options_active: aktív
+    status_options_active: Aktív
     status_options_inactive: Inaktív
     data_label: Eseményadatok küldése
     triggers_divider: Triggerek
@@ -956,6 +960,7 @@ relational_triggers: Relációs triggerek
 referential_action_field_label_m2o: '{collection} törlésekor...'
 referential_action_field_label_o2m: '{collection} kiválasztásának megszüntetésekor...'
 referential_action_no_action: A törlés megakadályozása
+referential_action_cascade: A {collection} elem kaszkád törlése
 referential_action_set_null: A {field} mező állapotának nullra állítása
 referential_action_set_default: '{field} beállítása alapértelmezett értékére'
 choose_action: Művelet választása
@@ -1203,7 +1208,7 @@ interfaces:
     auto_formatter: Cím automatikus formázó használata
     alphabetize: ABC sorrend
     alphabetize_label: ABC sorrend kényszerítése
-    add_tags: Címke hozzáadása...
+    add_tags: Címkék hozzáadása...
   input:
     input: Bevitel
     description: Manuálisan határozzon meg egy értéket!
