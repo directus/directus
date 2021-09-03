@@ -3,43 +3,7 @@
 		<v-skeleton-loader v-for="n in 5" :key="n" />
 	</div>
 
-	<v-list v-else class="translations">
-		<v-list-item
-			v-for="(languageItem, i) in languages"
-			:key="languageItem[languagesPrimaryKeyField]"
-			clickable
-			class="language-row"
-			block
-			@click="startEditing(languageItem[languagesPrimaryKeyField])"
-		>
-			<v-icon class="translate" name="translate" left />
-			<render-template :template="internalLanguageTemplate" :collection="languagesCollection" :item="languageItem" />
-			<render-template
-				class="preview"
-				:template="internalTranslationsTemplate"
-				:collection="translationsCollection"
-				:item="previewItems[i]"
-			/>
-			<div class="spacer" />
-		</v-list-item>
-		<i-translations
-			v-if="editing"
-			:collection="translationsCollection"
-			:languages="languages"
-			:template="internalLanguageTemplate"
-			:preview-items="previewItems"
-		/>
-		<!-- <drawer-item
-			v-if="editing"
-			active
-			:collection="translationsCollection"
-			:primary-key="editing"
-			:edits="edits"
-			:circular-field="translationsRelation.field"
-			@input="stageEdits"
-			@update:active="cancelEdit"
-		/> -->
-	</v-list>
+	<i-translations :collection="translationsCollection" :languages="languages" :template="internalLanguageTemplate" />
 </template>
 
 <script lang="ts">

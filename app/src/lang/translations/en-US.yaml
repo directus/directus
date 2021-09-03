@@ -1413,3 +1413,4 @@ layouts:
     invalid_geometry: Invalid geometry
     auto_location_filter: Always filter data to view bounds
     search_this_area: Search this area
+multilang: Multi-language Editing Mode
