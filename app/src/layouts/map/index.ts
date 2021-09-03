@@ -257,25 +257,30 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		}
 
-		function updateSelection(selected: Array<string | number> | null) {
-			if (selected) {
-				selection.value = Array.from(new Set(selection.value.concat(selected)));
+		function setSelection(ids: Array<string | number>) {
+			selection.value = ids;
+		}
+
+		function pushSelection(ids: Array<string | number>) {
+			selection.value = Array.from(new Set(selection.value.concat(ids)));
+		}
+
+		function handleSelect({ ids, replace }: { ids: Array<string | number>; replace: boolean }) {
+			if (replace) setSelection(ids);
+			else pushSelection(ids);
+		}
+
+		function handleClick({ id, replace }: { id: string | number; replace: boolean }) {
+			if (props.selectMode) {
+				handleSelect({ ids: [id], replace });
 			} else {
-				selection.value = [];
+				router.push(`/collections/${collection.value}/${id}`);
 			}
 		}
 
 		const featureId = computed(() => {
 			return props.readonly ? null : primaryKeyField.value?.field ?? null;
 		});
-
-		function handleClick(key: number | string) {
-			if (props.selectMode) {
-				updateSelection([key]);
-			} else {
-				router.push(`/collections/${collection.value}/${key}`);
-			}
-		}
 
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {
@@ -316,12 +321,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geojsonError,
 			geometryOptions,
 			handleClick,
+			handleSelect,
 			geometryFormat,
 			geometryField,
 			cameraOptions,
 			autoLocationFilter,
 			clusterData,
-			updateSelection,
 			items,
 			loading,
 			error,
