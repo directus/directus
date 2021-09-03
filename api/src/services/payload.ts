@@ -49,7 +49,7 @@ export class PayloadService {
 		async hash({ action, value }) {
 			if (!value) return;
 			if (action === 'create' || action === 'update') {
-				return await generateHash(value);
+				return await generateHash(String(value));
 			}
 
 			return value;
