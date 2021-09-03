@@ -388,7 +388,7 @@ csv: CSV
 no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
 no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
-no_collections_copy: Még nem hoztál létre gyűjteményt. Lépj kapcsolatba a rendszeradminisztrátorral.
+no_collections_copy: Ön még nem rendelkezik Gyűjteményekkel. Lépjen kapcsolatba a rendszeradminisztrátorral!
 relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
