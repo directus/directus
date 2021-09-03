@@ -1401,7 +1401,7 @@ export class GraphQLService {
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
-				resolve: async (_, { identifier, email, ...args }, { req, res }) => {
+				resolve: async (_, { ...args }, { req, res }) => {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
@@ -1413,10 +1413,9 @@ export class GraphQLService {
 					});
 					const result = await authenticationService.authenticate({
 						...args,
-						identifier: identifier ?? email,
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
-						provider,
+						identifier: args.email,
 					});
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
