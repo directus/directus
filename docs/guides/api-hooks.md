@@ -141,7 +141,7 @@ module.exports = function registerHook() {
 ## 4. Develop your Custom Hook
 
 > Hooks can impact performance when not carefully implemented. This is especially true for `before` hooks (as these are
-> blocking) and hooks on `read` actions, as a single request can result in a large ammount of database reads.
+> blocking) and hooks on `read` actions, as a single request can result in a large amount of database reads.
 
 ### Register Function
 
