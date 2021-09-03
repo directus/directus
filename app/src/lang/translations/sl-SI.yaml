@@ -38,6 +38,7 @@ role_name: Ime vloge
 branch: Veja
 leaf: List
 indeterminate: Nedoločeno
+edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
 db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
@@ -556,7 +557,7 @@ create_item: Ustvari zapis
 display_template: Prikaži predlogo
 language_display_template: Predloga prikaza jezika
 translations_display_template: Predloga prikaza prevodov
-n_items_selected: 'Noben zapis ni izbran | 1 zaois je izbran | {n} zapisov izbranih'
+n_items_selected: 'Noben zapis ni izbran | 1 zapis je izbran | {n} zapisov izbranih'
 per_page: Na stran
 all_files: Vse datoteke
 my_files: Moje datoteke
@@ -723,6 +724,7 @@ no_layout_collection_selected_yet: Nobena postavitev ali zbirka ni izbrana
 batch_delete_confirm: >-
   Noben zapis ni izbran | Ste prepričani, da želite izbrisati ta zapis? | Ste prepričani, da želite izbrisati {count} zapisov?
 cancel: Prekliči
+no_upscale: Brez povečevanja slik
 collection: Zbirka
 collections: Zbirke
 singleton: En zapis
@@ -805,6 +807,8 @@ fields:
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
+    transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: Dodatne pretvorbe
     project_name: Ime projekta
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
@@ -850,7 +854,22 @@ fields:
     actions: Dejanja
 field_options:
   directus_settings:
+    project_name_placeholder: Moj projekt ...
+    project_logo_note: Ozadje prijave in logotip
+    public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
+    auth_password_policy:
+      none_text: Brez - ni priporočljivo
+      weak_text: Šibko - najmanj 8 znakov
+      strong_text: Močno - Velike in majhne črke, številke, posebni znaki
+    storage_asset_presets:
+      fit:
+        contain_text: Omejeno (obdrži razmerje)
+        cover_text: Zapolni (točna velikost)
+        fit_text: Prilagodi znotraj
+        outside_text: Prilagodi zunaj
+    additional_transforms: Dodatne pretvorbe
+    transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
     files_divider_title: Datoteke & sličice
     overrides_divider_title: Aplikacijske preglasitve
   directus_collections:
@@ -858,11 +877,29 @@ field_options:
     only_track_activity: Sledi samo aktivnosti
     do_not_track_anything: Ne sledi ničesar
     collection_setup: Nastavitve zbirke
+    note_placeholder: Opis te zbirke ...
+    hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
+    translation: Vnesite prevod ...
     archive_divider: Arhiviraj
+    archive_field: Izberite polje ...
+    archive_app_filter: Omogoči aplikacijski arhivski filter
+    archive_value: Nastavljena vrednost pri arhiviranju ...
+    unarchive_value: Nastavljena vrednost pri dearhiviranju ...
     divider: Razvrsti
+    sort_field: Izberite polje ...
+    accountability_divider: Odgovornost
+  directus_files:
+    title: Edinstven naziv ...
+    description: Opcijski opis ...
+    location: Opcijska lokacija ...
+    storage_divider: Imenovanje datotek
+    filename_disk: Ime na disku ...
+    filename_download: Ime za prenos ...
   directus_roles:
+    name: Edinstveno ime te vloge ...
+    description: Opis te vloge ...
     fields:
       icon_name: Ikona
       name_name: Ime
