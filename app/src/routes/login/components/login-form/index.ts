@@ -1,4 +1,1 @@
-import LoginForm from './login-form.vue';
-
-export { LoginForm };
-export default LoginForm;
+export { default as LocalLogin } from './local-login.vue';

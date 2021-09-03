@@ -155,7 +155,7 @@ fields:
     interface: select-dropdown
     width: half
 
-  - field: identifier
+  - field: alternate_identifier
     width: half
     options:
       iconRight: account_circle

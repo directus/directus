@@ -7,7 +7,7 @@ export interface User {
 	status: 'active' | 'suspended' | 'invited';
 	role: string | null;
 	provider: string;
-	identifier: string | null;
+	alternate_identifier: string | null;
 	auth_data: string | null;
 }
 

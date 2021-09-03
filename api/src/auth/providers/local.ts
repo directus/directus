@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import Auth from './auth';
 import { User } from '../../types';
-import { InvalidPayloadException } from '@directus/shared/exceptions';
 import { InvalidCredentialsException } from '../../exceptions';
 
 export default class LocalAuth extends Auth {
@@ -12,8 +11,8 @@ export default class LocalAuth extends Auth {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['identifier', identifier.toLowerCase()])
-			.orWhereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['email', identifier.toLowerCase()])
+			.orWhereRaw('LOWER(??) = ?', ['alternate_identifier', identifier.toLowerCase()])
 			.first();
 
 		if (!user) {

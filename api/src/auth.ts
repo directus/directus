@@ -13,7 +13,7 @@ const getAuthConfig = (): AuthManagerConfig => {
 		default: DEFAULT_AUTH_PROVIDER,
 		providers: {
 			[DEFAULT_AUTH_PROVIDER]: {
-				driver: 'basic',
+				driver: 'local',
 				config: {},
 			},
 		},

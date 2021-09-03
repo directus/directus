@@ -17,11 +17,12 @@ export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		name: 'login',
 		path: '/login',
+		alias: '/login/:driver/:provider',
 		component: LoginRoute,
 		props: (route) => ({
-			ssoErrorCode: route.query.error ? route.query.code : null,
 			logoutReason: route.query.reason,
-			provider: route.query.provider,
+			driver: route.params.driver,
+			provider: route.params.provider,
 		}),
 		meta: {
 			public: true,

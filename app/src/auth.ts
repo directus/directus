@@ -5,17 +5,16 @@ import { useAppStore } from '@/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 
-export type LoginCredentials = {
-	identifier?: string;
-	email?: string;
+export type LocalLoginCredentials = {
+	email: string;
 	password: string;
-	provider?: string;
+	otp?: string;
 };
 
-export async function login(credentials: LoginCredentials): Promise<void> {
+export async function localLogin(credentials: LocalLoginCredentials, provider?: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(`/auth/login`, {
+	const response = await api.post(provider ? `/auth/local/${provider}/login` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});

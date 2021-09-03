@@ -323,7 +323,10 @@ export default defineComponent({
 
 					if (!providersLoading.value) {
 						const defaultValue = { text: t('default'), value: 'default' };
-						const values = providers.value.map((provider) => ({ text: formatTitle(provider), value: provider }));
+						const values = providers.value.map((provider) => ({
+							text: formatTitle(provider.name),
+							value: provider.name,
+						}));
 
 						field.meta.readonly = !isNew.value;
 						field.meta.options.choices = [defaultValue, ...values];

@@ -245,7 +245,7 @@ export class UsersService extends ItemsService {
 				'status',
 				'role',
 				'provider',
-				'identifier',
+				'alternate_identifier',
 				'auth_data'
 			)
 			.from('directus_users')

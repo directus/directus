@@ -1395,17 +1395,13 @@ export class GraphQLService {
 			auth_login: {
 				type: AuthTokens,
 				args: {
-					email: GraphQLString,
-					identifier: GraphQLString,
+					email: GraphQLNonNull(GraphQLString),
 					password: GraphQLNonNull(GraphQLString),
 					provider: GraphQLString,
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
 				resolve: async (_, { identifier, email, ...args }, { req, res }) => {
-					if (!identifier && !email) {
-						throw new InvalidPayloadException(`"email" or "identifier" is required`);
-					}
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
@@ -1420,6 +1416,7 @@ export class GraphQLService {
 						identifier: identifier ?? email,
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						provider,
 					});
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {

@@ -4,7 +4,7 @@
 
 		<continue-as v-if="authenticated" />
 
-		<login-form v-else :provider="provider" />
+		<local-login v-else :provider="provider" />
 
 		<template v-if="authenticated" #notice>
 			<v-icon name="lock_open" left />
@@ -22,20 +22,21 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
-import LoginForm from './components/login-form/';
+import { LocalLogin } from './components/login-form/';
 import ContinueAs from './components/continue-as/';
 import { useAppStore } from '@/stores';
+
 import { LogoutReason } from '@/auth';
 
 export default defineComponent({
-	components: { LoginForm, ContinueAs },
+	components: { LocalLogin, ContinueAs },
 	props: {
-		ssoErrorCode: {
-			type: String,
-			default: null,
-		},
 		logoutReason: {
 			type: String as PropType<LogoutReason>,
+			default: null,
+		},
+		driver: {
+			type: String,
 			default: null,
 		},
 		provider: {
@@ -47,7 +48,6 @@ export default defineComponent({
 		const { t, te } = useI18n();
 
 		const appStore = useAppStore();
-
 		const authenticated = computed(() => appStore.authenticated);
 
 		return { t, te, authenticated };

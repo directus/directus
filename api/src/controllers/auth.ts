@@ -18,21 +18,18 @@ import logger from '../logger';
 
 const router = Router();
 
-const loginSchema = Joi.object().keys({
-	identifier: Joi.string(),
-	email: Joi.string().email(),
+const localLoginSchema = Joi.object({
+	email: Joi.string().required(),
 	password: Joi.string().required(),
-	provider: Joi.string(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
-});
+	provider: Joi.string(),
+}).unknown();
 
-const loginHandler = async (req: any, res: any, next: any) => {
-	const ip = req.ip;
-	const userAgent = req.get('user-agent');
+const localLoginHandler = async (req: any, res: any, next: any) => {
 	const accountability = {
-		ip,
-		userAgent,
+		ip: req.ip,
+		userAgent: req.get('user-agent'),
 		role: null,
 	};
 
@@ -41,24 +38,25 @@ const loginHandler = async (req: any, res: any, next: any) => {
 		schema: req.schema,
 	});
 
-	const { error } = loginSchema.validate(req.body);
+	const { error } = localLoginSchema.validate(req.body);
 	if (error) throw new InvalidPayloadException(error.message);
 
-	const { identifier, email } = req.body;
-	if (!identifier && !email) throw new InvalidPayloadException(`"email" or "identifier" is required`);
+	const mode = req.body.mode || 'json';
+
+	const ip = req.ip;
+	const userAgent = req.get('user-agent');
 
 	const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 		...req.body,
-		identifier: identifier ?? email,
 		ip,
 		userAgent,
+		identifier: req.body.email,
+		provider: req.params.provider,
 	});
 
 	const payload = {
 		data: { access_token: accessToken, expires },
 	} as Record<string, Record<string, any>>;
-
-	const mode = req.body.mode || 'json';
 
 	if (mode === 'json') {
 		payload.data.refresh_token = refreshToken;
@@ -78,9 +76,9 @@ const loginHandler = async (req: any, res: any, next: any) => {
 	return next();
 };
 
-router.post('/login', asyncHandler(loginHandler), respond);
+router.post('/login', asyncHandler(localLoginHandler), respond);
 
-router.post('/login/:provider', asyncHandler(loginHandler), respond);
+router.post('/local/:provider/login', asyncHandler(localLoginHandler), respond);
 
 router.post(
 	'/refresh',
@@ -224,7 +222,13 @@ router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.AUTH_PROVIDERS);
-		res.locals.payload = { data: env.AUTH_PROVIDERS ? providers : null };
+		const providerData = providers
+			.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`])
+			.map((provider) => ({
+				name: provider,
+				driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
+			}));
+		res.locals.payload = { data: env.AUTH_PROVIDERS ? providerData : null };
 		return next();
 	}),
 	respond

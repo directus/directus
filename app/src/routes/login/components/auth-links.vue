@@ -1,18 +1,13 @@
 <template>
-	<div class="sso-links">
+	<div class="auth-links">
 		<template v-if="authProviders?.length || oauthProviders?.length">
 			<v-divider />
 
-			<router-link
-				v-for="provider in authProviders"
-				:key="provider.value"
-				class="sso-link"
-				:to="'/login?provider=' + provider.value"
-			>
+			<router-link v-for="provider in authProviders" :key="provider.name" class="auth-link" :to="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</router-link>
 
-			<a v-for="provider in oauthProviders" :key="provider.name" class="sso-link" :href="provider.link">
+			<a v-for="provider in oauthProviders" :key="provider.name" class="auth-link" :href="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
 			</a>
 		</template>
@@ -45,9 +40,9 @@ export default defineComponent({
 			try {
 				const [authResponse, oauthResponse] = await Promise.all([api.get('/auth/'), api.get('/auth/oauth/')]);
 
-				authProviders.value = authResponse.data.data?.map((providerName: string) => ({
-					name: formatTitle(providerName),
-					value: providerName,
+				authProviders.value = authResponse.data.data?.map((provider: Record<string, any>) => ({
+					name: formatTitle(provider.name),
+					link: `/login/${provider.driver}/${provider.name}`,
 				}));
 
 				oauthProviders.value = oauthResponse.data.data?.map((providerName: string) => ({
@@ -69,7 +64,7 @@ export default defineComponent({
 	margin: 24px 0;
 }
 
-.sso-link {
+.auth-link {
 	display: block;
 	display: flex;
 	align-items: center;

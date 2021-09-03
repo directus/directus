@@ -71,7 +71,7 @@ export class AuthenticationService {
 				'role',
 				'tfa_secret',
 				'provider',
-				'identifier',
+				'alternate_identifier',
 				'auth_data'
 			)
 			.from('directus_users')
@@ -236,7 +236,7 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.identifier',
+				'u.alternate_identifier',
 				'u.auth_data'
 			)
 			.from('directus_sessions as s')
@@ -283,7 +283,7 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.identifier',
+				'u.alternate_identifier',
 				'u.auth_data'
 			)
 			.from('directus_sessions as s')
@@ -310,7 +310,7 @@ export class AuthenticationService {
 				'status',
 				'role',
 				'provider',
-				'identifier',
+				'alternate_identifier',
 				'auth_data'
 			)
 			.from('directus_users')
