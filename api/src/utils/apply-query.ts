@@ -320,8 +320,6 @@ export function applyFilter(
 				// reported as [undefined].
 				// We need to remove any undefined values, as they are useless
 				compareValue = compareValue.filter((val) => val !== undefined);
-				// And ignore the result filter if there are no values in it
-				if (compareValue.length === 0) return;
 			}
 
 			if (operator === '_eq') {
