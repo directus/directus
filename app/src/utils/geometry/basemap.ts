@@ -17,7 +17,7 @@ const defaultBasemap: BasemapSource = {
 
 const baseStyle: Style = {
 	version: 8,
-	glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
 
 export function getBasemapSources(): BasemapSource[] {
