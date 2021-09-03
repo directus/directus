@@ -678,7 +678,7 @@ preset_name_placeholder: Alapértelmezettként szolgál, ha üres...
 preset_search_placeholder: Keresési lekérdezés...
 editing_preset: Alapértelmezés szerkesztése
 layout_preview: Elrendezés előnézet
-layout_setup: Elrendezés beállítás
+layout_setup: További beállítások
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
@@ -1356,7 +1356,7 @@ layouts:
   cards:
     cards: Kártya
     image_source: Kép forrása
-    image_fit: Kép poziciója
+    image_fit: Kép pozíciója
     crop: Vágás
     contain: Tartalmaz
     title: Cím
