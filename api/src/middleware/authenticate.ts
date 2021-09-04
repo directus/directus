@@ -4,7 +4,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
-import isJWT from '../utils/is-jwt';
+import isDirectusJWT from '../utils/is-directus-jwt';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -23,7 +23,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const database = getDatabase();
 
-	if (isJWT(req.token)) {
+	if (isDirectusJWT(req.token)) {
 		let payload: { id: string };
 
 		try {
