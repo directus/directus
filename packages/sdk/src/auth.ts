@@ -14,21 +14,17 @@ export type AuthResult = {
 	refresh_token?: string | null;
 };
 
-export type AuthLoginOptions = {
-	refresh?: AuthRefreshOptions;
-};
-
-export type AuthRefreshOptions = {
-	auto?: boolean;
-	time?: number;
+export type AuthAutoRefreshOptions = {
+	autoRefresh?: boolean;
+	autoRefreshLeadTime?: number; // make sure is positive number...
 };
 
 export interface IAuth {
 	readonly token: string | null;
 	readonly password: PasswordsHandler;
-	readonly expiring: boolean;
+	readonly expiringSoon: boolean;
 
-	login(credentials: AuthCredentials, options?: AuthLoginOptions): Promise<AuthResult>;
+	login(credentials: AuthCredentials, refreshOptions?: AuthAutoRefreshOptions): Promise<AuthResult>;
 	refresh(force?: boolean): Promise<AuthResult | false>;
 	static(token: AuthToken): Promise<boolean>;
 	logout(): Promise<void>;

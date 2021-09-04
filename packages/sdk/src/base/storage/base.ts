@@ -13,19 +13,19 @@ export abstract class BaseStorage implements IStorage {
 		}
 	}
 
-	get auth_expires(): number | null {
-		const value = this.get('auth_expires');
+	get auth_expires_at(): number | null {
+		const value = this.get('auth_expires_at');
 		if (value === null) {
 			return null;
 		}
 		return parseInt(value);
 	}
 
-	set auth_expires(value: number | null) {
+	set auth_expires_at(value: number | null) {
 		if (value === null) {
-			this.delete('auth_expires');
+			this.delete('auth_expires_at');
 		} else {
-			this.set('auth_expires', value!.toString());
+			this.set('auth_expires_at', value!.toString());
 		}
 	}
 

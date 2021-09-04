@@ -1,6 +1,6 @@
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IStorage } from '../../storage';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
+import { ITransport, TransportError, TransportMethods, TransportOptions, TransportResponse } from '../../transport';
 
 export type AxiosTransportRefreshHandler = () => Promise<void>;
 
@@ -102,8 +102,9 @@ export class AxiosTransport implements ITransport {
 				onUploadProgress: options.onUploadProgress,
 			};
 
+			// cookies?
 			const token = this._storage.auth_token;
-			const expiration = this._storage.auth_expires;
+			const expiration = this._storage.auth_expires_at;
 			if (options.sendAuthorizationHeaders) {
 				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
 					if (token.startsWith(`Bearer `)) {
@@ -111,7 +112,7 @@ export class AxiosTransport implements ITransport {
 					} else {
 						config.headers.Authorization = `Bearer ${token}`;
 					}
-				}
+				} // if it is expired....refresh here? sheesh
 			}
 
 			const response = await this.axios.request<any>(config);

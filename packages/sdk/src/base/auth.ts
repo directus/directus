@@ -1,18 +1,22 @@
-import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, AuthToken, IAuth } from '../auth';
+import { AuthAutoRefreshOptions, AuthCredentials, AuthResult, AuthToken, IAuth } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
 import { Debouncer } from '../utils';
 
 export type AuthOptions = {
+	authTransport?: ITransport;
+	authStorage?: IStorage;
 	mode?: 'json' | 'cookie';
-	refresh?: AuthRefreshOptions;
+	refreshOptions?: AuthAutoRefreshOptions;
 };
 
-const DefaultExpirationTime = 30000;
+export type AuthInternalOptions = Omit<AuthOptions, 'authTransport' | 'authStorage'>;
+
+const DefaultLeadTime = 30000;
 
 export class Auth implements IAuth {
-	public readonly options: AuthOptions;
+	public readonly options: AuthInternalOptions;
 
 	private transport: ITransport;
 	private storage: IStorage;
@@ -20,18 +24,21 @@ export class Auth implements IAuth {
 	private passwords?: PasswordsHandler;
 	private refresher: Debouncer<AuthResult | false>;
 
-	constructor(transport: ITransport, storage: IStorage, options?: AuthOptions) {
+	constructor(transport: ITransport, storage: IStorage, options?: AuthInternalOptions) {
 		this.options = options || {};
 		this.options.mode = options?.mode || (typeof window !== 'undefined' ? 'cookie' : 'json');
-		this.options.refresh = options?.refresh || { auto: false, time: DefaultExpirationTime };
-		this.options.refresh.auto = this.options.refresh?.auto ?? false;
-		this.options.refresh.time = this.options.refresh?.time ?? DefaultExpirationTime;
+		this.options.refreshOptions = options?.refreshOptions || {
+			autoRefresh: true,
+			autoRefreshLeadTime: DefaultLeadTime,
+		};
+		this.options.refreshOptions.autoRefresh = options?.refreshOptions?.autoRefresh ?? true;
+		this.options.refreshOptions.autoRefreshLeadTime = options?.refreshOptions?.autoRefreshLeadTime ?? DefaultLeadTime;
 		this.transport = transport;
 		this.storage = storage;
 		this.timer = false;
 		this.refresher = new Debouncer(this.refreshToken.bind(this));
 		try {
-			this.updateRefresh(this.options?.refresh);
+			this.updateRefresh(this.options?.refreshOptions);
 		} catch {
 			// Ignore error
 		}
@@ -45,18 +52,18 @@ export class Auth implements IAuth {
 		return (this.passwords = this.passwords || new PasswordsHandler(this.transport));
 	}
 
-	get expiring(): boolean {
-		const expiration = this.storage.auth_expires;
-		if (expiration === null) {
+	get expiringSoon(): boolean {
+		const expiresAt = this.storage.auth_expires_at;
+		if (expiresAt === null) {
 			return false;
 		}
 
-		const expiringAfter = expiration - (this.options.refresh?.time ?? 0);
-		return expiringAfter <= Date.now();
+		const refreshDeadline = expiresAt - (this.options.refreshOptions?.autoRefreshLeadTime ?? 0);
+		return refreshDeadline <= Date.now();
 	}
 
 	private async refreshToken(force = false): Promise<AuthResult | false> {
-		if (!force && !this.expiring) {
+		if (!force && !this.expiringSoon) {
 			return false;
 		}
 
@@ -84,37 +91,39 @@ export class Auth implements IAuth {
 		this.storage.auth_token = result.access_token;
 		this.storage.auth_refresh_token = result.refresh_token ?? null;
 		if (result.expires) {
-			this.storage.auth_expires = Date.now() + result.expires;
+			this.storage.auth_expires_at = Date.now() + result.expires;
 		} else {
-			this.storage.auth_expires = null;
+			this.storage.auth_expires_at = null;
 		}
 	}
 
-	private updateRefresh(options?: Partial<AuthRefreshOptions>) {
-		const expiration = this.storage.auth_expires;
-		if (expiration === null) {
+	private updateRefresh(options?: Partial<AuthAutoRefreshOptions>) {
+		const expiresAt = this.storage.auth_expires_at;
+		if (expiresAt === null) {
 			clearTimeout(this.timer as ReturnType<typeof setTimeout>);
 			return; // Don't auto refresh if there's no expiration time (token auth)
 		}
 
 		if (options) {
-			this.options.refresh!.auto = options.auto ?? this.options.refresh!.auto;
-			this.options.refresh!.time = options.time ?? this.options.refresh!.time;
+			this.options.refreshOptions!.autoRefresh = options.autoRefresh ?? this.options.refreshOptions!.autoRefresh;
+			this.options.refreshOptions!.autoRefreshLeadTime =
+				options.autoRefreshLeadTime ?? this.options.refreshOptions!.autoRefreshLeadTime;
 		}
 
 		clearTimeout(this.timer as ReturnType<typeof setTimeout>);
 
-		let remaining = expiration - this.options.refresh!.time! - Date.now();
+		let remaining = expiresAt - this.options.refreshOptions!.autoRefreshLeadTime! - Date.now();
 		if (remaining < 0) {
 			// It's already expired, try a refresh
-			if (expiration < Date.now()) {
+			if (expiresAt < Date.now()) {
+				// should be impossible?
 				return; // Don't set auto refresh
 			} else {
 				remaining = 0;
 			}
 		}
 
-		if (this.options.refresh!.auto) {
+		if (this.options.refreshOptions!.autoRefresh) {
 			this.timer = setTimeout(() => {
 				this.refresh()
 					.then(() => {
@@ -131,8 +140,9 @@ export class Auth implements IAuth {
 		return await this.refresher.debounce(force);
 	}
 
-	async login(credentials: AuthCredentials, options?: Partial<AuthLoginOptions>): Promise<AuthResult> {
-		options = options || {};
+	async login(credentials: AuthCredentials, refreshOptions?: Partial<AuthAutoRefreshOptions>): Promise<AuthResult> {
+		// why does login take its own refresh options object?
+		refreshOptions = refreshOptions || {};
 		const response = await this.transport.post<AuthResult>(
 			'/auth/login',
 			{
@@ -146,7 +156,7 @@ export class Auth implements IAuth {
 		);
 
 		this.updateStorage(response.data!);
-		this.updateRefresh(options.refresh);
+		this.updateRefresh(refreshOptions);
 
 		return {
 			access_token: response.data!.access_token,
@@ -162,7 +172,7 @@ export class Auth implements IAuth {
 			},
 		});
 		this.storage.auth_token = token;
-		this.storage.auth_expires = null;
+		this.storage.auth_expires_at = null;
 		this.storage.auth_refresh_token = null;
 		return true;
 	}
@@ -184,7 +194,7 @@ export class Auth implements IAuth {
 		);
 
 		this.storage.auth_token = null;
-		this.storage.auth_expires = null;
+		this.storage.auth_expires_at = null;
 		this.storage.auth_refresh_token = null;
 
 		clearTimeout(this.timer as ReturnType<typeof setTimeout>);

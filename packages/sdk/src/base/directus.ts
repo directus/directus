@@ -16,20 +16,20 @@ import {
 	UsersHandler,
 	UtilsHandler,
 } from '../handlers';
-import { IItems } from '../items';
-import { ITransport } from '../transport';
-import { ItemsHandler } from './items';
-import { AxiosTransport } from './transport';
-import { Auth } from './auth';
-import { IStorage } from '../storage';
-import { LocalStorage, MemoryStorage } from './storage';
-import { TypeMap, TypeOf } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
-import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
+import { IItems } from '../items';
+import { ISingleton } from '../singleton';
+import { IStorage } from '../storage';
+import { ITransport } from '../transport';
+import { TypeMap, TypeOf } from '../types';
+import { Auth, AuthOptions } from './auth';
+import { ItemsHandler } from './items';
+import { LocalStorage, MemoryStorage } from './storage';
+import { AxiosTransport } from './transport';
 
 export type DirectusOptions = {
-	auth?: IAuth;
+	authOptions?: AuthOptions;
 	transport?: ITransport;
 	storage?: IStorage;
 };
@@ -63,13 +63,17 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
+		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage()); // cookies?
 		this._transport =
 			options?.transport ||
 			new AxiosTransport(url, this._storage, async () => {
 				await this._auth.refresh();
 			});
-		this._auth = options?.auth || new Auth(this._transport, this._storage);
+		this._auth = new Auth(
+			options?.authOptions?.authTransport || this._transport,
+			options?.authOptions?.authStorage || this._storage,
+			options?.authOptions
+		);
 		this._items = {};
 		this._singletons = {};
 	}
