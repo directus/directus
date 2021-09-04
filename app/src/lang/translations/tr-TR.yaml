@@ -29,6 +29,7 @@ field_name_translations: Alan İsim Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
 add_field: Alan Ekle
 role_name: Rol Adı
+edit_collection: Koleksiyonu düzenle
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
 edited: Değer Düzenlendi
@@ -61,6 +62,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
+public_label: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
