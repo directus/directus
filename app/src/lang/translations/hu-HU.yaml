@@ -36,7 +36,7 @@ enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés be
 add_field: Mező Hozzáadása
 role_name: Szerepkör neve
 branch: Ág
-leaf: Falevél / Leaf
+leaf: Leaf
 indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
