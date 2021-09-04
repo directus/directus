@@ -239,6 +239,16 @@ export default defineComponent({
 					loadValueFromProps();
 				}
 			);
+
+			watch(
+				() => props.disabled,
+				() => {
+					map.removeControl(controls.draw);
+					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
+					map.addControl(controls.draw as IControl, 'top-left');
+					loadValueFromProps();
+				}
+			);
 		}
 
 		function resetValue(hard: boolean) {

@@ -11,8 +11,8 @@ export default {
 		sidebar: () => null,
 		actions: () => null,
 	},
-	setup(props) {
-		const name = ref('Custom layout state');
+	setup() {
+		const name = ref('Custom Layout');
 
 		return { name };
 	},

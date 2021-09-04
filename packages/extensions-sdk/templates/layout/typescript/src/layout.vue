@@ -1,17 +1,24 @@
 <template>
-	<div>{{ name }} - Collection: {{ props.collection }}</div>
+	<div>
+		<p>Name: {{ name }}</p>
+		<p>Collection: {{ collection }}</p>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
-import { useLayoutState } from '@directus/extensions-sdk';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-	setup() {
-		const layoutState = useLayoutState();
-		const { props, name } = toRefs(layoutState.value);
-
-		return { props, name };
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
 	},
 });
 </script>

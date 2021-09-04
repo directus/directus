@@ -797,7 +797,7 @@ fields:
     admin_options: Opções do Admin
     status: Status
     status_draft: Rascunho
-    status_invited: Inativo
+    status_invited: Convidado
     status_active: Ativo
     status_suspended: Suspenso
     status_archived: Arquivado

@@ -142,7 +142,7 @@ module.exports = function registerHook() {
 ## 4. Develop your Custom Hook
 
 > Hooks can impact performance when not carefully implemented. This is especially true for `before` hooks (as these are
-> blocking) and hooks on `read` actions, as a single request can result in a large ammount of database reads.
+> blocking) and hooks on `read` actions, as a single request can result in a large amount of database reads.
 
 ### Register Function
 
@@ -156,6 +156,7 @@ The `registerHook` function receives a context parameter with the following prop
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
 ### Event Handler Function
 

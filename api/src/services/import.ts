@@ -104,8 +104,16 @@ export class ImportService {
 					.pipe(csv())
 					.on('data', (value: Record<string, string>) => {
 						const obj = transform(value, (result: Record<string, string>, value, key) => {
-							if (value.length === 0) delete result[key];
-							else set(result, key, value);
+							if (value.length === 0) {
+								delete result[key];
+							} else {
+								try {
+									const parsedJson = JSON.parse(value);
+									set(result, key, parsedJson);
+								} catch {
+									set(result, key, value);
+								}
+							}
 						});
 
 						saveQueue.push(obj);
