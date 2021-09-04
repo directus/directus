@@ -68,7 +68,7 @@
 		"@vue/cli-plugin-vuex": "4.5.13",
 		"@vue/cli-service": "4.5.13",
 		"@vue/compiler-sfc": "3.2.8",
-		"axios": "0.21.1",
+		"axios": "0.21.3",
 		"base-64": "1.0.0",
 		"codemirror": "5.62.3",
 		"copyfiles": "2.4.1",
