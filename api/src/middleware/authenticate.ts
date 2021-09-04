@@ -27,7 +27,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		let payload: { id: string };
 
 		try {
-			payload = jwt.verify(req.token, env.SECRET as string) as { id: string };
+			payload = jwt.verify(req.token, env.SECRET as string, { issuer: 'directus' }) as { id: string };
 		} catch (err: any) {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');
