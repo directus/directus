@@ -116,6 +116,12 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
+		async 'storage-public-url'({ action, value }) {
+			if (action !== 'read' || !value) return; // only transform on read
+			// else return the public url template for storage, and process the template string.
+			// eslint-disable-next-line
+            console.log("storage_public_url, value? ", value);
+		},
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
