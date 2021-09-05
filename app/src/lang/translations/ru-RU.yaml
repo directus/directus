@@ -842,10 +842,12 @@ fields:
     actions: Действия
 field_options:
   directus_settings:
+    project_name_placeholder: Мой проект
     security_divider_title: Безопасность
     auth_password_policy:
       none_text: Нет — не рекомендуется
       weak_text: Слабый – минимум 8 символов
+      strong_text: Крепкий – строчные, прописные, цифры, специальные
     files_divider_title: Файлы и миниатюры
     overrides_divider_title: Переопределить заводские настройки
   directus_collections:
