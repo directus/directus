@@ -57,7 +57,7 @@
 					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
 						<span class="name">
 							{{ field.field }}
-							<v-icon v-if="field.schema && field.schema.is_nullable === false" name="star" class="required" sup />
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
 						</span>
 						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
@@ -123,7 +123,7 @@
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete') }}</v-button>
+						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -288,7 +288,7 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					duplicating.value = false;

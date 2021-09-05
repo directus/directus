@@ -12,15 +12,21 @@ export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 		cache = getKeyvInstance(ms(env.CACHE_TTL as string));
-		cache.on('error', (err) => logger.error(err));
+		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (env.CACHE_SCHEMA !== false && schemaCache === null) {
 		schemaCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
-		schemaCache.on('error', (err) => logger.error(err));
+		schemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	return { cache, schemaCache };
+}
+
+export async function flushCaches(): Promise<void> {
+	const { schemaCache, cache } = getCache();
+	await schemaCache?.clear();
+	await cache?.clear();
 }
 
 function getKeyvInstance(ttl: number | undefined): Keyv {
@@ -43,7 +49,10 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory', ttl: numbe
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
+
+		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'), {
+			commandTimeout: 500,
+		});
 	}
 
 	if (store === 'memcache') {

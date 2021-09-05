@@ -1,5 +1,5 @@
-import md from 'mockdate';
 import nock, { back, BackMode } from 'nock';
+import { setImmediate, setTimeout, clearImmediate } from 'timers';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
@@ -27,6 +27,11 @@ export function test(name: string, test: Test, settings?: TestSettings): void {
 			await test(settings?.url || URL, scope);
 		}
 
+		// `clearImmediate` doesn't exist in the jsdom environment and nock throws ReferenceError
+		if (typeof global.clearImmediate !== 'function') {
+			global.clearImmediate = clearImmediate;
+		}
+
 		nock.abortPendingRequests();
 		nock.cleanAll();
 	});
@@ -42,40 +47,41 @@ export async function timers(
 	initial: number = Date.now()
 ): Promise<void> {
 	const originals = {
-		setTimeout: global.setTimeout,
-		setImmediate: global.setImmediate,
+		setTimeout: setTimeout,
+		setImmediate: setImmediate,
 	};
 
-	md.set(new Date(initial));
+	jest.useFakeTimers();
+	jest.setSystemTime(new Date(initial));
 
 	let travel = 0;
 
 	try {
-		jest.useFakeTimers();
 		const tick = async (ms: number) => {
 			travel += ms;
-			md.set(initial + travel);
 			await Promise.resolve().then(() => jest.advanceTimersByTime(ms));
 		};
 		const skip = async (func: () => Promise<void>, date = false) => {
-			if (date) {
-				md.reset();
-			}
 			jest.useRealTimers();
 			try {
 				await func();
 			} finally {
 				if (date) {
-					md.set(initial + travel);
+					jest.setSystemTime(initial + travel);
 				}
 				jest.useFakeTimers();
 			}
 		};
-		const flush = () => new Promise<void>((resolve) => originals.setImmediate(resolve));
+		const flush = () =>
+			new Promise<void>((resolve) => {
+				jest.runAllTicks();
+
+				originals.setImmediate(resolve);
+			});
 		const sleep = (ms: number) =>
 			new Promise<void>((resolve) => {
 				travel += ms;
-				md.set(initial + travel);
+				jest.advanceTimersByTime(travel);
 				originals.setTimeout(resolve, ms);
 			});
 
@@ -86,7 +92,6 @@ export async function timers(
 			sleep,
 		});
 	} finally {
-		md.reset();
 		jest.clearAllTimers();
 		jest.useRealTimers();
 	}

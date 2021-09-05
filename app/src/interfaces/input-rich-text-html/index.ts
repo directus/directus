@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils/browser';
+import { defineInterface } from '@directus/shared/utils';
 import { defineAsyncComponent } from 'vue';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));

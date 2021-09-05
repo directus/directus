@@ -10,7 +10,7 @@
 				</v-select>
 			</div>
 
-			<component :is="`layout-options-${layout}`" />
+			<slot />
 		</div>
 	</sidebar-detail>
 </template>
@@ -19,6 +19,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	props: {
@@ -43,14 +44,7 @@ export default defineComponent({
 			return layout;
 		});
 
-		const layout = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(newType: string) {
-				emit('update:modelValue', newType);
-			},
-		});
+		const layout = useSync(props, 'modelValue', emit);
 
 		return { t, currentLayout, layouts, layout };
 	},

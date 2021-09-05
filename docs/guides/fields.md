@@ -29,6 +29,7 @@ the database, and it will automatically appear within Directus. The first time y
    - [Field Setup](#field-setup)
    - [Interface Options](#interface-options)
    - [Display Options](#display-options)
+   - [Conditions](#conditions)
 
 ### Schema Setup
 
@@ -81,7 +82,7 @@ field on the parent Collection. If the chosen Related Collection already exists,
 selected. If the Related Collection does not already exist, you will be prompted to enter the name of its new primary
 key field.
 
-![M2O](../assets/guides-fields/m2o.png)
+![M2O](../assets/guides/fields/m2o.png)
 
 #### One-to-Many
 
@@ -89,7 +90,7 @@ The [One-to-Many](/concepts/relationships/#one-to-many-o2m) creates an [Alias](/
 parent Collection. To configure, enter or select a Related Collection and a field therein for storing the foreign key.
 The related field must have a data type that matches the type of "This" Collection's primary key field.
 
-![O2M](../assets/guides-fields/o2m.png)
+![O2M](../assets/guides/fields/o2m.png)
 
 The optional **Sort Field** can be used enable the reordering of items within the O2M field. Configured by entering the
 name/key of a Field (numeric type only) from the Related Collection.
@@ -102,7 +103,7 @@ parent Collection. To configure, enter or select a Related Collection and a fiel
 To configure the Junction Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent defaults,
 or disable it to select existing options or enter custom naming.
 
-![M2M](../assets/guides-fields/m2m.png)
+![M2M](../assets/guides/fields/m2m.png)
 
 #### Many-to-Any
 
@@ -113,7 +114,7 @@ automatically be referenced.
 To configure the Junction Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent defaults,
 or disable it to select existing options or enter custom naming.
 
-![M2A](../assets/guides-fields/m2a.png)
+![M2A](../assets/guides/fields/m2a.png)
 
 #### Translations
 
@@ -121,7 +122,7 @@ or disable it to select existing options or enter custom naming.
 parent Collection. The easiest way to create this is to use the modal wizard, which only asks for the Translation field
 name:
 
-![Translations](../assets/guides-fields/translations.png)
+![Translations](../assets/guides/fields/translations.png)
 
 If you choose to switch to the **manual editor**, enter or select a Related Collection and a field therein for storing
 the foreign key.
@@ -129,7 +130,7 @@ the foreign key.
 To configure the Translations Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent
 defaults, or disable it to select existing options or enter custom naming.
 
-![Translations](../assets/guides-fields/translations-2.png)
+![Translations](../assets/guides/fields/translations-2.png)
 
 ### Field Setup
 
@@ -153,6 +154,29 @@ This pane includes any customization options that may be defined by the Interfac
 ### Display Options
 
 This pane includes any customization options that may be defined by the Display.
+
+### Conditions
+
+Conditions allow you to alter the current field's setup based on the values of other fields in the form. This allows you
+to show/hide the field, make it readonly, or change the interface options.
+
+Each field can have one or more _rules_. Each rule has the following configuration options:
+
+- **Name**: The name of the rule. This is only used internally for convenience purposes
+- **Rule**: The rule that controls whether or not these conditions are applied. Rule follows the
+  [Filter Rules](/reference/filter-rules) spec
+- **Readonly**: Whether or not the field is readonly when the condition is matched
+- **Hidden**: Whether or not the field is hidden when the condition is matched
+- **Interface Options**: Any additional configuration for the selected interface
+
+These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden
+by default, and then only toggle the hidden state of the field in the condition.
+
+::: tip Order matters
+
+The conditions are matched in order. The **last** condition that matches is the one that's used to apply the changes.
+
+:::
 
 ## Updating a Field
 

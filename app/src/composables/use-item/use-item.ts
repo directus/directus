@@ -7,6 +7,10 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { AxiosResponse } from 'axios';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { validatePayload } from '@directus/shared/utils';
+import { Filter, Item, Field } from '@directus/shared/types';
+import { isNil, flatten, merge } from 'lodash';
+import { FailedValidationException } from '@directus/shared/exceptions';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -29,8 +33,7 @@ type UsableItem = {
 };
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
-	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-
+	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -96,7 +99,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -106,6 +109,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	async function save() {
 		saving.value = true;
 		validationErrors.value = [];
+
+		const errors = validate(edits.value);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
 
 		try {
 			let response;
@@ -129,7 +140,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -172,6 +183,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			delete newItem[primaryKeyField.value.field];
 		}
 
+		const errors = validate(newItem);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
 			const response = await api.post(endpoint.value, newItem);
 
@@ -184,7 +203,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
@@ -234,7 +253,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -254,7 +273,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -291,5 +310,64 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
+	}
+
+	function validate(item: Item) {
+		const validationRules = {
+			_and: [] as Filter['_and'],
+		} as Filter;
+
+		const applyConditions = (field: Field) => {
+			if (field.meta && Array.isArray(field.meta?.conditions)) {
+				const conditions = [...field.meta.conditions].reverse();
+
+				const matchingCondition = conditions.find((condition) => {
+					const errors = validatePayload(condition.rule, item, { requireAll: true });
+					return errors.length === 0;
+				});
+
+				if (matchingCondition) {
+					return {
+						...field,
+						meta: merge({}, field.meta || {}, {
+							readonly: matchingCondition.readonly,
+							options: matchingCondition.options,
+							hidden: matchingCondition.hidden,
+							required: matchingCondition.required,
+						}),
+					};
+				}
+
+				return field;
+			} else {
+				return field;
+			}
+		};
+
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(field));
+
+		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+
+		for (const field of requiredFields) {
+			if (isNew.value === true && isNil(field.schema?.default_value)) {
+				validationRules._and!.push({
+					[field.field]: {
+						_submitted: true,
+					},
+				});
+			}
+
+			validationRules._and!.push({
+				[field.field]: {
+					_nnull: true,
+				},
+			});
+		}
+
+		return flatten(
+			validatePayload(validationRules, item).map((error) =>
+				error.details.map((details) => new FailedValidationException(details).extensions)
+			)
+		);
 	}
 }

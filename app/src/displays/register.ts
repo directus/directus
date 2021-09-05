@@ -15,14 +15,17 @@ export async function registerDisplays(app: App): Promise<void> {
 			const customDisplays: DisplayConfig[] = Object.values(customDisplayModules).map((module) => module.default);
 			displays.push(...customDisplays);
 		} else {
-			const customDisplays: { default: DisplayConfig[] } = await import(
-				/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`
-			);
+			const customDisplays: { default: DisplayConfig[] } = import.meta.env.DEV
+				? await import('@directus-extensions-display')
+				: await import(/* @vite-ignore */ `${getRootPath()}extensions/displays/index.js`);
+
 			displays.push(...customDisplays.default);
 		}
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom displays`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	displaysRaw.value = displays;

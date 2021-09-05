@@ -11,7 +11,8 @@ import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import getEmailFromProfile from '../utils/get-email-from-profile';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
+import logger from '../logger';
 
 const router = Router();
 
@@ -176,10 +177,11 @@ router.post(
 		try {
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
-		} catch (err) {
+		} catch (err: any) {
 			if (err instanceof InvalidPayloadException) {
 				throw err;
 			} else {
+				logger.warn(err, `[email] ${err}`);
 				return next();
 			}
 		}
@@ -190,11 +192,11 @@ router.post(
 router.post(
 	'/password/reset',
 	asyncHandler(async (req, res, next) => {
-		if (req.body.token !== 'string') {
+		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
 
-		if (req.body.password !== 'string') {
+		if (typeof req.body.password !== 'string') {
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
@@ -318,8 +320,11 @@ router.get(
 			authResponse = await authenticationService.authenticate({
 				email,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			emitStatus('fail');
+
+			logger.warn(error);
+
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
 

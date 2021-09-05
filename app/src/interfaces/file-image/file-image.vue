@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed } from 'vue';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import FileLightbox from '@/views/private/components/file-lightbox';
@@ -71,7 +71,7 @@ export default defineComponent({
 	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
-			type: [String, Object],
+			type: [String, Object] as PropType<string | Record<string, any>>,
 			default: null,
 		},
 		disabled: {
@@ -100,10 +100,8 @@ export default defineComponent({
 			if (image.value.type.includes('svg')) {
 				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
-
 			if (image.value.type.includes('image')) {
 				const url = getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
-
 				return addTokenToURL(url);
 			}
 
@@ -164,7 +162,7 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+				const id = typeof props.value === 'string' ? props.value : props.value?.id;
 
 				const response = await api.get(`/files/${id}`, {
 					params: {
@@ -180,7 +178,7 @@ export default defineComponent({
 				} else {
 					image.value = response.data.data;
 				}
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

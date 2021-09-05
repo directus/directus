@@ -15,7 +15,7 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -34,7 +34,7 @@
 							{{ t('cancel') }}
 						</v-button>
 						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -453,7 +453,7 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

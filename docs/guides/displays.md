@@ -95,12 +95,25 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom display's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using the directus-extension CLI from our `@directus/extension-sdk` package. The CLI
+recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
 internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
 SDK, run this command:
 
 ```bash
-npm i -D @directus/extension-sdk
+npm i -D @directus/extensions-sdk
+```
+
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
+
+```json
+"directus:extension": {
+	"type": "display",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+}
 ```
 
 ## 3. Develop Your Custom Display

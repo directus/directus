@@ -94,7 +94,7 @@ export default defineComponent({
 
 				emails.value = '';
 				emit('update:modelValue', false);
-			} catch (err) {
+			} catch (err: any) {
 				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
 					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
 				});

@@ -8,7 +8,7 @@ import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array'];
 
@@ -18,6 +18,8 @@ const defaults: Record<string, any> = {
 	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '100kb',
+
+	DB_EXCLUDE_TABLES: [],
 
 	STORAGE_LOCATIONS: 'local',
 	STORAGE_LOCAL_DRIVER: 'local',
@@ -69,6 +71,8 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+
+	SERVE_APP: true,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -172,6 +176,8 @@ function getEnvironmentValueByType(envVariableString: string) {
 			return new RegExp(envVariableValue);
 		case 'string':
 			return envVariableValue;
+		case 'json':
+			return tryJSON(envVariableValue);
 	}
 }
 
@@ -216,6 +222,9 @@ function processValues(env: Record<string, any>) {
 				case 'array':
 					env[key] = toArray(value);
 					break;
+				case 'json':
+					env[key] = tryJSON(value);
+					break;
 			}
 			continue;
 		}
@@ -249,6 +258,14 @@ function processValues(env: Record<string, any>) {
 			continue;
 		}
 
+		if (String(value).includes(',')) {
+			env[key] = toArray(value);
+		}
+
+		// Try converting the value to a JS object. This allows JSON objects to be passed for nested
+		// config flags, or custom param names (that aren't camelCased)
+		env[key] = tryJSON(value);
+
 		// If '_FILE' variable hasn't been processed yet, store it as it is (string)
 		if (newKey) {
 			env[key] = value;
@@ -256,4 +273,12 @@ function processValues(env: Record<string, any>) {
 	}
 
 	return env;
+}
+
+function tryJSON(value: any) {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
 }

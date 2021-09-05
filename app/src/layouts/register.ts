@@ -16,14 +16,17 @@ export async function registerLayouts(app: App): Promise<void> {
 			const customLayouts: LayoutConfig[] = Object.values(customLayoutModules).map((module) => module.default);
 			layouts.push(...customLayouts);
 		} else {
-			const customLayouts: { default: LayoutConfig[] } = await import(
-				/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`
-			);
+			const customLayouts: { default: LayoutConfig[] } = import.meta.env.DEV
+				? await import('@directus-extensions-layout')
+				: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
+
 			layouts.push(...customLayouts.default);
 		}
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom layouts`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	layoutsRaw.value = layouts;

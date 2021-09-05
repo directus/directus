@@ -13,13 +13,14 @@
 					ref="input"
 					v-focus="autofocus"
 					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue"
+					:value="modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
 				/>
 			</slot>
@@ -84,6 +85,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
 		modelValue: {
 			type: [String, Number],
 			default: null,
@@ -147,7 +152,7 @@ export default defineComponent({
 			keydown: processValue,
 			blur: (e: Event) => {
 				trimIfEnabled();
-				attrs?.onBlur?.(e);
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 			},
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
@@ -210,7 +215,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}

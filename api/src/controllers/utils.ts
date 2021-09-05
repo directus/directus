@@ -2,12 +2,13 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { nanoid } from 'nanoid';
-import { InvalidPayloadException, InvalidQueryException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, InvalidQueryException } from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import { RevisionsService, UtilsService, ImportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
+import { flushCaches } from '../cache';
 
 const router = Router();
 
@@ -102,7 +103,7 @@ router.post(
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
 			try {
 				await service.import(req.params.collection, mimetype, fileStream);
-			} catch (err) {
+			} catch (err: any) {
 				return next(err);
 			}
 
@@ -112,6 +113,19 @@ router.post(
 		busboy.on('error', (err: Error) => next(err));
 
 		req.pipe(busboy);
+	})
+);
+
+router.post(
+	'/cache/clear',
+	asyncHandler(async (req, res) => {
+		if (req.accountability?.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		await flushCaches();
+
+		res.status(200).end();
 	})
 );
 

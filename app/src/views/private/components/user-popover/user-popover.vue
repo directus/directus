@@ -96,7 +96,7 @@ export default defineComponent({
 					},
 				});
 				data.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;

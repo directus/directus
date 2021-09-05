@@ -13,6 +13,7 @@
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled"
+			:show-selection-only="showSelectionOnly"
 		/>
 	</v-list>
 </template>
@@ -54,6 +55,10 @@ export default defineComponent({
 			default: 'children',
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		showSelectionOnly: {
 			type: Boolean,
 			default: false,
 		},

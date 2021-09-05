@@ -50,7 +50,7 @@
 				<v-card-actions>
 					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
 					<v-button :loading="deleteSaving" class="action-delete" @click="deleteSave">
-						{{ t('delete') }}
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -120,7 +120,7 @@ export default defineComponent({
 					});
 
 					renameActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
@@ -151,7 +151,7 @@ export default defineComponent({
 					if (navigateTo) {
 						router.push(navigateTo);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleteSaving.value = false;

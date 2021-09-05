@@ -22,10 +22,10 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs, watch, computed, provide } from 'vue';
-import * as stores from '@/stores';
-import api, { addTokenToURL } from '@/api';
-import axios from 'axios';
+import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from 'vue';
+import { useAppStore, useUserStore, useServerStore } from '@/stores';
+import { startIdleTracking, stopIdleTracking } from './idle';
+import useSystem from '@/composables/use-system';
 
 import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
@@ -33,8 +33,6 @@ import setFavicon from '@/utils/set-favicon';
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
-
-		const { useAppStore, useUserStore, useServerStore } = stores;
 
 		const appStore = useAppStore();
 		const userStore = useUserStore();
@@ -47,6 +45,9 @@ export default defineComponent({
 				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
+
+		onMounted(() => startIdleTracking());
+		onUnmounted(() => stopIdleTracking());
 
 		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
 			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
@@ -102,15 +103,7 @@ export default defineComponent({
 
 		const error = computed(() => appStore.error);
 
-		/**
-		 * This allows custom extensions to use the apps internals
-		 */
-		provide('system', {
-			...stores,
-			api,
-			axios,
-			addTokenToURL,
-		});
+		useSystem();
 
 		return { t, hydrating, brandStyle, error, customCSS };
 	},

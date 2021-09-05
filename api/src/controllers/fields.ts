@@ -6,7 +6,8 @@ import validateCollection from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { FieldsService } from '../services/fields';
-import { Field, types } from '../types';
+import { Field, Type } from '@directus/shared/types';
+import { TYPES } from '@directus/shared/constants';
 import asyncHandler from '../utils/async-handler';
 
 const router = Router();
@@ -65,7 +66,7 @@ const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
 	type: Joi.string()
-		.valid(...types, ...ALIAS_TYPES)
+		.valid(...TYPES, ...ALIAS_TYPES)
 		.allow(null)
 		.optional(),
 	schema: Joi.object({
@@ -93,14 +94,14 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> & { field: string; type: typeof types[number] | null } = req.body;
+		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
 		await service.createField(req.params.collection, field);
 
 		try {
 			const createdField = await service.readOne(req.params.collection, field.field);
 			res.locals.payload = { data: createdField || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -137,7 +138,7 @@ router.patch(
 				results.push(updatedField);
 				res.locals.payload = { data: results || null };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -152,7 +153,7 @@ router.patch(
 
 const updateSchema = Joi.object({
 	type: Joi.string()
-		.valid(...types, ...ALIAS_TYPES)
+		.valid(...TYPES, ...ALIAS_TYPES)
 		.allow(null),
 	schema: Joi.object({
 		default_value: Joi.any(),
@@ -183,7 +184,7 @@ router.patch(
 			throw new InvalidPayloadException(`You need to provide "type" when providing "schema".`);
 		}
 
-		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+		const fieldData: Partial<Field> & { field: string; type: Type } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
 
@@ -192,7 +193,7 @@ router.patch(
 		try {
 			const updatedField = await service.readOne(req.params.collection, req.params.field);
 			res.locals.payload = { data: updatedField || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

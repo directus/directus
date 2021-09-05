@@ -38,6 +38,9 @@ jobs:
         with:
           node-version: '16.x'
 
+      # See https://github.com/npm/cli/issues/3637
+      - run: npm i -g npm@7.20.2
+
       - uses: c-hive/gha-npm-cache@v1
       - run: npm ci
       - run: npm run build
@@ -64,6 +67,9 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
+
+      # See https://github.com/npm/cli/issues/3637
+      - run: npm i -g npm@7.20.2
 
       - run: npm ci
 

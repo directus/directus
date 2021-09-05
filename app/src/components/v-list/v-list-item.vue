@@ -1,9 +1,8 @@
 <template>
 	<component
 		:is="component"
-		v-bind="disabled === false && $attrs"
 		class="v-list-item"
-		:to="to"
+		:to="to !== '' ? to : undefined"
 		:class="{
 			active: isActiveRoute,
 			dense,
@@ -15,7 +14,8 @@
 		}"
 		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : null"
+		:target="component === 'a' ? '_blank' : undefined"
+		@click="onClick"
 	>
 		<slot />
 	</component>
@@ -43,7 +43,7 @@ export default defineComponent({
 		},
 		href: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		disabled: {
 			type: Boolean,
@@ -71,7 +71,7 @@ export default defineComponent({
 		},
 		download: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		value: {
 			type: [String, Number],
@@ -82,12 +82,13 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	emits: ['click'],
+	setup(props, { emit }) {
 		const route = useRoute();
 
 		const { route: linkRoute, isActive, isExactActive } = useLink(props);
 
-		const component = computed<string>(() => {
+		const component = computed(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
 			return 'li';
@@ -115,7 +116,12 @@ export default defineComponent({
 			return false;
 		});
 
-		return { component, isLink, isActiveRoute };
+		return { component, isLink, isActiveRoute, onClick };
+
+		function onClick(event: PointerEvent) {
+			if (props.disabled === true) return;
+			emit('click', event);
+		}
 	},
 });
 </script>

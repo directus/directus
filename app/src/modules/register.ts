@@ -20,14 +20,17 @@ export async function loadModules(): Promise<void> {
 			const customModules: ModuleConfig[] = Object.values(customModuleModules).map((module) => module.default);
 			modules.push(...customModules);
 		} else {
-			const customModules: { default: ModuleConfig[] } = await import(
-				/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`
-			);
+			const customModules: { default: ModuleConfig[] } = import.meta.env.DEV
+				? await import('@directus-extensions-module')
+				: await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/index.js`);
+
 			modules.push(...customModules.default);
 		}
-	} catch {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom modules`);
+		// eslint-disable-next-line no-console
+		console.warn(err);
 	}
 
 	queuedModules = modules;

@@ -52,8 +52,8 @@ export default defineComponent({
 				modules.value
 					.map((module: ModuleConfig) => ({
 						...module,
-						href: module.link || null,
-						to: module.link === undefined ? `/${module.id}` : null,
+						href: module.link,
+						to: module.link === undefined ? `/${module.id}` : '',
 					}))
 					.filter((module: ModuleConfig) => {
 						if (module.hidden !== undefined && unref(module.hidden) === true) {

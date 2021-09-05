@@ -50,7 +50,7 @@ import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@/composables/use-collection';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
@@ -143,7 +143,7 @@ export default defineComponent({
 
 		function addFilterForField(fieldKey: string) {
 			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
-			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
+			const defaultOperator = getFilterOperatorsForType(field.type)[0];
 
 			emit('update:modelValue', [
 				...props.modelValue,

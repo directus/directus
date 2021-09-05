@@ -74,8 +74,22 @@ Run the following command from the root directory.
 npm run dev
 ```
 
-If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory
-and run the following command:
+To work on a specific part of the platform, like just the app+api, you can provide the `scope` option as follows:
+
+```bash
+npm run dev -- --scope directus --scope @directus/app
+```
+
+::: warning Server startup
+
+When using `npm run dev` without a provided `scope`, `ts-node-dev` can get a little confused with the many restarts on
+first launch. Keep an eye out for the "directus: Server started at port xxxx" message. If that doesn't show up, try
+restarting `npm run dev`.
+
+:::
+
+If are looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run
+the following command:
 
 ```bash
 npm run dev:site

@@ -54,8 +54,12 @@ fields:
     role: როლი
   directus_roles:
     description: აღწერა
+  directus_webhooks:
+    status: სტატუსი
+field_options:
+  directus_webhooks:
+    actions_create: შექმნა
 comment: კომენტარი
-continue: გაგრძელება
 description: აღწერა
 email: ელ-ფოსტა
 password: პაროლი
