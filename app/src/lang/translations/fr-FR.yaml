@@ -1347,3 +1347,4 @@ layouts:
   map:
     map: Carte
     field: Géométrie
+    search_this_area: Chercher dans cette zone
