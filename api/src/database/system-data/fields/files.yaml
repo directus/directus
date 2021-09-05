@@ -136,3 +136,8 @@ fields:
   - field: duration
     width: half
     readonly: true
+
+  - field: public_url
+    width: full
+    readonly: true
+    special: storage-public-url
