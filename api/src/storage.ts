@@ -30,7 +30,6 @@ function getStorageConfig(): StorageManagerConfig {
 			config: getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`),
 		};
 
-		delete diskConfig.config.publicUrl;
 		delete diskConfig.config.driver;
 
 		config.disks![location] = diskConfig;
