@@ -76,7 +76,7 @@ module.exports = function registerHook({ exceptions }) {
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
 | `cron()`                        | [See below for configuration](#interval-cron)               | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
-| `init`                          |                                                             | Optional         |
+| `app`                           | `init`                                                      | Optional         |
 | `cli`                           | `init`                                                      | Optional         |
 | `routes`                        | `init`                                                      | Optional         |
 | `routes.custom`                 | `init`                                                      | Optional         |

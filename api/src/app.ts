@@ -82,7 +82,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', true);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	await emitAsyncSafe('init.before', { app });
+	await emitAsyncSafe('app.init.before', { app });
 
 	await emitAsyncSafe('middlewares.init.before', { app });
 
@@ -203,7 +203,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	track('serverStarted');
 
-	emitAsyncSafe('init');
+	emitAsyncSafe('app.init');
 
 	return app;
 }
