@@ -87,7 +87,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 		}
 	}
 
-	emitAsyncSafe('error', payload.errors).then(() => {
+	emitAsyncSafe('request.error', payload.errors).then(() => {
 		return res.json(payload);
 	});
 };
