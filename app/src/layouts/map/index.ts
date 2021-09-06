@@ -189,9 +189,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			sort,
 			limit,
 			page,
+			filters,
 			searchQuery,
 			fields: queryFields,
-			filters: filters,
 		});
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
