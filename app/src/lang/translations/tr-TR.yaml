@@ -229,7 +229,7 @@ undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
 show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
-page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
+page_not_found_body: Aradığınız sayfa mevcut değil.
 confirm_revert: Geri Alma İşlemini Onayla
 confirm_revert_body: Bu, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
@@ -612,6 +612,9 @@ fields:
     last_page: Son Sayfa
     last_access: Son Erişim
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
     project_name: Proje Adı
     custom_css: Özel CSS
   directus_fields:
