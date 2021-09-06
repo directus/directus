@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: directus-env-configmap
+data:
+  DIRECTUS_ENV: {{ .Values.directusEnv | quote }}
+  DIRECTUS_INSTALL_TITLE: {{ .Values.directusTitle | quote }}
+  DIRECTUS_INSTALL_FORCE: {{ .Values.directusForceInstall | quote }}
+  DIRECTUS_DATABASE_CLIENT: {{ .Values.directusDatabaseClient | quote }}
+  DIRECTUS_DATABASE_PORT: {{ .Values.directusDatabasePort | quote }}

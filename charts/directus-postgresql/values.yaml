@@ -1,0 +1,269 @@
+# Default values for directus.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+## Directus image
+## ref: https://hub.docker.com/r/directus/directus/tags/
+## @param image.registry Directus image registry
+## @param image.repository Directus image repository
+## @param image.tag Directus image tag (immutable tags are recommended)
+## @param image.pullPolicy Directus image pull policy
+## @param image.pullSecrets Directus image pull secrets
+## @param image.debug Enable image debug mode
+##
+image:
+  repository: directus/directus
+  tag: 9.0.0-rc.92
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.storageClass Global StorageClass for Persistent Volume(s)
+##
+global:
+  postgresql:
+    servicePort: "5432"
+    postgresqlDatabase: directusdb 
+    postgresqlUsername: directus
+    postgresqlPassword: directus123
+
+postgresql:
+  image:
+    tag: "12.8.0-debian-10-r21" # Directus requires postgres 12+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+# @param databaseServiceSuffix is the database service suffix that's added to the release name. E.g.: directus-postgresql
+databaseServiceSuffix: postgresql
+# @param databaseCluster is the address to the cluster the database is on
+databaseCluster: cluster.local
+
+## @section Directus Configuration parameters
+## Directus settings based on environment variables
+## ref: https://v8.docs.directus.io/docker/environment.html
+## ref: https://docs.directus.io/reference/environment-variables/
+
+## @param directusEnv Deployment environment
+##
+directusEnv: development
+## @param directusTitle Directus installation's title
+##
+directusTitle: Directus CMS
+## @param directusKey Directus project's identifier key
+##
+directusKey: akeyexample123
+## @param directusSecret Directus project's secret key
+##
+directusSecret: asecretexample123
+## @param directusEmail Directus admin email
+##
+directusEmail: user@example.com
+## @param directusPassword Directus admin password
+##
+directusPassword: "123456"
+## @param directusForceInstall Enable Directus' forced installation
+directusForceInstall: false
+## @param directusDatabaseType Directus database's type
+##
+directusDatabaseClient: postgres
+## @param directusDatabasePort Directus's target database port for connection
+##
+directusDatabasePort: "5432"
+## @param directusDatabaseName Directus' target database database name
+##
+directusDatabaseName: directusdb
+## @param directusDatabaseUsername Directus' target database's username for authentication
+##
+directusDatabaseUsername: directus
+## @param directusDatabasePassword Directus' target database's password for authentication
+##
+directusDatabasePassword: directus123
+
+## Directus service parameters
+##
+service:
+  ## @param service.type Directus service type
+  ##
+  type: LoadBalancer
+  ## @param service.port Directus service HTTP port
+  ##
+  port: 80
+  ## @param service.httpsPort Directus service HTTPS port
+  ##
+  httpsPort: 443
+  ## @param service.httpsTargetPort Directus port for HTTPS
+  ##
+  httpsTargetPort: https
+  ## @param service.targetPort Directus port to expose, usually the port the server listens on
+  targetPort: 8055
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## Directus Autoscaling configuration
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+## @param autoscaling.enabled Enable Horizontal POD autoscaling for Directus
+## @param autoscaling.minReplicas Minimum number of Directus replicas
+## @param autoscaling.maxReplicas Maximum number of Directus replicas
+## @param autoscaling.targetCPU Target CPU utilization percentage
+## @param autoscaling.targetMemory Target Memory utilization percentage
+##
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 11
+  targetCPU: 50
+  targetMemory: 50
+
+## Persistence Parameters
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  ## @param persistence.enabled Enable persistence using Persistent Volume Claims
+  ##
+  enabled: true
+  ## @param persistence.storageClass Persistent Volume storage class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+  ##
+  storageClass: ""
+  ## @param persistence.accessModes [array] Persistent Volume access modes
+  ##
+  accessModes:
+    - ReadWriteOnce
+  ## @param persistence.accessMode Persistent Volume access mode (DEPRECATED: use `persistence.accessModes` instead)
+  ##
+  accessMode: ReadWriteOnce
+  ## @param persistence.size Persistent Volume size
+  ##
+  size: 10Gi
+  ## @param persistence.dataSource Custom PVC data source
+  ##
+  dataSource: {}
+  ## @param persistence.existingClaim The name of an existing PVC to use for persistence
+  ##
+  existingClaim: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## Configure extra options for Directus containers' liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+## @param livenessProbe.enabled Enable livenessProbe
+## @skip livenessProbe.httpGet
+## @param livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+## @param livenessProbe.periodSeconds Period seconds for livenessProbe
+## @param livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+## @param livenessProbe.failureThreshold Failure threshold for livenessProbe
+## @param livenessProbe.successThreshold Success threshold for livenessProbe
+##
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 8055
+    scheme: HTTP
+    ## If using an HTTPS-terminating load-balancer, the probes may need to behave
+    ## like the balancer to prevent HTTP 302 responses. According to the Kubernetes
+    ## docs, 302 should be considered "successful", but this issue on GitHub
+    ## (https://github.com/kubernetes/kubernetes/issues/47893) shows that it isn't.
+    ## E.g.
+    ## httpHeaders:
+    ## - name: X-Forwarded-Proto
+    ##   value: https
+    ##
+    httpHeaders: []
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+# @param readinessProbe.enabled Enable readinessProbe
+# @skip readinessProbe.httpGet
+# @param readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+# @param readinessProbe.periodSeconds Period seconds for readinessProbe
+# @param readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+# @param readinessProbe.failureThreshold Failure threshold for readinessProbe
+# @param readinessProbe.successThreshold Success threshold for readinessProbe
+#
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: 8055
+    scheme: HTTP
+    ## If using an HTTPS-terminating load-balancer, the probes may need to behave
+    ## like the balancer to prevent HTTP 302 responses. According to the Kubernetes
+    ## docs, 302 should be considered "successful", but this issue on GitHub
+    ## (https://github.com/kubernetes/kubernetes/issues/47893) shows that it isn't.
+    ## E.g.
+    ## httpHeaders:
+    ## - name: X-Forwarded-Proto
+    ##   value: https
+    ##
+    httpHeaders: []
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1

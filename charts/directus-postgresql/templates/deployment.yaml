@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "directus.fullname" . }}
+  labels:
+    {{- include "directus.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "directus.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "directus.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "directus.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe: {{- omit .Values.livenessProbe "enabled" | toYaml | nindent 12 }}
+          readinessProbe: {{- omit .Values.readinessProbe "enabled" | toYaml | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: DIRECTUS_KEY
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: DIRECTUS_SECRET
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: DIRECTUS_DATABASE_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: DIRECTUS_DATABASE_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: DIRECTUS_DATABASE_PASSWORD
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: ADMIN_EMAIL
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: directus-env-secrets
+                  key: ADMIN_PASSWORD
+            - name: DIRECTUS_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: directus-env-configmap
+                  key: DIRECTUS_ENV
+            - name: DIRECTUS_INSTALL_TITLE
+              valueFrom:
+                configMapKeyRef:
+                  name: directus-env-configmap
+                  key: DIRECTUS_INSTALL_TITLE
+            - name: DIRECTUS_INSTALL_FORCE
+              valueFrom:
+                configMapKeyRef:
+                  name: directus-env-configmap
+                  key: DIRECTUS_INSTALL_FORCE
+            - name: DB_CLIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: directus-env-configmap
+                  key: DIRECTUS_DATABASE_CLIENT
+            - name: DB_HOST
+              value: {{ include "directus.databaseService" . }}
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: directus-env-configmap
+                  key: DIRECTUS_DATABASE_PORT
+            {{- with .Values.nodeSelector }}
+          volumeMounts:
+            - name: directus-data
+              mountPath: /directus
+      volumes:
+      - name: directus-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "directus.fullname" . ) }}
+          {{- else }}
+          emptyDir: {}
+          {{ end }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
