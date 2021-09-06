@@ -8,6 +8,7 @@ import { performance } from 'perf_hooks';
 import { version } from '../../package.json';
 import { getCache } from '../cache';
 import getDatabase, { hasDatabaseConnection } from '../database';
+import { getGeometryHelper } from '../database/helpers/geometry';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
@@ -47,6 +48,8 @@ export class ServerService {
 		});
 
 		info.project = projectInfo;
+
+		info.geometrySupport = await getGeometryHelper(this.knex).supported();
 
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();

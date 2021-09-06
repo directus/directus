@@ -1,34 +1,36 @@
 import { Field, RawField } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
+import { getDatabaseClient } from '..';
 import getDatabase from '..';
 
 let geometryHelper: KnexSpatial | undefined;
 
-export function getGeometryHelper(): KnexSpatial {
+export function getGeometryHelper(database?: Knex): KnexSpatial {
 	if (!geometryHelper) {
-		const db = getDatabase();
-		const client = db.client.config.client as string;
+		database = database ?? getDatabase();
+		const client = getDatabaseClient(database);
 		const constructor = {
 			mysql: KnexSpatial_MySQL,
-			mariadb: KnexSpatial_MySQL,
-			sqlite3: KnexSpatial,
-			pg: KnexSpatial_PG,
+			sqlite: KnexSpatial_SQLite,
 			postgres: KnexSpatial_PG,
 			redshift: KnexSpatial_Redshift,
 			mssql: KnexSpatial_MSSQL,
-			oracledb: KnexSpatial_Oracle,
+			oracle: KnexSpatial_Oracle,
 		}[client];
 		if (!constructor) {
 			throw new Error(`Geometry helper not implemented on ${client}.`);
 		}
-		geometryHelper = new constructor(db);
+		geometryHelper = new constructor(database);
 	}
-	return geometryHelper;
+	return geometryHelper!;
 }
 
 class KnexSpatial {
 	constructor(protected knex: Knex) {}
+	supported(): boolean | Promise<boolean> {
+		return true;
+	}
 	isTrue(expression: Knex.Raw) {
 		return expression;
 	}
@@ -73,7 +75,25 @@ class KnexSpatial {
 	}
 }
 
+class KnexSpatial_SQLite extends KnexSpatial {
+	supported() {
+		return new Promise<boolean>((resolve, reject) => {
+			this.knex
+				.raw('SELECT spatialite_version()')
+				.then(() => resolve(true))
+				.catch(() => resolve(false));
+		});
+	}
+}
 class KnexSpatial_PG extends KnexSpatial {
+	supported() {
+		return new Promise<boolean>((resolve, reject) => {
+			this.knex
+				.raw('SELECT postgis_version()')
+				.then(() => resolve(true))
+				.catch(() => resolve(false));
+		});
+	}
 	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
 		const type = field.schema?.geometry_type ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type})`);
