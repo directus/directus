@@ -929,6 +929,7 @@ field_options:
         group_placeholder: Diese Gruppe benennen...
         type_name: Typ
         choices_always: Immer geöffnet
+        choices_start_open: Geöffnet starten
         choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
@@ -1032,6 +1033,7 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1267,6 +1269,7 @@ interfaces:
     trigger: Trigger
     rate: Rate
   group-raw:
+    name: Rohgruppe
     description: Felder so anzeigen wie sie sind
   group-detail:
     name: Detailgruppe
@@ -1274,6 +1277,8 @@ interfaces:
     show_header: Kopfzeile anzeigen
     header_icon: Icon Kopfzeile
     header_color: Farbe Kopfzeile
+    start_open: Geöffnet starten
+    start_closed: Geschlossen starten
 displays:
   boolean:
     boolean: Boolean
@@ -1382,4 +1387,15 @@ layouts:
     end_date_field: Datumsfeld Ende
   map:
     map: Karte
+    basemap: Basemap
+    layers: Ebenen
+    edit_custom_layers: Ebenen bearbeiten
+    cluster_options: Clustering-Optionen
+    cluster: Clustering aktivieren
+    cluster_radius: Cluster-Radius
+    cluster_minpoints: Minimale Punkte Clustering
+    cluster_maxzoom: Maximaler Zoom für Clustering
     field: Dimensionen
+    invalid_geometry: Ungültige Geometrie
+    auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
+    search_this_area: Diesen Bereich durchsuchen
