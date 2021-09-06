@@ -88,7 +88,7 @@ export async function createCli(): Promise<Command> {
 		.option('--skipAdminInit', 'Skips the creation of the default Admin Role and User')
 		.action(bootstrap);
 
-	await emitAsyncSafe('cli.init.after', { program });
+	await emitAsyncSafe('cli.init', { program });
 
 	return program;
 }

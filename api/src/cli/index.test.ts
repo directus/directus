@@ -28,7 +28,7 @@ const customCliExtension: Extension = {
 const beforeHook = jest.fn();
 const afterAction = jest.fn();
 const afterHook = jest.fn(({ program }: { program: Command }) => program.command('custom').action(afterAction));
-const customCliHook = { 'cli.init.before': beforeHook, 'cli.init.after': afterHook };
+const customCliHook = { 'cli.init.before': beforeHook, 'cli.init': afterHook };
 
 const writeOut = jest.fn();
 const writeErr = jest.fn();

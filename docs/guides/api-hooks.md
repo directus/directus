@@ -75,12 +75,12 @@ module.exports = function registerHook({ exceptions }) {
 | Scope                           | Actions                                                     | Before           |
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
 | `cron()`                        | [See below for configuration](#interval-cron)               | No               |
-| `cli.init`                      | `before` and `after`                                        | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
 | `init`                          |                                                             | Optional         |
-| `routes.init`                   | `before` and `after`                                        | No               |
-| `routes.custom.init`            | `before` and `after`                                        | No               |
-| `middlewares.init`              | `before` and `after`                                        | No               |
+| `cli`                           | `init`                                                      | Optional         |
+| `routes`                        | `init`                                                      | Optional         |
+| `routes.custom`                 | `init`                                                      | Optional         |
+| `middlewares`                   | `init`                                                      | Optional         |
 | `request`                       | `not_found`                                                 | No               |
 | `response`                      |                                                             | No<sup>[1]</sup> |
 | `database.error`                | When a database error is thrown                             | No               |

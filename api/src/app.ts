@@ -155,7 +155,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(sanitizeQuery);
 
-	await emitAsyncSafe('middlewares.init.after', { app });
+	await emitAsyncSafe('middlewares.init', { app });
 
 	await emitAsyncSafe('routes.init.before', { app });
 
@@ -191,12 +191,12 @@ export default async function createApp(): Promise<express.Application> {
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
 	registerExtensionEndpoints(customRouter);
-	await emitAsyncSafe('routes.custom.init.after', { app });
+	await emitAsyncSafe('routes.custom.init', { app });
 
 	app.use(notFoundHandler);
 	app.use(errorHandler);
 
-	await emitAsyncSafe('routes.init.after', { app });
+	await emitAsyncSafe('routes.init', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
