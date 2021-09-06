@@ -276,6 +276,11 @@ fields:
     name: Назва
     status: Статус
 field_options:
+  directus_activity:
+    login: Вхід
+    create: Створити
+    update: Оновити
+    delete: Видалити
   directus_collections:
     language: Мова
     archive_divider: Архів

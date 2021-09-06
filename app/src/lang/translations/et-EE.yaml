@@ -662,7 +662,7 @@ page_help_docs_global: >-
 page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
-  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm
 page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
 page_help_settings_datamodel_collections: >-
   **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
@@ -797,6 +797,11 @@ fields:
     name: Nimi
     status: Staatus
 field_options:
+  directus_activity:
+    login: Logi sisse
+    create: Loo
+    update: Uuenda
+    delete: Kustuta
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust

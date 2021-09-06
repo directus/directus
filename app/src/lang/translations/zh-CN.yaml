@@ -853,6 +853,11 @@ field_options:
     security_divider_title: 安全
     files_divider_title: 文件和缩略图
     overrides_divider_title: 应用设置覆盖
+  directus_activity:
+    login: 登录
+    create: 创建
+    update: 更新
+    delete: 删除
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动

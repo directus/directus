@@ -873,6 +873,11 @@ field_options:
     basemaps_style: Style de Mapbox
     files_divider_title: Fichiers et miniatures
     overrides_divider_title: Remplacer les applications
+  directus_activity:
+    login: Se connecter
+    create: Créer
+    update: Mettre à jour
+    delete: Supprimer
   directus_collections:
     track_activity_revisions: Enregistrer les activités et l'historique
     only_track_activity: Enregistrer seulement l'activité
