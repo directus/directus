@@ -952,6 +952,7 @@ field_options:
     actions_create: Erstellen
     actions_update: Aktualisieren
     actions_delete: Löschen
+    actions_login: Login
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern
@@ -1038,6 +1039,11 @@ interfaces:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
     start: Start
+    all_closed: Alle geschlossen
+    first_opened: Zuerst geöffnet
+    all_opened: Alle geöffnet
+    accordion_mode: Akkordeon-Modus
+    max_one_section_open: Max. einen Abschnitt öffnen
   presentation-links:
     presentation-links: Button-Links
     links: Links
@@ -1053,6 +1059,13 @@ interfaces:
     allow_other: Andere erlauben
     show_more: 'Zeige {count} mehr'
     items_shown: Angezeigte Elemente
+  select-multiple-checkbox-tree:
+    name: Kontrollkästchen (Baum)
+    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
+    value_combining: Kombination Werte
+    value_combining_note: Legt fest, welcher Werte gespeichert wird, wenn verschachtelte Selektionen gemacht werden.
+    show_all: Alle anzeigen
+    show_selected: Auswahl anzeigen
   input-code:
     code: Code
     description: Code-Snippets schreiben oder teilen
@@ -1147,7 +1160,21 @@ interfaces:
     imageToken: Bild-Token
     imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   map:
+    map: Karte
+    description: Ort auf der Karte wählen
     zoom: Zoom
+    geometry_type: Geometrie-Typ
+    geometry_format: Geometrie-Format
+    default_view: Standardansicht
+    invalid_options: Ungültige Optionen
+    invalid_format: Ungültiges Format ({format})
+    unexpected_geometry: Erwartete {expected}, erhielt {got}.
+    fit_bounds: Ansicht an Daten anpassen
+    native: Nativ
+    geojson: GeoJSON
+    lnglat: Längengrad, Breitengrad
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
@@ -1158,6 +1185,10 @@ interfaces:
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
     folder: Ordner
+    description: Ordner auswählen
+    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
+    root_name: Root-Ordner für Dateien
+    system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
     description: Eine von mehreren Optionen auswählen
@@ -1235,6 +1266,14 @@ interfaces:
     value_path: Wertpfad
     trigger: Trigger
     rate: Rate
+  group-raw:
+    description: Felder so anzeigen wie sie sind
+  group-detail:
+    name: Detailgruppe
+    description: Felder als einklappbaren Abschnitt anzeigen
+    show_header: Kopfzeile anzeigen
+    header_icon: Icon Kopfzeile
+    header_color: Farbe Kopfzeile
 displays:
   boolean:
     boolean: Boolean
@@ -1342,4 +1381,5 @@ layouts:
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
   map:
+    map: Karte
     field: Dimensionen
