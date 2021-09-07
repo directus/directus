@@ -900,6 +900,11 @@ field_options:
     basemaps_style: Mapbox Style
     files_divider_title: Files & Thumbnails
     overrides_divider_title: App Overrides
+  directus_activity:
+    login: Login
+    create: Create
+    update: Update
+    delete: Delete
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
     only_track_activity: Only Track Activity
