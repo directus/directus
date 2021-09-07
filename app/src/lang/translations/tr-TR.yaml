@@ -637,6 +637,9 @@ fields:
     name: İsim
     status: Durum
 field_options:
+  directus_activity:
+    create: Oluştur
+    update: Güncelle
   directus_collections:
     language: Dil
     archive_divider: Arşiv
