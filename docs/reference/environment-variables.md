@@ -17,6 +17,7 @@
 | `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
 | `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 | `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | true          |
+| `USER_DYNAMIC_VARS`        | Column names in `directus_users` table to enable usage with [Filter Rules](/reference/filter-rules).       | --            |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like oAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -34,7 +35,7 @@ needs to be publicly available on the internet.
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
-| `DB_EXCLUDE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | --            |
 
 ::: tip Additional Database Variables
 
@@ -241,11 +242,11 @@ Based on your configured driver, you must also provide the following configurati
 
 ### Azure (`azure`)
 
-| Variable                            | Description                | Default Value                         |
-| ----------------------------------- | -------------------------- | ------------------------------------- |
-| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
-| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
-| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
+| Variable                            | Description                | Default Value                                 |
+| ----------------------------------- | -------------------------- | --------------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                            |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                            |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                            |
 | `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "https://{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
