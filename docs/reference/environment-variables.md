@@ -34,7 +34,7 @@ needs to be publicly available on the internet.
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
-| `DB_EXCLUDE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | --            |
 
 ::: tip Additional Database Variables
 
@@ -74,7 +74,7 @@ your project and API on different domains, make sure to verify your configuratio
 
 :::
 
-## Argon2
+### Hashing
 
 | Variable               | Description                                                                                                                      | Default Value       |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
@@ -85,20 +85,18 @@ your project and API on different domains, make sure to verify your configuratio
 | `HASH_TYPE`            | The variant of the hash function (`0`: argon2d, `1`: argon2i, or `2`: argon2id).                                                 | `1` (argon2i)       |
 | `HASH_ASSOCIATED_DATA` | An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest.          | --                  |
 
-Argon2's hashing function is used by directus for three purposes: 1) hashing user passwords, 2) generating hashes for
+Argon2's hashing function is used by Directus for three purposes: 1) hashing user passwords, 2) generating hashes for
 the `Hash` field type in collections, and 3) the
 [generate a hash API endpoint](https://docs.directus.io/reference/api/system/utilities/#generate-a-hash).
 
 All `HASH_*` environment variable parameters are passed to the `argon2.hash` function. See the
 [node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.
 
-::: tip WARNINGS
+::: tip Memory Usage
 
-1. Modifying `HASH_MEMORY_COST` and/or `HASH_PARALLELISM` will affect the amount of memory directus uses when computing
-   hashes; each thread gets `HASH_MEMORY_COST` amount of memory, so the total additional memory will be these two values
-   multiplied. This may cause out of memory errors, especially when running in containerized environments;
-2. We specifically do not pass the `PASSWORD_HASH_RAW` or `HASH_RAW` parameters as enabling the `raw` setting is
-   incompatible with how directus uses these values.
+Modifying `HASH_MEMORY_COST` and/or `HASH_PARALLELISM` will affect the amount of memory directus uses when computing
+hashes; each thread gets `HASH_MEMORY_COST` amount of memory, so the total additional memory will be these two values
+multiplied. This may cause out of memory errors, especially when running in containerized environments.
 
 :::
 
