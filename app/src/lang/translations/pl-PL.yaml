@@ -822,6 +822,9 @@ fields:
     name: Nazwa
     status: Status
 field_options:
+  directus_activity:
+    create: Stwórz
+    update: Zaktualizuj
   directus_collections:
     track_activity_revisions: Śledź aktywność i rewizje
     only_track_activity: Tylko Śledź Aktywność
