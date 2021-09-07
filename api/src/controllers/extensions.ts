@@ -1,12 +1,33 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
-import { RouteNotFoundException } from '../exceptions';
+import { InvalidPayloadException, RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
 import { depluralize, isAppExtension } from '@directus/shared/utils';
 import { Plural } from '@directus/shared/types';
 
 const router = Router();
+
+router.post(
+	'/install',
+	asyncHandler(async (req, res) => {
+		const name = req.body.name;
+
+		if (!name) {
+			throw new InvalidPayloadException('No extension name specified');
+		}
+
+		const extensionManager = getExtensionManager();
+
+		const installed = await extensionManager.install(name);
+
+		if (!installed) {
+			throw new InvalidPayloadException(`Couldn't install extension ${name}`);
+		}
+
+		res.end();
+	})
+);
 
 router.get(
 	'/:type',
