@@ -738,6 +738,9 @@ fields:
     name: Pavadinimas
     status: Būsena
 field_options:
+  directus_activity:
+    create: Kurti
+    update: Atnaujinti
   directus_collections:
     collection_setup: Kolekcijos konfigūracija
     singleton: Laikyti vienu objektu
