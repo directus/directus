@@ -797,6 +797,9 @@ fields:
     name: Ime
     status: Status
 field_options:
+  directus_activity:
+    create: Kreiraj
+    update: Ažuriranje
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
     only_track_activity: Samo Prati Aktivnost
