@@ -344,6 +344,9 @@ fields:
     name: Navn
     status: Status
 field_options:
+  directus_activity:
+    create: Opret
+    update: Opdater
   directus_collections:
     language: Sprog
     archive_divider: Arkiver
