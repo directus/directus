@@ -815,6 +815,9 @@ fields:
     name: Naam
     status: Status
 field_options:
+  directus_activity:
+    create: Maak
+    update: Updaten
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
     only_track_activity: Track alleen activiteiten
