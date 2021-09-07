@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
-import { InvalidPayloadException, RouteNotFoundException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
 import { depluralize, isAppExtension } from '@directus/shared/utils';
@@ -12,6 +12,10 @@ router.post(
 	'/install',
 	asyncHandler(async (req, res) => {
 		const name = req.body.name;
+
+		if (!req.accountability?.admin) {
+			throw new ForbiddenException();
+		}
 
 		if (!name) {
 			throw new InvalidPayloadException('No extension name specified');
@@ -33,6 +37,10 @@ router.post(
 	'/uninstall',
 	asyncHandler(async (req, res) => {
 		const name = req.body.name;
+
+		if (!req.accountability?.admin) {
+			throw new ForbiddenException();
+		}
 
 		if (!name) {
 			throw new InvalidPayloadException('No extension name specified');
