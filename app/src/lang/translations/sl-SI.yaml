@@ -873,6 +873,11 @@ field_options:
     transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
     files_divider_title: Datoteke & sličice
     overrides_divider_title: Aplikacijske preglasitve
+  directus_activity:
+    login: Prijava
+    create: Ustvari
+    update: Posodobi
+    delete: Izbriši
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
     only_track_activity: Sledi samo aktivnosti
