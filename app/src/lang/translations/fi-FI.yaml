@@ -794,6 +794,9 @@ fields:
     name: Nimi
     status: Tila
 field_options:
+  directus_activity:
+    create: Luo
+    update: Päivitä
   directus_collections:
     track_activity_revisions: Seuraa tapahtumia ja versioita
     only_track_activity: Seuraa vain tapahtumia
