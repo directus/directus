@@ -797,6 +797,9 @@ fields:
     name: Nimi
     status: Staatus
 field_options:
+  directus_activity:
+    create: Loo
+    update: Uuenda
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
