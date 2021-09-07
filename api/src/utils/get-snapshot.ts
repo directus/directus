@@ -5,15 +5,9 @@ import { version } from '../../package.json';
 import { SchemaOverview, Snapshot } from '../types';
 import { Knex } from 'knex';
 
-export async function getSnapshot({
-	database,
-	schema,
-}: {
-	database?: Knex;
-	schema?: SchemaOverview;
-}): Promise<Snapshot> {
-	database = database ?? getDatabase();
-	schema = schema ?? (await getSchema({ database }));
+export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
+	const database = options?.database ?? getDatabase();
+	const schema = options?.schema ?? (await getSchema({ database }));
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
 	const fieldsService = new FieldsService({ knex: database, schema });
