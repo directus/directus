@@ -34,7 +34,7 @@ needs to be publicly available on the internet.
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
-| `DB_EXCLUDE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | --            |
 
 ::: tip Additional Database Variables
 
@@ -71,6 +71,32 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 Browser are pretty strict when it comes to third-party cookies. If you're running into unexpected problems when running
 your project and API on different domains, make sure to verify your configuration for `REFRESH_TOKEN_COOKIE_NAME`,
 `REFRESH_TOKEN_COOKIE_SECURE` and `REFRESH_TOKEN_COOKIE_SAME_SITE`.
+
+:::
+
+### Hashing
+
+| Variable               | Description                                                                                                                      | Default Value       |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `HASH_MEMORY_COST`     | How much memory to use when generating hashes, in KiB.                                                                           | `4096` (4 MiB)      |
+| `HASH_LENGTH`          | The length of the hash function output in bytes.                                                                                 | `32`                |
+| `HASH_TIME_COST`       | The amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute. | `3`                 |
+| `HASH_PARALLELISM`     | The amount of threads to compute the hash on. Each thread has a memory pool with `HASH_MEMORY_COST` size.                        | `1` (single thread) |
+| `HASH_TYPE`            | The variant of the hash function (`0`: argon2d, `1`: argon2i, or `2`: argon2id).                                                 | `1` (argon2i)       |
+| `HASH_ASSOCIATED_DATA` | An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest.          | --                  |
+
+Argon2's hashing function is used by Directus for three purposes: 1) hashing user passwords, 2) generating hashes for
+the `Hash` field type in collections, and 3) the
+[generate a hash API endpoint](https://docs.directus.io/reference/api/system/utilities/#generate-a-hash).
+
+All `HASH_*` environment variable parameters are passed to the `argon2.hash` function. See the
+[node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.
+
+::: tip Memory Usage
+
+Modifying `HASH_MEMORY_COST` and/or `HASH_PARALLELISM` will affect the amount of memory directus uses when computing
+hashes; each thread gets `HASH_MEMORY_COST` amount of memory, so the total additional memory will be these two values
+multiplied. This may cause out of memory errors, especially when running in containerized environments.
 
 :::
 
