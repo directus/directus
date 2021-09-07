@@ -217,7 +217,7 @@ export default defineComponent({
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 					revisionsCount.value = response.data.meta.filter_count;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

@@ -29,12 +29,13 @@ import Repeater from './list.vue';
 import { Field, FieldMeta } from '@directus/shared/types';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
 import { DeepPartial } from '@directus/shared/types';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { Repeater },
 	props: {
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},
@@ -110,7 +111,7 @@ export default defineComponent({
 					width: 'half',
 					sort: 4,
 					options: {
-						choices: fieldTypes,
+						choices: translate(fieldTypes),
 					},
 				},
 				schema: null,

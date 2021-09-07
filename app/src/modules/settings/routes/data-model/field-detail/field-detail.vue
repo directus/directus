@@ -434,7 +434,7 @@ export default defineComponent({
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
-			} catch (err) {
+			} catch (err: any) {
 				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'CONTAINS_NULL_VALUES') {
 					nullValueOverride.value = state.fieldData?.schema?.default_value || null;
 					nullValuesDialog.value = true;
@@ -486,7 +486,7 @@ export default defineComponent({
 
 					nullValuesDialog.value = false;
 					return saveField();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					nullOverrideSaving.value = false;

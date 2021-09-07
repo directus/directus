@@ -453,7 +453,7 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

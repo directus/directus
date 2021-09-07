@@ -8,7 +8,7 @@ import { respond } from '../middleware/respond';
 import { RevisionsService, UtilsService, ImportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
-import { getCache } from '../cache';
+import { flushCaches } from '../cache';
 
 const router = Router();
 
@@ -103,7 +103,7 @@ router.post(
 		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
 			try {
 				await service.import(req.params.collection, mimetype, fileStream);
-			} catch (err) {
+			} catch (err: any) {
 				return next(err);
 			}
 
@@ -123,10 +123,7 @@ router.post(
 			throw new ForbiddenException();
 		}
 
-		const { cache, schemaCache } = getCache();
-
-		await cache?.clear();
-		await schemaCache?.clear();
+		await flushCaches();
 
 		res.status(200).end();
 	})

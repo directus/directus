@@ -88,7 +88,7 @@ router.patch(
 		try {
 			const collection = await collectionsService.readOne(req.params.collection);
 			res.locals.payload = { data: collection || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

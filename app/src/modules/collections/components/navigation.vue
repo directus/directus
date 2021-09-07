@@ -24,6 +24,7 @@
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
+						:class="{ empty: group.name === null || group.name === undefined }"
 						@update:model-value="toggleActive(group.name)"
 					>
 						<v-list-item v-for="navItem in group.items" :key="navItem.to" :to="navItem.to" query>
@@ -37,7 +38,14 @@
 			</template>
 		</template>
 
-		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to" query>
+		<v-list-item
+			v-for="navItem in navItems"
+			v-else
+			:key="navItem.to"
+			:to="navItem.to"
+			query
+			@contextmenu.prevent.stop="activateContextMenu($event, navItem.to)"
+		>
 			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="navItem.name" />
@@ -65,7 +73,14 @@
 		<template v-if="hiddenShown">
 			<v-divider />
 
-			<v-list-item v-for="navItem in hiddenNavItems" :key="navItem.to" class="hidden-collection" :to="navItem.to" query>
+			<v-list-item
+				v-for="navItem in hiddenNavItems"
+				:key="navItem.to"
+				class="hidden-collection"
+				:to="navItem.to"
+				query
+				@contextmenu.prevent.stop="activateContextMenu($event, navItem.to)"
+			>
 				<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="navItem.name" />
@@ -81,6 +96,18 @@
 					</v-list-item-icon>
 					<v-list-item-content>
 						<v-text-overflow :text="hiddenShown ? t('hide_hidden_collections') : t('show_hidden_collections')" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item
+					v-if="isAdmin && contextMenuTarget && contextMenuTarget.includes('/collections')"
+					clickable
+					:to="'/settings/data-model' + contextMenuTarget.replace('/collections', '')"
+				>
+					<v-list-item-icon>
+						<v-icon name="list_alt" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('edit_collection')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -106,6 +133,7 @@ export default defineComponent({
 		const listComponent = ref<ComponentPublicInstance>();
 
 		const contextMenu = ref();
+		const contextMenuTarget = ref<undefined | string>();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
@@ -163,6 +191,7 @@ export default defineComponent({
 			searchQuery,
 			listComponent,
 			activateContextMenu,
+			contextMenuTarget,
 		};
 
 		function isActive(name: string) {
@@ -177,7 +206,8 @@ export default defineComponent({
 			}
 		}
 
-		function activateContextMenu(event: PointerEvent) {
+		function activateContextMenu(event: PointerEvent, target?: string) {
+			contextMenuTarget.value = target;
 			contextMenu.value.activate(event);
 		}
 	},
@@ -200,6 +230,20 @@ export default defineComponent({
 
 .collections-navigation {
 	--v-list-min-height: calc(100% - 64px);
+
+	.v-detail {
+		:deep(.v-divider) {
+			margin: 0px;
+		}
+
+		&:not(:first-child) :deep(.v-divider) {
+			margin-top: 8px;
+		}
+
+		&.empty :deep(.v-divider) {
+			margin-bottom: 8px;
+		}
+	}
 }
 
 .hidden-collection {

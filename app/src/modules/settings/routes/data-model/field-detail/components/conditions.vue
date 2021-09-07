@@ -55,6 +55,11 @@ export default defineComponent({
 					interface: 'input-code',
 					options: {
 						language: 'json',
+						placeholder: `{
+	"myField": {
+		"_eq": "Some Text"
+	}
+}`,
 					},
 				},
 			},

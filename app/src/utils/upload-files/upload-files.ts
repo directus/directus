@@ -36,7 +36,7 @@ export default async function uploadFiles(
 		}
 
 		return uploadedFiles;
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	}
 }

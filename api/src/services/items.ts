@@ -134,8 +134,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			try {
 				const result = await trx.insert(payloadWithoutAliases).into(this.collection).returning(primaryKeyField);
-				primaryKey = result[0];
-			} catch (err) {
+				primaryKey = primaryKey ?? result[0];
+			} catch (err: any) {
 				throw await translateDatabaseError(err);
 			}
 
@@ -172,8 +172,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						activity: activityID,
 						collection: this.collection,
 						item: primaryKey,
-						data: JSON.stringify(payload),
-						delta: JSON.stringify(payload),
+						data: await payloadService.prepareDelta(payload),
+						delta: await payloadService.prepareDelta(payload),
 					};
 
 					const revisionID = (await trx.insert(revisionRecord).into('directus_revisions').returning('id'))[0] as number;
@@ -442,7 +442,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (Object.keys(payloadWithTypeCasting).length > 0) {
 				try {
 					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
-				} catch (err) {
+				} catch (err: any) {
 					throw await translateDatabaseError(err);
 				}
 			}
@@ -480,14 +480,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 					const snapshots = await itemsService.readMany(keys);
 
-					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-						activity: key,
-						collection: this.collection,
-						item: keys[index],
-						data:
-							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithTypeCasting),
-					}));
+					const revisionRecords: {
+						activity: PrimaryKey;
+						collection: string;
+						item: PrimaryKey;
+						data: string;
+						delta: string;
+					}[] = [];
+
+					for (let i = 0; i < activityPrimaryKeys.length; i++) {
+						revisionRecords.push({
+							activity: activityPrimaryKeys[i],
+							collection: this.collection,
+							item: keys[i],
+							data: snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[i]) : JSON.stringify(snapshots),
+							delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+						});
+					}
 
 					for (let i = 0; i < revisionRecords.length; i++) {
 						const revisionID = (

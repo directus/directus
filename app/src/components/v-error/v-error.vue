@@ -21,7 +21,7 @@ import { isPlainObject } from 'lodash';
 export default defineComponent({
 	props: {
 		error: {
-			type: [Object, Error] as PropType<any>,
+			type: [Object, Error] as PropType<Record<string, any>>,
 			required: true,
 		},
 	},

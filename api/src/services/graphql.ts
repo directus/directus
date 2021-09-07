@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { validateQuery } from '../utils/validate-query';
 import {
 	ArgumentNode,
 	BooleanValueNode,
@@ -92,6 +93,12 @@ const GraphQLVoid = new GraphQLScalarType({
 	},
 });
 
+export const GraphQLGeoJSON = new GraphQLScalarType({
+	...GraphQLJSON,
+	name: 'GraphQLGeoJSON',
+	description: 'GeoJSON value',
+});
+
 export const GraphQLDate = new GraphQLScalarType({
 	...GraphQLString,
 	name: 'Date',
@@ -150,7 +157,7 @@ export class GraphQLService {
 				variableValues: variables,
 				operationName,
 			});
-		} catch (err) {
+		} catch (err: any) {
 			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
@@ -536,6 +543,30 @@ export class GraphQLService {
 				},
 			});
 
+			const GeometryFilterOperators = schemaComposer.createInputTC({
+				name: 'geometry_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLGeoJSON,
+					},
+					_neq: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects: {
+						type: GraphQLGeoJSON,
+					},
+					_intersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+					_nintersects_bbox: {
+						type: GraphQLGeoJSON,
+					},
+				},
+			});
+
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -556,6 +587,9 @@ export class GraphQLService {
 								break;
 							case GraphQLDate:
 								filterOperatorType = DateFilterOperators;
+								break;
+							case GraphQLGeoJSON:
+								filterOperatorType = GeometryFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
@@ -936,8 +970,8 @@ export class GraphQLService {
 					return { ids: keys };
 				}
 			}
-		} catch (err) {
-			this.formatError(err);
+		} catch (err: any) {
+			return this.formatError(err);
 		}
 	}
 
@@ -973,7 +1007,7 @@ export class GraphQLService {
 			}
 
 			return true;
-		} catch (err) {
+		} catch (err: any) {
 			throw this.formatError(err);
 		}
 	}
@@ -1087,6 +1121,8 @@ export class GraphQLService {
 		};
 
 		query.fields = parseFields(selections);
+
+		validateQuery(query);
 
 		return query;
 	}
@@ -1470,7 +1506,7 @@ export class GraphQLService {
 
 					try {
 						await service.requestPasswordReset(args.email, args.reset_url || null);
-					} catch (err) {
+					} catch (err: any) {
 						if (err instanceof InvalidPayloadException) {
 							throw err;
 						}

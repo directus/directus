@@ -19,6 +19,7 @@ const defaultInterfaceMap: Record<Type, string> = {
 	unknown: 'input',
 	csv: 'tags',
 	hash: 'input-hash',
+	geometry: 'map',
 };
 
 export function getDefaultInterfaceForType(type: Type): string {

@@ -146,6 +146,10 @@ export default defineComponent({
 			type: String,
 			default: 'disabled',
 		},
+		itemSelectable: {
+			type: String,
+			default: 'selectable',
+		},
 		itemChildren: {
 			type: String,
 			default: 'children',
@@ -228,6 +232,7 @@ export default defineComponent({
 						value: get(item, props.itemValue),
 						icon: get(item, props.itemIcon),
 						disabled: get(item, props.itemDisabled),
+						selectable: get(item, props.itemSelectable),
 						children,
 					};
 				};
@@ -267,7 +272,21 @@ export default defineComponent({
 			return { displayValue };
 
 			function getTextForValue(value: string | number) {
-				return internalItems.value.find((item) => item.value === value)?.['text'];
+				return findValue(internalItems.value);
+
+				function findValue(choices: Option[]): string | undefined {
+					let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+
+					for (const choice of choices) {
+						if (!textValue) {
+							if (choice.children) {
+								textValue = findValue(choice.children);
+							}
+						}
+					}
+
+					return textValue;
+				}
 			}
 		}
 	},

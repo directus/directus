@@ -155,7 +155,7 @@ export default defineComponent({
 				await qrcode.toCanvas(document.getElementById(canvasID), url);
 				tfaGenerated.value = true;
 				error.value = null;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -184,7 +184,7 @@ export default defineComponent({
 				otp.value = '';
 				secret.value = '';
 				error.value = null;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -200,7 +200,7 @@ export default defineComponent({
 				tfaEnabled.value = false;
 				disableActive.value = false;
 				otp.value = '';
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;

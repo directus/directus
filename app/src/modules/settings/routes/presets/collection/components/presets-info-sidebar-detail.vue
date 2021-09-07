@@ -49,7 +49,7 @@ export default defineComponent({
 
 				bookmarksCount.value = response.data.meta.filter_count as number;
 				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

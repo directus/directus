@@ -40,7 +40,7 @@ export default defineComponent({
 						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
 					};
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

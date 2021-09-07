@@ -88,6 +88,7 @@ export default defineComponent({
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
 	overflow: auto;
+	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }

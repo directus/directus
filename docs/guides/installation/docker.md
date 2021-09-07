@@ -116,6 +116,26 @@ networks:
   directus:
 ```
 
+### Updating with Docker Compose
+
+If you are not using the `latest` tag for directus you need to adjust your `docker-compose.yml` file to increment the
+tag version number, e.g.
+
+```
+-   image: directus/directus:9.0.0-rc.89
++   image: directus/directus:9.0.0-rc.90
+```
+
+You can then issue the following two commands (from your docker-compose root):
+
+```
+docker-compose pull
+docker-compose up -d
+```
+
+The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have
+started you will be on the newest version (or the version you specified).
+
 ## Supported Databases
 
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be

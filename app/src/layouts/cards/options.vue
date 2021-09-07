@@ -1,17 +1,17 @@
 <template>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.image_source') }}</div>
-		<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
+		<v-select v-model="imageSourceWritable" show-deselect item-value="field" item-text="name" :items="fileFields" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.title') }}</div>
-		<v-field-template v-model="title" :collection="props.collection" />
+		<v-field-template v-model="titleWritable" :collection="collection" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.subtitle') }}</div>
-		<v-field-template v-model="subtitle" :collection="props.collection" />
+		<v-field-template v-model="subtitleWritable" :collection="collection" />
 	</div>
 
 	<v-detail class="field">
@@ -21,7 +21,7 @@
 			<div class="field">
 				<div class="type-label">{{ t('layouts.cards.image_fit') }}</div>
 				<v-select
-					v-model="imageFit"
+					v-model="imageFitWritable"
 					:disabled="imageSource === null"
 					:items="[
 						{
@@ -38,7 +38,7 @@
 
 			<div class="field">
 				<div class="type-label">{{ t('fallback_icon') }}</div>
-				<interface-select-icon :value="icon" @input="icon = $event" />
+				<interface-select-icon :value="icon" @input="iconWritable = $event" />
 			</div>
 		</div>
 	</v-detail>
@@ -46,18 +46,54 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
-import { useLayoutState } from '@directus/shared/composables';
+import { Field } from '@directus/shared/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	setup() {
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		icon: {
+			type: String,
+			required: true,
+		},
+		fileFields: {
+			type: Array as PropType<Field[]>,
+			required: true,
+		},
+		imageSource: {
+			type: String,
+			default: null,
+		},
+		title: {
+			type: String,
+			default: null,
+		},
+		subtitle: {
+			type: String,
+			default: null,
+		},
+		imageFit: {
+			type: String,
+			required: true,
+		},
+	},
+	emits: ['update:icon', 'update:imageSource', 'update:title', 'update:subtitle', 'update:imageFit'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const layoutState = useLayoutState();
-		const { props, imageSource, fileFields, title, subtitle, imageFit, icon } = toRefs(layoutState.value);
+		const iconWritable = useSync(props, 'icon', emit);
+		const imageSourceWritable = useSync(props, 'imageSource', emit);
+		const titleWritable = useSync(props, 'title', emit);
+		const subtitleWritable = useSync(props, 'subtitle', emit);
+		const imageFitWritable = useSync(props, 'imageFit', emit);
 
-		return { t, props, imageSource, fileFields, title, subtitle, imageFit, icon };
+		return { t, iconWritable, imageSourceWritable, titleWritable, subtitleWritable, imageFitWritable };
 	},
 });
 </script>

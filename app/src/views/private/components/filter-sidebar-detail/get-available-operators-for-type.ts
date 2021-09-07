@@ -11,7 +11,6 @@ export default function getAvailableOperatorsForType(type: Type): OperatorType {
 	switch (type) {
 		// Text
 		case 'binary':
-		case 'json':
 		case 'hash':
 		case 'string':
 			return {
@@ -27,27 +26,36 @@ export default function getAvailableOperatorsForType(type: Type): OperatorType {
 					'neq',
 					'empty',
 					'nempty',
+					'null',
+					'nnull',
 					'in',
 					'nin',
 				],
 			};
+		// JSON
+		case 'json':
+			return {
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull', 'in', 'nin'],
+			};
+		// UUID
 		case 'uuid':
 			return {
 				type,
-				operators: ['eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+				operators: ['eq', 'neq', 'null', 'nnull', 'in', 'nin'],
 			};
 		// Boolean
 		case 'boolean':
 			return {
 				type,
-				operators: ['eq', 'neq', 'empty', 'nempty'],
+				operators: ['eq', 'neq', 'null', 'nnull'],
 			};
 		// Numbers
 		case 'integer':
 		case 'decimal':
 			return {
 				type,
-				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'],
 			};
 		// Datetime
 		case 'dateTime':
@@ -55,7 +63,13 @@ export default function getAvailableOperatorsForType(type: Type): OperatorType {
 		case 'time':
 			return {
 				type,
-				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'],
+			};
+		// Geometry
+		case 'geometry':
+			return {
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'],
 			};
 		default:
 			return {
@@ -73,6 +87,8 @@ export default function getAvailableOperatorsForType(type: Type): OperatorType {
 					'nbetween',
 					'empty',
 					'nempty',
+					'null',
+					'nnull',
 					'in',
 					'nin',
 				],

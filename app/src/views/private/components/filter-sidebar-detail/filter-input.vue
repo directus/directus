@@ -49,7 +49,7 @@
 				{{ t('add_new') }}
 			</v-button>
 		</div>
-		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
+		<template v-else-if="['empty', 'nempty', 'null', 'nnull'].includes(operator) === false">
 			<component
 				:is="interfaceComponent"
 				:type="type"

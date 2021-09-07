@@ -27,12 +27,12 @@ export const useUserStore = defineStore({
 			try {
 				const { data } = await api.get(`/users/me`, {
 					params: {
-						fields: '*,avatar.*,role.*',
+						fields: '*,avatar.id,role.*',
 					},
 				});
 
 				this.currentUser = data.data;
-			} catch (error) {
+			} catch (error: any) {
 				this.error = error;
 			} finally {
 				this.loading = false;

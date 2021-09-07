@@ -34,6 +34,7 @@ needs to be publicly available on the internet.
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
+| `DB_EXCLUDE_TABLES`     | CSV of tables you want Directus to ignore completely                                                                                               | --            |
 
 ::: tip Additional Database Variables
 
@@ -245,7 +246,7 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
 | `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
 | `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
-| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "https://{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
 
@@ -338,7 +339,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
 
-## Misc.
+## Admin Account
 
 If you're relying on Docker and/or the `directus bootstrap` CLI command, you can pass the following two environment
 variables to automatically configure the first user:
@@ -347,6 +348,16 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+
+## Telemetry
+
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
+Directus collects little and anonymized data about your environment. You can easily opt-out with the following
+environment variable:
+
+| Variable    | Description                                                       | Default Value |
+| ----------- | ----------------------------------------------------------------- | ------------- |
+| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | true          |
 
 ---
 

@@ -604,6 +604,7 @@ fields:
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
+    status_active: Aktif
     role: Rol
     last_page: Son Sayfa
     last_access: Son Erişim
@@ -626,6 +627,33 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+  directus_webhooks:
+    name: İsim
+    status: Durum
+field_options:
+  directus_activity:
+    login: Oturum Aç
+    create: Oluştur
+    update: Güncelle
+    delete: Sil
+  directus_collections:
+    language: Dil
+    archive_divider: Arşiv
+    divider: Sırala
+  directus_roles:
+    fields:
+      icon_name: İkon
+      name_name: İsim
+    collection_list:
+      fields:
+        type_name: Tür
+    collections_name: Koleksiyonlar
+  directus_users:
+    status_dropdown_active: Aktif
+  directus_webhooks:
+    status_options_active: Aktif
+    actions_create: Oluştur
+    actions_update: Güncelle
 do_nothing: Hiçbir Şey Yapma
 block: Blok
 comment: Yorum
@@ -716,6 +744,8 @@ interfaces:
     interface: Arayüz
   select-dropdown-m2o:
     display_template: Görüntüleme Şablonu
+  map:
+    zoom: Yakınlaş
   system-folder:
     folder: Klasör
   slider:
