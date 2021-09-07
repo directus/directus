@@ -29,6 +29,27 @@ router.post(
 	})
 );
 
+router.post(
+	'/uninstall',
+	asyncHandler(async (req, res) => {
+		const name = req.body.name;
+
+		if (!name) {
+			throw new InvalidPayloadException('No extension name specified');
+		}
+
+		const extensionManager = getExtensionManager();
+
+		const uninstalled = await extensionManager.uninstall(name);
+
+		if (!uninstalled) {
+			throw new InvalidPayloadException(`Couldn't uninstall extension ${name}`);
+		}
+
+		res.end();
+	})
+);
+
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {

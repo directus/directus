@@ -37,7 +37,7 @@ import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { ListenerFn } from 'eventemitter2';
-import installPackage from './utils/install-package';
+import { installPackage, uninstallPackage } from './utils/install-package';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -123,6 +123,18 @@ class ExtensionManager {
 		const installed = await installPackage(name);
 
 		if (!installed) return false;
+
+		await this.reload();
+
+		return true;
+	}
+
+	public async uninstall(name: string): Promise<boolean> {
+		if (!EXTENSION_NAME_REGEX.test(name)) return false;
+
+		const uninstalled = await uninstallPackage(name);
+
+		if (!uninstalled) return false;
 
 		await this.reload();
 
