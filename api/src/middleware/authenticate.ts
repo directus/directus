@@ -5,6 +5,7 @@ import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 import isJWT from '../utils/is-jwt';
+import { toArray } from '@directus/shared/utils';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -23,6 +24,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const database = getDatabase();
 
+	const userDynamicVars = toArray(env.USER_DYNAMIC_VARS);
+	req.accountability.userDynamicVars = {};
+
 	if (isJWT(req.token)) {
 		let payload: { id: string };
 
@@ -39,7 +43,12 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		const user = await database
-			.select('role', 'directus_roles.admin_access', 'directus_roles.app_access')
+			.select(
+				'role',
+				'directus_roles.admin_access',
+				'directus_roles.app_access',
+				...userDynamicVars.map((v) => 'directus_users.' + v)
+			)
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -56,10 +65,19 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+		for (const column of userDynamicVars) {
+			req.accountability.userDynamicVars[column] = user[column];
+		}
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
-			.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
+			.select(
+				'directus_users.id',
+				'directus_users.role',
+				'directus_roles.admin_access',
+				'directus_roles.app_access',
+				...userDynamicVars.map((v) => 'directus_users.' + v)
+			)
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -76,6 +94,9 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
+		for (const column of userDynamicVars) {
+			req.accountability.userDynamicVars[column] = user[column];
+		}
 	}
 
 	return next();

@@ -52,4 +52,5 @@ export type User = {
 	company: string | null;
 	title: string | null;
 	email_notifications: boolean;
+	dynamic_vars: string[];
 };

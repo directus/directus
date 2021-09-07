@@ -7,6 +7,8 @@ import { validateBatch } from '../middleware/validate-batch';
 import { AuthenticationService, MetaService, UsersService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import env from '../env';
+import { toArray } from '@directus/shared/utils';
 
 const router = express.Router();
 
@@ -85,6 +87,9 @@ router.get(
 
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
+			if (item) {
+				item.dynamic_vars = toArray(env.USER_DYNAMIC_VARS);
+			}
 			res.locals.payload = { data: item || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {

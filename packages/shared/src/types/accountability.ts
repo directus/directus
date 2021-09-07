@@ -6,4 +6,6 @@ export type Accountability = {
 
 	ip?: string;
 	userAgent?: string;
+
+	userDynamicVars?: Record<string, any>;
 };
