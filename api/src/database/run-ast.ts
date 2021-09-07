@@ -65,12 +65,11 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		let dbQuery;
-		try {
-			dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
-		} catch (error) {
-			throw new InvalidQueryException(error);
-		}
+		const dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested).catch(
+			(error) => {
+				throw new InvalidQueryException(error);
+			}
+		);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
