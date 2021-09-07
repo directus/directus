@@ -1418,3 +1418,5 @@ layouts:
     invalid_geometry: Invalid geometry
     auto_location_filter: Always filter data to view bounds
     search_this_area: Search this area
+    clear_data_filter: Clear Data Filter
+    clear_location_filter: Clear Location Filter
