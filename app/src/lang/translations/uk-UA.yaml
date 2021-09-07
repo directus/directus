@@ -276,6 +276,9 @@ fields:
     name: Назва
     status: Статус
 field_options:
+  directus_activity:
+    create: Створити
+    update: Оновити
   directus_collections:
     language: Мова
     archive_divider: Архів
