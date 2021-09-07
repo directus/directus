@@ -545,6 +545,9 @@ fields:
     name: 名稱
     status: 狀態
 field_options:
+  directus_activity:
+    create: 新建
+    update: 更新
   directus_collections:
     language: 語言
     archive_divider: 封存
