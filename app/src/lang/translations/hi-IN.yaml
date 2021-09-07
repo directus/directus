@@ -241,6 +241,8 @@ fields:
   directus_webhooks:
     name: नाम
 field_options:
+  directus_activity:
+    delete: डिलीट
   directus_collections:
     language: भाषा
     archive_divider: आर्काइव

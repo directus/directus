@@ -845,6 +845,11 @@ field_options:
     security_divider_title: Безопасность
     files_divider_title: Файлы и миниатюры
     overrides_divider_title: Переопределить заводские настройки
+  directus_activity:
+    login: Войти
+    create: Создать
+    update: Обновить
+    delete: Удалить
   directus_collections:
     track_activity_revisions: Отслеживание активности и изменений
     only_track_activity: Отслеживать только активность
