@@ -439,6 +439,9 @@ fields:
     name: Navn
     status: Status
 field_options:
+  directus_activity:
+    create: Opprett
+    update: Oppdater
   directus_collections:
     language: Språk
     archive_divider: Arkiv
