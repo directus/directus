@@ -383,6 +383,9 @@ fields:
     name: 名前
     status: ステータス
 field_options:
+  directus_activity:
+    create: 作成
+    update: 更新
   directus_collections:
     collection_setup: コレクションの作成
     singleton: シングルオブジェクトに設定する
