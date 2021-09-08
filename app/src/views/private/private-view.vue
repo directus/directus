@@ -214,11 +214,11 @@ export default defineComponent({
 		width: 100%;
 		height: 100%;
 		overflow: auto;
+		scroll-padding-top: 100px;
 
 		// Page Content Spacing (Could be converted to Project Setting toggle)
 		font-size: 15px;
 		line-height: 24px;
-		scroll-padding-top: 100px;
 
 		main {
 			display: contents;
