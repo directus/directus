@@ -147,9 +147,9 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: Here is what this item looked like after the update...
-changes_made: These are the specific changes that were made...
-no_relational_data: Keep in mind that this does not include relational data.
+revision_post_update: Here is what this item looked like after the update.
+changes_made: Below are the specific changes made in this revision.
+no_relational_data: Keep in mind that relational data is not included here.
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
 delete_field: Delete Field
