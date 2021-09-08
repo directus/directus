@@ -7,12 +7,14 @@ export type BasemapSource = {
 	name: string;
 	type: 'raster' | 'tile' | 'style';
 	url: string;
+	tileSize?: number;
 };
 
 const defaultBasemap: BasemapSource = {
 	name: 'OpenStreetMap',
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	tileSize: 256,
 };
 
 const baseStyle: Style = {
@@ -38,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
+			source.tileSize = basemap.tileSize || 512;
 		}
 		if (basemap.type == 'tile') {
 			source.url = basemap.url;
