@@ -318,3 +318,17 @@ fields:
             interface: text-input
             options:
               placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png
+        - field: tileSize
+          name: $t:tile_size
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: '512'
+            conditions:
+              name: typeNeqRaster
+              rule:
+                type:
+                  _neq: 'raster'
+              hidden: true
