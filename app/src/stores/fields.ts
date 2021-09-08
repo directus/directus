@@ -90,6 +90,10 @@ export const useFieldsStore = defineStore({
 			}
 
 			if (field.meta?.conditions) {
+				field.meta.conditions_raw = field.meta.conditions.map((condition) => ({
+					...condition,
+					rule: condition.rule,
+				}));
 				field.meta.conditions = field.meta.conditions.map((condition) => ({
 					...condition,
 					rule: parseFilter(condition.rule),

@@ -27,7 +27,7 @@ export default defineComponent({
 
 		const value = computed({
 			get() {
-				return get(state, 'fieldData.meta.conditions', []);
+				return get(state, 'fieldData.meta.conditions_raw', []);
 			},
 			set(value: Condition[]) {
 				set(state, 'fieldData.meta.conditions', value);

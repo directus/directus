@@ -36,6 +36,7 @@ export type FieldMeta = {
 	width: Width | null;
 	note: string | null;
 	conditions: Condition[] | null;
+	conditions_raw: Condition[] | null;
 	system?: true;
 };
 
