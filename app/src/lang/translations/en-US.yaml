@@ -388,7 +388,7 @@ no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: There are no webhooks yet.
+no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 all_items: All Items
 any: Any
 csv: CSV
