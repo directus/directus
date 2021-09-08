@@ -124,6 +124,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 
 		await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database });
 
+		logger.info(`Snapshot applied successfully`);
+
 		database.destroy();
 		process.exit(0);
 	} catch (err: any) {

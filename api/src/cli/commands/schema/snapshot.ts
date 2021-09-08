@@ -46,6 +46,8 @@ export async function snapshot(
 			await fs.writeFile(filename, JSON.stringify(snapshot));
 		}
 
+		logger.info(`Snapshot saved to ${filename}`);
+
 		database.destroy();
 		process.exit(0);
 	} catch (err: any) {
