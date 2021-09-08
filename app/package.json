@@ -93,7 +93,7 @@
 		"qrcode": "1.4.4",
 		"rimraf": "3.0.2",
 		"sass": "1.39.0",
-		"tinymce": "5.9.1",
+		"tinymce": "5.9.2",
 		"typescript": "4.4.2",
 		"vite": "2.5.5",
 		"vue": "3.2.10",
