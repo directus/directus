@@ -160,9 +160,24 @@ export class AuthenticationService {
 			}
 		}
 
-		const payload = {
+		let payload = {
 			id: user.id,
 		};
+
+		const [customClaims] = await emitter.emitAsync('auth.jwt.before', payload, {
+			event: 'auth.jwt.before',
+			action: 'jwt',
+			schema: this.schema,
+			payload: payload,
+			accountability: this.accountability,
+			status: 'pending',
+			user: user?.id,
+			database: this.knex,
+		});
+
+		if (customClaims) {
+			payload = { ...payload, ...customClaims };
+		}
 
 		/**
 		 * @TODO
