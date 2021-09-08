@@ -27,7 +27,6 @@ import { useAppStore, useUserStore, useServerStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
-import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
@@ -38,7 +37,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
 
-		const { hydrating, sidebarOpen } = toRefs(appStore);
+		const { hydrating } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
@@ -53,23 +52,6 @@ export default defineComponent({
 			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
 			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
 		});
-
-		const { width } = useWindowSize();
-
-		watch(
-			width,
-			(newWidth, oldWidth) => {
-				if (newWidth === null || newWidth === 0) return;
-				if (newWidth === oldWidth) return;
-
-				if (newWidth >= 1424) {
-					if (sidebarOpen.value === false) sidebarOpen.value = true;
-				} else {
-					if (sidebarOpen.value === true) sidebarOpen.value = false;
-				}
-			},
-			{ immediate: true }
-		);
 
 		watch(
 			() => userStore.currentUser,
