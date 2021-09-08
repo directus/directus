@@ -27,7 +27,6 @@ import { useAppStore, useUserStore, useServerStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
-import useWindowSize from '@/composables/use-window-size';
 import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
@@ -38,7 +37,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
 
-		const { hydrating, sidebarOpen } = toRefs(appStore);
+		const { hydrating } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
