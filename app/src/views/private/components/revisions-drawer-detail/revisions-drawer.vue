@@ -78,7 +78,7 @@ export default defineComponent({
 			return props.revisions.find((revision) => revision.id === props.current);
 		});
 
-		const previousRevision = computed(() => {
+		const previousRevision = computed<Revision | undefined>(() => {
 			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
 
 			// This is assuming props.revisions is in chronological order from newest to oldest
@@ -104,7 +104,7 @@ export default defineComponent({
 			const revertToValues: Record<string, any> = {};
 
 			for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
-				const previousValue = previousRevision.value.data[field];
+				const previousValue = previousRevision.value?.data[field] ?? null;
 				if (isEqual(newValue, previousValue)) continue;
 				revertToValues[field] = previousValue;
 			}

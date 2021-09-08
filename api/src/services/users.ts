@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
@@ -19,6 +18,7 @@ import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
 import { AuthenticationService } from './authentication';
+import { generateHash } from '../utils/generate-hash';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -339,7 +339,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
@@ -403,7 +403,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = await generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 

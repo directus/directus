@@ -75,7 +75,7 @@ import { useAppStore } from '@/stores';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
-	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
+	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/2x/baseline_place_black_24dp.png';
 
 export default defineComponent({
 	props: {
@@ -235,6 +235,16 @@ export default defineComponent({
 					map.setStyle(style.value, { diff: false });
 					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 					await addMarkerImage();
+					map.addControl(controls.draw as IControl, 'top-left');
+					loadValueFromProps();
+				}
+			);
+
+			watch(
+				() => props.disabled,
+				() => {
+					map.removeControl(controls.draw);
+					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 					map.addControl(controls.draw as IControl, 'top-left');
 					loadValueFromProps();
 				}

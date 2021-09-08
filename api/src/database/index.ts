@@ -8,6 +8,7 @@ import { validateEnv } from '../utils/validate-env';
 import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
+import { promisify } from 'util';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -76,18 +77,10 @@ export default function getDatabase(): Knex {
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
 
+			const run = promisify(conn.run.bind(conn));
 			await run('PRAGMA foreign_keys = ON');
 
 			callback(null, conn);
-
-			async function run(sql: string): Promise<any> {
-				return new Promise((resolve, reject) => {
-					conn.run(sql, (err: Error | null, result: any) => {
-						if (err) return reject(err);
-						resolve(result);
-					});
-				});
-			}
 		};
 	}
 

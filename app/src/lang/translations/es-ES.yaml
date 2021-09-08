@@ -814,6 +814,11 @@ fields:
     name: Nombre
     status: Estado
 field_options:
+  directus_activity:
+    login: Iniciar Sesión
+    create: Crear
+    update: Actualización
+    delete: Eliminar
   directus_collections:
     track_activity_revisions: Rastrear actividad y revisiones
     only_track_activity: Sólo seguimiento de actividad

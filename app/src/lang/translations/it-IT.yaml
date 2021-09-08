@@ -887,6 +887,11 @@ field_options:
     basemaps_style: Stile Mapbox
     files_divider_title: File e miniature
     overrides_divider_title: Personalizzazioni App
+  directus_activity:
+    login: Accesso
+    create: Creare
+    update: Aggiornare
+    delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività

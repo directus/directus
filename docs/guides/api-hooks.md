@@ -75,6 +75,7 @@ module.exports = function registerHook({ exceptions }) {
 | Scope                           | Actions                                                     | Before           |
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
 | `cron()`                        | [See below for configuration](#interval-cron)               | No               |
+| `cli.init`                      | `before` and `after`                                        | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
 | `init`                          |                                                             | Optional         |
 | `routes.init`                   | `before` and `after`                                        | No               |
@@ -82,6 +83,7 @@ module.exports = function registerHook({ exceptions }) {
 | `middlewares.init`              | `before` and `after`                                        | No               |
 | `request`                       | `not_found`                                                 | No               |
 | `response`                      |                                                             | No<sup>[1]</sup> |
+| `database.error`                | When a database error is thrown                             | No               |
 | `error`                         |                                                             | No               |
 | `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
 | `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
@@ -141,7 +143,7 @@ module.exports = function registerHook() {
 ## 4. Develop your Custom Hook
 
 > Hooks can impact performance when not carefully implemented. This is especially true for `before` hooks (as these are
-> blocking) and hooks on `read` actions, as a single request can result in a large ammount of database reads.
+> blocking) and hooks on `read` actions, as a single request can result in a large amount of database reads.
 
 ### Register Function
 

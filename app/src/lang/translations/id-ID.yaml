@@ -540,6 +540,11 @@ fields:
     name: Nama
     status: Status
 field_options:
+  directus_activity:
+    login: Masuk
+    create: Buat
+    update: Perbarui
+    delete: Hapus
   directus_collections:
     language: Bahasa
     archive_divider: Arsip

@@ -131,7 +131,7 @@ export default [
 			'icon-image': 'place',
 			'icon-anchor': 'bottom',
 			'icon-allow-overlap': true,
-			'icon-size': 2,
+			'icon-size': 1,
 			'icon-offset': [0, 3],
 		},
 		paint: {
@@ -152,7 +152,7 @@ export default [
 			'icon-image': 'place',
 			'icon-anchor': 'bottom',
 			'icon-allow-overlap': true,
-			'icon-size': 2,
+			'icon-size': 1,
 			'icon-offset': [0, 3],
 		},
 		paint: {
@@ -173,7 +173,7 @@ export default [
 			'icon-image': 'place',
 			'icon-anchor': 'bottom',
 			'icon-allow-overlap': true,
-			'icon-size': 2,
+			'icon-size': 1,
 			'icon-offset': [0, 3],
 		},
 		paint: {

@@ -151,6 +151,11 @@ fields:
     name: Nama
     status: Status
 field_options:
+  directus_activity:
+    login: Log masuk
+    create: Cipta
+    update: Kemaskini
+    delete: Padam
   directus_roles:
     fields:
       name_name: Nama
