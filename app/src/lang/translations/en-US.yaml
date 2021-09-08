@@ -743,6 +743,22 @@ collections: Collections
 singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
+directus_collection:
+  directus_activity: Accountability logs for all events
+  directus_collections: Additional collection configuration and metadata
+  directus_fields: Additional field configuration and metadata
+  directus_files: Metadata for all managed file assets
+  directus_folders: Provides virtual directories for files
+  directus_migrations: What version of the database you're using
+  directus_permissions: Access permissions for each role
+  directus_presets: Presets for collection defaults and bookmarks
+  directus_relations: Relationship configuration and metadata
+  directus_revisions: Data snapshots for all activity
+  directus_roles: Permission groups for system users
+  directus_sessions: User session information
+  directus_settings: Project configuration options
+  directus_users: System users for the platform
+  directus_webhooks: Configuration for event-based HTTP requests
 fields:
   directus_activity:
     item: Item Primary Key
