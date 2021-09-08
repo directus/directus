@@ -238,12 +238,16 @@ export default defineComponent({
 }
 
 .v-divider {
+	--v-divider-color: var(--background-normal-alt);
+
 	position: sticky;
 	top: 0;
 	z-index: 3;
 	margin-top: 8px;
 	margin-bottom: 8px;
+	margin-left: -4px;
 	padding-top: 8px;
+	padding-left: 4px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
 
