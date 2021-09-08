@@ -25,11 +25,16 @@ item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
+group: Gruppe
+and: Og
+or: Eller
 fill_width: Fuld Bredde
 field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
 add_field: Tilføj Felt
 role_name: Rollenavn
+exclusive: Eksklusiv
+children: Underordnede
 db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
@@ -41,7 +46,9 @@ create_role: Opret Rolle
 create_user: Opret bruger
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
+email_examples: "admin{'@'}example.com, bruger{'@'}example.com..."
 invite: Inviter
+email_already_invited: Email "{email}" er allerede blevet inviteret
 emails: E-mail
 connection_excellent: Udmærket forbindelse
 connection_good: God forbindelse
@@ -61,6 +68,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
+public_label: Offentlig
 public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
 not_allowed: Ikke tilladt
 directus_version: Directus Version
@@ -99,9 +107,16 @@ validationError:
   null: Værdien skal være null
   nnull: Værdien kan ikke være null
   required: Værdi er påkrævet
+  unique: Værdien skal være unik
+  regex: Værdien har ikke det korrekte format
 all_access: Alle Adgang
 no_access: Ingen Adgang
 use_custom: Brug Brugerdefineret
+nullable: Nullbar
+allow_null_value: Tillad NULL værdi
+allow_multiple: Tillad Flere
+allow_multiple_to_be_open: Tillad åbning af flere
+enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_m2o: M2O Forhold
@@ -252,6 +267,7 @@ operators:
   ncontains: Indeholder ikke
   empty: Er tom
 loading: Indlæser...
+value_unique: Værdien skal være unik
 no_results: Ingen resultater
 role: Rolle
 create: Opret
