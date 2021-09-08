@@ -146,6 +146,7 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	overflow-x: hidden;
 	background-color: var(--background-page);
 
 	.nav-overlay {
@@ -213,11 +214,11 @@ export default defineComponent({
 		width: 100%;
 		height: 100%;
 		overflow: auto;
-		scroll-padding-top: 100px;
 
 		// Page Content Spacing (Could be converted to Project Setting toggle)
 		font-size: 15px;
 		line-height: 24px;
+		scroll-padding-top: 100px;
 
 		main {
 			display: contents;
@@ -268,12 +269,10 @@ export default defineComponent({
 			position: relative;
 			flex-basis: 64px;
 			flex-shrink: 0;
-			transform: none;
-			transition: flex-basis var(--slow) var(--transition);
+			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 
 			&.is-open {
 				flex-basis: 284px;
-				transform: none;
 			}
 		}
 	}
