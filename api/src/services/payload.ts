@@ -116,11 +116,21 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
-		async 'storage-public-url'({ action, value }) {
-			if (action !== 'read' || !value) return; // only transform on read
-			// else return the public url template for storage, and process the template string.
+		async 'storage-public-url'({ action, value, payload, accountability, specials }) {
+			// eslint-disable-next-line
+            console.log("storage-public-url, action? ", action);
 			// eslint-disable-next-line
             console.log("storage_public_url, value? ", value);
+			// eslint-disable-next-line
+            console.log("storage_public_url, payload?", payload);
+			// eslint-disable-next-line
+            console.log("storage_public_url, accountability?", accountability);
+			// eslint-disable-next-line
+            console.log("storage_public_url, specials?", specials);
+
+			if (action !== 'read') return; // only transform on read
+			// else return the public url template for storage, and process the template string.
+			return 'yolo';
 		},
 	};
 
