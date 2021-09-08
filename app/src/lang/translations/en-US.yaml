@@ -973,6 +973,7 @@ field_options:
     actions_delete: Delete
     actions_login: Login
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
+no_value: No value
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
