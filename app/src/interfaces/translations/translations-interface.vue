@@ -2,12 +2,12 @@
 	<div class="translations">
 		<div class="primary">
 			<v-select
-				:model-value="firstValue"
+				:model-value="firstLang"
 				item-text="code"
 				item-value="code"
 				:filled="true"
 				:items="languages"
-				@update:modelValue="firstValue = $event"
+				@update:modelValue="firstLang = $event"
 			>
 				<template #prepend>
 					<v-icon class="translate" name="translate" />
@@ -20,28 +20,39 @@
 					/>
 				</template>
 			</v-select>
-			<v-form :fields="fields" :color="'primary'" :badge="firstValue" />
+			<v-form
+				:fields="fields"
+				:model-value="firstItem"
+				:color="'primary'"
+				:badge="firstLang"
+				@update:modelValue="updateValue($event, firstLang)"
+			/>
 		</div>
 		<div v-if="sideBySide" class="secondary">
 			<v-select
-				:model-value="secondValue"
+				:model-value="secondLang"
 				item-text="code"
 				item-value="code"
 				:filled="true"
 				:items="languages"
-				@update:modelValue="secondValue = $event"
+				@update:modelValue="secondLang = $event"
 			>
 				<template #prepend>
 					<v-icon class="translate" name="translate" />
 				</template>
 			</v-select>
-			<v-form :fields="fields" :badge="secondValue" />
+			<v-form
+				:fields="fields"
+				:model-value="secondItem"
+				:badge="secondLang"
+				@update:modelValue="updateValue($event, secondLang)"
+			/>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, onMounted, PropType, Ref, ref, toRefs, watch } from 'vue';
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
@@ -49,6 +60,7 @@ import api from '@/api';
 import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { cloneDeep } from 'lodash';
 
 export default defineComponent({
 	name: 'ITranslations',
@@ -79,7 +91,8 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	setup(props) {
+	emits: ['input'],
+	setup(props, { emit }) {
 		const { collection } = toRefs(props);
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -87,8 +100,8 @@ export default defineComponent({
 
 		let sideBySide = ref(false);
 		const { info: collectionInfo } = useCollection(collection);
-		let firstValue = ref('en-US');
-		let secondValue = ref('en-US');
+		let firstLang = ref('en-US');
+		let secondLang = ref('en-US');
 
 		const {
 			relationsForField,
@@ -102,6 +115,7 @@ export default defineComponent({
 		} = useRelations();
 
 		const { languages, loading: languagesLoading, template: internalLanguageTemplate } = useLanguages();
+		const { items, firstItem, updateValue, secondItem } = useEdits();
 
 		const fields = computed(() => {
 			if (translationsCollection.value === null) return [];
@@ -111,8 +125,8 @@ export default defineComponent({
 		return {
 			collectionInfo,
 			sideBySide,
-			firstValue,
-			secondValue,
+			firstLang,
+			secondLang,
 			t,
 			languages,
 			fields,
@@ -124,6 +138,10 @@ export default defineComponent({
 			languagesCollection,
 			languagesPrimaryKeyField,
 			translationsLanguageField,
+			items,
+			firstItem,
+			secondItem,
+			updateValue,
 		};
 
 		function useRelations() {
@@ -224,6 +242,97 @@ export default defineComponent({
 					loading.value = false;
 				}
 			}
+		}
+
+		function useEdits() {
+			const items = ref<Record<string, any>[]>([]);
+
+			const firstItem = computed<Record<string, any>>(computedItem(firstLang));
+			const secondItem = computed<Record<string, any>>(computedItem(secondLang));
+
+			watch(
+				() => props.value,
+				(newVal, oldVal) => {
+					if (newVal.length > 0 && (oldVal === undefined || oldVal.length === 0)) {
+						loadItems();
+					}
+				},
+				{ immediate: true }
+			);
+
+			function computedItem(val: Ref<string>) {
+				return () => {
+					const langField = translationsLanguageField.value;
+
+					if (langField === null) return {};
+
+					const existingItem = items.value.find((item) => item[langField] === val.value);
+					const editedItem = props.value.find(
+						(item) => typeof item === 'object' && item[langField] === val.value
+					) as Record<string, any>;
+					return editedItem ?? existingItem ?? {};
+				};
+			}
+
+			async function loadItems() {
+				const pkField = translationsPrimaryKeyField.value;
+
+				if (pkField === null) return;
+
+				const response = await api.get(`/items/${translationsCollection.value}`, {
+					params: {
+						fields: '*',
+						filter: {
+							[pkField]: {
+								_in: props.value,
+							},
+						},
+					},
+				});
+				items.value = response.data.data;
+			}
+
+			function updateValue(edits: Record<string, any>, lang: string) {
+				const pkField = translationsPrimaryKeyField.value;
+				const langField = translationsLanguageField.value;
+
+				if (pkField === null || langField === null) return;
+
+				let copyValue = cloneDeep(props.value);
+
+				if (pkField in edits === false) {
+					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);
+
+					if (newIndex !== -1) {
+						copyValue[newIndex] = edits;
+					} else {
+						copyValue.push({
+							...edits,
+							[langField]: lang,
+						});
+					}
+				} else {
+					copyValue = copyValue.map((item) => {
+						if (typeof item === 'number' || typeof item === 'string') {
+							if (edits[pkField] === item) {
+								return edits;
+							} else {
+								return item;
+							}
+						} else {
+							if (edits[pkField] === item[pkField]) {
+								return edits;
+							} else {
+								return item;
+							}
+						}
+					});
+				}
+
+				emit('input', copyValue);
+			}
+
+			return { items, firstItem, updateValue, secondItem };
 		}
 	},
 });
