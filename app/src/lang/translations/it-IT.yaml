@@ -1038,6 +1038,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1403,3 +1404,5 @@ layouts:
     invalid_geometry: Geometria non valida
     auto_location_filter: Filtra sempre i dati al rettangolo di selezione
     search_this_area: Cerca in quest'area
+    clear_data_filter: Rimuovi il filtro sui dati
+    clear_location_filter: Rimuovi il filtro sulla posizione
