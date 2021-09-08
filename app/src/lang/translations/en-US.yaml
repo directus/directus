@@ -1278,6 +1278,7 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+    multilang: Multi-language Editing Mode
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1436,4 +1437,3 @@ layouts:
     search_this_area: Search this area
     clear_data_filter: Clear Data Filter
     clear_location_filter: Clear Location Filter
-multilang: Multi-language Editing Mode

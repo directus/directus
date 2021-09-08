@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import TranslationsOptions from './options.vue';
-import InterfaceTranslations from './translations.vue';
+import InterfaceTranslations from './translations-interface.vue';
 
 export default defineInterface({
 	id: 'translations',
