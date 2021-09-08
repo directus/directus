@@ -31,7 +31,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-divider-color: var(--border-subdued);
+	--v-divider-color: var(--border-normal);
 	--v-divider-label-color: var(--foreground-normal-alt);
 }
 </style>

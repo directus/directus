@@ -3,6 +3,7 @@
 		:class="{ margin: icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
+			'--v-divider-color': 'var(--border-subdued)',
 		}"
 		large
 		:inline-title="inlineTitle"
