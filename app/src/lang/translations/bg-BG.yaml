@@ -868,7 +868,7 @@ field_options:
     auth_password_policy:
       none_text: Без - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи 
+      strong_text: Силна - главни, малки, числа и специални символи
     storage_asset_presets:
       fit:
         contain_text: Напасване (запазване на съотношението)
@@ -882,6 +882,11 @@ field_options:
     basemaps_style: Стил на географската карта
     files_divider_title: Файлове и картинки
     overrides_divider_title: Отмяна
+  directus_activity:
+    login: Вход
+    create: Създаване
+    update: Обновяване
+    delete: Изтриване
   directus_collections:
     track_activity_revisions: Проследяване на активността и ревизиите
     only_track_activity: Проследяване само на активността

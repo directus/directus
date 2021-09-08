@@ -140,6 +140,8 @@ fields:
     name: Име
     status: Стање
 field_options:
+  directus_activity:
+    create: Креирај
   directus_collections:
     language: Језик
     archive_divider: Архивирај

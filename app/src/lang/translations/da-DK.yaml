@@ -344,6 +344,11 @@ fields:
     name: Navn
     status: Status
 field_options:
+  directus_activity:
+    login: Log ind
+    create: Opret
+    update: Opdater
+    delete: Slet
   directus_collections:
     language: Sprog
     archive_divider: Arkiver

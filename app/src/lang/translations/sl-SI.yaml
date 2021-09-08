@@ -853,6 +853,11 @@ field_options:
     security_divider_title: Varnost
     files_divider_title: Datoteke & sličice
     overrides_divider_title: Aplikacijske preglasitve
+  directus_activity:
+    login: Prijava
+    create: Ustvari
+    update: Posodobi
+    delete: Izbriši
   directus_collections:
     track_activity_revisions: Sledi aktivnosti in revizije
     only_track_activity: Sledi samo aktivnosti

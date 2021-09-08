@@ -351,6 +351,11 @@ fields:
     name: Jméno
     status: Stav
 field_options:
+  directus_activity:
+    login: Login
+    create: Vytořit
+    update: Úpravy
+    delete: Smazat
   directus_collections:
     language: Jazyk
     archive_divider: Archivovat
