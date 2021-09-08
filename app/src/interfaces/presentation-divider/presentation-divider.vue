@@ -39,6 +39,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .margin {
-	margin-top: 20px;
+	margin-top: 40px;
+	margin-bottom: -10px;
 }
 </style>
