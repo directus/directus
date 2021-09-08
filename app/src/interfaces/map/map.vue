@@ -317,6 +317,9 @@ export default defineComponent({
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
+				if (!initialValue) {
+					return;
+				}
 				if (!props.disabled && !isTypeCompatible(geometryType, initialValue!.type)) {
 					geometryParsingError.value = t('interfaces.map.unexpected_geometry', {
 						expected: geometryType,
