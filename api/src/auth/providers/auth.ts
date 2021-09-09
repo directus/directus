@@ -15,11 +15,9 @@ export interface AuthConstructor {
 
 export default abstract class Auth {
 	knex: Knex;
-	provider: string;
 
 	constructor(knex: Knex, provider: string) {
 		this.knex = knex;
-		this.provider = provider;
 	}
 
 	/**
@@ -38,7 +36,7 @@ export default abstract class Auth {
 	 * @param password User password
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, password?: string): void;
+	abstract verify(user: User, password?: string, ...args: any[]): void;
 
 	/**
 	 * Handle user session refresh

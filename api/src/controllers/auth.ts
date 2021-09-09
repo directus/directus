@@ -27,7 +27,6 @@ const loginSchema = Joi.object({
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
-	provider: Joi.string(),
 }).unknown();
 
 const loginHandler = async (req: any, res: any, next: any) => {
@@ -341,13 +340,6 @@ router.get(
 			req.session?.destroy(() => {
 				// Do nothing
 			});
-
-			const database = getDatabase();
-			const user = await database.select('provider').from('directus_users').where('email', email).first();
-
-			if (!user) {
-				throw new InvalidCredentialsException('Email does not match existing user');
-			}
 
 			/**
 			 * The default auth provider should allow auth by email. If that ever
