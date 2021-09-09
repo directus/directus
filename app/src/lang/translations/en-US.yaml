@@ -20,10 +20,9 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
-status_field:
-  published: Published
-  draft: Draft
-  archived: Archived
+published: Published
+draft: Draft
+archived: Archived
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
