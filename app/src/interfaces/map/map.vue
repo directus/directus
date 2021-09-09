@@ -51,7 +51,6 @@ import {
 	Map,
 	NavigationControl,
 	GeolocateControl,
-	IControl,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
