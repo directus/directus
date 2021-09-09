@@ -1417,7 +1417,6 @@ export class GraphQLService {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
 						identifier: args.email,
-						provider,
 					});
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
