@@ -317,15 +317,15 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									text: t('status_field.published'),
+									text: '$t:status_field.published',
 									value: 'published',
 								},
 								{
-									text: t('status_field.draft'),
+									text: '$t:status_field.draft',
 									value: 'draft',
 								},
 								{
-									text: t('status_field.archived'),
+									text: '$t:status_field.archived',
 									value: 'archived',
 								},
 							],
