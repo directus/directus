@@ -244,12 +244,14 @@ export default defineComponent({
 	top: 0;
 	z-index: 3;
 	margin-top: 8px;
-	margin-bottom: 8px;
-	margin-left: -4px;
+	margin-right: -8px;
+	margin-bottom: 6px;
+	margin-left: -8px;
 	padding-top: 8px;
-	padding-left: 4px;
+	padding-right: 8px;
+	padding-left: 8px;
 	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	box-shadow: 0 0 2px 2px var(--background-normal);
 
 	&:first-of-type {
 		margin-top: 0;
