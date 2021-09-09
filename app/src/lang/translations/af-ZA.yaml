@@ -83,6 +83,8 @@ fields:
   directus_webhooks:
     status: Status
 field_options:
+  directus_activity:
+    create: Skep
   directus_collections:
     language: Taal
   directus_webhooks:

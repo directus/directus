@@ -75,7 +75,7 @@ import { useAppStore } from '@/stores';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const MARKER_ICON_URL =
-	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
+	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/2x/baseline_place_black_24dp.png';
 
 export default defineComponent({
 	props: {
@@ -239,6 +239,16 @@ export default defineComponent({
 					loadValueFromProps();
 				}
 			);
+
+			watch(
+				() => props.disabled,
+				() => {
+					map.removeControl(controls.draw);
+					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
+					map.addControl(controls.draw as IControl, 'top-left');
+					loadValueFromProps();
+				}
+			);
 		}
 
 		function resetValue(hard: boolean) {
@@ -307,6 +317,9 @@ export default defineComponent({
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
+				if (!initialValue) {
+					return;
+				}
 				if (!props.disabled && !isTypeCompatible(geometryType, initialValue!.type)) {
 					geometryParsingError.value = t('interfaces.map.unexpected_geometry', {
 						expected: geometryType,

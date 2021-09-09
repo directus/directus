@@ -1,7 +1,10 @@
+const base = require('../jest.config.js');
+
 require('dotenv').config();
 
 module.exports = {
-	preset: 'ts-jest',
+	...base,
+	roots: ['<rootDir>/src'],
 	verbose: true,
 	setupFiles: ['dotenv/config'],
 	testURL: process.env.TEST_URL || 'http://localhost',

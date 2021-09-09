@@ -824,6 +824,11 @@ field_options:
     language: Idioma
     archive_divider: Archivar
     divider: Ordenar
+  directus_activity:
+    login: Iniciar Sesión
+    create: Crear
+    update: Actualización
+    delete: Eliminar
   directus_roles:
     fields:
       icon_name: Ícono

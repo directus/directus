@@ -1,5 +1,5 @@
-import argon2 from 'argon2';
 import { getSchema } from '../../../utils/get-schema';
+import { generateHash } from '../../../utils/generate-hash';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';
 import logger from '../../../logger';
@@ -13,7 +13,7 @@ export default async function usersPasswd({ email, password }: { email?: string;
 	}
 
 	try {
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = await generateHash(password);
 		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });
 

@@ -163,6 +163,8 @@ fields:
   directus_webhooks:
     status: Stare
 field_options:
+  directus_activity:
+    create: Creează
   directus_collections:
     archive_divider: Arhivează
   directus_roles:

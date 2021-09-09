@@ -75,6 +75,7 @@ import { TFAService } from './tfa';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
+import { generateHash } from '../utils/generate-hash';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -972,7 +973,7 @@ export class GraphQLService {
 				}
 			}
 		} catch (err: any) {
-			this.formatError(err);
+			return this.formatError(err);
 		}
 	}
 
@@ -1604,7 +1605,7 @@ export class GraphQLService {
 					string: GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
-					return await argon2.hash(args.string);
+					return await generateHash(args.string);
 				},
 			},
 			utils_hash_verify: {

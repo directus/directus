@@ -882,6 +882,11 @@ field_options:
     basemaps_style: Mapbox stílus
     files_divider_title: Fájlok és miniatűrök
     overrides_divider_title: Alkalmazás felülbírálások
+  directus_activity:
+    login: Belépés
+    create: Létrehozás
+    update: Frissítés
+    delete: Törlés
   directus_collections:
     track_activity_revisions: Tevékenységek és módosítások nyomon követése
     only_track_activity: Csak a tevékenység nyomon követése

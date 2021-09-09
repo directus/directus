@@ -849,7 +849,7 @@ fields:
     collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     data_label: Enviar Dados do Evento
@@ -863,6 +863,11 @@ field_options:
     additional_transforms: Transformações Adicionais
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
+  directus_activity:
+    login: Entrar
+    create: Criar
+    update: Alteração
+    delete: Excluir
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade

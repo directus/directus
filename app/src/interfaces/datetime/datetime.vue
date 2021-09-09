@@ -59,7 +59,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import formatLocalized from '@/utils/localized-format';
-import { formatISO, parseISO, format, parse } from 'date-fns';
+import { format, formatISO, parse, parseISO, setSeconds } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -251,7 +251,7 @@ export default defineComponent({
 		}
 
 		function setToNow() {
-			internalValue.value = new Date();
+			internalValue.value = props.includeSeconds ? new Date() : setSeconds(new Date(), 0);
 		}
 
 		function useDisplayValue() {
