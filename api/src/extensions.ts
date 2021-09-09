@@ -37,6 +37,7 @@ import getModuleDefault from './utils/get-module-default';
 
 let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
+const registeredHooks: string[] = [];
 
 export async function initializeExtensions(): Promise<void> {
 	try {
@@ -152,6 +153,13 @@ function registerHooks(hooks: Extension[]) {
 	function registerHook(hook: Extension) {
 		const hookPath = path.resolve(hook.path, hook.entrypoint || '');
 		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+
+		// Make sure hooks are only registered once
+		if (registeredHooks.includes(hookPath)) {
+			return;
+		} else {
+			registeredHooks.push(hookPath);
+		}
 
 		const register = getModuleDefault(hookInstance);
 

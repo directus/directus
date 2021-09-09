@@ -67,6 +67,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			},
 		});
 
+		const geometryFieldData = computed(() => {
+			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
+		});
+
+		const isGeometryFieldNative = computed(() => geometryFieldData.value?.type == 'geometry');
+
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
 				({ type, meta }) => type == 'geometry' || meta?.interface == 'map'
@@ -84,9 +90,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		);
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
-			const field = fieldsInCollection.value.filter((field: Field) => field.field == geometryField.value)[0];
+			const field = geometryFieldData.value;
 			if (!field) return undefined;
-			if (field.type == 'geometry') {
+			if (isGeometryFieldNative.value) {
 				return {
 					geometryField: field.field,
 					geometryFormat: 'native',
@@ -103,15 +109,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return undefined;
 		});
 
-		watch(
-			() => geometryOptions.value,
-			(options, _) => {
-				if (options?.geometryFormat !== 'native') {
-					autoLocationFilter.value = false;
-				}
-			}
-		);
-
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
 			return `{{ ${primaryKeyField.value?.field} }}`;
@@ -123,18 +120,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		const _filters = ref(filters.value);
-
 		const locationFilterOutdated = ref(false);
 
 		function getLocationFilter(): Filter | undefined {
-			if (geometryOptions.value?.geometryFormat !== 'native') {
+			if (!isGeometryFieldNative.value || !cameraOptions.value) {
 				return;
 			}
-			if (!geometryField.value || !cameraOptions.value) {
-				return;
-			}
-			const bbox = cameraOptions.value?.bbox;
+			const bbox = cameraOptions.value.bbox;
 			const bboxPolygon = [
 				[bbox[0], bbox[1]],
 				[bbox[2], bbox[1]],
@@ -156,12 +148,21 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function updateLocationFilter() {
 			const locationFilter = getLocationFilter();
 			locationFilterOutdated.value = false;
-			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
+			filters.value = filters.value.filter((filter) => filter.key !== 'location-filter').concat(locationFilter ?? []);
 		}
 
-		function removeLocationFilter() {
+		function clearLocationFilter() {
 			shouldUpdateCamera.value = true;
-			_filters.value = filters.value.filter((filter) => filter.key !== 'location-filter');
+			locationFilterOutdated.value = false;
+			filters.value = filters.value.filter((filter) => filter.key !== 'location-filter');
+			if (geojson.value) {
+				geojsonBounds.value = geojson.value.bbox;
+			}
+		}
+
+		function clearDataFilters() {
+			filters.value = filters.value.filter((filter) => filter.key === 'location-filter');
+			searchQuery.value = null;
 		}
 
 		const shouldUpdateCamera = ref(false);
@@ -177,13 +178,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		);
 
+		watch(
+			() => autoLocationFilter.value,
+			(value) => {
+				if (value) updateLocationFilter();
+			}
+		);
+
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
+			filters,
 			searchQuery,
 			fields: queryFields,
-			filters: _filters,
 		});
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
@@ -324,6 +332,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			handleSelect,
 			geometryFormat,
 			geometryField,
+			isGeometryFieldNative,
 			cameraOptions,
 			autoLocationFilter,
 			clusterData,
@@ -336,6 +345,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			itemCount,
 			fieldsInCollection,
 			limit,
+			filters,
 			primaryKeyField,
 			sort,
 			info,
@@ -347,7 +357,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			customLayerDrawerOpen,
 			locationFilterOutdated,
 			updateLocationFilter,
-			removeLocationFilter,
+			clearLocationFilter,
+			clearDataFilters,
 		};
 
 		async function resetPresetAndRefresh() {
