@@ -6,7 +6,7 @@
 			:value="field.field"
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span v-tooltip="edited ? t('edited') : null" class="flex" @click="toggle">
+		<span v-tooltip="edited ? t('edited') : null" @click="toggle">
 			{{ field.name }}
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
@@ -63,11 +63,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.flex {
-	display: flex;
-	flex-direction: row;
-}
-
 .label {
 	position: relative;
 	display: flex;
