@@ -16,7 +16,7 @@
 					<v-icon
 						v-if="!sideBySide"
 						v-tooltip="t('interfaces.translations.multilang')"
-						name="add"
+						name="flip"
 						@click.stop="sideBySide = !sideBySide"
 					/>
 				</template>
@@ -24,6 +24,7 @@
 			<v-form
 				:fields="fields"
 				:model-value="firstItem"
+				:initial-values="firstItem"
 				:color="'primary'"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
@@ -49,7 +50,12 @@
 					/>
 				</template>
 			</v-select>
-			<v-form :fields="fields" :model-value="secondItem" @update:modelValue="updateValue($event, secondLang)" />
+			<v-form
+				:initial-values="secondItem"
+				:fields="fields"
+				:model-value="secondItem"
+				@update:modelValue="updateValue($event, secondLang)"
+			/>
 		</div>
 	</div>
 </template>
@@ -244,6 +250,8 @@ export default defineComponent({
 				(newVal, oldVal) => {
 					if (newVal.length > 0 && (oldVal === undefined || oldVal.length === 0)) {
 						loadItems();
+					} else if (newVal.every((val) => typeof val !== 'object') && oldVal?.some((val) => typeof val === 'object')) {
+						loadItems();
 					}
 				},
 				{ immediate: true }
@@ -328,6 +336,8 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .translations {
+	// padding: 20px;
+	// background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
 	display: flex;
 	gap: 24px;
 
@@ -341,31 +351,40 @@ export default defineComponent({
 
 	:deep(.v-select) {
 		.v-input .input {
-			background-color: var(--background-normal);
+			color: var(--primary);
+			// background-color: var(--background-normal);
+			background-color: var(--primary-alt);
 			border: 0px;
 		}
 
 		.v-icon {
 			margin-left: 6px;
+			color: var(--primary);
+		}
+	}
+
+	:deep(.v-form) {
+		.field .label {
+			color: var(--primary);
 		}
 	}
 
 	.secondary {
 		:deep(.v-select) {
 			.v-input .input {
-				color: var(--primary);
-				background-color: var(--primary-alt);
+				color: var(--blue);
+				background-color: var(--blue-alt);
 				border: 0px;
 			}
 
 			.v-icon {
-				color: var(--primary);
+				color: var(--blue);
 			}
 		}
 
 		:deep(.v-form) {
 			.field .label {
-				color: var(--primary);
+				color: var(--blue);
 			}
 		}
 	}

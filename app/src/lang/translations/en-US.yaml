@@ -1278,7 +1278,7 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
-    multilang: Multi-language Editing Mode
+    multilang: Split View
     language_field: Language Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
