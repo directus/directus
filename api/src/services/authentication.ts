@@ -171,6 +171,7 @@ export class AuthenticationService {
 		 */
 		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
@@ -237,6 +238,7 @@ export class AuthenticationService {
 
 		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
