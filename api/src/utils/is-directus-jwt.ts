@@ -2,9 +2,10 @@ import atob from 'atob';
 import logger from '../logger';
 
 /**
- * Check if a given string conforms to the structure of a JWT.
+ * Check if a given string conforms to the structure of a JWT
+ * and whether it is issued by Directus.
  */
-export default function isJWT(string: string): boolean {
+export default function isDirectusJWT(string: string): boolean {
 	const parts = string.split('.');
 
 	// JWTs have the structure header.payload.signature
@@ -23,7 +24,8 @@ export default function isJWT(string: string): boolean {
 	// Check if the header and payload are valid JSON
 	try {
 		JSON.parse(atob(parts[0]));
-		JSON.parse(atob(parts[1]));
+		const payload = JSON.parse(atob(parts[1]));
+		if (payload.iss !== 'directus') return false;
 	} catch {
 		return false;
 	}

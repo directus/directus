@@ -75,6 +75,7 @@ module.exports = function registerHook({ exceptions }) {
 | Scope                           | Actions                                                     | Before           |
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
 | `cron()`                        | [See below for configuration](#interval-cron)               | No               |
+| `cli.init`                      | `before` and `after`                                        | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
 | `init`                          |                                                             | Optional         |
 | `routes.init`                   | `before` and `after`                                        | No               |
@@ -82,6 +83,7 @@ module.exports = function registerHook({ exceptions }) {
 | `middlewares.init`              | `before` and `after`                                        | No               |
 | `request`                       | `not_found`                                                 | No               |
 | `response`                      |                                                             | No<sup>[1]</sup> |
+| `database.error`                | When a database error is thrown                             | No               |
 | `error`                         |                                                             | No               |
 | `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
 | `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
@@ -89,7 +91,7 @@ module.exports = function registerHook({ exceptions }) {
 | `activity`                      | `create`, `update` and `delete`                             | Optional         |
 | `collections`                   | `create`, `update` and `delete`                             | Optional         |
 | `fields`                        | `create`, `update` and `delete`                             | Optional         |
-| `files`                         | `upload`<sup>[3]</sup>, `create`, `update` and `delete`     | Optional         |
+| `files`                         | `upload`<sup>[3]</sup>                                      | No               |
 | `folders`                       | `create`, `update` and `delete`                             | Optional         |
 | `permissions`                   | `create`, `update` and `delete`                             | Optional         |
 | `presets`                       | `create`, `update` and `delete`                             | Optional         |

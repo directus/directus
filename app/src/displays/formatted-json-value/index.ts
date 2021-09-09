@@ -5,7 +5,7 @@ export default defineDisplay({
 	id: 'formatted-json-value',
 	name: '$t:displays.formatted-json-value.formatted-json-value',
 	description: '$t:displays.formatted-json-value.description',
-	types: ['json'],
+	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
 	handler: DisplayJsonValue,
 	options: [

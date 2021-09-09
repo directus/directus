@@ -14,11 +14,11 @@
 			@featureclick="handleClick"
 			@featureselect="handleSelect"
 			@moveend="cameraOptionsWritable = $event"
-			@fitdata="removeLocationFilter"
+			@fitdata="clearLocationFilter"
 		/>
 
 		<v-button
-			v-if="!autoLocationFilter && locationFilterOutdated"
+			v-if="isGeometryFieldNative && !autoLocationFilter && locationFilterOutdatedWritable"
 			small
 			class="location-filter"
 			@click="updateLocationFilter"
@@ -46,10 +46,26 @@
 				{{ geojsonError }}
 			</v-info>
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-			<slot
+			<v-info
 				v-else-if="itemCount === 0 && (searchQuery || activeFilterCount > 0 || !locationFilterOutdated)"
-				name="no-results"
-			/>
+				icon="search"
+				center
+				:title="t('no_results_here')"
+			>
+				<template #append>
+					<v-card-actions>
+						<v-button
+							:disabled="!searchQuery && !filters.filter((f) => f.key !== 'location-filter').length"
+							@click="clearDataFilters"
+						>
+							{{ t('clear_data_filters') }}
+						</v-button>
+						<v-button :disabled="locationFilterOutdated" @click="clearLocationFilter">
+							{{ t('layouts.map.clear_location_filter') }}
+						</v-button>
+					</v-card-actions>
+				</template>
+			</v-info>
 		</transition>
 
 		<template v-if="loading || itemCount > 0">
@@ -102,6 +118,7 @@ import { defineComponent, PropType } from 'vue';
 import MapComponent from './components/map.vue';
 import useSync from '@/composables/use-sync';
 import { GeometryOptions, Item } from '@directus/shared/types';
+import { Filter } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -195,6 +212,10 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
+		filters: {
+			type: Array as PropType<Filter[]>,
+			required: true,
+		},
 		autoLocationFilter: {
 			type: Boolean,
 			default: undefined,
@@ -207,8 +228,16 @@ export default defineComponent({
 			type: Function as PropType<() => void>,
 			required: true,
 		},
-		removeLocationFilter: {
+		clearDataFilters: {
 			type: Function as PropType<() => void>,
+			required: true,
+		},
+		clearLocationFilter: {
+			type: Function as PropType<() => void>,
+			required: true,
+		},
+		isGeometryFieldNative: {
+			type: Boolean,
 			required: true,
 		},
 	},
@@ -218,8 +247,9 @@ export default defineComponent({
 
 		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 		const limitWritable = useSync(props, 'limit', emit);
+		const locationFilterOutdatedWritable = useSync(props, 'locationFilterOutdated', emit);
 
-		return { t, n, cameraOptionsWritable, limitWritable };
+		return { t, n, cameraOptionsWritable, limitWritable, locationFilterOutdatedWritable };
 	},
 });
 </script>
@@ -312,7 +342,7 @@ export default defineComponent({
 	pointer-events: none;
 }
 
-.v-info > :deep(.v-button) {
+.v-info :deep(.v-button) {
 	pointer-events: initial;
 }
 
