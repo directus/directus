@@ -163,6 +163,11 @@ export default defineComponent({
 	}
 
 	.user {
+		span {
+			margin: -6px;
+			padding: 6px;
+		}
+
 		&:hover {
 			color: var(--foreground-normal);
 		}
