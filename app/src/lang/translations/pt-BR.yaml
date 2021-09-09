@@ -19,9 +19,10 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-Published: Publicado
-Draft: Rascunho
-Archived: Arquivado
+status_field:
+  published: Publicado
+  draft: Rascunho
+  archived: Arquivado
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
