@@ -303,7 +303,7 @@ export class UsersService extends ItemsService {
 
 		for (const email of emails) {
 			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d', issuer: 'directus' });
 			const subjectLine = subject ?? "You've been invited";
 			const inviteURL = url ? new Url(url) : new Url(env.PUBLIC_URL).addPath('admin', 'accept-invite');
 			inviteURL.setQuery('token', token);
@@ -323,7 +323,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 		};
@@ -366,7 +366,7 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
@@ -386,7 +386,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 		};

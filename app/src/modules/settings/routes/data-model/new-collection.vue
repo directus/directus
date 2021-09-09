@@ -317,15 +317,15 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									text: 'Published',
+									text: '$t:published',
 									value: 'published',
 								},
 								{
-									text: 'Draft',
+									text: '$t:draft',
 									value: 'draft',
 								},
 								{
-									text: 'Archived',
+									text: '$t:archived',
 									value: 'archived',
 								},
 							],

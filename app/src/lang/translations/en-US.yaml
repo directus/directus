@@ -22,6 +22,9 @@
 
 avatar: Avatar
 default: Default
+published: Published
+draft: Draft
+archived: Archived
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
