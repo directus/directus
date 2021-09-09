@@ -111,10 +111,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		chip: {
-			type: String,
-			default: null,
-		},
 	},
 	emits: ['toggle-batch', 'unset', 'update:modelValue'],
 	setup(props, { emit }) {
