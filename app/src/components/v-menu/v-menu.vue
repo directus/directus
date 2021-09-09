@@ -104,7 +104,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
-	emits: ['update:modelValue', 'something'],
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement | null>(null);
 		const reference = ref<HTMLElement | null>(null);
