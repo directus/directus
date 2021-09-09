@@ -11,7 +11,6 @@
 					:batch-active="batchActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
-					:badge="badge"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
@@ -83,10 +82,6 @@ export default defineComponent({
 		batchActive: {
 			type: Boolean,
 			default: false,
-		},
-		badge: {
-			type: String,
-			default: '',
 		},
 		disabled: {
 			type: Boolean,

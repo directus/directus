@@ -10,9 +10,6 @@
 			{{ field.name }}
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-			<v-chip v-if="badge" :x-small="true">
-				{{ badge }}
-			</v-chip>
 		</span>
 	</div>
 </template>
@@ -55,10 +52,6 @@ export default defineComponent({
 		hasError: {
 			type: Boolean,
 			default: false,
-		},
-		badge: {
-			type: String,
-			default: '',
 		},
 	},
 	emits: ['toggle-batch'],
