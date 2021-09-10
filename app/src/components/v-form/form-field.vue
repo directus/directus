@@ -11,6 +11,7 @@
 					:batch-active="batchActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
+					:badge="badge"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
@@ -110,6 +111,10 @@ export default defineComponent({
 		autofocus: {
 			type: Boolean,
 			default: false,
+		},
+		badge: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['toggle-batch', 'unset', 'update:modelValue'],

@@ -11,6 +11,7 @@
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
+		<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 	</div>
 </template>
 
@@ -53,6 +54,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 	},
 	emits: ['toggle-batch'],
 	setup() {
@@ -77,6 +82,10 @@ export default defineComponent({
 	.v-checkbox {
 		height: 18px; // Don't push down label with normal icon height (24px)
 		margin-right: 4px;
+	}
+
+	.v-chip {
+		margin: 0 0 0 8px;
 	}
 
 	.required {
@@ -118,7 +127,7 @@ export default defineComponent({
 			pointer-events: none;
 		}
 
-		> span {
+		> span:not(.v-chip) {
 			margin-left: -16px;
 			padding-left: 16px;
 		}

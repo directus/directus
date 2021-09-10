@@ -1,46 +1,26 @@
 <template>
-	<div class="translations">
+	<div class="translations" :class="{ split: sideBySide }">
 		<div class="primary">
-			<v-select
-				:model-value="firstLang"
-				:item-text="languageField ?? languagesPrimaryKeyField"
-				:item-value="languagesPrimaryKeyField"
-				:filled="true"
-				:items="languages"
-				@update:modelValue="firstLang = $event"
-			>
-				<template #prepend>
-					<v-icon class="translate" name="translate" />
-				</template>
+			<language-select :model-value="firstLang" :items="languageOptions" @update:modelValue="firstLang = $event">
 				<template #append>
 					<v-icon
-						v-if="!sideBySide"
+						v-if="!sideBySide && width > 960"
 						v-tooltip="t('interfaces.translations.multilang')"
 						name="flip"
 						@click.stop="sideBySide = !sideBySide"
 					/>
 				</template>
-			</v-select>
+			</language-select>
 			<v-form
 				:fields="fields"
 				:model-value="firstItem"
-				:initial-values="firstItem"
-				:color="'primary'"
+				:initial-values="firstItemInitial"
+				:badge="firstLang"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 		</div>
 		<div v-if="sideBySide" class="secondary">
-			<v-select
-				:model-value="secondLang"
-				:item-text="languageField ?? languagesPrimaryKeyField"
-				:item-value="languagesPrimaryKeyField"
-				:filled="true"
-				:items="languages"
-				@update:modelValue="secondLang = $event"
-			>
-				<template #prepend>
-					<v-icon class="translate" name="translate" />
-				</template>
+			<language-select :model-value="secondLang" :items="languageOptions" @update:modelValue="secondLang = $event">
 				<template #append>
 					<v-icon
 						v-if="sideBySide"
@@ -49,10 +29,11 @@
 						@click.stop="sideBySide = !sideBySide"
 					/>
 				</template>
-			</v-select>
+			</language-select>
 			<v-form
-				:initial-values="secondItem"
+				:initial-values="secondItemInitial"
 				:fields="fields"
+				:badge="secondLang"
 				:model-value="secondItem"
 				@update:modelValue="updateValue($event, secondLang)"
 			/>
@@ -61,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch } from 'vue';
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
@@ -68,10 +50,16 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
+import useWindowSize from '@/composables/use-window-size';
+import { isEmpty, notEmpty } from '@/utils/is-empty';
+
+let sideBySide = ref(false);
+let firstLang = ref('en-US');
+let secondLang = ref('en-US');
 
 export default defineComponent({
-	components: {},
+	components: { LanguageSelect },
 	props: {
 		collection: {
 			type: String,
@@ -90,8 +78,8 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Array as PropType<(string | number | Record<string, any>)[]>,
-			default: () => [],
+			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
+			default: null,
 		},
 	},
 	emits: ['input'],
@@ -101,10 +89,21 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
 
-		let sideBySide = ref(false);
 		const { info: collectionInfo } = useCollection(collection);
-		let firstLang = ref('en-US');
-		let secondLang = ref('en-US');
+
+		watch(sideBySide, (newVal) => {
+			const lang = languageOptions.value;
+			if (newVal && secondLang.value === firstLang.value)
+				secondLang.value = lang[0].value === firstLang.value ? lang[1].value : lang[0].value;
+		});
+
+		const { width } = useWindowSize();
+
+		watch(width, (newWidth) => {
+			if (sideBySide.value && newWidth <= 960) {
+				sideBySide.value = false;
+			}
+		});
 
 		const {
 			relationsForField,
@@ -117,8 +116,8 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages } = useLanguages();
-		const { items, firstItem, updateValue, secondItem } = useEdits();
+		const { languageOptions } = useLanguages();
+		const { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial } = useEdits();
 
 		const fields = computed(() => {
 			if (translationsCollection.value === null) return [];
@@ -131,7 +130,7 @@ export default defineComponent({
 			firstLang,
 			secondLang,
 			t,
-			languages,
+			languageOptions,
 			fields,
 			relationsForField,
 			translationsRelation,
@@ -146,6 +145,9 @@ export default defineComponent({
 			secondItem,
 			updateValue,
 			relationsStore,
+			firstItemInitial,
+			secondItemInitial,
+			width,
 		};
 
 		function useRelations() {
@@ -212,7 +214,42 @@ export default defineComponent({
 
 			watch(languagesCollection, fetchLanguages, { immediate: true });
 
-			return { languages, loading, error };
+			const languageOptions = computed(() => {
+				const langField = translationsLanguageField.value;
+
+				if (langField === null) return [];
+
+				const writableFields = fields.value.filter(
+					(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+				);
+				const totalFields = writableFields.length;
+
+				return languages.value.map((language) => {
+					if (languagesPrimaryKeyField.value === null) return language;
+					const langCode = language[languagesPrimaryKeyField.value];
+					const initialValue = items.value.find((item) => item[langField] === langCode) ?? {};
+					const edits = props.value?.find((val) => typeof val === 'object' && val[langField] === langCode) as
+						| Record<string, any>
+						| undefined;
+					const item = { ...initialValue, ...(edits ?? {}) };
+
+					const filledFields = writableFields.reduce((acc, field) => {
+						if (field.field in item && notEmpty(item[field.field])) acc += 1;
+						return acc;
+					}, 0);
+
+					return {
+						text: language[props.languageField ?? languagesPrimaryKeyField.value],
+						value: langCode,
+						edited: edits !== undefined,
+						progress: (filledFields / totalFields) * 100,
+						max: totalFields,
+						current: filledFields,
+					};
+				});
+			});
+
+			return { languageOptions, loading, error };
 
 			async function fetchLanguages() {
 				if (!languagesCollection.value || !languagesPrimaryKeyField.value) return;
@@ -245,29 +282,34 @@ export default defineComponent({
 			const firstItem = computed<Record<string, any>>(computedItem(firstLang));
 			const secondItem = computed<Record<string, any>>(computedItem(secondLang));
 
+			const firstItemInitial = computed<Record<string, any>>(computedItem(firstLang, false));
+			const secondItemInitial = computed<Record<string, any>>(computedItem(secondLang, false));
+
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (newVal.length > 0 && (oldVal === undefined || oldVal.length === 0)) {
+					if (newVal && newVal.every((val) => typeof val !== 'object')) {
 						loadItems();
-					} else if (newVal.every((val) => typeof val !== 'object') && oldVal?.some((val) => typeof val === 'object')) {
-						loadItems();
+					} else if (newVal === null || newVal.length === 0) {
+						items.value = [];
 					}
 				},
 				{ immediate: true }
 			);
 
-			function computedItem(val: Ref<string>) {
+			function computedItem(val: Ref<string>, mergeEdits = true) {
 				return () => {
 					const langField = translationsLanguageField.value;
 
 					if (langField === null) return {};
 
 					const existingItem = items.value.find((item) => item[langField] === val.value);
-					const editedItem = props.value.find(
+					const editedItem = props.value?.find(
 						(item) => typeof item === 'object' && item[langField] === val.value
 					) as Record<string, any>;
-					return editedItem ?? existingItem ?? {};
+
+					if (mergeEdits) return editedItem ?? existingItem ?? {};
+					else return existingItem ?? {};
 				};
 			}
 
@@ -295,13 +337,17 @@ export default defineComponent({
 
 				if (pkField === null || langField === null) return;
 
-				let copyValue = cloneDeep(props.value);
+				let copyValue = cloneDeep(props.value ?? []);
 
 				if (pkField in edits === false) {
 					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);
 
 					if (newIndex !== -1) {
-						copyValue[newIndex] = edits;
+						if (Object.keys(edits).length === 1 && langField in edits) {
+							copyValue.splice(newIndex, 1);
+						} else {
+							copyValue[newIndex] = edits;
+						}
 					} else {
 						copyValue.push({
 							...edits,
@@ -309,6 +355,8 @@ export default defineComponent({
 						});
 					}
 				} else {
+					const initialValues = items.value.find((item) => item[langField] === lang);
+
 					copyValue = copyValue.map((item) => {
 						if (typeof item === 'number' || typeof item === 'string') {
 							if (edits[pkField] === item) {
@@ -318,7 +366,11 @@ export default defineComponent({
 							}
 						} else {
 							if (edits[pkField] === item[pkField]) {
-								return edits;
+								if (isEqual(initialValues, { ...initialValues, ...edits })) {
+									return edits[pkField];
+								} else {
+									return edits;
+								}
 							} else {
 								return item;
 							}
@@ -329,7 +381,7 @@ export default defineComponent({
 				emit('input', copyValue);
 			}
 
-			return { items, firstItem, updateValue, secondItem };
+			return { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial };
 		}
 	},
 });
@@ -364,9 +416,21 @@ export default defineComponent({
 	}
 
 	:deep(.v-form) {
-		.field .label {
-			color: var(--primary);
+		.field {
+			.label {
+				// color: var(--primary);
+
+				.v-chip {
+					color: var(--primary);
+					background-color: var(--primary-alt);
+					border: none;
+				}
+			}
 		}
+	}
+
+	&.split :deep(.v-form) .field {
+		grid-column: start/fill;
 	}
 
 	.secondary {
@@ -383,8 +447,9 @@ export default defineComponent({
 		}
 
 		:deep(.v-form) {
-			.field .label {
+			.field .label .v-chip {
 				color: var(--blue);
+				background-color: var(--blue-alt);
 			}
 		}
 	}
