@@ -122,6 +122,7 @@ fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_update: بسم الله الرحمن الرحيم.
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
