@@ -7,18 +7,19 @@ export type BasemapSource = {
 	name: string;
 	type: 'raster' | 'tile' | 'style';
 	url: string;
+	tileSize?: number;
 };
 
 const defaultBasemap: BasemapSource = {
 	name: 'OpenStreetMap',
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	tileSize: 256,
 };
 
 const baseStyle: Style = {
 	version: 8,
-	glyphs:
-		'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_GCS_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
+	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
 
 export function getBasemapSources(): BasemapSource[] {
@@ -39,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
+			source.tileSize = basemap.tileSize || 512;
 		}
 		if (basemap.type == 'tile') {
 			source.url = basemap.url;
@@ -93,7 +95,7 @@ function setMapboxAccessToken(styleURL: string): void {
 			const token = url.searchParams.get('access_token');
 			if (token) maplibre.accessToken = token;
 		}
-	} catch (e) {
+	} catch {
 		return;
 	}
 }

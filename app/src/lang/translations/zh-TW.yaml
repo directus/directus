@@ -545,6 +545,11 @@ fields:
     name: 名稱
     status: 狀態
 field_options:
+  directus_activity:
+    login: 登入
+    create: 新建
+    update: 更新
+    delete: 刪除
   directus_collections:
     language: 語言
     archive_divider: 封存
@@ -556,7 +561,7 @@ field_options:
     collection_list:
       fields:
         type_name: 類型
-      collections_name: 資料集
+    collections_name: 資料集
   directus_webhooks:
     actions_create: 新建
     actions_update: 更新

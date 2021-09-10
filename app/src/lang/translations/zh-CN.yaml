@@ -796,7 +796,6 @@ fields:
     admin_options: 管理员设置
     status: 状态
     status_draft: 草稿
-    status_invited: 非活跃
     status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档
@@ -850,6 +849,15 @@ fields:
     triggers: 触发条件
     actions: 操作
 field_options:
+  directus_settings:
+    security_divider_title: 安全
+    files_divider_title: 文件和缩略图
+    overrides_divider_title: 应用设置覆盖
+  directus_activity:
+    login: 登录
+    create: 创建
+    update: 更新
+    delete: 删除
   directus_collections:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动
@@ -867,11 +875,7 @@ field_options:
     collection_list:
       fields:
         type_name: 类型
-      collections_name: 集合
-    public_divider_title: 公开页面
-    security_divider_title: 安全
-    files_divider_title: 文件和缩略图
-    overrides_divider_title: 应用设置覆盖
+    collections_name: 集合
   directus_users:
     preferences_divider: 用户设置
     dropdown_auto: 自动 (系统主题)

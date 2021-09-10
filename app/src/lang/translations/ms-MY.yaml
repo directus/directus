@@ -151,11 +151,15 @@ fields:
     name: Nama
     status: Status
 field_options:
+  directus_activity:
+    login: Log masuk
+    create: Cipta
+    update: Kemaskini
+    delete: Padam
   directus_roles:
     fields:
       name_name: Nama
-    collection_list:
-      collections_name: Koleksi-koleksi
+    collections_name: Koleksi-koleksi
   directus_webhooks:
     actions_create: Cipta
     actions_update: Kemaskini

@@ -26,6 +26,7 @@ While Directus is always completely free, you will likely need to pay for these 
 - [Internet Information Services (IIS)](/guides/installation/iis)
 - [Amazon AWS](/guides/installation/aws)
 - [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
+- [Shared Hosting with Plesk](/guides/installation/plesk)
 
 ## One-Click Installs
 

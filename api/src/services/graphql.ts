@@ -74,6 +74,7 @@ import { SpecificationService } from './specifications';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
+import { generateHash } from '../utils/generate-hash';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -157,7 +158,7 @@ export class GraphQLService {
 				variableValues: variables,
 				operationName,
 			});
-		} catch (err) {
+		} catch (err: any) {
 			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
@@ -970,8 +971,8 @@ export class GraphQLService {
 					return { ids: keys };
 				}
 			}
-		} catch (err) {
-			this.formatError(err);
+		} catch (err: any) {
+			return this.formatError(err);
 		}
 	}
 
@@ -1007,7 +1008,7 @@ export class GraphQLService {
 			}
 
 			return true;
-		} catch (err) {
+		} catch (err: any) {
 			throw this.formatError(err);
 		}
 	}
@@ -1506,7 +1507,7 @@ export class GraphQLService {
 
 					try {
 						await service.requestPasswordReset(args.email, args.reset_url || null);
-					} catch (err) {
+					} catch (err: any) {
 						if (err instanceof InvalidPayloadException) {
 							throw err;
 						}
@@ -1604,7 +1605,7 @@ export class GraphQLService {
 					string: GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
-					return await argon2.hash(args.string);
+					return await generateHash(args.string);
 				},
 			},
 			utils_hash_verify: {

@@ -47,7 +47,7 @@ export default async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	}
 

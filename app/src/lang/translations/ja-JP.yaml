@@ -383,6 +383,11 @@ fields:
     name: 名前
     status: ステータス
 field_options:
+  directus_activity:
+    login: ログイン
+    create: 作成
+    update: 更新
+    delete: 削除
   directus_collections:
     collection_setup: コレクションの作成
     singleton: シングルオブジェクトに設定する
@@ -396,7 +401,7 @@ field_options:
     collection_list:
       fields:
         type_name: タイプ
-      collections_name: コレクション
+    collections_name: コレクション
   directus_webhooks:
     actions_create: 作成
     actions_update: 更新

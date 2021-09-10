@@ -50,7 +50,7 @@ export default defineComponent({
 				});
 
 				done.value = true;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				sending.value = false;

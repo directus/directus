@@ -288,7 +288,7 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					duplicating.value = false;

@@ -553,6 +553,10 @@ fields:
     name: Tên
     status: Trạng thái
 field_options:
+  directus_activity:
+    login: Đăng nhập
+    create: Tạo
+    update: Cập nhật
   directus_collections:
     language: Ngôn ngữ
     archive_divider: Lưu trữ
@@ -564,7 +568,7 @@ field_options:
     collection_list:
       fields:
         type_name: Kiểu
-      collections_name: Danh mục
+    collections_name: Danh mục
   directus_users:
     status_dropdown_active: Kích hoạt
   directus_webhooks:

@@ -63,7 +63,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
@@ -105,7 +105,7 @@ export class FilesService extends ItemsService {
 				if (payload.metadata?.iptc?.Keywords) {
 					payload.tags = payload.metadata.iptc.Keywords;
 				}
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(`Couldn't extract metadata from file`);
 				logger.warn(err);
 			}
@@ -156,7 +156,7 @@ export class FilesService extends ItemsService {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
 				responseType: 'stream',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {

@@ -65,7 +65,7 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&heig
 ```
 
 For even more advanced control over the file generation, Directus exposes
-[the full `sharp` API](https://sharp.pixelplumbing.com/api-operation) through the `transform` query parameter. This
+[the full `sharp` API](https://sharp.pixelplumbing.com/api-operation) through the `transforms` query parameter. This
 parameter accepts a two-dimensional array with the format `[Operation, ...arguments]`, for example:
 
 ```

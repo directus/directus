@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
-
 import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import { Knex } from 'knex';
 import path from 'path';
 import env from '../../env';
+import logger from '../../logger';
 import { Migration } from '../../types';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest'): Promise<void> {
@@ -62,7 +61,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = require(nextVersion.file);
 
-		console.log(`✨ Applying ${nextVersion.name}...`);
+		logger.info(`Applying ${nextVersion.name}...`);
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
@@ -83,7 +82,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { down } = require(migration.file);
 
-		console.log(`✨ Undoing ${migration.name}...`);
+		logger.info(`Undoing ${migration.name}...`);
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
@@ -94,7 +93,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				const { up } = require(migration.file);
 
-				console.log(`✨ Applying ${migration.name}...`);
+				logger.info(`Applying ${migration.name}...`);
 
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');

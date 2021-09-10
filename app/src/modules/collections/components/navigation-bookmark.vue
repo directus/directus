@@ -120,7 +120,7 @@ export default defineComponent({
 					});
 
 					renameActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
@@ -151,7 +151,7 @@ export default defineComponent({
 					if (navigateTo) {
 						router.push(navigateTo);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleteSaving.value = false;

@@ -540,6 +540,11 @@ fields:
     name: Nama
     status: Status
 field_options:
+  directus_activity:
+    login: Masuk
+    create: Buat
+    update: Perbarui
+    delete: Hapus
   directus_collections:
     language: Bahasa
     archive_divider: Arsip
@@ -551,7 +556,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipe
-      collections_name: Pengumpulan
+    collections_name: Pengumpulan
   directus_webhooks:
     actions_create: Buat
     actions_update: Perbarui

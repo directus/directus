@@ -344,6 +344,11 @@ fields:
     name: Navn
     status: Status
 field_options:
+  directus_activity:
+    login: Log ind
+    create: Opret
+    update: Opdater
+    delete: Slet
   directus_collections:
     language: Sprog
     archive_divider: Arkiver
@@ -351,8 +356,7 @@ field_options:
     fields:
       icon_name: Ikon
       name_name: Navn
-    collection_list:
-      collections_name: Samlinger
+    collections_name: Samlinger
   directus_webhooks:
     actions_create: Opret
     actions_update: Opdater
