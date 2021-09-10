@@ -124,9 +124,6 @@ fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action
 validation_for_role: 'Pravila, ki jih mora upoštevati vloga {role} za polje {action}.'
 presets_for_role: 'Privzete vrednosti vloge {role} za polje.'
 presentation_and_aliases: Predstavitev in aliasi
-revision_post_update: Tako je zapis zgledal po popravku ...
-changes_made: To so narejeni popravki ...
-no_relational_data: Upoštevajte, da to ne vključuje relacijskih podatkov.
 hide_field_on_detail: Skrij polje v podrobnem pogledu
 show_field_on_detail: Prikaži polje v podrobnem pogledu
 delete_field: Izbriši polje
@@ -364,7 +361,6 @@ no_files_copy: Ni datotek.
 user_count: 'Ni uporabnikov | En uporabnik | Dva uporabnika | Trije uporabniki | Štirje uporabniki | {count} uporabnikov'
 no_users_copy: Ta vloga še nima uporabnikov.
 webhooks_count: 'Ni prožilnikov | En prožilnik | Dva prožilnika | Trije prožilniki | Štirje prožilniki | {count} prožilnikov'
-no_webhooks_copy: Prožilniki ne obstajajo.
 all_items: Vsi zapisi
 any: Katerokoli
 csv: CSV
