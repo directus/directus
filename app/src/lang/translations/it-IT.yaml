@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: Pubblicato
 draft: Bozza
 archived: Archiviato
 edit_field: Modifica campo
@@ -712,6 +733,22 @@ collections: Raccolte
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
+directus_collection:
+  directus_activity: Log autorizzazioni per tutti gli eventi
+  directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_fields: Configurazione e metadati aggiuntivi del campo
+  directus_files: Metadati per tutti i file degli asset gestiti
+  directus_folders: Fornisce directory virtuali per i file
+  directus_migrations: Quale versione del database stai usando
+  directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_presets: Preset per i default della raccolta e i segnalibri
+  directus_relations: Configurazione e metadati della relazione
+  directus_revisions: Snapshot dei dati per tutte le attività
+  directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
+  directus_sessions: Informazioni sulla sessione dell'utente
+  directus_settings: Opzioni di configurazione del progetto
+  directus_users: Utenti di sistema per la piattaforma
+  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -1020,6 +1057,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
