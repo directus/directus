@@ -123,9 +123,6 @@ fields_for_role: '{role} 角色能够 {action} 字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
 presets_for_role: '{role} 角色的默认值。'
 presentation_and_aliases: 别名
-revision_post_update: 这是更新这个项目后的样式...
-changes_made: 这些是所做的具体更改...
-no_relational_data: 请记住，这不包括关系数据。
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
 delete_field: 删除
@@ -363,7 +360,6 @@ no_files_copy: 没有任何文件。
 user_count: '没有用户 | 一个用户 | {count} 个用户'
 no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
-no_webhooks_copy: 还没有任何web钩子。
 all_items: 所有项目
 any: 任意
 csv: CSV
