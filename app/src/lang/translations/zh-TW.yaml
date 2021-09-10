@@ -81,8 +81,6 @@ field_validation: 欄位驗證
 permissions_for_role: '角色 {role} 可以 {action} 項目'
 fields_for_role: '角色 {role} 可以 {action} 欄位'
 validation_for_role: '角色 {role} 必須遵守欄位 {action} 規則'
-revision_post_update: 項目更新後看起來像...
-changes_made: 這些是具體的變更部分
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -258,7 +256,6 @@ no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
-no_webhooks_copy: 這裡還沒有任何 Webhooks。
 all_items: 所有項目
 csv: CSV
 no_collections: 沒有集合
