@@ -121,9 +121,6 @@ fields_for_role: 'Pola roli {role} mogą {action}.'
 validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
 presentation_and_aliases: Prezentacja i aliasy
-revision_post_update: Oto jak wyglądał ten element po aktualizacji...
-changes_made: To są konkretne zmiany, które zostały wprowadzone...
-no_relational_data: Pamiętaj, że nie obejmuje to danych relacyjnych.
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -361,7 +358,6 @@ no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
-no_webhooks_copy: Brak webhooków.
 all_items: Wszystkie elementy
 any: Dowolny
 csv: CSV
