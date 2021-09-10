@@ -30,7 +30,6 @@ import { AxiosTransport } from './transport';
 
 export type DirectusOptions = {
 	authOptions?: AuthOptions;
-	transport?: ITransport;
 	storage?: IStorage;
 };
 
@@ -63,17 +62,11 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage()); // cookies?
-		this._transport =
-			options?.transport ||
-			new AxiosTransport(url, this._storage, async () => {
-				await this._auth.refresh();
-			});
-		this._auth = new Auth(
-			options?.authOptions?.authTransport || this._transport,
-			options?.authOptions?.authStorage || this._storage,
-			options?.authOptions
-		);
+		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
+		this._transport = new AxiosTransport(url, this._storage, async () => {
+			await this._auth.refresh();
+		});
+		this._auth = new Auth(this._transport, options?.authOptions?.authStorage || this._storage, options?.authOptions);
 		this._items = {};
 		this._singletons = {};
 	}

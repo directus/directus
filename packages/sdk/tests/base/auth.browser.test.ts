@@ -80,10 +80,8 @@ describe('auth (browser)', function () {
 					password: 'password',
 				},
 				{
-					refresh: {
-						auto: true,
-						time: 2500,
-					},
+					autoRefresh: true,
+					autoRefreshLeadTime: 2500,
 				}
 			);
 
@@ -92,14 +90,14 @@ describe('auth (browser)', function () {
 			await loginPromise;
 
 			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.auth.expiring).toBe(false);
+			expect(sdk.auth.expiringSoon).toBe(false);
 			expect(sdk.storage.auth_token).toBe('access_token');
-			expect(sdk.storage.auth_expires).toBe(107000);
+			expect(sdk.storage.auth_expires_at).toBe(107000);
 			await tick(5000);
 
 			expect(scope.pendingMocks().length).toBe(1);
 			await flush();
-			expect(sdk.auth.expiring).toBe(true);
+			expect(sdk.auth.expiringSoon).toBe(true);
 
 			await new Promise((resolve) => {
 				scope.once('replied', () => {
@@ -107,10 +105,10 @@ describe('auth (browser)', function () {
 				});
 			});
 
-			expect(sdk.storage.auth_expires).toBe(112000);
+			expect(sdk.storage.auth_expires_at).toBe(112000);
 			expect(scope.pendingMocks().length).toBe(0);
 			expect(sdk.storage.auth_token).toBe('new_access_token');
-			expect(sdk.auth.expiring).toBe(false);
+			expect(sdk.auth.expiringSoon).toBe(false);
 		}, 100000);
 	});
 

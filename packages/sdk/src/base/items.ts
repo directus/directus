@@ -1,5 +1,5 @@
+import { IItems, Item, ManyItems, OneItem, PartialItem, QueryMany, QueryOne } from '../items';
 import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
 import { ID } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {

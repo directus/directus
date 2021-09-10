@@ -5,7 +5,6 @@ import { ITransport } from '../transport';
 import { Debouncer } from '../utils';
 
 export type AuthOptions = {
-	authTransport?: ITransport;
 	authStorage?: IStorage;
 	mode?: 'json' | 'cookie';
 	refreshOptions?: AuthAutoRefreshOptions;
@@ -33,6 +32,9 @@ export class Auth implements IAuth {
 		};
 		this.options.refreshOptions.autoRefresh = options?.refreshOptions?.autoRefresh ?? true;
 		this.options.refreshOptions.autoRefreshLeadTime = options?.refreshOptions?.autoRefreshLeadTime ?? DefaultLeadTime;
+		if (this.options.refreshOptions.autoRefreshLeadTime < 0) {
+			throw new Error("Option 'autoRefreshLeadTime' cannot be a negative number"); // Is this the proper way to handle config errors?
+		}
 		this.transport = transport;
 		this.storage = storage;
 		this.timer = false;
@@ -116,7 +118,7 @@ export class Auth implements IAuth {
 		if (remaining < 0) {
 			// It's already expired, try a refresh
 			if (expiresAt < Date.now()) {
-				// should be impossible?
+				// should be impossible if leadtime is > 0
 				return; // Don't set auto refresh
 			} else {
 				remaining = 0;
@@ -141,7 +143,7 @@ export class Auth implements IAuth {
 	}
 
 	async login(credentials: AuthCredentials, refreshOptions?: Partial<AuthAutoRefreshOptions>): Promise<AuthResult> {
-		// why does login take its own refresh options object?
+		// why does login take its own refresh options object? so you can change the global login options on subsequent logins?
 		refreshOptions = refreshOptions || {};
 		const response = await this.transport.post<AuthResult>(
 			'/auth/login',

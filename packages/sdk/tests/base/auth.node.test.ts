@@ -69,10 +69,8 @@ describe('auth (node)', function () {
 					password: 'password',
 				},
 				{
-					refresh: {
-						auto: true,
-						time: 2500,
-					},
+					autoRefresh: true,
+					autoRefreshLeadTime: 2500,
 				}
 			);
 
@@ -81,14 +79,14 @@ describe('auth (node)', function () {
 			await loginPromise;
 
 			expect(scope.pendingMocks().length).toBe(1);
-			expect(sdk.auth.expiring).toBe(false);
+			expect(sdk.auth.expiringSoon).toBe(false);
 			expect(sdk.storage.auth_token).toBe('some_node_access_token');
-			expect(sdk.storage.auth_expires).toBe(107000);
+			expect(sdk.storage.auth_expires_at).toBe(107000);
 			await tick(5000);
 
 			expect(scope.pendingMocks().length).toBe(0);
 			await flush();
-			expect(sdk.auth.expiring).toBe(true);
+			expect(sdk.auth.expiringSoon).toBe(true);
 
 			await new Promise((resolve) => {
 				scope.once('replied', () => {
@@ -96,10 +94,10 @@ describe('auth (node)', function () {
 				});
 			});
 
-			expect(sdk.storage.auth_expires).toBe(112000);
+			expect(sdk.storage.auth_expires_at).toBe(112000);
 			expect(scope.pendingMocks().length).toBe(0);
 			expect(sdk.storage.auth_token).toBe('a_new_node_access_token');
-			expect(sdk.auth.expiring).toBe(false);
+			expect(sdk.auth.expiringSoon).toBe(false);
 		}, 100000);
 	});
 

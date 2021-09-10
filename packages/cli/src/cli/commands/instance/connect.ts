@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 import { Directus } from '@directus/sdk';
+import chalk from 'chalk';
 import { InstanceConfiguration } from '../../../config';
 import { command } from '../../../core/command';
 import { CLIRuntimeError } from '../../../core/exceptions';
@@ -134,7 +134,7 @@ export default command(
 				password,
 			});
 			instance.data = {
-				auth_expires: sdk.storage.auth_expires,
+				auth_expires_at: sdk.storage.auth_expires_at,
 				auth_token: sdk.storage.auth_token,
 				auth_refresh_token: sdk.storage.auth_refresh_token,
 			};

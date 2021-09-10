@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IStorage } from '../../storage';
 import { ITransport, TransportError, TransportMethods, TransportOptions, TransportResponse } from '../../transport';
 
@@ -85,7 +85,7 @@ export class AxiosTransport implements ITransport {
 		try {
 			options = options || {};
 			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
-			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? true;
+			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? false;
 			options.headers = options.headers ?? {};
 			options.onUploadProgress = options.onUploadProgress ?? undefined;
 

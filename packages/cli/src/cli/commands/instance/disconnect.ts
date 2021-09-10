@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 import { Directus } from '@directus/sdk';
+import chalk from 'chalk';
 import { command } from '../../../core/command';
 import { CLIRuntimeError } from '../../../core/exceptions';
 import { InstanceStorage } from '../../../core/sdk/storage';
