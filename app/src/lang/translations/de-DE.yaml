@@ -124,9 +124,6 @@ fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
-revision_post_update: Hier siehst du, wie das Element nach dem Update aussah...
-changes_made: Dies sind die spezifischen Änderungen, die vorgenommen wurden...
-no_relational_data: Beachten Sie, dass dies keine relationalen Daten enthält.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -364,7 +361,6 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
-no_webhooks_copy: Es gibt noch keine Webhooks.
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
