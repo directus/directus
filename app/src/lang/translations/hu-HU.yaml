@@ -124,9 +124,6 @@ fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják
 validation_for_role: 'A {action} mező szabályozza a {role} szerepek által követendő viselkedést.'
 presets_for_role: 'A {role} szerepkör mezőértékeinek alapértelmezései.'
 presentation_and_aliases: Prezentációk és Aliasok
-revision_post_update: Ez az elem így nézett ki a frissítés után...
-changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
-no_relational_data: Ne feledd, ez nem tartalmaz relációs adatokat!
 hide_field_on_detail: Mező elrejtése a Részleteken
 show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
@@ -363,7 +360,6 @@ no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
-no_webhooks_copy: Még nincsenek webhookok.
 all_items: Minden elem
 any: Bármely
 csv: CSV
