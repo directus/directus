@@ -116,9 +116,6 @@ fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valor del campo por defecto para el rol {role}.'
 presentation_and_aliases: Presentación y Alias
-revision_post_update: Así es como se vería este artículo después de la actualización...
-changes_made: Estos son los cambios específicos que se hicieron...
-no_relational_data: Ten en cuenta que esto no incluye datos relacionales.
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
 delete_field: Borrar Campo
@@ -355,7 +352,6 @@ no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
 webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
-no_webhooks_copy: Aún no hay Webhooks.
 all_items: Todos los Elementos
 csv: CSV
 no_collections: Sin Colecciones
