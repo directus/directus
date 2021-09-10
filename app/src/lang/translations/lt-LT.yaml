@@ -113,9 +113,6 @@ fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
 validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
 presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
-revision_post_update: Taip šis elementas atrodė po paskutinio atnaujinimo...
-changes_made: Tai yra konkretūs atlikti pakeitimai...
-no_relational_data: Atminkite, kad neįtraukiami sąryšių duomenys.
 hide_field_on_detail: Slėpti lauką detalėse
 show_field_on_detail: Rodyti lauką detalėse
 delete_field: Trinti lauką
@@ -338,7 +335,6 @@ no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
 webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
-no_webhooks_copy: Dar nėra sukurta "Webhook"ų.
 all_items: Visi elementai
 csv: CSV
 no_collections: Nėra kolekcijų
