@@ -2,7 +2,7 @@
 	<v-menu attached class="v-select">
 		<template #activator="{ toggle, active }">
 			<v-input readonly :model-value="displayValue" clickable :active="active" @click="toggle">
-				<template v-if="$slots.prepend" #prepend>
+				<template #prepend>
 					<v-icon class="translate" name="translate" />
 				</template>
 				<template #append>
