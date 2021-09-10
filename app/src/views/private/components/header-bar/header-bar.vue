@@ -96,9 +96,9 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 65px;
+	height: 61px;
 	margin: 0;
-	padding: 0 12px;
+	padding: 0 10px;
 	background-color: var(--background-page);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
