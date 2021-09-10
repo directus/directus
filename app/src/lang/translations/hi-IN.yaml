@@ -103,7 +103,6 @@ fields_for_role: 'फ़ील्ड्स जो {role} भूमिका {action
 validation_for_role: 'फील्ड {action} नियमों जो {role} भूमिका पालन करना चाहिए'
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
-revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
 language: भाषा
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
