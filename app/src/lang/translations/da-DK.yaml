@@ -112,9 +112,6 @@ fields_for_role: 'Felter {role} Rollen kan {action}.'
 validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
 presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: Her er hvad dette element så ud som, efter opdateringen...
-changes_made: Disse er de specifikke ændringer, der blev lavet...
-no_relational_data: Husk, at dette ikke omfatter relationelle data.
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
 delete_field: Slet Felt
