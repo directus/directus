@@ -64,7 +64,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, provide, toRefs, computed } from 'vue';
-import ModuleBar from './components/module-bar/';
+import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';

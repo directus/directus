@@ -1,25 +1,26 @@
 <template>
 	<div class="module-bar">
 		<module-bar-logo />
+
 		<div class="modules">
 			<v-button
-				v-for="module in internalModules"
-				:key="module.id"
-				v-tooltip.right="module.name"
+				v-for="modulePart in modules"
+				:key="modulePart.id"
+				v-tooltip.right="modulePart.name"
 				icon
 				x-large
-				:to="module.to"
-				:href="module.href"
+				:to="modulePart.to"
+				:href="modulePart.href"
 				tile
 				:style="
-					module.color
+					modulePart.color
 						? {
-								'--v-button-color-active': module.color,
+								'--v-button-color-active': modulePart.color,
 						  }
 						: null
 				"
 			>
-				<v-icon :name="module.icon" outline />
+				<v-icon :name="modulePart.icon" outline />
 			</v-button>
 		</div>
 		<module-bar-avatar />
@@ -27,14 +28,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, unref } from 'vue';
-
+import { defineComponent, computed } from 'vue';
 import { getModules } from '@/modules/';
-import ModuleBarLogo from '../module-bar-logo/';
-import ModuleBarAvatar from '../module-bar-avatar/';
-import { useUserStore } from '@/stores/';
-import { orderBy } from 'lodash';
-import { ModuleConfig } from '@directus/shared/types';
+import ModuleBarLogo from './module-bar-logo/';
+import ModuleBarAvatar from './module-bar-avatar/';
+import { useSettingsStore } from '@/stores/';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: {
@@ -42,10 +41,36 @@ export default defineComponent({
 		ModuleBarAvatar,
 	},
 	setup() {
-		const userStore = useUserStore();
-		const { modules } = getModules();
+		const settingsStore = useSettingsStore();
+		const { modules: registeredModules } = getModules();
 
-		const internalModules = computed(() => {
+		const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
+
+		const modules = computed(() => {
+			if (!settingsStore.settings) return [];
+			return settingsStore.settings.module_bar
+				.filter((modulePart) => {
+					if (modulePart.type === 'link') return true;
+
+					return registeredModuleIDs.value.includes(modulePart.id);
+				})
+				.map((modulePart) => {
+					if (modulePart.type === 'link') {
+						return translate(modulePart);
+					}
+
+					const module = registeredModules.value.find((module) => module.id === modulePart.id)!;
+
+					return {
+						...modulePart,
+						...registeredModules.value.find((module) => module.id === modulePart.id),
+						to: module.link === undefined ? `/${module.id}` : '',
+					};
+				});
+		});
+
+		/**
+		 * const internalModules = computed(() => {
 			const customModuleListing = userStore.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
@@ -85,7 +110,9 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-		return { internalModules, modules };
+		 */
+
+		return { modules };
 	},
 });
 </script>
