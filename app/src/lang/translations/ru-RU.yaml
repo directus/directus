@@ -121,9 +121,6 @@ fields_for_role: 'Поля, которые Роль {role} может {action}.'
 validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
 presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
 presentation_and_aliases: Представление и Алиасы
-revision_post_update: Вот как этот элемент выглядел после обновления...
-changes_made: Вот конкретные изменения, которые были сделаны...
-no_relational_data: Помните, что это не включает относительные данные.
 hide_field_on_detail: Скрыть Поле в Карточке
 show_field_on_detail: Показать Поле в Карточке
 delete_field: Удалить поле
@@ -359,7 +356,6 @@ no_files_copy: Здесь нет файлов.
 user_count: 'Нет Пользователей | Один Пользователь | {count} Пользователей'
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
-no_webhooks_copy: Веб-хуков пока нет.
 all_items: Все Элементы
 any: Любой
 csv: CSV
