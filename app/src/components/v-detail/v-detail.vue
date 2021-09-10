@@ -2,7 +2,7 @@
 	<div class="v-detail" :class="{ disabled }">
 		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
 			<v-divider @click="internalActive = !internalActive">
-				<v-icon v-if="!disabled" :name="internalActive ? 'unfold_less' : 'unfold_more'" small />
+				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
 				<slot name="title">{{ label }}</slot>
 			</v-divider>
 		</slot>
