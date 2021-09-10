@@ -24,7 +24,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const database = getDatabase();
 
-  const userDynamicVars = toArray(env.USER_DYNAMIC_VARS || []);
+	const userDynamicVars = toArray(env.USER_DYNAMIC_VARS || []);
 	req.accountability.userDynamicVars = {};
 
 	if (isDirectusJWT(req.token)) {
