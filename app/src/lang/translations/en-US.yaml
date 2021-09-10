@@ -23,6 +23,8 @@
 published: Published
 draft: Draft
 archived: Archived
+module_bar: Module Bar
+tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps

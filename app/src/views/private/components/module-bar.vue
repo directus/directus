@@ -48,11 +48,11 @@ export default defineComponent({
 
 		const modules = computed(() => {
 			if (!settingsStore.settings) return [];
+
 			return settingsStore.settings.module_bar
 				.filter((modulePart) => {
 					if (modulePart.type === 'link') return true;
-
-					return registeredModuleIDs.value.includes(modulePart.id);
+					return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);
 				})
 				.map((modulePart) => {
 					if (modulePart.type === 'link') {
@@ -68,49 +68,6 @@ export default defineComponent({
 					};
 				});
 		});
-
-		/**
-		 * const internalModules = computed(() => {
-			const customModuleListing = userStore.currentUser?.role.module_list;
-
-			const registeredModules = orderBy(
-				modules.value
-					.map((module: ModuleConfig) => ({
-						...module,
-						href: module.link,
-						to: module.link === undefined ? `/${module.id}` : '',
-					}))
-					.filter((module: ModuleConfig) => {
-						if (module.hidden !== undefined && unref(module.hidden) === true) {
-							return false;
-						}
-						return true;
-					}),
-				['order'],
-				['asc']
-			);
-
-			if (customModuleListing && Array.isArray(customModuleListing) && customModuleListing.length > 0) {
-				return [
-					...customModuleListing.map((custom) => {
-						if (custom.link?.startsWith('http') || custom.link?.startsWith('//')) {
-							return {
-								...custom,
-								href: custom.link,
-							};
-						} else {
-							return {
-								...custom,
-								to: custom.link,
-							};
-						}
-					}),
-					...registeredModules.filter((module) => module.persistent === true),
-				];
-			}
-			return registeredModules;
-		});
-		 */
 
 		return { modules };
 	},

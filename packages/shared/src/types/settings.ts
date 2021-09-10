@@ -7,6 +7,7 @@ export type SettingsModuleBarModule = {
 
 export type SettingsModuleBarLink = {
 	type: 'link';
+	id: string;
 	url: string;
 	icon: string;
 	name: string;
