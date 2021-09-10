@@ -15,7 +15,7 @@
 				:fields="fields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
-				:badge="firstLang"
+				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
 		</div>
@@ -33,11 +33,15 @@
 			<v-form
 				:initial-values="secondItemInitial"
 				:fields="fields"
-				:badge="secondLang"
+				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:model-value="secondItem"
 				@update:modelValue="updateValue($event, secondLang)"
 			/>
 		</div>
+	</div>
+	<div class="divider">
+		<v-divider></v-divider>
+		<v-divider v-if="sideBySide" class="blue"></v-divider>
 	</div>
 </template>
 
@@ -265,7 +269,7 @@ export default defineComponent({
 
 				try {
 					const response = await api.get(`/items/${languagesCollection.value}`, {
-						params: { field: Array.of(fields), limit: -1 },
+						params: { field: Array.of(fields), limit: -1, sort: props.languageField ?? languagesPrimaryKeyField.value },
 					});
 					languages.value = response.data.data;
 				} catch (err: any) {
@@ -387,6 +391,21 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+.divider {
+	display: flex;
+	gap: 20px;
+
+	.v-divider {
+		--v-divider-color: var(--primary-50);
+
+		margin-top: 40px;
+
+		&.blue {
+			--v-divider-color: var(--blue-50);
+		}
+	}
+}
+
 .translations {
 	// padding: 20px;
 	// background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
@@ -398,7 +417,7 @@ export default defineComponent({
 	}
 
 	.v-form {
-		margin-top: 52px;
+		margin-top: 32px;
 	}
 
 	:deep(.v-select) {
@@ -416,6 +435,8 @@ export default defineComponent({
 	}
 
 	:deep(.v-form) {
+		--form-vertical-gap: 32px;
+
 		.field {
 			.label {
 				// color: var(--primary);
@@ -447,6 +468,8 @@ export default defineComponent({
 		}
 
 		:deep(.v-form) {
+			--primary: var(--blue);
+
 			.field .label .v-chip {
 				color: var(--blue);
 				background-color: var(--blue-alt);

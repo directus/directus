@@ -19,8 +19,11 @@
 					{{ item.text }}
 				</div>
 				<div class="end">
-					<v-progress-linear :value="item.progress" colorful />
-					{{ item.current }} / {{ item.max }}
+					<v-progress-linear
+						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
+						:value="item.progress"
+						colorful
+					/>
 				</div>
 			</v-list-item>
 		</v-list>
@@ -75,6 +78,7 @@ export default defineComponent({
 			gap: 10px;
 			align-items: center;
 			justify-content: flex-end;
+			color: var(--foreground-subdued);
 		}
 
 		&:hover {
@@ -89,14 +93,14 @@ export default defineComponent({
 				display: block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--primary);
+				background-color: var(--foreground-subdued);
 				border-radius: 2px;
 				content: '';
 			}
 		}
 
 		.v-progress-linear {
-			max-width: 300px;
+			max-width: 100px;
 		}
 	}
 }
