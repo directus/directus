@@ -204,8 +204,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			--v-icon-color: var(--foreground-normal);
-
+			color: var(--foreground-normal);
 			cursor: pointer;
 		}
 	}
