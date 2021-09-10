@@ -4,7 +4,6 @@
 			ref="activator"
 			class="v-menu-activator"
 			:class="{ attached }"
-			@focusout="deactivate"
 			@pointerenter.stop="onPointerEnter"
 			@pointerleave.stop="onPointerLeave"
 		>
