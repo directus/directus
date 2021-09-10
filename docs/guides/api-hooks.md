@@ -91,7 +91,7 @@ module.exports = function registerHook({ exceptions }) {
 | `activity`                      | `create`, `update` and `delete`                             | Optional         |
 | `collections`                   | `create`, `update` and `delete`                             | Optional         |
 | `fields`                        | `create`, `update` and `delete`                             | Optional         |
-| `files`                         | `upload`<sup>[3]</sup>, `create`, `update` and `delete`     | Optional         |
+| `files`                         | `upload`<sup>[3]</sup>                                      | No               |
 | `folders`                       | `create`, `update` and `delete`                             | Optional         |
 | `permissions`                   | `create`, `update` and `delete`                             | Optional         |
 | `presets`                       | `create`, `update` and `delete`                             | Optional         |

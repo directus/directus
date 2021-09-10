@@ -3,6 +3,7 @@
 		<v-drawer
 			v-model="internalActive"
 			:title="t('item_revision')"
+			icon="change_history"
 			:sidebar-label="t(currentTab[0])"
 			@cancel="internalActive = false"
 		>

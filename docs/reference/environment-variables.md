@@ -23,18 +23,18 @@ needs to be publicly available on the internet.
 
 ## Database
 
-| Variable               | Description                                                                                                                                        | Default Value |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --            |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
-| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
-| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
-| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
-| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | --            |
+| Variable               | Description                                                                                                                                        | Default Value   |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --              |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --              |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --              |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --              |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --              |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | spatial_ref_sys |
 
 ::: tip Additional Database Variables
 
