@@ -118,11 +118,15 @@ class ExtensionManager {
 	}
 
 	public async install(name: string): Promise<boolean> {
-		if (!EXTENSION_NAME_REGEX.test(name)) return false;
+		if (!EXTENSION_NAME_REGEX.test(name) || (env.EXTENSION_ALLOWLIST && !env.EXTENSION_ALLOWLIST.includes(name))) {
+			return false;
+		}
 
 		const installed = await installPackage(name);
 
-		if (!installed) return false;
+		if (!installed) {
+			return false;
+		}
 
 		await this.reload();
 
@@ -130,11 +134,15 @@ class ExtensionManager {
 	}
 
 	public async uninstall(name: string): Promise<boolean> {
-		if (!EXTENSION_NAME_REGEX.test(name)) return false;
+		if (!EXTENSION_NAME_REGEX.test(name) || (env.EXTENSION_ALLOWLIST && !env.EXTENSION_ALLOWLIST.includes(name))) {
+			return false;
+		}
 
 		const uninstalled = await uninstallPackage(name);
 
-		if (!uninstalled) return false;
+		if (!uninstalled) {
+			return false;
+		}
 
 		await this.reload();
 
