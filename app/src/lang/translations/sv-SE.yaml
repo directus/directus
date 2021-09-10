@@ -102,9 +102,6 @@ fields_for_role: 'Fält {role} rollen kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
 presentation_and_aliases: Presentation & alias
-revision_post_update: Så här såg objektet ut efter uppdateringen...
-changes_made: Dessa är de specifika ändringarna som gjordes...
-no_relational_data: Tänk på att detta inte inkluderar datans relationer.
 hide_field_on_detail: Dölj fältet på detaljnivå
 show_field_on_detail: Visa fältet på detaljnivå
 delete_field: Radera fält
@@ -332,7 +329,6 @@ no_files_copy: Det finns inga filer här.
 user_count: 'Inga användare | En användare | {count} användare'
 no_users_copy: Det finns inga användare i denna roll ännu.
 webhooks_count: 'Inga webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Det finns inga webhooks ännu.
 all_items: Alla objekt
 csv: CSV
 no_collections: Inga kollektioner
