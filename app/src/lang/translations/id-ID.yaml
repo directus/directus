@@ -105,9 +105,6 @@ fields_for_role: 'Baris {role} Peran dapat {action}.'
 validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
 presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
 presentation_and_aliases: Presentasi & Alias
-revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan...
-changes_made: Ini adalah perubahan spesifik yang telah dibuat...
-no_relational_data: Untuk catatan bahwa ini tidak termasuk data relasional.
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
 delete_field: Hapus Baris
@@ -342,7 +339,6 @@ no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
 webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
-no_webhooks_copy: Belum ada webhook.
 all_items: Semua Item
 csv: CSV
 no_collections: Tidak ada koleksi
