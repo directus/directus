@@ -92,7 +92,7 @@ export default defineComponent({
 			}
 		});
 
-		return { treeList, addField, onInput, contentEl, onClick, loadFieldRelations };
+		return { treeList, addField, onInput, contentEl, onClick, loadFieldRelations, onKeyDown };
 
 		function onInput() {
 			if (!contentEl.value) return;

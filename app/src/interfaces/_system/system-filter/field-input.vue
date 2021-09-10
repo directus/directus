@@ -140,10 +140,10 @@ export default defineComponent({
 	align-items: center;
 
 	.v-icon {
-		margin-left: 12px;
 		margin-right: 8px;
-		cursor: pointer;
+		margin-left: 12px;
 		color: var(--foreground-subdued);
+		cursor: pointer;
 
 		&:hover {
 			color: var(--danger);

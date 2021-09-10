@@ -37,8 +37,8 @@ export default defineComponent({
 					emit('update:modelValue', newSelection);
 				},
 				onToggle: (item) => {
-					emit('toggle', item)
-				}
+					emit('toggle', item);
+				},
 			},
 			{
 				mandatory,

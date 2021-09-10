@@ -3,17 +3,26 @@ import { Relation } from '@/types';
 import { Field } from '@directus/shared/types';
 import { getRelationType } from '@/utils/get-relation-type';
 import { get, set } from 'lodash';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, ComputedRef } from 'vue';
 
 type FieldTree = Record<string, FieldInfo>;
 type FieldInfo = { name: string; field: string; children: FieldTree; collection: string; type: string };
 type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
+type FieldTreeContext = {
+	tree: Ref<FieldTree>;
+	treeList: ComputedRef<FieldOption[]>;
+	loadFieldRelations: (fieldPath: string, depth?: number) => void;
+	getField: (fieldPath: string) => FieldOption | undefined;
+	treeToList: (tree: FieldTree, parentName?: string) => FieldOption[];
+	visitedRelations: Ref<string[][]>;
+};
+
 export default function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
-) {
+): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -23,7 +32,7 @@ export default function useFieldTree(
 		tree.value = getFieldTreeForCollection(collection.value, 'any');
 	}
 
-	const visitedRelations = ref<SimpleRelation[]>([]);
+	const visitedRelations = ref<string[][]>([]);
 
 	Object.values(tree.value).forEach((value) => {
 		loadFieldRelations(value.field);
@@ -138,7 +147,7 @@ export default function useFieldTree(
 		}
 
 		Object.values(children).forEach((child) => {
-			const relation: SimpleRelation = [field.collection, field.field, child.collection, child.field];
+			const relation: string[] = [field.collection, field.field, child.collection, child.field];
 			const exists = visitedRelations.value.findIndex((rel) => relationEquals(rel, relation)) !== -1;
 
 			if (exists === false) visitedRelations.value.push(relation);
@@ -147,14 +156,12 @@ export default function useFieldTree(
 		set(tree.value, `${path}.children`, children);
 	}
 
-	type SimpleRelation = string[];
-
 	function relationVisited(relation: Relation) {
 		if (!relation.meta) return;
 
 		if (relation.meta.one_collection_field !== null && relation.meta.one_allowed_collections !== null) return false;
 
-		const simpleRelation: SimpleRelation = [
+		const simpleRelation: string[] = [
 			relation.meta.many_collection,
 			relation.meta.one_collection,
 			relation.meta.many_field,
@@ -172,7 +179,7 @@ export default function useFieldTree(
 		);
 	}
 
-	function relationEquals(rel1: SimpleRelation, rel2: SimpleRelation) {
+	function relationEquals(rel1: string[], rel2: string[]) {
 		for (const rel of rel1) {
 			if (rel2.includes(rel) === false) return false;
 		}

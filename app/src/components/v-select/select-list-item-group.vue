@@ -17,8 +17,8 @@
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
-				@update:model-value="$emit('update:modelValue', $event)"
 				:clickable="clickable"
+				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
 				v-else
@@ -59,8 +59,8 @@ export default defineComponent({
 		},
 		clickable: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 });
