@@ -25,13 +25,13 @@ export async function up(knex: Knex): Promise<void> {
 				},
 				{
 					type: 'module',
-					id: 'docs',
-					enabled: true,
+					id: 'insights',
+					enabled: false,
 				},
 				{
 					type: 'module',
-					id: 'insights',
-					enabled: false,
+					id: 'docs',
+					enabled: true,
 				},
 				{
 					type: 'module',
