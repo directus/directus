@@ -327,8 +327,8 @@ fields:
             options:
               placeholder: '512'
             conditions:
-              name: typeNeqRaster
-              rule:
-                type:
-                  _neq: 'raster'
-              hidden: true
+              - name: typeNeqRaster
+                rule:
+                  type:
+                    _neq: 'raster'
+                hidden: true
