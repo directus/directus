@@ -117,9 +117,6 @@ fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
 presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
-revision_post_update: Hier is hoe dit item eruit zag na de update...
-changes_made: Dit zijn de specifieke wijzigingen die zijn aangebracht...
-no_relational_data: Houd er rekening mee dat dit geen relationele gegevens omvat.
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -356,7 +353,6 @@ no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
 webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
-no_webhooks_copy: Er zijn nog geen webhooks.
 all_items: Alle items
 csv: CSV
 no_collections: Geen collecties
