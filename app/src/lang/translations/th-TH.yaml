@@ -119,9 +119,6 @@ fields_for_role: 'ฟิลด์ที่บทบาท {role} สามาร
 validation_for_role: 'ฟิลด์ {action} ถูกกำหนดสิทธิ์ให้บทบาท {role}'
 presets_for_role: 'ค่าตั้งต้นของฟิลด์สำหรับบทบาท {role}'
 presentation_and_aliases: การแสดงผลและนาวแผง
-revision_post_update: สิ่งที่ไอเท็มจะเป็นหลังจากอัพเดทแล้ว
-changes_made: นี่คือการเปลี่ยนแปลงที่ถูกทำ...
-no_relational_data: โปรดจำไว้ว่านี่ไม่รวมข้อมูลความสัมพันธ์
 hide_field_on_detail: ซ่อนฟิลด์เมื่อแสดงรายละเอียด
 show_field_on_detail: แสดงฟิลด์เมื่อแสดงรายละเอียด
 delete_field: ลบฟิลด์
@@ -358,7 +355,6 @@ no_files_copy: ไม่มีไฟล์ที่นี่
 user_count: 'ไม่มีผู้ใช้ | ผู้ใช้ 1 คน | ผู้ใช้ {count} คน'
 no_users_copy: ยังไม่มีผู้ใช้ในบทบาท
 webhooks_count: 'ไม่มี webhook | มี 1 webhook | มี {count} webhook'
-no_webhooks_copy: ยังไม่มี webhook
 all_items: รายการทั้งหมด
 csv: CSV
 no_collections: ไม่มีคอลเลกชัน
