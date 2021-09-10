@@ -8,7 +8,7 @@
 			<span class="time">{{ time }}</span>
 			–
 			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">
-				{{ user }}
+				<span>{{ user }}</span>
 			</user-popover>
 
 			<span v-else>{{ t('private_user') }}</span>
@@ -163,6 +163,11 @@ export default defineComponent({
 	}
 
 	.user {
+		span {
+			margin: -6px;
+			padding: 6px;
+		}
+
 		&:hover {
 			color: var(--foreground-normal);
 		}

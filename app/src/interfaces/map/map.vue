@@ -1,10 +1,8 @@
 <template>
 	<div class="interface-map">
-		<div
-			ref="container"
-			class="map"
-			:class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }"
-		/>
+		<div class="map" :class="{ loading: mapLoading, error: geometryParsingError || geometryOptionsError }">
+			<div ref="container" />
+		</div>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
 			<v-icon name="map" />
 			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
@@ -43,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, toRefs, computed } from 'vue';
 import {
 	LngLatBoundsLike,
@@ -53,7 +51,6 @@ import {
 	Map,
 	NavigationControl,
 	GeolocateControl,
-	IControl,
 } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 // @ts-ignore
@@ -176,6 +173,7 @@ export default defineComponent({
 				container: container.value!,
 				style: style.value,
 				attributionControl: false,
+				logoPosition: 'bottom-right',
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -183,10 +181,10 @@ export default defineComponent({
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
 			map.addControl(controls.fitData, 'top-left');
-			map.addControl(controls.draw as IControl, 'top-left');
+			map.addControl(controls.draw as any, 'top-left');
 
 			if (mapboxKey) {
-				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }), 'top-right');
+				map.addControl(new MapboxGeocoder({ accessToken: mapboxKey, marker: false }) as any, 'top-right');
 			}
 
 			map.on('load', async () => {
@@ -231,11 +229,11 @@ export default defineComponent({
 			watch(
 				() => style.value,
 				async () => {
-					map.removeControl(controls.draw);
+					map.removeControl(controls.draw as any);
 					map.setStyle(style.value, { diff: false });
 					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 					await addMarkerImage();
-					map.addControl(controls.draw as IControl, 'top-left');
+					map.addControl(controls.draw as any, 'top-left');
 					loadValueFromProps();
 				}
 			);
@@ -243,9 +241,9 @@ export default defineComponent({
 			watch(
 				() => props.disabled,
 				() => {
-					map.removeControl(controls.draw);
+					map.removeControl(controls.draw as any);
 					controls.draw = new MapboxDraw(getDrawOptions(geometryType));
-					map.addControl(controls.draw as IControl, 'top-left');
+					map.addControl(controls.draw as any, 'top-left');
 					loadValueFromProps();
 				}
 			);
@@ -429,6 +427,11 @@ export default defineComponent({
 		&.error,
 		&.loading {
 			opacity: 0.25;
+		}
+
+		.maplibregl-map {
+			width: 100%;
+			height: 100%;
 		}
 	}
 
