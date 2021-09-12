@@ -1,39 +1,15 @@
-ARG NODE_VERSION=16-alpine
-ARG VERSION
-ARG REPOSITORY=directus/directus
-
-
-FROM node:${NODE_VERSION}
-LABEL directus.version="${VERSION}"
-
-
-ARG TARGETPLATFORM
-
-WORKDIR /directus
-COPY / .
-RUN \
-  if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then \
-  apk --no-cache add \
-  python3 \
-  build-base \
-  && ln -sf /usr/bin/python3 /usr/bin/python \
-  ; fi
-  
-# Default environment variables
-# (see https://docs.directus.io/reference/environment-variables/)
-ENV \
-  DB_CLIENT="sqlite3" \
-  DB_FILENAME="/directus/database/database.sqlite" \
-  EXTENSIONS_PATH="/directus/extensions" \
-  STORAGE_LOCAL_ROOT="/directus/uploads"
+FROM node:alpine-16
 
 RUN \
   # Upgrade system and install 'ssmtp' to be able to send mails
   apk upgrade --no-cache && apk add --no-cache \
   ssmtp
 
-RUN npm i --no-package-lock
-RUN npm run build
+WORKDIR /directus
+
+ADD . .
+
+RUN npm i
 
 RUN \
   # Create data directories
