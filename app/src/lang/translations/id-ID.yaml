@@ -427,6 +427,8 @@ monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
 circle: Lingkaran
+advanced_filter: Filter Lanjutan
+delete_advanced_filter: Hapus Filter
 operators:
   lt: Kurang dari
   gt: Lebih besar dari
@@ -440,9 +442,11 @@ operators:
   empty: Kosong
   nempty: Tidak kosong
 loading: Memuat...
+layout_options: Pilihan Tata Letak
 value_unique: Nilai harus unik
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
+saves_automatically: Menyimpan Secara Otomatis
 role: Peran
 create: Buat
 on_update: Saat Pembaruan
@@ -465,6 +469,7 @@ editing_in_batch: 'Mengedit Masal {count} item'
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
+scope: Lingkup
 discard_changes: Batalkan Perubahan
 keep_editing: Tetap Mengedit
 add_new: Tambah Baru
@@ -551,6 +556,7 @@ field_options:
     actions_create: Buat
     actions_update: Perbarui
 comment: Komentar
+editing_role: 'Peraturan {role}'
 delete_field_are_you_sure: >-
   Apakah Anda yakin Anda ingin menghapus bidang "{field}" ini? Tindakan ini tidak dapat dikembalikan.
 description: Deskripsi
