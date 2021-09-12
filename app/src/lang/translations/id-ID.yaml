@@ -1,14 +1,21 @@
 ---
 edit_field: Edit Kolom
+conditions: Kondisi
+maps: Peta
 item_revision: Revisi Item
 duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
+limit: Batas
+group: Grup
+and: Dan
+or: Atau
 fill_width: Lebar Penuh
 field_name_translations: Terjemahan Nama Kolom
 enter_password_to_enable_tfa: Masukkan password anda untuk Two-Factor Authentication
 add_field: Tambah Kolom
 role_name: Nama Peran
+branch: Cabang
 db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
 edited: Nilai Diedit
@@ -406,11 +413,20 @@ copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
 back: Kembali
+rotate: Putar
+all_users: Semua Pengguna
+delete_collection: Hapus Koleksi
+update_collection_success: Perbarui Koleksi
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
 icon_right: Ikon Kanan
+font: Huruf
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
 divider: Pembagi/Pemecah
 color: Warna
+circle: Lingkaran
 operators:
   lt: Kurang dari
   gt: Lebih besar dari
@@ -629,6 +645,8 @@ displays:
     filesize: Ukuran Berkas
   icon:
     icon: Ikon
+  image:
+    circle: Lingkaran
   labels:
     choices_value_placeholder: Masukkan sebuah nilai...
   user:
