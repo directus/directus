@@ -13,7 +13,8 @@ export function getCacheKey(req: Request): string {
 		query: isGraphQl ? pick(req.query, ['query', 'variables']) : req.sanitizedQuery,
 	};
 
-	const key = hash(info) as string;
+	const key = hash(info);
 
-	return key;
+	// hash() only returns a buffer if the encoding is set to 'buffer'
+	return key as string;
 }
