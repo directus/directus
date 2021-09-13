@@ -150,9 +150,9 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: Here is what this item looked like after the update...
-changes_made: These are the specific changes that were made...
-no_relational_data: Keep in mind that this does not include relational data.
+revision_post_update: Here is what this item looked like after the update.
+changes_made: Below are the specific changes made in this revision.
+no_relational_data: Keep in mind that relational data is not included here.
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
 delete_field: Delete Field
@@ -391,7 +391,7 @@ no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: There are no webhooks yet.
+no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 all_items: All Items
 any: Any
 csv: CSV
@@ -992,6 +992,7 @@ field_options:
     actions_delete: Delete
     actions_login: Login
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
+no_value: No value
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
