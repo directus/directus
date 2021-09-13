@@ -163,7 +163,11 @@ async function parseCurrentLevel(
 
 	const fieldNodes = columnsToSelect.map(
 		(column: string) =>
-			children.find((childNode) => childNode.fieldKey === column) ?? { type: 'field', name: column, fieldKey: column }
+			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
+				type: 'field',
+				name: column,
+				fieldKey: column,
+			}
 	) as FieldNode[];
 
 	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
