@@ -74,7 +74,7 @@ export default defineComponent({
 					title: t('post_comment_success'),
 					type: 'success',
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

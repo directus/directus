@@ -82,6 +82,13 @@ fields:
     description: Beskrywing
   directus_webhooks:
     status: Status
+field_options:
+  directus_activity:
+    create: Skep
+  directus_collections:
+    language: Taal
+  directus_webhooks:
+    actions_create: Skep
 comment: Kommentaar
 description: Beskrywing
 email: E-pos

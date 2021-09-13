@@ -30,7 +30,7 @@ export default async function start(): Promise<void> {
 					// No need to log/warn here. The update message is only an informative nice-to-have
 				});
 
-			logger.info(`Server started at port ${port}`);
+			logger.info(`Server started at http://localhost:${port}`);
 			emitAsyncSafe('server.start');
 		})
 		.once('error', (err: any) => {

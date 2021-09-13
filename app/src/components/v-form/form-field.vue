@@ -50,7 +50,7 @@
 			</v-card>
 		</v-dialog>
 
-		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="note" />
+		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
 		<small v-if="validationError" class="validation-error">
 			{{ validationMessage }}
@@ -61,11 +61,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Field } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
-import { ValidationError } from '@/types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
 
@@ -218,12 +217,11 @@ export default defineComponent({
 	position: relative;
 }
 
-.note {
+.type-note {
+	position: relative;
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 
 .invalid {

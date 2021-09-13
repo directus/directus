@@ -75,7 +75,7 @@ export default defineComponent({
 				newFolderName.value = null;
 
 				router.push({ path: `/files/folders/${newFolder.data.data.id}` });
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

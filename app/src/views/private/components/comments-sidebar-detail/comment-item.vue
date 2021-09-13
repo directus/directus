@@ -86,7 +86,7 @@ export default defineComponent({
 						comment: edits.value,
 					});
 					await props.refresh();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					savingEdits.value = false;

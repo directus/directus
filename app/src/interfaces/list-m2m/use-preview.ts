@@ -82,14 +82,17 @@ export default function usePreview(
 				// Replace existing items with it's updated counterparts
 				responseData = responseData
 					.map((item) => {
-						const updatedItem = updatedItems.find((updated) => updated[junctionPkField] === item[junctionPkField]);
+						const updatedItem = updatedItems.find(
+							(updated) =>
+								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+						);
 						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
 					})
 					.concat(...newItems);
 
 				items.value = responseData;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -177,7 +180,7 @@ export default function usePreview(
 
 			// Add all items that already had the id of it's related item
 			return data.concat(...getNewSelectedItems(), ...updatedItems);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		}
 		return [];
