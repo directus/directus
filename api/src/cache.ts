@@ -59,7 +59,7 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory', ttl: numbe
 		const KeyvMemcache = require('keyv-memcache');
 
 		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
-		// so we need to join array into a string when applicable. See #9999
+		// so we need to join array into a string when applicable. See #7986
 		const cacheMemcache = Array.isArray(env.CACHE_MEMCACHE) ? env.CACHE_MEMCACHE.join(',') : env.CACHE_MEMCACHE;
 
 		config.store = new KeyvMemcache(cacheMemcache);
