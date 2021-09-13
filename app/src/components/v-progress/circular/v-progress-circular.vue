@@ -18,7 +18,7 @@
 				transform="translate(2.5 2.5)"
 			/>
 		</svg>
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
@@ -27,7 +27,6 @@ import { defineComponent, computed } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({
-	emits: ['animationiteration'],
 	props: {
 		indeterminate: {
 			type: Boolean,
@@ -39,6 +38,7 @@ export default defineComponent({
 		},
 		...sizeProps,
 	},
+	emits: ['animationiteration'],
 	setup(props) {
 		const sizeClass = useSizeClass(props);
 

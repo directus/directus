@@ -13,7 +13,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="md(t('page_help_settings_presets_collection'))" />
+		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
 	</sidebar-detail>
 </template>
 
@@ -21,7 +21,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import api from '@/api';
-import { md } from '@/utils/md';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -34,7 +33,7 @@ export default defineComponent({
 
 		fetchCounts();
 
-		return { t, bookmarksCount, presetsCount, md };
+		return { t, bookmarksCount, presetsCount };
 
 		async function fetchCounts() {
 			loading.value = true;
@@ -50,7 +49,7 @@ export default defineComponent({
 
 				bookmarksCount.value = response.data.meta.filter_count as number;
 				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				loading.value = false;

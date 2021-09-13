@@ -78,7 +78,7 @@ export function useProjectInfo(): UsableProjectInfo {
 		try {
 			const response = await api.get('/server/info');
 			info.value = response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;

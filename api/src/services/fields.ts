@@ -11,16 +11,16 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
-import { Field } from '../types/field';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { Field, FieldMeta, RawField, Type } from '@directus/shared/types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { toArray } from '../utils/to-array';
-import { isEqual } from 'lodash';
+import { toArray } from '@directus/shared/utils';
+import { isEqual, isNil } from 'lodash';
 import { RelationsService } from './relations';
+import { getGeometryHelper } from '../database/helpers/geometry';
 import Keyv from 'keyv';
-
-export type RawField = DeepPartial<Field> & { field: string; type: typeof types[number] };
 
 export class FieldsService {
 	knex: Knex;
@@ -75,25 +75,22 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		let columns = await this.schemaInspector.columnInfo(collection);
-
-		columns = columns.map((column) => {
-			return {
-				...column,
-				default_value: getDefaultValue(column),
-			};
-		});
+		const columns = (await this.schemaInspector.columnInfo(collection)).map((column) => ({
+			...column,
+			default_value: getDefaultValue(column),
+		}));
 
 		const columnsWithSystem = columns.map((column) => {
 			const field = fields.find((field) => {
 				return field.field === column.name && field.collection === column.table;
 			});
 
+			const { type = 'alias', ...info } = column ? getLocalType(column, field) : {};
 			const data = {
 				collection: column.table,
 				field: column.name,
-				type: column ? getLocalType(column, field) : 'alias',
-				schema: column,
+				type: type,
+				schema: { ...column, ...info },
 				meta: field || null,
 			};
 
@@ -200,12 +197,13 @@ export class FieldsService {
 			// Do nothing
 		}
 
+		const { type = 'alias', ...info } = column ? getLocalType(column, fieldInfo) : {};
 		const data = {
 			collection,
 			field,
-			type: column ? getLocalType(column, fieldInfo) : 'alias',
+			type,
 			meta: fieldInfo || null,
-			schema: column || null,
+			schema: type == 'alias' ? null : { ...column, ...info },
 		};
 
 		return data;
@@ -213,15 +211,20 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] | null },
+		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
 
+		const exists =
+			field.field in this.schema.collections[collection].fields ||
+			isNil(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()) ===
+				false;
+
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema.collections[collection].fields) {
+		if (exists) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
@@ -274,7 +277,7 @@ export class FieldsService {
 						if (!field.schema) return;
 						this.addColumnToTable(table, field, existingColumn);
 					});
-				} catch (err) {
+				} catch (err: any) {
 					throw await translateDatabaseError(err);
 				}
 			}
@@ -313,7 +316,6 @@ export class FieldsService {
 		return field.field;
 	}
 
-	/** @todo save accountability */
 	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
@@ -434,6 +436,9 @@ export class FieldsService {
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
 		let column: Knex.ColumnBuilder;
 
+		// Don't attempt to add a DB column for alias / corrupt fields
+		if (field.type === 'alias' || field.type === 'unknown') return;
+
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
 		} else if (field.type === 'string') {
@@ -445,6 +450,13 @@ export class FieldsService {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
+		} else if (field.type === 'dateTime') {
+			column = table.dateTime(field.field, { useTz: false });
+		} else if (field.type === 'timestamp') {
+			column = table.timestamp(field.field, { useTz: true });
+		} else if (field.type === 'geometry') {
+			const helper = getGeometryHelper();
+			column = helper.createColumn(table, field);
 		} else {
 			column = table[field.type](field.field);
 		}

@@ -20,9 +20,12 @@ pageClass: page-reference
 - [Sort](#sort)
 - [Limit](#limit)
 - [Offset](#offset) / [Page](#page)
-- [Group](#group)
-- [Aggregate](#aggregate) (sum/avg/min/max/count)
+- [Aggregate and Grouping](#aggregate-and-grouping)
 - [Deep](#deep)
+- [Aliases](#aliases)
+- [Metadata](#metadata)
+  - [Total Count](#total-count)
+  - [Filter Count](#filter-count)
 - [Export](#export)
 
 </div>
@@ -443,12 +446,58 @@ query {
 
 ---
 
-## Group
+## Aggregate and Grouping
 
 <div class="two-up">
 <div class="left">
 
-Group allows you to group the output items based on (a) shared value(s).
+The aggegate functions all the transformation of fields. Supported functions are avg, avg_distinct, count,
+count_distinct, min, max, sum, sum_distinct.
+
+A group by option can be added to the arguments which groups the return by a specified field.
+
+Aggregated functions can be accessed with the syntax `collection_aggregated`.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Return of an aggregated sum of the revenue field.
+
+```json
+{
+	"articles_aggregated": {
+		"sum": {
+			"revenue": 598
+		}
+	}
+}
+```
+
+Return of an aggregate sum of the revenue field with a group by on `author`
+
+```json
+{
+	"articles_aggregated": [
+		{
+			"group": "John",
+			"sum": {
+				"revenue": 475
+			}
+		},
+		{
+			"group": "Smith",
+			"sum": {
+				"revenue": 123
+			}
+		}
+	]
+}
+```
 
 </div>
 <div class="right">
@@ -456,47 +505,21 @@ Group allows you to group the output items based on (a) shared value(s).
 ### REST API
 
 ```
-?group=year
-?group=year,status
+?aggregate[sum]=revenue&groupBy=author
 ```
 
 ### GraphQL
 
-TBD
-
-</div>
-</div>
-
----
-
-## Aggregate
-
-<div class="two-up">
-<div class="left">
-
-Aggregate allows you to retrieve the output of several functions in your items. In the syntax listed to the right,
-`<type>` is one of `avg`, `sum`, `min`, `max`, or `count`, `<field>` is the column you'd like to run the function on,
-and `<alias>` is how the result should be returned.
-
-</div>
-<div class="right">
-
-### REST API
-
+```graphql
+query {
+	articles_aggregated(groupBy: "author") {
+		group
+		sum {
+			revenue
+		}
+	}
+}
 ```
-?aggregate[<type>][<field>]=<alias>
-```
-
-##### Example
-
-```
-?aggregate[avg][price]=average_sale
-&aggregate[sum][price]=revenue
-```
-
-### GraphQL
-
-TBD
 
 </div>
 </div>
@@ -577,6 +600,118 @@ query {
 
 ---
 
+## Aliases
+
+<div class="two-up">
+<div class="left">
+
+Aliases allow you to make multiple queries to the same collection under different names. For example an alias of
+`translations` could be `all_translations` and they could both be used in the same query.
+
+### Examples
+
+Return both a filtered translations field and an unfiltered `translations` as `all_translations`
+
+```json
+{
+	"articles: [
+	  {
+        "translations": [],
+        "all_translations": [
+		  {
+			"id": "2"
+		  }
+		]
+      },
+      {
+        "translations": [
+          {
+            "id": "4"
+          }
+        ],
+        "all_translations": [
+          {
+            "id": "4"
+          }
+        ]
+      }
+	]
+}
+```
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?translations[filter][id][_eq]=4&alias[all_translations]=translations
+```
+
+### GraphQL
+
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	articles {
+		translations(filter: { id: { _eq: 4 } }) {
+			id
+		}
+		all_translations: translations {
+			id
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+## Metadata
+
+<div class="two-up">
+<div class="left">
+
+Metadata allows you to retrieve some additional information about the items in the collection you're fetching. `*` can
+be used as a wildcard to retrieve all metadata.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Total Count
+
+Returns the total item count of the collection you're querying.
+
+### Filter Count
+
+Returns the item count of the collection you're querying, taking the current filter/search parameters into account.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?meta=total_count
+
+?meta=filter_count
+
+?meta=*
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
+
 ## Export
 
 Save the current API response to a file.
@@ -605,3 +740,5 @@ n/a
 </div>
 
 ---
+
+s

@@ -1,15 +1,15 @@
 <template>
-	<v-hover class="module-bar-avatar" v-slot="{ hover }">
+	<v-hover v-slot="{ hover }" class="module-bar-avatar">
 		<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 			<template #activator="{ on }">
 				<v-button
-					@click="on"
+					v-tooltip.right="t('sign_out')"
 					tile
 					icon
 					x-large
 					:class="{ show: hover }"
 					class="sign-out"
-					v-tooltip.right="t('sign_out')"
+					@click="on"
 				>
 					<v-icon name="logout" />
 				</v-button>
@@ -27,7 +27,7 @@
 		</v-dialog>
 
 		<router-link :to="userProfileLink">
-			<v-avatar tile large v-tooltip.right="userFullName" :class="{ 'no-avatar': !avatarURL }">
+			<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
 				<img v-if="avatarURL" :src="avatarURL" :alt="userFullName" class="avatar-image" />
 				<v-icon v-else name="account_circle" outline />
 			</v-avatar>
@@ -85,7 +85,7 @@ export default defineComponent({
 		overflow: visible;
 
 		.avatar-image {
-			opacity: 0.5;
+			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
 		}
 

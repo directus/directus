@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useLatencyStore } from '@/stores';
-import { User } from '@/types';
+import { User } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
 import { defineStore } from 'pinia';
 
@@ -27,12 +27,12 @@ export const useUserStore = defineStore({
 			try {
 				const { data } = await api.get(`/users/me`, {
 					params: {
-						fields: '*,avatar.*,role.*',
+						fields: '*,avatar.id,role.*',
 					},
 				});
 
 				this.currentUser = data.data;
-			} catch (error) {
+			} catch (error: any) {
 				this.error = error;
 			} finally {
 				this.loading = false;

@@ -6,7 +6,7 @@
 			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div class="change" v-for="change in changes" :key="change.name">
+		<div v-for="change in changes" :key="change.name" class="change">
 			<div class="type-label">{{ change.name }}</div>
 			<revisions-drawer-updates-change deleted :changes="change.changes" />
 			<revisions-drawer-updates-change added :changes="change.changes" />
@@ -110,7 +110,7 @@ export default defineComponent({
 }
 
 .change-line {
-	margin-bottom: 4px;
+	margin-bottom: 0px;
 }
 
 .v-notice {

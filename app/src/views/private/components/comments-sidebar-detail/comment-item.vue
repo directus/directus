@@ -2,19 +2,19 @@
 	<div class="comment-item">
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
-		<v-textarea ref="textarea" v-if="editing" v-model="edits">
+		<v-textarea v-if="editing" ref="textarea" v-model="edits">
 			<template #append>
 				<div class="buttons">
-					<v-button class="cancel" @click="cancelEditing" secondary x-small>
+					<v-button class="cancel" secondary x-small @click="cancelEditing">
 						{{ t('cancel') }}
 					</v-button>
 
 					<v-button
 						:loading="savingEdits"
 						class="post-comment"
-						@click="saveEdits"
 						x-small
 						:disabled="edits === activity.comment"
+						@click="saveEdits"
 					>
 						{{ t('save') }}
 					</v-button>
@@ -23,7 +23,7 @@
 		</v-textarea>
 
 		<div v-else class="content">
-			<span v-html="htmlContent" class="selectable" />
+			<span v-md="activity.comment" class="selectable" />
 
 			<!-- @TODO: Dynamically add element below if the comment overflows -->
 			<!-- <div v-if="activity.id == 204" class="expand-text">
@@ -35,10 +35,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
+import { defineComponent, PropType, ref, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
-import { md } from '@/utils/md';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
@@ -60,13 +59,12 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const textarea = ref<ComponentPublicInstance>();
-		const htmlContent = computed(() => (props.activity.comment ? md(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
 		useShortcut('meta+enter', saveEdits, textarea);
 
-		return { t, htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
+		return { t, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);
@@ -88,7 +86,7 @@ export default defineComponent({
 						comment: edits.value,
 					});
 					await props.refresh();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					savingEdits.value = false;

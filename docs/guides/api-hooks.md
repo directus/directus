@@ -75,6 +75,7 @@ module.exports = function registerHook({ exceptions }) {
 | Scope                           | Actions                                                     | Before           |
 | ------------------------------- | ----------------------------------------------------------- | ---------------- |
 | `cron()`                        | [See below for configuration](#interval-cron)               | No               |
+| `cli.init`                      | `before` and `after`                                        | No               |
 | `server`                        | `start` and `stop`                                          | Optional         |
 | `init`                          |                                                             | Optional         |
 | `routes.init`                   | `before` and `after`                                        | No               |
@@ -82,6 +83,7 @@ module.exports = function registerHook({ exceptions }) {
 | `middlewares.init`              | `before` and `after`                                        | No               |
 | `request`                       | `not_found`                                                 | No               |
 | `response`                      |                                                             | No<sup>[1]</sup> |
+| `database.error`                | When a database error is thrown                             | No               |
 | `error`                         |                                                             | No               |
 | `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
 | `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
@@ -89,7 +91,7 @@ module.exports = function registerHook({ exceptions }) {
 | `activity`                      | `create`, `update` and `delete`                             | Optional         |
 | `collections`                   | `create`, `update` and `delete`                             | Optional         |
 | `fields`                        | `create`, `update` and `delete`                             | Optional         |
-| `files`                         | `upload`<sup>[3]</sup>, `create`, `update` and `delete`     | Optional         |
+| `files`                         | `upload`<sup>[3]</sup>                                      | No               |
 | `folders`                       | `create`, `update` and `delete`                             | Optional         |
 | `permissions`                   | `create`, `update` and `delete`                             | Optional         |
 | `presets`                       | `create`, `update` and `delete`                             | Optional         |
@@ -141,7 +143,7 @@ module.exports = function registerHook() {
 ## 4. Develop your Custom Hook
 
 > Hooks can impact performance when not carefully implemented. This is especially true for `before` hooks (as these are
-> blocking) and hooks on `read` actions, as a single request can result in a large ammount of database reads.
+> blocking) and hooks on `read` actions, as a single request can result in a large amount of database reads.
 
 ### Register Function
 
@@ -155,6 +157,7 @@ The `registerHook` function receives a context parameter with the following prop
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
+- `logger` — [Pino](https://github.com/pinojs/pino) instance.
 
 ### Event Handler Function
 
@@ -165,6 +168,27 @@ properties:
 - `accountability` — Information about the current user
 - `collection` — Collection that is being modified
 - `item` — Primary key(s) of the item(s) being modified
+- `action` — Action that is performed
+- `payload` — Payload of the request
+- `schema` - The current API schema in use
+- `database` - Current database transaction
+
+::: tip Input
+
+The `items.*.before` hooks get the raw input payload as the first parameter, with the context parameter as the second
+parameter.
+
+:::
+
+#### Items read
+
+In contrast to the other `items` events (`items.create`, `items.update`, `items.delete`) the `items.read` doesn't
+receive the primary key(s) of the items but the query used:
+
+- `event` — Full event string
+- `accountability` — Information about the current user
+- `collection` — Collection that is being modified
+- `query` — The query used to get the data
 - `action` — Action that is performed
 - `payload` — Payload of the request
 - `schema` - The current API schema in use

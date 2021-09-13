@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Muuda välja
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
@@ -41,7 +61,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
-public: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
@@ -51,7 +70,7 @@ os_type: OS Tüüp
 os_version: OS Versioon
 os_uptime: OS Ülevaloleku aeg
 os_totalmem: OS Mälu
-archive: Arhiveeri
+archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
@@ -249,7 +268,7 @@ move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
-interface: Kasutajaliides
+interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -279,7 +298,6 @@ drag_mode: Lohistusrežiim
 cancel_crop: Tühista lõikamine
 original: Originaal
 url: URL
-import: Impordi
 file_details: Faili Üksikasjad
 dimensions: Mõõtmed
 size: Suurus
@@ -369,7 +387,6 @@ documentation: Dokumentatsioon
 sidebar: Külgmenüü
 duration: Kestus
 charset: Sümbolid
-second: sekundit
 file_moved: Fail on liigutatud
 collection_created: Andmekogu on lisatud
 modified_on: Muudetud
@@ -409,6 +426,7 @@ errors:
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
+  NOT_NULL_VIOLATION: Väärtus ei saa olla null
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -494,6 +512,7 @@ upload_files_success: '{count} faili üles laetud'
 upload_pending: Laadimine on ootel
 drag_file_here: Lohista failid siia
 click_to_browse: Kliki otsimiseks
+interface_options: Kasutajaliidese valikud
 layout_options: Paiguse valikud
 rows: Read
 columns: Veerud
@@ -643,7 +662,7 @@ page_help_docs_global: >-
 page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
-  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm
 page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
 page_help_settings_datamodel_collections: >-
   **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
@@ -693,7 +712,7 @@ fields:
     hidden: Peidetud
     singleton: Üksik
     translations: Andmekogu nimetuste tõlked
-    archive_app_filter: Arhiveeri rakenduse filter
+    archive_app_filter: Arhiveerimisfilter
     archive_value: Arhiveeri väärtus
     unarchive_value: Aktiveeri väärtus
     sort_field: Sorteerimisväli
@@ -736,6 +755,8 @@ fields:
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
+    status_active: aktiivne
+    status_archived: Arhiveeritud
     role: Roll
     token: Kontrollkood
     last_page: Viimane leht
@@ -772,11 +793,40 @@ fields:
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
     collection_list: Andmekogude näitamine
+  directus_webhooks:
+    name: Nimi
+    status: Staatus
 field_options:
+  directus_activity:
+    login: Logi sisse
+    create: Loo
+    update: Uuenda
+    delete: Kustuta
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
     do_not_track_anything: Ära jälgi midagi
+    collection_setup: Andmekogu seadistus
+    singleton: Käsitle üksiku objektina
+    language: Keel
+    archive_divider: Arhiiv
+    divider: Sorteeri
+  directus_roles:
+    fields:
+      icon_name: Ikoon
+      name_name: Nimi
+      name_placeholder: Sisesta pealkiri...
+    collection_list:
+      fields:
+        type_name: Tüüp
+    collections_name: Kogud
+  directus_users:
+    status_dropdown_active: aktiivne
+    status_dropdown_archived: Arhiveeritud
+  directus_webhooks:
+    status_options_active: aktiivne
+    actions_create: Loo
+    actions_update: Uuenda
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -794,11 +844,8 @@ referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
 referential_action_set_null: Nulli {field} väli
 referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
-continue: Continue
 editing_role: '{role} roll'
 creating_webhook: Loo veebikonks
-default: Vaikimisi
-delete: Kustuta
 delete_are_you_sure: >-
   See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-
@@ -949,7 +996,7 @@ interfaces:
     description: Kasutajaliidese valikute tegemise hüpikaken
   list-m2m:
     many-to-many: Mitu mitmele
-    description: Vali mitu seoetud kirjet
+    description: Vali mitu seotud kirjet
   select-dropdown-m2o:
     many-to-one: Mitu ühele
     description: Vali üksik seotud kirje
@@ -963,6 +1010,8 @@ interfaces:
     box: Plokk / Tekstisisene
     imageToken: Pildi kood
     imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+  map:
+    zoom: Suurenda
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -971,6 +1020,8 @@ interfaces:
     one-to-many: Üks-mitmele
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
+  system-folder:
+    folder: Kaust
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust

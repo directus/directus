@@ -7,7 +7,7 @@ import env from './env';
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',
 	redact: {
-		paths: ['req.headers.authorization', 'req.cookies.directus_refresh_token'],
+		paths: ['req.headers.authorization', `req.cookies.${env.REFRESH_TOKEN_COOKIE_NAME}`],
 		censor: '--redact--',
 	},
 };
@@ -19,16 +19,20 @@ if (env.LOG_STYLE !== 'raw') {
 
 const logger = pino(pinoOptions);
 
-export const expressLogger = pinoHTTP({
-	logger,
-	serializers: {
-		req(request: Request) {
-			const output = stdSerializers.req(request);
-			output.url = redactQuery(output.url);
-			return output;
-		},
+export const expressLogger = pinoHTTP(
+	{
+		logger,
 	},
-}) as RequestHandler;
+	{
+		serializers: {
+			req(request: Request) {
+				const output = stdSerializers.req(request);
+				output.url = redactQuery(output.url);
+				return output;
+			},
+		},
+	}
+) as RequestHandler;
 
 export default logger;
 

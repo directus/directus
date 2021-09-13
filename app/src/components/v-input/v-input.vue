@@ -1,5 +1,5 @@
 <template>
-	<div class="v-input" @click="$emit('click', $event)" :class="classes">
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
@@ -10,17 +10,18 @@
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
 				<input
-					v-bind="attributes"
+					ref="input"
 					v-focus="autofocus"
-					v-on="listeners"
+					v-bind="attributes"
+					:placeholder="placeholder"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue"
-					ref="input"
+					:value="modelValue === null ? '' : String(modelValue)"
+					v-on="listeners"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
@@ -30,16 +31,16 @@
 					name="keyboard_arrow_up"
 					class="step-up"
 					clickable
-					@click="stepUp"
 					:disabled="!isStepUpAllowed"
+					@click="stepUp"
 				/>
 				<v-icon
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					clickable
-					@click="stepDown"
 					:disabled="!isStepDownAllowed"
+					@click="stepDown"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -58,7 +59,6 @@ import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
 
 export default defineComponent({
-	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	inheritAttrs: false,
 	props: {
 		autofocus: {
@@ -84,6 +84,10 @@ export default defineComponent({
 		fullWidth: {
 			type: Boolean,
 			default: true,
+		},
+		placeholder: {
+			type: String,
+			default: null,
 		},
 		modelValue: {
 			type: [String, Number],
@@ -139,6 +143,7 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
+	emits: ['click', 'keydown', 'update:modelValue', 'focus'],
 	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
@@ -147,7 +152,7 @@ export default defineComponent({
 			keydown: processValue,
 			blur: (e: Event) => {
 				trimIfEnabled();
-				attrs?.onBlur?.(e);
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 			},
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
@@ -210,7 +215,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}

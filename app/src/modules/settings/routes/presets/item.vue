@@ -1,106 +1,125 @@
 <template>
-	<private-view :title="t('editing_preset')">
-		<template #headline>{{ t('settings_presets') }}</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="backLink">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		v-model:filters="layoutFilters"
+		v-model:search-query="searchQuery"
+		:collection="values.collection"
+		readonly
+	>
+		<private-view :title="t('editing_preset')">
+			<template #headline>{{ t('settings_presets') }}</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon exact :to="backLink">
+					<v-icon name="arrow_back" />
+				</v-button>
+			</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
+			<template #navigation>
+				<settings-navigation />
+			</template>
 
-		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						rounded
-						icon
-						class="action-delete"
-						:disabled="preset === null || id === '+'"
-						@click="on"
-						v-tooltip.bottom="t('delete')"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ t('cancel') }}
+			<template #actions>
+				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="t('delete_label')"
+							rounded
+							icon
+							class="action-delete"
+							:disabled="preset === null || id === '+'"
+							@click="on"
+						>
+							<v-icon name="delete" outline />
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ t('delete') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button
-				icon
-				rounded
-				:disabled="hasEdits === false"
-				:loading="saving"
-				@click="save"
-				v-tooltip.bottom="t('save')"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="preset-item">
-			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
-
-			<div class="layout">
-				<component v-if="values.layout && values.collection" :is="`layout-${values.layout}`">
-					<template #no-results>
-						<v-info :title="t('no_results')" icon="search" center>
-							{{ t('no_results_copy') }}
-						</v-info>
 					</template>
 
-					<template #no-items>
-						<v-info :title="t('item_count', 0)" center>
-							{{ t('no_items_copy') }}
-						</v-info>
-					</template>
-				</component>
+					<v-card>
+						<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
-				<v-notice v-else>
-					{{ t('no_layout_collection_selected_yet') }}
-				</v-notice>
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-tooltip.bottom="t('save')"
+					icon
+					rounded
+					:disabled="hasEdits === false"
+					:loading="saving"
+					@click="save"
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="preset-item">
+				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
+
+				<div class="layout">
+					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
+						<template #no-results>
+							<v-info :title="t('no_results')" icon="search" center>
+								{{ t('no_results_copy') }}
+							</v-info>
+						</template>
+
+						<template #no-items>
+							<v-info :title="t('item_count', 0)" center>
+								{{ t('no_items_copy') }}
+							</v-info>
+						</template>
+					</component>
+
+					<v-notice v-else>
+						{{ t('no_layout_collection_selected_yet') }}
+					</v-notice>
+				</div>
 			</div>
-		</div>
 
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_settings_presets_item'))" />
-			</sidebar-detail>
-
-			<div class="layout-sidebar">
-				<sidebar-detail icon="search" :title="t('search')">
-					<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+			<template #sidebar>
+				<sidebar-detail icon="info_outline" :title="t('information')" close>
+					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 				</sidebar-detail>
 
-				<component v-if="values.layout && values.collection" :is="`layout-sidebar-${values.layout}`" />
+				<div class="layout-sidebar">
+					<sidebar-detail icon="search" :title="t('search')">
+						<v-input v-model="searchQuery" :placeholder="t('preset_search_placeholder')"></v-input>
+					</sidebar-detail>
 
-				<sidebar-detail icon="layers" :title="t('layout_options')">
-					<div class="layout-options">
-						<component v-if="values.layout && values.collection" :is="`layout-options-${values.layout}`" />
-					</div>
-				</sidebar-detail>
-			</div>
-		</template>
-	</private-view>
+					<component
+						:is="`layout-sidebar-${values.layout}`"
+						v-if="values.layout && values.collection"
+						v-bind="layoutState"
+					/>
+
+					<sidebar-detail icon="layers" :title="t('layout_options')">
+						<div class="layout-options">
+							<component
+								:is="`layout-options-${values.layout}`"
+								v-if="values.layout && values.collection"
+								v-bind="layoutState"
+							/>
+						</div>
+					</sidebar-detail>
+				</div>
+			</template>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, reactive } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@directus/shared/types';
@@ -108,7 +127,6 @@ import api from '@/api';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
-import { md } from '@/utils/md';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
 
@@ -162,19 +180,9 @@ export default defineComponent({
 			},
 		});
 
-		useLayout(
-			computed(() => values.value.layout || 'tabular'),
-			reactive({
-				collection: computed(() => values.value.collection),
-				selection: [],
-				layoutOptions,
-				layoutQuery,
-				filters: layoutFilters,
-				searchQuery,
-				selectMode: false,
-				readonly: true,
-			})
-		);
+		const layout = computed(() => values.value.layout);
+
+		const { layoutWrapper } = useLayout(layout);
 
 		return {
 			t,
@@ -187,13 +195,14 @@ export default defineComponent({
 			initialValues,
 			saving,
 			save,
+			layoutWrapper,
 			layoutQuery,
 			layoutOptions,
+			layoutFilters,
 			hasEdits,
 			deleting,
 			deleteAndQuit,
 			confirmDelete,
-			md,
 			updateFilters,
 			searchQuery,
 		};
@@ -220,8 +229,10 @@ export default defineComponent({
 				if (edits.value.scope) {
 					if (edits.value.scope.startsWith('role_')) {
 						editsParsed.role = edits.value.scope.substring(5);
+						editsParsed.user = null;
 					} else if (edits.value.scope.startsWith('user_')) {
 						editsParsed.user = edits.value.scope.substring(5);
+						editsParsed.role = null;
 					} else {
 						editsParsed.role = null;
 						editsParsed.user = null;
@@ -238,7 +249,7 @@ export default defineComponent({
 					await presetsStore.hydrate();
 
 					edits.value = {};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					saving.value = false;
@@ -259,7 +270,7 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;
@@ -391,7 +402,7 @@ export default defineComponent({
 					const response = await api.get(`/presets/${props.id}`);
 
 					preset.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -526,6 +537,8 @@ export default defineComponent({
 	--sidebar-detail-color: var(--primary);
 	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
+
+	display: contents;
 }
 
 :deep(.layout-options) {

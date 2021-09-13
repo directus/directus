@@ -102,7 +102,7 @@ export const useCollectionsStore = defineStore({
 					type: 'success',
 					title: i18n.global.t('update_collection_success'),
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		},
@@ -114,7 +114,7 @@ export const useCollectionsStore = defineStore({
 					type: 'success',
 					title: i18n.global.t('delete_collection_success'),
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		},

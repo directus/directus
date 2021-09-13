@@ -5,8 +5,8 @@
 				v-if="showManualSort"
 				class="manual cell"
 				:class="{ 'sorted-manually': sort.by === manualSortKey }"
-				@click="toggleManualSort"
 				scope="col"
+				@click="toggleManualSort"
 			>
 				<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
 			</th>
@@ -28,15 +28,15 @@
 					</span>
 					<v-icon
 						v-if="header.sortable"
+						v-tooltip.top="t(getTooltipForSortIcon(header))"
 						name="sort"
 						class="sort-icon"
 						small
-						v-tooltip.top="t(getTooltipForSortIcon(header))"
 					/>
 				</div>
 				<span
-					class="resize-handle"
 					v-if="showResize"
+					class="resize-handle"
 					@click.stop
 					@pointerdown="onResizeHandleMouseDown(header, $event)"
 				/>
@@ -56,7 +56,6 @@ import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
-	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,
@@ -103,6 +102,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

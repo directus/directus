@@ -14,13 +14,10 @@
 </template>
 
 <script lang="ts">
-import { Field } from '@/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import { defineComponent, PropType } from 'vue';
-import { ValidationError } from '@/types';
-
 export default defineComponent({
-	emits: ['apply'],
-	name: 'interface-group-raw',
+	name: 'InterfaceGroupRaw',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
@@ -63,5 +60,6 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['apply'],
 });
 </script>

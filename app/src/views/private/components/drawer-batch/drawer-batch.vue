@@ -6,15 +6,15 @@
 		@cancel="cancel"
 	>
 		<template #actions>
-			<v-button @click="save" icon rounded :loading="saving" v-tooltip.bottom="t('save')">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
 
 		<div class="drawer-batch-content">
 			<v-form
-				:collection="collection"
 				v-model="internalEdits"
+				:collection="collection"
 				batch-mode
 				primary-key="+"
 				:validation-errors="validationErrors"
@@ -32,7 +32,6 @@ import { APIError } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	emits: ['update:active', 'refresh'],
 	props: {
 		active: {
 			type: Boolean,
@@ -51,6 +50,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update:active', 'refresh'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -125,7 +125,7 @@ export default defineComponent({
 
 					internalActive.value = false;
 					internalEdits.value = {};
-				} catch (err) {
+				} catch (err: any) {
 					validationErrors.value = err.response.data.errors
 						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 						.map((err: APIError) => {

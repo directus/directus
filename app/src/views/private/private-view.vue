@@ -8,7 +8,7 @@
 	</v-info>
 
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
-		<aside role="navigation" aria-label="Module Navigation" id="navigation" :class="{ 'is-open': navOpen }">
+		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
 				<project-info />
@@ -18,14 +18,15 @@
 				</div>
 			</div>
 		</aside>
-		<div id="main-content" ref="contentEl">
+		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
+				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
 			>
-				<template v-for="(_, scopedSlotName) in $slots" v-slot:[scopedSlotName]="slotData">
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
 			</header-bar>
@@ -35,8 +36,8 @@
 			</main>
 		</div>
 		<aside
-			role="contentinfo"
 			id="sidebar"
+			role="contentinfo"
 			class="alt-colors"
 			aria-label="Module Sidebar"
 			:class="{ 'is-open': sidebarOpen }"
@@ -89,6 +90,10 @@ export default defineComponent({
 		title: {
 			type: String,
 			default: null,
+		},
+		smallHeader: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -213,7 +218,6 @@ export default defineComponent({
 		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; // (60 - 4 - 24) / 2
-		--form-vertical-gap: 52px;
 
 		position: relative;
 		flex-grow: 1;
@@ -245,7 +249,7 @@ export default defineComponent({
 		top: 0;
 		right: 0;
 		z-index: 30;
-		width: 284px;
+		width: 280px;
 		height: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
@@ -263,23 +267,23 @@ export default defineComponent({
 		.flex-container {
 			display: flex;
 			flex-direction: column;
-			width: 284px;
+			width: 280px;
 			height: 100%;
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 64px));
+			transform: translateX(calc(100% - 60px));
 		}
 
 		@media (min-width: 1260px) {
 			position: relative;
-			flex-basis: 64px;
+			flex-basis: 60px;
 			flex-shrink: 0;
 			transform: none;
 			transition: flex-basis var(--slow) var(--transition);
 
 			&.is-open {
-				flex-basis: 284px;
+				flex-basis: 280px;
 				transform: none;
 			}
 		}

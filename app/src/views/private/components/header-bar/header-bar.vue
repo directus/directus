@@ -1,10 +1,10 @@
 <template>
-	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
-		<div class="title-outer-prepend" v-if="$slots['title-outer:prepend']">
+		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
 
@@ -41,7 +41,6 @@ import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
-	emits: ['primary', 'toggle:sidebar'],
 	components: { HeaderBarActions },
 	props: {
 		title: {
@@ -56,7 +55,12 @@ export default defineComponent({
 			type: String,
 			default: 'menu',
 		},
+		small: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	emits: ['primary', 'toggle:sidebar'],
 	setup() {
 		const headerEl = ref<Element>();
 
@@ -92,12 +96,12 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 65px;
+	height: 61px;
 	margin: 0;
-	padding: 0 12px;
+	padding: 0 10px;
 	background-color: var(--background-page);
 	box-shadow: 0;
-	transition: box-shadow var(--medium) var(--transition);
+	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
 	.nav-toggle {
 		@media (min-width: 960px) {
@@ -167,6 +171,11 @@ export default defineComponent({
 		}
 	}
 
+	&.small .title-container .headline {
+		opacity: 0;
+		pointer-events: none;
+	}
+
 	&.collapsed {
 		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
 
@@ -192,8 +201,11 @@ export default defineComponent({
 	}
 
 	@media (min-width: 600px) {
-		margin: 24px 0;
 		padding: 0 32px;
+
+		&:not(.small) {
+			margin: 24px 0;
+		}
 	}
 }
 </style>

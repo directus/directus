@@ -1,8 +1,9 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, SchemaOverview, Query, Relation, RelationMeta, Accountability } from '../types';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, SchemaOverview, Query, Relation, RelationMeta } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
@@ -140,6 +141,10 @@ export class RelationsService {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
 			);
+		}
+
+		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
+			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
 		}
 
 		const existingRelation = this.schema.relations.find(

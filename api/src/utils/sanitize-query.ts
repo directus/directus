@@ -1,7 +1,8 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Accountability, Aggregate, Filter, Meta, Query, Sort } from '../types';
-import { parseFilter } from '../utils/parse-filter';
+import { Aggregate, Filter, Meta, Query, Sort } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { parseFilter, deepMap } from '@directus/shared/utils';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -18,8 +19,8 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.fields = sanitizeFields(rawQuery.fields);
 	}
 
-	if (rawQuery.group) {
-		query.group = sanitizeFields(rawQuery.group);
+	if (rawQuery.groupBy) {
+		query.group = sanitizeFields(rawQuery.groupBy);
 	}
 
 	if (rawQuery.aggregate) {
@@ -58,6 +59,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		if (!query.deep) query.deep = {};
 
 		query.deep = sanitizeDeep(rawQuery.deep, accountability);
+	}
+
+	if (rawQuery.alias) {
+		query.alias = sanitizeAlias(rawQuery.alias);
 	}
 
 	return query;
@@ -121,6 +126,14 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 			logger.warn('Invalid value passed for filter query parameter.');
 		}
 	}
+
+	filters = deepMap(filters, (val) => {
+		try {
+			return JSON.parse(val);
+		} catch {
+			return val;
+		}
+	});
 
 	filters = parseFilter(filters, accountability);
 
@@ -192,4 +205,18 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 			set(result, path, merge({}, get(result, path, {}), parsedLevel));
 		}
 	}
+}
+
+function sanitizeAlias(rawAlias: any) {
+	let alias: Record<string, string> = rawAlias;
+
+	if (typeof rawAlias === 'string') {
+		try {
+			alias = JSON.parse(rawAlias);
+		} catch (err) {
+			logger.warn('Invalid value passed for alias query parameter.');
+		}
+	}
+
+	return alias;
 }

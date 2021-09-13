@@ -2,15 +2,15 @@
 	<form @submit.prevent="onSubmit">
 		<v-input :model-value="email" disabled />
 		<v-input
+			v-model="password"
 			:placeholder="t('password')"
 			autofocus
 			autocomplete="username"
 			type="password"
-			v-model="password"
 			:disabled="done"
 		/>
-		<v-notice type="success" v-if="done">{{ t('password_reset_successful') }}</v-notice>
-		<v-notice type="danger" v-if="error">
+		<v-notice v-if="done" type="success">{{ t('password_reset_successful') }}</v-notice>
+		<v-notice v-if="error" type="danger">
 			{{ errorFormatted }}
 		</v-notice>
 		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ t('reset') }}</v-button>
@@ -66,7 +66,7 @@ export default defineComponent({
 				});
 
 				done.value = true;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				resetting.value = false;

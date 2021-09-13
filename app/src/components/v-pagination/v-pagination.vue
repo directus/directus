@@ -7,10 +7,10 @@
 		<v-button
 			v-if="showFirstLast && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
 			class="page"
-			@click="toPage(1)"
 			secondary
 			small
 			:disabled="disabled"
+			@click="toPage(1)"
 		>
 			1
 		</v-button>
@@ -24,10 +24,10 @@
 			:key="page"
 			:class="{ active: modelValue === page }"
 			class="page"
-			@click="toPage(page)"
 			secondary
 			small
 			:disabled="disabled"
+			@click="toPage(page)"
 		>
 			{{ page }}
 		</v-button>
@@ -43,10 +43,10 @@
 			v-if="showFirstLast && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible"
 			:class="{ active: modelValue === length }"
 			class="page"
-			@click="toPage(length)"
 			secondary
 			small
 			:disabled="disabled"
+			@click="toPage(length)"
 		>
 			{{ length }}
 		</v-button>
@@ -62,7 +62,6 @@ import { defineComponent, computed } from 'vue';
 import { isEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -88,8 +87,11 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const visiblePages = computed<number[]>(() => {
+			if (props.totalVisible === undefined) return [];
+
 			let startPage: number;
 			let endPage: number;
 

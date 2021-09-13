@@ -23,10 +23,10 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="branding && branding.project_name" />
+				<img v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="branding && branding.project_name" />
 			</transition>
 			<div class="note-container">
-				<div class="note" v-if="branding && branding.public_note" v-html="md(branding.public_note)" />
+				<div v-if="branding && branding.public_note" v-md="branding.public_note" class="note" />
 			</div>
 		</div>
 	</div>
@@ -36,7 +36,6 @@
 import { version } from '../../../package.json';
 import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
-import { md } from '@/utils/md';
 import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
@@ -84,7 +83,6 @@ export default defineComponent({
 			version,
 			artStyles,
 			branding: serverStore.info?.project,
-			md,
 			foregroundURL,
 			logoURL,
 			isBranded,

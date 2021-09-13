@@ -3,7 +3,7 @@
  */
 
 import env from './env';
-import { toArray } from './utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 
 const enabledProviders = toArray(env.OAUTH_PROVIDERS).map((provider) => provider.toLowerCase());

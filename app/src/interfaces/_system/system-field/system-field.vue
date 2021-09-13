@@ -8,11 +8,11 @@
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@update:model-value="$emit('input', $event)"
 		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
 		:placeholder="placeholder || t('select_a_field')"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
@@ -20,10 +20,9 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType, watch } from 'vue';
 import { useFieldsStore } from '@/stores';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		collectionField: {
 			type: String,
@@ -58,6 +57,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

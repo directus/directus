@@ -1,7 +1,6 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
-import parseEXIF from 'exif-reader';
-import { parse as parseICC } from 'icc';
+import exifr from 'exifr';
 import { clone } from 'lodash';
 import { extension } from 'mime-types';
 import path from 'path';
@@ -13,8 +12,7 @@ import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
-import parseIPTC from '../utils/parse-iptc';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService, MutationOptions } from './items';
 
 export class FilesService extends ItemsService {
@@ -32,6 +30,14 @@ export class FilesService extends ItemsService {
 	): Promise<PrimaryKey> {
 		const payload = clone(data);
 
+		if ('folder' in payload === false) {
+			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
+
+			if (settings?.storage_default_folder) {
+				payload.folder = settings.storage_default_folder;
+			}
+		}
+
 		if (primaryKey !== undefined) {
 			await this.updateOne(primaryKey, payload, { emitEvents: false });
 
@@ -46,9 +52,10 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
-		const fileExtension = path.extname(payload.filename_download) || (payload.type && extension(payload.type));
+		const fileExtension =
+			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
 
-		payload.filename_disk = primaryKey + '.' + fileExtension;
+		payload.filename_disk = primaryKey + (fileExtension || '');
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
@@ -56,7 +63,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
@@ -77,37 +84,30 @@ export class FilesService extends ItemsService {
 				payload.height = meta.height;
 			}
 
-			payload.filesize = meta.size;
 			payload.metadata = {};
 
-			if (meta.icc) {
-				try {
-					payload.metadata.icc = parseICC(meta.icc);
-				} catch (err) {
-					logger.warn(`Couldn't extract ICC information from file`);
-					logger.warn(err);
+			try {
+				payload.metadata = await exifr.parse(buffer.content, {
+					icc: false,
+					iptc: true,
+					ifd1: true,
+					interop: true,
+					translateValues: true,
+					reviveValues: true,
+					mergeOutput: false,
+				});
+				if (payload.metadata?.iptc?.Headline) {
+					payload.title = payload.metadata.iptc.Headline;
 				}
-			}
-
-			if (meta.exif) {
-				try {
-					payload.metadata.exif = parseEXIF(meta.exif);
-				} catch (err) {
-					logger.warn(`Couldn't extract EXIF information from file`);
-					logger.warn(err);
+				if (!payload.description && payload.metadata?.iptc?.Caption) {
+					payload.description = payload.metadata.iptc.Caption;
 				}
-			}
-
-			if (meta.iptc) {
-				try {
-					payload.metadata.iptc = parseIPTC(meta.iptc);
-					payload.title = payload.metadata.iptc.headline || payload.title;
-					payload.description = payload.description || payload.metadata.iptc.caption;
-					payload.tags = payload.metadata.iptc.keywords;
-				} catch (err) {
-					logger.warn(`Couldn't extract IPTC information from file`);
-					logger.warn(err);
+				if (payload.metadata?.iptc?.Keywords) {
+					payload.tags = payload.metadata.iptc.Keywords;
 				}
+			} catch (err: any) {
+				logger.warn(`Couldn't extract metadata from file`);
+				logger.warn(err);
 			}
 		}
 
@@ -156,7 +156,7 @@ export class FilesService extends ItemsService {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
 				responseType: 'stream',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {

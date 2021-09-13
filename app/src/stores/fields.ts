@@ -1,10 +1,12 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useRelationsStore } from '@/stores/';
-import { Field, FieldRaw, Relation } from '@/types';
+import { Relation } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldRaw } from '@directus/shared/types';
+import { parseFilter } from '@/utils/parse-filter';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -38,6 +40,8 @@ const fakeFilesField: Field = {
 		width: 'full',
 		group: null,
 		note: null,
+		required: false,
+		conditions: null,
 	},
 };
 
@@ -85,6 +89,13 @@ export const useFieldsStore = defineStore({
 				}
 			}
 
+			if (field.meta?.conditions) {
+				field.meta.conditions = field.meta.conditions.map((condition) => ({
+					...condition,
+					rule: parseFilter(condition.rule),
+				}));
+			}
+
 			return {
 				...field,
 				name,
@@ -128,7 +139,7 @@ export const useFieldsStore = defineStore({
 				});
 
 				return field;
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -158,7 +169,7 @@ export const useFieldsStore = defineStore({
 
 					return field;
 				});
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -200,7 +211,7 @@ export const useFieldsStore = defineStore({
 
 					this.translateFields();
 				}
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -216,7 +227,7 @@ export const useFieldsStore = defineStore({
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
-			} catch (err) {
+			} catch (err: any) {
 				this.fields = stateClone;
 				unexpectedError(err);
 			}

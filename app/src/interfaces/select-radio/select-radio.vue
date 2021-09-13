@@ -11,9 +11,9 @@
 		}"
 	>
 		<v-radio
-			block
 			v-for="item in choices"
 			:key="item.value"
+			block
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
@@ -23,8 +23,8 @@
 			@update:model-value="$emit('input', $event)"
 		/>
 		<div
-			class="custom"
 			v-if="allowOther"
+			class="custom"
 			:class="{
 				active: !disabled && usesOtherValue,
 				'has-value': !disabled && otherValue,
@@ -48,7 +48,6 @@ type Option = {
 };
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -83,6 +82,7 @@ export default defineComponent({
 			default: 'var(--primary)',
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

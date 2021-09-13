@@ -4,8 +4,8 @@
 		<div class="modules">
 			<v-button
 				v-for="module in internalModules"
-				v-tooltip.right="module.name"
 				:key="module.id"
+				v-tooltip.right="module.name"
 				icon
 				x-large
 				:to="module.to"
@@ -34,7 +34,7 @@ import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
-import { ModuleConfig } from '@/modules/types';
+import { ModuleConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: {
@@ -52,8 +52,8 @@ export default defineComponent({
 				modules.value
 					.map((module: ModuleConfig) => ({
 						...module,
-						href: module.link || null,
-						to: module.link === undefined ? `/${module.id}` : null,
+						href: module.link,
+						to: module.link === undefined ? `/${module.id}` : '',
 					}))
 					.filter((module: ModuleConfig) => {
 						if (module.hidden !== undefined && unref(module.hidden) === true) {
@@ -103,7 +103,7 @@ body {
 .module-bar {
 	display: flex;
 	flex-direction: column;
-	width: 64px;
+	width: 60px;
 	height: 100%;
 	background-color: var(--module-background);
 

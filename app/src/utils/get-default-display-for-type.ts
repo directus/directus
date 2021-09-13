@@ -1,6 +1,6 @@
-import { types } from '@/types';
+import { Type } from '@directus/shared/types';
 
-const defaultDisplayMap: Record<typeof types[number], string> = {
+const defaultDisplayMap: Record<Type, string> = {
 	alias: 'raw',
 	bigInteger: 'formatted-value',
 	binary: 'raw',
@@ -19,8 +19,9 @@ const defaultDisplayMap: Record<typeof types[number], string> = {
 	unknown: 'raw',
 	csv: 'labels',
 	hash: 'formatted-value',
+	geometry: 'map',
 };
 
-export function getDefaultDisplayForType(type: typeof types[number]): string {
+export function getDefaultDisplayForType(type: Type): string {
 	return defaultDisplayMap[type] || 'raw';
 }

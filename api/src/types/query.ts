@@ -13,6 +13,7 @@ export type Query = {
 	group?: string[];
 	aggregate?: Aggregate;
 	deep?: Record<string, Query>;
+	alias?: Record<string, string>;
 };
 
 export type Sort = {
@@ -37,21 +38,3 @@ export type Aggregate = {
 	min?: string[];
 	max?: string[];
 };
-
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'contains'
-	| 'ncontains'
-	| 'in'
-	| 'nin'
-	| 'gt'
-	| 'gte'
-	| 'lt'
-	| 'lte'
-	| 'null'
-	| 'nnull'
-	| 'empty'
-	| 'nempty';
-
-export type ValidationOperator = 'required' | 'regex';

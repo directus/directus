@@ -1,13 +1,13 @@
 <template>
-	<v-notice class="full" type="warning" v-if="collection === null">
+	<v-notice v-if="collection === null" class="full" type="warning">
 		{{ t('interfaces.translations.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field half">
 			<p class="type-label">{{ t('language_display_template') }}</p>
 			<v-field-template
-				:collection="languageCollection"
 				v-model="languageTemplate"
+				:collection="languageCollection"
 				:depth="2"
 				:placeholder="
 					languageCollectionInfo && languageCollectionInfo.meta && languageCollectionInfo.meta.display_template
@@ -18,8 +18,8 @@
 		<div class="field half">
 			<p class="type-label">{{ t('translations_display_template') }}</p>
 			<v-field-template
-				:collection="translationsCollection"
 				v-model="translationsTemplate"
+				:collection="translationsCollection"
 				:depth="2"
 				:placeholder="
 					translationsCollectionInfo &&
@@ -33,12 +33,12 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		collection: {
 			type: String,
@@ -53,10 +53,11 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

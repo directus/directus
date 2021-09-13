@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import { ItemsService } from './items';
@@ -103,8 +104,16 @@ export class ImportService {
 					.pipe(csv())
 					.on('data', (value: Record<string, string>) => {
 						const obj = transform(value, (result: Record<string, string>, value, key) => {
-							if (value.length === 0) delete result[key];
-							else set(result, key, value);
+							if (value.length === 0) {
+								delete result[key];
+							} else {
+								try {
+									const parsedJson = JSON.parse(value);
+									set(result, key, parsedJson);
+								} catch {
+									set(result, key, value);
+								}
+							}
 						});
 
 						saveQueue.push(obj);

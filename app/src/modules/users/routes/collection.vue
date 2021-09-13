@@ -1,134 +1,149 @@
 <template>
-	<private-view :title="title">
-		<template #headline v-if="breadcrumb">
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
+	<component
+		:is="layoutWrapper"
+		ref="layoutRef"
+		v-slot="{ layoutState }"
+		v-model:selection="selection"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		v-model:filters="layoutFilters"
+		v-model:search-query="searchQuery"
+		collection="directus_users"
+		:reset-preset="resetPreset"
+	>
+		<private-view :title="title">
+			<template v-if="breadcrumb" #headline>
+				<v-breadcrumb :items="breadcrumb" />
+			</template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="people_alt" outline />
-			</v-button>
-		</template>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded disabled icon secondary>
+					<v-icon name="people_alt" outline />
+				</v-button>
+			</template>
 
-		<template #actions:prepend>
-			<component :is="`layout-actions-${layout}`" />
-		</template>
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
+			</template>
 
-		<template #actions>
-			<search-input v-model="searchQuery" />
+			<template #actions>
+				<search-input v-model="searchQuery" />
 
-			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						:disabled="batchDeleteAllowed !== true"
-						rounded
-						icon
-						class="action-delete"
-						@click="on"
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete') : t('not_allowed')"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							:disabled="batchDeleteAllowed !== true"
+							rounded
+							icon
+							class="action-delete"
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button class="action-delete" :loading="deleting" @click="batchDelete">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-if="selection.length > 1"
+					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					rounded
+					icon
+					class="action-batch"
+					:disabled="batchEditAllowed === false"
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-if="canInviteUsers"
+					v-tooltip.bottom="t('invite_users')"
+					rounded
+					icon
+					class="invite-user"
+					@click="userInviteModalActive = true"
+				>
+					<v-icon name="person_add" />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					rounded
+					icon
+					:to="addNewLink"
+					:disabled="createAllowed === false"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</template>
+
+			<template #navigation>
+				<users-navigation :current-role="role" />
+			</template>
+
+			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
+
+			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+				<template #no-results>
+					<v-info :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+
+						<template #append>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+						</template>
+					</v-info>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+				<template #no-items>
+					<v-info :title="t('user_count', 0)" icon="people_alt" center>
+						{{ t('no_users_copy') }}
 
-					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ t('cancel') }}
-						</v-button>
-						<v-button @click="batchDelete" class="action-delete" :loading="deleting">
-							{{ t('delete') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						<template v-if="canInviteUsers" #append>
+							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ t('create_user') }}
+							</v-button>
+						</template>
+					</v-info>
+				</template>
+			</component>
 
-			<v-button
-				rounded
-				icon
-				class="action-batch"
-				:disabled="batchEditAllowed === false"
-				@click="batchEditActive = true"
-				v-if="selection.length > 1"
-				v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
-			>
-				<v-icon name="edit" outline />
-			</v-button>
+			<drawer-batch
+				v-model:active="batchEditActive"
+				:primary-keys="selection"
+				collection="directus_users"
+				@refresh="refresh"
+			/>
 
-			<v-button
-				v-if="canInviteUsers"
-				rounded
-				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="t('invite_users')"
-				class="invite-user"
-			>
-				<v-icon name="person_add" />
-			</v-button>
-
-			<v-button
-				rounded
-				icon
-				:to="addNewLink"
-				v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-				:disabled="createAllowed === false"
-			>
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<users-navigation :current-role="role" />
-		</template>
-
-		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
-
-		<component class="layout" :is="`layout-${layout}`">
-			<template #no-results>
-				<v-info :title="t('no_results')" icon="search" center>
-					{{ t('no_results_copy') }}
-
-					<template #append>
-						<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
-					</template>
-				</v-info>
+			<template #sidebar>
+				<sidebar-detail icon="info_outline" :title="t('information')" close>
+					<div v-md="t('page_help_users_collection')" class="page-description" />
+				</sidebar-detail>
+				<layout-sidebar-detail v-model="layout">
+					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
+				</layout-sidebar-detail>
+				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 			</template>
-
-			<template #no-items>
-				<v-info :title="t('user_count', 0)" icon="people_alt" center>
-					{{ t('no_users_copy') }}
-
-					<template v-if="canInviteUsers" #append>
-						<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
-							{{ t('create_user') }}
-						</v-button>
-					</template>
-				</v-info>
-			</template>
-		</component>
-
-		<drawer-batch
-			:primary-keys="selection"
-			v-model:active="batchEditActive"
-			collection="directus_users"
-			@refresh="refresh"
-		/>
-
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_users_collection'))" />
-			</sidebar-detail>
-			<layout-sidebar-detail v-model="layout" />
-			<component :is="`layout-sidebar-${layout}`" />
-		</template>
-	</private-view>
+		</private-view>
+	</component>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, reactive } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
@@ -137,18 +152,17 @@ import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '@/stores';
-import { md } from '@/utils/md';
 import useNavigation from '../composables/use-navigation';
 import { useLayout } from '@/composables/use-layout';
 import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Role } from '@/types';
+import { Role } from '@directus/shared/types';
 
 type Item = {
 	[field: string]: any;
 };
 
 export default defineComponent({
-	name: 'users-collection',
+	name: 'UsersCollection',
 	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
 		role: {
@@ -164,6 +178,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 
+		const layoutRef = ref();
 		const selection = ref<Item[]>([]);
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
@@ -173,7 +188,7 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const layoutFilters = computed<any[]>({
+		const layoutFilters = computed({
 			get() {
 				if (props.role !== null) {
 					const roleFilter = {
@@ -208,20 +223,7 @@ export default defineComponent({
 			return !!usersCreatePermission && !!rolesReadPermission;
 		});
 
-		const layoutState = useLayout(
-			layout,
-			reactive({
-				collection: 'directus_users',
-				selection,
-				layoutOptions,
-				layoutQuery,
-				filters: layoutFilters,
-				searchQuery,
-				resetPreset,
-				selectMode: false,
-				readonly: false,
-			})
-		);
+		const { layoutWrapper } = useLayout(layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
@@ -231,13 +233,14 @@ export default defineComponent({
 			addNewLink,
 			breadcrumb,
 			title,
-			filters,
+			layoutRef,
+			layoutWrapper,
 			selection,
+			layoutFilters,
 			layoutOptions,
 			layoutQuery,
 			layout,
 			searchQuery,
-			md,
 			clearFilters,
 			userInviteModalActive,
 			refresh,
@@ -253,7 +256,7 @@ export default defineComponent({
 		};
 
 		async function refresh() {
-			await layoutState.value.refresh();
+			await layoutRef.value?.state?.refresh?.();
 		}
 
 		function useBatch() {
@@ -276,11 +279,11 @@ export default defineComponent({
 						data: batchPrimaryKeys,
 					});
 
-					await layoutState.value.refresh();
+					await refresh();
 
 					selection.value = [];
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					deleting.value = false;

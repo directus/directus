@@ -29,13 +29,13 @@ import { defineComponent } from 'vue';
 import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
-	emits: ['save-and-stay', 'save-and-add-new', 'save-as-copy'],
 	props: {
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
 	},
+	emits: ['save-and-stay', 'save-and-add-new', 'save-as-copy'],
 	setup() {
 		const { t } = useI18n();
 

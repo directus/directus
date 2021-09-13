@@ -7,8 +7,8 @@ import {
 	getPackageExtensions,
 	getLocalExtensions,
 	generateExtensionsEntry,
-} from '@directus/shared/utils';
-import { SHARED_DEPS, APP_EXTENSION_TYPES } from '@directus/shared/constants';
+} from '@directus/shared/utils/node';
+import { APP_SHARED_DEPS, APP_EXTENSION_TYPES, APP_EXTENSION_PACKAGE_TYPES } from '@directus/shared/constants';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,9 +22,7 @@ export default defineConfig({
 		}),
 	],
 	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, '/src'),
-		},
+		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {
@@ -50,7 +48,7 @@ function directusExtensions() {
 			apply: 'serve',
 			config: () => ({
 				optimizeDeps: {
-					include: SHARED_DEPS,
+					include: APP_SHARED_DEPS,
 				},
 			}),
 			async buildStart() {
@@ -77,7 +75,7 @@ function directusExtensions() {
 					rollupOptions: {
 						input: {
 							index: path.resolve(__dirname, 'index.html'),
-							...SHARED_DEPS.reduce((acc, dep) => ({ ...acc, [dep.replace(/\//g, '_')]: dep }), {}),
+							...APP_SHARED_DEPS.reduce((acc, dep) => ({ ...acc, [dep.replace(/\//g, '_')]: dep }), {}),
 						},
 						output: {
 							entryFileNames: '[name].[hash].js',
@@ -94,9 +92,9 @@ function directusExtensions() {
 		const apiPath = path.join('..', 'api');
 		const extensionsPath = path.join(apiPath, 'extensions');
 
-		await ensureExtensionDirs(extensionsPath);
-		const packageExtensions = await getPackageExtensions(apiPath);
-		const localExtensions = await getLocalExtensions(extensionsPath);
+		await ensureExtensionDirs(extensionsPath, APP_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(apiPath, APP_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(extensionsPath, APP_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 

@@ -3,8 +3,8 @@
 		:model-value="value"
 		:disabled="disabled"
 		:items="items"
-		@update:model-value="$emit('input', $event)"
 		:placeholder="t('select_a_collection')"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
@@ -14,7 +14,6 @@ import { useCollectionsStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: String,
@@ -29,6 +28,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const { t } = useI18n();
 

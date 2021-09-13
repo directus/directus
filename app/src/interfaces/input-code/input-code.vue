@@ -2,7 +2,7 @@
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
 		<div ref="codemirrorEl"></div>
 
-		<v-button small icon secondary v-if="template" v-tooltip.left="t('fill_template')" @click="fillTemplate">
+		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>
@@ -30,7 +30,6 @@ import formatTitle from '@directus/format-title';
 import importCodemirrorMode from './import-codemirror-mode';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -65,6 +64,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -111,7 +111,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (props.type === 'json') {
+			if (typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -289,8 +289,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'codemirror/addon/lint/lint.css';
-
 .input-code {
 	position: relative;
 	width: 100%;

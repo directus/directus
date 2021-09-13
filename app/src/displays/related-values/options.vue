@@ -1,22 +1,22 @@
 <template>
-	<v-notice type="warning" v-if="collection === null">
+	<v-notice v-if="collection === null" type="warning">
 		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ t('display_template') }}</p>
-			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
+			<v-field-template v-model="template" :collection="relatedCollection" :depth="2" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field, Relation } from '@/types';
+import { Relation } from '@/types';
+import { Field } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
 	props: {
 		value: {
 			type: Object as PropType<any | null>,
@@ -35,6 +35,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

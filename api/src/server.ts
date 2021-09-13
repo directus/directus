@@ -8,6 +8,7 @@ import url from 'url';
 import createApp from './app';
 import getDatabase from './database';
 import { emitAsyncSafe } from './emitter';
+import env from './env';
 import logger from './logger';
 
 export default async function createServer(): Promise<http.Server> {
@@ -86,9 +87,7 @@ export default async function createServer(): Promise<http.Server> {
 	async function beforeShutdown() {
 		emitAsyncSafe('server.stop.before', { server });
 
-		if ('DIRECTUS_DEV' in process.env) {
-			logger.info('Restarting...');
-		} else {
+		if (env.NODE_ENV !== 'development') {
 			logger.info('Shutting down...');
 		}
 	}
@@ -102,7 +101,7 @@ export default async function createServer(): Promise<http.Server> {
 	async function onShutdown() {
 		emitAsyncSafe('server.stop');
 
-		if (!('DIRECTUS_DEV' in process.env)) {
+		if (env.NODE_ENV !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}

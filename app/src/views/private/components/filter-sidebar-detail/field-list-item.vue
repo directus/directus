@@ -23,8 +23,7 @@ import { defineComponent, PropType } from 'vue';
 import { FieldTree } from './types';
 
 export default defineComponent({
-	emits: ['add'],
-	name: 'field-list-item',
+	name: 'FieldListItem',
 	props: {
 		field: {
 			type: Object as PropType<FieldTree>,
@@ -35,5 +34,6 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['add'],
 });
 </script>

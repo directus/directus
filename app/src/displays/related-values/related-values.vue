@@ -6,7 +6,7 @@
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
+			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
 				<span class="label">
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
@@ -16,12 +16,12 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
 				<v-list-item-content>
 					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
@@ -48,7 +48,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {

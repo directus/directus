@@ -1,35 +1,40 @@
 # Environment Variables
 
-> Environment Variables are used for all configuration within Directus projects. They are managed in the root `.env`
-> file, which is created during the installation process.
+> Environment variables are used for all configuration within Directus projects. They can either be defined as plain
+> environment variables or via the `.env` file in the root directory, which is created during the installation process.
 
 [[toc]]
 
 ## General
 
-| Variable           | Description                                                                                                | Default Value |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
-| `PORT`             | What port to run the API under.                                                                            | `8055`        |
-| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
-| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
-| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
-| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
-| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
+| Variable                   | Description                                                                                                | Default Value |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`              | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`                     | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
+| `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | true          |
+
+<sup>[1]</sup> The PUBLIC_URL value is used for things like oAuth redirects, forgot-password emails, and logos that
+needs to be publicly available on the internet.
 
 ## Database
 
-| Variable               | Description                                                                                                                                        | Default Value |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --            |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
-| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
-| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
-| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
+| Variable               | Description                                                                                                                                        | Default Value   |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --              |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --              |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --              |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --              |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --              |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | spatial_ref_sys |
 
 ::: tip Additional Database Variables
 
@@ -48,23 +53,50 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                                                       | Default Value |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `KEY`                            | Unique identifier for the project.                                                                                                | --            |
-| `SECRET`                         | Secret string for the project.                                                                                                    | --            |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | 15m           |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | 7d            |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                          | --            |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                       | `false`       |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                             | `lax`         |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/system/authentication/#request-password-reset) | --            |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/system/users/#invite-a-new-user)                  | --            |
+| Variable                         | Description                                                                                                                       | Default Value            |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `KEY`                            | Unique identifier for the project.                                                                                                | --                       |
+| `SECRET`                         | Secret string for the project.                                                                                                    | --                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | 15m                      |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | 7d                       |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                          | --                       |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                       | `false`                  |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                             | `lax`                    |
+| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                    | `directus_refresh_token` |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/system/authentication/#request-password-reset) | --                       |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/system/users/#invite-a-new-user)                  | --                       |
 
 ::: tip Cookie Strictness
 
 Browser are pretty strict when it comes to third-party cookies. If you're running into unexpected problems when running
-your project and API on different domains, make sure to verify your configuration for `REFRESH_TOKEN_COOKIE_SECURE` and
-`REFRESH_TOKEN_COOKIE_SAME_SITE`.
+your project and API on different domains, make sure to verify your configuration for `REFRESH_TOKEN_COOKIE_NAME`,
+`REFRESH_TOKEN_COOKIE_SECURE` and `REFRESH_TOKEN_COOKIE_SAME_SITE`.
+
+:::
+
+### Hashing
+
+| Variable               | Description                                                                                                                      | Default Value       |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `HASH_MEMORY_COST`     | How much memory to use when generating hashes, in KiB.                                                                           | `4096` (4 MiB)      |
+| `HASH_LENGTH`          | The length of the hash function output in bytes.                                                                                 | `32`                |
+| `HASH_TIME_COST`       | The amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute. | `3`                 |
+| `HASH_PARALLELISM`     | The amount of threads to compute the hash on. Each thread has a memory pool with `HASH_MEMORY_COST` size.                        | `1` (single thread) |
+| `HASH_TYPE`            | The variant of the hash function (`0`: argon2d, `1`: argon2i, or `2`: argon2id).                                                 | `1` (argon2i)       |
+| `HASH_ASSOCIATED_DATA` | An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest.          | --                  |
+
+Argon2's hashing function is used by Directus for three purposes: 1) hashing user passwords, 2) generating hashes for
+the `Hash` field type in collections, and 3) the
+[generate a hash API endpoint](https://docs.directus.io/reference/api/system/utilities/#generate-a-hash).
+
+All `HASH_*` environment variable parameters are passed to the `argon2.hash` function. See the
+[node-argon2 library options page](https://github.com/ranisalt/node-argon2/wiki/Options) for reference.
+
+::: tip Memory Usage
+
+Modifying `HASH_MEMORY_COST` and/or `HASH_PARALLELISM` will affect the amount of memory directus uses when computing
+hashes; each thread gets `HASH_MEMORY_COST` amount of memory, so the total additional memory will be these two values
+multiplied. This may cause out of memory errors, especially when running in containerized environments.
 
 :::
 
@@ -193,9 +225,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable           | Description                        | Default Value |
-| ------------------ | ---------------------------------- | ------------- |
-| `SESSION_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable                 | Description                        | Default Value |
+| ------------------------ | ---------------------------------- | ------------- |
+| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance | ---           |
 
 ### Database
 
@@ -235,12 +267,12 @@ Based on your configured driver, you must also provide the following configurati
 
 ### Azure (`azure`)
 
-| Variable                            | Description                | Default Value                         |
-| ----------------------------------- | -------------------------- | ------------------------------------- |
-| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
-| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
-| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
-| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
+| Variable                            | Description                | Default Value                                 |
+| ----------------------------------- | -------------------------- | --------------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                            |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                            |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                            |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "https://{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
 
@@ -263,6 +295,7 @@ STORAGE_LOCAL_ROOT="./uploads"
 | `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`         |
 | `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | 4             |
 | `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | 6000          |
+| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)            | 5             |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
@@ -326,12 +359,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### Mailgun (`mailgun`)
 
-| Variable                | Description                                                                       | Default Value |
-| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
-| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --            |
-| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --            |
+| Variable                | Description                                                                       | Default Value     |
+| ----------------------- | --------------------------------------------------------------------------------- | ----------------- |
+| `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
+| `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
+| `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
 
-## Misc.
+## Admin Account
 
 If you're relying on Docker and/or the `directus bootstrap` CLI command, you can pass the following two environment
 variables to automatically configure the first user:
@@ -340,6 +374,16 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+
+## Telemetry
+
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
+Directus collects little and anonymized data about your environment. You can easily opt-out with the following
+environment variable:
+
+| Variable    | Description                                                       | Default Value |
+| ----------- | ----------------------------------------------------------------- | ------------- |
+| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | true          |
 
 ---
 

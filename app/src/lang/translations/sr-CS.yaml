@@ -1,4 +1,24 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
 edit_field: Izmijeni
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
@@ -42,7 +62,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Sesija je istekla
-public: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
@@ -250,7 +269,7 @@ move_to_folder: Prebaci u fasciklu
 move: Premjesti
 system: Sistem
 add_field_related: Dodaj Polje u Povezanu Kolekciju
-interface: Interfejs
+interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -280,7 +299,6 @@ drag_mode: Režim Prevlačenja
 cancel_crop: Poništi Isjecanje
 original: Originalno
 url: URL adresa
-import: Uvezi
 file_details: Detalji Fajla
 dimensions: Dimenzije
 size: Veličina
@@ -370,7 +388,6 @@ documentation: Dokumentacija
 sidebar: Bočna traka
 duration: Trajanje
 charset: Set karaktera
-second: Sekundi
 file_moved: Fajl je premješten
 collection_created: Kolekcija Napravljena
 modified_on: Izmijenjeno
@@ -410,6 +427,7 @@ errors:
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
   UNKNOWN: Neočekivana greška
   INTERNAL_SERVER_ERROR: Neočekivana greška
+  NOT_NULL_VIOLATION: Vrijednost ne može biti null
 value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
 create_bookmark: Napravi Oznaku
@@ -495,6 +513,7 @@ upload_files_success: '{count} Fajlova Otpremljeno'
 upload_pending: Otpremanje na Čekanju
 drag_file_here: Prevuci Fajl ovdje
 click_to_browse: Klikni za Pretraživanje
+interface_options: Opcije Interfejsa
 layout_options: Opcije Izgleda
 rows: Redova
 columns: Kolona
@@ -737,6 +756,7 @@ fields:
     theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
+    status_active: Aktivan
     role: Uloga
     token: Token
     last_page: Posljednja Stranica
@@ -773,11 +793,39 @@ fields:
     users: Svi korisnici ove Uloge
     module_list: Navigacija Modula
     collection_list: Navigacija Kolekcije
+  directus_webhooks:
+    name: Ime
+    status: Status
 field_options:
+  directus_activity:
+    login: Prijavi se
+    create: Kreiraj
+    update: Ažuriranje
+    delete: Obriši
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
     only_track_activity: Samo Prati Aktivnost
     do_not_track_anything: Bez praćenja
+    collection_setup: Podešavanje Kolekcije
+    singleton: Tretiraj kao jedinstven objekat
+    language: Jezik
+    archive_divider: Arhiviraj
+    divider: Sortiranje
+  directus_roles:
+    fields:
+      icon_name: Ikonica
+      name_name: Ime
+      name_placeholder: Unesi naslov...
+    collection_list:
+      fields:
+        type_name: Tip
+    collections_name: Kolekcije
+  directus_users:
+    status_dropdown_active: Aktivan
+  directus_webhooks:
+    status_options_active: Aktivan
+    actions_create: Kreiraj
+    actions_update: Ažuriranje
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
@@ -795,11 +843,8 @@ referential_action_cascade: Obriši {collection} stavku (kaskadno)
 referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
-continue: Nastavi
 editing_role: '{role} Uloga'
 creating_webhook: Kreiranje Webhook-a
-default: Podrazumijevano
-delete: Obriši
 delete_are_you_sure: >-
   Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 delete_field_are_you_sure: >-
@@ -964,6 +1009,8 @@ interfaces:
     box: Blok / Linijski
     imageToken: Token Fotografije
     imageToken_label: Koji (statični) token prikačiti na izvore slika
+  map:
+    zoom: Uvеćanjе
   presentation-notice:
     notice: Napomеna
     description: Prikaži kratku napomenu
@@ -972,6 +1019,8 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
+  system-folder:
+    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija

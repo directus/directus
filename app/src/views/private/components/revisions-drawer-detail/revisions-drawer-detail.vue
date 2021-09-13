@@ -4,7 +4,7 @@
 		icon="change_history"
 		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
 	>
-		<v-progress-linear indeterminate v-if="loading" />
+		<v-progress-linear v-if="loading" indeterminate />
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
@@ -15,7 +15,7 @@
 				</template>
 			</template>
 
-			<v-divider class="other" v-if="revisionsCount > 100">
+			<v-divider v-if="revisionsCount > 100" class="other">
 				{{ t('count_other_revisions', revisionsCount - 101) }}
 			</v-divider>
 
@@ -34,9 +34,9 @@
 
 		<revisions-drawer
 			v-if="revisions"
-			:revisions="revisions"
 			v-model:current="modalCurrentRevision"
 			v-model:active="modalActive"
+			:revisions="revisions"
 			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
@@ -57,7 +57,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
-	emits: ['revert'],
 	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {
@@ -69,6 +68,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['revert'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -217,7 +217,7 @@ export default defineComponent({
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 					revisionsCount.value = response.data.meta.filter_count;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -238,15 +238,20 @@ export default defineComponent({
 }
 
 .v-divider {
+	--v-divider-color: var(--background-normal-alt);
+
 	position: sticky;
 	top: 0;
 	z-index: 3;
 	margin-top: 8px;
-	margin-bottom: 8px;
+	margin-right: -8px;
+	margin-bottom: 6px;
+	margin-left: -8px;
 	padding-top: 8px;
-	padding-bottom: 8px;
+	padding-right: 8px;
+	padding-left: 8px;
 	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	box-shadow: 0 0 2px 2px var(--background-normal);
 
 	&:first-of-type {
 		margin-top: 0;

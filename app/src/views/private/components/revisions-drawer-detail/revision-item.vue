@@ -1,5 +1,5 @@
 <template>
-	<div class="revision-item" @click="$emit('click')" :class="{ last }">
+	<div class="revision-item" :class="{ last }" @click="$emit('click')">
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -8,7 +8,7 @@
 			<span class="time">{{ time }}</span>
 			–
 			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">
-				{{ user }}
+				<span>{{ user }}</span>
 			</user-popover>
 
 			<span v-else>{{ t('private_user') }}</span>
@@ -24,7 +24,6 @@ import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		revision: {
 			type: Object as PropType<Revision>,
@@ -35,6 +34,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['click'],
 	setup(props) {
 		const { t } = useI18n();
 
@@ -77,7 +77,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .revision-item {
 	position: relative;
-	margin-bottom: 16px;
+	margin-bottom: 12px;
 	margin-left: 16px;
 
 	.header {
@@ -126,7 +126,7 @@ export default defineComponent({
 		top: -4px;
 		left: -24px;
 		z-index: 1;
-		width: calc(100% + 28px);
+		width: calc(100% + 32px);
 		height: calc(100% + 10px);
 		background-color: var(--background-normal-alt);
 		border-radius: var(--border-radius);
@@ -163,6 +163,11 @@ export default defineComponent({
 	}
 
 	.user {
+		span {
+			margin: -6px;
+			padding: 6px;
+		}
+
 		&:hover {
 			color: var(--foreground-normal);
 		}

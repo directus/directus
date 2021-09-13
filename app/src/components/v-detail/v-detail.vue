@@ -2,7 +2,7 @@
 	<div class="v-detail" :class="{ disabled }">
 		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
 			<v-divider @click="internalActive = !internalActive">
-				<v-icon v-if="!disabled" :name="internalActive ? 'unfold_less' : 'unfold_more'" small />
+				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
 				<slot name="title">{{ label }}</slot>
 			</v-divider>
 		</slot>
@@ -19,7 +19,6 @@ import { defineComponent, computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -38,7 +37,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const localActive = ref(props.startOpen);
 

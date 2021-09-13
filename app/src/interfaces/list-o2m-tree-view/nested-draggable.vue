@@ -8,11 +8,11 @@
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".row"
-		@start="drag = true"
-		@end="drag = false"
 		:set-data="hideDragImage"
 		:disabled="disabled"
 		:force-fallback="true"
+		@start="drag = true"
+		@end="drag = false"
 		@change="$emit('change', $event)"
 	>
 		<template #item="{ element, index }">
@@ -50,8 +50,11 @@ import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 
 export default defineComponent({
-	emits: ['change', 'input'],
-	name: 'nested-draggable',
+	name: 'NestedDraggable',
+	components: {
+		Draggable,
+		ItemPreview,
+	},
 	props: {
 		tree: {
 			required: true,
@@ -87,10 +90,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	components: {
-		Draggable,
-		ItemPreview,
-	},
+	emits: ['change', 'input'],
 	setup(props, { emit }) {
 		const drag = ref(false);
 
