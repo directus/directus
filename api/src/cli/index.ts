@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import start from '../start';
 import { emitAsyncSafe } from '../emitter';
 import { initializeExtensions, registerExtensionHooks } from '../extensions';
