@@ -29,5 +29,6 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 }
 
 function excludeSystem(item: { meta?: { system?: boolean } }) {
-	return (item?.meta?.system === true) === false;
+	if (item?.meta?.system === true) return false;
+	return true;
 }
