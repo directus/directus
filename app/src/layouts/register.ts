@@ -16,7 +16,7 @@ export async function registerLayouts(app: App): Promise<void> {
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/index.js`);
 
 		layouts.push(...customLayouts.default);
-	} catch (err) {
+	} catch (err: any) {
 		// eslint-disable-next-line no-console
 		console.warn(`Couldn't load custom layouts`);
 		// eslint-disable-next-line no-console

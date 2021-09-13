@@ -27,7 +27,7 @@ const md = new MarkdownIt({
 		if (lang && hljs.getLanguage(lang)) {
 			try {
 				return hljs.highlight(str, { language: lang }).value;
-			} catch (err) {
+			} catch (err: any) {
 				// eslint-disable-next-line no-console
 				console.warn('There was an error highlighting in Markdown');
 				// eslint-disable-next-line no-console
@@ -131,11 +131,14 @@ export default defineComponent({
 				if (link.startsWith('http') || link.startsWith('#')) return;
 
 				event.preventDefault();
+
 				const parts = link.split('#');
+
 				parts[0] = parts[0].endsWith('/') ? parts[0].slice(0, -1) : parts[0];
+
 				router.push({
 					path: `/docs${parts[0]}`,
-					hash: parts[1],
+					hash: `#${parts[1]}`,
 				});
 			}
 		}

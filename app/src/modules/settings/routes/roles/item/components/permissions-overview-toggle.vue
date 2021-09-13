@@ -111,18 +111,14 @@ export default defineComponent({
 
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 			if (permission.value === undefined) return 'none';
-			if (hasAll() === true) return 'all';
+			if (
+				permission.value.fields?.includes('*') &&
+				Object.keys(permission.value.permissions || {}).length === 0 &&
+				Object.keys(permission.value.validation || {}).length === 0
+			)
+				return 'all';
 
 			return 'custom';
-
-			function hasAll() {
-				if (!permission.value) return false;
-				if (permission.value.fields?.includes('*') === false) return false;
-				if (Object.keys(permission.value.permissions || {}).length > 0) return false;
-				if (Object.keys(permission.value.validation || {}).length > 0) return false;
-
-				return true;
-			}
 		});
 
 		const saving = ref(false);

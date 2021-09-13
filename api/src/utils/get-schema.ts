@@ -32,7 +32,7 @@ export async function getSchema(options?: {
 
 		try {
 			cachedSchema = (await schemaCache.get('schema')) as SchemaOverview;
-		} catch (err) {
+		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
 
@@ -47,7 +47,7 @@ export async function getSchema(options?: {
 					result,
 					typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined
 				);
-			} catch (err) {
+			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}
 		}
@@ -116,6 +116,11 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
+		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
+			continue;
+		}
+
 		if (!info.primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 			continue;

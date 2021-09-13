@@ -139,7 +139,7 @@ export const useFieldsStore = defineStore({
 				});
 
 				return field;
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -169,7 +169,7 @@ export const useFieldsStore = defineStore({
 
 					return field;
 				});
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -211,7 +211,7 @@ export const useFieldsStore = defineStore({
 
 					this.translateFields();
 				}
-			} catch (err) {
+			} catch (err: any) {
 				// reset the changes if the api sync failed
 				this.fields = stateClone;
 				unexpectedError(err);
@@ -227,7 +227,7 @@ export const useFieldsStore = defineStore({
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
-			} catch (err) {
+			} catch (err: any) {
 				this.fields = stateClone;
 				unexpectedError(err);
 			}

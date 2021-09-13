@@ -387,7 +387,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			try {
 				await save();
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -453,7 +453,7 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

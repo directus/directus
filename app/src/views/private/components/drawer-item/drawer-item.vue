@@ -302,7 +302,7 @@ export default defineComponent({
 					const response = await api.get(endpoint, { params: { fields } });
 
 					item.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -325,7 +325,7 @@ export default defineComponent({
 						...(item.value || {}),
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

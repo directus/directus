@@ -495,7 +495,7 @@ export default defineComponent({
 							[collection]: responses[i].data.data,
 						};
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

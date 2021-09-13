@@ -60,10 +60,9 @@ export default {};
 
 #### Accessing the API from within your extension
 
-The Directus App's Vue app instance provides a field called `system`, which can be injected into Vue components using
-[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `system` field contains
-functions to access Vuex stores, and more importantly, contains a property called `api`, which is an authenticated Axios
-instance. Here's an example of how to use it:
+The Directus App's Vue app instance provides a field called `api`, which can be injected into Vue components using
+[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `api` field contains a property
+called `api`, which is an authenticated Axios instance. Here's an example of how to use it:
 
 ```vue
 <template>
@@ -89,14 +88,14 @@ export default {
 			console.log(this.collections);
 		},
 	},
-	inject: ['system'],
+	inject: ['api'],
 	mounted() {
 		// log the system field so you can see what attributes are available under it
 		// remove this line when you're done.
-		console.log(this.system);
+		console.log(this.api);
 
 		// Get a list of all available collections to use with this module
-		this.system.api.get('/collections?limit=-1').then((res) => {
+		this.api.get('/collections?limit=-1').then((res) => {
 			this.collections = res.data.data;
 		});
 	},
@@ -106,14 +105,14 @@ export default {
 
 In the above example, you can see that:
 
-- The `system` field gets injected into the component and becomes available as an attribute of the component (ie
-  `this.system`)
-- When the component is mounted, it uses `this.system.api.get` to request a list of all available collections
+- The `api` field gets injected into the component and becomes available as an attribute of the component (ie
+  `this.api`)
+- When the component is mounted, it uses `this.api.get` to request a list of all available collections
 - The names of the collections are rendered into a list in the component's template
 - a button is added with a method the logs all the data for the collections to the console
 
 This is just a basic example. A more efficient way to access and work with the list of collections would be to get an
-instance of the `collectionsStore` using `system.useCollectionsStore()`, but that's beyond the scope of this guide
+instance of the `collectionsStore` using `store.useCollectionsStore()`, but that's beyond the scope of this guide
 
 #### Available Props
 
@@ -128,12 +127,12 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom module's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using the directus-extension CLI from our `@directus/extension-sdk` package. The CLI
+recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
 internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
 SDK, run this command:
 
 ```bash
-npm i -D @directus/extension-sdk
+npm i -D @directus/extensions-sdk
 ```
 
 For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
@@ -144,7 +143,7 @@ the root of the `package.json` file:
 	"type": "module",
 	"path": "dist/index.js",
 	"source": "src/index.js",
-	"host": "^9.0.0-rc.87",
+	"host": "^9.0.0-rc.92",
 	"hidden": false
 }
 ```

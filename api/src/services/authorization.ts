@@ -186,15 +186,6 @@ export class AuthorizationService {
 				}
 
 				if (query.filter._and.length === 0) delete query.filter._and;
-
-				if (permissions.limit && query.limit && query.limit > permissions.limit) {
-					throw new ForbiddenException();
-				}
-
-				// Default to the permissions limit if limit hasn't been set
-				if (permissions.limit && !query.limit) {
-					query.limit = permissions.limit;
-				}
 			}
 		}
 	}
@@ -215,7 +206,6 @@ export class AuthorizationService {
 				action,
 				permissions: {},
 				validation: {},
-				limit: null,
 				fields: ['*'],
 				presets: {},
 			};
@@ -316,7 +306,7 @@ export class AuthorizationService {
 		};
 
 		if (Array.isArray(pk)) {
-			const result = await itemsService.readMany(pk, query, { permissionsAction: action });
+			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
 			if (!result) throw new ForbiddenException();
 			if (result.length !== pk.length) throw new ForbiddenException();
 		} else {

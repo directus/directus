@@ -61,7 +61,7 @@ function createHandler(webhook: Webhook): ListenerFn {
 				method: webhook.method,
 				data: webhook.data ? webhookPayload : null,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Webhook "${webhook.name}" (id: ${webhook.id}) failed`);
 			logger.warn(error);
 		}

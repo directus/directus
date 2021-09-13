@@ -154,7 +154,7 @@ export default defineComponent({
 					const response = await api.get('/permissions', { params });
 
 					permissions.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -173,7 +173,7 @@ export default defineComponent({
 						if (permission.id === id) return response.data.data;
 						return permission;
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
@@ -213,7 +213,7 @@ export default defineComponent({
 					await fetchPermissions();
 
 					resetActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					resetError.value = err;
 				} finally {
 					resetting.value = false;

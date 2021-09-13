@@ -61,7 +61,7 @@ export default function useFolders(): UsableFolders {
 
 			folders.value = response.data.data;
 			nestedFolders.value = nestFolders(response.data.data);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;

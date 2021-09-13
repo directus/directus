@@ -4,7 +4,6 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 	switch (type) {
 		// Text
 		case 'binary':
-		case 'json':
 		case 'hash':
 		case 'string':
 		case 'csv':
@@ -22,23 +21,44 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'in',
 				'nin',
 			];
+
+		// JSON
+		case 'json':
+			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
+
+		// UUID
 		case 'uuid':
-			return ['eq', 'neq', 'empty', 'nempty', 'in', 'nin'];
+			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
 		// Boolean
 		case 'boolean':
-			return ['eq', 'neq', 'empty', 'nempty'];
+			return ['eq', 'neq', 'null', 'nnull'];
 
 		// Numbers
 		case 'integer':
 		case 'decimal':
-			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		// Datetime
 		case 'dateTime':
 		case 'date':
 		case 'time':
-			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'];
+			return [
+				'eq',
+				'neq',
+				'null',
+				'nnull',
+				'lt',
+				'lte',
+				'gt',
+				'gte',
+				'between',
+				'nbetween',
+				'null',
+				'nnull',
+				'in',
+				'nin',
+			];
 
 		case 'geometry':
 			return ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
@@ -57,6 +77,8 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'nbetween',
 				'empty',
 				'nempty',
+				'null',
+				'nnull',
 				'in',
 				'nin',
 			];

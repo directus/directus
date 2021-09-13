@@ -662,7 +662,7 @@ page_help_docs_global: >-
 page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
-  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm
 page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
 page_help_settings_datamodel_collections: >-
   **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
@@ -797,10 +797,36 @@ fields:
     name: Nimi
     status: Staatus
 field_options:
+  directus_activity:
+    login: Logi sisse
+    create: Loo
+    update: Uuenda
+    delete: Kustuta
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
     do_not_track_anything: Ära jälgi midagi
+    collection_setup: Andmekogu seadistus
+    singleton: Käsitle üksiku objektina
+    language: Keel
+    archive_divider: Arhiiv
+    divider: Sorteeri
+  directus_roles:
+    fields:
+      icon_name: Ikoon
+      name_name: Nimi
+      name_placeholder: Sisesta pealkiri...
+    collection_list:
+      fields:
+        type_name: Tüüp
+    collections_name: Kogud
+  directus_users:
+    status_dropdown_active: aktiivne
+    status_dropdown_archived: Arhiveeritud
+  directus_webhooks:
+    status_options_active: aktiivne
+    actions_create: Loo
+    actions_update: Uuenda
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID

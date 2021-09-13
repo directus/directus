@@ -322,15 +322,13 @@ export function applyFilter(
 
 			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNull(selectionRaw);
-					query.orWhere(selectionRaw, '=', '');
+					query.where(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(selectionRaw);
-					query.orWhere(selectionRaw, '!=', '');
+					query.where(key, '!=', '');
 				});
 			}
 
@@ -344,8 +342,6 @@ export function applyFilter(
 				// reported as [undefined].
 				// We need to remove any undefined values, as they are useless
 				compareValue = compareValue.filter((val) => val !== undefined);
-				// And ignore the result filter if there are no values in it
-				if (compareValue.length === 0) return;
 			}
 
 			if (operator === '_eq') {

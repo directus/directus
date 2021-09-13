@@ -797,10 +797,35 @@ fields:
     name: Ime
     status: Status
 field_options:
+  directus_activity:
+    login: Prijavi se
+    create: Kreiraj
+    update: Ažuriranje
+    delete: Obriši
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
     only_track_activity: Samo Prati Aktivnost
     do_not_track_anything: Bez praćenja
+    collection_setup: Podešavanje Kolekcije
+    singleton: Tretiraj kao jedinstven objekat
+    language: Jezik
+    archive_divider: Arhiviraj
+    divider: Sortiranje
+  directus_roles:
+    fields:
+      icon_name: Ikonica
+      name_name: Ime
+      name_placeholder: Unesi naslov...
+    collection_list:
+      fields:
+        type_name: Tip
+    collections_name: Kolekcije
+  directus_users:
+    status_dropdown_active: Aktivan
+  directus_webhooks:
+    status_options_active: Aktivan
+    actions_create: Kreiraj
+    actions_update: Ažuriranje
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID

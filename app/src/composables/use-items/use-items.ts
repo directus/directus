@@ -219,7 +219,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 			}
 
 			getItemCount();
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			clearTimeout(loadingTimeout);
