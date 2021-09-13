@@ -143,9 +143,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable                | Description                        | Default Value |
-| ----------------------- | ---------------------------------- | ------------- |
-| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable                | Description                                                                                                                                                           | Default Value |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ::: tip Additional Rate Limiter Variables
 
@@ -191,9 +191,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable         | Description                        | Default Value |
-| ---------------- | ---------------------------------- | ------------- |
-| `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable         | Description                                                                                                                                                           | Default Value |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ## Sessions
 
@@ -225,9 +225,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable                 | Description                        | Default Value |
-| ------------------------ | ---------------------------------- | ------------- |
-| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance | ---           |
+| Variable                 | Description                                                                                                                                                           | Default Value |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ### Database
 
