@@ -441,7 +441,7 @@ export default defineComponent({
 			try {
 				const savedItem: Record<string, any> = await save();
 
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

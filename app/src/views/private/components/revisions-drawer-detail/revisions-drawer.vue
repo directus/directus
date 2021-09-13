@@ -3,6 +3,7 @@
 		<v-drawer
 			v-model="internalActive"
 			:title="t('item_revision')"
+			icon="change_history"
 			:sidebar-label="t(currentTab[0])"
 			@cancel="internalActive = false"
 		>
@@ -19,12 +20,12 @@
 			</template>
 
 			<div class="content">
-				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 				<revisions-drawer-updates
 					v-if="currentTab[0] === 'updates_made'"
 					:revision="currentRevision"
 					:revisions="revisions"
 				/>
+				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 			</div>
 
 			<template #actions>
@@ -72,7 +73,7 @@ export default defineComponent({
 		const internalActive = useSync(props, 'active', emit);
 		const internalCurrent = useSync(props, 'current', emit);
 
-		const currentTab = ref(['revision_preview']);
+		const currentTab = ref(['updates_made']);
 
 		const currentRevision = computed(() => {
 			return props.revisions.find((revision) => revision.id === props.current);
@@ -87,12 +88,12 @@ export default defineComponent({
 
 		const tabs = [
 			{
-				text: t('revision_preview'),
-				value: 'revision_preview',
-			},
-			{
 				text: t('updates_made'),
 				value: 'updates_made',
+			},
+			{
+				text: t('revision_preview'),
+				value: 'revision_preview',
 			},
 		];
 

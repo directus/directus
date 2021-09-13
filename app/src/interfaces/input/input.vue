@@ -27,11 +27,7 @@
 			>
 				{{ charsRemaining }}
 			</span>
-			<v-icon
-				v-if="iconRight"
-				:class="{ hide: percentageRemaining !== false && percentageRemaining <= 20 }"
-				:name="iconRight"
-			/>
+			<v-icon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
 		</template>
 	</v-input>
 </template>
@@ -124,8 +120,8 @@ export default defineComponent({
 		const percentageRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;
 
-			if (!props.length) return false;
-			if (!props.value) return false;
+			if (!props.length) return null;
+			if (!props.value) return null;
 			return 100 - (props.value.length / +props.length) * 100;
 		});
 
