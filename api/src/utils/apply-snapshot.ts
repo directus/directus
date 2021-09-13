@@ -12,7 +12,7 @@ import { Field } from '@directus/shared/types';
 export async function applySnapshot(
 	snapshot: Snapshot,
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
-) {
+): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const schema = options?.schema ?? (await getSchema({ database }));
 
