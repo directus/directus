@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-/* eslint-disable no-console */
-
 import { Command } from 'commander';
 import start from '../start';
 import { emitAsyncSafe } from '../emitter';
@@ -16,15 +12,6 @@ import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
 
 const pkg = require('../../package.json');
-
-if (require.main === module) {
-	createCli()
-		.then((program) => program.parseAsync(process.argv))
-		.catch((err) => {
-			console.error(err);
-			process.exit(1);
-		});
-}
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
