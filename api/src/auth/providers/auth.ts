@@ -16,7 +16,7 @@ export interface AuthConstructor {
 export default abstract class Auth {
 	knex: Knex;
 
-	constructor(knex: Knex, provider: string) {
+	constructor(knex: Knex) {
 		this.knex = knex;
 	}
 
