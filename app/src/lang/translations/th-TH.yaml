@@ -1,10 +1,33 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: เผยแพร่แล้ว
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
+maps: แผนที่
 item_revision: ประวัติรายการ
 duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
+limit: ขีดจำกัด
 group: กลุ่ม
 and: และ
 or: หรือ
@@ -16,6 +39,7 @@ role_name: ชื่อบทบาท
 branch: สาขา
 leaf: ใบ
 indeterminate: คลุมเครือ
+edit_collection: แก้ไขคอลเลกชัน
 exclusive: เฉพาะ
 children: ลูก
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
@@ -119,6 +143,8 @@ fields_for_role: 'ฟิลด์ที่บทบาท {role} สามาร
 validation_for_role: 'ฟิลด์ {action} ถูกกำหนดสิทธิ์ให้บทบาท {role}'
 presets_for_role: 'ค่าตั้งต้นของฟิลด์สำหรับบทบาท {role}'
 presentation_and_aliases: การแสดงผลและนาวแผง
+revision_post_update: สิ่งที่ไอเท็มจะเป็นหลังจากอัพเดทแล้ว
+changes_made: การดปลี่ยนแปลงที่เกิดขึ้นในการแก้ไขนี้
 hide_field_on_detail: ซ่อนฟิลด์เมื่อแสดงรายละเอียด
 show_field_on_detail: แสดงฟิลด์เมื่อแสดงรายละเอียด
 delete_field: ลบฟิลด์
