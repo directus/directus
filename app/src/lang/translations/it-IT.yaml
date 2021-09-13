@@ -145,6 +145,9 @@ fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
+changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
+no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -382,6 +385,7 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
+no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -975,6 +979,7 @@ field_options:
     actions_delete: Elimina
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
+no_value: Nessun valore
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
@@ -1053,6 +1058,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
