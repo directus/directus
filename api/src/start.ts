@@ -4,11 +4,6 @@ import logger from './logger';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
 
-// If this file is called directly using node, start the server
-if (require.main === module) {
-	start();
-}
-
 export default async function start(): Promise<void> {
 	const createServer = require('./server').default;
 
