@@ -8,6 +8,8 @@
 			indeterminate,
 			rounded,
 			top,
+			colorful,
+			[color]: true,
 		}"
 		@animationiteration="$emit('animationiteration')"
 	>
@@ -22,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -54,8 +56,21 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
+		colorful: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['animationiteration'],
+	setup(props) {
+		const color = computed(() => {
+			if (props.value <= 33) return 'red';
+			if (props.value <= 66) return 'orange';
+			return 'green';
+		});
+
+		return { color };
+	},
 });
 </script>
 
@@ -115,6 +130,20 @@ body {
 
 	&.top {
 		top: 0;
+	}
+
+	&.colorful {
+		&.red .inner {
+			background-color: var(--danger);
+		}
+
+		&.orange .inner {
+			background-color: var(--warning);
+		}
+
+		&.green .inner {
+			background-color: var(--primary);
+		}
 	}
 }
 
