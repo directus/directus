@@ -34,7 +34,7 @@ export function getColumn(
 		}
 	}
 
-	if (column !== alias) {
+	if (alias && column !== alias) {
 		return knex.ref(`${table}.${column}`).as(alias);
 	}
 

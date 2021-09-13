@@ -1,7 +1,7 @@
-import { defineModule } from '@/modules/define';
 import InsightsOverview from './routes/overview.vue';
 import InsightsDashboard from './routes/dashboard.vue';
 import InsightsPanelConfiguration from './routes/panel-configuration.vue';
+import { defineModule } from '@directus/shared/utils';
 
 export default defineModule({
 	id: 'insights',

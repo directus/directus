@@ -1,4 +1,4 @@
-import { definePanel } from '../define';
+import { definePanel } from '@directus/shared/utils';
 import PanelMetric from './metric.vue';
 
 export default definePanel({

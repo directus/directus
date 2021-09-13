@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getPanels } from './index';
-import { PanelConfig } from './types';
+import { PanelConfig } from '@directus/shared/types';
 
 const { panelsRaw } = getPanels();
 

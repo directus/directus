@@ -1,4 +1,4 @@
-import { definePanel } from '../define';
+import { definePanel } from '@directus/shared/utils';
 import PanelTimeSeries from './time-series.vue';
 
 export default definePanel({

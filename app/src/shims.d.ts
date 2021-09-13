@@ -54,3 +54,9 @@ declare module '@directus-extensions-module' {
 	const modules: ModuleConfig[];
 	export default modules;
 }
+
+declare module '@directus-extensions-panel' {
+	import { PanelConfig } from '@directus/shared/types';
+	const modules: PanelConfig[];
+	export default modules;
+}
