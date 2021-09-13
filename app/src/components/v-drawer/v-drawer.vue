@@ -32,9 +32,11 @@
 						</template>
 
 						<template #title-outer:prepend>
-							<v-button class="header-icon" rounded icon secondary disabled>
-								<v-icon :name="icon" />
-							</v-button>
+							<slot name="title-outer:prepend">
+								<v-button class="header-icon" rounded icon secondary disabled>
+									<v-icon :name="icon" />
+								</v-button>
+							</slot>
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
