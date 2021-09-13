@@ -1,5 +1,5 @@
 <template>
-	<div class="time-series" ref="chartEl" />
+	<div ref="chartEl" class="time-series" />
 </template>
 
 <script lang="ts">
@@ -101,7 +101,7 @@ export default defineComponent({
 			try {
 				const results = await api.get(`/items/${props.options.collection}`, {
 					params: {
-						group: getGroups(),
+						groupBy: getGroups(),
 						aggregate: {
 							[props.options.function]: [props.options.valueField],
 						},
@@ -132,9 +132,7 @@ export default defineComponent({
 						data: metrics.value.map((metric) => ({
 							x: toISO(metric),
 							y: Number(
-								Number(metric[`${props.options.valueField}_${props.options.function}`]).toFixed(
-									props.options.decimals ?? 0
-								)
+								Number(metric[props.options.function][props.options.valueField]).toFixed(props.options.decimals ?? 0)
 							),
 						})),
 					},
