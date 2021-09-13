@@ -59,6 +59,7 @@ create_user: Create User
 create_webhook: Create Webhook
 invite_users: Invite Users
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 emails: Emails
@@ -222,6 +223,8 @@ add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
+add_link: Add Link
+custom_link: Custom Link
 default_value: Default Value
 standard_field: Standard Field
 single_file: Single File
@@ -576,6 +579,7 @@ my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
 folder_name: Folder Name...
+enter_a_name: Enter a Name...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results

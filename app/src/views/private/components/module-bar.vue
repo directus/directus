@@ -10,7 +10,7 @@
 				icon
 				x-large
 				:to="modulePart.to"
-				:href="modulePart.href"
+				:href="modulePart.url"
 				tile
 				:style="
 					modulePart.color
