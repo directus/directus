@@ -185,7 +185,7 @@
 		"@types/node": "15.12.2",
 		"@types/node-cron": "2.0.4",
 		"@types/nodemailer": "6.4.4",
-		"@types/object-hash": "2.1.1",
+		"@types/object-hash": "2.2.0",
 		"@types/qs": "6.9.7",
 		"@types/sharp": "0.29.1",
 		"@types/stream-json": "1.7.1",
