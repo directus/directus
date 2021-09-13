@@ -1,7 +1,7 @@
 <template>
 	<div class="metric type-title selectable" :class="{ 'has-header': show_header }">
-		<v-progress-circular indeterminate v-if="loading" />
-		<div :style="{ color }" v-else>
+		<v-progress-circular v-if="loading" indeterminate />
+		<div v-else :style="{ color }">
 			<span class="prefix">{{ options.prefix }}</span>
 			<span class="value">{{ displayValue }}</span>
 			<span class="suffix">{{ options.suffix }}</span>
@@ -13,7 +13,7 @@
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import api from '@/api';
 import { isEqual } from 'lodash';
-import { Filter } from '@/types';
+import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
@@ -152,7 +152,7 @@ export default defineComponent({
 					if (props.options.function === 'first' || props.options.function === 'last') {
 						metric.value = Number(res.data.data[0][props.options.field]);
 					} else {
-						metric.value = Number(res.data.data[0][`${props.options.field}_${props.options.function}`]);
+						metric.value = Number(res.data.data[0][props.options.function][props.options.field]);
 					}
 				} else {
 					metric.value = Number(res.data.data[0][props.options.function]);
