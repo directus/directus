@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import start from '../start';
 import { emitAsyncSafe } from '../emitter';
 import { initializeExtensions, registerExtensionHooks } from '../extensions';
@@ -10,6 +10,8 @@ import init from './commands/init';
 import rolesCreate from './commands/roles/create';
 import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
+import { snapshot } from './commands/schema/snapshot';
+import { apply } from './commands/schema/apply';
 
 const pkg = require('../../package.json');
 
@@ -74,6 +76,23 @@ export async function createCli(): Promise<Command> {
 		.description('Initialize or update the database')
 		.option('--skipAdminInit', 'Skips the creation of the default Admin Role and User')
 		.action(bootstrap);
+
+	const schemaCommands = program.command('schema');
+
+	schemaCommands
+		.command('snapshot')
+		.description('Create a new Schema Snapshot')
+		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`, false)
+		.addOption(new Option('--format <format>', 'JSON or YAML format').choices(['json', 'yaml']).default('yaml'))
+		.argument('<path>', 'Path to snapshot file')
+		.action(snapshot);
+
+	schemaCommands
+		.command('apply')
+		.description('Apply a snapshot file to the current database')
+		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`)
+		.argument('<path>', 'Path to snapshot file')
+		.action(apply);
 
 	await emitAsyncSafe('cli.init.after', { program });
 

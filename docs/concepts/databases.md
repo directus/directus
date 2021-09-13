@@ -28,10 +28,10 @@ support most [SQL database vendors](/guides/installation/cli/#_1-confirm-minimum
 
 ## Database Abstraction
 
-Directus supports mirroring all the most widely used SQL databases. There are many different SQL database vendors, including popular
-choices such as MySQL, PostgreSQL, and SQLite. Each vendor has subtle (and sometimes not so subtle) differences in how
-they function, so Directus includes an abstraction layer that helps it avoid writing different code for each different
-type.
+Directus supports mirroring all the most widely used SQL databases. There are many different SQL database vendors,
+including popular choices such as MySQL, PostgreSQL, and SQLite. Each vendor has subtle (and sometimes not so subtle)
+differences in how they function, so Directus includes an abstraction layer that helps it avoid writing different code
+for each different type.
 
 This means there is the possiblility of supporting other datastores in the future, such as NoSQL options like MongoDB,
 or even third-party data services like Firebase or Heroku. However these options are _fundamentally_ different from the

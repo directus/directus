@@ -1,0 +1,10 @@
+# directus_migrations isn't surfaced in the app, nor accessible from the API
+table: directus_migrations
+
+fields:
+  - collection: directus_migrations
+    field: version
+  - collection: directus_migrations
+    field: name
+  - collection: directus_migrations
+    field: timestamp
