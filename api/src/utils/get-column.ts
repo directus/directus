@@ -28,7 +28,11 @@ export function getColumn(
 		if (functionName in fn) {
 			const result = fn[functionName as keyof typeof fn](table, columnName);
 
-			return knex.raw(result + ' AS ??', [alias]);
+			if (alias) {
+				return knex.raw(result + ' AS ??', [alias]);
+			}
+
+			return result;
 		} else {
 			throw new Error(`Invalid function specified "${functionName}"`);
 		}

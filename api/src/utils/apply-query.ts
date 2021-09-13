@@ -26,7 +26,7 @@ export default function applyQuery(
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
 				...sort,
-				column: getColumn(knex, collection, sort.column) as any,
+				column: getColumn(knex, collection, sort.column, false) as any,
 			}))
 		);
 	}

@@ -13,29 +13,29 @@
 		data-move
 		@pointerdown="onPointerDown('move', $event)"
 	>
-		<div class="header" v-if="panel.show_header">
+		<div v-if="panel.show_header" class="header">
 			<v-icon class="icon" :style="iconColor" :name="panel.icon" />
 			<v-text-overflow class="name selectable" :text="panel.name || ''" />
 			<div class="spacer" />
-			<v-icon class="note" v-if="panel.note" name="info" v-tooltip="panel.note" />
+			<v-icon v-if="panel.note" v-tooltip="panel.note" class="note" name="info" />
 		</div>
 
-		<div class="edit-actions" v-if="editMode" @pointerdown.stop>
+		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
 			<v-icon
+				v-tooltip="t('edit')"
 				class="edit-icon"
 				name="edit"
-				v-tooltip="t('edit')"
-				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 				clickable
+				@click.stop="$router.push(`/insights/${panel.dashboard}/${panel.id}`)"
 			/>
 
 			<v-menu placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
-					<v-icon class="more-icon" name="more_vert" @click="toggle" clickable />
+					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
 
 				<v-list>
-					<v-list-item @click="$emit('move')" clickable :disabled="panel.id.startsWith('_')">
+					<v-list-item clickable :disabled="panel.id.startsWith('_')" @click="$emit('move')">
 						<v-list-item-icon>
 							<v-icon class="move-icon" name="input" />
 						</v-list-item-icon>
@@ -44,18 +44,18 @@
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item @click="$emit('duplicate')" clickable>
+					<v-list-item clickable @click="$emit('duplicate')">
 						<v-list-item-icon>
 							<v-icon name="control_point_duplicate" />
 						</v-list-item-icon>
 						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item class="delete-action" @click="$emit('delete')" clickable>
+					<v-list-item class="delete-action" clickable @click="$emit('delete')">
 						<v-list-item-icon>
 							<v-icon name="delete" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete_panel') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -65,7 +65,7 @@
 			({{ positioning.x - 1 }}:{{ positioning.y - 1 }}) {{ positioning.width }}×{{ positioning.height }}
 		</div>
 
-		<div class="resize-handlers" v-if="editMode">
+		<div v-if="editMode" class="resize-handlers">
 			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
 			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
 			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
@@ -90,7 +90,7 @@ import { throttle } from 'lodash';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	name: 'panel',
+	name: 'Panel',
 	emits: ['update', 'move', 'duplicate', 'delete'],
 	props: {
 		panel: {
