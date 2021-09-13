@@ -31,8 +31,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean }): P
 
 		if (
 			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.collections.length === 0
+			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.relations.length === 0
 		) {
 			logger.info('No changes to apply.');
 			database.destroy();
