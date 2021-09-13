@@ -1,8 +1,4 @@
-#!/usr/bin/env node
-
-/* eslint-disable no-console */
-
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import start from '../start';
 import { emitAsyncSafe } from '../emitter';
 import { initializeExtensions, registerExtensionHooks } from '../extensions';
@@ -18,15 +14,6 @@ import { snapshot } from './commands/schema/snapshot';
 import { apply } from './commands/schema/apply';
 
 const pkg = require('../../package.json');
-
-if (require.main === module) {
-	createCli()
-		.then((program) => program.parseAsync(process.argv))
-		.catch((err) => {
-			console.error(err);
-			process.exit(1);
-		});
-}
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
