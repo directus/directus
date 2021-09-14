@@ -236,7 +236,7 @@ body {
 		margin: 0;
 		padding: 8px;
 		background-color: var(--v-list-item-background-color);
-		border: 2px solid var(--v-list-item-border-color);
+		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -258,11 +258,11 @@ body {
 
 		&:hover {
 			background-color: var(--v-list-item-background-color-hover);
-			border: 2px solid var(--v-list-item-border-color-hover);
+			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
 		}
 
 		& + & {
