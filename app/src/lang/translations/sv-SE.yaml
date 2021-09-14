@@ -750,10 +750,8 @@ fields:
     status: Status
 field_options:
   directus_activity:
-    login: Logga in
     create: Skapa
     update: Uppdatera
-    delete: Radera
   directus_collections:
     collection_setup: Konfiguration av kollektion
     singleton: Behandla som ett enskilt objekt
