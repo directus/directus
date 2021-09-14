@@ -20,7 +20,7 @@
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
 		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"
+		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
 	},
 	"engines": {
 		"node": ">=16.0.0",
@@ -32,8 +32,8 @@
 		"@types/listr": "0.14.4",
 		"@types/node": "15.12.2",
 		"@types/supertest": "2.0.11",
-		"@typescript-eslint/eslint-plugin": "4.31.0",
-		"@typescript-eslint/parser": "4.31.0",
+		"@typescript-eslint/eslint-plugin": "4.31.1",
+		"@typescript-eslint/parser": "4.31.1",
 		"axios": "0.21.4",
 		"dockerode": "3.3.1",
 		"eslint": "7.32.0",
@@ -41,7 +41,7 @@
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-vue": "7.17.0",
 		"globby": "11.0.4",
-		"jest": "27.1.1",
+		"jest": "27.2.0",
 		"knex": "0.95.11",
 		"lerna": "4.0.0",
 		"lint-staged": "11.1.2",
@@ -59,7 +59,7 @@
 		"stylelint-config-rational-order": "0.1.2",
 		"stylelint-config-standard": "22.0.0",
 		"stylelint-order": "4.1.0",
-		"stylelint-scss": "3.20.1",
+		"stylelint-scss": "3.21.0",
 		"supertest": "6.1.6",
 		"tedious": "12.2.0",
 		"ts-jest": "27.0.5",
