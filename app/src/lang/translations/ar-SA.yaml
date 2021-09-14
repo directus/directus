@@ -746,10 +746,8 @@ field_options:
   directus_settings:
     security_divider_title: الأمان
   directus_activity:
-    login: تسجيل الدخول
     create: انشاء
     update: تحديث
-    delete: حذف
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط

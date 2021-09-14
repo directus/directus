@@ -852,7 +852,7 @@ field_options:
     files_divider_title: Fichiers et miniatures
     overrides_divider_title: Remplacer les applications
   directus_activity:
-    login: Se connecter
+    login: Identifiant
     create: Créer
     update: Mettre à jour
     delete: Supprimer

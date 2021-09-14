@@ -613,10 +613,6 @@ fields:
     name: Nome
     status: Estado
 field_options:
-  directus_activity:
-    create: Criar
-    update: Atualizar
-    delete: Remover
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Apenas rastrear Atividade

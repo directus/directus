@@ -209,7 +209,6 @@ field_options:
   directus_activity:
     create: Δημιουργία
     update: Ενημέρωση
-    delete: Διαγραφή
   directus_collections:
     archive_divider: Αρχειοθέτηση
   directus_roles:
