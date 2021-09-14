@@ -791,7 +791,6 @@ fields:
     status: Estado
 field_options:
   directus_activity:
-    login: Iniciar Sesión
     create: Crear
     update: Actualización
     delete: Eliminar
