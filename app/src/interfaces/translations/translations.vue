@@ -325,6 +325,7 @@ export default defineComponent({
 				const response = await api.get(`/items/${translationsCollection.value}`, {
 					params: {
 						fields: '*',
+						limit: -1,
 						filter: {
 							[pkField]: {
 								_in: props.value,
@@ -407,8 +408,6 @@ export default defineComponent({
 }
 
 .translations {
-	// padding: 20px;
-	// background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
 	display: flex;
 	gap: 24px;
 
@@ -423,7 +422,6 @@ export default defineComponent({
 	:deep(.v-select) {
 		.v-input .input {
 			color: var(--primary);
-			// background-color: var(--background-normal);
 			background-color: var(--primary-alt);
 			border: 0px;
 		}
@@ -439,8 +437,6 @@ export default defineComponent({
 
 		.field {
 			.label {
-				// color: var(--primary);
-
 				.v-chip {
 					color: var(--primary);
 					background-color: var(--primary-alt);
