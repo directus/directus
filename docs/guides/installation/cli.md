@@ -78,3 +78,8 @@ By default, the `create-directus-project` tool will set the file permissions of 
 (0640). If you run Directus from a separate user on your machine, make sure these permissions are correct.
 
 :::
+
+## Configure / Update / Upgrade your Project
+
+See the [Project Guide](/projects/#upgrading-updating-a-project) to learn how to maintain your project further.
+
