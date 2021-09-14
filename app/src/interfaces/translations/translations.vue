@@ -1,7 +1,7 @@
 <template>
 	<div class="translations" :class="{ split: sideBySide }">
 		<div class="primary">
-			<language-select :model-value="firstLang" :items="languageOptions" @update:modelValue="firstLang = $event">
+			<language-select v-model="firstLang" :items="languageOptions">
 				<template #append>
 					<v-icon
 						v-if="!sideBySide && width > 960"
