@@ -19,6 +19,9 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+published: Pubblicato
+draft: Bozza
+archived: Archiviato
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
@@ -142,9 +145,9 @@ fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
-revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
-changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
-no_relational_data: Tieni presente che questo non include dati relazionali.
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
+changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
+no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -382,7 +385,7 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
-no_webhooks_copy: Non ci sono ancora webhook.
+no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -730,6 +733,22 @@ collections: Raccolte
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
+directus_collection:
+  directus_activity: Log autorizzazioni per tutti gli eventi
+  directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_fields: Configurazione e metadati aggiuntivi del campo
+  directus_files: Metadati per tutti i file degli asset gestiti
+  directus_folders: Fornisce directory virtuali per i file
+  directus_migrations: Quale versione del database stai usando
+  directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_presets: Preset per i default della raccolta e i segnalibri
+  directus_relations: Configurazione e metadati della relazione
+  directus_revisions: Snapshot dei dati per tutte le attività
+  directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
+  directus_sessions: Informazioni sulla sessione dell'utente
+  directus_settings: Opzioni di configurazione del progetto
+  directus_users: Utenti di sistema per la piattaforma
+  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -960,6 +979,7 @@ field_options:
     actions_delete: Elimina
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
+no_value: Nessun valore
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
@@ -1404,3 +1424,5 @@ layouts:
     invalid_geometry: Geometria non valida
     auto_location_filter: Filtra sempre i dati al rettangolo di selezione
     search_this_area: Cerca in quest'area
+    clear_data_filter: Rimuovi il filtro sui dati
+    clear_location_filter: Rimuovi il filtro sulla posizione

@@ -1,35 +1,20 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 edit_field: Rediger Felt
 conditions: Betingelser
 item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
+group: Gruppe
+and: Og
+or: Eller
 fill_width: Fuld Bredde
 field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
 add_field: Tilføj Felt
 role_name: Rollenavn
+exclusive: Eksklusiv
+children: Underordnede
 db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
@@ -41,7 +26,9 @@ create_role: Opret Rolle
 create_user: Opret bruger
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
+email_examples: "admin{'@'}example.com, bruger{'@'}example.com..."
 invite: Inviter
+email_already_invited: Email "{email}" er allerede blevet inviteret
 emails: E-mail
 connection_excellent: Udmærket forbindelse
 connection_good: God forbindelse
@@ -61,6 +48,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
+public_label: Offentlig
 public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
 not_allowed: Ikke tilladt
 directus_version: Directus Version
@@ -99,9 +87,16 @@ validationError:
   null: Værdien skal være null
   nnull: Værdien kan ikke være null
   required: Værdi er påkrævet
+  unique: Værdien skal være unik
+  regex: Værdien har ikke det korrekte format
 all_access: Alle Adgang
 no_access: Ingen Adgang
 use_custom: Brug Brugerdefineret
+nullable: Nullbar
+allow_null_value: Tillad NULL værdi
+allow_multiple: Tillad Flere
+allow_multiple_to_be_open: Tillad åbning af flere
+enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_m2o: M2O Forhold
@@ -117,9 +112,6 @@ fields_for_role: 'Felter {role} Rollen kan {action}.'
 validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
 presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: Her er hvad dette element så ud som, efter opdateringen...
-changes_made: Disse er de specifikke ændringer, der blev lavet...
-no_relational_data: Husk, at dette ikke omfatter relationelle data.
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
 delete_field: Slet Felt
@@ -252,6 +244,7 @@ operators:
   ncontains: Indeholder ikke
   empty: Er tom
 loading: Indlæser...
+value_unique: Værdien skal være unik
 no_results: Ingen resultater
 role: Rolle
 create: Opret

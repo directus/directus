@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Esborrany
+archived: Arxivat
 edit_field: Edita el camp
 conditions: Condicions
 maps: Mapes
@@ -141,9 +123,6 @@ fields_for_role: 'Camps del {role} poden {action}.'
 validation_for_role: 'El camp {action} determina que el rol {role} ha de obeir.'
 presets_for_role: 'Valor de camp predeterminat per al rol {role}.'
 presentation_and_aliases: Presentació i àlies
-revision_post_update: Així és com queda l'element després d'actualitzar...
-changes_made: Aquests són els canvis específics que s'han fet...
-no_relational_data: Tingues present que això no inclou dades relacionals.
 hide_field_on_detail: Amaga el camp en el detall
 show_field_on_detail: Mostra el camp en el detall
 delete_field: Elimina el camp
@@ -381,7 +360,6 @@ no_files_copy: No hi ha fitxers aquí.
 user_count: 'No hi ha usuaris | Un usuari | {count} usuaris'
 no_users_copy: Encara no hi ha usuaris en aquest rol.
 webhooks_count: 'No hi ha webhooks | Un webhook | {count} webhooks'
-no_webhooks_copy: Encara no hi ha webhooks.
 all_items: Tots els elements
 any: Qualsevol
 csv: CSV
