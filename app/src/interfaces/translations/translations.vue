@@ -241,10 +241,9 @@ export default defineComponent({
 						| undefined;
 					const item = { ...initialValue, ...(edits ?? {}) };
 
-					const filledFields = writableFields.reduce((acc, field) => {
-						if (field.field in item && notEmpty(item[field.field])) acc += 1;
-						return acc;
-					}, 0);
+					const filledFields = writableFields.filter((field) => {
+						return field.field in item && notEmpty(item[field.field]);
+					}).length;
 
 					return {
 						text: language[props.languageField ?? languagesPrimaryKeyField.value],
