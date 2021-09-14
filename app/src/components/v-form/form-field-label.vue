@@ -6,7 +6,7 @@
 			:value="field.field"
 			@update:model-value="$emit('toggle-batch', field)"
 		/>
-		<span v-tooltip="edited ? t('edited') : null" @click="toggle">
+		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
 			{{ field.name }}
 			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
@@ -128,7 +128,7 @@ export default defineComponent({
 			pointer-events: none;
 		}
 
-		> span:not(.v-chip) {
+		.field-name {
 			margin-left: -16px;
 			padding-left: 16px;
 		}
