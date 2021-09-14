@@ -44,9 +44,6 @@ CSV of IP addresses that have access to this role. Allows you to configure an al
 `enforce_tfa` **boolean**\
 Whether or not Two-Factor Authentication is required for users in this role.
 
-`module_list` **object**\
-Override for the module listing in the left most sidebar of the Admin App.
-
 `collection_list` **object**\
 Override for the collection listing in the navigation of the collections module in the Admin App.
 
@@ -71,7 +68,6 @@ The users in this role. One-to-many to [users](/reference/api/system/users/).
 	"description": null,
 	"ip_access": null,
 	"enforce_tfa": false,
-	"module_list": null,
 	"collection_list": null,
 	"admin_access": true,
 	"app_access": true,
