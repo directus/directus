@@ -1,16 +1,18 @@
 <template>
 	<div
 		class="v-progress-linear"
-		:class="{
-			absolute,
-			bottom,
-			fixed,
-			indeterminate,
-			rounded,
-			top,
-			colorful,
-			[color]: true,
-		}"
+		:class="[
+			{
+				absolute,
+				bottom,
+				fixed,
+				indeterminate,
+				rounded,
+				top,
+				colorful,
+			},
+			color,
+		]"
 		@animationiteration="$emit('animationiteration')"
 	>
 		<div
@@ -64,9 +66,9 @@ export default defineComponent({
 	emits: ['animationiteration'],
 	setup(props) {
 		const color = computed(() => {
-			if (props.value <= 33) return 'red';
-			if (props.value <= 66) return 'orange';
-			return 'green';
+			if (props.value <= 33) return 'danger';
+			if (props.value <= 66) return 'warning';
+			return 'success';
 		});
 
 		return { color };
@@ -133,16 +135,16 @@ body {
 	}
 
 	&.colorful {
-		&.red .inner {
+		&.danger .inner {
 			background-color: var(--danger);
 		}
 
-		&.orange .inner {
+		&.warning .inner {
 			background-color: var(--warning);
 		}
 
-		&.green .inner {
-			background-color: var(--primary);
+		&.success .inner {
+			background-color: var(--success);
 		}
 	}
 }
