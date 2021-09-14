@@ -774,10 +774,8 @@ fields:
     status: Status
 field_options:
   directus_activity:
-    login: Prijavi se
     create: Kreiraj
     update: Ažuriranje
-    delete: Obriši
   directus_collections:
     track_activity_revisions: Prati Aktivnost & Revizije
     only_track_activity: Samo Prati Aktivnost

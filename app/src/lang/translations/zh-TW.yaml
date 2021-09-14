@@ -523,10 +523,8 @@ fields:
     status: 狀態
 field_options:
   directus_activity:
-    login: 登入
     create: 新建
     update: 更新
-    delete: 刪除
   directus_collections:
     language: 語言
     archive_divider: 封存

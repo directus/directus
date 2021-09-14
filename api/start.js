@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('./dist/start.js').default();
+require('./dist/start.js');
