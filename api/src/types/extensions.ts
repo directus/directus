@@ -1,4 +1,3 @@
-import { ListenerFn } from 'eventemitter2';
 import { Router } from 'express';
 import { Knex } from 'knex';
 import { Logger } from 'pino';
@@ -16,7 +15,19 @@ export type ExtensionContext = {
 	getSchema: typeof getSchema;
 };
 
-type HookHandlerFunction = (context: ExtensionContext) => Record<string, ListenerFn>;
+type FilterFunction = (event: string, handler: (...values: any[]) => any[]) => void;
+type ActionFunction = (event: string, handler: (...values: any[]) => void) => void;
+type InitFunction = (event: string, handler: (...values: any[]) => void) => void;
+type ScheduleFunction = (cron: string, handler: () => void) => void;
+
+type RegisterFunctions = {
+	filter: FilterFunction;
+	action: ActionFunction;
+	init: InitFunction;
+	schedule: ScheduleFunction;
+};
+
+type HookHandlerFunction = (register: RegisterFunctions, context: ExtensionContext) => void;
 
 export type HookConfig = HookHandlerFunction;
 

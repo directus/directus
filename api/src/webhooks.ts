@@ -19,13 +19,13 @@ export async function register(): Promise<void> {
 		if (webhook.actions === '*') {
 			const event = 'items.*';
 			const handler = createHandler(webhook);
-			emitter.on(event, handler);
+			emitter.onAction(event, handler);
 			registered.push({ event, handler });
 		} else {
 			for (const action of webhook.actions.split(',')) {
 				const event = `items.${action}`;
 				const handler = createHandler(webhook);
-				emitter.on(event, handler);
+				emitter.onAction(event, handler);
 				registered.push({ event, handler });
 			}
 		}
@@ -34,7 +34,7 @@ export async function register(): Promise<void> {
 
 export function unregister(): void {
 	for (const { event, handler } of registered) {
-		emitter.off(event, handler);
+		emitter.offAction(event, handler);
 	}
 
 	registered = [];

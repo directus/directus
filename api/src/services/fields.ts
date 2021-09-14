@@ -5,7 +5,7 @@ import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemFieldRows } from '../database/system-data/fields/';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
@@ -325,8 +325,8 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitAsync(`fields.delete.before`, {
-			event: `fields.delete.before`,
+		await emitter.emitFilter(`fields.delete`, {
+			event: `fields.delete`,
 			accountability: this.accountability,
 			collection: collection,
 			item: field,
@@ -425,7 +425,7 @@ export class FieldsService {
 			await this.schemaCache.clear();
 		}
 
-		emitAsyncSafe(`fields.delete`, {
+		emitter.emitAction(`fields.delete`, {
 			event: `fields.delete`,
 			accountability: this.accountability,
 			collection: collection,

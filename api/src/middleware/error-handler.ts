@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { MethodNotAllowedException } from '../exceptions';
 import { BaseException } from '@directus/shared/exceptions';
@@ -87,7 +87,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 		}
 	}
 
-	emitAsyncSafe('error', payload.errors).then(() => {
+	emitter.emitAction('error', payload.errors).then(() => {
 		return res.json(payload);
 	});
 };

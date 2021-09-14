@@ -28,7 +28,7 @@ import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
-import { emitAsyncSafe } from './emitter';
+import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
@@ -84,9 +84,9 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', true);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	await emitAsyncSafe('init.before', { app });
+	await emitter.emitInit('app.before', { app });
 
-	await emitAsyncSafe('middlewares.init.before', { app });
+	await emitter.emitInit('middlewares.before', { app });
 
 	app.use(expressLogger);
 
@@ -157,9 +157,9 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(sanitizeQuery);
 
-	await emitAsyncSafe('middlewares.init.after', { app });
+	await emitter.emitInit('middlewares.after', { app });
 
-	await emitAsyncSafe('routes.init.before', { app });
+	await emitter.emitInit('routes.before', { app });
 
 	app.use(cache);
 
@@ -190,21 +190,22 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 
-	await emitAsyncSafe('routes.custom.init.before', { app });
+	// Register custom endpoints
+	await emitter.emitInit('routes.custom.before', { app });
 	app.use(extensionManager.getEndpointRouter());
-	await emitAsyncSafe('routes.custom.init.after', { app });
+	await emitter.emitInit('routes.custom.after', { app });
 
 	app.use(notFoundHandler);
 	app.use(errorHandler);
 
-	await emitAsyncSafe('routes.init.after', { app });
+	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
 
 	track('serverStarted');
 
-	emitAsyncSafe('init');
+	await emitter.emitInit('app.after', { app });
 
 	return app;
 }

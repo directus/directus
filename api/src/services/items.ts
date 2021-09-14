@@ -4,7 +4,7 @@ import { getCache } from '../cache';
 import Keyv from 'keyv';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
@@ -109,8 +109,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const hooksResult =
 				opts?.emitEvents !== false
 					? (
-							await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
-								event: `${this.eventScope}.create.before`,
+							await emitter.emitFilter(`${this.eventScope}.create`, payload, {
+								event: `${this.eventScope}.create`,
 								accountability: this.accountability,
 								collection: this.collection,
 								item: null,
@@ -203,7 +203,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.create`, {
+			emitter.emitAction(`${this.eventScope}.create`, {
 				event: `${this.eventScope}.create`,
 				accountability: this.accountability,
 				collection: this.collection,
@@ -285,7 +285,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
-		emitAsyncSafe(`${this.eventScope}.read`, {
+		emitter.emitAction(`${this.eventScope}.read`, {
 			event: `${this.eventScope}.read`,
 			accountability: this.accountability,
 			collection: this.collection,
@@ -392,8 +392,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const hooksResult =
 			opts?.emitEvents !== false
 				? (
-						await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-							event: `${this.eventScope}.update.before`,
+						await emitter.emitFilter(`${this.eventScope}.update`, payload, {
+							event: `${this.eventScope}.update`,
 							accountability: this.accountability,
 							collection: this.collection,
 							item: keys,
@@ -518,7 +518,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.update`, {
+			emitter.emitAction(`${this.eventScope}.update`, {
 				event: `${this.eventScope}.update`,
 				accountability: this.accountability,
 				collection: this.collection,
@@ -617,8 +617,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			await emitter.emitAsync(`${this.eventScope}.delete.before`, {
-				event: `${this.eventScope}.delete.before`,
+			await emitter.emitFilter(`${this.eventScope}.delete`, {
+				event: `${this.eventScope}.delete`,
 				accountability: this.accountability,
 				collection: this.collection,
 				item: keys,
@@ -653,7 +653,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitAsyncSafe(`${this.eventScope}.delete`, {
+			emitter.emitAction(`${this.eventScope}.delete`, {
 				event: `${this.eventScope}.delete`,
 				accountability: this.accountability,
 				collection: this.collection,

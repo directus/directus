@@ -6,7 +6,7 @@ import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
@@ -124,7 +124,7 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitAsyncSafe(`files.upload`, {
+		emitter.emitAction(`files.upload`, {
 			event: `files.upload`,
 			accountability: this.accountability,
 			collection: this.collection,

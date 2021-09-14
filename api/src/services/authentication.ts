@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import getDatabase from '../database';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -67,8 +67,8 @@ export class AuthenticationService {
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedPayload = await emitter.emitAsync('auth.login.before', {
-			event: 'auth.login.before',
+		const updatedPayload = await emitter.emitFilter('auth.login', payload, {
+			event: 'auth.login',
 			action: 'login',
 			schema: this.schema,
 			payload: payload,
@@ -83,7 +83,7 @@ export class AuthenticationService {
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', {
+			emitter.emitAction('auth.login', payload, {
 				event: 'auth.login',
 				action: 'login',
 				schema: this.schema,
@@ -161,7 +161,7 @@ export class AuthenticationService {
 			id: user.id,
 		};
 
-		const customClaims = await emitter.emitAsync('auth.jwt.before', tokenPayload, {
+		const customClaims = await emitter.emitFilter('auth.jwt', tokenPayload, {
 			event: 'auth.jwt.before',
 			action: 'jwt',
 			schema: this.schema,

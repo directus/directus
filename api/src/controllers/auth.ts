@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import grant from 'grant';
 import ms from 'ms';
-import emitter, { emitAsyncSafe } from '../emitter';
+import emitter from '../emitter';
 import env from '../env';
 import {
 	InvalidCredentialsException,
@@ -220,7 +220,7 @@ router.get(
 			redirect: req.query?.redirect,
 		};
 
-		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
+		emitter.emitAction(`oauth.${req.params.provider}.redirect`, {
 			event: `oauth.${req.params.provider}.redirect`,
 			action: 'redirect',
 			schema: req.schema,
@@ -229,8 +229,8 @@ router.get(
 			user: null,
 		});
 
-		await emitter.emitAsync(`oauth.${req.params.provider}.redirect.before`, {
-			event: `oauth.${req.params.provider}.redirect.before`,
+		await emitter.emitFilter(`oauth.${req.params.provider}.redirect`, {
+			event: `oauth.${req.params.provider}.redirect`,
 			action: 'redirect',
 			schema: req.schema,
 			payload: hookPayload,
@@ -264,8 +264,8 @@ router.get(
 
 		const hookPayload = req.session.grant.response;
 
-		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
-			event: `oauth.${req.params.provider}.login.before`,
+		await emitter.emitFilter(`oauth.${req.params.provider}.login`, hookPayload, {
+			event: `oauth.${req.params.provider}.login`,
 			action: 'oauth.login',
 			schema: req.schema,
 			payload: hookPayload,
@@ -275,7 +275,7 @@ router.get(
 		});
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe(`oauth.${req.params.provider}.login`, hookPayload, {
+			emitter.emitAction(`oauth.${req.params.provider}.login`, hookPayload, {
 				event: `oauth.${req.params.provider}.login`,
 				action: 'oauth.login',
 				schema: req.schema,
