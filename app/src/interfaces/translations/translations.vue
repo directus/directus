@@ -97,10 +97,12 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(collection);
 
-		watch(sideBySide, (newVal) => {
+		watch(sideBySide, (sideBySideEnabled) => {
 			const lang = languageOptions.value;
-			if (newVal && secondLang.value === firstLang.value)
+
+			if (sideBySideEnabled && secondLang.value === firstLang.value) {
 				secondLang.value = lang[0].value === firstLang.value ? lang[1].value : lang[0].value;
+			}
 		});
 
 		const { width } = useWindowSize();
