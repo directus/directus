@@ -7,7 +7,8 @@
 						v-if="!sideBySide && width > 960"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="flip"
-						@click.stop="sideBySide = !sideBySide"
+						clickable
+						@click.stop="sideBySide = true"
 					/>
 				</template>
 			</language-select>
@@ -26,6 +27,7 @@
 						v-if="sideBySide"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="close"
+						clickable
 						@click.stop="sideBySide = !sideBySide"
 					/>
 				</template>
@@ -427,8 +429,10 @@ export default defineComponent({
 		}
 
 		.v-icon {
+			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--primary-150);
+
 			margin-left: 6px;
-			color: var(--primary);
 		}
 	}
 
@@ -459,7 +463,8 @@ export default defineComponent({
 			}
 
 			.v-icon {
-				color: var(--blue);
+				--v-icon-color: var(--blue);
+				--v-icon-color-hover: var(--blue-150);
 			}
 		}
 
