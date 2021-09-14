@@ -1058,6 +1058,7 @@ require_value_to_be_set: Требовать установки значения
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
@@ -1294,7 +1295,9 @@ interfaces:
     rate: Рейтинг
   group-raw:
     name: Необработанная группа
+    description: Отображать поля как есть
   group-detail:
+    name: Детали группы
     description: Отображать поля как сворачиваемую секцию
     show_header: Показывать заголовок группы
     header_icon: Иконка заголовка
@@ -1325,6 +1328,8 @@ displays:
     datetime: Дата и время
     description: Показывать значения, относящиеся ко времени
     format: Формат
+    format_note: >-
+      Пользовательский формат принимает __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Длинный
     short: Короткий
     relative: Относительный
@@ -1417,4 +1422,7 @@ layouts:
     cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геометрия
     invalid_geometry: Некорректная геометрия
+    auto_location_filter: Всегда фильтровать данные к границам отображения
     search_this_area: Искать в этой области
+    clear_data_filter: Очистить фильтр данных
+    clear_location_filter: Очистить фильтр местоположения
