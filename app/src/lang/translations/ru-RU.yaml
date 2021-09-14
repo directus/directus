@@ -891,6 +891,12 @@ field_options:
       none_text: Нет — не рекомендуется
       weak_text: Слабый – минимум 8 символов
       strong_text: Крепкий – строчные, прописные, цифры, специальные
+    storage_asset_presets:
+      fit:
+        contain_text: Вместить (с сохранением пропорций)
+        cover_text: Покрыть (точный размер)
+        fit_text: Поместить внутри
+        outside_text: Поместить вне
     additional_transforms: Дополнительные преобразования
     transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Токен доступа Mapbox
@@ -910,27 +916,45 @@ field_options:
     only_track_activity: Отслеживать только активность
     do_not_track_anything: Ничего не отслеживать
     collection_setup: Настройки Коллекции
+    note_placeholder: Описание этой коллекции...
+    hidden_label: Скрыть в приложении
     singleton: Считать одним объектом
     language: Язык
     translation: Введите перевод...
     archive_divider: Архив
     archive_field: Выберите поле...
+    archive_app_filter: Включить фильтр архива приложения
+    archive_value: Значение, установленное при архивировании...
+    unarchive_value: Значение, установленное при разархивировании...
     divider: Сортировать
     sort_field: Выберите поле...
+    accountability_divider: Подотчетность
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
+    location: Необязательная локация...
+    storage_divider: Именование файлов
+    filename_disk: Имя на диске...
+    filename_download: Имя при загрузке...
   directus_roles:
+    name: Уникальное имя для этой роли...
+    description: Описание этой роли...
+    ip_access: Добавьте разрешенные IP-адреса, оставьте поле пустым, чтобы разрешить все...
     fields:
       icon_name: Иконка
       name_name: Имя
       name_placeholder: Введите название...
       link_name: Ссылка
+      link_placeholder: Относительный или абсолютный URL...
     collection_list:
+      group_name_addLabel: Добавить новую группу...
       fields:
         group_name: Название группы
+        group_placeholder: Обозначьте эту группу...
         type_name: Тип
+        choices_always: Всегда открыто
         choices_start_open: Раскрыта
+        choices_start_collapsed: Начать свернутым
     collections_name: Коллекции
     collections_addLabel: Добавить коллекцию...
   directus_users:
@@ -955,6 +979,7 @@ field_options:
     actions_delete: Удалить
     actions_login: Войти
 no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
+no_value: Нет значения
 do_nothing: Ничего не Делать
 generate_and_save_uuid: Создать и Сохранить UUID
 save_current_user_id: Сохранить ID Текущего Пользователя
@@ -963,13 +988,17 @@ save_current_datetime: Сохранить Текущую Дату/Время
 block: Блокировать
 inline: Строчный
 comment: Комментарий
+relational_triggers: Реляционные триггеры
 referential_action_field_label_m2o: При удалении {collection}...
 referential_action_field_label_o2m: При отмене выбора {collection}...
 referential_action_no_action: Предотвратить удаление
+referential_action_cascade: Удалить элемент {collection} (cascade)
 referential_action_set_null: Обнулить поле {field}
 referential_action_set_default: Установить полю {field} значение по умолчанию
 choose_action: Выбрать действие
 continue_label: Продолжить
+continue_as: >-
+  {name} в настоящее время аутентифицирован. Если вы узнаете этот аккаунт, нажмите продолжить.
 editing_role: '{role} Роль'
 creating_webhook: Создание Веб-хука
 default_label: По умолчанию
@@ -1025,6 +1054,7 @@ sort_direction: Направление сортировки
 sort_asc: По Возрастанию
 sort_desc: По Убыванию
 template: Шаблон
+require_value_to_be_set: Требовать установки значения
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
@@ -1090,6 +1120,7 @@ interfaces:
     use_24: Использовать 24-Часовой Формат
   system-display-template:
     display-template: Шаблон отображения
+    description: Смешивать статический текст и динамические значения полей
     collection_field: Поле коллекции
     collection_field_not_setup: Опция поля коллекции настроена некорректно
     select_a_collection: Выберите Коллекцию
@@ -1140,6 +1171,7 @@ interfaces:
     description: Окно выбора параметров интерфейса
   list-m2m:
     many-to-many: Многие ко Многим
+    description: Выберите несколько связанных элементов
   select-dropdown-m2o:
     many-to-one: Многие к Одному
     description: Выберите один связанный элемент
@@ -1163,6 +1195,7 @@ interfaces:
     invalid_options: Некорректные настройки
     invalid_format: Некорректный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
+    fit_bounds: Подогнать вид по размеру данных
     native: Родной
     geojson: GeoJSON
     lnglat: Долгота, широта (Lon, Lat)
@@ -1187,6 +1220,7 @@ interfaces:
     description: Выбор одного из нескольких вариантов
   list:
     repeater: Повторитель
+    description: Создать несколько записей одной структуры
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
     field_name_placeholder: Введите название поля...
@@ -1253,10 +1287,13 @@ interfaces:
     options_override: Переопределение параметров
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
+    description: Автодополнение значений поиска через внешний API.
     results_path: Путь к результатам
     value_path: Путь значения
     trigger: Триггер
     rate: Рейтинг
+  group-raw:
+    name: Необработанная группа
   group-detail:
     description: Отображать поля как сворачиваемую секцию
     show_header: Показывать заголовок группы
