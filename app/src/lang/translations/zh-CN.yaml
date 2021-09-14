@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: 已发布
 draft: 草稿
 archived: 已存档
 edit_field: 编辑
@@ -178,7 +199,7 @@ to_manually_setup_translations: 手动设置翻译。
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
-no_collections_found: 未找到任何集合
+no_collections_found: 未找到任何收藏
 new_data_alert: '以下将在您的数据模型中创建：'
 search_collection: 搜索数据模型...
 new_field: '新建字段'
@@ -244,11 +265,11 @@ post_comment_success: 评论已发布
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
 item_delete_success: 项目已删除 | 项目已删除
-this_collection: 此集合
-related_collection: 相关集合
-related_collections: 相关集合
+this_collection: 此收藏
+related_collection: 相关收藏
+related_collections: 相关收藏
 translations_collection: 翻译收藏
-languages_collection: 语言集合
+languages_collection: 语言收藏
 export_data: 导出数据
 format: 格式
 use_current_filters_settings: 使用当前筛选器和设置
@@ -318,11 +339,11 @@ replace_from_library: 从库中替换文件
 replace_from_url: 从 URL 中替换文件
 no_file_selected: 未选择文件
 download_file: 下载文件
-collection_key: 集合的键
+collection_key: 收藏的键
 name: 名称
 primary_key_field: 主键字段
 type: 类型
-creating_new_collection: 创建集合
+creating_new_collection: 创建收藏
 created_by: 创建自
 created_on: 创建于
 creating_collection_info: 命名集合并设置唯一键字段...
@@ -374,7 +395,7 @@ select_a_collection: 选择一个集合
 active: 激活
 inactive: 非活跃
 users: 用户
-activity: 活动
+activity: 动态
 webhooks: Webhook
 field_width: 字段宽度
 add_filter: 添加过滤器
