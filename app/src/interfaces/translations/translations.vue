@@ -42,8 +42,8 @@
 		</div>
 	</div>
 	<div class="divider">
-		<v-divider></v-divider>
-		<v-divider v-if="sideBySide" class="blue"></v-divider>
+		<v-divider />
+		<v-divider v-if="sideBySide" class="blue" />
 	</div>
 </template>
 
