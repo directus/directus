@@ -567,6 +567,7 @@ my_files: I Miei File
 recent_files: File Recenti
 create_folder: Crea Cartella
 folder_name: Nome Cartella...
+clear_data_filter: Rimuovi il filtro sui dati
 add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
@@ -907,7 +908,7 @@ field_options:
     files_divider_title: File e miniature
     overrides_divider_title: Personalizzazioni App
   directus_activity:
-    login: Accesso
+    login: Accedi
     create: Creare
     update: Aggiornare
     delete: Elimina
@@ -1058,7 +1059,6 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
