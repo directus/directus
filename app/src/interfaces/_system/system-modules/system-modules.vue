@@ -52,7 +52,7 @@
 			</template>
 
 			<div class="drawer-content">
-				<v-form v-model="values" :fields="linkFields" />
+				<v-form v-model="values" :initial-values="initialValues" :fields="linkFields" />
 			</div>
 		</v-drawer>
 	</div>
@@ -127,6 +127,7 @@ export default defineComponent({
 
 		const editing = ref<string | null>();
 		const values = ref<SettingsModuleBarLink | null>();
+		const initialValues = ref<SettingsModuleBarLink | null>();
 
 		const { modules: registeredModules } = getModules();
 
@@ -160,7 +161,19 @@ export default defineComponent({
 			},
 		});
 
-		return { t, editing, valuesWithData, hideDragImage, updateItem, edit, linkFields, save, values, remove };
+		return {
+			t,
+			editing,
+			valuesWithData,
+			hideDragImage,
+			updateItem,
+			edit,
+			linkFields,
+			save,
+			values,
+			remove,
+			initialValues,
+		};
 
 		function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 			return value
@@ -214,10 +227,12 @@ export default defineComponent({
 		function edit(id: string) {
 			editing.value = id;
 
+			let value: SettingsModuleBarLink;
+
 			if (id !== '+') {
-				values.value = props.value.find((val) => val.id === id) as SettingsModuleBarLink;
+				value = props.value.find((val) => val.id === id) as SettingsModuleBarLink;
 			} else {
-				values.value = {
+				value = {
 					id: nanoid(),
 					type: 'link',
 					enabled: true,
@@ -226,6 +241,9 @@ export default defineComponent({
 					icon: '',
 				};
 			}
+
+			values.value = value;
+			initialValues.value = value;
 		}
 
 		function save() {
