@@ -46,7 +46,7 @@ export default defineComponent({
 		},
 	},
 	emits: ['update:modelValue'],
-	setup(props, { emit }) {
+	setup(props) {
 		const displayValue = computed(() => {
 			const item = props.items.find((item) => item.value === props.modelValue);
 			return item?.text ?? props.modelValue;

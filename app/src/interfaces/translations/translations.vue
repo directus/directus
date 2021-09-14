@@ -58,7 +58,7 @@ import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual } from 'lodash';
 import useWindowSize from '@/composables/use-window-size';
-import { isEmpty, notEmpty } from '@/utils/is-empty';
+import { notEmpty } from '@/utils/is-empty';
 
 let sideBySide = ref(false);
 let firstLang = ref('en-US');
