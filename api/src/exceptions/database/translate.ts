@@ -39,7 +39,7 @@ export async function translateDatabaseError(error: SQLError): Promise<any> {
 			break;
 	}
 
-	const hookResult = await emitter.emitAsync('database.error', defaultError, { client });
+	const hookResult = await emitter.emitFilter('database.error', defaultError, { client });
 	const hookError = Array.isArray(hookResult) ? last(compact(hookResult)) : hookResult;
 
 	return hookError || defaultError;

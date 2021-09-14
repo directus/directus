@@ -9,7 +9,7 @@ import createApp from './app';
 import getDatabase from './database';
 import env from './env';
 import logger from './logger';
-import emitter, { emitAsyncSafe } from './emitter';
+import emitter from './emitter';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
 
@@ -67,7 +67,7 @@ export async function createServer(): Promise<http.Server> {
 				duration: elapsedMilliseconds.toFixed(),
 			};
 
-			emitAsyncSafe('response', info);
+			emitter.emitAction('response', info);
 		});
 
 		res.once('finish', complete.bind(null, true));
@@ -87,8 +87,6 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		emitAsyncSafe('server.stop.before', { server });
-
 		if (env.NODE_ENV !== 'development') {
 			logger.info('Shutting down...');
 		}
@@ -97,11 +95,12 @@ export async function createServer(): Promise<http.Server> {
 	async function onSignal() {
 		const database = getDatabase();
 		await database.destroy();
+
 		logger.info('Database connections destroyed');
 	}
 
 	async function onShutdown() {
-		emitAsyncSafe('server.stop');
+		emitter.emitAction('server.stop');
 
 		if (env.NODE_ENV !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
@@ -111,8 +110,6 @@ export async function createServer(): Promise<http.Server> {
 
 export async function startServer(): Promise<void> {
 	const server = await createServer();
-
-	await emitter.emitAsync('server.start.before', { server });
 
 	const port = env.PORT;
 
@@ -129,7 +126,8 @@ export async function startServer(): Promise<void> {
 				});
 
 			logger.info(`Server started at http://localhost:${port}`);
-			emitAsyncSafe('server.start');
+
+			emitter.emitAction('server.start');
 		})
 		.once('error', (err: any) => {
 			if (err?.code === 'EADDRINUSE') {

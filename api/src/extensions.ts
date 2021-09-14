@@ -27,7 +27,6 @@ import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, ScheduledTask, validate } from 'node-cron';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
@@ -57,8 +56,10 @@ class ExtensionManager {
 	private appExtensions: Partial<Record<AppExtensionType, string>> = {};
 
 	private apiHooks: (
-		| { type: 'cron'; path: string; task: ScheduledTask }
-		| { type: 'event'; path: string; event: string; handler: ListenerFn }
+		| { type: 'filter'; path: string; event: string; handler: ListenerFn }
+		| { type: 'action'; path: string; event: string; handler: ListenerFn }
+		| { type: 'init'; path: string; event: string; handler: ListenerFn }
+		| { type: 'schedule'; path: string; task: ScheduledTask }
 	)[] = [];
 	private apiEndpoints: { path: string }[] = [];
 
@@ -223,15 +224,39 @@ class ExtensionManager {
 
 		const register = getModuleDefault(hookInstance);
 
-		const events = register({ services, exceptions, env, database: getDatabase(), logger, getSchema });
+		const registerFunctions = {
+			filter: (event: string, handler: (...values: any[]) => any[]) => {
+				emitter.onFilter(event, handler);
 
-		for (const [event, handler] of Object.entries(events)) {
-			if (event.startsWith('cron(')) {
-				const cron = event.match(REGEX_BETWEEN_PARENS)?.[1];
+				this.apiHooks.push({
+					type: 'filter',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			action: (event: string, handler: (...values: any[]) => void) => {
+				emitter.onAction(event, handler);
 
-				if (!cron || validate(cron) === false) {
-					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
-				} else {
+				this.apiHooks.push({
+					type: 'action',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			init: (event: string, handler: (...values: any[]) => void) => {
+				emitter.onInit(event, handler);
+
+				this.apiHooks.push({
+					type: 'init',
+					path: hookPath,
+					event,
+					handler,
+				});
+			},
+			schedule: (cron: string, handler: () => void) => {
+				if (validate(cron)) {
 					const task = schedule(cron, async () => {
 						if (this.isScheduleHookEnabled) {
 							try {
@@ -243,22 +268,17 @@ class ExtensionManager {
 					});
 
 					this.apiHooks.push({
-						type: 'cron',
+						type: 'schedule',
 						path: hookPath,
 						task,
 					});
+				} else {
+					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				}
-			} else {
-				emitter.on(event, handler);
+			},
+		};
 
-				this.apiHooks.push({
-					type: 'event',
-					path: hookPath,
-					event,
-					handler,
-				});
-			}
-		}
+		register(registerFunctions, { services, exceptions, env, database: getDatabase(), logger, getSchema });
 	}
 
 	private registerEndpoint(endpoint: Extension, router: Router) {
@@ -282,10 +302,19 @@ class ExtensionManager {
 
 	private unregisterHooks(): void {
 		for (const hook of this.apiHooks) {
-			if (hook.type === 'cron') {
-				hook.task.destroy();
-			} else {
-				emitter.off(hook.event, hook.handler);
+			switch (hook.type) {
+				case 'filter':
+					emitter.offFilter(hook.event, hook.handler);
+					break;
+				case 'action':
+					emitter.offAction(hook.event, hook.handler);
+					break;
+				case 'init':
+					emitter.offInit(hook.event, hook.handler);
+					break;
+				case 'schedule':
+					hook.task.destroy();
+					break;
 			}
 
 			delete require.cache[require.resolve(hook.path)];
