@@ -5,7 +5,7 @@
 				<template #append>
 					<v-icon
 						v-if="!sideBySide && width > 960"
-						v-tooltip="t('interfaces.translations.multilang')"
+						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="flip"
 						@click.stop="sideBySide = !sideBySide"
 					/>
@@ -24,7 +24,7 @@
 				<template #append>
 					<v-icon
 						v-if="sideBySide"
-						v-tooltip="t('interfaces.translations.multilang')"
+						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="close"
 						@click.stop="sideBySide = !sideBySide"
 					/>
