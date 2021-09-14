@@ -39,7 +39,10 @@ enter_password_to_enable_tfa: Введите свой пароль для вкл
 add_field: Добавить поле
 role_name: Название роли
 branch: Ветка
+leaf: Лист
+indeterminate: Неопределенный
 edit_collection: Изменить коллекцию
+exclusive: Эксклюзивный
 children: Дочерние элементы
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать элементы в архиве
@@ -142,6 +145,9 @@ fields_for_role: 'Поля, которые Роль {role} может {action}.'
 validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
 presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
 presentation_and_aliases: Представление и Алиасы
+revision_post_update: Вот как этот элемент выглядел после обновления.
+changes_made: Ниже приведены конкретные изменения, внесенные в эту редакцию.
+no_relational_data: Имейте в виду, что реляционные данные здесь не включены.
 hide_field_on_detail: Скрыть Поле в Карточке
 show_field_on_detail: Показать Поле в Карточке
 delete_field: Удалить поле
@@ -157,6 +163,7 @@ exposure: Экспозиция
 shutter: Затвор
 iso: ISO
 focal_length: Фокусное Расстояние
+schema_setup_key: Имя столбца базы данных этого поля и API ключ
 create_field: Создать Поле
 creating_new_field: 'Новое Поле ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -197,6 +204,7 @@ click_to_manage_translated_fields: >-
   Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
 fields_group: Группа Полей
 no_collections_found: Нет найденных коллекций.
+new_data_alert: 'В вашей модели данных будет создано следующее:'
 search_collection: Поиск коллекций...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
@@ -377,6 +385,7 @@ no_files_copy: Здесь нет файлов.
 user_count: 'Нет Пользователей | Один Пользователь | {count} Пользователей'
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
+no_webhooks_copy: Веб-хуки еще не настроены. Начните с создания одного из них ниже.
 all_items: Все Элементы
 any: Любой
 csv: CSV
@@ -486,6 +495,7 @@ system_collections: Системные коллекции
 placeholder: Плейсхолдер
 icon_left: Значок слева
 icon_right: Значок справа
+count_other_revisions: '{count} других редакций'
 font: Шрифт
 sans_serif: Sans Serif
 serif: Serif
@@ -524,6 +534,8 @@ operators:
   has: Содержит некоторые из этих ключей
   intersects: Пересекает
   nintersects: Не пересекает
+  intersects_bbox: Пересекает ограничивающую рамку
+  nintersects_bbox: Не пересекает ограничивающую рамку
 loading: Загрузка...
 drop_to_upload: Перетащите для Загрузки
 item: Элемент
@@ -546,6 +558,7 @@ value_unique: Значение должно быть уникальным
 all_activity: Вся Активность
 create_item: Создать Элемент
 display_template: Шаблон отображения
+language_display_template: Шаблон отображения языка
 n_items_selected: 'Не Выбраны Элементы | Выбран 1 Элемент | Выбрано {n} Элементов'
 per_page: На Страницу
 all_files: Все Файлы
