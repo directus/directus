@@ -38,6 +38,7 @@
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
+						:class="{ seamless }"
 						@click.stop="onContentClick"
 						@pointerenter.stop="onPointerEnter"
 						@pointerleave.stop="onPointerLeave"
@@ -102,6 +103,10 @@ export default defineComponent({
 		delay: {
 			type: Number,
 			default: 0,
+		},
+		seamless: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
@@ -391,6 +396,10 @@ body {
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;
 	contain: content;
+
+	&.seamless {
+		padding: 0;
+	}
 
 	.v-list {
 		--v-list-background-color: transparent;

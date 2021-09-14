@@ -1,7 +1,11 @@
 <template>
 	<div class="system-filter">
 		<v-list :mandatory="true">
+			<div v-if="innerValue.length === 0" class="no-rules">
+				{{ t('interfaces.filter.no_rules') }}
+			</div>
 			<nested-draggable
+				v-else
 				v-model:tree="innerValue"
 				:collection="collectionName"
 				:depth="1"
@@ -208,9 +212,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .system-filter {
-	width: fit-content;
-	padding: 0 10px;
-
 	:deep(ul),
 	:deep(li) {
 		list-style: none;
@@ -219,17 +220,24 @@ export default defineComponent({
 	:deep(.group) {
 		margin-left: 18px;
 		padding-left: 10px;
-		border-left: var(--border-width) solid var(--border-normal);
+		border-left: var(--border-width) solid var(--border-subdued);
 	}
 
 	.v-list {
-		margin: 0px;
-		padding: 0px;
+		margin: 0px 0px 10px 0px;
+		padding: 20px 20px 12px 20px;
+		border: var(--border-width) solid var(--border-subdued);
 
 		& > :deep(.group) {
 			margin-left: 0px;
 			padding-left: 0px;
 			border-left: none;
+		}
+
+		.no-rules {
+			margin-bottom: 8px;
+			color: var(--foreground-subdued);
+			font-family: var(--family-monospace);
 		}
 	}
 

@@ -8,7 +8,14 @@
 		</v-dialog>
 	</template>
 	<span v-else-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
-	<v-menu v-else :close-on-content-click="false" :show-arrow="true">
+	<input
+		v-else-if="is === 'interface-input'"
+		:value="value"
+		:style="{ width }"
+		placeholder="--"
+		@input="$emit('input', $event.target.value)"
+	/>
+	<v-menu v-else :close-on-content-click="false" :show-arrow="true" seamless>
 		<template #activator="{ toggle }">
 			<div class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
@@ -26,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -39,7 +46,7 @@ export default defineComponent({
 			default: undefined,
 		},
 		value: {
-			type: [String, Number, Object, Boolean, Array],
+			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
 			default: undefined,
 		},
 	},
@@ -47,9 +54,16 @@ export default defineComponent({
 	setup(props) {
 		const active = ref(false);
 
-		const displayValue = computed(() => (props.value === null ? '##' : props.value));
+		const displayValue = computed(() => (props.value === null ? '--' : props.value));
 
-		return { active, displayValue };
+		const width = computed(() => {
+			if (props.is === 'interface-input' && typeof props.value === 'string') {
+				return (props.value?.length >= 3 ? props.value.length + 1 : 3) + 'ch';
+			}
+			return 3 + 'ch';
+		});
+
+		return { active, displayValue, width };
 	},
 });
 </script>
@@ -69,6 +83,22 @@ export default defineComponent({
 	&.time,
 	&.dateTime {
 		min-width: 250px;
+	}
+
+	:deep(.v-input .input) {
+		border: none;
+	}
+}
+
+input {
+	color: var(--primary);
+	font-family: var(--family-monospace);
+	border: none;
+
+	&::placeholder {
+		color: var(--primary);
+		font-weight: 500;
+		font-family: var(--family-monospace);
 	}
 }
 

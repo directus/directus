@@ -1084,7 +1084,9 @@ interfaces:
     all: All
     any: Any
     and: and
-    of_the_following: of the following
+    of_the_following: of the following,
+    no_rules: no rules yet
+    change_value: Click to change value
   group-accordion:
     name: Accordion
     description: Display fields or groups as accordion sections

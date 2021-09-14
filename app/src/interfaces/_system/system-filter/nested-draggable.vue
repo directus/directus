@@ -14,7 +14,11 @@
 				<div v-if="element.type === 'logic'" class="node logic">
 					<div class="header">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
-						<div class="logic-type" :class="{ blue: element.name === '_or' }">
+						<div
+							v-tooltip="t('interfaces.filter.change_value')"
+							class="logic-type"
+							:class="{ blue: element.name === '_or' }"
+						>
 							<span class="key" @click="toggleLogic(index)">
 								{{ element.name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any') }}
 							</span>
@@ -36,6 +40,7 @@
 					<div class="header">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
 						<v-select
+							v-tooltip="t('interfaces.filter.change_value')"
 							inline
 							class="name"
 							:full-width="false"
@@ -49,6 +54,7 @@
 							@update:modelValue="updateField($event, index)"
 						/>
 						<v-select
+							v-tooltip="t('interfaces.filter.change_value')"
 							inline
 							class="comparator"
 							:model-value="element.comparator"
@@ -146,7 +152,11 @@ export default defineComponent({
 		}
 
 		function updateField(newKey: string, index: number) {
-			tree.value[index].name = newKey;
+			const field = tree.value[index];
+			field.name = newKey;
+			if (field.type === 'field') {
+				field.value = null;
+			}
 		}
 
 		function updateNode(index: number, field: Field | FilterTree) {
@@ -179,8 +189,8 @@ export default defineComponent({
 	align-items: center;
 	width: fit-content;
 	margin-bottom: 8px;
-	padding: 8px 12px 8px 6px;
-	border: var(--border-width) solid var(--border-normal);
+	padding: 2px 12px 2px 6px;
+	border: var(--border-width) solid var(--border-subdued);
 	border-radius: 100px;
 
 	.logic-type {
