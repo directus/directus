@@ -416,10 +416,8 @@ fields:
     status: Status
 field_options:
   directus_activity:
-    login: Logg inn
     create: Opprett
     update: Oppdater
-    delete: Slett
   directus_collections:
     language: Språk
     archive_divider: Arkiv
