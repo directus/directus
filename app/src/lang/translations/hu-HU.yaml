@@ -861,7 +861,7 @@ field_options:
     files_divider_title: Fájlok és miniatűrök
     overrides_divider_title: Alkalmazás felülbírálások
   directus_activity:
-    login: Belépés
+    login: Bejelentkezés
     create: Létrehozás
     update: Frissítés
     delete: Törlés
