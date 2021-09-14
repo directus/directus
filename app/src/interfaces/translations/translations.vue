@@ -272,7 +272,11 @@ export default defineComponent({
 
 				try {
 					const response = await api.get(`/items/${languagesCollection.value}`, {
-						params: { field: Array.of(fields), limit: -1, sort: props.languageField ?? languagesPrimaryKeyField.value },
+						params: {
+							fields: Array.of(fields),
+							limit: -1,
+							sort: props.languageField ?? languagesPrimaryKeyField.value,
+						},
 					});
 					languages.value = response.data.data;
 				} catch (err: any) {
