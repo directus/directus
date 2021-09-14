@@ -833,8 +833,9 @@ fields:
     name: ชื่อ
     status: สถานะ
 field_options:
+  directus_settings:
+    security_divider_title: ความปลอดภัย
   directus_activity:
-    login: ลงชื่อเข้าใช้
     create: สร้าง
     update: แก้ไข
   directus_collections:
