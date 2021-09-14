@@ -229,7 +229,7 @@ body {
 		margin: 0;
 		padding: 8px;
 		background-color: var(--background-subdued);
-		border: 2px solid var(--border-subdued);
+		border: var(--border-width) solid var(--border-subdued);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -255,11 +255,11 @@ body {
 
 		&:hover {
 			background-color: var(--background-subdued);
-			border: 2px solid var(--border-normal);
+			border: var(--border-width) solid var(--border-normal);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
 		}
 
 		& + & {

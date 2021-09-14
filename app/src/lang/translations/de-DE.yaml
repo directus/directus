@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Entwurf
+archived: Archiviert
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
@@ -142,9 +124,6 @@ fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
-revision_post_update: Hier siehst du, wie das Element nach dem Update aussah...
-changes_made: Dies sind die spezifischen Änderungen, die vorgenommen wurden...
-no_relational_data: Beachten Sie, dass dies keine relationalen Daten enthält.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -382,7 +361,6 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
-no_webhooks_copy: Es gibt noch keine Webhooks.
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -934,6 +912,7 @@ field_options:
         group_placeholder: Diese Gruppe benennen...
         type_name: Typ
         choices_always: Immer geöffnet
+        choices_start_open: Geöffnet starten
         choices_start_collapsed: Eingeklappt starten
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
@@ -957,6 +936,7 @@ field_options:
     actions_create: Erstellen
     actions_update: Aktualisieren
     actions_delete: Löschen
+    actions_login: Login
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern
@@ -1043,6 +1023,11 @@ interfaces:
     name: Akkordeon
     description: Felder oder Gruppen als Akkordeonabschnitte anzeigen
     start: Start
+    all_closed: Alle geschlossen
+    first_opened: Zuerst geöffnet
+    all_opened: Alle geöffnet
+    accordion_mode: Akkordeon-Modus
+    max_one_section_open: Max. einen Abschnitt öffnen
   presentation-links:
     presentation-links: Button-Links
     links: Links
@@ -1058,6 +1043,13 @@ interfaces:
     allow_other: Andere erlauben
     show_more: 'Zeige {count} mehr'
     items_shown: Angezeigte Elemente
+  select-multiple-checkbox-tree:
+    name: Kontrollkästchen (Baum)
+    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
+    value_combining: Kombination Werte
+    value_combining_note: Legt fest, welcher Werte gespeichert wird, wenn verschachtelte Selektionen gemacht werden.
+    show_all: Alle anzeigen
+    show_selected: Auswahl anzeigen
   input-code:
     code: Code
     description: Code-Snippets schreiben oder teilen
@@ -1152,7 +1144,21 @@ interfaces:
     imageToken: Bild-Token
     imageToken_label: Welcher (statischer) Token, der an Bildquellen angehängt werden soll
   map:
+    map: Karte
+    description: Ort auf der Karte wählen
     zoom: Zoom
+    geometry_type: Geometrie-Typ
+    geometry_format: Geometrie-Format
+    default_view: Standardansicht
+    invalid_options: Ungültige Optionen
+    invalid_format: Ungültiges Format ({format})
+    unexpected_geometry: Erwartete {expected}, erhielt {got}.
+    fit_bounds: Ansicht an Daten anpassen
+    native: Nativ
+    geojson: GeoJSON
+    lnglat: Längengrad, Breitengrad
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
@@ -1163,6 +1169,10 @@ interfaces:
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
     folder: Ordner
+    description: Ordner auswählen
+    field_hint: Neu hochgeladene Dateien in den ausgewählten Ordner verschieben. Hat keine Auswirkung auf selektierte Dateien.
+    root_name: Root-Ordner für Dateien
+    system_default: System-Standardeinstellungen
   select-radio:
     radio-buttons: Radio Buttons
     description: Eine von mehreren Optionen auswählen
@@ -1240,6 +1250,17 @@ interfaces:
     value_path: Wertpfad
     trigger: Trigger
     rate: Rate
+  group-raw:
+    name: Rohgruppe
+    description: Felder so anzeigen wie sie sind
+  group-detail:
+    name: Detailgruppe
+    description: Felder als einklappbaren Abschnitt anzeigen
+    show_header: Kopfzeile anzeigen
+    header_icon: Icon Kopfzeile
+    header_color: Farbe Kopfzeile
+    start_open: Geöffnet starten
+    start_closed: Geschlossen starten
 displays:
   boolean:
     boolean: Boolean
@@ -1347,4 +1368,16 @@ layouts:
     start_date_field: Datumsfeld Start
     end_date_field: Datumsfeld Ende
   map:
+    map: Karte
+    basemap: Basemap
+    layers: Ebenen
+    edit_custom_layers: Ebenen bearbeiten
+    cluster_options: Clustering-Optionen
+    cluster: Clustering aktivieren
+    cluster_radius: Cluster-Radius
+    cluster_minpoints: Minimale Punkte Clustering
+    cluster_maxzoom: Maximaler Zoom für Clustering
     field: Dimensionen
+    invalid_geometry: Ungültige Geometrie
+    auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
+    search_this_area: Diesen Bereich durchsuchen

@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Osnutek
+archived: Arhivirano
 edit_field: Uredi polje
 conditions: Pogoji
 maps: Zemljevidi
@@ -38,6 +20,7 @@ role_name: Ime vloge
 branch: Veja
 leaf: List
 indeterminate: Nedoločeno
+edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
 db_only_click_to_configure: 'Samo podatkovna baza: konfiguriraj '
@@ -141,9 +124,6 @@ fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action
 validation_for_role: 'Pravila, ki jih mora upoštevati vloga {role} za polje {action}.'
 presets_for_role: 'Privzete vrednosti vloge {role} za polje.'
 presentation_and_aliases: Predstavitev in aliasi
-revision_post_update: Tako je zapis zgledal po popravku ...
-changes_made: To so narejeni popravki ...
-no_relational_data: Upoštevajte, da to ne vključuje relacijskih podatkov.
 hide_field_on_detail: Skrij polje v podrobnem pogledu
 show_field_on_detail: Prikaži polje v podrobnem pogledu
 delete_field: Izbriši polje
@@ -381,7 +361,6 @@ no_files_copy: Ni datotek.
 user_count: 'Ni uporabnikov | En uporabnik | Dva uporabnika | Trije uporabniki | Štirje uporabniki | {count} uporabnikov'
 no_users_copy: Ta vloga še nima uporabnikov.
 webhooks_count: 'Ni prožilnikov | En prožilnik | Dva prožilnika | Trije prožilniki | Štirje prožilniki | {count} prožilnikov'
-no_webhooks_copy: Prožilniki ne obstajajo.
 all_items: Vsi zapisi
 any: Katerokoli
 csv: CSV
@@ -556,7 +535,7 @@ create_item: Ustvari zapis
 display_template: Prikaži predlogo
 language_display_template: Predloga prikaza jezika
 translations_display_template: Predloga prikaza prevodov
-n_items_selected: 'Noben zapis ni izbran | 1 zaois je izbran | {n} zapisov izbranih'
+n_items_selected: 'Noben zapis ni izbran | 1 zapis je izbran | {n} zapisov izbranih'
 per_page: Na stran
 all_files: Vse datoteke
 my_files: Moje datoteke
@@ -723,6 +702,7 @@ no_layout_collection_selected_yet: Nobena postavitev ali zbirka ni izbrana
 batch_delete_confirm: >-
   Noben zapis ni izbran | Ste prepričani, da želite izbrisati ta zapis? | Ste prepričani, da želite izbrisati {count} zapisov?
 cancel: Prekliči
+no_upscale: Brez povečevanja slik
 collection: Zbirka
 collections: Zbirke
 singleton: En zapis
@@ -796,6 +776,7 @@ fields:
     admin_options: Administracijske opcije
     status: Stanje
     status_draft: Osnutek
+    status_invited: Povabljen
     status_active: Aktivno
     status_suspended: Zaustavljeno
     status_archived: Arhivirano
@@ -805,13 +786,15 @@ fields:
     last_page: Zadnja stran
     last_access: Zadnji dostop
   directus_settings:
+    transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: Dodatne pretvorbe
     project_name: Ime projekta
     project_url: Spletni naslov (URL) projekta
     project_color: Barva projekta
     project_logo: Logo projekta
     public_pages: Javne strani
-    public_foreground: Barva teksta v javnem delu
-    public_background: Barva ozadja v javnem delu
+    public_foreground: Glavna slika v javnem delu, logo
+    public_background: Slika za ozadje v javnem delu
     public_note: Sporočilo v javnem delu
     auth_password_policy: Pravila gesel
     auth_login_attempts: Število poskusov prijave
@@ -850,7 +833,22 @@ fields:
     actions: Dejanja
 field_options:
   directus_settings:
+    project_name_placeholder: Moj projekt ...
+    project_logo_note: Ozadje prijave in logotip
+    public_note_placeholder: Kratko javno sporočilo, ki podpira Markdown oblikovanje ...
     security_divider_title: Varnost
+    auth_password_policy:
+      none_text: Brez - ni priporočljivo
+      weak_text: Šibko - najmanj 8 znakov
+      strong_text: Močno - Velike in majhne črke, številke, posebni znaki
+    storage_asset_presets:
+      fit:
+        contain_text: Omejeno (obdrži razmerje)
+        cover_text: Zapolni (točna velikost)
+        fit_text: Prilagodi znotraj
+        outside_text: Prilagodi zunaj
+    additional_transforms: Dodatne pretvorbe
+    transforms_note: Ime Sharp metode in parametri. Več na https://sharp.pixelplumbing.com/api-constructor.
     files_divider_title: Datoteke & sličice
     overrides_divider_title: Aplikacijske preglasitve
   directus_activity:
@@ -863,20 +861,47 @@ field_options:
     only_track_activity: Sledi samo aktivnosti
     do_not_track_anything: Ne sledi ničesar
     collection_setup: Nastavitve zbirke
+    note_placeholder: Opis te zbirke ...
+    hidden_label: Skrij v aplikaciji
     singleton: Obravnavaj kot en objekt
     language: Jezik
+    translation: Vnesite prevod ...
     archive_divider: Arhiviraj
+    archive_field: Izberite polje ...
+    archive_app_filter: Omogoči aplikacijski arhivski filter
+    archive_value: Nastavljena vrednost pri arhiviranju ...
+    unarchive_value: Nastavljena vrednost pri dearhiviranju ...
     divider: Razvrsti
+    sort_field: Izberite polje ...
+    accountability_divider: Odgovornost
+  directus_files:
+    title: Edinstven naziv ...
+    description: Opcijski opis ...
+    location: Opcijska lokacija ...
+    storage_divider: Imenovanje datotek
+    filename_disk: Ime na disku ...
+    filename_download: Ime za prenos ...
   directus_roles:
+    name: Edinstveno ime te vloge ...
+    description: Opis te vloge ...
+    ip_access: Dovoljeni IP naslovi, pustite prazno za neomejen dostop ...
     fields:
       icon_name: Ikona
       name_name: Ime
       name_placeholder: Vnesite naslov ...
+      link_name: Povezava
+      link_placeholder: Relativni ali absolutni URL naslov ...
     collection_list:
+      group_name_addLabel: Dodaj novo skupino ...
       fields:
+        group_name: Ime skupine
+        group_placeholder: Naziv te skupine ...
         type_name: Tip
+        choices_always: Vedno odprto
         choices_start_open: Začni odprto
+        choices_start_collapsed: Začni zaprto
     collections_name: Zbirke
+    collections_addLabel: Dodaj zbirko ...
   directus_users:
     preferences_divider: Uporabniške nastavitve
     dropdown_auto: Avtomatsko (sistemsko)
@@ -884,6 +909,7 @@ field_options:
     dropdown_dark: Temna tema
     admin_divider: Administracijske opcije
     status_dropdown_draft: Osnutek
+    status_dropdown_invited: Povabljen
     status_dropdown_active: Aktivno
     status_dropdown_suspended: Zaustavljeno
     status_dropdown_archived: Arhivirano
@@ -896,6 +922,7 @@ field_options:
     actions_create: Ustvari
     actions_update: Posodobi
     actions_delete: Izbriši
+    actions_login: Prijava
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
