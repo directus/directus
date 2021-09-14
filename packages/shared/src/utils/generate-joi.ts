@@ -1,8 +1,13 @@
-import BaseJoi, { AnySchema } from 'joi';
+import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema } from 'joi';
 import { escapeRegExp, merge } from 'lodash';
 import { FieldFilter } from '../types/filter';
 
-const Joi = BaseJoi.extend({
+interface StringSchema extends BaseStringSchema {
+	contains(substring: string): this;
+	ncontains(substring: string): this;
+}
+
+const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
 	base: BaseJoi.string(),
 	messages: {
@@ -95,105 +100,109 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		const operator = Object.keys(value)[0];
 		const compareValue = Object.values(value)[0];
 
+		const getAnySchema = () => schema[key] ?? Joi.any();
+		const getStringSchema = () => (schema[key] ?? Joi.string()) as StringSchema;
+		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
+
 		if (operator === '_eq') {
-			schema[key] = (schema[key] ?? Joi.any()).equal(compareValue);
+			schema[key] = getAnySchema().equal(compareValue);
 		}
 
 		if (operator === '_neq') {
-			schema[key] = (schema[key] ?? Joi.any()).not(compareValue);
+			schema[key] = getAnySchema().not(compareValue);
 		}
 
 		if (operator === '_contains') {
-			schema[key] = (schema[key] ?? Joi.string()).contains(compareValue);
+			schema[key] = getStringSchema().contains(compareValue);
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = (schema[key] ?? Joi.string()).ncontains(compareValue);
+			schema[key] = getStringSchema().ncontains(compareValue);
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 			});
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 			});
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = (schema[key] ?? Joi.string()).pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_in') {
-			schema[key] = (schema[key] ?? Joi.any()).equal(...(compareValue as (string | number)[]));
+			schema[key] = getAnySchema().equal(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_nin') {
-			schema[key] = (schema[key] ?? Joi.any()).not(...(compareValue as (string | number)[]));
+			schema[key] = getAnySchema().not(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_gt') {
-			schema[key] = (schema[key] ?? Joi.number()).greater(Number(compareValue));
+			schema[key] = getNumberSchema().greater(Number(compareValue));
 		}
 
 		if (operator === '_gte') {
-			schema[key] = (schema[key] ?? Joi.number()).min(Number(compareValue));
+			schema[key] = getNumberSchema().min(Number(compareValue));
 		}
 
 		if (operator === '_lt') {
-			schema[key] = (schema[key] ?? Joi.number()).less(Number(compareValue));
+			schema[key] = getNumberSchema().less(Number(compareValue));
 		}
 
 		if (operator === '_lte') {
-			schema[key] = (schema[key] ?? Joi.number()).max(Number(compareValue));
+			schema[key] = getNumberSchema().max(Number(compareValue));
 		}
 
 		if (operator === '_null') {
-			schema[key] = (schema[key] ?? Joi.any()).valid(null);
+			schema[key] = getAnySchema().valid(null);
 		}
 
 		if (operator === '_nnull') {
-			schema[key] = (schema[key] ?? Joi.any()).invalid(null);
+			schema[key] = getAnySchema().invalid(null);
 		}
 
 		if (operator === '_empty') {
-			schema[key] = (schema[key] ?? Joi.any()).valid('');
+			schema[key] = getAnySchema().valid('');
 		}
 
 		if (operator === '_nempty') {
-			schema[key] = (schema[key] ?? Joi.any()).invalid('');
+			schema[key] = getAnySchema().invalid('');
 		}
 
 		if (operator === '_between') {
-			const values = compareValue as number[];
-			schema[key] = (schema[key] ?? Joi.number()).greater(values[0]).less(values[1]);
+			const values = compareValue as [number, number];
+			schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
 		}
 
 		if (operator === '_nbetween') {
-			const values = compareValue as number[];
-			schema[key] = (schema[key] ?? Joi.number()).less(values[0]).greater(values[1]);
+			const values = compareValue as [number, number];
+			schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
 		}
 
 		if (operator === '_submitted') {
-			schema[key] = (schema[key] ?? Joi.any()).required();
+			schema[key] = getAnySchema().required();
 		}
 
 		if (operator === '_regex') {
 			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
-			schema[key] = (schema[key] ?? Joi.string()).regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+			schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
 		}
 	}
 

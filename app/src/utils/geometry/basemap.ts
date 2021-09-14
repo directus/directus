@@ -7,17 +7,19 @@ export type BasemapSource = {
 	name: string;
 	type: 'raster' | 'tile' | 'style';
 	url: string;
+	tileSize?: number;
 };
 
 const defaultBasemap: BasemapSource = {
 	name: 'OpenStreetMap',
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	tileSize: 256,
 };
 
 const baseStyle: Style = {
 	version: 8,
-	glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
 
 export function getBasemapSources(): BasemapSource[] {
@@ -38,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
+			source.tileSize = basemap.tileSize || 512;
 		}
 		if (basemap.type == 'tile') {
 			source.url = basemap.url;
@@ -101,11 +104,11 @@ function getDefaultMapboxBasemap(): BasemapSource {
 	const defaultMapboxBasemap: BasemapSource = {
 		name: 'Mapbox',
 		type: 'style',
-		url: 'mapbox://styles/mapbox/light-v10',
+		url: 'mapbox://styles/directus/cktaiz31c509n18nrxj63zdy6',
 	};
 
 	if (getTheme() === 'dark') {
-		defaultMapboxBasemap.url = 'mapbox://styles/mapbox/dark-v10';
+		defaultMapboxBasemap.url = 'mapbox://styles/directus/cktaixyhk2joh17lrb5i8zs22';
 	}
 
 	return defaultMapboxBasemap;

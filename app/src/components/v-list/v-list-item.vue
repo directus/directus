@@ -130,11 +130,11 @@ export default defineComponent({
 body {
 	--v-list-item-padding-large: 0 8px;
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 4px 0;
+	--v-list-item-margin-large: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height-large: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
@@ -229,7 +229,7 @@ body {
 		margin: 0;
 		padding: 8px;
 		background-color: var(--background-subdued);
-		border: 2px solid var(--border-subdued);
+		border: var(--border-width) solid var(--border-subdued);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -255,11 +255,11 @@ body {
 
 		&:hover {
 			background-color: var(--background-subdued);
-			border: 2px solid var(--border-normal);
+			border: var(--border-width) solid var(--border-normal);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
 		}
 
 		& + & {

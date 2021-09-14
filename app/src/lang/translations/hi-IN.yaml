@@ -221,8 +221,7 @@ fields:
     name: नाम
 field_options:
   directus_activity:
-    create: Create
-    update: Update
+    delete: डिलीट
   directus_collections:
     language: भाषा
     archive_divider: आर्काइव

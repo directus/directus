@@ -715,6 +715,7 @@ fields:
     status: Būsena
 field_options:
   directus_activity:
+    login: Prisijungti
     create: Kurti
     update: Atnaujinti
   directus_collections:
