@@ -55,7 +55,7 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
-email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
+email_examples: "admin{'@'}exemplo.com, usuario{'@'}exemplo.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -145,9 +145,6 @@ fields_for_role: 'Campos que o cargo {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
 presets_for_role: 'Valores de campo padrões para a função {role}.'
 presentation_and_aliases: Apresentação e pseudônimos
-revision_post_update: Aqui está como este item ficou após a atualização...
-changes_made: Estas são as mudanças específicas que foram feitas...
-no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir campo
@@ -385,7 +382,6 @@ no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
-no_webhooks_copy: Ainda não possui Webhooks.
 all_items: Todos os itens
 any: Qualquer
 csv: CSV

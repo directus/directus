@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Vázlat
+archived: Archiválva
 edit_field: Mező szerkesztése
 conditions: Feltételek
 maps: Térképek
@@ -36,7 +18,7 @@ enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés be
 add_field: Mező Hozzáadása
 role_name: Szerepkör neve
 branch: Ág
-leaf: Falevél / Leaf
+leaf: Leaf
 indeterminate: Meghatározatlan
 edit_collection: Gyűjtemény szerkesztése
 exclusive: Kizárólagos
@@ -142,9 +124,6 @@ fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják
 validation_for_role: 'A {action} mező szabályozza a {role} szerepek által követendő viselkedést.'
 presets_for_role: 'A {role} szerepkör mezőértékeinek alapértelmezései.'
 presentation_and_aliases: Prezentációk és Aliasok
-revision_post_update: Ez az elem így nézett ki a frissítés után...
-changes_made: Ezek a konkrét változtatások, melyeket elvégeztünk...
-no_relational_data: Ne feledd, ez nem tartalmaz relációs adatokat!
 hide_field_on_detail: Mező elrejtése a Részleteken
 show_field_on_detail: Mező megjelenítése a Részleteken
 delete_field: Mező törlése
@@ -381,14 +360,13 @@ no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
-no_webhooks_copy: Még nincsenek webhookok.
 all_items: Minden elem
 any: Bármely
 csv: CSV
 no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
 no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
-no_collections_copy: Még nem hoztál létre gyűjteményt. Lépj kapcsolatba a rendszeradminisztrátorral.
+no_collections_copy: Ön még nem rendelkezik Gyűjteményekkel. Lépjen kapcsolatba a rendszeradminisztrátorral!
 relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
@@ -545,7 +523,7 @@ upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
 click_to_browse: Kattints a böngészéshez
 interface_options: Interfész opciók
-layout_options: Elrendezési beállítások
+layout_options: Elrendezés beállításai
 rows: Sorok
 columns: Oszlopok
 collection_setup: Gyűjtemény beállítások
@@ -678,7 +656,7 @@ preset_name_placeholder: Alapértelmezettként szolgál, ha üres...
 preset_search_placeholder: Keresési lekérdezés...
 editing_preset: Alapértelmezés szerkesztése
 layout_preview: Elrendezés előnézet
-layout_setup: Elrendezés beállítás
+layout_setup: További beállítások
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
@@ -754,7 +732,7 @@ fields:
     $thumbnail: Miniatűr
     title: Cím
     description: Leírás
-    tags: Cimkék
+    tags: Címkék
     location: Pozíció
     storage: Tároló
     filename_disk: Fájlnév (tárhely)
@@ -783,7 +761,7 @@ fields:
     location: Pozíció
     title: Cím
     description: Leírás
-    tags: Cimkék
+    tags: Címkék
     user_preferences: Felhasználói beállítások
     language: Nyelv
     theme: Téma
@@ -986,7 +964,7 @@ duplicate: Duplikálás
 email: Email
 embed: Beágyazás
 fallback_icon: Tartalék ikon
-field: mező | mezők
+field: Mező | Mezők
 file: File
 file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
@@ -1201,7 +1179,7 @@ interfaces:
     description: Válasszon számot csúszka segítségével
     always_show_value: Mindig mutassa az értéket
   tags:
-    tags: Cimkék
+    tags: Címkék
     description: Címke megadása vagy kiválasztása
     whitespace: Szóköz
     hyphen: Helyettesítse kötőjellel
@@ -1361,7 +1339,7 @@ layouts:
   cards:
     cards: Kártya
     image_source: Kép forrása
-    image_fit: Kép poziciója
+    image_fit: Kép pozíciója
     crop: Vágás
     contain: Tartalmaz
     title: Cím
@@ -1372,7 +1350,7 @@ layouts:
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
-    cozy: Kényelmes
+    cozy: Kellemes
   calendar:
     calendar: Naptár
     start_date_field: Kezdő dátum mező

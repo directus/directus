@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Черновик
+archived: В архиве
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
@@ -139,9 +121,6 @@ fields_for_role: 'Поля, которые Роль {role} может {action}.'
 validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
 presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
 presentation_and_aliases: Представление и Алиасы
-revision_post_update: Вот как этот элемент выглядел после обновления...
-changes_made: Вот конкретные изменения, которые были сделаны...
-no_relational_data: Помните, что это не включает относительные данные.
 hide_field_on_detail: Скрыть Поле в Карточке
 show_field_on_detail: Показать Поле в Карточке
 delete_field: Удалить поле
@@ -377,7 +356,6 @@ no_files_copy: Здесь нет файлов.
 user_count: 'Нет Пользователей | Один Пользователь | {count} Пользователей'
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
-no_webhooks_copy: Веб-хуков пока нет.
 all_items: Все Элементы
 any: Любой
 csv: CSV
@@ -403,6 +381,7 @@ documentation: Документация
 sidebar: Боковая панель
 duration: Продолжительность
 charset: Кодировка
+second: секунда
 file_moved: Файл Перемещен
 collection_created: Коллекция Создана
 modified_on: Дата изменения
@@ -842,7 +821,12 @@ fields:
     actions: Действия
 field_options:
   directus_settings:
+    project_name_placeholder: Мой проект
     security_divider_title: Безопасность
+    auth_password_policy:
+      none_text: Нет — не рекомендуется
+      weak_text: Слабый – минимум 8 символов
+      strong_text: Крепкий – строчные, прописные, цифры, специальные
     files_divider_title: Файлы и миниатюры
     overrides_divider_title: Переопределить заводские настройки
   directus_activity:
@@ -870,8 +854,10 @@ field_options:
       icon_name: Иконка
       name_name: Имя
       name_placeholder: Введите название...
+      link_name: Ссылка
     collection_list:
       fields:
+        group_name: Название группы
         type_name: Тип
         choices_start_open: Раскрыта
     collections_name: Коллекции
