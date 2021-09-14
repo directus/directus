@@ -574,9 +574,6 @@ my_files: My Files
 recent_files: Recent Files
 create_folder: Create Folder
 folder_name: Folder Name...
-enter_a_name: Enter a Name...
-no_results_here: No results in this region
-clear_data_filter: Clear Data Filter
 add_file: Add File
 replace_file: Replace File
 no_results: No Results
