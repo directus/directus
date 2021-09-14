@@ -1,5 +1,5 @@
 import { Command, Option } from 'commander';
-import start from '../start';
+import { startServer } from '../server';
 import { emitAsyncSafe } from '../emitter';
 import { initializeExtensions, registerExtensionHooks } from '../extensions';
 import bootstrap from './commands/bootstrap';
@@ -26,7 +26,7 @@ export async function createCli(): Promise<Command> {
 	program.name('directus').usage('[command] [options]');
 	program.version(pkg.version, '-v, --version');
 
-	program.command('start').description('Start the Directus API').action(start);
+	program.command('start').description('Start the Directus API').action(startServer);
 	program.command('init').description('Create a new Directus Project').action(init);
 
 	const dbCommand = program.command('database');
