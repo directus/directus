@@ -614,10 +614,8 @@ fields:
     status: Durum
 field_options:
   directus_activity:
-    login: Oturum Aç
     create: Oluştur
     update: Güncelle
-    delete: Sil
   directus_collections:
     language: Dil
     archive_divider: Arşiv
