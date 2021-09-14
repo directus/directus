@@ -854,7 +854,6 @@ field_options:
     files_divider_title: 文件和缩略图
     overrides_divider_title: 应用设置覆盖
   directus_activity:
-    login: 登录
     create: 创建
     update: 更新
     delete: 删除
