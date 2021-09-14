@@ -19,6 +19,7 @@
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				@update:modelValue="updateValue($event, firstLang)"
 			/>
+			<v-divider />
 		</div>
 		<div v-if="sideBySide" class="secondary">
 			<language-select :model-value="secondLang" :items="languageOptions" @update:modelValue="secondLang = $event">
@@ -39,11 +40,8 @@
 				:model-value="secondItem"
 				@update:modelValue="updateValue($event, secondLang)"
 			/>
+			<v-divider />
 		</div>
-	</div>
-	<div class="divider">
-		<v-divider />
-		<v-divider v-if="sideBySide" class="blue" />
 	</div>
 </template>
 
@@ -266,6 +264,7 @@ export default defineComponent({
 				if (props.languageField !== null) {
 					fields.add(props.languageField);
 				}
+
 				fields.add(languagesPrimaryKeyField.value);
 
 				loading.value = true;
@@ -399,21 +398,6 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-.divider {
-	display: flex;
-	gap: 20px;
-
-	.v-divider {
-		--v-divider-color: var(--primary-50);
-
-		margin-top: 40px;
-
-		&.blue {
-			--v-divider-color: var(--blue-50);
-		}
-	}
-}
-
 .translations {
 	display: flex;
 	gap: 24px;
@@ -459,7 +443,17 @@ export default defineComponent({
 		grid-column: start/fill;
 	}
 
+	.v-divider {
+		margin-top: var(--form-vertical-gap);
+	}
+
+	.primary {
+		--v-divider-color: var(--primary-50);
+	}
+
 	.secondary {
+		--v-divider-color: var(--blue-50);
+
 		:deep(.v-select) {
 			.v-input .input {
 				color: var(--blue);
@@ -483,4 +477,19 @@ export default defineComponent({
 		}
 	}
 }
+
+// .divider {
+// 	display: flex;
+// 	gap: 20px;
+
+// 	.v-divider {
+// 		--v-divider-color: var(--primary-50);
+
+// 		margin-top: 40px;
+
+// 		&.blue {
+// 			--v-divider-color: var(--blue-50);
+// 		}
+// 	}
+// }
 </style>
