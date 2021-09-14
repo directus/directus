@@ -598,7 +598,7 @@ wysiwyg_options:
   superscript: Superíndex
   codeblock: Codi
   blockquote: Bloc de cita
-  bullist: Llista amb vinyetes
+  bullist: Llista amb vinyetes 
   numlist: Llista ordenada
   hr: Regle horitzontal
   link: Afegeix / Edita l'enllaç
@@ -832,7 +832,6 @@ field_options:
     files_divider_title: Fitxers i miniatures
     overrides_divider_title: Substitucións de l'aplicació
   directus_activity:
-    login: Entra
     create: Crear
     update: Actualitzar
     delete: Elimina
