@@ -109,11 +109,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				opts?.emitEvents !== false
 					? (
 							await emitter.emitFilter(`${this.eventScope}.create`, payload, {
-								event: `${this.eventScope}.create`,
 								accountability: this.accountability,
 								collection: this.collection,
 								item: null,
-								action: 'create',
 								payload,
 								schema: this.schema,
 								database: trx,
@@ -209,11 +207,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(`${this.eventScope}.create`, {
-				event: `${this.eventScope}.create`,
 				accountability: this.accountability,
 				collection: this.collection,
 				item: primaryKey,
-				action: 'create',
 				payload,
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
@@ -291,11 +287,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		emitter.emitAction(`${this.eventScope}.read`, {
-			event: `${this.eventScope}.read`,
 			accountability: this.accountability,
 			collection: this.collection,
 			query,
-			action: 'read',
 			payload: records,
 			schema: this.schema,
 			database: getDatabase(),
@@ -398,11 +392,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			opts?.emitEvents !== false
 				? (
 						await emitter.emitFilter(`${this.eventScope}.update`, payload, {
-							event: `${this.eventScope}.update`,
 							accountability: this.accountability,
 							collection: this.collection,
 							item: keys,
-							action: 'update',
 							payload,
 							schema: this.schema,
 							database: this.knex,
@@ -522,11 +514,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(`${this.eventScope}.update`, {
-				event: `${this.eventScope}.update`,
 				accountability: this.accountability,
 				collection: this.collection,
 				item: keys,
-				action: 'update',
 				payload,
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be
@@ -621,11 +611,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			await emitter.emitFilter(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
 				accountability: this.accountability,
 				collection: this.collection,
 				item: keys,
-				action: 'delete',
 				payload: null,
 				schema: this.schema,
 				database: this.knex,
@@ -660,11 +648,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
 				accountability: this.accountability,
 				collection: this.collection,
 				item: keys,
-				action: 'delete',
 				payload: null,
 				schema: this.schema,
 				// This hook is called async. If we would pass the transaction here, the hook can be

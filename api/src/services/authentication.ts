@@ -70,8 +70,6 @@ export class AuthenticationService {
 			.first();
 
 		const updatedPayload = await emitter.emitFilter('auth.login', payload, {
-			event: 'auth.login',
-			action: 'login',
 			schema: this.schema,
 			payload: payload,
 			provider: providerName,
@@ -87,8 +85,6 @@ export class AuthenticationService {
 
 		const emitStatus = (status: 'fail' | 'success') => {
 			emitter.emitAction('auth.login', payload, {
-				event: 'auth.login',
-				action: 'login',
 				schema: this.schema,
 				payload: payload,
 				provider: providerName,
@@ -166,8 +162,6 @@ export class AuthenticationService {
 		};
 
 		const customClaims = await emitter.emitFilter('auth.jwt', tokenPayload, {
-			event: 'auth.jwt.before',
-			action: 'jwt',
 			schema: this.schema,
 			payload: tokenPayload,
 			provider: providerName,

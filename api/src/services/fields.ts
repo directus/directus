@@ -329,12 +329,10 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitFilter(`fields.delete`, {
-			event: `fields.delete`,
+		await emitter.emitFilter('fields.delete', {
 			accountability: this.accountability,
 			collection: collection,
 			item: field,
-			action: 'delete',
 			payload: null,
 			schema: this.schema,
 			database: this.knex,
@@ -435,12 +433,10 @@ export class FieldsService {
 			await this.schemaCache.clear();
 		}
 
-		emitter.emitAction(`fields.delete`, {
-			event: `fields.delete`,
+		emitter.emitAction('fields.delete', {
 			accountability: this.accountability,
 			collection: collection,
 			item: field,
-			action: 'delete',
 			payload: null,
 			schema: this.schema,
 			database: this.knex,
