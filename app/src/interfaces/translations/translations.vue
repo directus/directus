@@ -22,7 +22,7 @@
 			<v-divider />
 		</div>
 		<div v-if="sideBySide" class="secondary">
-			<language-select :model-value="secondLang" :items="languageOptions" @update:modelValue="secondLang = $event">
+			<language-select v-model="secondLang" :items="languageOptions" secondary>
 				<template #append>
 					<v-icon
 						v-if="sideBySide"
@@ -419,21 +419,6 @@ export default defineComponent({
 		margin-top: 32px;
 	}
 
-	:deep(.v-select) {
-		.v-input .input {
-			color: var(--primary);
-			background-color: var(--primary-alt);
-			border: 0px;
-		}
-
-		.v-icon {
-			--v-icon-color: var(--primary);
-			--v-icon-color-hover: var(--primary-150);
-
-			margin-left: 6px;
-		}
-	}
-
 	:deep(.v-form) {
 		--form-vertical-gap: 32px;
 
@@ -463,19 +448,6 @@ export default defineComponent({
 	.secondary {
 		--v-divider-color: var(--blue-50);
 
-		:deep(.v-select) {
-			.v-input .input {
-				color: var(--blue);
-				background-color: var(--blue-alt);
-				border: 0px;
-			}
-
-			.v-icon {
-				--v-icon-color: var(--blue);
-				--v-icon-color-hover: var(--blue-150);
-			}
-		}
-
 		:deep(.v-form) {
 			--primary: var(--blue);
 
@@ -486,19 +458,4 @@ export default defineComponent({
 		}
 	}
 }
-
-// .divider {
-// 	display: flex;
-// 	gap: 20px;
-
-// 	.v-divider {
-// 		--v-divider-color: var(--primary-50);
-
-// 		margin-top: 40px;
-
-// 		&.blue {
-// 			--v-divider-color: var(--blue-50);
-// 		}
-// 	}
-// }
 </style>

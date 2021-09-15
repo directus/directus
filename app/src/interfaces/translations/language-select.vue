@@ -1,15 +1,12 @@
 <template>
-	<v-menu attached class="v-select">
+	<v-menu attached class="language-select" :class="{ secondary }">
 		<template #activator="{ toggle, active }">
-			<v-input readonly :model-value="displayValue" clickable :active="active" @click="toggle">
-				<template #prepend>
-					<v-icon class="translate" name="translate" />
-				</template>
-				<template #append>
-					<v-icon name="expand_more" :class="{ active }" />
-					<slot name="append" />
-				</template>
-			</v-input>
+			<button class="toggle" @click="toggle">
+				<v-icon class="translate" name="translate" />
+				<span class="display-value">{{ displayValue }}</span>
+				<v-icon name="expand_more" :class="{ active }" />
+				<span class="append-slot"><slot name="append" /></span>
+			</button>
 		</template>
 
 		<v-list>
@@ -44,6 +41,10 @@ export default defineComponent({
 			type: Array as PropType<Record<string, any>[]>,
 			default: () => [],
 		},
+		secondary: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props) {
@@ -56,7 +57,54 @@ export default defineComponent({
 	},
 });
 </script>
+
 <style lang="scss" scoped>
+.toggle {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: var(--input-height);
+	padding: var(--input-padding);
+	color: var(--primary);
+	text-align: left;
+	background-color: var(--primary-alt);
+	border-radius: var(--border-radius);
+
+	.display-value {
+		flex-grow: 1;
+		margin-left: 8px;
+	}
+
+	.append-slot:not(:empty) {
+		margin-left: 8px;
+	}
+}
+
+.v-input .input {
+	color: var(--primary);
+	background-color: var(--primary-alt);
+	border: 0px;
+}
+
+.v-icon {
+	--v-icon-color: var(--primary);
+	--v-icon-color-hover: var(--primary-150);
+
+	margin-left: 6px;
+}
+
+.secondary {
+	.toggle {
+		color: var(--blue);
+		background-color: var(--blue-alt);
+	}
+
+	.v-icon {
+		--v-icon-color: var(--blue);
+		--v-icon-color-hover: var(--blue-150);
+	}
+}
+
 .v-list {
 	.v-list-item {
 		display: flex;
