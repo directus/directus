@@ -22,10 +22,13 @@
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+module_bar: Modulleiste
+tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
 item_revision: Element Revision
+enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
@@ -56,6 +59,7 @@ create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 email_examples: "admin{'@'}beispiel.de, benutzer{'@'}beispiel.de..."
+url_example: "https://example.com"
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
