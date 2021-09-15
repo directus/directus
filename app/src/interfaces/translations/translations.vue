@@ -331,7 +331,8 @@ export default defineComponent({
 					if (
 						newVal &&
 						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
+						newVal?.every((item) => typeof item === 'string' || typeof item === 'number') &&
+						items.value.length === 0
 					) {
 						loadItems();
 					}
