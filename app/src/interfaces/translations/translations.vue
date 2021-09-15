@@ -48,14 +48,14 @@
 
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
-import { computed, defineComponent, PropType, Ref, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, assign } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
 import { useWindowSize } from '@/composables/use-window-size';
 
@@ -319,11 +319,11 @@ export default defineComponent({
 			const loading = ref(false);
 			const error = ref(null);
 
-			const firstItem = computed<Record<string, any>>(computedItem(firstLang));
-			const secondItem = computed<Record<string, any>>(computedItem(secondLang));
+			const firstItem = computed(() => getEditedValue(firstLang));
+			const secondItem = computed(() => getEditedValue(secondLang));
 
-			const firstItemInitial = computed<Record<string, any>>(computedItem(firstLang, false));
-			const secondItemInitial = computed<Record<string, any>>(computedItem(secondLang, false));
+			const firstItemInitial = computed<Record<string, any>>(() => getExistingValue(firstLang));
+			const secondItemInitial = computed<Record<string, any>>(() => getExistingValue(secondLang));
 
 			watch(
 				() => props.value,
@@ -331,8 +331,7 @@ export default defineComponent({
 					if (
 						newVal &&
 						newVal !== oldVal &&
-						newVal?.every((item) => typeof item === 'string' || typeof item === 'number') &&
-						items.value.length === 0
+						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
 					) {
 						loadItems();
 					}
@@ -346,30 +345,31 @@ export default defineComponent({
 
 			return { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial, loading, error };
 
-			function computedItem(val: Ref<string | number | undefined>, mergeEdits = true) {
-				return () => {
-					const langField = translationsLanguageField.value;
+			function getExistingValue(langRef: string | number | undefined | Ref<string | number | undefined>) {
+				const lang = unref(langRef);
 
-					if (langField === null) return {};
+				const langField = translationsLanguageField.value;
+				if (langField === null) return {};
 
-					const existingItem = items.value.find((item) => item[langField] === val.value);
+				return (items.value.find((item) => item[langField] === lang) as Record<string, any>) ?? {};
+			}
 
-					const editedItem = props.value?.find(
-						(item) => typeof item === 'object' && item[langField] === val.value
-					) as Record<string, any>;
+			function getEditedValue(langRef: string | number | undefined | Ref<string | number | undefined>) {
+				const lang = unref(langRef);
 
-					if (mergeEdits) {
-						return editedItem ?? existingItem ?? {};
-					} else {
-						return existingItem ?? {};
-					}
-				};
+				const langField = translationsLanguageField.value;
+				if (langField === null) return {};
+
+				return (
+					(props.value?.find((item) => typeof item === 'object' && item[langField] === lang) as Record<string, any>) ??
+					{}
+				);
 			}
 
 			async function loadItems() {
 				const pkField = translationsPrimaryKeyField.value;
 
-				if (pkField === null) return;
+				if (pkField === null || !props.value || props.value.length === 0) return;
 
 				loading.value = true;
 
@@ -399,22 +399,26 @@ export default defineComponent({
 				const pkField = translationsPrimaryKeyField.value;
 				const langField = translationsLanguageField.value;
 
+				const existing = getExistingValue(lang);
+
+				const values = assign({}, existing, edits);
+
 				if (pkField === null || langField === null) return;
 
 				let copyValue = cloneDeep(props.value ?? []);
 
-				if (pkField in edits === false) {
+				if (pkField in values === false) {
 					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);
 
 					if (newIndex !== -1) {
-						if (Object.keys(edits).length === 1 && langField in edits) {
+						if (Object.keys(values).length === 1 && langField in values) {
 							copyValue.splice(newIndex, 1);
 						} else {
-							copyValue[newIndex] = edits;
+							copyValue[newIndex] = values;
 						}
 					} else {
 						copyValue.push({
-							...edits,
+							...values,
 							[langField]: lang,
 						});
 					}
@@ -423,17 +427,17 @@ export default defineComponent({
 
 					copyValue = copyValue.map((item) => {
 						if (typeof item === 'number' || typeof item === 'string') {
-							if (edits[pkField] === item) {
-								return edits;
+							if (values[pkField] === item) {
+								return values;
 							} else {
 								return item;
 							}
 						} else {
-							if (edits[pkField] === item[pkField]) {
-								if (isEqual(initialValues, { ...initialValues, ...edits })) {
-									return edits[pkField];
+							if (values[pkField] === item[pkField]) {
+								if (isEqual(initialValues, { ...initialValues, ...values })) {
+									return values[pkField];
 								} else {
-									return edits;
+									return values;
 								}
 							} else {
 								return item;
