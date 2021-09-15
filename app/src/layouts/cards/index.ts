@@ -6,7 +6,7 @@ import CardsActions from './actions.vue';
 
 import { useI18n } from 'vue-i18n';
 import { toRefs, inject, computed, ref } from 'vue';
-import useCollection from '@directus/shared/composables/';
+import { useCollection } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { useRelationsStore } from '@/stores/';
