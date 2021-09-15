@@ -169,25 +169,7 @@ export default defineComponent({
 
 			return false;
 		});
-
-		const isKind = computed(() => {
-			if (!props.kind) {
-				return 'normal';
-			}
-			if (props.type === 'info') {
-				return 'info';
-			} else if (props.type === 'success') {
-				return 'success';
-			} else if (props.type === 'warning') {
-				return 'warning';
-			} else if (props.type === 'danger') {
-				return 'danger';
-			} else {
-				return 'info';
-			}
-		});
-
-		return { sizeClass, onClick, component, isActiveRoute, isKind, toggle };
+		return { sizeClass, onClick, component, isActiveRoute, toggle };
 
 		function onClick(event: MouseEvent) {
 			if (props.loading === true) return;
@@ -215,6 +197,15 @@ export default defineComponent({
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
 	--v-button-min-width: 140px;
+}
+
+.secondary {
+	--v-button-color: var(--foreground-normal);
+	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color-active: var(--foreground-normal);
+	--v-button-background-color: var(--border-subdued);
+	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-active: var(--background-normal-alt);
 }
 
 .info {
@@ -252,15 +243,6 @@ export default defineComponent({
 .v-button {
 	display: inline-flex;
 	align-items: center;
-}
-
-.secondary {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
-	--v-button-background-color: var(--border-subdued);
-	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-background-color-active: var(--background-normal-alt);
 }
 
 .v-button.full-width {
