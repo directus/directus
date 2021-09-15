@@ -1,10 +1,10 @@
 <template>
-	<div class="translations" :class="{ split: splitView }">
-		<div class="primary">
+	<div class="translations" :class="{ split: splitViewEnabled }">
+		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
 			<language-select v-model="firstLang" :items="languageOptions">
 				<template #append>
 					<v-icon
-						v-if="['fill', 'full'].includes(width) && !splitView"
+						v-if="splitViewAvailable && !splitViewEnabled"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="flip"
 						clickable
@@ -13,6 +13,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:loading="valuesLoading"
 				:fields="fields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
@@ -21,11 +22,10 @@
 			/>
 			<v-divider />
 		</div>
-		<div v-if="splitView" class="secondary">
+		<div v-if="splitViewEnabled" class="secondary" :class="splitViewEnabled ? 'half' : 'full'">
 			<language-select v-model="secondLang" :items="languageOptions" secondary>
 				<template #append>
 					<v-icon
-						v-if="splitView"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="close"
 						clickable
@@ -34,6 +34,7 @@
 				</template>
 			</language-select>
 			<v-form
+				:loading="valuesLoading"
 				:initial-values="secondItemInitial"
 				:fields="fields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
@@ -56,6 +57,7 @@ import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	components: { LanguageSelect },
@@ -80,10 +82,6 @@ export default defineComponent({
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
 		},
-		width: {
-			type: String,
-			required: true,
-		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -91,6 +89,8 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
+
+		const { width } = useWindowSize();
 
 		const splitView = ref(false);
 		const firstLang = ref<string | number>();
@@ -117,12 +117,28 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languageOptions } = useLanguages();
-		const { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial } = useEdits();
+		const { languageOptions, loading: languagesLoading } = useLanguages();
+		const {
+			items,
+			firstItem,
+			loading: valuesLoading,
+			updateValue,
+			secondItem,
+			firstItemInitial,
+			secondItemInitial,
+		} = useEdits();
 
 		const fields = computed(() => {
 			if (translationsCollection.value === null) return [];
 			return fieldsStore.getFieldsForCollection(translationsCollection.value);
+		});
+
+		const splitViewAvailable = computed(() => {
+			return width.value > 960;
+		});
+
+		const splitViewEnabled = computed(() => {
+			return splitViewAvailable.value && splitView.value;
 		});
 
 		return {
@@ -148,6 +164,10 @@ export default defineComponent({
 			relationsStore,
 			firstItemInitial,
 			secondItemInitial,
+			splitViewAvailable,
+			splitViewEnabled,
+			languagesLoading,
+			valuesLoading,
 		};
 
 		function useRelations() {
@@ -222,15 +242,20 @@ export default defineComponent({
 				const writableFields = fields.value.filter(
 					(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
 				);
+
 				const totalFields = writableFields.length;
 
 				return languages.value.map((language) => {
 					if (languagesPrimaryKeyField.value === null) return language;
+
 					const langCode = language[languagesPrimaryKeyField.value];
+
 					const initialValue = items.value.find((item) => item[langField] === langCode) ?? {};
+
 					const edits = props.value?.find((val) => typeof val === 'object' && val[langField] === langCode) as
 						| Record<string, any>
 						| undefined;
+
 					const item = { ...initialValue, ...(edits ?? {}) };
 
 					const filledFields = writableFields.filter((field) => {
@@ -291,6 +316,8 @@ export default defineComponent({
 
 		function useEdits() {
 			const items = ref<Record<string, any>[]>([]);
+			const loading = ref(false);
+			const error = ref(null);
 
 			const firstItem = computed<Record<string, any>>(computedItem(firstLang));
 			const secondItem = computed<Record<string, any>>(computedItem(secondLang));
@@ -301,14 +328,22 @@ export default defineComponent({
 			watch(
 				() => props.value,
 				(newVal, oldVal) => {
-					if (newVal && newVal.every((val) => typeof val !== 'object')) {
+					if (
+						newVal &&
+						newVal !== oldVal &&
+						newVal?.every((item) => typeof item === 'string' || typeof item === 'number')
+					) {
 						loadItems();
-					} else if (newVal === null || newVal.length === 0) {
+					}
+
+					if (newVal === null || newVal.length === 0) {
 						items.value = [];
 					}
 				},
 				{ immediate: true }
 			);
+
+			return { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial, loading, error };
 
 			function computedItem(val: Ref<string | number | undefined>, mergeEdits = true) {
 				return () => {
@@ -317,12 +352,16 @@ export default defineComponent({
 					if (langField === null) return {};
 
 					const existingItem = items.value.find((item) => item[langField] === val.value);
+
 					const editedItem = props.value?.find(
 						(item) => typeof item === 'object' && item[langField] === val.value
 					) as Record<string, any>;
 
-					if (mergeEdits) return editedItem ?? existingItem ?? {};
-					else return existingItem ?? {};
+					if (mergeEdits) {
+						return editedItem ?? existingItem ?? {};
+					} else {
+						return existingItem ?? {};
+					}
 				};
 			}
 
@@ -331,18 +370,28 @@ export default defineComponent({
 
 				if (pkField === null) return;
 
-				const response = await api.get(`/items/${translationsCollection.value}`, {
-					params: {
-						fields: '*',
-						limit: -1,
-						filter: {
-							[pkField]: {
-								_in: props.value,
+				loading.value = true;
+
+				try {
+					const response = await api.get(`/items/${translationsCollection.value}`, {
+						params: {
+							fields: '*',
+							limit: -1,
+							filter: {
+								[pkField]: {
+									_in: props.value,
+								},
 							},
 						},
-					},
-				});
-				items.value = response.data.data;
+					});
+
+					items.value = response.data.data;
+				} catch (err) {
+					error.value = err;
+					unexpectedError(err);
+				} finally {
+					loading.value = false;
+				}
 			}
 
 			function updateValue(edits: Record<string, any>, lang: string) {
@@ -394,20 +443,16 @@ export default defineComponent({
 
 				emit('input', copyValue);
 			}
-
-			return { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial };
 		}
 	},
 });
 </script>
-<style lang="scss" scoped>
-.translations {
-	display: flex;
-	gap: 24px;
 
-	& > div {
-		flex: 1;
-	}
+<style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
+.translations {
+	@include form-grid;
 
 	.v-form {
 		--form-vertical-gap: 32px;
