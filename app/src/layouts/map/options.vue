@@ -67,7 +67,7 @@ import { defineComponent, PropType, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { GeometryOptions, Item } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	inheritAttrs: false,

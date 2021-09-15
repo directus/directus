@@ -1,7 +1,7 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { formatISO, parse, format } from 'date-fns';
-import useItems from '@/composables/use-items';
+import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
@@ -21,7 +21,7 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import CalendarSidebar from './sidebar.vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { LayoutOptions } from './types';
 
 export default defineLayout<LayoutOptions>({

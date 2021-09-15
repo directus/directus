@@ -1,5 +1,5 @@
 import { useFieldsStore } from '@/stores/';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 
 /**
  * Adds the primary key field for any passed relational dot-notation field to the array of fields.

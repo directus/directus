@@ -1,7 +1,9 @@
-export default function moveInArray<T = any>(array: T[], fromIndex: number, toIndex: number): T[] {
+export function moveInArray<T = any>(array: T[], fromIndex: number, toIndex: number): T[] {
 	const item = array[fromIndex];
 	const length = array.length;
 	const diff = fromIndex - toIndex;
+
+	if (item === undefined) return array;
 
 	if (diff > 0) {
 		// move left

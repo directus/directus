@@ -9,3 +9,5 @@ export * from './pluralize';
 export * from './to-array';
 export * from './validate-extension-manifest';
 export * from './validate-payload';
+export * from './move-in-array';
+export * from './filters-to-query';

@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { computed, Ref, ref, watch } from 'vue';
 

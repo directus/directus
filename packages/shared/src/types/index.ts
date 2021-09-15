@@ -15,3 +15,4 @@ export * from './permissions';
 export * from './presets';
 export * from './settings';
 export * from './users';
+export * from './collection';

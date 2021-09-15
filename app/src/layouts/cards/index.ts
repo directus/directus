@@ -7,13 +7,13 @@ import CardsActions from './actions.vue';
 import { useI18n } from 'vue-i18n';
 import { toRefs, inject, computed, ref } from 'vue';
 import useCollection from '@/composables/use-collection/';
-import useItems from '@/composables/use-items';
+import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
 
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { clone } from 'lodash';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({

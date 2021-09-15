@@ -57,6 +57,7 @@
 		"lodash": "4.17.21",
 		"pino": "*",
 		"vue": "3",
+		"vue-i18n": "9",
 		"vue-router": "4"
 	},
 	"devDependencies": {

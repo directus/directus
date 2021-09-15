@@ -10,11 +10,11 @@ import { toRefs, computed, ref, watch, Ref } from 'vue';
 import { toGeoJSON } from '@/utils/geometry';
 import { layers } from './style';
 import { useRouter } from 'vue-router';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 import { Filter } from '@directus/shared/types';
 import useCollection from '@/composables/use-collection/';
-import useItems from '@/composables/use-items';
+import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
 
