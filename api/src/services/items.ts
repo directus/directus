@@ -108,14 +108,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const hooksResult =
 				opts?.emitEvents !== false
 					? (
-							await emitter.emitFilter(`${this.eventScope}.create`, payload, {
-								accountability: this.accountability,
-								collection: this.collection,
-								item: null,
+							await emitter.emitFilter(
+								`${this.eventScope}.create`,
 								payload,
-								schema: this.schema,
-								database: trx,
-							})
+								{
+									collection: this.collection,
+								},
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								}
+							)
 					  ).filter((val) => val)
 					: [];
 
@@ -206,16 +210,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(`${this.eventScope}.create`, {
-				accountability: this.accountability,
-				collection: this.collection,
-				item: primaryKey,
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.create`,
+				{
+					payload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
@@ -286,14 +295,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new ForbiddenException();
 		}
 
-		emitter.emitAction(`${this.eventScope}.read`, {
-			accountability: this.accountability,
-			collection: this.collection,
-			query,
-			payload: records,
-			schema: this.schema,
-			database: getDatabase(),
-		});
+		emitter.emitAction(
+			`${this.eventScope}.read`,
+			{
+				payload: records,
+				query,
+				collection: this.collection,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return records as Item[];
 	}
@@ -391,14 +405,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const hooksResult =
 			opts?.emitEvents !== false
 				? (
-						await emitter.emitFilter(`${this.eventScope}.update`, payload, {
-							accountability: this.accountability,
-							collection: this.collection,
-							item: keys,
+						await emitter.emitFilter(
+							`${this.eventScope}.update`,
 							payload,
-							schema: this.schema,
-							database: this.knex,
-						})
+							{
+								keys,
+								collection: this.collection,
+							},
+							{
+								database: this.knex,
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+						)
 				  ).filter((val) => val)
 				: [];
 
@@ -513,16 +532,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(`${this.eventScope}.update`, {
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				payload,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.update`,
+				{
+					payload,
+					keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;
@@ -610,14 +634,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			await emitter.emitFilter(`${this.eventScope}.delete`, {
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				payload: null,
-				schema: this.schema,
-				database: this.knex,
-			});
+			await emitter.emitFilter(
+				`${this.eventScope}.delete`,
+				keys,
+				{
+					collection: this.collection,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -647,16 +675,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(`${this.eventScope}.delete`, {
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				payload: null,
-				schema: this.schema,
-				// This hook is called async. If we would pass the transaction here, the hook can be
-				// called after the transaction is done #5460
-				database: getDatabase(),
-			});
+			emitter.emitAction(
+				`${this.eventScope}.delete`,
+				{
+					payload: keys,
+					collection: this.collection,
+				},
+				{
+					// This hook is called async. If we would pass the transaction here, the hook can be
+					// called after the transaction is done #5460
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		}
 
 		return keys;

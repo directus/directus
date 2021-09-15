@@ -124,14 +124,19 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitter.emitAction('files.upload', {
-			accountability: this.accountability,
-			collection: this.collection,
-			item: primaryKey,
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'files.upload',
+			{
+				payload,
+				key: primaryKey,
+				collection: this.collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		return primaryKey;
 	}

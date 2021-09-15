@@ -21,7 +21,7 @@ import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import logger from './logger';
-import { HookConfig, EndpointConfig } from './types';
+import { HookConfig, EndpointConfig, FilterHandler, ActionHandler, InitHandler, ScheduleHandler } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
@@ -34,7 +34,6 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
-import { ListenerFn } from 'eventemitter2';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -56,9 +55,9 @@ class ExtensionManager {
 	private appExtensions: Partial<Record<AppExtensionType, string>> = {};
 
 	private apiHooks: (
-		| { type: 'filter'; path: string; event: string; handler: ListenerFn }
-		| { type: 'action'; path: string; event: string; handler: ListenerFn }
-		| { type: 'init'; path: string; event: string; handler: ListenerFn }
+		| { type: 'filter'; path: string; event: string; handler: FilterHandler }
+		| { type: 'action'; path: string; event: string; handler: ActionHandler }
+		| { type: 'init'; path: string; event: string; handler: InitHandler }
 		| { type: 'schedule'; path: string; task: ScheduledTask }
 	)[] = [];
 	private apiEndpoints: { path: string }[] = [];
@@ -225,7 +224,7 @@ class ExtensionManager {
 		const register = getModuleDefault(hookInstance);
 
 		const registerFunctions = {
-			filter: (event: string, handler: (...values: any[]) => any[]) => {
+			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
 				this.apiHooks.push({
@@ -235,7 +234,7 @@ class ExtensionManager {
 					handler,
 				});
 			},
-			action: (event: string, handler: (...values: any[]) => void) => {
+			action: (event: string, handler: ActionHandler) => {
 				emitter.onAction(event, handler);
 
 				this.apiHooks.push({
@@ -245,7 +244,7 @@ class ExtensionManager {
 					handler,
 				});
 			},
-			init: (event: string, handler: (...values: any[]) => void) => {
+			init: (event: string, handler: InitHandler) => {
 				emitter.onInit(event, handler);
 
 				this.apiHooks.push({
@@ -255,7 +254,7 @@ class ExtensionManager {
 					handler,
 				});
 			},
-			schedule: (cron: string, handler: () => void) => {
+			schedule: (cron: string, handler: ScheduleHandler) => {
 				if (validate(cron)) {
 					const task = schedule(cron, async () => {
 						if (this.isScheduleHookEnabled) {
