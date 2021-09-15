@@ -98,7 +98,7 @@ export default defineComponent({
 	.ctx-arrow {
 		position: absolute;
 		top: -3px;
-		right: -20px;
+		right: -24px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);

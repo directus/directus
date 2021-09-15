@@ -1,14 +1,14 @@
 <template>
-	<div class="translations" :class="{ split: sideBySide }">
+	<div class="translations" :class="{ split: splitView }">
 		<div class="primary">
 			<language-select v-model="firstLang" :items="languageOptions">
 				<template #append>
 					<v-icon
-						v-if="!sideBySide && width > 960"
+						v-if="['fill', 'full'].includes(width) && !splitView"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="flip"
 						clickable
-						@click.stop="sideBySide = true"
+						@click.stop="splitView = true"
 					/>
 				</template>
 			</language-select>
@@ -21,15 +21,15 @@
 			/>
 			<v-divider />
 		</div>
-		<div v-if="sideBySide" class="secondary">
+		<div v-if="splitView" class="secondary">
 			<language-select v-model="secondLang" :items="languageOptions" secondary>
 				<template #append>
 					<v-icon
-						v-if="sideBySide"
+						v-if="splitView"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="close"
 						clickable
-						@click.stop="sideBySide = !sideBySide"
+						@click.stop="splitView = !splitView"
 					/>
 				</template>
 			</language-select>
@@ -55,12 +55,7 @@ import api from '@/api';
 import { Relation } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual } from 'lodash';
-import useWindowSize from '@/composables/use-window-size';
 import { notEmpty } from '@/utils/is-empty';
-
-let sideBySide = ref(false);
-let firstLang = ref<string | number>();
-let secondLang = ref<string | number>();
 
 export default defineComponent({
 	components: { LanguageSelect },
@@ -85,6 +80,10 @@ export default defineComponent({
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
 		},
+		width: {
+			type: String,
+			required: true,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -93,21 +92,17 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
 
+		const splitView = ref(false);
+		const firstLang = ref<string | number>();
+		const secondLang = ref<string | number>();
+
 		const { info: collectionInfo } = useCollection(collection);
 
-		watch(sideBySide, (sideBySideEnabled) => {
+		watch(splitView, (splitViewEnabled) => {
 			const lang = languageOptions.value;
 
-			if (sideBySideEnabled && secondLang.value === firstLang.value) {
+			if (splitViewEnabled && secondLang.value === firstLang.value) {
 				secondLang.value = lang[0].value === firstLang.value ? lang[1].value : lang[0].value;
-			}
-		});
-
-		const { width } = useWindowSize();
-
-		watch(width, (newWidth) => {
-			if (sideBySide.value && newWidth <= 960) {
-				sideBySide.value = false;
 			}
 		});
 
@@ -132,7 +127,7 @@ export default defineComponent({
 
 		return {
 			collectionInfo,
-			sideBySide,
+			splitView,
 			firstLang,
 			secondLang,
 			t,
@@ -153,7 +148,6 @@ export default defineComponent({
 			relationsStore,
 			firstItemInitial,
 			secondItemInitial,
-			width,
 		};
 
 		function useRelations() {
