@@ -22,10 +22,13 @@
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+module_bar: Modulleiste
+tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
 item_revision: Element Revision
+enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
@@ -56,6 +59,7 @@ create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 email_examples: "admin{'@'}beispiel.de, benutzer{'@'}beispiel.de..."
+url_example: "https://example.com"
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
@@ -145,6 +149,9 @@ fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
+revision_post_update: So sieht dieses Element nach dem Update aus.
+changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
+no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -211,6 +218,8 @@ add_m2m_to_collection: 'n:m zu "{collection}" hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
+add_link: Verknüpfung hinzufügen
+custom_link: Benutzerdefinierte Verknüpfung
 default_value: Standardwert
 standard_field: Standardfeld
 single_file: Eine Datei
@@ -382,6 +391,7 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
+no_webhooks_copy: Es wurden noch keine Webhooks erstellt. Beginnen Sie.
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -729,6 +739,22 @@ collections: Sammlungen
 singleton: Einzelnes Element
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
+directus_collection:
+  directus_activity: Verantwortungsprotokoll für alle Ereignisse
+  directus_collections: Weitere Konfiguration und Metadaten
+  directus_fields: Weitere Felder und Metadaten
+  directus_files: Metadaten für alle verwalteten Anlagen
+  directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
+  directus_migrations: Welche Version der Datenbank verwenden Sie
+  directus_permissions: Zugriffsrechte für jede Rolle
+  directus_presets: Voreinstellungen für Sammlung und Lesezeichen
+  directus_relations: Relationen und Metadaten
+  directus_revisions: Speicherabzug für alle Aktivitäten
+  directus_roles: Berechtigungsgruppen für Systembenutzer
+  directus_sessions: Sitzungsinformation
+  directus_settings: Projektkonfiguration
+  directus_users: Systembenutzer für die Plattform
+  directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -959,6 +985,7 @@ field_options:
     actions_delete: Löschen
     actions_login: Login
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
+no_value: Kein Wert
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern
 save_current_user_id: Aktuelle Benutzer-ID speichern
@@ -1037,6 +1064,7 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1247,6 +1275,8 @@ interfaces:
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
+    toggle_split_view: Teil-Ansicht umschalten
+    language_field: Sprachfeld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1402,3 +1432,5 @@ layouts:
     invalid_geometry: Ungültige Geometrie
     auto_location_filter: Daten immer filtern, um Grenzen anzuzeigen
     search_this_area: Diesen Bereich durchsuchen
+    clear_data_filter: Datenfilter löschen
+    clear_location_filter: Standortfilter löschen

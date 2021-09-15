@@ -7,9 +7,17 @@
 
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
-import { DeepPartial, DisplayConfig, Field, InterfaceConfig, Item, LocalType } from '@directus/shared/types';
+import {
+	DeepPartial,
+	DisplayConfig,
+	Field,
+	InterfaceConfig,
+	Item,
+	LocalType,
+	Collection,
+	Relation,
+} from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Collection, Relation } from '@/types';
 
 import { clone, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';

@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useCollection } from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { defineModule } from '@directus/shared/utils';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';

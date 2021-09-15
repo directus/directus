@@ -1,7 +1,7 @@
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getRelatedCollection from '@/utils/get-related-collection';
 import { ref } from 'vue';
 import options from './options.vue';
