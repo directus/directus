@@ -70,10 +70,9 @@
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
-			:selection="[]"
-			:filters="selectionFilters"
+			:selection="selectedPrimaryKeys"
 			multiple
-			@input="stageSelection"
+			@input="$emit('input', $event.length > 0 ? $event : null)"
 		/>
 	</div>
 </template>
@@ -157,7 +156,7 @@ export default defineComponent({
 
 		const { items, loading } = usePreview();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
 
 		const { createAllowed, updateAllowed } = usePermissions();
@@ -172,12 +171,11 @@ export default defineComponent({
 			editsAtStart,
 			stageEdits,
 			cancelEdit,
-			stageSelection,
 			selectModalActive,
 			deleteItem,
 			items,
 			sortItems,
-			selectionFilters,
+			selectedPrimaryKeys,
 			sort,
 			sortedItems,
 			get,
@@ -434,32 +432,7 @@ export default defineComponent({
 				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
 			});
 
-			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = relatedPrimaryKeyField.value?.field;
-
-				if (selectedPrimaryKeys.value.length === 0) return [];
-
-				const filter: Filter = {
-					key: 'selection',
-					field: pkField,
-					operator: 'nin',
-					value: selectedPrimaryKeys.value.join(','),
-					locked: true,
-				};
-
-				return [filter];
-			});
-
-			return { stageSelection, selectModalActive, selectionFilters };
-
-			function stageSelection(newSelection: (number | string)[]) {
-				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
-
-				const newVal = [...selection, ...(props.value || [])];
-
-				if (newVal.length === 0) emit('input', null);
-				else emit('input', newVal);
-			}
+			return { selectModalActive, selectedPrimaryKeys };
 		}
 
 		function getDefaultFields(): string[] {
