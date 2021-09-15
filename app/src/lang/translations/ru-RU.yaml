@@ -22,10 +22,13 @@
 published: Опубликовано
 draft: Черновик
 archived: В архиве
+module_bar: Панель модулей
+tile_size: Размер тайла
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
 item_revision: Редакция
+enter_a_name: Введите название...
 duplicate_field: Клонировать поле
 half_width: Полширины
 full_width: Вся ширина
@@ -56,6 +59,7 @@ create_user: Создать пользователя
 create_webhook: Создать веб-хук
 invite_users: Пригласить пользователей
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Пригласить
 email_already_invited: На адрес "{email}" уже было отправлено приглашение
 emails: Email-адреса
@@ -214,6 +218,8 @@ add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
 choose_a_type: Выберите Тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
+add_link: Добавить ссылку
+custom_link: Пользовательская ссылка
 default_value: Значение По умолчанию
 standard_field: Стандартное Поле
 single_file: Один Файл
@@ -1058,6 +1064,7 @@ require_value_to_be_set: Требовать установки значения
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
