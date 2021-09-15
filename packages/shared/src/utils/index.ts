@@ -11,3 +11,5 @@ export * from './validate-extension-manifest';
 export * from './validate-payload';
 export * from './move-in-array';
 export * from './filters-to-query';
+export * from './get-fields-from-template';
+export * from './get-relation-type';

@@ -15,9 +15,9 @@ import {
 	Item,
 	LocalType,
 	Collection,
+	Relation,
 } from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
 
 import { clone, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';

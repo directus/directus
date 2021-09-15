@@ -40,10 +40,10 @@
 import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { useRelationsStore, useFieldsStore } from '@/stores/';
 import api from '@/api';
-import { Relation } from '@/types';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { Relation } from '@directus/shared/types';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
-import { useCollection } from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { isPlainObject } from 'lodash';
 

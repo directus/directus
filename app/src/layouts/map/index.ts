@@ -13,9 +13,9 @@ import { useRouter } from 'vue-router';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 import { Filter } from '@directus/shared/types';
-import useCollection from '@/composables/use-collection/';
+import useCollection from '@directus/shared/composables/';
 import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Field, GeometryFormat, GeometryOptions } from '@directus/shared/types';
 
 import { cloneDeep, merge } from 'lodash';

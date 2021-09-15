@@ -4,7 +4,7 @@ import { formatISO, parse, format } from 'date-fns';
 import { useItems } from '@directus/shared/composables';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
