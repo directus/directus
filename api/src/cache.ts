@@ -16,7 +16,7 @@ export function getCache(): { cache: Keyv | null; schemaCache: Keyv | null } {
 	}
 
 	if (env.CACHE_SCHEMA !== false && schemaCache === null) {
-		schemaCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined);
+		schemaCache = getKeyvInstance(typeof env.CACHE_SCHEMA === 'string' ? ms(env.CACHE_SCHEMA) : undefined, '_schema');
 		schemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
@@ -29,21 +29,25 @@ export async function flushCaches(): Promise<void> {
 	await cache?.clear();
 }
 
-function getKeyvInstance(ttl: number | undefined): Keyv {
+function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
 	switch (env.CACHE_STORE) {
 		case 'redis':
-			return new Keyv(getConfig('redis', ttl));
+			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
 		case 'memcache':
-			return new Keyv(getConfig('memcache', ttl));
+			return new Keyv(getConfig('memcache', ttl, namespaceSuffix));
 		case 'memory':
 		default:
-			return new Keyv(getConfig('memory', ttl));
+			return new Keyv(getConfig('memory', ttl, namespaceSuffix));
 	}
 }
 
-function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory', ttl: number | undefined): Options<any> {
+function getConfig(
+	store: 'memory' | 'redis' | 'memcache' = 'memory',
+	ttl: number | undefined,
+	namespaceSuffix = ''
+): Options<any> {
 	const config: Options<any> = {
-		namespace: env.CACHE_NAMESPACE,
+		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
 		ttl,
 	};
 
