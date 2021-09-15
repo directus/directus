@@ -60,6 +60,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .toggle {
+	--v-icon-color: var(--primary);
+	--v-icon-color-hover: var(--primary-150);
+
 	display: flex;
 	align-items: center;
 	width: 100%;
@@ -87,21 +90,16 @@ export default defineComponent({
 }
 
 .v-icon {
-	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--primary-150);
-
 	margin-left: 6px;
 }
 
 .secondary {
 	.toggle {
-		color: var(--blue);
-		background-color: var(--blue-alt);
-	}
-
-	.v-icon {
 		--v-icon-color: var(--blue);
 		--v-icon-color-hover: var(--blue-150);
+
+		color: var(--blue);
+		background-color: var(--blue-alt);
 	}
 }
 
