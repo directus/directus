@@ -8,4 +8,4 @@ export {
 	getFieldsFromTemplate,
 	getRelationType,
 } from '@directus/shared/utils';
-export { useStores, useApi, useCollection, useSync, useFilterFields, useItems } from '@directus/shared/composables';
+export { useStores, useApi, useSync, useCollection, useItems, useFilterFields } from '@directus/shared/composables';
