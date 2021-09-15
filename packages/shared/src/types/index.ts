@@ -14,4 +14,5 @@ export * from './modules';
 export * from './panels';
 export * from './permissions';
 export * from './presets';
+export * from './settings';
 export * from './users';

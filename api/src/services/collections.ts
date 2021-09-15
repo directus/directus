@@ -16,7 +16,7 @@ import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
 export type RawCollection = {
 	collection: string;
 	fields?: RawField[];
-	meta?: Partial<CollectionMeta>;
+	meta?: Partial<CollectionMeta> | null;
 };
 
 export class CollectionsService {
