@@ -6,28 +6,33 @@
 		handle=".drag-handle"
 		item-key="id"
 		tag="ul"
+		:animation="150"
+		:invert-swap="true"
 		class="group"
 		@change="$emit('change', $event)"
 	>
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="element.type === 'logic'" class="node logic">
-					<div class="header">
+					<div class="header" @mouseenter="enter(index)" @mouseleave="leave(index)">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
-						<div
-							v-tooltip="t('interfaces.filter.change_value')"
-							class="logic-type"
-							:class="{ blue: element.name === '_or' }"
-						>
-							<span class="key" @click="toggleLogic(index)">
+						<div class="logic-type" :class="{ blue: element.name === '_or' }">
+							<span v-tooltip="t('interfaces.filter.change_value')" class="key" @click="toggleLogic(index)">
 								{{ element.name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any') }}
 							</span>
 							<span class="text">{{ t('interfaces.filter.of_the_following') }}</span>
 						</div>
-						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
+						<transition-expand x-axis>
+							<v-icon
+								v-if="hover === index"
+								v-tooltip="t('interfaces.filter.remove_element')"
+								class="delete"
+								name="close"
+								@click="$emit('remove-node', [index])"
+							></v-icon>
+						</transition-expand>
 					</div>
 					<nested-draggable
-						v-if="element.type === 'logic'"
 						:tree="element.values"
 						:collection="collection"
 						:depth="depth + 1"
@@ -37,10 +42,10 @@
 					/>
 				</div>
 				<div v-else block class="node field">
-					<div class="header">
+					<div class="header" @mouseenter="enter(index)" @mouseleave="leave(index)">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
 						<v-select
-							v-tooltip="t('interfaces.filter.change_value')"
+							v-tooltip="element.name"
 							inline
 							class="name"
 							:full-width="false"
@@ -50,7 +55,7 @@
 							item-value="key"
 							:mandatory="false"
 							:groups-clickable="true"
-							@group-clicked="loadFieldRelations($event.value, 1)"
+							@group-toggle="loadFieldRelations($event.value, 1)"
 							@update:modelValue="updateField($event, index)"
 						/>
 						<v-select
@@ -62,7 +67,15 @@
 							@update:modelValue="updateComparator(index, $event)"
 						></v-select>
 						<field-input :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
-						<v-icon class="delete" name="close" @click="$emit('remove-node', [index])"></v-icon>
+						<transition-expand x-axis>
+							<v-icon
+								v-show="hover === index"
+								v-tooltip="t('interfaces.filter.remove_element')"
+								class="delete"
+								name="close"
+								@click="$emit('remove-node', [index])"
+							></v-icon>
+						</transition-expand>
 					</div>
 				</div>
 			</li>
@@ -72,7 +85,7 @@
 
 <script lang="ts">
 import useFieldTree from '@/composables/use-field-tree';
-import { defineComponent, PropType, toRefs, watch } from 'vue';
+import { defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import FieldInput from './field-input.vue';
 import Draggable from 'vuedraggable';
 import { FilterOperators, FilterTree, Field } from './system-filter.vue';
@@ -107,6 +120,7 @@ export default defineComponent({
 		const { treeList: fieldOptions, loadFieldRelations } = useFieldTree(collection);
 		const fieldsStore = useFieldsStore();
 		const { t } = useI18n();
+		const hover = ref(-1);
 
 		watch(tree, (newTree) => {
 			newTree.forEach((field) => {
@@ -125,7 +139,18 @@ export default defineComponent({
 			updateNode,
 			toggleLogic,
 			loadFieldRelations,
+			enter,
+			leave,
+			hover,
 		};
+
+		function enter(index: number) {
+			hover.value = index;
+		}
+
+		function leave(index: number) {
+			hover.value = -1;
+		}
 
 		function toggleLogic(index: number) {
 			if (tree.value[index].name === '_and') {
@@ -235,17 +260,17 @@ export default defineComponent({
 	}
 
 	.delete {
-		display: none;
+		// display: none;
 		margin-left: 8px;
 		color: var(--danger);
 		cursor: pointer;
 	}
 
-	&:hover {
-		.delete {
-			display: block;
-		}
-	}
+	// &:hover {
+	// 	.delete {
+	// 		display: block;
+	// 	}
+	// }
 
 	.drag-handle {
 		margin-right: 6px;

@@ -52,6 +52,7 @@ export default function useFieldTree(
 				key,
 				field: fieldName,
 				children: children.length > 0 ? children : undefined,
+				selectable: true,
 			};
 		});
 	}

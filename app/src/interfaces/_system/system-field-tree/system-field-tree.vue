@@ -14,7 +14,7 @@
 			item-value="key"
 			value-combining="exclusive"
 			@update:model-value="$emit('input', $event)"
-			@group-clicked="loadFieldRelations($event.value, 1)"
+			@group-toggle="loadFieldRelations($event.value, 1)"
 		/>
 	</div>
 </template>

@@ -24,7 +24,7 @@
 			@input="value = $event"
 		></input-component>
 	</template>
-	<template v-else-if="['_in', '_nin'].includes(field.comparator)">
+	<div v-else-if="['_in', '_nin'].includes(field.comparator)" class="list">
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
@@ -32,12 +32,8 @@
 				:value="val"
 				@input="setValueAt(index, $event)"
 			></input-component>
-			<v-icon name="delete" @click="remove(index)"></v-icon>
 		</div>
-		<v-icon class="add-value" name="add" @click="value = [...value, null]">
-			{{ t('interfaces.filter.add_value') }}
-		</v-icon>
-	</template>
+	</div>
 	<template v-else-if="['_between', '_nbetween'].includes(field.comparator)" class="between">
 		<input-component
 			:is="interfaceType"
@@ -110,11 +106,20 @@ export default defineComponent({
 
 		const value = computed<any | any[]>({
 			get() {
-				return props.field.value;
+				if (['_in', '_nin'].includes(props.field.comparator)) {
+					return [...(props.field.value as string[]).filter((val) => val !== null && val !== ''), null];
+				} else {
+					return props.field.value;
+				}
 			},
 			set(newVal) {
 				const newField = clone(props.field);
-				newField.value = newVal;
+
+				if (['_in', '_nin'].includes(props.field.comparator)) {
+					newField.value = (newVal as string[]).filter((val) => val !== null && val !== '');
+				} else {
+					newField.value = newVal;
+				}
 				emit('update:field', newField);
 			},
 		});
@@ -125,11 +130,7 @@ export default defineComponent({
 			value.value = newArray;
 		}
 
-		return { t, fieldInfo, interfaceType, remove, value, setValueAt };
-
-		function remove(index: number) {
-			value.value = value.value.filter((v: any, i: number) => i !== index);
-		}
+		return { t, fieldInfo, interfaceType, value, setValueAt };
 	},
 });
 </script>
@@ -151,8 +152,13 @@ export default defineComponent({
 	}
 }
 
-.add-value {
-	color: var(--primary);
+.list {
+	display: flex;
+
+	.value:not(:last-child)::after {
+		margin: 0 8px 0 -6px;
+		content: ',';
+	}
 }
 
 .and {

@@ -1,5 +1,5 @@
 <template>
-	<v-list-group :clickable="clickable" :value="item.value">
+	<v-list-group :clickable="item.selectable" :value="item.value">
 		<template #activator>
 			<select-list-item
 				:model-value="modelValue"
@@ -17,7 +17,6 @@
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
-				:clickable="clickable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
@@ -56,10 +55,6 @@ export default defineComponent({
 		allowOther: {
 			type: Boolean,
 			required: true,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
