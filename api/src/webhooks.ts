@@ -1,12 +1,11 @@
 import axios from 'axios';
-import { ListenerFn } from 'eventemitter2';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { Webhook } from './types';
+import { ActionHandler, Webhook } from './types';
 import { pick } from 'lodash';
 
-let registered: { event: string; handler: ListenerFn }[] = [];
+let registered: { event: string; handler: ActionHandler }[] = [];
 
 export async function register(): Promise<void> {
 	unregister();
@@ -40,10 +39,10 @@ export function unregister(): void {
 	registered = [];
 }
 
-function createHandler(webhook: Webhook): ListenerFn {
+function createHandler(webhook: Webhook): ActionHandler {
 	return async (data) => {
 		const collectionAllowList = webhook.collections.split(',');
-		if (collectionAllowList.includes('*') === false && collectionAllowList.includes(data.collection) === false) return;
+		if (collectionAllowList.includes('*') === false && collectionAllowList.includes(data!.collection) === false) return;
 
 		const webhookPayload = pick(data, [
 			'event',

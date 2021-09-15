@@ -67,28 +67,38 @@ export class AuthenticationService {
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedPayload = await emitter.emitFilter('auth.login', payload, {
-			schema: this.schema,
-			payload: payload,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const updatedPayload = await emitter.emitFilter(
+			'auth.login',
+			payload,
+			{
+				status: 'pending',
+				user: user?.id,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		if (updatedPayload) {
 			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitter.emitAction('auth.login', payload, {
-				schema: this.schema,
-				payload: payload,
-				accountability: this.accountability,
-				status,
-				user: user?.id,
-				database: this.knex,
-			});
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: payload,
+					status,
+					user: user?.id,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				}
+			);
 		};
 
 		if (user?.status !== 'active') {
@@ -157,14 +167,19 @@ export class AuthenticationService {
 			id: user.id,
 		};
 
-		const customClaims = await emitter.emitFilter('auth.jwt', tokenPayload, {
-			schema: this.schema,
-			payload: tokenPayload,
-			accountability: this.accountability,
-			status: 'pending',
-			user: user?.id,
-			database: this.knex,
-		});
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		if (customClaims) {
 			tokenPayload =

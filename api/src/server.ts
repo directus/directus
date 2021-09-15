@@ -67,7 +67,11 @@ export async function createServer(): Promise<http.Server> {
 				duration: elapsedMilliseconds.toFixed(),
 			};
 
-			emitter.emitAction('response', info);
+			emitter.emitAction('response', info, {
+				database: getDatabase(),
+				schema: req.schema,
+				accountability: req.accountability ?? null,
+			});
 		});
 
 		res.once('finish', complete.bind(null, true));
@@ -100,7 +104,15 @@ export async function createServer(): Promise<http.Server> {
 	}
 
 	async function onShutdown() {
-		emitter.emitAction('server.stop');
+		emitter.emitAction(
+			'server.stop',
+			{},
+			{
+				database: getDatabase(),
+				schema: null,
+				accountability: null,
+			}
+		);
 
 		if (env.NODE_ENV !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
@@ -127,7 +139,15 @@ export async function startServer(): Promise<void> {
 
 			logger.info(`Server started at http://localhost:${port}`);
 
-			emitter.emitAction('server.start');
+			emitter.emitAction(
+				'server.start',
+				{},
+				{
+					database: getDatabase(),
+					schema: null,
+					accountability: null,
+				}
+			);
 		})
 		.once('error', (err: any) => {
 			if (err?.code === 'EADDRINUSE') {

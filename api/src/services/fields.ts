@@ -325,14 +325,18 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		await emitter.emitFilter('fields.delete', {
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		await emitter.emitFilter(
+			'fields.delete',
+			[field],
+			{
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 
 		await this.knex.transaction(async (trx) => {
 			const relations = this.schema.relations.filter((relation) => {
@@ -423,14 +427,18 @@ export class FieldsService {
 			await this.schemaCache.clear();
 		}
 
-		emitter.emitAction('fields.delete', {
-			accountability: this.accountability,
-			collection: collection,
-			item: field,
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		emitter.emitAction(
+			'fields.delete',
+			{
+				payload: [field],
+				collection: collection,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {

@@ -19,6 +19,7 @@ import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
 import { createLocalAuthRouter } from '../auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
+import getDatabase from '../database';
 
 const router = Router();
 
@@ -215,24 +216,34 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		const hookPayload = {
+		emitter.emitAction(
+			`oauth.${req.params.provider}.redirect`,
+			{
+				provider: req.params.provider,
+				redirect: req.query?.redirect,
+			},
+			{
+				database: getDatabase(),
+				schema: req.schema,
+				accountability: req.accountability ?? null,
+			}
+		);
+
+		const filterPayload = {
 			provider: req.params.provider,
 			redirect: req.query?.redirect,
 		};
 
-		emitter.emitAction(`oauth.${req.params.provider}.redirect`, {
-			schema: req.schema,
-			payload: hookPayload,
-			accountability: req.accountability,
-			user: null,
-		});
-
-		await emitter.emitFilter(`oauth.${req.params.provider}.redirect`, {
-			schema: req.schema,
-			payload: hookPayload,
-			accountability: req.accountability,
-			user: null,
-		});
+		await emitter.emitFilter(
+			`oauth.${req.params.provider}.redirect`,
+			filterPayload,
+			{},
+			{
+				database: getDatabase(),
+				schema: req.schema,
+				accountability: req.accountability ?? null,
+			}
+		);
 
 		next();
 	})
@@ -258,24 +269,32 @@ router.get(
 
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
-		const hookPayload = req.session.grant.response;
-
-		await emitter.emitFilter(`oauth.${req.params.provider}.login`, hookPayload, {
-			schema: req.schema,
-			payload: hookPayload,
-			accountability: accountability,
-			status: 'pending',
-			user: null,
-		});
+		await emitter.emitFilter(
+			`oauth.${req.params.provider}.login`,
+			req.session.grant.response,
+			{
+				status: 'pending',
+			},
+			{
+				database: getDatabase(),
+				schema: req.schema,
+				accountability: req.accountability ?? null,
+			}
+		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitter.emitAction(`oauth.${req.params.provider}.login`, hookPayload, {
-				schema: req.schema,
-				payload: hookPayload,
-				accountability: accountability,
-				status,
-				user: null,
-			});
+			emitter.emitAction(
+				`oauth.${req.params.provider}.login`,
+				{
+					response: req.session.grant.response,
+					status,
+				},
+				{
+					database: getDatabase(),
+					schema: req.schema,
+					accountability: accountability,
+				}
+			);
 		};
 
 		try {
