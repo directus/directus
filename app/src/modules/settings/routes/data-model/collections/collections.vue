@@ -100,11 +100,12 @@ import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
+import { translate } from '@/utils/translate-object-values';
 
 const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 
@@ -201,7 +202,7 @@ export default defineComponent({
 				}
 
 				if (activeTypes.value.includes('system')) {
-					items.push(system.value);
+					items.push(translate(system.value));
 				}
 
 				return items.flat();

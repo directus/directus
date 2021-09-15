@@ -102,7 +102,7 @@ export default defineComponent({
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);
-		border-bottom: 2px solid var(--border-subdued);
+		border-bottom: var(--border-width) solid var(--border-subdued);
 
 		&:last-child {
 			padding: 0 12px 0 12px;

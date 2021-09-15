@@ -64,7 +64,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, provide, toRefs, computed } from 'vue';
-import ModuleBar from './components/module-bar/';
+import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
@@ -207,7 +207,6 @@ export default defineComponent({
 		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; // (60 - 4 - 24) / 2
-		--form-vertical-gap: 52px;
 
 		position: relative;
 		flex-grow: 1;
@@ -239,7 +238,7 @@ export default defineComponent({
 		top: 0;
 		right: 0;
 		z-index: 30;
-		width: 284px;
+		width: 280px;
 		height: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
@@ -257,22 +256,22 @@ export default defineComponent({
 		.flex-container {
 			display: flex;
 			flex-direction: column;
-			width: 284px;
+			width: 280px;
 			height: 100%;
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 64px));
+			transform: translateX(calc(100% - 60px));
 		}
 
 		@media (min-width: 1260px) {
 			position: relative;
-			flex-basis: 64px;
+			flex-basis: 60px;
 			flex-shrink: 0;
 			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 
 			&.is-open {
-				flex-basis: 284px;
+				flex-basis: 280px;
 			}
 		}
 	}

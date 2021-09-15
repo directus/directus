@@ -7,5 +7,4 @@ export type Permission = {
 	validation: Record<string, any> | null;
 	presets: Record<string, any> | null;
 	fields: string[] | null;
-	limit: number | null;
 };
