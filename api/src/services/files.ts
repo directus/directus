@@ -124,12 +124,10 @@ export class FilesService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		emitter.emitAction(`files.upload`, {
-			event: `files.upload`,
+		emitter.emitAction('files.upload', {
 			accountability: this.accountability,
 			collection: this.collection,
 			item: primaryKey,
-			action: 'upload',
 			payload,
 			schema: this.schema,
 			database: this.knex,
