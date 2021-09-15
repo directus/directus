@@ -416,25 +416,11 @@ export default defineComponent({
 	}
 
 	.v-form {
-		margin-top: 32px;
-	}
-
-	:deep(.v-form) {
 		--form-vertical-gap: 32px;
+		--v-chip-color: var(--primary);
+		--v-chip-background-color: var(--primary-alt);
 
-		.field {
-			.label {
-				.v-chip {
-					color: var(--primary);
-					background-color: var(--primary-alt);
-					border: none;
-				}
-			}
-		}
-	}
-
-	&.split :deep(.v-form) .field {
-		grid-column: start/fill;
+		margin-top: 32px;
 	}
 
 	.v-divider {
@@ -448,13 +434,10 @@ export default defineComponent({
 	.secondary {
 		--v-divider-color: var(--blue-50);
 
-		:deep(.v-form) {
+		.v-form {
 			--primary: var(--blue);
-
-			.field .label .v-chip {
-				color: var(--blue);
-				background-color: var(--blue-alt);
-			}
+			--v-chip-color: var(--blue);
+			--v-chip-background-color: var(--blue-alt);
 		}
 	}
 }
