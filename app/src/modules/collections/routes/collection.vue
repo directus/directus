@@ -111,7 +111,7 @@
 							<v-button secondary @click="confirmDelete = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button class="action-delete" :loading="deleting" @click="batchDelete">
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
 								{{ t('delete_label') }}
 							</v-button>
 						</v-card-actions>
@@ -143,7 +143,7 @@
 							<v-button secondary @click="confirmArchive = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button class="action-archive" :loading="archiving" @click="archive">
+							<v-button kind="warning" :loading="archiving" @click="archive">
 								{{ t('archive') }}
 							</v-button>
 						</v-card-actions>

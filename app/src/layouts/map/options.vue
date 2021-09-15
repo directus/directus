@@ -34,30 +34,6 @@
 			:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"
 		/>
 	</div>
-
-	<!-- <div class="field">
-		<v-drawer
-			v-model="customLayerDrawerOpenWritable"
-			:title="t('layouts.map.custom_layers')"
-			@cancel="customLayerDrawerOpenWritable = false"
-		>
-			<template #activator="{ on }">
-				<v-button @click="on">{{ t('layouts.map.edit_custom_layers') }}</v-button>
-			</template>
-
-			<template #actions>
-				<v-button v-tooltip.bottom="t('reset')" icon rounded class="delete-action" @click="resetLayers">
-					<v-icon name="replay" />
-				</v-button>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="updateLayers">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-			<div class="custom-layers">
-				<interface-input-code v-model="customLayersWritable" language="json" type="json" :line-number="false" />
-			</div>
-		</v-drawer>
-	</div> -->
 </template>
 
 <script lang="ts">
