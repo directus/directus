@@ -2,7 +2,7 @@ import { Range, StatResponse } from '@directus/drive';
 import { Semaphore } from 'async-mutex';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
-import ObjectHash from 'object-hash';
+import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
 import getDatabase from '../database';
@@ -124,5 +124,5 @@ export class AssetsService {
 
 const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
-	return `__${ObjectHash.sha1(transforms)}`;
+	return `__${hash(transforms)}`;
 };
