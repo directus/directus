@@ -111,7 +111,7 @@
 							<v-button secondary @click="confirmDelete = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button kind="delete" :loading="deleting" @click="batchDelete">
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
 								{{ t('delete_label') }}
 							</v-button>
 						</v-card-actions>
