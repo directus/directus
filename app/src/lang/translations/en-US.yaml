@@ -1515,3 +1515,6 @@ panels:
   label:
     name: Label
     description: Show some text
+  list:
+    name: List
+    description: Filter and list fields from a collection
