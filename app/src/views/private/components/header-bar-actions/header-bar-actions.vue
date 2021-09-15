@@ -1,10 +1,10 @@
 <template>
 	<div class="actions" :class="{ active }">
-		<v-button class="expand" icon rounded secondary outlined @click="active = !active">
+		<v-button v-if="children?.length > 1" class="expand" icon rounded secondary outlined @click="active = !active">
 			<v-icon name="arrow_left" />
 		</v-button>
 
-		<div class="action-buttons">
+		<div ref="actionButtonsEl" class="action-buttons">
 			<v-button
 				v-if="showSidebarToggle"
 				class="sidebar-toggle"
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -34,8 +34,14 @@ export default defineComponent({
 	},
 	emits: ['toggle:sidebar'],
 	setup() {
+		const actionButtonsEl = ref<Element | null>(null);
 		const active = ref(false);
-		return { active };
+
+		const children = computed(() => {
+			return actionButtonsEl?.value?.children;
+		});
+
+		return { active, actionButtonsEl, children };
 	},
 });
 </script>
