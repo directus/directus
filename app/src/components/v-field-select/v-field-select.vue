@@ -13,7 +13,7 @@
 		class="v-field-select"
 	>
 		<template #item="{ element }">
-			<v-chip v-tooltip="element.field" class="field draggable" @click="removeField(element.field)">
+			<v-chip v-tooltip="element.field" clickable class="field draggable" @click="removeField(element.field)">
 				{{ element.name }}
 			</v-chip>
 		</template>

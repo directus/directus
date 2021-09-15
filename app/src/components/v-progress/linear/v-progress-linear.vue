@@ -1,14 +1,18 @@
 <template>
 	<div
 		class="v-progress-linear"
-		:class="{
-			absolute,
-			bottom,
-			fixed,
-			indeterminate,
-			rounded,
-			top,
-		}"
+		:class="[
+			{
+				absolute,
+				bottom,
+				fixed,
+				indeterminate,
+				rounded,
+				top,
+				colorful,
+			},
+			color,
+		]"
 		@animationiteration="$emit('animationiteration')"
 	>
 		<div
@@ -22,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -54,8 +58,21 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
+		colorful: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['animationiteration'],
+	setup(props) {
+		const color = computed(() => {
+			if (props.value <= 33) return 'danger';
+			if (props.value <= 66) return 'warning';
+			return 'success';
+		});
+
+		return { color };
+	},
 });
 </script>
 
@@ -115,6 +132,20 @@ body {
 
 	&.top {
 		top: 0;
+	}
+
+	&.colorful {
+		&.danger .inner {
+			background-color: var(--danger);
+		}
+
+		&.warning .inner {
+			background-color: var(--warning);
+		}
+
+		&.success .inner {
+			background-color: var(--success);
+		}
 	}
 }
 
