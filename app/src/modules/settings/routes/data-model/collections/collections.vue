@@ -100,7 +100,7 @@ import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';

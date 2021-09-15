@@ -89,8 +89,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
-import useCollection from '@/composables/use-collection';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { useCollection } from '@directus/shared/composables';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';

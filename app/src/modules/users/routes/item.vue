@@ -190,7 +190,7 @@ import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';

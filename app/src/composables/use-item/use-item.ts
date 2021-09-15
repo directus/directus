@@ -1,5 +1,5 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { APIError } from '@/types';

@@ -1,4 +1,4 @@
-import { Relation } from '@/types';
+import { Relation } from '../types';
 
 export function getRelationType(getRelationOptions: {
 	relation: Relation;

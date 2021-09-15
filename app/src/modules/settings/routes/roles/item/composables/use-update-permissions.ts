@@ -1,6 +1,5 @@
 import api from '@/api';
-import { Collection } from '@/types';
-import { Permission } from '@directus/shared/types';
+import { Permission, Collection } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { inject, ref, Ref } from 'vue';
 

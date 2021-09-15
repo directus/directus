@@ -55,7 +55,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Field } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

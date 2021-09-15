@@ -33,7 +33,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType, Ref } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({

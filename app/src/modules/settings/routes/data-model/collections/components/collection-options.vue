@@ -34,7 +34,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({

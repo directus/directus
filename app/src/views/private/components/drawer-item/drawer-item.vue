@@ -61,10 +61,9 @@ import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import FilePreview from '@/views/private/components/file-preview';
 
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useFieldsStore, useRelationsStore } from '@/stores';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';

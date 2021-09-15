@@ -198,7 +198,7 @@ import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';

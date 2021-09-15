@@ -259,7 +259,7 @@ import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useLayout } from '@/composables/use-layout';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
