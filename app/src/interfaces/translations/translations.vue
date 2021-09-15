@@ -59,8 +59,8 @@ import useWindowSize from '@/composables/use-window-size';
 import { notEmpty } from '@/utils/is-empty';
 
 let sideBySide = ref(false);
-let firstLang = ref('en-US');
-let secondLang = ref('en-US');
+let firstLang = ref<string | number>();
+let secondLang = ref<string | number>();
 
 export default defineComponent({
 	components: { LanguageSelect },
@@ -272,12 +272,21 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/items/${languagesCollection.value}`, {
 						params: {
-							fields: Array.of(fields),
+							fields: Array.from(fields),
 							limit: -1,
 							sort: props.languageField ?? languagesPrimaryKeyField.value,
 						},
 					});
+
 					languages.value = response.data.data;
+
+					if (!firstLang.value) {
+						firstLang.value = response.data.data?.[0]?.[languagesPrimaryKeyField.value];
+					}
+
+					if (!secondLang.value) {
+						secondLang.value = response.data.data?.[1]?.[languagesPrimaryKeyField.value];
+					}
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
@@ -307,7 +316,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			function computedItem(val: Ref<string>, mergeEdits = true) {
+			function computedItem(val: Ref<string | number | undefined>, mergeEdits = true) {
 				return () => {
 					const langField = translationsLanguageField.value;
 
