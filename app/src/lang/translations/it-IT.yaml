@@ -22,10 +22,13 @@
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+module_bar: Barra del modulo
+tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
 item_revision: Revisione elemento
+enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
@@ -56,6 +59,7 @@ create_user: Crea utente
 create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
@@ -214,6 +218,8 @@ add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
+add_link: Aggiungi link
+custom_link: Link personalizzato
 default_value: Valore predefinito
 standard_field: Campo Standard
 single_file: File Singolo
@@ -1058,6 +1064,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
