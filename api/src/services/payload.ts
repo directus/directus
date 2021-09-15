@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, isNil, template } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -13,6 +13,7 @@ import { ItemsService } from './items';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -116,21 +117,18 @@ export class PayloadService {
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
-		async 'storage-public-url'({ action, value, payload, accountability, specials }) {
-			// eslint-disable-next-line
-            console.log("storage-public-url, action? ", action);
-			// eslint-disable-next-line
-            console.log("storage_public_url, value? ", value);
-			// eslint-disable-next-line
-            console.log("storage_public_url, payload?", payload);
-			// eslint-disable-next-line
-            console.log("storage_public_url, accountability?", accountability);
-			// eslint-disable-next-line
-            console.log("storage_public_url, specials?", specials);
-
-			if (action !== 'read') return; // only transform on read
-			// else return the public url template for storage, and process the template string.
-			return 'yolo';
+		async 'storage-public-url'({ action, payload }) {
+			if (action !== 'read') return;
+			const storage_config = getConfigFromEnv(`STORAGE_${payload.storage.toUpperCase()}_`);
+			if (!storage_config.publicUrl) return;
+			try {
+				const urlTemplate = template(storage_config.publicUrl, {
+					interpolate: /{{([\s\S]+?)}}/g,
+				});
+				return urlTemplate(payload);
+			} catch {
+				return storage_config.publicUrl;
+			}
 		},
 	};
 

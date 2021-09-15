@@ -141,6 +141,4 @@ fields:
     width: full
     readonly: true
     interface: input
-    special:
-      - storage-public-url
-      - no-data
+    special: storage-public-url
