@@ -120,7 +120,7 @@ export class PayloadService {
 		async 'storage-public-url'({ action, payload }) {
 			if (action !== 'read') return;
 			const storage_config = getConfigFromEnv(`STORAGE_${payload.storage.toUpperCase()}_`);
-			if (!storage_config.publicUrl) return;
+			if (!storage_config.publicUrl) return `${process.env.PUBLIC_URL}/assets/${payload.id}`;
 			try {
 				const urlTemplate = template(storage_config.publicUrl, {
 					interpolate: /{{([\s\S]+?)}}/g,
