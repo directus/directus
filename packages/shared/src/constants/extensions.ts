@@ -1,4 +1,4 @@
-export const APP_SHARED_DEPS = ['@directus/extensions-sdk', 'vue', 'vue-router'];
+export const APP_SHARED_DEPS = ['@directus/extensions-sdk', 'vue', 'vue-router', 'vue-i18n'];
 export const API_SHARED_DEPS = ['@directus/extensions-sdk', 'axios'];
 
 export const APP_EXTENSION_TYPES = ['interface', 'display', 'layout', 'module'] as const;
