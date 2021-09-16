@@ -1064,6 +1064,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1274,6 +1275,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+    toggle_split_view: Attiva/disattiva la Split View
+    language_field: Campo lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
