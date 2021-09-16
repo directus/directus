@@ -2,6 +2,122 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.0.0-rc.93 (September 16, 2021)
+
+### :sparkles: New Features
+
+- **App**
+  - [#8012](https://github.com/directus/directus/pull/8012) Move module setup to Project Settings ([@rijkvanzanten](https://github.com/rijkvanzanten))
+- **API**
+  - [#7939](https://github.com/directus/directus/pull/7939) Add native schema migration capabilities ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7833](https://github.com/directus/directus/pull/7833) Add ability to customise database errors ([@smilledge](https://github.com/smilledge))
+
+### :rocket: Improvements
+
+- **API**
+  - [#7986](https://github.com/directus/directus/pull/7986) Align memcached configurations for multiple hosts ([@azrikahar](https://github.com/azrikahar))
+  - [#7923](https://github.com/directus/directus/pull/7923) add spatial_ref_sys as default for DB_EXCLUDE_TABLES ([@azrikahar](https://github.com/azrikahar))
+  - :warning: [#7830](https://github.com/directus/directus/pull/7830) Add custom JWTs support for static token ([@azrikahar](https://github.com/azrikahar))
+- **App**
+  - [#7974](https://github.com/directus/directus/pull/7974) Prevent v-input append slot from shrinking ([@azrikahar](https://github.com/azrikahar))
+  - [#7972](https://github.com/directus/directus/pull/7972) Various style updates ([@benhaynes](https://github.com/benhaynes))
+  - [#7964](https://github.com/directus/directus/pull/7964) Fix header icon for revisions drawer ([@azrikahar](https://github.com/azrikahar))
+  - [#7954](https://github.com/directus/directus/pull/7954) Add click event for user tooltip & navigate to the user's page ([@azrikahar](https://github.com/azrikahar))
+  - [#7948](https://github.com/directus/directus/pull/7948) Allow v-menu tooltip to stay active on hover ([@azrikahar](https://github.com/azrikahar))
+  - [#7925](https://github.com/directus/directus/pull/7925) Add possibility to translate Published, Draft and Archived strings ([@jrvidotti](https://github.com/jrvidotti))
+  - [#7913](https://github.com/directus/directus/pull/7913) Enable "Format JSON Value" to display 'geometry' ([@vidhav](https://github.com/vidhav))
+  - [#7902](https://github.com/directus/directus/pull/7902) remove auto-open feature for info sidebar ([@azrikahar](https://github.com/azrikahar))
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#8091](https://github.com/directus/directus/pull/8091) Fix saving issue on invalid conditional rule ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7987](https://github.com/directus/directus/pull/7987) fix revision detail refresh for "Save and Stay" ([@azrikahar](https://github.com/azrikahar))
+  - [#7966](https://github.com/directus/directus/pull/7966) Right icon hides for numeric input ([@alesvaupotic](https://github.com/alesvaupotic))
+  - [#7963](https://github.com/directus/directus/pull/7963) Respect & show correct icon/color for collection drawers ([@azrikahar](https://github.com/azrikahar))
+  - [#7950](https://github.com/directus/directus/pull/7950) Fixed mapbox-gl-draw css not being applied and moved logo ([@Oreilles](https://github.com/Oreilles))
+  - [#7947](https://github.com/directus/directus/pull/7947) Fix user-popover location when hovered in revisions ([@azrikahar](https://github.com/azrikahar))
+  - [#7918](https://github.com/directus/directus/pull/7918) Add tileSize parameter to basemap options ([@Oreilles](https://github.com/Oreilles))
+  - [#7917](https://github.com/directus/directus/pull/7917) Fix translation keys for system collections ([@azrikahar](https://github.com/azrikahar))
+  - [#7884](https://github.com/directus/directus/pull/7884) Add scope to v-tab-items ([@Nitwel](https://github.com/Nitwel))
+  - [#7864](https://github.com/directus/directus/pull/7864) Fix reverting to created revision ([@Nitwel](https://github.com/Nitwel))
+  - [#7858](https://github.com/directus/directus/pull/7858) Fix display labels translations ([@azrikahar](https://github.com/azrikahar))
+  - [#7840](https://github.com/directus/directus/pull/7840) Fix watcher loop and filters not being applied. ([@Oreilles](https://github.com/Oreilles))
+- **API**
+  - [#8056](https://github.com/directus/directus/pull/8056) Don't flush schema cache on content update ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7910](https://github.com/directus/directus/pull/7910) Fix the collections column in directus_webhooks being nullable ([@nickrum](https://github.com/nickrum))
+  - [#7883](https://github.com/directus/directus/pull/7883) Parse created arrays in parseFilter ([@Nitwel](https://github.com/Nitwel))
+  - [#7847](https://github.com/directus/directus/pull/7847) fix default of env var EMAIL_MAILGUN_HOST ([@mooori](https://github.com/mooori))
+- **Extensions**
+  - [#7978](https://github.com/directus/directus/pull/7978) Make type-only dependency versions of shared package less strict ([@nickrum](https://github.com/nickrum))
+- **drive**
+  - [#7976](https://github.com/directus/directus/pull/7976) Update AmazonWebServicesS3Storage.ts ([@aidenfoxx](https://github.com/aidenfoxx))
+- **Misc.**
+  - [#7965](https://github.com/directus/directus/pull/7965) Add missing words to Database Abstraction ([@alesvaupotic](https://github.com/alesvaupotic))
+  - [#7893](https://github.com/directus/directus/pull/7893) fix readme emoji ([@azrikahar](https://github.com/azrikahar))
+- **Docker**
+  - [#7892](https://github.com/directus/directus/pull/7892) fix readme filename in sync-dockerhub-readme.yml ([@azrikahar](https://github.com/azrikahar))
+
+### :memo: Documentation
+
+- [#8067](https://github.com/directus/directus/pull/8067) Make default values have consistent formatting ([@azrikahar](https://github.com/azrikahar))
+- [#8055](https://github.com/directus/directus/pull/8055) Fix broken anchor link to oAuth config section. ([@TonyLovesDevOps](https://github.com/TonyLovesDevOps))
+- [#8036](https://github.com/directus/directus/pull/8036) Fix URL ([@cstork](https://github.com/cstork))
+- [#8023](https://github.com/directus/directus/pull/8023) Update cli.md: Point to update/upgrade instructions ([@cstork](https://github.com/cstork))
+- [#7967](https://github.com/directus/directus/pull/7967) Update assets.md ([@alesvaupotic](https://github.com/alesvaupotic))
+- [#7965](https://github.com/directus/directus/pull/7965) Add missing words to Database Abstraction ([@alesvaupotic](https://github.com/alesvaupotic))
+- [#7915](https://github.com/directus/directus/pull/7915) Docs: update actions for file event ([@pgegenfurtner](https://github.com/pgegenfurtner))
+- [#7893](https://github.com/directus/directus/pull/7893) fix readme emoji ([@azrikahar](https://github.com/azrikahar))
+- [#7892](https://github.com/directus/directus/pull/7892) fix readme filename in sync-dockerhub-readme.yml ([@azrikahar](https://github.com/azrikahar))
+- [#7889](https://github.com/directus/directus/pull/7889) Add github action for syncing readme to Docker Hub ([@azrikahar](https://github.com/azrikahar))
+- [#7831](https://github.com/directus/directus/pull/7831) fix url format for Azure storage endpoint ([@azrikahar](https://github.com/azrikahar))
+- [#7821](https://github.com/directus/directus/pull/7821) fix minor typo in api-hooks.md ([@azrikahar](https://github.com/azrikahar))
+
+### :package: Dependency Updates
+
+- [#8070](https://github.com/directus/directus/pull/8070) Update dependency prettier to v2.4.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8063](https://github.com/directus/directus/pull/8063) Update dependency @types/lodash to v4.14.173 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8060](https://github.com/directus/directus/pull/8060) Update dependency @mapbox/mapbox-gl-geocoder to v4.7.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8050](https://github.com/directus/directus/pull/8050) Update dependency dompurify to v2.3.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8046](https://github.com/directus/directus/pull/8046) Update dependency @types/object-hash to v2.2.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8042](https://github.com/directus/directus/pull/8042) Update dependency directory-tree to v2.4.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8039](https://github.com/directus/directus/pull/8039) Update dependency sass to v1.41.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8025](https://github.com/directus/directus/pull/8025) Update dependency @types/sharp to v0.29.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8018](https://github.com/directus/directus/pull/8018) Update dependency stylelint-scss to v3.21.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8014](https://github.com/directus/directus/pull/8014) Update dependency sass to v1.40.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8011](https://github.com/directus/directus/pull/8011) Pin dependency @types/deep-diff to 1.0.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8003](https://github.com/directus/directus/pull/8003) Update dependency @typescript-eslint/parser to v4.31.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8002](https://github.com/directus/directus/pull/8002) Update dependency @typescript-eslint/eslint-plugin to v4.31.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7997](https://github.com/directus/directus/pull/7997) Update dependency @types/object-hash to v2.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7995](https://github.com/directus/directus/pull/7995) Update dependency vite to v2.5.7 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7989](https://github.com/directus/directus/pull/7989) Update jest monorepo to v27.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7982](https://github.com/directus/directus/pull/7982) Update dependency pinia to v2.0.0-rc.9 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7973](https://github.com/directus/directus/pull/7973) Update dependency typescript to v4.4.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7959](https://github.com/directus/directus/pull/7959) Update dependency sass to v1.39.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7956](https://github.com/directus/directus/pull/7956) Update dependency npm to v7.23.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7945](https://github.com/directus/directus/pull/7945) Update dependency prettier to v2.4.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7944](https://github.com/directus/directus/pull/7944) Update dependency @types/sharp to v0.29.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7940](https://github.com/directus/directus/pull/7940) Update vue monorepo to v3.2.11 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7929](https://github.com/directus/directus/pull/7929) Update dependency vite to v2.5.6 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7922](https://github.com/directus/directus/pull/7922) Update dependency @vitejs/plugin-vue to v1.6.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7912](https://github.com/directus/directus/pull/7912) Update jest monorepo to v27.1.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7908](https://github.com/directus/directus/pull/7908) Update dependency tinymce to v5.9.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7905](https://github.com/directus/directus/pull/7905) Update dependency vite to v2.5.5 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7897](https://github.com/directus/directus/pull/7897) Update vue monorepo to v3.2.10 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7896](https://github.com/directus/directus/pull/7896) Update dependency @types/sharp to v0.29.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7886](https://github.com/directus/directus/pull/7886) Update dependency vite to v2.5.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7882](https://github.com/directus/directus/pull/7882) Update dependency @types/keyv to v3.1.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7876](https://github.com/directus/directus/pull/7876) Update dependency dockerode to v3.3.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7868](https://github.com/directus/directus/pull/7868) Update dependency @types/inquirer to v8 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7866](https://github.com/directus/directus/pull/7866) Update typescript-eslint monorepo to v4.31.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7865](https://github.com/directus/directus/pull/7865) Update dependency axios to v0.21.4 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7860](https://github.com/directus/directus/pull/7860) Update dependency pino to v6.13.2 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7859](https://github.com/directus/directus/pull/7859) Update dependency @vitejs/plugin-vue to v1.6.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7848](https://github.com/directus/directus/pull/7848) Update dependency pinia to v2.0.0-rc.8 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7842](https://github.com/directus/directus/pull/7842) Update vue monorepo to v3.2.9 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7835](https://github.com/directus/directus/pull/7835) Update dependency tedious to v12.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7829](https://github.com/directus/directus/pull/7829) Update dependency axios to v0.21.3 ([@renovate[bot]](https://github.com/apps/renovate))
+
 ## v9.0.0-rc.92 (September 2, 2021)
 
 ### ⚠️ Potential Breaking Changes
