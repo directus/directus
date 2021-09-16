@@ -1,11 +1,10 @@
-import { useCollection } from '@directus/shared/composables';
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import getRelatedCollection from '@/utils/get-related-collection';
-import { ref } from 'vue';
 import options from './options.vue';
 import DisplayRelatedValues from './related-values.vue';
+import { useFieldsStore } from '@/stores';
 
 type Options = {
 	template: string;
@@ -22,7 +21,8 @@ export default defineDisplay({
 	groups: ['m2m', 'm2o', 'o2m'],
 	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
-		const { primaryKeyField } = useCollection(ref(relatedCollection as unknown as string));
+		const fieldsStore = useFieldsStore();
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
 		if (!relatedCollection) return [];
 
@@ -30,8 +30,8 @@ export default defineDisplay({
 			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection as unknown as string)
 			: [];
 
-		if (primaryKeyField.value && !fields.includes(primaryKeyField.value.field)) {
-			fields.push(primaryKeyField.value.field);
+		if (primaryKeyField && !fields.includes(primaryKeyField.field)) {
+			fields.push(primaryKeyField.field);
 		}
 
 		return fields;
