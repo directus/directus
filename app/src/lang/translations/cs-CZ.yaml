@@ -19,13 +19,17 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+published: Zveřejněno
+tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 maps: Mapy
 item_revision: Revize položky
+enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
+limit: Limit
 group: Skupina
 and: A
 or: Nebo
@@ -38,6 +42,7 @@ branch: Větev
 leaf: List
 indeterminate: Neurčitý
 edit_collection: Upravit kolekci
+exclusive: Exkluzivní
 children: Potomci
 db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
@@ -50,6 +55,7 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
+email_examples: "admin{'@'}stranka.cz, user{'@'}stranka.cz..."
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
@@ -352,10 +358,8 @@ fields:
     status: Stav
 field_options:
   directus_activity:
-    login: Login
     create: Vytořit
     update: Úpravy
-    delete: Smazat
   directus_collections:
     language: Jazyk
     archive_divider: Archivovat

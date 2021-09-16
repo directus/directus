@@ -66,6 +66,33 @@ npx directus database migrate:down
 Migrate the database up/down to match the versions of Directus. Once you update Directus itself, make sure to run
 `npx directus database migrate:latest` (or `npx directus bootstrap`) to update your database.
 
+### Migrate Schema to a different Environment
+
+To move your configured data model between Directus instances, you can use the schema "snapshot" and "apply" commands.
+
+#### Snapshot the Data Model
+
+Directus can automatically generate a snapshot of your current data model in YAML or JSON format. This includes all
+collections, fields, and relations, and their configuration. This snapshot can be checked in version control and shared
+with your team. To generate the snapshot, run
+
+```
+npx directus schema snapshot ./snapshot.yaml
+```
+
+#### Applying a Snapshot
+
+To make a different instance up to date with the latest changes in your data model, you can apply the snapshot. By
+applying the snapshot, Directus will auto-detect the changes required to make the current instance up to date with the
+proposed data model in the snapshot file, and will run the required migrations to the database to make it match the
+snapshot.
+
+To apply the generated snapshot, run
+
+```
+npx directus schema apply ./path/to/snapshot.yaml
+```
+
 ---
 
 ## Client

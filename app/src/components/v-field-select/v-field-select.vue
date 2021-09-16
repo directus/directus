@@ -13,7 +13,7 @@
 		class="v-field-select"
 	>
 		<template #item="{ element }">
-			<v-chip v-tooltip="element.field" class="field draggable" @click="removeField(element.field)">
+			<v-chip v-tooltip="element.field" clickable class="field draggable" @click="removeField(element.field)">
 				{{ element.name }}
 			</v-chip>
 		</template>
@@ -45,10 +45,9 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, ref, PropType, computed } from 'vue';
 import FieldListItem from '../v-field-template/field-list-item.vue';
-import { Collection, Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Collection, Relation } from '@directus/shared/types';
 import Draggable from 'vuedraggable';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
 import { useFieldTree } from '@/composables/use-field-tree';

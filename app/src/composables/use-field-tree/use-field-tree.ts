@@ -1,7 +1,6 @@
 import { useFieldsStore, useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
-import { getRelationType } from '@/utils/get-relation-type';
+import { Field, Relation } from '@directus/shared/types';
+import { getRelationType } from '@directus/shared/utils';
 import { get, set } from 'lodash';
 import { computed, Ref, ref, ComputedRef } from 'vue';
 

@@ -1,11 +1,10 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useRelationsStore } from '@/stores/';
-import { Relation } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldRaw } from '@directus/shared/types';
+import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
