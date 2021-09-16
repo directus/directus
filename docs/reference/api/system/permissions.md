@@ -50,9 +50,6 @@ Additional default values for the role.
 `fields` **array**\
 What fields the user is allowed to alter.
 
-`limit` **integer**\
-How many items the user is able to alter at once in batch operations.
-
 </div>
 </div>
 <div class="right">
@@ -72,8 +69,7 @@ How many items the user is able to alter at once in batch operations.
 	"presets": {
 		"published": false
 	},
-	"fields": ["title", "translations"],
-	"limit": null
+	"fields": ["title", "translations"]
 }
 ```
 
@@ -190,8 +186,7 @@ GET /permissions/:id
 		"presets": {
 			"published": false
 		},
-		"fields": ["title", "translations"],
-		"limit": null
+		"fields": ["title", "translations"]
 	}
 }
 ```

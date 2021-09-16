@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
@@ -14,6 +13,7 @@ import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { generateHash } from '../utils/generate-hash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -49,9 +49,8 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
-
 			if (action === 'create' || action === 'update') {
-				return await argon2.hash(String(value));
+				return await generateHash(String(value));
 			}
 
 			return value;

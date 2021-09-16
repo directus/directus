@@ -50,7 +50,7 @@
 			</v-card>
 		</v-dialog>
 
-		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="note" />
+		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
 		<small v-if="validationError" class="validation-error">
 			{{ validationMessage }}
@@ -217,12 +217,11 @@ export default defineComponent({
 	position: relative;
 }
 
-.note {
+.type-note {
+	position: relative;
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 
 .invalid {

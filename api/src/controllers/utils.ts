@@ -9,6 +9,7 @@ import { RevisionsService, UtilsService, ImportService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
 import { flushCaches } from '../cache';
+import { generateHash } from '../utils/generate-hash';
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.post(
 			throw new InvalidPayloadException(`"string" is required`);
 		}
 
-		const hash = await argon2.hash(req.body.string);
+		const hash = await generateHash(req.body.string);
 
 		return res.json({ data: hash });
 	})

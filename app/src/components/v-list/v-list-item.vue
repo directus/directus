@@ -130,14 +130,16 @@ export default defineComponent({
 body {
 	--v-list-item-padding-large: 0 8px;
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 4px 0;
+	--v-list-item-margin-large: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height-large: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
+	--v-list-item-border-color: var(--border-subdued);
+	--v-list-item-border-color-hover: var(--border-normal);
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
@@ -223,26 +225,27 @@ body {
 	}
 
 	&.block {
+		--v-list-item-border-color: var(--border-subdued);
+		--v-list-item-background-color: var(--background-subdued);
+		--v-list-item-background-color-hover: var(--background-subdued);
+		--v-icon-color: var(--foreground-subdued);
+
 		position: relative;
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
 		padding: 8px;
-		background-color: var(--background-subdued);
-		border: 2px solid var(--border-subdued);
+		background-color: var(--v-list-item-background-color);
+		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
-		:slotted(.v-icon) {
-			color: var(--foreground-subdued);
-
-			&:hover {
-				color: var(--foreground-normal);
-			}
-		}
-
 		:slotted(.drag-handle) {
 			cursor: grab;
+
+			&:hover {
+				color: var(--foreground-color);
+			}
 		}
 
 		:slotted(.drag-handle:active) {
@@ -254,12 +257,12 @@ body {
 		}
 
 		&:hover {
-			background-color: var(--background-subdued);
-			border: 2px solid var(--border-normal);
+			background-color: var(--v-list-item-background-color-hover);
+			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
 		}
 
 		& + & {

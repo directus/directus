@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 edit_field: Editar campo
 conditions: Condições
 item_revision: Revisão do documento
@@ -137,9 +117,6 @@ fields_for_role: 'Campos que o estatuto {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
 presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
 presentation_and_aliases: Apresentação & Pseudônimos
-revision_post_update: Aqui está como este documento ficou após a atualização...
-changes_made: Estas são as mudanças específicas que foram feitas...
-no_relational_data: Tenha em atenção que isto não inclui dados relacionais.
 hide_field_on_detail: Ocultar campo dentro de Detalhe
 show_field_on_detail: Mostrar campo dentro de Detalhe
 delete_field: Remover campo
@@ -375,7 +352,6 @@ no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
 no_users_copy: Ainda não existem utilizadores neste estatuto.
 webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
-no_webhooks_copy: Ainda não existem webhooks.
 all_items: Todos os documentos
 csv: CSV
 no_collections: Nenhuma coleção

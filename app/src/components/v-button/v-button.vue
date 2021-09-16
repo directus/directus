@@ -314,7 +314,7 @@ export default defineComponent({
 }
 
 .x-large {
-	--v-button-height: 64px;
+	--v-button-height: 60px;
 	--v-button-font-size: 18px;
 	--v-button-min-width: 180px;
 

@@ -65,7 +65,7 @@ body {
 }
 
 .large {
-	--v-avatar-size: 64px;
+	--v-avatar-size: 60px;
 }
 
 .x-large {

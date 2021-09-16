@@ -46,7 +46,7 @@ important to keep your projects up-to-date.
 
 <br>
 
-## :rocket: One-Click Deployments
+## 🚀 One-Click Deployments
 
 If you would like to completely avoid the manual installation process, the following self-hosted one-click apps will
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these

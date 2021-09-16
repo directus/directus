@@ -16,7 +16,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable({ value: props.value });
+		const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
 		return { active, toggle };
 	},
 });

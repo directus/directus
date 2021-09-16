@@ -4,14 +4,16 @@ import { adjustDate } from './adjust-date';
 import { deepMap } from './deep-map';
 
 export function parseFilter(filter: Filter, accountability: Accountability | null): any {
-	return deepMap(filter, (val, key) => {
+	return deepMap(filter, applyFilter);
+
+	function applyFilter(val: any, key: string | number) {
 		if (val === 'true') return true;
 		if (val === 'false') return false;
 		if (val === 'null' || val === 'NULL') return null;
 
 		if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
-			if (typeof val === 'string' && val.includes(',')) return val.split(',');
-			else return toArray(val);
+			if (typeof val === 'string' && val.includes(',')) return deepMap(val.split(','), applyFilter);
+			else return deepMap(toArray(val), applyFilter);
 		}
 
 		if (val && typeof val === 'string' && val.startsWith('$NOW')) {
@@ -28,5 +30,5 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 		if (val === '$CURRENT_ROLE') return accountability?.role || null;
 
 		return val;
-	});
+	}
 }
