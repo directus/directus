@@ -62,10 +62,11 @@ export default defineModule({
 					path: ':collection',
 					component: Fields,
 					async beforeEnter(to) {
-						const { info } = useCollection(ref(to.params.collection as string));
+						const collectionsStore = useCollectionsStore();
+						const info = collectionsStore.getCollection(to.params.collection as string);
 						const fieldsStore = useFieldsStore();
 
-						if (!info.value?.meta) {
+						if (!info?.meta) {
 							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
 						}
 
