@@ -129,6 +129,9 @@ export default defineComponent({
 					validationErrors.value = err.response.data.errors
 						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 						.map((err: APIError) => {
+							if (err.extensions.field.includes(',')) {
+								unexpectedError(err);
+							}
 							return err.extensions;
 						});
 
