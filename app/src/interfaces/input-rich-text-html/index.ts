@@ -284,5 +284,18 @@ export default defineInterface({
 				interface: 'input',
 			},
 		},
+		{
+			field: 'publicUrl',
+			name: 'public url',
+			type: 'boolean',
+			meta: {
+				note: 'Use public url for images in this wysiwyg container',
+				width: 'half',
+				interface: 'boolean',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
 });

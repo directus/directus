@@ -230,6 +230,10 @@ export default defineComponent({
 			type: String,
 			default: undefined,
 		},
+		publicUrl: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -237,11 +241,12 @@ export default defineComponent({
 
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<ComponentPublicInstance | null>(null);
-		const { imageToken } = toRefs(props);
+		const { imageToken, publicUrl } = toRefs(props);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 			editorRef,
-			imageToken
+			imageToken,
+			publicUrl
 		);
 
 		const {

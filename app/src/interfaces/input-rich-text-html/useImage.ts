@@ -27,7 +27,11 @@ type UsableImage = {
 	imageButton: ImageButton;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
+export default function useImage(
+	editor: Ref<any>,
+	imageToken: Ref<string | undefined>,
+	usePublicUrl: Ref<boolean> = ref(false)
+): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
@@ -78,7 +82,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string | unde
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		let imageUrl = getPublicURL() + 'assets/' + image.id;
+		let imageUrl = usePublicUrl ? image.public_url : getPublicURL() + 'assets/' + image.id;
 
 		if (imageToken.value) {
 			imageUrl = addTokenToURL(imageUrl, imageToken.value);
