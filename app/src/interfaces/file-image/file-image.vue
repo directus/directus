@@ -7,7 +7,11 @@
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
-			<img :src="src" alt="" role="presentation" />
+			<div v-if="isIllegalAssetTransformation" class="illegal-asset-transformation">
+				<v-icon large name="info" outline />
+				<span>{{ t('illegal_asset_transformation') }}</span>
+			</div>
+			<img v-else :src="src" alt="" role="presentation" />
 
 			<div class="shadow" />
 
@@ -91,6 +95,7 @@ export default defineComponent({
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
 		const editDrawerActive = ref(false);
+		const isIllegalAssetTransformation = ref(false);
 
 		const cacheBuster = ref(nanoid());
 
@@ -147,6 +152,7 @@ export default defineComponent({
 			loading,
 			image,
 			src,
+			isIllegalAssetTransformation,
 			meta,
 			lightboxActive,
 			editDrawerActive,
@@ -178,8 +184,16 @@ export default defineComponent({
 				} else {
 					image.value = response.data.data;
 				}
+
+				await api.get(
+					`${getRootPath()}assets/${response.data.data.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
+				);
 			} catch (err: any) {
-				unexpectedError(err);
+				if (err.response?.data?.errors[0]?.extensions?.code === 'ILLEGAL_ASSET_TRANSFORMATION') {
+					isIllegalAssetTransformation.value = true;
+				} else {
+					unexpectedError(err);
+				}
 			} finally {
 				loading.value = false;
 			}
@@ -252,6 +266,29 @@ img {
 
 	img {
 		object-fit: contain;
+	}
+}
+
+.illegal-asset-transformation {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	color: var(--foreground-subdued);
+	background-color: var(--background-normal);
+
+	.v-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 6px;
+	}
+
+	span {
+		padding: 0 16px;
+		text-align: center;
 	}
 }
 
