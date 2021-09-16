@@ -106,6 +106,7 @@
 		"express": "^4.17.1",
 		"express-session": "^1.17.2",
 		"fs-extra": "^10.0.0",
+		"global-agent": "^3.0.0",
 		"grant": "^5.4.14",
 		"graphql": "^15.5.0",
 		"graphql-compose": "^9.0.1",

@@ -12,6 +12,7 @@ import logger from './logger';
 import emitter, { emitAsyncSafe } from './emitter';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
+import 'global-agent/bootstrap';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
