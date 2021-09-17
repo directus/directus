@@ -367,9 +367,7 @@ export default defineComponent({
 			}
 
 			async function loadItems() {
-				const pkField = translationsPrimaryKeyField.value;
-
-				if (pkField === null || !props.value || props.value.length === 0) return;
+				if (!translationsRelation.value?.field) return;
 
 				loading.value = true;
 
@@ -379,8 +377,8 @@ export default defineComponent({
 							fields: '*',
 							limit: -1,
 							filter: {
-								[pkField]: {
-									_in: props.value,
+								[translationsRelation.value.field]: {
+									_eq: props.primaryKey,
 								},
 							},
 						},

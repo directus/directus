@@ -224,7 +224,7 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const { info: collectionInfo } = useCollection(ref('directus_users'));
+		const { info: collectionInfo } = useCollection('directus_users');
 
 		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
