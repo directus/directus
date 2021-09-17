@@ -8,7 +8,7 @@ export function deepMap(
 		return object.map(function (val, key) {
 			return typeof val === 'object' ? deepMap(val, iterator, context) : iterator.call(context, val, key);
 		});
-	} else if (typeof object === 'object') {
+	} else if (object !== null && typeof object === 'object') {
 		const res: Record<string, any> = {};
 
 		for (const key in object) {
