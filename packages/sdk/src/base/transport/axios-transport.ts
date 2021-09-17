@@ -82,7 +82,6 @@ export class AxiosTransport implements ITransport {
 	): Promise<TransportResponse<T, R>> {
 		try {
 			options = options || {};
-			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
 			options.headers = options.headers ?? {};
 			options.onUploadProgress = options.onUploadProgress ?? undefined;
 
