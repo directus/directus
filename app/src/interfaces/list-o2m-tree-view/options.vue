@@ -22,8 +22,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 export default defineComponent({
 	props: {
@@ -40,7 +39,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},

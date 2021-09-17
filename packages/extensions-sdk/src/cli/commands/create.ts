@@ -3,16 +3,22 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import execa from 'execa';
 import ora from 'ora';
-import { EXTENSION_TYPES, EXTENSION_PKG_KEY } from '@directus/shared/constants';
-import { isExtension } from '@directus/shared/utils';
+import { EXTENSION_TYPES, EXTENSION_PKG_KEY, EXTENSION_LANGUAGES } from '@directus/shared/constants';
+import { isAppExtension, isExtension } from '@directus/shared/utils';
+import { ExtensionType } from '@directus/shared/types';
 import log from '../utils/logger';
+import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
+import { Language } from '../types';
+import getPackageVersion from '../utils/get-package-version';
 
 const pkg = require('../../../../package.json');
 
-const TEMPLATE_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'templates');
+const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 
-export default async function create(type: string, name: string): Promise<void> {
+type CreateOptions = { language: string };
+
+export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const targetPath = path.resolve(name);
 
 	if (!isExtension(type)) {
@@ -41,12 +47,22 @@ export default async function create(type: string, name: string): Promise<void> 
 		}
 	}
 
+	if (!isLanguage(options.language)) {
+		log(
+			`Language ${chalk.bold(options.language)} is not supported. Available languages: ${EXTENSION_LANGUAGES.map((t) =>
+				chalk.bold.magenta(t)
+			).join(', ')}.`,
+			'error'
+		);
+		process.exit(1);
+	}
+
 	const spinner = ora(`Scaffolding Directus extension...`).start();
 
 	await fse.ensureDir(targetPath);
 
-	await fse.copy(path.join(TEMPLATE_PATH, 'common'), targetPath);
-	await fse.copy(path.join(TEMPLATE_PATH, type), targetPath);
+	await fse.copy(path.join(TEMPLATE_PATH, 'common', options.language), targetPath);
+	await fse.copy(path.join(TEMPLATE_PATH, type, options.language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
 	const packageManifest = {
@@ -56,16 +72,14 @@ export default async function create(type: string, name: string): Promise<void> 
 		[EXTENSION_PKG_KEY]: {
 			type,
 			path: 'dist/index.js',
-			source: 'src/index.js',
+			source: `src/index.${languageToShort(options.language)}`,
 			host: `^${pkg.version}`,
 			hidden: false,
 		},
 		scripts: {
 			build: 'directus-extension build',
 		},
-		devDependencies: {
-			'@directus/extensions-sdk': pkg.version,
-		},
+		devDependencies: await getPackageDeps(type, options.language),
 	};
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -81,4 +95,28 @@ Build your extension by running:
   ${chalk.blue('cd')} ${name}
   ${chalk.blue('npm run')} build
 	`);
+}
+
+async function getPackageDeps(type: ExtensionType, language: Language) {
+	if (isAppExtension(type)) {
+		return {
+			'@directus/extensions-sdk': pkg.version,
+			...(language === 'typescript'
+				? {
+						typescript: `^${await getPackageVersion('typescript')}`,
+				  }
+				: {}),
+			vue: `^${await getPackageVersion('vue', 'next')}`,
+		};
+	} else {
+		return {
+			'@directus/extensions-sdk': pkg.version,
+			...(language === 'typescript'
+				? {
+						'@types/node': `^${await getPackageVersion('@types/node')}`,
+						typescript: `^${await getPackageVersion('typescript')}`,
+				  }
+				: {}),
+		};
+	}
 }

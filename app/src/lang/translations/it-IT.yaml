@@ -19,10 +19,16 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+published: Pubblicato
+draft: Bozza
+archived: Archiviato
+module_bar: Barra del modulo
+tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
 item_revision: Revisione elemento
+enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
@@ -38,6 +44,7 @@ role_name: Nome ruolo
 branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
+edit_collection: Modifica raccolta
 exclusive: Esclusivo
 children: Figli
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
@@ -52,6 +59,7 @@ create_user: Crea utente
 create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
@@ -85,7 +93,6 @@ os_uptime: Uptime sistema operativo
 os_totalmem: Memoria sistema operativo
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
-edit_collection: Modifica Collezione
 archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
@@ -142,9 +149,9 @@ fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
-revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
-changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
-no_relational_data: Tieni presente che questo non include dati relazionali.
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
+changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
+no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -211,6 +218,8 @@ add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
+add_link: Aggiungi link
+custom_link: Link personalizzato
 default_value: Valore predefinito
 standard_field: Campo Standard
 single_file: File Singolo
@@ -382,7 +391,7 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
-no_webhooks_copy: Non ci sono ancora webhook.
+no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
@@ -724,11 +733,28 @@ no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
+no_upscale: Non ingrandire le immagini
 collection: Raccolta
 collections: Raccolte
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
+directus_collection:
+  directus_activity: Log autorizzazioni per tutti gli eventi
+  directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_fields: Configurazione e metadati aggiuntivi del campo
+  directus_files: Metadati per tutti i file degli asset gestiti
+  directus_folders: Fornisce directory virtuali per i file
+  directus_migrations: Quale versione del database stai usando
+  directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_presets: Preset per i default della raccolta e i segnalibri
+  directus_relations: Configurazione e metadati della relazione
+  directus_revisions: Snapshot dei dati per tutte le attività
+  directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
+  directus_sessions: Informazioni sulla sessione dell'utente
+  directus_settings: Opzioni di configurazione del progetto
+  directus_users: Utenti di sistema per la piattaforma
+  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -797,7 +823,7 @@ fields:
     admin_options: Opzioni Amministratore
     status: Stato
     status_draft: Bozza
-    status_invited: Disattivato
+    status_invited: Invitato
     status_active: Attivo
     status_suspended: Sospeso
     status_archived: Archiviato
@@ -862,6 +888,35 @@ fields:
     triggers: Trigger
     actions: Azioni
 field_options:
+  directus_settings:
+    project_name_placeholder: Il mio progetto...
+    project_logo_note: Sfondo per l'accesso e il logo
+    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
+    security_divider_title: Sicurezza
+    auth_password_policy:
+      none_text: Nessuna – non consigliato
+      weak_text: Debole – minimo 8 caratteri
+      strong_text: Forte – maiuscole / minuscole / numeri / simboli
+    storage_asset_presets:
+      fit:
+        contain_text: Contieni (preserva le proporzioni)
+        cover_text: Ricopri (forza dimensione esatta)
+        fit_text: Adatta all'interno
+        outside_text: Adatta all'esterno
+    additional_transforms: Trasformazioni aggiuntive
+    transforms_note: Il nome del metodo di Sharp e i suoi argomenti. Vedi https://sharp.pixelplumbing.com/api-constructor per maggiori informazioni.
+    mapbox_key: Access Token di Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Stile Mapbox
+    files_divider_title: File e miniature
+    overrides_divider_title: Personalizzazioni App
+  directus_activity:
+    login: Accedi
+    create: Creare
+    update: Aggiornare
+    delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -905,27 +960,9 @@ field_options:
         type_name: Tipo
         choices_always: Sempre aperto
         choices_start_open: Inizia aperto
-        choises_start_collapsed: Inizia chiuso
-      collections_name: Raccolte
-      collections_addLabel: Aggiungi etichetta
-    project_name_placeholder: Il mio progetto...
-    project_color_note: Sfondo per l'accesso e il logo
-    project_logo_note: SVG/PNG 40x40 bianca
-    public_divider_title: Pagine pubbliche
-    public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
-    security_divider_title: Sicurezza
-    auth_password_policy:
-      none_text: Nessuna – non consigliato
-      weak_text: Debole – minimo 8 caratteri
-      strong_text: Forte – maiuscole / minuscole / numeri / simboli
-    storage_asset_presets:
-      fit:
-        contain_text: Contieni (preserva le proporzioni)
-        cover_text: Ricopri (forza dimensione esatta)
-        inside_text: Adatta all'interno
-        outside_text: Adatta all'esterno
-    files_divider_title: File e miniature
-    overrides_divider_title: Personalizzazioni App
+        choices_start_collapsed: Inizia chiuse
+    collections_name: Raccolte
+    collections_addLabel: Aggiungi raccolta...
   directus_users:
     preferences_divider: Preferenze utente
     dropdown_auto: Automatico (in base al sistema)
@@ -948,6 +985,7 @@ field_options:
     actions_delete: Elimina
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
+no_value: Nessun valore
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
@@ -1026,6 +1064,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1236,6 +1275,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+    toggle_split_view: Attiva/disattiva la Split View
+    language_field: Campo lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -1391,3 +1432,5 @@ layouts:
     invalid_geometry: Geometria non valida
     auto_location_filter: Filtra sempre i dati al rettangolo di selezione
     search_this_area: Cerca in quest'area
+    clear_data_filter: Rimuovi il filtro sui dati
+    clear_location_filter: Rimuovi il filtro sulla posizione

@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-
-import argon2 from 'argon2';
 import chalk from 'chalk';
 import execa from 'execa';
 import inquirer from 'inquirer';
@@ -13,6 +10,7 @@ import createDBConnection, { Credentials } from '../../utils/create-db-connectio
 import createEnv from '../../utils/create-env';
 import { drivers, getDriverForClient } from '../../utils/drivers';
 import { databaseQuestions } from './questions';
+import { generateHash } from '../../../utils/generate-hash';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
@@ -49,19 +47,16 @@ export default async function init(): Promise<void> {
 			await runSeed(db);
 			await runMigrations(db, 'latest');
 		} catch (err: any) {
-			console.log();
-			console.log('Something went wrong while seeding the database:');
-			console.log();
-			console.log(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
-			console.log();
-			console.log('Please try again');
-			console.log();
+			process.stdout.write('\nSomething went wrong while seeding the database:\n');
+			process.stdout.write(`\n${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}\n`);
+			process.stdout.write('\nPlease try again\n\n');
+
 			attemptsRemaining--;
 
 			if (attemptsRemaining > 0) {
 				return await trySeed();
 			} else {
-				console.log(`Couldn't seed the database. Exiting.`);
+				process.stdout.write("Couldn't seed the database. Exiting.\n");
 				process.exit(1);
 			}
 		}
@@ -71,10 +66,7 @@ export default async function init(): Promise<void> {
 
 	await createEnv(dbClient, credentials!, rootPath);
 
-	console.log();
-	console.log();
-
-	console.log(`Create your first admin user:`);
+	process.stdout.write('\nCreate your first admin user:\n\n');
 
 	const firstUser = await inquirer.prompt([
 		{
@@ -95,7 +87,7 @@ export default async function init(): Promise<void> {
 		},
 	]);
 
-	firstUser.password = await argon2.hash(firstUser.password);
+	firstUser.password = await generateHash(firstUser.password);
 
 	const userID = uuidV4();
 	const roleID = uuidV4();
@@ -120,15 +112,11 @@ export default async function init(): Promise<void> {
 
 	await db.destroy();
 
-	console.log(`
-Your project has been created at ${chalk.green(rootPath)}.
-
-The configuration can be found in ${chalk.green(rootPath + '/.env')}
-
-Start Directus by running:
-  ${chalk.blue('cd')} ${rootPath}
-  ${chalk.blue('npx directus')} start
-`);
+	process.stdout.write(`\nYour project has been created at ${chalk.green(rootPath)}.\n`);
+	process.stdout.write(`\nThe configuration can be found in ${chalk.green(rootPath + '/.env')}\n`);
+	process.stdout.write(`\nStart Directus by running:\n`);
+	process.stdout.write(`  ${chalk.blue('cd')} ${rootPath}\n`);
+	process.stdout.write(`  ${chalk.blue('npx directus')} start\n`);
 
 	process.exit(0);
 }

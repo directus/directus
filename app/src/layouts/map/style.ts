@@ -73,8 +73,7 @@ export const layers: AnyLayer[] = [
 		filter: ['has', 'point_count'],
 		layout: {
 			'text-field': '{point_count_abbreviated}',
-			// 'text-font': ['Open Sans Semibold'],
-			'text-font': ['Noto Sans Regular'],
+			'text-font': ['Open Sans Semibold'],
 			'text-size': ['step', ['get', 'point_count'], 15, 100, 17, 750, 19],
 		},
 	},

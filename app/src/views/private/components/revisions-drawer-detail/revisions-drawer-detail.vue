@@ -240,6 +240,27 @@ export default defineComponent({
 	margin: 24px 0;
 }
 
+.v-divider {
+	--v-divider-color: var(--background-normal-alt);
+
+	position: sticky;
+	top: 0;
+	z-index: 3;
+	margin-top: 8px;
+	margin-right: -8px;
+	margin-bottom: 6px;
+	margin-left: -8px;
+	padding-top: 8px;
+	padding-right: 8px;
+	padding-left: 8px;
+	background-color: var(--background-normal);
+	box-shadow: 0 0 2px 2px var(--background-normal);
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+}
+
 .empty {
 	margin-top: 16px;
 	margin-bottom: 16px;

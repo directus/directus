@@ -82,16 +82,15 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, PropType } from 'vue';
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { Relation } from '@/types';
-import { Filter, Field } from '@directus/shared/types';
+import { Filter, Field, Relation } from '@directus/shared/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
@@ -192,8 +191,8 @@ export default defineComponent({
 		}
 
 		function getNewItems() {
-			const pkField = relatedPrimaryKeyField.value.field;
-			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
 				string,
 				any
@@ -201,8 +200,8 @@ export default defineComponent({
 		}
 
 		function getUpdatedItems() {
-			const pkField = relatedPrimaryKeyField.value.field;
-			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === true) as Record<
 				string,
 				any
@@ -210,8 +209,8 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeys() {
-			if (props.value === null) return [];
-			const pkField = relatedPrimaryKeyField.value.field;
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value
 				.map((item) => {
 					if (typeof item === 'object') {
@@ -224,9 +223,8 @@ export default defineComponent({
 		}
 
 		function deleteItem(item: Record<string, any>) {
-			if (props.value === null) return;
-
-			const relatedPrimKey = relatedPrimaryKeyField.value.field;
+			const relatedPrimKey = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !relatedPrimKey) return;
 
 			if (relatedPrimKey in item === false) {
 				emit(
@@ -302,7 +300,8 @@ export default defineComponent({
 					if (isEqual(newVal, oldVal)) return;
 
 					loading.value = true;
-					const pkField = relatedPrimaryKeyField.value.field;
+					const pkField = relatedPrimaryKeyField.value?.field;
+					if (!pkField) return;
 
 					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
 
@@ -375,13 +374,15 @@ export default defineComponent({
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (!pkField) return;
 				const hasPrimaryKey = pkField in item;
 
 				const edits = (props.value || []).find(
 					(edit: any) =>
 						typeof edit === 'object' &&
-						edit[relatedPrimaryKeyField.value.field] === item[relatedPrimaryKeyField.value.field]
+						relatedPrimaryKeyField.value?.field &&
+						edit[relatedPrimaryKeyField.value?.field] === item[relatedPrimaryKeyField.value?.field]
 				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
@@ -389,7 +390,8 @@ export default defineComponent({
 			}
 
 			function stageEdits(edits: any) {
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {
 					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
@@ -425,15 +427,14 @@ export default defineComponent({
 			const selectModalActive = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (items.value === null) return [];
-
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (items.value === null || !pkField) return [];
 
 				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
 			});
 
 			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
 
 				if (selectedPrimaryKeys.value.length === 0) return [];
 

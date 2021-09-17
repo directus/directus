@@ -1,24 +1,6 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
+draft: Rascunho
+archived: Arquivado
 edit_field: Editar campo
 conditions: Condições
 maps: Mapas
@@ -38,6 +20,7 @@ role_name: Nome do cargo
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
+edit_collection: Editar Coleção
 exclusive: Exclusivo
 children: Filhos
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
@@ -51,7 +34,7 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
-email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
+email_examples: "admin{'@'}exemplo.com, usuario{'@'}exemplo.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -141,9 +124,6 @@ fields_for_role: 'Campos que o cargo {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
 presets_for_role: 'Valores de campo padrões para a função {role}.'
 presentation_and_aliases: Apresentação e pseudônimos
-revision_post_update: Aqui está como este item ficou após a atualização...
-changes_made: Estas são as mudanças específicas que foram feitas...
-no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir campo
@@ -381,7 +361,6 @@ no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
-no_webhooks_copy: Ainda não possui Webhooks.
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
@@ -796,7 +775,7 @@ fields:
     admin_options: Opções do Admin
     status: Status
     status_draft: Rascunho
-    status_invited: Inativo
+    status_invited: Convidado
     status_active: Ativo
     status_suspended: Suspenso
     status_archived: Arquivado
@@ -806,6 +785,11 @@ fields:
     last_page: Última página
     last_access: Último acesso
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    additional_transforms: Transformações Adicionais
     project_name: Nome do projeto
     project_url: URL do projeto
     project_color: Cor do projeto
@@ -850,6 +834,17 @@ fields:
     triggers: Gatilhos
     actions: Ações
 field_options:
+  directus_settings:
+    security_divider_title: Segurança
+    auth_password_policy:
+      none_text: Nenhum – Não Recomendado
+    additional_transforms: Transformações Adicionais
+    files_divider_title: Arquivos e Miniaturas
+    overrides_divider_title: Substituições de Aplicativos
+  directus_activity:
+    create: Criar
+    update: Alteração
+    delete: Excluir
   directus_collections:
     track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade
@@ -867,11 +862,7 @@ field_options:
     collection_list:
       fields:
         type_name: Tipo
-      collections_name: Coleções
-    public_divider_title: Páginas Públicas
-    security_divider_title: Segurança
-    files_divider_title: Arquivos e Miniaturas
-    overrides_divider_title: Substituições de Aplicativos
+    collections_name: Coleções
   directus_users:
     preferences_divider: Preferências do Usuário
     dropdown_auto: Automático (Baseado no Sistema)
@@ -879,6 +870,7 @@ field_options:
     dropdown_dark: Modo Escuro
     admin_divider: Opções do Admin
     status_dropdown_draft: Rascunho
+    status_dropdown_invited: Convidado
     status_dropdown_active: Ativo
     status_dropdown_suspended: Suspenso
     status_dropdown_archived: Arquivado
@@ -1094,6 +1086,12 @@ interfaces:
     imageToken_label: Qual token (estático) a ser adicionado nas imagens
   map:
     zoom: Zoom
+    geometry_type: Tipo de geometria
+    geometry_format: Formato da geometria
+    default_view: Visualização padrão
+    invalid_options: Opções inválidas
+    invalid_format: Formato inválido ({format})
+    unexpected_geometry: Esperado {expected}, obtido {got}.
   presentation-notice:
     notice: Aviso
     description: Mostrar um breve aviso
