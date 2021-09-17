@@ -398,7 +398,7 @@ csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
-no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
+no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
