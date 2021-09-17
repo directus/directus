@@ -2,15 +2,18 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
-## v9.0.0-rc.93 (September 16, 2021)
+## v9.0.0-rc.93 (September 17, 2021)
 
 ### :sparkles: New Features
 
 - **App**
   - [#8012](https://github.com/directus/directus/pull/8012) Move module setup to Project Settings ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7727](https://github.com/directus/directus/pull/7727) Add new translations interface ([@jaycammarano](https://github.com/jaycammarano))
 - **API**
   - [#7939](https://github.com/directus/directus/pull/7939) Add native schema migration capabilities ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7833](https://github.com/directus/directus/pull/7833) Add ability to customise database errors ([@smilledge](https://github.com/smilledge))
+  - [#7755](https://github.com/directus/directus/pull/7755) Make Argon2.hash parameters configurable to allow for stronger user password hashes. ([@TonyLovesDevOps](https://github.com/TonyLovesDevOps))
+  - [#7675](https://github.com/directus/directus/pull/7675) Allow custom CLI commands to be added by extensions ([@smilledge](https://github.com/smilledge))
 
 ### :rocket: Improvements
 
@@ -18,6 +21,7 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   - [#7986](https://github.com/directus/directus/pull/7986) Align memcached configurations for multiple hosts ([@azrikahar](https://github.com/azrikahar))
   - [#7923](https://github.com/directus/directus/pull/7923) add spatial_ref_sys as default for DB_EXCLUDE_TABLES ([@azrikahar](https://github.com/azrikahar))
   - :warning: [#7830](https://github.com/directus/directus/pull/7830) Add custom JWTs support for static token ([@azrikahar](https://github.com/azrikahar))
+  - [#7676](https://github.com/directus/directus/pull/7676) Update logging in CLI commands ([@smilledge](https://github.com/smilledge))
 - **App**
   - [#7974](https://github.com/directus/directus/pull/7974) Prevent v-input append slot from shrinking ([@azrikahar](https://github.com/azrikahar))
   - [#7972](https://github.com/directus/directus/pull/7972) Various style updates ([@benhaynes](https://github.com/benhaynes))
@@ -27,6 +31,10 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   - [#7925](https://github.com/directus/directus/pull/7925) Add possibility to translate Published, Draft and Archived strings ([@jrvidotti](https://github.com/jrvidotti))
   - [#7913](https://github.com/directus/directus/pull/7913) Enable "Format JSON Value" to display 'geometry' ([@vidhav](https://github.com/vidhav))
   - [#7902](https://github.com/directus/directus/pull/7902) remove auto-open feature for info sidebar ([@azrikahar](https://github.com/azrikahar))
+  - [#7811](https://github.com/directus/directus/pull/7811) Map selection behaviour ([@Oreilles](https://github.com/Oreilles))
+  - [#7140](https://github.com/directus/directus/pull/7140) V button color prop ([@jaycammarano](https://github.com/jaycammarano))
+- **sdk**
+  - [#7815](https://github.com/directus/directus/pull/7815) fix type for deep query with underscore prefix ([@azrikahar](https://github.com/azrikahar))
 
 ### :bug: Bug Fixes
 
@@ -43,11 +51,21 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   - [#7864](https://github.com/directus/directus/pull/7864) Fix reverting to created revision ([@Nitwel](https://github.com/Nitwel))
   - [#7858](https://github.com/directus/directus/pull/7858) Fix display labels translations ([@azrikahar](https://github.com/azrikahar))
   - [#7840](https://github.com/directus/directus/pull/7840) Fix watcher loop and filters not being applied. ([@Oreilles](https://github.com/Oreilles))
+  - [#7816](https://github.com/directus/directus/pull/7816) Apply "in" to query even if array is empty ([@joselcvarela](https://github.com/joselcvarela))
+  - [#7812](https://github.com/directus/directus/pull/7812) Fix map interface controls not showing ([@Oreilles](https://github.com/Oreilles))
+  - [#7801](https://github.com/directus/directus/pull/7801) Use https for openmaptiles fonts. ([@Oreilles](https://github.com/Oreilles))
+  - [#7800](https://github.com/directus/directus/pull/7800) Fix wrong icon ([@Nitwel](https://github.com/Nitwel))
+  - [#7796](https://github.com/directus/directus/pull/7796) Fix allow false as value in filter ([@Nitwel](https://github.com/Nitwel))
+  - [#7794](https://github.com/directus/directus/pull/7794) Datetime interface "Set to now" sets seconds to 0 ([@Moeriki](https://github.com/Moeriki))
+  - [#7754](https://github.com/directus/directus/pull/7754) Fix WYSIWYG field not being cleared after "Save and Create New" ([@azrikahar](https://github.com/azrikahar))
 - **API**
   - [#8056](https://github.com/directus/directus/pull/8056) Don't flush schema cache on content update ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7910](https://github.com/directus/directus/pull/7910) Fix the collections column in directus_webhooks being nullable ([@nickrum](https://github.com/nickrum))
   - [#7883](https://github.com/directus/directus/pull/7883) Parse created arrays in parseFilter ([@Nitwel](https://github.com/Nitwel))
   - [#7847](https://github.com/directus/directus/pull/7847) fix default of env var EMAIL_MAILGUN_HOST ([@mooori](https://github.com/mooori))
+  - [#7820](https://github.com/directus/directus/pull/7820) make csv imports try to parse values to json ([@azrikahar](https://github.com/azrikahar))
+  - [#7816](https://github.com/directus/directus/pull/7816) Apply "in" to query even if array is empty ([@joselcvarela](https://github.com/joselcvarela))
+  - [#7814](https://github.com/directus/directus/pull/7814) Fix return error for GraphQL mutations ([@joselcvarela](https://github.com/joselcvarela))
 - **Extensions**
   - [#7978](https://github.com/directus/directus/pull/7978) Make type-only dependency versions of shared package less strict ([@nickrum](https://github.com/nickrum))
 - **drive**
@@ -66,12 +84,15 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 - [#8023](https://github.com/directus/directus/pull/8023) Update cli.md: Point to update/upgrade instructions ([@cstork](https://github.com/cstork))
 - [#7967](https://github.com/directus/directus/pull/7967) Update assets.md ([@alesvaupotic](https://github.com/alesvaupotic))
 - [#7965](https://github.com/directus/directus/pull/7965) Add missing words to Database Abstraction ([@alesvaupotic](https://github.com/alesvaupotic))
+- [#7925](https://github.com/directus/directus/pull/7925) Add possibility to translate Published, Draft and Archived strings ([@jrvidotti](https://github.com/jrvidotti))
 - [#7915](https://github.com/directus/directus/pull/7915) Docs: update actions for file event ([@pgegenfurtner](https://github.com/pgegenfurtner))
 - [#7893](https://github.com/directus/directus/pull/7893) fix readme emoji ([@azrikahar](https://github.com/azrikahar))
 - [#7892](https://github.com/directus/directus/pull/7892) fix readme filename in sync-dockerhub-readme.yml ([@azrikahar](https://github.com/azrikahar))
 - [#7889](https://github.com/directus/directus/pull/7889) Add github action for syncing readme to Docker Hub ([@azrikahar](https://github.com/azrikahar))
 - [#7831](https://github.com/directus/directus/pull/7831) fix url format for Azure storage endpoint ([@azrikahar](https://github.com/azrikahar))
 - [#7821](https://github.com/directus/directus/pull/7821) fix minor typo in api-hooks.md ([@azrikahar](https://github.com/azrikahar))
+- [#7798](https://github.com/directus/directus/pull/7798) Fix incorrect database exclude tables environment variable in docs. ([@licitdev](https://github.com/licitdev))
+- [#7795](https://github.com/directus/directus/pull/7795) Update modules docs  ([@HarunKilic](https://github.com/HarunKilic))
 
 ### :package: Dependency Updates
 
@@ -117,6 +138,8 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 - [#7842](https://github.com/directus/directus/pull/7842) Update vue monorepo to v3.2.9 ([@renovate[bot]](https://github.com/apps/renovate))
 - [#7835](https://github.com/directus/directus/pull/7835) Update dependency tedious to v12.2.0 ([@renovate[bot]](https://github.com/apps/renovate))
 - [#7829](https://github.com/directus/directus/pull/7829) Update dependency axios to v0.21.3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7819](https://github.com/directus/directus/pull/7819) Update dependency knex to v0.95.11 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7817](https://github.com/directus/directus/pull/7817) Update dependency pinia to v2.0.0-rc.7 ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.92 (September 2, 2021)
 
