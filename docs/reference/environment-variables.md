@@ -246,6 +246,13 @@ For each of the storage locations listed, you must provide the following configu
 | `STORAGE_<LOCATION>_DRIVER` | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
 | `STORAGE_<LOCATION>_ROOT`   | Where to store the files on disk                          | `''`          |
 
+For each of the storage locations listed, you may provide the following optional configuration:
+
+| Variable                        | Description                                                                                                                                                                                                    | Default Value |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_PUBLIC_URL` | Optional: Public URL for direct access to files (eg, CDN or Direct access via cloud storage), can use string interpolation with file properties, (eg: 'https://www.cloudinary.com/mysite/{{ filename_disk }}') |               |
+
+
 Based on your configured driver, you must also provide the following configurations:
 
 ### Local (`local`)
