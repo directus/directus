@@ -146,7 +146,7 @@ field_validation: Convalida di Campo
 field_presets: Preset di Campo
 permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
@@ -378,7 +378,7 @@ search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
-request_feature: Richiesta caratteristica
+request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
 display_not_found: 'Display "{display}" non trovato.'
@@ -398,7 +398,7 @@ csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
-no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
+no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
@@ -564,7 +564,7 @@ value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
-language_display_template: Modello Visualizzazione Lingua
+language_display_template: Modello di visualizzazione della lingua
 translations_display_template: Modello Visualizzazione Traduzioni
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
@@ -586,11 +586,11 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creare
-on_create: Alla Creazione
-on_update: In aggiornamento
-read: Leggere
-update: Aggiornare
+create: Creazione
+on_create: Alla creazione
+on_update: Alla modifica
+read: Lettura
+update: Modifica
 select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
@@ -677,7 +677,7 @@ editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
-settings_project: Impostazioni del progetto
+settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
@@ -784,7 +784,7 @@ fields:
     title: Titolo
     description: Descrizione
     tags: Tag
-    location: Percorso
+    location: Posizione
     storage: Archiviazione
     filename_disk: Nome File (Disco)
     filename_download: Nome File (Download)
@@ -809,7 +809,7 @@ fields:
     email: E-mail
     password: Password
     avatar: Avatar
-    location: Percorso
+    location: Posizione
     title: Titolo
     description: Descrizione
     tags: Tag
@@ -852,7 +852,7 @@ fields:
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
-    auth_password_policy: Criteri Password di accesso
+    auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e miniature
     storage_default_folder: Cartella predefinita di archiviazione
@@ -914,9 +914,9 @@ field_options:
     overrides_divider_title: Personalizzazioni App
   directus_activity:
     login: Accedi
-    create: Creare
-    update: Aggiornare
-    delete: Elimina
+    create: Creazione
+    update: Modifica
+    delete: Cancellazione
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -980,9 +980,9 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Aggiornare
-    actions_delete: Elimina
+    actions_create: Creazione
+    actions_update: Modifica
+    actions_delete: Cancellazione
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
@@ -1008,7 +1008,7 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Elimina
+delete_label: Cancellazione
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
