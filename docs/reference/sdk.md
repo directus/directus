@@ -44,40 +44,95 @@ console.log({
 
 ## Global
 
-### Initialize
+### Constructor
+
+Signature:
 
 ```js
-import { Directus } from '@directus/sdk';
-
-const directus = new Directus('https://api.example.com/');
+new Directus(url, options?)
 ```
 
-#### `url`
+#### Parameters
 
-The constructor accepts the URL as the first parameter.
+| Parameter | Description                               | Default     | Type              |
+| --------- | ----------------------------------------- | ----------- | ----------------- |
+| `url`     | Url of your running Directus api instance | none        | `string`          |
+| `options` | Configuration options                     | _See below_ | `DirectusOptions` |
 
-#### `options.auth`
+#### Options
 
-The authentication implementation. See [Auth](#auth) for more information.
+<table> 
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+<th>Type</th>
+</tr>
+<tr>
+<td>
 
-Defaults to an instance `Auth`.
+`storage`
 
-#### `options.storage`
+</td>
+<td>
 
-The storage implementation. See [Storage](#storage) for more information.
+Storage implementation. See [Storage](#storage) for more information.
 
-Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
+</td>
+<td>
 
-**NOTE:**
+`MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
 
-If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
-unpredictable behaviors. This scenario might be a case while writing tests.
+</td>
+<td>
 
-For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
-Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
-scenario by granting false access rights to your previous logged-in users.
+`IStorage`
 
-Adding prefixes to your Storage instances would solve this error:
+</td>
+</tr>
+<tr>
+<td>
+
+`authOptions`
+
+</td>
+<td>
+
+Authentication options. See ([Auth](#auth)) for more information.
+
+</td>
+<td>
+
+```js
+{
+	authStorage: // the above global storage instance,
+	mode: // 'json' in nodejs, 'cookie' in browser,
+	authRefreshOptions: {
+		autoRefresh: true,
+		autoRefreshLeadTime: 30000
+	}
+}
+```
+
+</td>
+<td>
+
+`AuthOptions`
+
+</td>
+</tr>
+
+</table>
+
+::: warning NOTE
+
+If you plan on using multiple SDK instances at once, keep in mind that they will all access the same Storage instance.
+This can lead to unpredictable behaviors, and is especially common when writing tests.
+
+For example, one SDK instance executes `login()` and writes the resulting `access_token` into the Storage. Then another
+SDK instance does the same thing, and **overwrites** the previous value. `access_token`. The first SDK instance now has
+the access rights of the second, which can mess up your tests. Adding prefixes to your Storage instances would solve
+this error:
 
 ```js
 import { Directus, MemoryStorage } from '@directus/sdk';
@@ -91,11 +146,7 @@ const url = `http://${host}:${port}`;
 const directus = new Directus(url, { storage });
 ```
 
-#### `options.transport`
-
-The transport implementation. See [Transport](#transport) for more information.
-
-Defaults to an instance of `AxiosTransport`.
+:::
 
 ### Example
 
@@ -341,63 +392,20 @@ Note: The passed key is the primary key of the comment
 
 ## Auth
 
-### Configuration
-
-Directus will accept custom implementations of the `IAuth` interface. The default implementation `Auth` can be imported
-from `@directus/sdk`. The default implementation will require you to pass the transport and storage implementations. All
-options are optional.
-
-```js
-import { Auth } from '@directus/sdk';
-
-// ...
-
-const sdk = new Directus('url', {
-	auth: new Auth(transport, storage, options);
-	// ...
-});
-```
-
-#### transport
-
-The transport responsible for communicating with Directus backend.
-
-Defaults to an instance of `AxiosTransport` when not creating `Auth` youself.
-
-#### storage
-
-The storage responsible for storing authentication and sdk state.
-
-When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
-
-#### options
-
-##### options.mode
-
-Accepts `cookie` or `json`.
-
-When in `cookie` mode, the API will set the refresh token in an `httpOnly` secure cookie that can't be accessed from
-client side JavaScript. This is the most secure way to connect to the API from a public front-end website.
-
-When you can't rely on cookies, or need more control over handling the storage of the cookie (like in node.js), use
-`json` mode. This will return the refresh token in the "normal" payload. The storage of these tokens are handled by the
-`storage` implementation.
-
-Defaults to `cookie` in browsers, `json` in node.js.
-
-##### options.refresh
-
-See [Refresh auth token](#refresh-auth-token).
-
-### Get current token
-
-```ts
-const token = directus.auth.token;
-```
+By default the SDK will choose sensible defaults for your environment, and automatically refresh your access token
+before it expires. Or, you can choose to manually control this behavior using [AuthOptions](#auth-options).
 
 ### Login
 
-#### With credentials
+::: tip Types of Authentication
+
+There are two kinds of authentication Directus can use: static and login (see
+[Types of Tokens](/reference/api/system/authentication#types-of-tokens) for more on how authentication works in
+Directus).
+
+:::
+
+#### With login credentials
 
 ```js
 await directus.auth.login({
@@ -406,15 +414,168 @@ await directus.auth.login({
 });
 ```
 
-#### With static tokens
+#### With a static token
 
 ```js
 await directus.auth.static('static_token');
 ```
 
-#### Refresh auth token
+### Auth Options
 
-You can set authentication to auto-refresh the token once it's close to expire.
+All auth options are optional.
+
+Outline:
+
+```js
+{
+	authStorage
+	mode
+	refreshOptions {
+		autoRefresh
+		autoRefreshLeadTime
+	}
+}
+```
+
+<table>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+<th>Type</th>
+</tr>
+<tr>
+<td>
+
+`authStorage`
+
+</td>
+<td>
+
+Storage implementation for auth information. This is here in case you wish to use a different storage for auth than for
+the rest of the sdk. In almost all cases, you won't need to set this at all. See [Storage](#storage) for more
+information.
+
+</td>
+<td>
+
+Same storage as the main sdk.
+
+</td>
+<td>
+
+`IStorage?`
+
+</td>
+</tr>
+<tr>
+<td>
+
+`mode`
+
+</td>
+<td>
+
+When in `cookie` mode, the API will set the refresh token in an `httpOnly` secure cookie that can't be accessed from
+client side JavaScript. This is the most secure way to connect to the API from a public front-end website.
+
+When you can't rely on cookies (i.e. node.js), or need more control over handling the storage of the cookie, use `json`
+mode. This will return the refresh token in the "normal" payload.
+
+</td>
+<td>
+
+`cookie` in browsers, `json` in node.js.
+
+</td>
+<td>
+
+`cookie | json`
+
+</td>
+</tr>
+<tr>
+<td>
+
+`refreshOptions`
+
+</td>
+<td>
+
+Configuration options for the SDK's automatic token refresh functionality.
+
+</td>
+<td>
+
+_See below_
+
+</td>
+<td>
+
+`AuthAutoRefreshOptions`
+
+</td>
+</tr>
+<tr>
+<td></td>
+<td colspan=3>
+<table>
+<tr>
+<td>
+
+`autoRefresh`
+
+</td>
+<td>
+
+Whether or not to automatically refresh the auth token (get a new one before the current one expires).
+
+</td>
+<td>
+
+`true`
+
+</td>
+<td>
+
+`boolean`
+
+</td>
+</tr>
+<tr>
+<td>
+
+`autoRefreshLeadTime`
+
+</td>
+<td>
+
+How many milliseconds before the auth token expiration you want to automatically refresh it.
+
+The lead time (in milliseconds) between auth token refreshing and expiration.
+
+The auth token will be refreshed some number of milliseconds _before_ it actually expires. This setting controls exactly
+how many.
+
+</td>
+<td>
+
+`30000`
+
+</td>
+<td>
+
+`number`
+
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+</table>
+
+You can also pass any `AuthAutoRefreshOptions` as a second param to `login()`:
 
 ```js
 await directus.auth.login(
@@ -423,60 +584,65 @@ await directus.auth.login(
 		password: 'd1r3ctu5',
 	},
 	{
-		refresh: {
-			auto: true,
-		},
+		autoRefresh: true,
+		autoRefreshLeadTime: 30000,
 	}
 );
 ```
 
-You can also set how much time before the expiration you want to auto-refresh the token. When not specified, 30 sec is
-the default time.
+### Manual Token Control
 
-```js
-await directus.auth.login(
-	{
-		email: 'admin@example.com',
-		password: 'd1r3ctu5',
-	},
-	{
-		refresh: {
-			auto: true,
-			time: 30000, // refesh the token 30 secs before the expiration
-		},
-	}
-);
+You can manually get the auth token:
+
+```ts
+const token = directus.auth.token;
 ```
 
-### Refresh Auth Token
-
-You can manually refresh the authentication token. This won't try to refresh the token if it's still valid in the eyes
-of the SDK.
-
-Also worth mentioning that any concurrent refreshes (trying to refresh while a there's an existing refresh running),
-will result in only a single refresh hitting the server, and promises resolving/rejecting with the result from the first
-call. This depends on the implementation of IAuth you're using.
+You can also manually refresh the authentication token. This won't try to refresh the token if it's still valid in the
+eyes of the SDK.
 
 ```js
 await directus.auth.refresh();
 ```
 
-You can force the refresh by passing true in the first parameter.
-
-An optional parameter will accept auto-refresh information.
+If you want to force it to regardless, pass in `true`:
 
 ```js
 await directus.auth.refresh(true);
 ```
 
-This function can either return the `AuthResult` in case a refresh was made, `false` in case SDK thinks it's not needed,
-or throw an error in case refresh fails.
+In addition, any concurrent refreshes (trying to refresh while a there's an existing refresh running), will result in
+only a single refresh hitting the server, returning a promise resolving/rejecting with the result from the first call.
+
+`refresh` will return the `AuthResult` if the refresh was successful, `false` if the SDK thinks it's not needed, or
+throw an error if the refresh fails.
+
+If you wish to control the automatic refresh of the token yourself for whatever reason, here is an example of how you
+might do so:
+
+````js
+
+const directus = new Directus('https://api.example.com')
+const response = await directus.login({
+		email: 'admin@example.com',
+		password: 'd1r3ctu5',
+	},);
+
+	const accessToken = response.data.data.access_token;
+
+	// Store the access token somewhere to use in auth headers, like
+	// request.headers['Authorization'] = `Bearer ${accessToken}`;
+
+	// Refresh the token 10 seconds before the access token expires.
+	setTimeout(() => directus.auth.refresh(), response.data.data.expires - 10000);
+
+	```
 
 ### Logout
 
 ```js
 await directus.auth.logout();
-```
+````
 
 ### Request a Password Reset
 
@@ -503,42 +669,6 @@ await directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
 ```
 
 Note: The token passed in the first parameter is sent in an email to the user when using `request()`
-
-## Transport
-
-The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP
-libraries for example.
-
-### Interface
-
-```ts
-// Simplified version, `import { ITransport } from '@directus/sdk';`
-interface ITransport {
-	url;
-	get(path);
-	head(path);
-	options(path);
-	delete(path, data = undefined);
-	post(path, data);
-	put(path, data);
-	patch(path, data);
-}
-```
-
-### AxiosTransport
-
-The default transport used in both browser and node deployments. It supports auto refresh on request.
-
-#### Options
-
-AxiosTransport requires a base URL and a storage implementation to work.
-
-```ts
-const transport = new AxiosTransport('http://example.com', new MemoryStorage(), async () => {
-	await sdk.auth.refresh();
-});
-await transport.get('/server/info');
-```
 
 ## Storage
 
