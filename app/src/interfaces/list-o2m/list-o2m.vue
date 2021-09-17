@@ -377,11 +377,11 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value?.field;
 				if (!pkField) return;
 				const hasPrimaryKey = pkField in item;
-				
+
 				const edits = (props.value || []).find(
 					(edit: any) => typeof edit === 'object' && pkField && edit[pkField] === item[pkField]
 				);
-				
+
 				editsAtStart.value = hasPrimaryKey ? edits || { [pkField]: item[pkField] || {} } : item;
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
 			}
