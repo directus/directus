@@ -27,8 +27,26 @@ export enum Meta {
 	FILTER_COUNT = 'filter_count',
 }
 
+type Dictionary = { [k: string]: any };
+
+type Wildcard = { '*': undefined; '*.*': undefined; '*.*.*': undefined };
+
+type WithWildcard<T> = T extends Dictionary ? T & Wildcard : T;
+
+type FieldsDotNotation<T> = (
+	WithWildcard<T> extends Dictionary
+		? {
+				[K in Exclude<keyof WithWildcard<T>, symbol>]: `${K}${FieldDotPrefix<FieldsDotNotation<WithWildcard<T>[K]>>}`;
+		  }[Exclude<keyof WithWildcard<T>, symbol>]
+		: ''
+) extends infer D
+	? Extract<D, string>
+	: never;
+
+type FieldDotPrefix<T extends string> = T extends '' ? '' : `.${T}`;
+
 export type QueryOne<T> = {
-	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
+	fields?: FieldsDotNotation<T>[];
 	search?: string;
 	deep?: Record<string, DeepQueryMany<T>>;
 	export?: 'json' | 'csv' | 'xml';
