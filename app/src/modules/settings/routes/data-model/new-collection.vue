@@ -131,6 +131,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { DeepPartial } from '@directus/shared/types';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	setup() {
@@ -451,7 +452,7 @@ export default defineComponent({
 				});
 			}
 
-			return fields;
+			return translate(fields);
 		}
 
 		function getSystemRelations() {
