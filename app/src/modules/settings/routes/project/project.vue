@@ -35,6 +35,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
@@ -53,6 +54,10 @@ export default defineComponent({
 		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
 
 		const saving = ref(false);
+
+		useShortcut('meta+s', () => {
+			if (!noEdits.value) save();
+		});
 
 		return { t, fields, initialValues, edits, noEdits, saving, save };
 

@@ -129,6 +129,7 @@ import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
+import useShortcut from '@/composables/use-shortcut';
 
 type FormattedPreset = {
 	id: number;
@@ -183,6 +184,10 @@ export default defineComponent({
 		const layout = computed(() => values.value.layout);
 
 		const { layoutWrapper } = useLayout(layout);
+
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) save();
+		});
 
 		return {
 			t,

@@ -93,6 +93,7 @@ import FieldsManagement from './components/fields-management.vue';
 import useItem from '@/composables/use-item';
 import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -129,6 +130,10 @@ export default defineComponent({
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
 		const confirmDelete = ref(false);
 
 		return {
@@ -157,6 +162,12 @@ export default defineComponent({
 			await collectionsStore.hydrate();
 			await fieldsStore.hydrate();
 			router.push(`/settings/data-model`);
+		}
+
+		async function saveAndStay() {
+			await save();
+			await collectionsStore.hydrate();
+			await fieldsStore.hydrate();
 		}
 
 		async function saveAndQuit() {

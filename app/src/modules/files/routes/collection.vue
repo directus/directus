@@ -186,6 +186,7 @@ import { useLayout } from '@/composables/use-layout';
 import uploadFiles from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import useShortcut from '@/composables/use-shortcut';
 
 type Item = {
 	[field: string]: any;
@@ -305,6 +306,10 @@ export default defineComponent({
 		useEventListener(window, 'drop', onDrop);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+
+		useShortcut('delete', () => {
+			if (selection.value.length > 0) confirmDelete.value = true;
+		});
 
 		return {
 			t,

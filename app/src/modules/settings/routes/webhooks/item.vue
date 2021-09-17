@@ -76,6 +76,7 @@ import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	name: 'WebhooksItem',
@@ -115,6 +116,14 @@ export default defineComponent({
 			if (loading.value) return t('loading');
 			if (isNew.value) return t('creating_webhook');
 			return item.value?.name;
+		});
+
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
+		useShortcut('meta+shift+s', () => {
+			if (hasEdits.value) saveAndAddNew();
 		});
 
 		return {

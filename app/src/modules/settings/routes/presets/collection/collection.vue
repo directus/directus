@@ -98,6 +98,7 @@ import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
+import useShortcut from '@/composables/use-shortcut';
 
 type PresetRaw = {
 	id: number;
@@ -134,6 +135,10 @@ export default defineComponent({
 		const { confirmDelete, deleting, deleteSelection } = useDelete();
 
 		getPresets();
+
+		useShortcut('delete', () => {
+			if (selection.value.length > 0) confirmDelete.value = true;
+		});
 
 		return {
 			t,
