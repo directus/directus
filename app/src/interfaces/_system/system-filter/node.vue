@@ -22,17 +22,15 @@
 							</span>
 							<span class="text">{{ t('interfaces.filter.of_the_following') }}</span>
 						</div>
-						<transition-expand x-axis>
-							<v-icon
-								v-if="hover === index"
-								v-tooltip="t('interfaces.filter.remove_element')"
-								class="delete"
-								name="close"
-								@click="$emit('remove-node', [index])"
-							></v-icon>
-						</transition-expand>
+						<v-icon
+							v-if="hover === index"
+							v-tooltip="t('interfaces.filter.remove_element')"
+							class="delete"
+							name="close"
+							@click="$emit('remove-node', [index])"
+						></v-icon>
 					</div>
-					<nested-draggable
+					<node
 						:tree="element.values"
 						:collection="collection"
 						:depth="depth + 1"
@@ -66,16 +64,14 @@
 							:items="getCompareOptions(element.name)"
 							@update:modelValue="updateComparator(index, $event)"
 						></v-select>
-						<field-input :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
-						<transition-expand x-axis>
-							<v-icon
-								v-show="hover === index"
-								v-tooltip="t('interfaces.filter.remove_element')"
-								class="delete"
-								name="close"
-								@click="$emit('remove-node', [index])"
-							></v-icon>
-						</transition-expand>
+						<input-group :field="element" :collection="collection" @update:field="updateNode(index, $event)" />
+						<v-icon
+							v-show="hover === index"
+							v-tooltip="t('interfaces.filter.remove_element')"
+							class="delete"
+							name="close"
+							@click="$emit('remove-node', [index])"
+						></v-icon>
 					</div>
 				</div>
 			</li>
@@ -86,19 +82,19 @@
 <script lang="ts">
 import useFieldTree from '@/composables/use-field-tree';
 import { defineComponent, PropType, ref, toRefs, watch } from 'vue';
-import FieldInput from './field-input.vue';
+import InputGroup from './input-group.vue';
 import Draggable from 'vuedraggable';
-import { FilterOperators, FilterTree, Field } from './system-filter.vue';
+import { FilterOperators, FilterTree, FilterField } from './system-filter.vue';
 import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 
 export default defineComponent({
-	name: 'NestedDraggable',
+	name: 'Node',
 	components: {
 		Draggable,
-		FieldInput,
+		InputGroup,
 	},
 	props: {
 		tree: {
@@ -161,7 +157,7 @@ export default defineComponent({
 		}
 
 		function updateComparator(index: number, newVal: FilterOperators) {
-			const field = tree.value[index] as Field;
+			const field = tree.value[index] as FilterField;
 			field.comparator = newVal;
 
 			if (['_in', '_nin'].includes(newVal)) {
@@ -184,19 +180,18 @@ export default defineComponent({
 			}
 		}
 
-		function updateNode(index: number, field: Field | FilterTree) {
+		function updateNode(index: number, field: FilterField | FilterTree) {
 			const newTree = cloneDeep(props.tree);
 			const node = newTree[index];
 			if (node.type === 'logic' && Array.isArray(field)) {
 				node.values = field;
 			} else {
-				newTree[index] = field as Field;
+				newTree[index] = field as FilterField;
 			}
 			emit('update:tree', newTree);
 		}
 
 		function getCompareOptions(name: string) {
-			// TODO: Support m2a fields
 			const fieldInfo = fieldsStore.getField(props.collection, name);
 			if (fieldInfo === null) return [];
 			return getFilterOperatorsForType(fieldInfo.type).map((type) => ({

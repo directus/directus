@@ -1,13 +1,5 @@
 <template>
-	<template v-if="type === 'geometry' || type === 'json'">
-		<v-icon class="preview" :name="type === 'json' ? 'integration_instructions' : 'map'" @click="active = true" />
-		<v-dialog v-model="active">
-			<div class="dialog">
-				<component :is="is" small :type="type" :value="value" @input="$emit('input', $event)"></component>
-			</div>
-		</v-dialog>
-	</template>
-	<span v-else-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
+	<span v-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
 	<input
 		v-else-if="is === 'interface-input'"
 		:value="value"
@@ -17,7 +9,13 @@
 	/>
 	<v-menu v-else :close-on-content-click="false" :show-arrow="true" seamless>
 		<template #activator="{ toggle }">
-			<div class="preview" @click="toggle">{{ displayValue }}</div>
+			<v-icon
+				v-if="type === 'geometry' || type === 'json'"
+				class="preview"
+				:name="type === 'json' ? 'integration_instructions' : 'map'"
+				@click="toggle"
+			/>
+			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
 			<component
@@ -34,6 +32,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
@@ -52,7 +51,7 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props) {
-		const active = ref(false);
+		const { t } = useI18n();
 
 		const displayValue = computed(() => (props.value === null ? '--' : props.value));
 
@@ -63,7 +62,7 @@ export default defineComponent({
 			return 3 + 'ch';
 		});
 
-		return { active, displayValue, width };
+		return { displayValue, width, t };
 	},
 });
 </script>
@@ -83,6 +82,11 @@ export default defineComponent({
 	&.time,
 	&.dateTime {
 		min-width: 250px;
+	}
+
+	&.geometry,
+	&.json {
+		width: 500px;
 	}
 
 	:deep(.v-input .input) {

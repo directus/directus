@@ -24,7 +24,11 @@
 			@input="value = $event"
 		></input-component>
 	</template>
-	<div v-else-if="['_in', '_nin'].includes(field.comparator)" class="list">
+	<div
+		v-else-if="['_in', '_nin'].includes(field.comparator)"
+		class="list"
+		:class="{ moveComma: interfaceType === 'interface-input' }"
+	>
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
@@ -52,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Field } from './system-filter.vue';
+import { FilterField } from './system-filter.vue';
 import { computed, defineComponent, PropType } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
@@ -63,7 +67,7 @@ export default defineComponent({
 	components: { InputComponent },
 	props: {
 		field: {
-			type: Object as PropType<Field>,
+			type: Object as PropType<FilterField>,
 			default: null,
 		},
 		collection: {
@@ -156,8 +160,12 @@ export default defineComponent({
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin: 0 8px 0 -6px;
+		margin-right: 6px;
 		content: ',';
+	}
+
+	&.moveComma .value:not(:last-child)::after {
+		margin: 0 8px 0 -6px;
 	}
 }
 

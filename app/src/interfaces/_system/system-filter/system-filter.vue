@@ -4,7 +4,7 @@
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
-			<nested-draggable
+			<node
 				v-else
 				v-model:tree="innerValue"
 				:collection="collectionName"
@@ -29,53 +29,33 @@ import { useFieldsStore } from '@/stores';
 import { get, set, isEqual, debounce } from 'lodash';
 import { defineComponent, ref, PropType, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NestedDraggable from './nested-draggable.vue';
+import { FilterOperator } from '@directus/shared/types';
+import Node from './node.vue';
 
-export type FilterTree = (Field | Logic)[];
+export type FilterTree = FilterNode[];
 
-export type Logic = {
+export type FilterNode = FilterField | FilterLogic;
+
+export type FilterLogic = {
 	type: 'logic';
 	name: LogicOperators;
 	values: FilterTree;
 };
 
-export type Field = {
+export type FilterField = {
 	type: 'field';
 	name: string;
 	comparator: FilterOperators;
 	value: any;
 };
 
-export const logicOperators = ['and', 'or'] as const;
-export type LogicOperators = `_${typeof logicOperators[number]}`;
+export type LogicOperators = '_and' | '_or';
 
-export const filterOperators = [
-	'eq',
-	'neq',
-	'lt',
-	'lte',
-	'gt',
-	'gte',
-	'in',
-	'nin',
-	'null',
-	'nnull',
-	'contains',
-	'ncontains',
-	'starts_with',
-	'nstarts_with',
-	'ends_with',
-	'nends_with',
-	'between',
-	'nbetween',
-	'empty',
-	'nempty',
-] as const;
-export type FilterOperators = `_${typeof filterOperators[number]}`;
+export type FilterOperators = `_${FilterOperator}`;
 
 export default defineComponent({
 	components: {
-		NestedDraggable,
+		Node,
 	},
 	props: {
 		value: {
@@ -163,7 +143,7 @@ export default defineComponent({
 			return id.map((v) => `[${v}]`).join('.values.') + '.values';
 		}
 
-		function deconstructFilterTree(tree: Field | Logic): Record<string, any> | null {
+		function deconstructFilterTree(tree: FilterNode): Record<string, any> | null {
 			if (tree === undefined) return null;
 			if (tree.type === 'logic') {
 				return {
@@ -177,7 +157,7 @@ export default defineComponent({
 			}
 		}
 
-		function constructFilterTree(tree: Record<string, any>, id = [0]): Field | Logic {
+		function constructFilterTree(tree: Record<string, any>, id = [0]): FilterNode {
 			const key = Object.keys(tree)[0];
 			if (key.startsWith('_') && Array.isArray(tree[key]) && key) {
 				return {
