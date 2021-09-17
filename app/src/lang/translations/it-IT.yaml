@@ -586,11 +586,11 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creare
+create: Creazione
 on_create: Alla Creazione
-on_update: In aggiornamento
+on_update: Alla modifica
 read: Leggere
-update: Aggiornare
+update: Modifica
 select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
@@ -914,8 +914,8 @@ field_options:
     overrides_divider_title: Personalizzazioni App
   directus_activity:
     login: Accedi
-    create: Creare
-    update: Aggiornare
+    create: Creazione
+    update: Modifica
     delete: Elimina
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
@@ -980,8 +980,8 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Aggiornare
+    actions_create: Creazione
+    actions_update: Modifica
     actions_delete: Elimina
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
