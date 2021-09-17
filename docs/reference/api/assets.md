@@ -27,9 +27,10 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4
 
 ::: warning Direct File Access
 
-While you may _technically_ be able to expose your storage adapters root filesystem and access your raw files through
-there, it is recommended that you always use the Directus API. This is the only way that you can take advantage of file
-permissions and other built-in features.
+While you can _technically_ expose your storage adapters root filesystem and access your raw files through there, 
+it is recommended that you always use the Directus API. This is the only way that you can take advantage of file
+permissions and other built-in features. If you want to provide direct access through a CDN or Cloud Storage, you may
+utilize the `STORAGE_<LOCATION>_PUBLIC_URL` [environment variable](/reference/environment-variables/#file-storage).
 
 :::
 
