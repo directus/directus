@@ -7,11 +7,17 @@
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
-			<div v-if="isIllegalAssetTransformation" class="illegal-asset-transformation">
-				<v-icon large name="info" outline />
-				<span>{{ t('illegal_asset_transformation') }}</span>
+			<div v-if="imageError" class="image-error">
+				<v-icon large :name="imageError === 'illegalAssetTransformation' ? 'info_outline' : 'error_outline'" />
+				<span class="message">
+					{{
+						imageError === 'illegalAssetTransformation'
+							? t('image_errors.too_large_to_preview')
+							: t('image_errors.generic')
+					}}
+				</span>
 			</div>
-			<img v-else :src="src" alt="" role="presentation" />
+			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
 
 			<div class="shadow" />
 
@@ -71,6 +77,8 @@ type Image = {
 	filename_download: string;
 };
 
+type ImageError = 'generic' | 'illegalAssetTransformation';
+
 export default defineComponent({
 	components: { FileLightbox, DrawerItem },
 	props: {
@@ -95,7 +103,7 @@ export default defineComponent({
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
 		const editDrawerActive = ref(false);
-		const isIllegalAssetTransformation = ref(false);
+		const imageError = ref<ImageError | null>(null);
 
 		const cacheBuster = ref(nanoid());
 
@@ -152,7 +160,8 @@ export default defineComponent({
 			loading,
 			image,
 			src,
-			isIllegalAssetTransformation,
+			imageError,
+			imageErrorHandler,
 			meta,
 			lightboxActive,
 			editDrawerActive,
@@ -184,18 +193,23 @@ export default defineComponent({
 				} else {
 					image.value = response.data.data;
 				}
-
-				await api.get(
-					`${getRootPath()}assets/${response.data.data.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
-				);
 			} catch (err: any) {
-				if (err.response?.data?.errors[0]?.extensions?.code === 'ILLEGAL_ASSET_TRANSFORMATION') {
-					isIllegalAssetTransformation.value = true;
-				} else {
-					unexpectedError(err);
-				}
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
+			}
+		}
+
+		async function imageErrorHandler() {
+			if (!src.value) return;
+			try {
+				await api.get(src.value);
+			} catch (err: any) {
+				if (err.response?.data?.errors[0]?.extensions?.code === 'ILLEGAL_ASSET_TRANSFORMATION') {
+					imageError.value = 'illegalAssetTransformation';
+				} else {
+					imageError.value = 'generic';
+				}
 			}
 		}
 
@@ -269,24 +283,22 @@ img {
 	}
 }
 
-.illegal-asset-transformation {
+.image-error {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	// width: 100%;
 	height: 100%;
 	color: var(--foreground-subdued);
 	background-color: var(--background-normal);
 
 	.v-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		margin-bottom: 6px;
 	}
 
-	span {
+	.message {
+		max-width: 300px;
 		padding: 0 16px;
 		text-align: center;
 	}
