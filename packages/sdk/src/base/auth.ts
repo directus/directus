@@ -24,14 +24,17 @@ export class Auth implements IAuth {
 	private refresher: Debouncer<AuthResult | false>;
 
 	constructor(transport: ITransport, storage: IStorage, options?: AuthInternalOptions) {
+		// Setting options
 		this.options = options || {};
 		this.options.mode = options?.mode || (typeof window !== 'undefined' ? 'cookie' : 'json');
+		// TODO: prevent cookie mode in node
 		this.options.refreshOptions = options?.refreshOptions || {
 			autoRefresh: true,
 			autoRefreshLeadTime: DefaultLeadTime,
 		};
 		this.options.refreshOptions.autoRefresh = options?.refreshOptions?.autoRefresh ?? true;
 		this.options.refreshOptions.autoRefreshLeadTime = options?.refreshOptions?.autoRefreshLeadTime ?? DefaultLeadTime;
+
 		if (this.options.refreshOptions.autoRefreshLeadTime < 0) {
 			throw new Error("Option 'autoRefreshLeadTime' cannot be a negative number"); // Is this the proper way to handle config errors?
 		}
@@ -40,7 +43,7 @@ export class Auth implements IAuth {
 		this.timer = false;
 		this.refresher = new Debouncer(this.refreshToken.bind(this));
 		try {
-			this.updateRefresh(this.options?.refreshOptions);
+			this.updateRefresher(this.options?.refreshOptions);
 		} catch {
 			// Ignore error
 		}
@@ -69,18 +72,12 @@ export class Auth implements IAuth {
 			return false;
 		}
 
-		const response = await this.transport.post<AuthResult>(
-			'/auth/refresh',
-			{
-				refresh_token: this.options.mode === 'json' ? this.storage.auth_refresh_token : undefined,
-			},
-			{
-				refreshTokenIfNeeded: false,
-			}
-		);
+		const response = await this.transport.post<AuthResult>('/auth/refresh', {
+			refresh_token: this.options.mode === 'json' ? this.storage.auth_refresh_token : undefined,
+		});
 
 		this.updateStorage(response.data!);
-		this.updateRefresh();
+		this.updateRefresher();
 
 		return {
 			access_token: response.data!.access_token,
@@ -93,47 +90,45 @@ export class Auth implements IAuth {
 		this.storage.auth_token = result.access_token;
 		this.storage.auth_refresh_token = result.refresh_token ?? null;
 		if (result.expires) {
+			// should technically be the response time of the request, not Date.now()
 			this.storage.auth_expires_at = Date.now() + result.expires;
 		} else {
 			this.storage.auth_expires_at = null;
 		}
 	}
 
-	private updateRefresh(options?: Partial<AuthAutoRefreshOptions>) {
+	private updateRefresher(options?: Partial<AuthAutoRefreshOptions>) {
+		// Reset timer
+		clearTimeout(this.timer as ReturnType<typeof setTimeout>);
+
 		const expiresAt = this.storage.auth_expires_at;
 		if (expiresAt === null) {
-			clearTimeout(this.timer as ReturnType<typeof setTimeout>);
-			return; // Don't auto refresh if there's no expiration time (token auth)
+			return; // Don't set timer if there's no expiration time (token auth)
 		}
 
+		// Update options
 		if (options) {
 			this.options.refreshOptions!.autoRefresh = options.autoRefresh ?? this.options.refreshOptions!.autoRefresh;
 			this.options.refreshOptions!.autoRefreshLeadTime =
 				options.autoRefreshLeadTime ?? this.options.refreshOptions!.autoRefreshLeadTime;
 		}
 
-		clearTimeout(this.timer as ReturnType<typeof setTimeout>);
-
 		let remaining = expiresAt - this.options.refreshOptions!.autoRefreshLeadTime! - Date.now();
+		// TODO: how to deal with the unlikely edge case that LeadTime > token TTL; creates infinite refresh loop (why doesn't debouncer catch this?)
 		if (remaining < 0) {
 			// It's already expired, try a refresh
 			if (expiresAt < Date.now()) {
-				// should be impossible if leadtime is > 0
-				return; // Don't set auto refresh
+				// Is already expired
+				return;
 			} else {
+				// Is not expired, but will be soon
 				remaining = 0;
 			}
 		}
 
 		if (this.options.refreshOptions!.autoRefresh) {
 			this.timer = setTimeout(() => {
-				this.refresh()
-					.then(() => {
-						// Do nothing
-					})
-					.catch(() => {
-						// Do nothing
-					});
+				this.refresh();
 			}, remaining);
 		}
 	}
@@ -143,22 +138,20 @@ export class Auth implements IAuth {
 	}
 
 	async login(credentials: AuthCredentials, refreshOptions?: Partial<AuthAutoRefreshOptions>): Promise<AuthResult> {
-		// why does login take its own refresh options object? so you can change the global login options on subsequent logins?
+		// why does login take its own refresh options object so you can change the global login options on repeat logins?
 		refreshOptions = refreshOptions || {};
-		const response = await this.transport.post<AuthResult>(
-			'/auth/login',
-			{
-				mode: this.options.mode,
-				...credentials,
-			},
-			{
-				refreshTokenIfNeeded: false,
-				sendAuthorizationHeaders: false,
-			}
-		);
+
+		// Shouldn't be sending any credentials on login
+		this.storage.auth_token = null;
+		this.storage.auth_expires_at = null;
+
+		const response = await this.transport.post<AuthResult>('/auth/login', {
+			mode: this.options.mode,
+			...credentials,
+		});
 
 		this.updateStorage(response.data!);
-		this.updateRefresh(refreshOptions);
+		this.updateRefresher(refreshOptions);
 
 		return {
 			access_token: response.data!.access_token,
@@ -185,15 +178,9 @@ export class Auth implements IAuth {
 			refresh_token = this.storage.auth_refresh_token || undefined;
 		}
 
-		await this.transport.post(
-			'/auth/logout',
-			{
-				refresh_token,
-			},
-			{
-				refreshTokenIfNeeded: false,
-			}
-		);
+		await this.transport.post('/auth/logout', {
+			refresh_token,
+		});
 
 		this.storage.auth_token = null;
 		this.storage.auth_expires_at = null;

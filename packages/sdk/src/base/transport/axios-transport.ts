@@ -23,14 +23,12 @@ export type AxiosInterceptor<T> = {
 export class AxiosTransport implements ITransport {
 	private _url: string;
 	private _storage: IStorage;
-	private _refresh: () => Promise<void>;
 	public _axios: AxiosInstance;
 
-	constructor(url: string, storage: IStorage, refresh: AxiosTransportRefreshHandler = () => Promise.resolve()) {
+	constructor(url: string, storage: IStorage) {
 		this._url = url;
 		this._storage = storage;
 		this._axios = null as any;
-		this._refresh = refresh;
 		this.url = url;
 	}
 
@@ -85,13 +83,8 @@ export class AxiosTransport implements ITransport {
 		try {
 			options = options || {};
 			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
-			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? false;
 			options.headers = options.headers ?? {};
 			options.onUploadProgress = options.onUploadProgress ?? undefined;
-
-			if (options.refreshTokenIfNeeded) {
-				await this._refresh();
-			}
 
 			const config = {
 				method,
@@ -102,18 +95,16 @@ export class AxiosTransport implements ITransport {
 				onUploadProgress: options.onUploadProgress,
 			};
 
-			// cookies?
 			const token = this._storage.auth_token;
 			const expiration = this._storage.auth_expires_at;
-			if (options.sendAuthorizationHeaders) {
-				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
-					if (token.startsWith(`Bearer `)) {
-						config.headers.Authorization = token;
-					} else {
-						config.headers.Authorization = `Bearer ${token}`;
-					}
-				} // if it is expired....refresh here? sheesh
-			}
+			if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
+				// Expires but hasn't yet, or doesn't expire
+				if (token.startsWith(`Bearer `)) {
+					config.headers.Authorization = token;
+				} else {
+					config.headers.Authorization = `Bearer ${token}`;
+				}
+			} // There is an edge case where it has expired by the time we get here, and refresh either hasn't had enough lead time or is stalled for some reason...
 
 			const response = await this.axios.request<any>(config);
 
