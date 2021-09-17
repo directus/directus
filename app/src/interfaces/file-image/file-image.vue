@@ -8,13 +8,10 @@
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<div v-if="imageError" class="image-error">
-				<v-icon large :name="imageError === 'illegalAssetTransformation' ? 'info_outline' : 'error_outline'" />
+				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
+
 				<span class="message">
-					{{
-						imageError === 'illegalAssetTransformation'
-							? t('image_errors.too_large_to_preview')
-							: t('image_errors.generic')
-					}}
+					{{ t(`errors.${imageError}`) }}
 				</span>
 			</div>
 			<img v-else :src="src" alt="" role="presentation" @error="imageErrorHandler" />
@@ -77,8 +74,6 @@ type Image = {
 	filename_download: string;
 };
 
-type ImageError = 'generic' | 'illegalAssetTransformation';
-
 export default defineComponent({
 	components: { FileLightbox, DrawerItem },
 	props: {
@@ -97,13 +92,13 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
+		const { t, n, te } = useI18n();
 
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
 		const editDrawerActive = ref(false);
-		const imageError = ref<ImageError | null>(null);
+		const imageError = ref<string | null>(null);
 
 		const cacheBuster = ref(nanoid());
 
@@ -205,10 +200,10 @@ export default defineComponent({
 			try {
 				await api.get(src.value);
 			} catch (err: any) {
-				if (err.response?.data?.errors[0]?.extensions?.code === 'ILLEGAL_ASSET_TRANSFORMATION') {
-					imageError.value = 'illegalAssetTransformation';
-				} else {
-					imageError.value = 'generic';
+				imageError.value = err.response?.data?.errors[0]?.extensions?.code;
+
+				if (!imageError.value || !te(imageError.value)) {
+					imageError.value = 'UNKNOWN';
 				}
 			}
 		}
