@@ -400,8 +400,7 @@ before it expires. Or, you can choose to manually control this behavior using [A
 ::: tip Types of Authentication
 
 There are two kinds of authentication Directus can use: static and login (see
-[Types of Tokens](/reference/api/system/authentication#types-of-tokens) for more on how authentication works in
-Directus).
+[Types of Tokens](/reference/api/authentication#types-of-tokens) for more on how authentication works in Directus).
 
 :::
 
@@ -636,13 +635,13 @@ const response = await directus.login({
 	// Refresh the token 10 seconds before the access token expires.
 	setTimeout(() => directus.auth.refresh(), response.data.data.expires - 10000);
 
-	```
+```
 
 ### Logout
 
 ```js
 await directus.auth.logout();
-````
+```
 
 ### Request a Password Reset
 
@@ -963,3 +962,4 @@ me.level = 42;
 // Error TS2322: Type "string" is not assignable to type "number".
 me.experience = 'high';
 ```
+````
