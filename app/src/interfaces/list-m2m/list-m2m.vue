@@ -63,7 +63,20 @@
 			:circular-field="junction.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
-		/>
+		>
+			<template #actions>
+				<v-button
+					v-if="currentlyEditing !== '+' && relationCollection.collection === 'directus_files'"
+					secondary
+					rounded
+					icon
+					download
+					:href="downloadUrl"
+				>
+					<v-icon name="download" />
+				</v-button>
+			</template>
+		</drawer-item>
 
 		<drawer-collection
 			v-if="!disabled"
@@ -104,6 +117,8 @@ import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { getRootPath } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -205,6 +220,11 @@ export default defineComponent({
 
 		const { showUpload, onUpload } = useUpload();
 
+		const downloadUrl = computed(() => {
+			if (relatedPrimaryKey.value === null || relationCollection.value.collection !== 'directus_files') return;
+			return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+		});
+
 		return {
 			t,
 			junction,
@@ -236,6 +256,7 @@ export default defineComponent({
 			showEditModal,
 			onUpload,
 			showUpload,
+			downloadUrl,
 		};
 
 		function emitter(newVal: any[] | null) {
