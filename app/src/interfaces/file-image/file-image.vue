@@ -202,7 +202,7 @@ export default defineComponent({
 			} catch (err: any) {
 				imageError.value = err.response?.data?.errors[0]?.extensions?.code;
 
-				if (!imageError.value || !te(imageError.value)) {
+				if (!imageError.value || !te('errors.' + imageError.value)) {
 					imageError.value = 'UNKNOWN';
 				}
 			}
