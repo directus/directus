@@ -461,10 +461,11 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNKNOWN: Unexpected Error
   UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  UNKNOWN: Unexpected Error
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
