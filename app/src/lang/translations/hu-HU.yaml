@@ -423,10 +423,10 @@ errors:
   RECORD_NOT_UNIQUE: Ismétlődő értéket észleltem
   USER_SUSPENDED: Felhasználó felfüggesztve
   CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
-  UNKNOWN: Váratlan hiba történt
   UNPROCESSABLE_ENTITY: Feldolgozhatatlan entitás
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
+  UNKNOWN: Váratlan hiba történt
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...
