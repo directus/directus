@@ -445,10 +445,10 @@ errors:
   RECORD_NOT_UNIQUE: 检测到重复的值
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
-  UNKNOWN: 未知错误
   UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
+  UNKNOWN: 未知错误
 security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
