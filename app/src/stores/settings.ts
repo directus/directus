@@ -4,11 +4,12 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
+import { Settings } from '@directus/shared/types';
 
 export const useSettingsStore = defineStore({
 	id: 'settingsStore',
 	state: () => ({
-		settings: null as null | Record<string, any>,
+		settings: null as null | Settings,
 	}),
 	actions: {
 		async hydrate() {

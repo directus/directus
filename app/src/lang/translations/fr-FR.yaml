@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: Publié
 draft: Brouillon
 archived: Archivé
 edit_field: Modifier le champ
@@ -20,6 +41,7 @@ role_name: Nom de rôle
 branch: Branche
 leaf: Feuille
 indeterminate: Indéterminé
+edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
@@ -123,6 +145,9 @@ fields_for_role: 'Champs dont l''action « {action} » peut être effectué par 
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presentation_and_aliases: Présentation & Alias
+revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
+changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
+no_relational_data: Gardez à l'esprit que les données relationnelles ne sont pas incluses ici.
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
@@ -360,6 +385,7 @@ no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
 all_items: Tous les éléments
 any: N'importe quel
 csv: CSV
@@ -701,11 +727,28 @@ no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée
 batch_delete_confirm: >-
   Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
 cancel: Annuler
+no_upscale: Ne pas agrandir les images
 collection: Collection
 collections: Collections
 singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
+directus_collection:
+  directus_activity: Journaux de responsabilité pour tous les événements
+  directus_collections: Configuration de la collection supplémentaire et métadonnées
+  directus_fields: Configuration supplémentaire des champs et métadonnées
+  directus_files: Métadonnées pour tous les fichiers gérés
+  directus_folders: Fournit des répertoires virtuels pour les fichiers
+  directus_migrations: Quelle version de la base de données que vous utilisez
+  directus_permissions: Sélectionner les permissions pour chaque groupe
+  directus_presets: Préréglages pour la collection par défaut et les signets
+  directus_relations: Configuration de la relation et métadonnées
+  directus_revisions: Instantanés de données pour toutes les activités
+  directus_roles: Groupes de permissions pour les utilisateurs système
+  directus_sessions: Informations sur la session utilisateur
+  directus_settings: Options de configuration du projet
+  directus_users: Utilisateurs du système pour la plateforme
+  directus_webhooks: Configuration des requêtes HTTP basées sur des événements
 fields:
   directus_activity:
     item: Clé principale de l'élément
@@ -788,6 +831,8 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -843,11 +888,21 @@ field_options:
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
+      none_text: Aucun - Non Recommandé
       weak_text: Faible - 8 caractères minimum
+      strong_text: Fort – Majuscules / minuscules / chiffres / spéciaux
+    storage_asset_presets:
+      fit:
+        contain_text: Contient (préserver le rapport d'aspect)
+        cover_text: Couverture (force la taille exacte)
+        fit_text: Ajuster l'intérieur
+        outside_text: Ajuster à l'extérieur
     additional_transforms: Transformations supplémentaires
     transforms_note: Le nom de la méthode Sharp et ses arguments. Voir https://sharp.pixelplumbing.com/api-constructor pour plus d'informations.
     mapbox_key: Jeton d'accès Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Style de Mapbox
     files_divider_title: Fichiers et miniatures
     overrides_divider_title: Remplacer les applications
@@ -898,7 +953,9 @@ field_options:
         group_placeholder: Étiquetez ce groupe...
         type_name: Type
         choices_always: Toujours ouvert
+        choices_start_collapsed: Commencer à réduire
     collections_name: Collections
+    collections_addLabel: Ajouter une collection...
   directus_users:
     preferences_divider: Préférences utilisateur
     dropdown_auto: Automatique (Basé sur le système)
@@ -921,6 +978,7 @@ field_options:
     actions_delete: Supprimer
     actions_login: Identifiant
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
+no_value: Aucune valeur
 do_nothing: Ne rien faire
 generate_and_save_uuid: Générer et Enregistrer l'UUID
 save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
@@ -1032,6 +1090,7 @@ interfaces:
     value_combining: Combinaison de valeurs
     value_combining_note: Contrôle la valeur stockée lorsque des sélections imbriquées sont faites.
     show_all: Tout afficher
+    show_selected: Afficher la sélection
   input-code:
     code: Code
     description: Écrire ou partager des extraits de code
@@ -1127,8 +1186,20 @@ interfaces:
     imageToken_label: Quel token (statique) ajouter aux sources d'images
   map:
     map: Carte
+    description: Sélectionnez un emplacement sur une carte
     zoom: Zoom
+    geometry_type: Type de géométrie
+    geometry_format: Format géométrique
+    default_view: Vue par défaut
+    invalid_options: Options non valides
+    invalid_format: Format invalide ({format})
+    unexpected_geometry: '{expected} attendu, reçu {got}.'
+    fit_bounds: Ajuster la vue aux données
     native: Natif
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -1140,6 +1211,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
+    field_hint: Met les fichiers récemment téléchargés dans le dossier sélectionné. Cela n'affecte pas les fichiers existants qui sont sélectionnés.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1221,6 +1293,10 @@ interfaces:
     rate: Débit
   group-raw:
     name: Groupe brut
+    description: Rendre les champs tels qu'ils sont
+  group-detail:
+    name: Détail du groupe
+    description: Rendre les champs comme une section pliable
 displays:
   boolean:
     boolean: Booléen

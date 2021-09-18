@@ -1,4 +1,4 @@
-import { useCollection } from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@directus/shared/types';
 import { debounce, isEqual } from 'lodash';

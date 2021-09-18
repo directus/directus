@@ -1,6 +1,5 @@
-import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Collection } from '@/types';
-import { Field } from '@directus/shared/types';
+import { useStores } from './use-system';
+import { Collection, Field } from '../types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
 type UsableCollection = {
@@ -15,18 +14,21 @@ type UsableCollection = {
 };
 
 export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
+	const { useCollectionsStore, useFieldsStore } = useStores();
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 
 	const collection: Ref<string | null> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
-		return collectionsStore.collections.find(({ collection: key }) => key === collection.value) || null;
+		return (
+			(collectionsStore.collections as Collection[]).find(({ collection: key }) => key === collection.value) || null
+		);
 	});
 
 	const fields = computed(() => {
 		if (!collection.value) return [];
-		return fieldsStore.getFieldsForCollection(collection.value);
+		return fieldsStore.getFieldsForCollection(collection.value) as Field[];
 	});
 
 	const defaults = computed(() => {
