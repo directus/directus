@@ -50,7 +50,9 @@ function castToBoolean(value: any): boolean {
 	return Boolean(value);
 }
 
-function castToObject(value: any): Record<string, any> | any[] {
+function castToObject(value: any): any | any[] {
+	if (!value) return value;
+
 	if (typeof value === 'object') return value;
 
 	if (typeof value === 'string') {
@@ -60,6 +62,8 @@ function castToObject(value: any): Record<string, any> | any[] {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);
 			}
+
+			return value;
 		}
 	}
 
