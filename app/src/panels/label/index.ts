@@ -5,7 +5,7 @@ export default definePanel({
 	id: 'label',
 	name: '$t:panels.label.name',
 	description: '$t:panels.label.description',
-	icon: 'functions',
+	icon: 'title',
 	component: PanelLabel,
 	options: [
 		{
