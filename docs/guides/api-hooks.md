@@ -85,7 +85,7 @@ module.exports = function registerHook({ exceptions }) {
 | `response`                      |                                                             | No<sup>[1]</sup> |
 | `database.error`                | When a database error is thrown                             | No               |
 | `error`                         |                                                             | No               |
-| `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
+| `auth`                          | `login`, `logout`<sup>[1]</sup>, `jwt` and `refresh`<sup>[1]</sup> | Optional         |
 | `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
 | `items`                         | `read`<sup>[3]</sup>, `create`, `update` and `delete`       | Optional         |
 | `activity`                      | `create`, `update` and `delete`                             | Optional         |
