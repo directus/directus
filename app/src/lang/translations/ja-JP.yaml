@@ -201,8 +201,8 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
-  UNKNOWN: 予期しないエラーが発生しました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
