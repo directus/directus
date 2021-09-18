@@ -71,7 +71,7 @@ export default defineComponent({
 			required: true,
 		},
 		primaryKey: {
-			type: String,
+			type: [Number, String],
 			required: true,
 		},
 		languageField: {
