@@ -189,7 +189,7 @@ export class AuthenticationService {
 		if (customClaims) {
 			payload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
 		}
-      
+
 		/**
 		 * @TODO
 		 * Sign token with combination of server secret + user password hash
