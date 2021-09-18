@@ -449,10 +449,10 @@ errors:
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   USER_SUSPENDED: Utilisateur suspendu
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
-  UNKNOWN: Erreur inconnue
   UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+  UNKNOWN: Erreur inconnue
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...

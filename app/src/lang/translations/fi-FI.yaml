@@ -400,9 +400,9 @@ errors:
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   USER_SUSPENDED: Käyttäjä jäädytetty
   CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  UNKNOWN: Odottamaton virhe
   INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
+  UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki

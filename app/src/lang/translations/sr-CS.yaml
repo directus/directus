@@ -401,9 +401,9 @@ errors:
   RECORD_NOT_UNIQUE: Detektovana je dupla vrijednost
   USER_SUSPENDED: Suspendovan Korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNKNOWN: Neočekivana greška
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne može biti null
+  UNKNOWN: Neočekivana greška
 value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
 create_bookmark: Napravi Oznaku

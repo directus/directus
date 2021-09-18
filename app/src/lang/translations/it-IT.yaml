@@ -455,10 +455,10 @@ errors:
   RECORD_NOT_UNIQUE: Rilevato valore duplicato
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNKNOWN: Errore Imprevisto
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+  UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -1064,7 +1064,6 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
