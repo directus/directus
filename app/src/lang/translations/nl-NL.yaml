@@ -413,10 +413,10 @@ errors:
   RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
-  UNKNOWN: Onverwachte fout
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
   NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  UNKNOWN: Onverwachte fout
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
