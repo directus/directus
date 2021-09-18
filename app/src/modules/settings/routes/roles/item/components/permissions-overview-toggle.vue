@@ -66,8 +66,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
-import { Permission } from '@directus/shared/types';
-import { Collection } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';

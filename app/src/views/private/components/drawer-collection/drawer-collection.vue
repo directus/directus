@@ -15,6 +15,12 @@
 				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
 
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon secondary disabled>
+					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
+				</v-button>
+			</template>
+
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
@@ -43,7 +49,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
 import usePreset from '@/composables/use-preset';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useLayout } from '@/composables/use-layout';
 import SearchInput from '@/views/private/components/search-input';
 

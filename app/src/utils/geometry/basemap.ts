@@ -104,11 +104,11 @@ function getDefaultMapboxBasemap(): BasemapSource {
 	const defaultMapboxBasemap: BasemapSource = {
 		name: 'Mapbox',
 		type: 'style',
-		url: 'mapbox://styles/mapbox/light-v10',
+		url: 'mapbox://styles/directus/cktaiz31c509n18nrxj63zdy6',
 	};
 
 	if (getTheme() === 'dark') {
-		defaultMapboxBasemap.url = 'mapbox://styles/mapbox/dark-v10';
+		defaultMapboxBasemap.url = 'mapbox://styles/directus/cktaixyhk2joh17lrb5i8zs22';
 	}
 
 	return defaultMapboxBasemap;

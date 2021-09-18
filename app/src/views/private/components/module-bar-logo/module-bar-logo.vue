@@ -80,16 +80,16 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 64px;
-	height: 64px;
+	width: 60px;
+	height: 60px;
 	padding: 12px;
 	background-color: var(--brand);
 
 	.v-progress-linear {
 		position: absolute;
-		right: 12px;
+		right: 10px;
 		bottom: 5px;
-		left: 12px;
+		left: 10px;
 		width: 40px;
 	}
 
@@ -102,8 +102,8 @@ export default defineComponent({
 
 	.logo {
 		position: absolute;
-		top: 20px;
-		left: 12px;
+		top: 18px;
+		left: 10px;
 		width: 40px;
 		height: 32px;
 		margin: 0 auto;
