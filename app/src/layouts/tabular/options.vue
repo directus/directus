@@ -54,7 +54,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
 
 import Draggable from 'vuedraggable';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 
 export default defineComponent({

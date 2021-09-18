@@ -1,4 +1,5 @@
 export * from './accountability';
+export * from './collection';
 export * from './displays';
 export * from './endpoints';
 export * from './extensions';
@@ -14,4 +15,6 @@ export * from './modules';
 export * from './panels';
 export * from './permissions';
 export * from './presets';
+export * from './relations';
+export * from './settings';
 export * from './users';

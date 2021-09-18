@@ -20,6 +20,7 @@
 					tile,
 					'full-width': fullWidth,
 				},
+				kind,
 			]"
 			:type="type"
 			:disabled="disabled"
@@ -54,6 +55,10 @@ export default defineComponent({
 		autofocus: {
 			type: Boolean,
 			default: false,
+		},
+		kind: {
+			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
+			default: 'normal',
 		},
 		fullWidth: {
 			type: Boolean,
@@ -172,7 +177,6 @@ export default defineComponent({
 
 			return false;
 		});
-
 		return { sizeClass, onClick, component, isActiveRoute, toggle };
 
 		function onClick(event: MouseEvent) {
@@ -203,9 +207,36 @@ export default defineComponent({
 	--v-button-min-width: 140px;
 }
 
-.v-button {
-	display: inline-flex;
-	align-items: center;
+.info {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--blue);
+	--v-button-background-color-hover: var(--blue-125);
+	--v-button-background-color-active: var(--blue);
+}
+
+.success {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--success);
+	--v-button-background-color-hover: var(--success-125);
+	--v-button-background-color-active: var(--success);
+}
+
+.warning {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--warning);
+	--v-button-background-color-hover: var(--warning-125);
+	--v-button-background-color-active: var(--warning);
+}
+
+.danger {
+	--v-button-color: var(--white);
+	--v-button-color-hover: var(--white);
+	--v-button-background-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-125);
+	--v-button-background-color-active: var(--danger);
 }
 
 .secondary {
@@ -224,21 +255,11 @@ export default defineComponent({
 	--v-button-color-disabled: var(--foreground-normal);
 }
 
-.warning {
-	--v-button-background-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-125);
-}
-
 .warning.rounded {
 	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
-}
-
-.danger {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
 }
 
 .danger.rounded {

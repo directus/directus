@@ -33,6 +33,7 @@ import {
 	StringValueNode,
 	validate,
 } from 'graphql';
+import { Filter } from '@directus/shared/types';
 import {
 	GraphQLJSON,
 	InputTypeComposer,
@@ -43,7 +44,7 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, set, uniq, pick } from 'lodash';
+import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject } from 'lodash';
 import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
@@ -674,6 +675,50 @@ export class GraphQLService {
 				},
 			});
 
+			const DateFunctionFilterOperators = schemaComposer.createInputTC({
+				name: 'date_function_filter_operators',
+				fields: {
+					year: {
+						type: NumberFilterOperators,
+					},
+					month: {
+						type: NumberFilterOperators,
+					},
+					week: {
+						type: NumberFilterOperators,
+					},
+					day: {
+						type: NumberFilterOperators,
+					},
+					weekday: {
+						type: NumberFilterOperators,
+					},
+				},
+			});
+
+			const TimeFunctionFilterOperators = schemaComposer.createInputTC({
+				name: 'time_function_filter_operators',
+				fields: {
+					hour: {
+						type: NumberFilterOperators,
+					},
+					minute: {
+						type: NumberFilterOperators,
+					},
+					second: {
+						type: NumberFilterOperators,
+					},
+				},
+			});
+
+			const DateTimeFunctionFilterOperators = schemaComposer.createInputTC({
+				name: 'datetime_function_filter_operators',
+				fields: {
+					...DateFunctionFilterOperators.getFields(),
+					...TimeFunctionFilterOperators.getFields(),
+				},
+			});
+
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -704,6 +749,25 @@ export class GraphQLService {
 						}
 
 						acc[field.field] = filterOperatorType;
+
+						if (field.type === 'date') {
+							acc[`${field.field}_func`] = {
+								type: DateFunctionFilterOperators,
+							};
+						}
+
+						if (field.type === 'time') {
+							acc[`${field.field}_func`] = {
+								type: TimeFunctionFilterOperators,
+							};
+						}
+
+						if (field.type === 'dateTime' || field.type === 'timestamp') {
+							acc[`${field.field}_func`] = {
+								type: DateTimeFunctionFilterOperators,
+							};
+						}
+
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
@@ -1351,8 +1415,30 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
+		const replaceFuncs = (filter?: Filter): undefined | Filter => {
+			if (!filter) return filter;
+
+			return replaceFuncDeep(filter);
+
+			function replaceFuncDeep(filter: Record<string, any>) {
+				return transform(filter, (result: Record<string, any>, value, key) => {
+					let currentKey = key;
+
+					if (typeof key === 'string' && key.endsWith('_func')) {
+						const functionName = Object.keys(value)[0]!;
+						currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
+
+						result[currentKey] = Object.values(value)[0]!;
+					} else {
+						result[currentKey] = isObject(value) ? replaceFuncDeep(value) : value;
+					}
+				});
+			}
+		};
+
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
+		query.filter = replaceFuncs(query.filter);
 
 		validateQuery(query);
 

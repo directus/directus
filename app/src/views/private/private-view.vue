@@ -65,7 +65,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, provide, toRefs, computed } from 'vue';
-import ModuleBar from './components/module-bar/';
+import ModuleBar from './components/module-bar.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
@@ -158,6 +158,7 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
+	overflow-x: hidden;
 	background-color: var(--background-page);
 
 	.nav-overlay {
@@ -279,12 +280,10 @@ export default defineComponent({
 			position: relative;
 			flex-basis: 60px;
 			flex-shrink: 0;
-			transform: none;
-			transition: flex-basis var(--slow) var(--transition);
+			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
 
 			&.is-open {
 				flex-basis: 280px;
-				transform: none;
 			}
 		}
 	}

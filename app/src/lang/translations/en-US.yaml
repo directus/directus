@@ -23,10 +23,13 @@
 published: Published
 draft: Draft
 archived: Archived
+module_bar: Module Bar
+tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
 item_revision: Item Revision
+enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
@@ -58,6 +61,7 @@ delete_panel: Delete Panel
 create_webhook: Create Webhook
 invite_users: Invite Users
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 emails: Emails
@@ -236,6 +240,8 @@ add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
 choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
+add_link: Add Link
+custom_link: Custom Link
 default_value: Default Value
 standard_field: Standard Field
 single_file: Single File
@@ -482,10 +488,11 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNKNOWN: Unexpected Error
   UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  UNKNOWN: Unexpected Error
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -632,7 +639,7 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
-insights: Insights
+insights: Insights (Beta)
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1343,6 +1350,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+    toggle_split_view: Toggle Split View
+    language_field: Language Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.

@@ -101,7 +101,7 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
 

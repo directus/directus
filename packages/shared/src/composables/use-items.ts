@@ -1,8 +1,7 @@
-import api from '@/api';
-import useCollection from '@/composables/use-collection';
-import { Filter, Item } from '@directus/shared/types';
-import filtersToQuery from '@/utils/filters-to-query';
-import moveInArray from '@/utils/move-in-array';
+import { useApi } from './use-system';
+import { useCollection } from './use-collection';
+import { Filter, Item } from '../types';
+import { moveInArray, filtersToQuery } from '../utils';
 import { isEqual, orderBy, throttle } from 'lodash';
 import { computed, ComputedRef, nextTick, ref, Ref, watch } from 'vue';
 
@@ -32,6 +31,7 @@ type UsableItems = {
 };
 
 export function useItems(collection: Ref<string | null>, query: Query, fetchOnInit = true): UsableItems {
+	const api = useApi();
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: number | null = null;
@@ -144,7 +144,7 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 
 		error.value = null;
 
-		loadingTimeout = setTimeout(() => {
+		loadingTimeout = window.setTimeout(() => {
 			loading.value = true;
 		}, 250);
 
@@ -162,8 +162,8 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		// Make sure all fields that are used to filter are fetched
 		if (fields.value.includes('*') === false) {
 			filters.value.forEach((filter) => {
-				if (fieldsToFetch.includes(filter.field) === false) {
-					fieldsToFetch.push(filter.field);
+				if (fieldsToFetch.includes(filter.field as string) === false) {
+					fieldsToFetch.push(filter.field as string);
 				}
 			});
 		}
