@@ -1,7 +1,7 @@
-import { Filter } from '@directus/shared/types';
+import { Filter } from '../types';
 import { clone } from 'lodash';
 
-export default function filtersToQuery(filters: readonly Filter[]): { filter: Record<string, any> } {
+export function filtersToQuery(filters: readonly Filter[]): { filter: Record<string, any> } {
 	const filterList: Record<string, any>[] = [];
 
 	for (const filter of filters) {
@@ -30,7 +30,7 @@ export default function filtersToQuery(filters: readonly Filter[]): { filter: Re
 
 	let filterQuery: Record<string, any> = {};
 
-	if (filterList.length === 1) {
+	if (filterList.length === 1 && filterList[0] !== undefined) {
 		filterQuery = filterList[0];
 	} else if (filterList.length > 1) {
 		filterQuery = { _and: filterList };

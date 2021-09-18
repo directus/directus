@@ -52,6 +52,7 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-error="validationErrors.find((err) => err.field === field.field)"
+				:badge="badge"
 				@update:model-value="setValue(field, $event)"
 				@unset="unsetValue(field)"
 				@toggle-batch="toggleBatchField(field)"
@@ -122,6 +123,10 @@ export default defineComponent({
 		},
 		group: {
 			type: Number,
+			default: null,
+		},
+		badge: {
+			type: String,
 			default: null,
 		},
 	},

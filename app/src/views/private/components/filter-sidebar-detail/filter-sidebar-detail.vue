@@ -49,7 +49,7 @@ import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
-import { useCollection } from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldTree } from '@/composables/use-field-tree';
 

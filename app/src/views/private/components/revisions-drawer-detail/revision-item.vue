@@ -77,7 +77,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .revision-item {
 	position: relative;
-	margin-bottom: 16px;
+	margin-bottom: 12px;
 	margin-left: 16px;
 
 	.header {
@@ -126,7 +126,7 @@ export default defineComponent({
 		top: -4px;
 		left: -24px;
 		z-index: 1;
-		width: calc(100% + 28px);
+		width: calc(100% + 32px);
 		height: calc(100% + 10px);
 		background-color: var(--background-normal-alt);
 		border-radius: var(--border-radius);

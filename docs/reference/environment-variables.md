@@ -24,18 +24,18 @@ needs to be publicly available on the internet.
 
 ## Database
 
-| Variable               | Description                                                                                                                                        | Default Value   |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --              |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --              |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --              |
-| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --              |
-| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --              |
-| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --              |
-| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | spatial_ref_sys |
+| Variable               | Description                                                                                                                                        | Default Value     |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --                |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                |
+| `DB_EXCLUDE_TABLES`    | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys` |
 
 ::: tip Additional Database Variables
 
@@ -58,8 +58,8 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | `KEY`                            | Unique identifier for the project.                                                                                                | --                       |
 | `SECRET`                         | Secret string for the project.                                                                                                    | --                       |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | 15m                      |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | 7d                       |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                      | `15m`                    |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                  | `7d`                     |
 | `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                          | --                       |
 | `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                       | `false`                  |
 | `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                             | `lax`                    |
@@ -144,9 +144,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable                | Description                        | Default Value |
-| ----------------------- | ---------------------------------- | ------------- |
-| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable                | Description                                                                                                                                                           | Default Value |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ::: tip Additional Rate Limiter Variables
 
@@ -192,9 +192,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable         | Description                        | Default Value |
-| ---------------- | ---------------------------------- | ------------- |
-| `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
+| Variable         | Description                                                                                                                                                           | Default Value |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ## Sessions
 
@@ -226,9 +226,9 @@ Alternatively, you can provide the individual connection parameters:
 
 ### Memcache
 
-| Variable                 | Description                        | Default Value |
-| ------------------------ | ---------------------------------- | ------------- |
-| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance | ---           |
+| Variable                 | Description                                                                                                                                                           | Default Value |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `SESSION_MEMCACHE_HOSTS` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), eg: `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ### Database
 
@@ -263,7 +263,7 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_SECRET`   | User secret | --                 |
 | `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --                 |
 | `STORAGE_<LOCATION>_REGION`   | S3 Region   | --                 |
-| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | "s3.amazonaws.com" |
+| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | `s3.amazonaws.com` |
 | `STORAGE_<LOCATION>_ACL`      | S3 ACL      | --                 |
 
 ### Azure (`azure`)
@@ -273,7 +273,7 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                            |
 | `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                            |
 | `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                            |
-| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "https://{ACCOUNT_KEY}.blob.core.windows.net" |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | `https://{ACCOUNT_KEY}.blob.core.windows.net` |
 
 ### Google Cloud Storage (`gcs`)
 
@@ -294,9 +294,9 @@ STORAGE_LOCAL_ROOT="./uploads"
 | Variable                               | Description                                                                                                | Default Value |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
 | `ASSETS_CACHE_TTL`                     | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`         |
-| `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | 4             |
-| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | 6000          |
-| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)            | 5             |
+| `ASSETS_TRANSFORM_MAX_CONCURRENT`      | How many file transformations can be done simultaneously                                                   | `4`           |
+| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` | The max pixel dimensions size (width/height) that is allowed to be transformed                             | `6000`        |
+| `ASSETS_TRANSFORM_MAX_OPERATIONS`      | The max number of transform operations that is allowed to be processed (excludes saved presets)            | `5`           |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
@@ -364,7 +364,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | ----------------------- | --------------------------------------------------------------------------------- | ----------------- |
 | `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
-| `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | 'api.mailgun.net' |
+| `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | `api.mailgun.net` |
 
 ## Admin Account
 
@@ -384,7 +384,7 @@ environment variable:
 
 | Variable    | Description                                                       | Default Value |
 | ----------- | ----------------------------------------------------------------- | ------------- |
-| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | true          |
+| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
 
 ---
 

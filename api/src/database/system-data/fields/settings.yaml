@@ -332,3 +332,7 @@ fields:
                   type:
                     _neq: 'raster'
                 hidden: true
+
+  - field: module_bar
+    interface: system-modules
+    special: json
