@@ -1305,6 +1305,8 @@ interfaces:
     toolbar: Toolbar
     custom_formats: Custom Formats
     options_override: Options Override
+    publicUrl: public url
+    publicUrl_label: Use public url for images in this WYSIWYG container.
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

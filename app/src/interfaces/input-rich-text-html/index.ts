@@ -286,10 +286,10 @@ export default defineInterface({
 		},
 		{
 			field: 'publicUrl',
-			name: 'public url',
+			name: '$t:interfaces.input-rich-text-html.publicUrl',
 			type: 'boolean',
 			meta: {
-				note: 'Use public url for images in this wysiwyg container',
+				note: '$t:interfaces.input-rich-text-html.publicUrl_label',
 				width: 'half',
 				interface: 'boolean',
 			},
