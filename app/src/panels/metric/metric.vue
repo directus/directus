@@ -21,7 +21,6 @@ import { isNil } from 'lodash';
 type MetricOptions = {
 	abbreviate: boolean;
 	sortField: string;
-	sortDirection: string;
 	collection: string;
 	field: string;
 	function:
