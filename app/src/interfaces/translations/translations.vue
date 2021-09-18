@@ -49,11 +49,11 @@
 <script lang="ts">
 import LanguageSelect from './language-select.vue';
 import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } from 'vue';
-import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { Relation } from '@/types';
+import { Relation } from '@directus/shared/types';
+import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual, assign } from 'lodash';
 import { notEmpty } from '@/utils/is-empty';
@@ -367,9 +367,7 @@ export default defineComponent({
 			}
 
 			async function loadItems() {
-				const pkField = translationsPrimaryKeyField.value;
-
-				if (pkField === null || !props.value || props.value.length === 0) return;
+				if (!translationsRelation.value?.field) return;
 
 				loading.value = true;
 
@@ -379,8 +377,8 @@ export default defineComponent({
 							fields: '*',
 							limit: -1,
 							filter: {
-								[pkField]: {
-									_in: props.value,
+								[translationsRelation.value.field]: {
+									_eq: props.primaryKey,
 								},
 							},
 						},

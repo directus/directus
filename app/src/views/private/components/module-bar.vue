@@ -34,6 +34,7 @@ import ModuleBarLogo from './module-bar-logo/';
 import ModuleBarAvatar from './module-bar-avatar/';
 import { useSettingsStore } from '@/stores/';
 import { translate } from '@/utils/translate-object-values';
+import { MODULE_BAR_DEFAULT } from '@/constants';
 
 export default defineComponent({
 	components: {
@@ -49,7 +50,7 @@ export default defineComponent({
 		const modules = computed(() => {
 			if (!settingsStore.settings) return [];
 
-			return settingsStore.settings.module_bar
+			return (settingsStore.settings.module_bar ?? MODULE_BAR_DEFAULT)
 				.filter((modulePart) => {
 					if (modulePart.type === 'link') return true;
 					return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);

@@ -412,10 +412,10 @@ errors:
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   USER_SUSPENDED: Usuario Suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
-  UNKNOWN: Error Inesperado
   UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
+  UNKNOWN: Error Inesperado
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador

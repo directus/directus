@@ -455,10 +455,10 @@ errors:
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   USER_SUSPENDED: Пользователь заблокирован
   CONTAINS_NULL_VALUES: Поле содержит значения null
-  UNKNOWN: Неожиданная Ошибка
   UNPROCESSABLE_ENTITY: Необрабатываемый объект
   INTERNAL_SERVER_ERROR: Неожиданная Ошибка
   NOT_NULL_VIOLATION: Значение не может быть null
+  UNKNOWN: Неожиданная Ошибка
 security: Безопасность
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...

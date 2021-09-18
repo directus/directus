@@ -116,7 +116,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { GeometryOptions, Item } from '@directus/shared/types';
 import { Filter } from '@directus/shared/types';
 

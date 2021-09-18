@@ -447,10 +447,10 @@ errors:
   RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
   USER_SUSPENDED: ผู้ใช้ถูกระงับ
   CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
-  UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   UNPROCESSABLE_ENTITY: เอ็นติตี้ที่ประมวลผลไม่ได้
   INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   NOT_NULL_VIOLATION: ต้องไม่เป็นค่า null
+  UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
 security: ความปลอดภัย
 value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
 bookmark_name: ชื่อบุ๊กมาร์ก...

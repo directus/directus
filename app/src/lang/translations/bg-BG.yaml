@@ -424,10 +424,10 @@ errors:
   RECORD_NOT_UNIQUE: Вече съществува такава стойност
   USER_SUSPENDED: Потребителя е деактивиран
   CONTAINS_NULL_VALUES: Полето съдържа null стойност
-  UNKNOWN: Неочаквана грешка
   UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
+  UNKNOWN: Неочаквана грешка
 security: Сигурност
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...

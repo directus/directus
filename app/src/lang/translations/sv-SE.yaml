@@ -388,9 +388,9 @@ errors:
   ROUTE_NOT_FOUND: Hittades inte
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
-  UNKNOWN: Oväntat fel
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
+  UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
