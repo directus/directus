@@ -169,10 +169,6 @@ export default defineComponent({
 	justify-content: center;
 }
 
-.list.has-header {
-	height: calc(100% - 16px);
-}
-
 .v-list-item {
 	height: 48px;
 	border-top: var(--border-width) solid var(--border-subdued);
