@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit, isNil, template } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -14,6 +14,7 @@ import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { generateHash } from '../utils/generate-hash';
+import { render } from 'micromustache';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -121,10 +122,7 @@ export class PayloadService {
 			const storage_config = getConfigFromEnv(`STORAGE_${payload.storage.toUpperCase()}_`);
 			if (!storage_config.publicUrl) return null;
 			try {
-				const urlTemplate = template(storage_config.publicUrl, {
-					interpolate: /{{([\s\S]+?)}}/g,
-				});
-				return urlTemplate(payload);
+				return render(storage_config.publicUrl, payload);
 			} catch {
 				return storage_config.publicUrl;
 			}
