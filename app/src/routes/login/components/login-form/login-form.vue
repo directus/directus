@@ -134,7 +134,7 @@ export default defineComponent({
 	justify-content: space-between;
 }
 
-.forgot-password {
+.auth-link {
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
