@@ -38,7 +38,10 @@
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
-		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
+    "test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll"
+
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
