@@ -14,11 +14,11 @@
 			<dashboard-dialog v-model="createDialogActive">
 				<template #activator="{ on }">
 					<v-button
-						@click="on"
+						v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')"
 						rounded
 						icon
-						v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')"
 						:disabled="createAllowed === false"
+						@click="on"
 					>
 						<v-icon name="add" />
 					</v-button>
@@ -47,11 +47,11 @@
 			<template #item-append="{ item }">
 				<v-menu placement="left-start" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" @click="toggle" class="ctx-toggle" />
+						<v-icon name="more_vert" class="ctx-toggle" @click="toggle" />
 					</template>
 
 					<v-list>
-						<v-list-item @click="editDashboard = item" class="warning" clickable>
+						<v-list-item class="warning" clickable @click="editDashboard = item">
 							<v-list-item-icon>
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
@@ -60,7 +60,7 @@
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item @click="confirmDelete = item.id" class="danger" clickable>
+						<v-list-item class="danger" clickable @click="confirmDelete = item.id">
 							<v-list-item-icon>
 								<v-icon name="delete" outline />
 							</v-list-item-icon>
@@ -73,7 +73,7 @@
 			</template>
 		</v-table>
 
-		<v-info icon="dashboard" :title="t('no_dashboards')" v-else center>
+		<v-info v-else icon="dashboard" :title="t('no_dashboards')" center>
 			{{ t('no_dashboards_copy') }}
 		</v-info>
 
@@ -82,11 +82,11 @@
 				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
 
 				<v-card-actions>
-					<v-button @click="confirmDelete = null" secondary>
+					<v-button secondary @click="confirmDelete = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button danger @click="deleteDashboard" :loading="deletingDashboard">
-						{{ t('delete') }}
+					<v-button danger :loading="deletingDashboard" @click="deleteDashboard">
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

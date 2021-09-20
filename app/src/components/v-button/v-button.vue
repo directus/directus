@@ -398,8 +398,6 @@ export default defineComponent({
 .content,
 .spinner {
 	max-width: 100%;
-	margin: 0 -1px;
-	padding: 0 1px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
