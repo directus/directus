@@ -75,7 +75,7 @@
 		"cropperjs": "1.5.12",
 		"date-fns": "2.24.0",
 		"diacritics": "1.3.0",
-		"dompurify": "2.3.2",
+		"dompurify": "2.3.3",
 		"escape-string-regexp": "5.0.0",
 		"front-matter": "4.0.2",
 		"html-entities": "2.3.2",
