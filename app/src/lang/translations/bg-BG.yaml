@@ -792,6 +792,7 @@ fields:
     basemaps_raster: Растер
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
+    mapbox_key: Токен за mapbox
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -855,6 +856,7 @@ field_options:
         outside_text: Напасване отвън
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
+    mapbox_key: Токен за mapbox
     basemaps_raster: Растер
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
@@ -881,6 +883,7 @@ field_options:
     unarchive_value: Задаване на стойност при разархивиране...
     divider: Сортиране
     sort_field: Избор на поле...
+    accountability_divider: Профилиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -906,6 +909,7 @@ field_options:
         type_name: Тип
         choices_always: Винаги отворена
         choices_start_open: Отворена в началото
+        choices_start_collapsed: Затворена в началото
     collections_name: Колекции
   directus_users:
     preferences_divider: Потребителски настройки
@@ -929,6 +933,7 @@ field_options:
     actions_delete: Изтриване
     actions_login: Вход
 no_fields_in_collection: 'Все още няма полета в {collection}'
+no_value: Няма стойност
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
