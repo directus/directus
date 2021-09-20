@@ -29,7 +29,7 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: "admin{'@'}voorbeeld.nl, gebruiker{'@'}voorbeeld.nl..."
+email_examples: "admin{'@'}example.com, gebruiker{'@'}example.com..."
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
