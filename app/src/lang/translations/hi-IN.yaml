@@ -20,7 +20,7 @@ create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
-email_examples: "good"
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
 emails: इमेल्स

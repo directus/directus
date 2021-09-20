@@ -57,7 +57,7 @@ create_user: Хэрэглэгч үүсгэх
 create_webhook: Webhook үүсгэх
 invite_users: Хэрэглэгч урих
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://jishee.com"
+url_example: "https://example.com"
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
 emails: Имэйл
@@ -92,7 +92,7 @@ os_totalmem: Үйлдлийн системийн санах ой
 archive: Архивлах
 archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
 archive_confirm_count: >-
-  Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} 
+  Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count}
   зүйлсийг архивлахдаа итгэлтэй байна уу?
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
