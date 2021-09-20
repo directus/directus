@@ -367,7 +367,7 @@ export default defineComponent({
 			}
 
 			async function loadItems() {
-				if (!translationsRelation.value?.field) return;
+				if (!translationsRelation.value?.field || props.primaryKey === '+') return;
 
 				loading.value = true;
 

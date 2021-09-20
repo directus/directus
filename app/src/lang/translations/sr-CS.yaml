@@ -20,7 +20,7 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
-email_examples: "admin{'@'}primjer.com, user{'@'}primjer.com..."
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese

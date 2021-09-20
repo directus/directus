@@ -34,7 +34,7 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
-email_examples: "admin{'@'}exemplo.com, usuario{'@'}exemplo.com..."
+email_examples: "admin{'@'}example.com, usuario{'@'}example.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -827,7 +827,7 @@ fields:
     collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     data_label: Enviar Dados do Evento

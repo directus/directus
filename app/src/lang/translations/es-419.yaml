@@ -29,7 +29,7 @@ create_role: Crear rol
 create_user: Crear Usuario
 create_webhook: Crear un gancho web
 invite_users: Invitar Usuarios
-email_examples: "admin{'@'}ejemplo.com, usuario{'@'}ejemplo.com..."
+email_examples: "admin{'@'}example.com, usuario{'@'}example.com..."
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
 emails: Correos electrónicos
