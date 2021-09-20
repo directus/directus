@@ -39,7 +39,7 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
-		show_header: {
+		showHeader: {
 			type: Boolean,
 			default: false,
 		},
@@ -74,7 +74,7 @@ export default defineComponent({
 		});
 
 		watch(
-			[() => props.options, () => props.show_header, () => props.height],
+			[() => props.options, () => props.showHeader, () => props.height],
 			(newVal, oldVal) => {
 				if (isEqual(newVal, oldVal) === false) {
 					fetchData();
@@ -241,7 +241,7 @@ export default defineComponent({
 				grid: {
 					borderColor: 'var(--border-subdued)',
 					padding: {
-						top: props.show_header ? -20 : -4,
+						top: props.showHeader ? -20 : -4,
 						bottom: 0,
 						left: 8,
 					},

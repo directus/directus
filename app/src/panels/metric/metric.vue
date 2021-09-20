@@ -1,5 +1,5 @@
 <template>
-	<div class="metric type-title selectable" :class="{ 'has-header': show_header }">
+	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
 		<v-progress-circular v-if="loading" indeterminate />
 		<div v-else :style="{ color }">
 			<span class="prefix">{{ options.prefix }}</span>
@@ -49,7 +49,7 @@ export default defineComponent({
 			type: Object as PropType<MetricOptions>,
 			default: null,
 		},
-		show_header: {
+		showHeader: {
 			type: Boolean,
 			default: false,
 		},

@@ -77,7 +77,12 @@
 		</div>
 
 		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
-			<component :is="`panel-${panel.type}`" v-bind="panel" :now="now" />
+			<component
+				:is="`panel-${panel.type}`"
+				v-bind="omit(panel, ['show_header'])"
+				:show-header="panel.show_header"
+				:now="now"
+			/>
 		</div>
 	</div>
 </template>
@@ -86,7 +91,7 @@
 import { getPanels } from '@/panels';
 import { Panel } from '@/types';
 import { defineComponent, PropType, computed, ref, reactive } from 'vue';
-import { throttle } from 'lodash';
+import { throttle, omit } from 'lodash';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -178,6 +183,7 @@ export default defineComponent({
 			dragging,
 			editedPosition,
 			t,
+			omit,
 		};
 
 		function useDragDrop() {

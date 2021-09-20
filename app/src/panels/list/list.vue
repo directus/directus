@@ -1,5 +1,5 @@
 <template>
-	<div class="list" :class="{ 'has-header': show_header, loading, 'no-data': !hasData }">
+	<div class="list" :class="{ 'has-header': showHeader, loading, 'no-data': !hasData }">
 		<v-progress-circular v-if="loading" indeterminate />
 		<span v-else-if="!hasData" class="type-note">{{ t('no_data') }}</span>
 		<div v-else>
@@ -56,7 +56,7 @@ export default defineComponent({
 			type: Object as PropType<ListOptions>,
 			default: null,
 		},
-		show_header: {
+		showHeader: {
 			type: Boolean,
 			default: false,
 		},

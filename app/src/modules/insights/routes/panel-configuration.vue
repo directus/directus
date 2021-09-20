@@ -3,12 +3,12 @@
 		:model-value="isOpen"
 		:title="panel?.name || t('panel')"
 		:subtitle="t('panel_options')"
-		@cancel="$emit('cancel')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
+		@cancel="$emit('cancel')"
 	>
 		<template #actions>
-			<v-button :disabled="!edits.type" @click="emitSave" icon rounded v-tooltip.bottom="t('done')">
+			<v-button v-tooltip.bottom="t('done')" :disabled="!edits.type" icon rounded @click="emitSave">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -16,7 +16,7 @@
 		<div class="content">
 			<p class="type-label panel-type-label">{{ t('type') }}</p>
 
-			<v-fancy-select class="select" :items="selectItems" v-model="edits.type" />
+			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
 
 			<template v-if="edits.type && selectedPanel">
 				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
@@ -25,13 +25,13 @@
 
 				<v-form
 					v-else-if="Array.isArray(selectedPanel.options)"
+					v-model="edits.options"
 					:fields="selectedPanel.options"
 					primary-key="+"
-					v-model="edits.options"
 					:initial-values="panel && panel.options"
 				/>
 
-				<component v-model="edits.options" :collection="collection" :is="`panel-options-${selectedPanel.id}`" v-else />
+				<component :is="`panel-options-${selectedPanel.id}`" v-else v-model="edits.options" :collection="collection" />
 			</template>
 
 			<v-divider :inline-title="false" large>
@@ -42,15 +42,15 @@
 			<div class="form-grid">
 				<div class="field half-left">
 					<p class="type-label">{{ t('visible') }}</p>
-					<v-checkbox block v-model="edits.show_header" :label="t('show_header')" />
+					<v-checkbox v-model="edits.showHeader" block :label="t('show_header')" />
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('name') }}</p>
 					<v-input
-						:nullable="false"
 						v-model="edits.name"
-						:disabled="edits.show_header !== true"
+						:nullable="false"
+						:disabled="edits.showHeader !== true"
 						:placeholder="t('panel_name_placeholder')"
 					/>
 				</div>
@@ -59,8 +59,8 @@
 					<p class="type-label">{{ t('icon') }}</p>
 					<interface-select-icon
 						:value="edits.icon"
+						:disabled="edits.showHeader !== true"
 						@input="edits.icon = $event"
-						:disabled="edits.show_header !== true"
 					/>
 				</div>
 
@@ -68,9 +68,9 @@
 					<p class="type-label">{{ t('color') }}</p>
 					<interface-select-color
 						:value="edits.color"
-						@input="edits.color = $event"
-						:disabled="edits.show_header !== true"
+						:disabled="edits.showHeader !== true"
 						width="half"
+						@input="edits.color = $event"
 					/>
 				</div>
 
@@ -78,7 +78,7 @@
 					<p class="type-label">{{ t('note') }}</p>
 					<v-input
 						v-model="edits.note"
-						:disabled="edits.show_header !== true"
+						:disabled="edits.showHeader !== true"
 						:placeholder="t('panel_note_placeholder')"
 					/>
 				</div>
@@ -111,7 +111,7 @@ export default defineComponent({
 		const isOpen = useDialogRoute();
 
 		const edits = reactive<Partial<Panel>>({
-			show_header: props.panel?.show_header ?? true,
+			showHeader: props.panel?.showHeader ?? true,
 			type: props.panel?.type || undefined,
 			name: props.panel?.name,
 			note: props.panel?.note,
