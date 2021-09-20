@@ -98,6 +98,9 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 
 	filters = deepMap(filters, (val) => {
 		try {
+			if (typeof val == 'string' && val.length > 15) {
+				return val;
+			}
 			return JSON.parse(val);
 		} catch {
 			return val;
