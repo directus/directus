@@ -11,7 +11,7 @@ export type Dashboard = {
 export type Panel = {
 	id: string;
 	dashboard: string;
-	showHeader: boolean;
+	show_header: boolean;
 	name: string;
 	icon: string;
 	color: string;

@@ -2,9 +2,9 @@
 	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
 		<v-progress-circular v-if="loading" indeterminate />
 		<div v-else :style="{ color }">
-			<span class="prefix">{{ options.prefix }}</span>
+			<span class="prefix">{{ prefix }}</span>
 			<span class="value">{{ displayValue }}</span>
-			<span class="suffix">{{ options.suffix }}</span>
+			<span class="suffix">{{ suffix }}</span>
 		</div>
 	</div>
 </template>
@@ -18,40 +18,60 @@ import { useI18n } from 'vue-i18n';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
 
-type MetricOptions = {
-	abbreviate: boolean;
-	sortField: string;
-	collection: string;
-	field: string;
-	function:
-		| 'avg'
-		| 'avg_distinct'
-		| 'sum'
-		| 'sum_distinct'
-		| 'count'
-		| 'count_distinct'
-		| 'min'
-		| 'max'
-		| 'first'
-		| 'last';
-	filter: Filter;
-	decimals: number;
-	conditionalFormatting: {
-		operator: '=' | '!=' | '>' | '>=' | '<' | '<=';
-		color: string;
-		value: number;
-	}[];
-};
-
 export default defineComponent({
 	props: {
-		options: {
-			type: Object as PropType<MetricOptions>,
-			default: null,
-		},
 		showHeader: {
 			type: Boolean,
 			default: false,
+		},
+
+		abbreviate: {
+			type: Boolean,
+			default: false,
+		},
+		sortField: {
+			type: String,
+			default: undefined,
+		},
+		collection: {
+			type: String,
+			required: true,
+		},
+		field: {
+			type: String,
+			required: true,
+		},
+		function: {
+			type: String as PropType<
+				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max' | 'first' | 'last'
+			>,
+			required: true,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: () => ({}),
+		},
+		decimals: {
+			type: Number,
+			default: 0,
+		},
+		conditionalFormatting: {
+			type: Array as PropType<
+				{
+					operator: '=' | '!=' | '>' | '>=' | '<' | '<=';
+					color: string;
+					value: number;
+				}[]
+			>,
+			default: () => [],
+		},
+		prefix: {
+			type: String,
+			default: null,
+		},
+		suffix: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props) {
@@ -63,7 +83,7 @@ export default defineComponent({
 		fetchData();
 
 		watch(
-			() => props.options,
+			() => props,
 			(newOptions, oldOptions) => {
 				if (isEqual(newOptions, oldOptions)) return;
 				fetchData();
@@ -74,13 +94,13 @@ export default defineComponent({
 		const displayValue = computed(() => {
 			if (isNil(metric.value)) return null;
 
-			if (props.options.abbreviate) {
-				return abbreviateNumber(metric.value, props.options.decimals ?? 0);
+			if (props.abbreviate) {
+				return abbreviateNumber(metric.value, props.decimals ?? 0);
 			}
 
 			return n(Number(metric.value), 'decimal', {
-				minimumFractionDigits: props.options.decimals ?? 0,
-				maximumFractionDigits: props.options.decimals ?? 0,
+				minimumFractionDigits: props.decimals ?? 0,
+				maximumFractionDigits: props.decimals ?? 0,
 			} as any);
 		});
 
@@ -89,7 +109,7 @@ export default defineComponent({
 
 			let matchingFormat: MetricOptions['conditionalFormatting'][number] | null = null;
 
-			for (const format of props.options.conditionalFormatting || []) {
+			for (const format of props.conditionalFormatting || []) {
 				if (matchesOperator(format)) {
 					matchingFormat = format;
 				}
@@ -121,40 +141,39 @@ export default defineComponent({
 		return { metric, loading, displayValue, color };
 
 		async function fetchData() {
-			if (!props.options) return;
+			if (!props) return;
 
-			const isRawValue = ['first', 'last'].includes(props.options.function);
+			const isRawValue = ['first', 'last'].includes(props.function);
 
 			loading.value = true;
 
 			try {
-				const sort =
-					props.options.sortField && `${props.options.function === 'last' ? '-' : ''}${props.options.sortField}`;
+				const sort = props.sortField && `${props.function === 'last' ? '-' : ''}${props.sortField}`;
 
 				const aggregate = isRawValue
 					? undefined
 					: {
-							[props.options.function]: [props.options.field || '*'],
+							[props.function]: [props.field || '*'],
 					  };
 
-				const res = await api.get(`/items/${props.options.collection}`, {
+				const res = await api.get(`/items/${props.collection}`, {
 					params: {
 						aggregate,
-						filter: props.options.filter,
+						filter: props.filter,
 						sort: sort,
 						limit: 1,
-						fields: [props.options.field],
+						fields: [props.field],
 					},
 				});
 
-				if (props.options.field) {
-					if (props.options.function === 'first' || props.options.function === 'last') {
-						metric.value = Number(res.data.data[0][props.options.field]);
+				if (props.field) {
+					if (props.function === 'first' || props.function === 'last') {
+						metric.value = Number(res.data.data[0][props.field]);
 					} else {
-						metric.value = Number(res.data.data[0][props.options.function][props.options.field]);
+						metric.value = Number(res.data.data[0][props.function][props.field]);
 					}
 				} else {
-					metric.value = Number(res.data.data[0][props.options.function]);
+					metric.value = Number(res.data.data[0][props.function]);
 				}
 			} catch (err) {
 				// oh no

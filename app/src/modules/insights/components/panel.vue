@@ -79,8 +79,12 @@
 		<div class="panel-content" :class="{ 'has-header': panel.show_header }">
 			<component
 				:is="`panel-${panel.type}`"
-				v-bind="omit(panel, ['show_header'])"
+				v-bind="panel.options"
+				:id="panel.id"
 				:show-header="panel.show_header"
+				:height="panel.height"
+				:width="panel.width"
+				:dashboard="panel.dashboard"
 				:now="now"
 			/>
 		</div>
@@ -96,7 +100,6 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	name: 'Panel',
-	emits: ['update', 'move', 'duplicate', 'delete'],
 	props: {
 		panel: {
 			type: Object as PropType<Panel>,
@@ -111,6 +114,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update', 'move', 'duplicate', 'delete'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const { panels } = getPanels();

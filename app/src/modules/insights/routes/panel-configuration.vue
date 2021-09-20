@@ -42,7 +42,7 @@
 			<div class="form-grid">
 				<div class="field half-left">
 					<p class="type-label">{{ t('visible') }}</p>
-					<v-checkbox v-model="edits.showHeader" block :label="t('show_header')" />
+					<v-checkbox v-model="edits.show_header" block :label="t('show_header')" />
 				</div>
 
 				<div class="field half-right">
@@ -50,7 +50,7 @@
 					<v-input
 						v-model="edits.name"
 						:nullable="false"
-						:disabled="edits.showHeader !== true"
+						:disabled="edits.show_header !== true"
 						:placeholder="t('panel_name_placeholder')"
 					/>
 				</div>
@@ -59,7 +59,7 @@
 					<p class="type-label">{{ t('icon') }}</p>
 					<interface-select-icon
 						:value="edits.icon"
-						:disabled="edits.showHeader !== true"
+						:disabled="edits.show_header !== true"
 						@input="edits.icon = $event"
 					/>
 				</div>
@@ -68,7 +68,7 @@
 					<p class="type-label">{{ t('color') }}</p>
 					<interface-select-color
 						:value="edits.color"
-						:disabled="edits.showHeader !== true"
+						:disabled="edits.show_header !== true"
 						width="half"
 						@input="edits.color = $event"
 					/>
@@ -78,7 +78,7 @@
 					<p class="type-label">{{ t('note') }}</p>
 					<v-input
 						v-model="edits.note"
-						:disabled="edits.showHeader !== true"
+						:disabled="edits.show_header !== true"
 						:placeholder="t('panel_note_placeholder')"
 					/>
 				</div>
@@ -103,6 +103,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['cancel', 'save'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -111,7 +112,7 @@ export default defineComponent({
 		const isOpen = useDialogRoute();
 
 		const edits = reactive<Partial<Panel>>({
-			showHeader: props.panel?.showHeader ?? true,
+			show_header: props.panel?.show_header ?? true,
 			type: props.panel?.type || undefined,
 			name: props.panel?.name,
 			note: props.panel?.note,

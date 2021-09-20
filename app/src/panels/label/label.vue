@@ -1,6 +1,6 @@
 <template>
-	<div class="label type-title selectable" :class="{ 'has-header': showHeader }" :style="{ color: options.color }">
-		{{ options.text }}
+	<div class="label type-title selectable" :class="{ 'has-header': showHeader }" :style="{ color: color }">
+		{{ text }}
 	</div>
 </template>
 
@@ -9,13 +9,18 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
-		options: {
-			type: Object,
-			default: null,
-		},
 		showHeader: {
 			type: Boolean,
 			default: false,
+		},
+
+		text: {
+			type: String,
+			default: '',
+		},
+		color: {
+			type: String,
+			default: undefined,
 		},
 	},
 });

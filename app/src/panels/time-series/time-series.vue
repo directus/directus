@@ -13,28 +13,8 @@ import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
-type TimeSeriesOptions = {
-	collection: string;
-	dateField: string;
-	valueField: string;
-	function: 'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max';
-	range: string; // 1 week, etc
-	color: string;
-	decimals: number;
-	precision: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
-	min?: number;
-	max?: number;
-	filter: Filter | null;
-	showXAxis?: boolean;
-	showYAxis?: boolean;
-};
-
 export default defineComponent({
 	props: {
-		options: {
-			type: Object as PropType<TimeSeriesOptions>,
-			required: true,
-		},
 		height: {
 			type: Number,
 			required: true,
@@ -55,6 +35,61 @@ export default defineComponent({
 			type: Date,
 			required: true,
 		},
+
+		collection: {
+			type: String,
+			required: true,
+		},
+		dateField: {
+			type: String,
+			required: true,
+		},
+		valueField: {
+			type: String,
+			required: true,
+		},
+		function: {
+			type: String as PropType<
+				'avg' | 'avg_distinct' | 'sum' | 'sum_distinct' | 'count' | 'count_distinct' | 'min' | 'max'
+			>,
+			required: true,
+		},
+		precision: {
+			type: String as PropType<'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second'>,
+			default: 'hour',
+		},
+		range: {
+			type: String,
+			default: '1 week',
+		},
+		color: {
+			type: String,
+			default: '#00C897',
+		},
+		decimals: {
+			type: Number,
+			default: 0,
+		},
+		min: {
+			type: Number,
+			default: undefined,
+		},
+		max: {
+			type: Number,
+			default: undefined,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: () => ({}),
+		},
+		showXAxis: {
+			type: Boolean,
+			default: true,
+		},
+		showYAxis: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props) {
 		const { d, t, n } = useI18n();
@@ -68,13 +103,13 @@ export default defineComponent({
 		const chart = ref<ApexCharts>();
 
 		const valueLabel = computed(() => {
-			const field = fieldsStore.getField(props.options.collection, props.options.valueField)!;
-			const operation = t(props.options.function);
+			const field = fieldsStore.getField(props.collection, props.valueField)!;
+			const operation = t(props.function);
 			return `${field.name} (${operation})`;
 		});
 
 		watch(
-			[() => props.options, () => props.showHeader, () => props.height],
+			[() => props, () => props.showHeader, () => props.height],
 			(newVal, oldVal) => {
 				if (isEqual(newVal, oldVal) === false) {
 					fetchData();
@@ -99,25 +134,25 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const results = await api.get(`/items/${props.options.collection}`, {
+				const results = await api.get(`/items/${props.collection}`, {
 					params: {
 						groupBy: getGroups(),
 						aggregate: {
-							[props.options.function]: [props.options.valueField],
+							[props.function]: [props.valueField],
 						},
 						filter: {
 							_and: [
 								{
-									[props.options.dateField]: {
-										_gte: `$NOW(-${props.options.range || '1 week'})`,
+									[props.dateField]: {
+										_gte: `$NOW(-${props.range || '1 week'})`,
 									},
 								},
 								{
-									[props.options.dateField]: {
+									[props.dateField]: {
 										_lte: `$NOW`,
 									},
 								},
-								props.options.filter || {},
+								props.filter || {},
 							],
 						},
 						limit: -1,
@@ -128,12 +163,10 @@ export default defineComponent({
 
 				chart.value?.updateSeries([
 					{
-						name: props.options.collection,
+						name: props.collection,
 						data: metrics.value.map((metric) => ({
 							x: toISO(metric),
-							y: Number(
-								Number(metric[props.options.function][props.options.valueField]).toFixed(props.options.decimals ?? 0)
-							),
+							y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 						})),
 					},
 				]);
@@ -144,12 +177,12 @@ export default defineComponent({
 			}
 
 			function toISO(metric: Record<string, any>) {
-				const year = metric[`${props.options.dateField}_year`];
-				const month = padZero(metric[`${props.options.dateField}_month`] ?? 1);
-				const day = padZero(metric[`${props.options.dateField}_day`] ?? 1);
-				const hour = padZero(metric[`${props.options.dateField}_hour`] ?? 0);
-				const minute = padZero(metric[`${props.options.dateField}_minute`] ?? 0);
-				const second = padZero(metric[`${props.options.dateField}_second`] ?? 0);
+				const year = metric[`${props.dateField}_year`];
+				const month = padZero(metric[`${props.dateField}_month`] ?? 1);
+				const day = padZero(metric[`${props.dateField}_day`] ?? 1);
+				const hour = padZero(metric[`${props.dateField}_hour`] ?? 0);
+				const minute = padZero(metric[`${props.dateField}_minute`] ?? 0);
+				const second = padZero(metric[`${props.dateField}_second`] ?? 0);
 
 				return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
 
@@ -161,7 +194,7 @@ export default defineComponent({
 			function getGroups() {
 				let groups: string[] = [];
 
-				switch (props.options.precision || 'hour') {
+				switch (props.precision || 'hour') {
 					case 'year':
 						groups = ['year'];
 						break;
@@ -185,13 +218,13 @@ export default defineComponent({
 						break;
 				}
 
-				return groups.map((datePart) => `${datePart}(${props.options.dateField})`);
+				return groups.map((datePart) => `${datePart}(${props.dateField})`);
 			}
 		}
 
 		function setupChart() {
 			chart.value = new ApexCharts(chartEl.value, {
-				colors: [props.options.color ? props.options.color : '#00C897'],
+				colors: [props.color ? props.color : '#00C897'],
 				chart: {
 					type: 'area',
 					height: '100%',
@@ -226,12 +259,12 @@ export default defineComponent({
 							[
 								{
 									offset: 0,
-									color: props.options.color ? props.options.color : '#00C897',
+									color: props.color ? props.color : '#00C897',
 									opacity: 0.25,
 								},
 								{
 									offset: 100,
-									color: props.options.color ? props.options.color : '#00C897',
+									color: props.color ? props.color : '#00C897',
 									opacity: 0,
 								},
 							],
@@ -279,10 +312,10 @@ export default defineComponent({
 					axisBorder: {
 						show: false,
 					},
-					range: props.now.getTime() - adjustDate(props.now, `-${props.options.range}`)!.getTime(),
+					range: props.now.getTime() - adjustDate(props.now, `-${props.range}`)!.getTime(),
 					max: props.now.getTime(),
 					labels: {
-						show: props.options.showXAxis ?? true,
+						show: props.showXAxis ?? true,
 						offsetY: -4,
 						style: {
 							fontFamily: 'var(--family-sans-serif)',
@@ -298,10 +331,10 @@ export default defineComponent({
 					},
 				},
 				yaxis: {
-					show: props.options.showYAxis ?? true,
+					show: props.showYAxis ?? true,
 					forceNiceScale: true,
-					min: isNil(props.options.min) ? undefined : Number(props.options.min),
-					max: isNil(props.options.max) ? undefined : Number(props.options.max),
+					min: isNil(props.min) ? undefined : Number(props.min),
+					max: isNil(props.max) ? undefined : Number(props.max),
 					tickAmount: props.height - 4,
 					labels: {
 						offsetY: 1,
@@ -310,8 +343,8 @@ export default defineComponent({
 							return value > 10000
 								? abbreviateNumber(value, 1)
 								: n(value, 'decimal', {
-										minimumFractionDigits: props.options.decimals ?? 0,
-										maximumFractionDigits: props.options.decimals ?? 0,
+										minimumFractionDigits: props.decimals ?? 0,
+										maximumFractionDigits: props.decimals ?? 0,
 								  } as any);
 						},
 						style: {

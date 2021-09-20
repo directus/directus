@@ -11,7 +11,7 @@
 					clickable
 					@click="startEditing(row)"
 				>
-					<render-template :item="row" :collection="options.collection" :template="renderTemplate" />
+					<render-template :item="row" :collection="collection" :template="renderTemplate" />
 					<div class="spacer" />
 				</v-list-item>
 			</v-list>
@@ -19,7 +19,7 @@
 
 		<drawer-item
 			:active="!!currentlyEditing"
-			:collection="options.collection"
+			:collection="collection"
 			:primary-key="currentlyEditing ?? '+'"
 			:edits="editsAtStart"
 			@input="saveEdits"
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, computed } from 'vue';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import api from '@/api';
 import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
@@ -40,25 +40,37 @@ import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useI18n } from 'vue-i18n';
 
-type ListOptions = {
-	displayTemplate: string;
-	sortField: string;
-	sortDirection: 'asc' | 'desc';
-	collection: string;
-	limit: number;
-	filter: Filter;
-};
-
 export default defineComponent({
 	components: { DrawerItem },
 	props: {
-		options: {
-			type: Object as PropType<ListOptions>,
-			default: null,
-		},
 		showHeader: {
 			type: Boolean,
 			default: false,
+		},
+
+		displayTemplate: {
+			type: String,
+			default: '',
+		},
+		sortField: {
+			type: String,
+			default: undefined,
+		},
+		sortDirection: {
+			type: String,
+			default: 'desc',
+		},
+		collection: {
+			type: String,
+			required: true,
+		},
+		limit: {
+			type: Number,
+			default: 5,
+		},
+		filter: {
+			type: Object as PropType<Filter>,
+			default: () => ({}),
 		},
 	},
 	setup(props) {
@@ -78,15 +90,15 @@ export default defineComponent({
 		});
 
 		const renderTemplate = computed(() => {
-			return props.options.displayTemplate;
+			return props.displayTemplate;
 		});
 
-		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.options.collection));
+		const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
 		fetchData();
 
 		watch(
-			() => props.options,
+			() => props,
 			(newOptions, oldOptions) => {
 				if (isEqual(newOptions, oldOptions)) return;
 				fetchData();
@@ -109,22 +121,22 @@ export default defineComponent({
 		};
 
 		async function fetchData() {
-			if (!props.options) return;
+			if (!props) return;
 
 			loading.value = true;
 
 			try {
-				const sort = props.options.sortField;
+				const sort = props.sortField;
 
-				const res = await api.get(`/items/${props.options.collection}`, {
+				const res = await api.get(`/items/${props.collection}`, {
 					params: {
 						fields: [
 							primaryKeyField.value.field,
-							...adjustFieldsForDisplays(getFieldsFromTemplate(renderTemplate.value), props.options.collection),
+							...adjustFieldsForDisplays(getFieldsFromTemplate(renderTemplate.value), props.collection),
 						],
-						filter: props.options.filter,
-						sort: props.options.sortDirection === 'desc' ? `-${sort}` : sort,
-						limit: props.options.limit ?? 5,
+						filter: props.filter,
+						sort: props.sortDirection === 'desc' ? `-${sort}` : sort,
+						limit: props.limit ?? 5,
 					},
 				});
 
@@ -144,7 +156,7 @@ export default defineComponent({
 
 		async function saveEdits(item: Record<string, any>) {
 			try {
-				await api.patch(`/items/${props.options.collection}/${currentlyEditing.value}`, item);
+				await api.patch(`/items/${props.collection}/${currentlyEditing.value}`, item);
 			} catch (err) {
 				unexpectedError(err);
 			}
