@@ -64,7 +64,7 @@ export class MailService {
 			html = await this.renderTemplate(template.name, templateData);
 		}
 
-		if (typeof html === 'string') {
+		if (typeof html === 'string' && (options.reformatHtml === undefined || options.reformatHtml === true)) {
 			// Some email clients start acting funky when line length exceeds 75 characters. See #6074
 			html = prettier.format(html as string, { parser: 'html', printWidth: 70, tabWidth: 0 });
 		}
