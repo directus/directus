@@ -5,7 +5,7 @@ import Client_Oracledb from 'knex/lib/dialects/oracledb';
 export async function up(knex: Knex): Promise<void> {
 	if (knex.client instanceof Client_Oracledb) {
 		/* Oracle is already not nullable due to an oversight in
-			 "20210312A-webhooks-collections-text.ts" */
+		   "20210312A-webhooks-collections-text.ts" */
 		return;
 	}
 
@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	if (knex.client instanceof Client_Oracledb) {
 		/* Oracle is already not nullable due to an oversight in
-			 "20210312A-webhooks-collections-text.ts" */
+		   "20210312A-webhooks-collections-text.ts" */
 		return;
 	}
 
