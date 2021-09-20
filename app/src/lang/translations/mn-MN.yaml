@@ -1,14 +1,50 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: Нийтлэгдсэн
+module_bar: Модулийн мөр
+tile_size: Хэсгийн хэмжээ
 edit_field: Талбарыг засах
+conditions: Нөхцөл
+maps: Газрын зураг
 item_revision: Хяналт
+enter_a_name: Нэр оруулна уу...
 duplicate_field: Талбарыг хувилах
 half_width: Тал өргөн
 full_width: Бүтэн өргөн
+limit: Хязгаар
+group: Бүлэг
+and: Мөн
+or: Эсвэл
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
 enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү
 add_field: Талбар нэмэх
 role_name: Үүргийн нэр
+branch: Салбар
+leaf: Навч
+indeterminate: Тодорхойгүй
+edit_collection: Багцыг засах
+exclusive: Онцгой
+children: Хүүхэд
 db_only_click_to_configure: 'Зөвхөн дата баазад хамаатай: Дарж өөрчилнө үү '
 show_archived_items: Архивласан зүйлсийг харах
 edited: Зассан утга
@@ -21,6 +57,7 @@ create_user: Хэрэглэгч үүсгэх
 create_webhook: Webhook үүсгэх
 invite_users: Хэрэглэгч урих
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://jishee.com"
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
 emails: Имэйл
@@ -42,6 +79,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Сайтаас гарсан
   SESSION_EXPIRED: Холболтын хугацаа дууссан
+public_label: Нээлттэй
 public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
 not_allowed: Зөвшөөрөгдөөгүй
 directus_version: Directus хувилбар
