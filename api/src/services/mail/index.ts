@@ -23,6 +23,7 @@ export type EmailOptions = SendMailOptions & {
 		name: string;
 		data: Record<string, any>;
 	};
+	reformatHtml?: boolean;
 };
 
 export class MailService {
