@@ -1,10 +1,34 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: Публикувано
 draft: Чернова
 archived: Архивиран
+module_bar: Модулна лента
+tile_size: Големина на сегментите
 edit_field: Редактиране на поле
 conditions: Условия
 maps: Географски карти
 item_revision: Ревизии на запис
+enter_a_name: Въвеждане на името...
 duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
@@ -13,7 +37,7 @@ group: Групиране
 and: И
 or: Или
 fill_width: Изпълване по ширина
-field_name_translations: Превод за името на полето
+field_name_translations: Превод на името за полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
 role_name: Име на роля
@@ -35,6 +59,7 @@ create_user: Създаване на потребител
 create_webhook: Създаване на уеб-кука
 invite_users: Покана към потребители
 email_examples: "admin{'@'}example.com, potrebitel{'@'}example.com..."
+url_example: "https://example.com"
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
@@ -122,8 +147,11 @@ field_presets: Стойности на полета
 permissions_for_role: 'Записи, които ролята "{role}" има позволение за {action}.'
 fields_for_role: 'Полета, които ролята "{role}" има позволение за {action}.'
 validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полета.'
-presets_for_role: 'Стойности за полета по подразбиране, за ролята "{role}".'
+presets_for_role: 'Стойности на полета по подразбиране, за ролята "{role}".'
 presentation_and_aliases: Презентационни и псевдоними
+revision_post_update: Ето как ще изглежда записът след промяната.
+changes_made: По-долу са специфичните промени след ревизията.
+no_relational_data: Релационните данни не са включени тук.
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
 delete_field: Изтриване на поле
@@ -177,7 +205,7 @@ this_will_auto_setup_fields_relations: Автоматично настройва
 click_here: Натиснете тук
 to_manually_setup_translations: за ръчна настройка на преводи.
 click_to_manage_translated_fields: >-
-  Все още няма преведени полета. Натиснете тук за да ги създадете. | Има едно преведено поле. Натиснете тук за да го управлявате. | Има {count} преведени полета. Натиснете тук за да ги управлявате.
+  Все още няма преведени полета. Натиснете тук за създаване. | Има едно преведено поле. Натиснете тук за управление. | Има {count} преведени полета. Натиснете тук за управление.
 fields_group: Групи от полета
 no_collections_found: Не са намерени колекции.
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
@@ -190,6 +218,8 @@ add_m2m_to_collection: 'Добавяне на "много към много" в 
 choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
+add_link: Добавяне на връзка
+custom_link: Персонализирана връзка
 default_value: Стойност по подразбиране
 standard_field: Стандартно поле
 single_file: Единствен файл
@@ -361,15 +391,16 @@ no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители в тази роля.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
+no_webhooks_copy: Няма зададени уеб-куки. Започване на създаването с бутона по-долу.
 all_items: Всички записи
 any: Който и да е
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
-no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
+no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за започване.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
 relationship_not_setup: Релацията не е конфигурирана правилно
-display_template_not_setup: Опциите за показване на шаблона не са правилно конфигурирани
+display_template_not_setup: Опциите за показване на шаблона, не са правилно конфигурирани
 collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
 select_a_collection: Избор на колекция
 active: Активен
@@ -427,6 +458,7 @@ errors:
   UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
+  ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
   UNKNOWN: Неочаквана грешка
 security: Сигурност
 value_hashed: Хеширана стойност
@@ -698,15 +730,32 @@ add_new: Добави нов запис
 create_new: Създаване
 all: Всичко
 none: Нищо
-no_layout_collection_selected_yet: Все още не е избран изглед/колекция
+no_layout_collection_selected_yet: Все още не е избран изглед или колекция
 batch_delete_confirm: >-
   Няма избрани записи | Наистина ли искате да изтриете записа? Действието не може да бъде отменено. | Наистина ли искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
 cancel: Отмяна
+no_upscale: Без уголемяване на картиките
 collection: Колекция
 collections: Колекции
 singleton: Сек
 singleton_label: Използване като единствен запис
 system_fields_locked: Системните полета са заключени и не могат да бъдат променяни
+directus_collection:
+  directus_activity: Профилирани логове за всички събития
+  directus_collections: Допълнителна кофигурация и данни
+  directus_fields: Допълнителна кофигурация и данни
+  directus_files: Мета данни за всички файлове
+  directus_folders: Виртуални директории за файловете
+  directus_migrations: Версия на базата данни която се използва
+  directus_permissions: Позволения за роли
+  directus_presets: Заготовки на началните стойности и отметките за колекциите
+  directus_relations: Релационни настройки и мета данни
+  directus_revisions: Моментни данни за цялата активност
+  directus_roles: Групи от позволения за системните потребители
+  directus_sessions: Потребителски сесии
+  directus_settings: Настройки за проекти
+  directus_users: Системни потребители за платформата
+  directus_webhooks: Конфигурация от HTTP завките базирани на събития
 fields:
   directus_activity:
     item: Първичен ключ на запис
@@ -725,8 +774,8 @@ fields:
     display_template: Шаблон при показване
     hidden: Скриване
     singleton: Сек
-    translations: Преводи на името на колекцията
-    archive_app_filter: Филтър за архиви
+    translations: Преводи на името за колекцията
+    archive_app_filter: Филтър за архивни
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
     sort_field: Сортиране по поле
@@ -789,9 +838,11 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    basemaps_raster: Растер
+    basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
+    mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Допълнителни трансформации
     project_name: Име на проекта
@@ -816,7 +867,7 @@ fields:
     note: Бележка
     hidden: Скриване
     singleton: Сек
-    translation: Превод за името на полето
+    translation: Превод на името за полето
     display_template: Шаблон
   directus_roles:
     name: Име на роля
@@ -840,7 +891,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
-    project_logo_note: Фонт за логото и вход-а
+    project_logo_note: Фон на логото и вход-а
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -855,7 +906,9 @@ field_options:
         outside_text: Напасване отвън
     additional_transforms: Допълнителни трансформации
     transforms_note: Име на метода и параметри за Sharp. Повече информация на https://sharp.pixelplumbing.com/api-constructor for more information.
-    basemaps_raster: Растер
+    mapbox_key: Токен за mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Растерен
     basemaps_tile: Растерен TileJSON
     basemaps_style: Стил на географската карта
     files_divider_title: Файлове и картинки
@@ -877,10 +930,12 @@ field_options:
     translation: Въвеждане на превод...
     archive_divider: Архивиране
     archive_field: Избор на поле...
+    archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
     divider: Сортиране
     sort_field: Избор на поле...
+    accountability_divider: Профилиране
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -906,7 +961,9 @@ field_options:
         type_name: Тип
         choices_always: Винаги отворена
         choices_start_open: Отворена в началото
+        choices_start_collapsed: Затворена в началото
     collections_name: Колекции
+    collections_addLabel: Добавяне на колекция...
   directus_users:
     preferences_divider: Потребителски настройки
     dropdown_auto: Автоматично (според системата)
@@ -929,6 +986,7 @@ field_options:
     actions_delete: Изтриване
     actions_login: Вход
 no_fields_in_collection: 'Все още няма полета в {collection}'
+no_value: Няма стойност
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
@@ -1007,6 +1065,7 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1132,8 +1191,8 @@ interfaces:
     customSyntax_label: Добавяне на персонализиран синтаксис
     customSyntax_add: Добавяне на персонален синтаксис
     box: Блоков / Вложен
-    imageToken: Токън за изображенията
-    imageToken_label: Какъв (статичен) токън да се добави, към адресите на изображенията
+    imageToken: Токен за изображенията
+    imageToken_label: Какъв (статичен) токен да се добави, към адресите на изображенията
   map:
     map: Географска карта
     description: Избор на местоположение по картата
@@ -1145,6 +1204,7 @@ interfaces:
     invalid_format: Невалиден формат ({format})
     unexpected_geometry: Очаква се {expected}, но има {got}.
     fit_bounds: Напасване на изгледа към данните
+    native: Естествен
     geojson: GeoJSON
     lnglat: Географски дължина/ширина
     wkt: WKT
@@ -1204,7 +1264,7 @@ interfaces:
     maximum_value: Максимална стойност
     step_interval: Интервал на стъпка
     slug: Превръщане в Slug
-    slug_label: Обезапасяване за използване в URL
+    slug_label: Обезопасяване при използване в URL
   input-multiline:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
@@ -1216,6 +1276,8 @@ interfaces:
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
+    toggle_split_view: Превключване на разделен режим
+    language_field: Поле за език
   list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
     recursive_only: Дървовидния интерфейс, работи само за рекурсивни релации.
@@ -1242,10 +1304,10 @@ interfaces:
     rate: Оценка
   group-raw:
     name: Обикновена група
-    description: Изобразяване както е
+    description: Показване на полетата, както са си
   group-detail:
     name: Детайлна група
-    description: Изобразяване на полетата с възможност за свиване
+    description: Показване на полетата с възможност за свиване
     show_header: Показване на заглавието
     header_icon: Икона на заглавието
     header_color: Цвят на заглавието
@@ -1371,3 +1433,5 @@ layouts:
     invalid_geometry: Невалидна геометрия
     auto_location_filter: Филтриране на данните спрямо границите
     search_this_area: Търсене в тази зона
+    clear_data_filter: Изчистване на филтрирането
+    clear_location_filter: Изчистване на локацията
