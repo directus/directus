@@ -55,8 +55,8 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
-email_examples: "admin{'@'}stranka.cz, user{'@'}stranka.cz..."
-url_example: "https://stranka.cz"
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
