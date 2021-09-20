@@ -775,7 +775,7 @@ fields:
     hidden: Скриване
     singleton: Сек
     translations: Преводи на името за колекцията
-    archive_app_filter: Филтър за архиви
+    archive_app_filter: Филтър за архивни
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
     sort_field: Сортиране по поле
@@ -930,6 +930,7 @@ field_options:
     translation: Въвеждане на превод...
     archive_divider: Архивиране
     archive_field: Избор на поле...
+    archive_app_filter: Възможност за филтриране на архивни
     archive_value: Задаване на стойност при архивиране...
     unarchive_value: Задаване на стойност при разархивиране...
     divider: Сортиране
@@ -1064,6 +1065,7 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
