@@ -20,13 +20,16 @@ pageClass: page-reference
 - [Sort](#sort)
 - [Limit](#limit)
 - [Offset](#offset) / [Page](#page)
-- [Aggregate and Grouping](#aggregate-and-grouping)
+- [Aggregation & Grouping](#aggregation-grouping)
 - [Deep](#deep)
 - [Aliases](#aliases)
+- [Export](#export)
+<p></p>
+- [Functions](#functions)
+<p></p>
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
-- [Export](#export)
 
 </div>
 </div>
@@ -446,17 +449,12 @@ query {
 
 ---
 
-## Aggregate and Grouping
+## Aggregation & Grouping
 
 <div class="two-up">
 <div class="left">
 
-The aggegate functions all the transformation of fields. Supported functions are avg, avg_distinct, count,
-count_distinct, min, max, sum, sum_distinct.
-
-A group by option can be added to the arguments which groups the return by a specified field.
-
-Aggregated functions can be accessed with the syntax `collection_aggregated`.
+Aggregate functions allow you to perform calculations on a set of values, returning a single result.
 
 </div>
 </div>
@@ -464,40 +462,27 @@ Aggregated functions can be accessed with the syntax `collection_aggregated`.
 <div class="two-up">
 <div class="left">
 
-### Examples
+The following aggregation functions are available in Directus:
 
-Return of an aggregated sum of the revenue field.
+| Name            | Description                                                   |
+| --------------- | ------------------------------------------------------------- |
+| `count`         | Counts how many items there are                               |
+| `countDistinct` | Counts how many unique items there are                        |
+| `sum`           | Adds together the values in the given field                   |
+| `sumDistinct`   | Adds together the unique values in the given field            |
+| `avg`           | Get the average value of the given field                      |
+| `avgDistinct`   | Get the average value of the unique values in the given field |
+| `min`           | Return the lowest value in the field                          |
+| `max`           | Return the highest value in the field                         |
 
-```json
-{
-	"articles_aggregated": {
-		"sum": {
-			"revenue": 598
-		}
-	}
-}
-```
+### Grouping
 
-Return of an aggregate sum of the revenue field with a group by on `author`
+By default, the above aggregation functions run on the whole dataset. To allow for more flexible reporting, you can
+combine the above aggregation with grouping. Grouping allows for running the aggregation functions based on a shared
+value. This allows for things like _"Average rating per month"_ or _"Total sales of items in the jeans category"_.
 
-```json
-{
-	"articles_aggregated": [
-		{
-			"group": "John",
-			"sum": {
-				"revenue": 475
-			}
-		},
-		{
-			"group": "Smith",
-			"sum": {
-				"revenue": 123
-			}
-		}
-	]
-}
-```
+The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
+this allows for aggregate reporting per year-month-date.
 
 </div>
 <div class="right">
@@ -505,14 +490,16 @@ Return of an aggregate sum of the revenue field with a group by on `author`
 ### REST API
 
 ```
-?aggregate[sum]=revenue&groupBy=author
+?aggregate[avg]=cost
+&groupBy[]=author
+&groupBy[]=year(publish_date)
 ```
 
 ### GraphQL
 
 ```graphql
 query {
-	articles_aggregated(groupBy: "author") {
+	articles_aggregated(groupBy: ["author", "year(publish_date)"]) {
 		group
 		sum {
 			revenue
@@ -605,39 +592,7 @@ query {
 <div class="two-up">
 <div class="left">
 
-Aliases allow you to make multiple queries to the same collection under different names. For example an alias of
-`translations` could be `all_translations` and they could both be used in the same query.
-
-### Examples
-
-Return both a filtered translations field and an unfiltered `translations` as `all_translations`
-
-```json
-{
-	"articles: [
-	  {
-        "translations": [],
-        "all_translations": [
-		  {
-			"id": "2"
-		  }
-		]
-      },
-      {
-        "translations": [
-          {
-            "id": "4"
-          }
-        ],
-        "all_translations": [
-          {
-            "id": "4"
-          }
-        ]
-      }
-	]
-}
-```
+Aliases allow you rename fields on the fly, and request the same nested data set multiple times using different filters.
 
 </div>
 <div class="right">
@@ -645,7 +600,9 @@ Return both a filtered translations field and an unfiltered `translations` as `a
 ### REST API
 
 ```
-?translations[filter][id][_eq]=4&alias[all_translations]=translations
+?alias[all_translations]=translations
+&alias[dutch_translations]=translations
+&deep[dutch_translations][_filter][code][_eq]=nl-NL
 ```
 
 ### GraphQL
@@ -655,9 +612,10 @@ _Natively supported in GraphQL:_
 ```graphql
 query {
 	articles {
-		translations(filter: { id: { _eq: 4 } }) {
+		dutch_translations: translations(filter: { code: { _eq: "nl-NL" } }) {
 			id
 		}
+
 		all_translations: translations {
 			id
 		}
@@ -667,6 +625,106 @@ query {
 
 </div>
 </div>
+
+---
+
+## Export
+
+Save the current API response to a file.
+
+<div class="two-up">
+<div class="left">
+
+Saves the API response to a file. Accepts one of `json`, `csv`, `xml`.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?export=json
+?export=csv
+?export=xml
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
+
+## Functions
+
+<div class="two-up">
+<div class="left">
+
+Functions allow for "live" modification of values stored in a field. Functions can be used in any query parameter you'd
+normally supply a field key, including fields, aggregation, and filter.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+Functions can be used by wrapping the field key in a JavaScript like syntax, for example:
+
+`timestamp` -> `year(timestamp)`
+
+### DateTime Filters
+
+| Filter    | Description                                              |
+| --------- | -------------------------------------------------------- |
+| `year`    | Extract the year from a datetime/date/timestamp field    |
+| `month`   | Extract the month from a datetime/date/timestamp field   |
+| `week`    | Extract the week from a datetime/date/timestamp field    |
+| `day`     | Extract the day from a datetime/date/timestamp field     |
+| `weekday` | Extract the weekday from a datetime/date/timestamp field |
+| `hour`    | Extract the hour from a datetime/date/timestamp field    |
+| `minute`  | Extract the minute from a datetime/date/timestamp field  |
+| `second`  | Extract the second from a datetime/date/timestamp field  |
+
+::: warning GraphQL
+
+Names aren't allowed to include any special characters in GraphQL, preventing the `()` syntax from being used.
+
+As an alternative, the above functions can be used by appending `_func` at the end of the field name, and using the
+function name as the nested field (see the example on the right).
+
+:::
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?fields=id,title,weekday(date_published)
+&filter[year(date_published)][_eq]=2021
+```
+
+### GraphQL
+
+```graphql
+query {
+	articles(filter: { date_published_func: { year: { _eq: 2021 } } }) {
+		id
+		title
+		date_published_func {
+			weekday
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
 
 ## Metadata
 
@@ -709,36 +767,3 @@ n/a
 
 </div>
 </div>
-
----
-
-## Export
-
-Save the current API response to a file.
-
-<div class="two-up">
-<div class="left">
-
-Saves the API response to a file. Accepts one of `json`, `csv`, `xml`.
-
-</div>
-<div class="right">
-
-### REST API
-
-```
-?export=json
-?export=csv
-?export=xml
-```
-
-### GraphQL
-
-n/a
-
-</div>
-</div>
-
----
-
-s
