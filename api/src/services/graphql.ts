@@ -44,7 +44,7 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject } from 'lodash';
+import { flatten, get, mapKeys, merge, set, uniq, pick, transform, isObject, omit } from 'lodash';
 import ms from 'ms';
 import { getCache } from '../cache';
 import getDatabase from '../database';
@@ -876,13 +876,7 @@ export class GraphQLService {
 					name: `${collection.collection}_aggregated`,
 					type: [AggregatedFunctions[collection.collection]],
 					args: {
-						groupBy: schemaComposer.createEnumTC({
-							name: `${collection.collection}_group_by`,
-							values: Object.values(collection.fields).reduce((acc, field) => {
-								acc[field.field] = { value: field.field };
-								return acc;
-							}, {} as Record<string, { value: string }>),
-						}),
+						groupBy: new GraphQLList(GraphQLString),
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
@@ -1166,8 +1160,10 @@ export class GraphQLService {
 
 		if (query.group) {
 			// for every entry in result add a group field based on query.group;
+			const aggregateKeys = Object.keys(query.aggregate ?? {});
+
 			result.map((field: Item) => {
-				field.group = field[query.group[0]];
+				field.group = omit(field, aggregateKeys);
 			});
 		}
 

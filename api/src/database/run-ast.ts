@@ -149,7 +149,7 @@ async function parseCurrentLevel(
 		nestedCollectionNodes.push(child);
 	}
 
-	const isAggregate = (query.aggregate && Object.keys(query.aggregate).length > 0) ?? false;
+	const isAggregate = (query.group || (query.aggregate && Object.keys(query.aggregate).length > 0)) ?? false;
 
 	/** Always fetch primary key in case there's a nested relation that needs it. Aggregate payloads
 	 * can't have nested relational fields
