@@ -98,7 +98,11 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 
 	filters = deepMap(filters, (val) => {
 		try {
-			return JSON.parse(val);
+			const parsed = JSON.parse(val);
+
+			if (typeof parsed == 'number' && !Number.isSafeInteger(parsed)) return val;
+
+			return parsed;
 		} catch {
 			return val;
 		}
