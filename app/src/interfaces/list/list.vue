@@ -180,6 +180,8 @@ export default defineComponent({
 		}
 
 		function saveItem(index: number) {
+			isNewItem.value = false;
+
 			updateValues(index, edits.value);
 			closeDrawer();
 		}
