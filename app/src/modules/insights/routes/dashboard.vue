@@ -14,8 +14,8 @@
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
-					class="clear-changes"
 					v-tooltip.bottom="t('clear_changes')"
+					class="clear-changes"
 					rounded
 					icon
 					outlined
@@ -24,11 +24,11 @@
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button rounded icon outlined v-tooltip.bottom="t('create_panel')" :to="`/insights/${currentDashboard.id}/+`">
+				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
 				</v-button>
 
-				<v-button rounded icon v-tooltip.bottom="t('save')" @click="saveChanges" :loading="saving">
+				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -101,14 +101,14 @@
 					<v-notice v-if="movePanelChoices.length === 0">
 						{{ t('no_other_dashboards_copy') }}
 					</v-notice>
-					<v-select v-else :items="movePanelChoices" v-model="movePanelTo" item-text="name" item-value="id" />
+					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
 				</v-card-text>
 
 				<v-card-actions>
-					<v-button @click="movePanelID = null" secondary>
+					<v-button secondary @click="movePanelID = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button @click="movePanel" :loading="movePanelLoading">
+					<v-button :loading="movePanelLoading" @click="movePanel">
 						{{ t('copy') }}
 					</v-button>
 				</v-card-actions>
@@ -159,6 +159,7 @@ import { pointOnLine } from '@/utils/point-on-line';
 import InsightsWorkspace from '../components/workspace.vue';
 import { md } from '@/utils/md';
 import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	name: 'InsightsDashboard',
@@ -190,6 +191,10 @@ export default defineComponent({
 		const movePanelID = ref<string | null>();
 
 		const zoomToFit = ref(false);
+
+		useShortcut('meta+s', () => {
+			saveChanges();
+		});
 
 		watch(editMode, (editModeEnabled) => {
 			if (editModeEnabled) {
