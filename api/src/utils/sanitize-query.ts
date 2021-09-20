@@ -98,10 +98,12 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 
 	filters = deepMap(filters, (val) => {
 		try {
-			if (typeof val == 'string' && val.length > 15) {
+			const parsedObject = JSON.parse(val);
+			if (parsedObject == 'number' && typeof val == 'string' && val.length > 15) {
 				return val;
+			} else {
+				return parsedObject;
 			}
-			return JSON.parse(val);
 		} catch {
 			return val;
 		}
