@@ -1,6 +1,7 @@
 <template>
-	<div class="list" :class="{ 'has-header': show_header, loading }">
+	<div class="list" :class="{ 'has-header': show_header, loading, 'no-data': !hasData }">
 		<v-progress-circular v-if="loading" indeterminate />
+		<span v-else-if="!hasData" class="type-note">{{ t('no_data') }}</span>
 		<div v-else>
 			<v-list>
 				<v-list-item
@@ -30,13 +31,14 @@
 <script lang="ts">
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import api from '@/api';
-import { isEqual, clone } from 'lodash';
+import { isEqual } from 'lodash';
 import { Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { useI18n } from 'vue-i18n';
 
 type ListOptions = {
 	displayTemplate: string;
@@ -60,6 +62,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const currentlyEditing = ref<number | string>();
 		const editsAtStart = ref<Record<string, any>>();
 
@@ -68,6 +72,10 @@ export default defineComponent({
 		const list = ref<Record<string, any>[]>([]);
 		const loading = ref(false);
 		const error = ref();
+
+		const hasData = computed(() => {
+			return list.value && list.value.length > 0;
+		});
 
 		const renderTemplate = computed(() => {
 			return props.options.displayTemplate;
@@ -96,6 +104,8 @@ export default defineComponent({
 			cancelEdit,
 			currentlyEditing,
 			editsAtStart,
+			hasData,
+			t,
 		};
 
 		async function fetchData() {

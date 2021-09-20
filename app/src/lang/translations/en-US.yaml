@@ -656,6 +656,7 @@ suffix_placeholder: Text after value...
 decimals_placeholder: Number of decimal places...
 no_dashboards: No Dashboards
 no_dashboards_copy: You don’t have any Dashboards yet.
+no_data: No Data
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 full_screen: Full Screen
