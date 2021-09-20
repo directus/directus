@@ -6,6 +6,7 @@
 
 		<v-list v-if="value && value.length > 0">
 			<draggable
+				:disabled="disabled"
 				:force-fallback="true"
 				:model-value="value"
 				item-key="id"
@@ -14,7 +15,7 @@
 			>
 				<template #item="{ element, index }">
 					<v-list-item :dense="value.length > 4" block @click="active = index">
-						<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />

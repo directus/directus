@@ -1,6 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection, CollectionRaw } from '@/types';
+import { Collection, CollectionRaw } from '@directus/shared/types';
 import { notEmpty } from '@/utils/is-empty/';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';

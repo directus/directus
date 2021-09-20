@@ -19,10 +19,16 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+published: Pubblicato
+draft: Bozza
+archived: Archiviato
+module_bar: Barra del modulo
+tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
 item_revision: Revisione elemento
+enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
@@ -53,6 +59,7 @@ create_user: Crea utente
 create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+url_example: "https://example.com"
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
@@ -139,12 +146,12 @@ field_validation: Convalida di Campo
 field_presets: Preset di Campo
 permissions_for_role: 'Campi che il ruolo {role} può {action}.'
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
-validation_for_role: 'Regole per il campo {action} che il ruolo {role} deve rispettare.'
+validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
-revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento...
-changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
-no_relational_data: Tieni presente che questo non include dati relazionali.
+revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
+changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
+no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
@@ -211,6 +218,8 @@ add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
+add_link: Aggiungi link
+custom_link: Link personalizzato
 default_value: Valore predefinito
 standard_field: Campo Standard
 single_file: File Singolo
@@ -369,7 +378,7 @@ search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
-request_feature: Richiesta caratteristica
+request_feature: Richiesta funzionalità
 interface_not_found: 'Interfaccia "{interface}" non trovata.'
 reset_interface: '"Reimposta interfaccia"'
 display_not_found: 'Display "{display}" non trovato.'
@@ -382,14 +391,14 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
-no_webhooks_copy: Non ci sono ancora webhook.
+no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV
 no_collections: Nessuna Raccolta
 create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
-no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
+no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
@@ -446,10 +455,11 @@ errors:
   RECORD_NOT_UNIQUE: Rilevato valore duplicato
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNKNOWN: Errore Imprevisto
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -555,7 +565,7 @@ value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
-language_display_template: Modello Visualizzazione Lingua
+language_display_template: Modello di visualizzazione della lingua
 translations_display_template: Modello Visualizzazione Traduzioni
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
@@ -577,11 +587,11 @@ no_presets: Nessuna Preset
 no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
 no_presets_cta: Aggiungi Preset
 presets_only: Solo Preset
-create: Creare
-on_create: Alla Creazione
-on_update: In aggiornamento
-read: Leggere
-update: Aggiornare
+create: Creazione
+on_create: Alla creazione
+on_update: Alla modifica
+read: Lettura
+update: Modifica
 select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
@@ -668,7 +678,7 @@ editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Ruoli e permessi
-settings_project: Impostazioni del progetto
+settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 one_or_more_options_are_missing: Mancano una o più opzioni
@@ -730,6 +740,22 @@ collections: Raccolte
 singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
+directus_collection:
+  directus_activity: Log autorizzazioni per tutti gli eventi
+  directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_fields: Configurazione e metadati aggiuntivi del campo
+  directus_files: Metadati per tutti i file degli asset gestiti
+  directus_folders: Fornisce directory virtuali per i file
+  directus_migrations: Quale versione del database stai usando
+  directus_permissions: Autorizzazioni di accesso per ciascun ruolo
+  directus_presets: Preset per i default della raccolta e i segnalibri
+  directus_relations: Configurazione e metadati della relazione
+  directus_revisions: Snapshot dei dati per tutte le attività
+  directus_roles: Gruppi di autorizzazioni per gli utenti di sistema
+  directus_sessions: Informazioni sulla sessione dell'utente
+  directus_settings: Opzioni di configurazione del progetto
+  directus_users: Utenti di sistema per la piattaforma
+  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -759,7 +785,7 @@ fields:
     title: Titolo
     description: Descrizione
     tags: Tag
-    location: Percorso
+    location: Posizione
     storage: Archiviazione
     filename_disk: Nome File (Disco)
     filename_download: Nome File (Download)
@@ -784,7 +810,7 @@ fields:
     email: E-mail
     password: Password
     avatar: Avatar
-    location: Percorso
+    location: Posizione
     title: Titolo
     description: Descrizione
     tags: Tag
@@ -827,7 +853,7 @@ fields:
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
-    auth_password_policy: Criteri Password di accesso
+    auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e miniature
     storage_default_folder: Cartella predefinita di archiviazione
@@ -887,6 +913,11 @@ field_options:
     basemaps_style: Stile Mapbox
     files_divider_title: File e miniature
     overrides_divider_title: Personalizzazioni App
+  directus_activity:
+    login: Accedi
+    create: Creazione
+    update: Modifica
+    delete: Cancellazione
   directus_collections:
     track_activity_revisions: Traccia Attività e Revisioni
     only_track_activity: Traccia solo Attività
@@ -950,11 +981,12 @@ field_options:
     status_options_inactive: Disattivato
     data_label: Invia dati evento
     triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Aggiornare
-    actions_delete: Elimina
+    actions_create: Creazione
+    actions_update: Modifica
+    actions_delete: Cancellazione
     actions_login: Accedi
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
+no_value: Nessun valore
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
@@ -977,7 +1009,7 @@ continue_as: >-
 editing_role: '{role} Ruolo'
 creating_webhook: Creazione Webhook
 default_label: Predefinito
-delete_label: Elimina
+delete_label: Cancellazione
 delete_are_you_sure: >-
   Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
@@ -1244,6 +1276,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: Nessuna Raccolta
+    toggle_split_view: Attiva/disattiva la Split View
+    language_field: Campo lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -1399,3 +1433,5 @@ layouts:
     invalid_geometry: Geometria non valida
     auto_location_filter: Filtra sempre i dati al rettangolo di selezione
     search_this_area: Cerca in quest'area
+    clear_data_filter: Rimuovi il filtro sui dati
+    clear_location_filter: Rimuovi il filtro sulla posizione

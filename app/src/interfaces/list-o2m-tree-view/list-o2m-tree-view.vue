@@ -50,14 +50,13 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
-import { useCollection } from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter } from '@directus/shared/types';
-import { Relation } from '@/types';
+import { Filter, Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 

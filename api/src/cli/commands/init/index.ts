@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import chalk from 'chalk';
 import execa from 'execa';
 import inquirer from 'inquirer';
@@ -11,6 +10,7 @@ import createDBConnection, { Credentials } from '../../utils/create-db-connectio
 import createEnv from '../../utils/create-env';
 import { drivers, getDriverForClient } from '../../utils/drivers';
 import { databaseQuestions } from './questions';
+import { generateHash } from '../../../utils/generate-hash';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
@@ -87,7 +87,7 @@ export default async function init(): Promise<void> {
 		},
 	]);
 
-	firstUser.password = await argon2.hash(firstUser.password);
+	firstUser.password = await generateHash(firstUser.password);
 
 	const userID = uuidV4();
 	const roleID = uuidV4();

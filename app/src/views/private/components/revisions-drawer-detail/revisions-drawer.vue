@@ -3,6 +3,7 @@
 		<v-drawer
 			v-model="internalActive"
 			:title="t('item_revision')"
+			icon="change_history"
 			:sidebar-label="t(currentTab[0])"
 			@cancel="internalActive = false"
 		>
@@ -19,12 +20,12 @@
 			</template>
 
 			<div class="content">
-				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 				<revisions-drawer-updates
 					v-if="currentTab[0] === 'updates_made'"
 					:revision="currentRevision"
 					:revisions="revisions"
 				/>
+				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 			</div>
 
 			<template #actions>
@@ -42,7 +43,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { Revision } from './types';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
@@ -72,13 +73,13 @@ export default defineComponent({
 		const internalActive = useSync(props, 'active', emit);
 		const internalCurrent = useSync(props, 'current', emit);
 
-		const currentTab = ref(['revision_preview']);
+		const currentTab = ref(['updates_made']);
 
 		const currentRevision = computed(() => {
 			return props.revisions.find((revision) => revision.id === props.current);
 		});
 
-		const previousRevision = computed(() => {
+		const previousRevision = computed<Revision | undefined>(() => {
 			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
 
 			// This is assuming props.revisions is in chronological order from newest to oldest
@@ -87,12 +88,12 @@ export default defineComponent({
 
 		const tabs = [
 			{
-				text: t('revision_preview'),
-				value: 'revision_preview',
-			},
-			{
 				text: t('updates_made'),
 				value: 'updates_made',
+			},
+			{
+				text: t('revision_preview'),
+				value: 'revision_preview',
 			},
 		];
 
@@ -104,7 +105,7 @@ export default defineComponent({
 			const revertToValues: Record<string, any> = {};
 
 			for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
-				const previousValue = previousRevision.value.data[field];
+				const previousValue = previousRevision.value?.data[field] ?? null;
 				if (isEqual(newValue, previousValue)) continue;
 				revertToValues[field] = previousValue;
 			}

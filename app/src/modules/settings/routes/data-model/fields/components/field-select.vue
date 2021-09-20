@@ -123,7 +123,7 @@
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete_label') }}</v-button>
+						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -507,11 +507,6 @@ export default defineComponent({
 	--form-vertical-gap: 24px;
 
 	@include form-grid;
-}
-
-.delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
 }
 
 .required {

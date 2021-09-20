@@ -1,5 +1,5 @@
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { APIError } from '@/types';
@@ -322,6 +322,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				const conditions = [...field.meta.conditions].reverse();
 
 				const matchingCondition = conditions.find((condition) => {
+					if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 					const errors = validatePayload(condition.rule, item, { requireAll: true });
 					return errors.length === 0;
 				});
