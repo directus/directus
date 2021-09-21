@@ -12,6 +12,7 @@ import { isEqual, isNil } from 'lodash';
 import { useFieldsStore } from '@/stores';
 import { Filter } from '@directus/shared/types';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 export default defineComponent({
 	props: {
@@ -134,7 +135,7 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const results = await api.get(`/items/${props.collection}`, {
+				const results = await api.get(getEndpoint(props.collection), {
 					params: {
 						groupBy: getGroups(),
 						aggregate: {
