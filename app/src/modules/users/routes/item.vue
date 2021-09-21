@@ -389,26 +389,24 @@ export default defineComponent({
 				return !fieldsDenyList.includes(field.field);
 			});
 
-			if (!providerField) {
-				return;
-			}
+			if (providerField) {
+				providerField.meta.options = {};
 
-			providerField.meta.options = {};
+				if (!providersLoading.value) {
+					const defaultValue = { text: t('default'), value: 'default' };
+					const values = providers.value.map((provider) => ({
+						text: formatTitle(provider.name),
+						value: provider.name,
+					}));
 
-			if (!providersLoading.value) {
-				const defaultValue = { text: t('default'), value: 'default' };
-				const values = providers.value.map((provider) => ({
-					text: formatTitle(provider.name),
-					value: provider.name,
-				}));
+					providerField.meta.readonly = !isNew.value;
+					providerField.meta.options.choices = [defaultValue, ...values];
+				} else {
+					const loadingValue = { text: t('loading'), value: item.value?.provider ?? 'default' };
 
-				providerField.meta.readonly = !isNew.value;
-				providerField.meta.options.choices = [defaultValue, ...values];
-			} else {
-				const loadingValue = { text: t('loading'), value: item.value?.provider ?? 'default' };
-
-				providerField.meta.readonly = true;
-				providerField.meta.options.choices = [loadingValue];
+					providerField.meta.readonly = true;
+					providerField.meta.options.choices = [loadingValue];
+				}
 			}
 		}
 
