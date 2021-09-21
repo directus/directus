@@ -6,7 +6,7 @@ const mockComponent = defineComponent({});
 const mockHandler = () => {
 	return '';
 };
-describe('defineInterface', () => {
+describe('define-extensions', () => {
 	const types = [] as readonly Type[];
 	const mockRecord = () => {
 		return { test: 'test' };
