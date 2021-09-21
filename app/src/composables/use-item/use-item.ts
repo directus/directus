@@ -11,6 +11,7 @@ import { validatePayload } from '@directus/shared/utils';
 import { Filter, Item, Field } from '@directus/shared/types';
 import { isNil, flatten, merge } from 'lodash';
 import { FailedValidationException } from '@directus/shared/exceptions';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsableItem = {
 	edits: Ref<Record<string, any>>;
@@ -56,18 +57,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const endpoint = computed(() => {
-		return collection.value.startsWith('directus_')
-			? `/${collection.value.substring(9)}`
-			: `/items/${collection.value}`;
-	});
-
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
-			return endpoint.value;
+			return getEndpoint(collection.value);
 		}
 
-		return `${endpoint.value}/${encodeURIComponent(primaryKey.value as string)}`;
+		return `${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });
@@ -122,7 +117,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			let response;
 
 			if (isNew.value === true) {
-				response = await api.post(endpoint.value, edits.value);
+				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
 					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
@@ -192,7 +187,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		}
 
 		try {
-			const response = await api.post(endpoint.value, newItem);
+			const response = await api.post(getEndpoint(collection.value), newItem);
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
