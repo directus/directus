@@ -1,7 +1,10 @@
-import { adjustDate } from './adjust-date';
+import { adjustDate } from '.';
 
 describe('Adjust a given date by a given change in duration.', () => {
 	const date = new Date('2021-09-20T21:06:51.517Z');
+	it('returns undefined when the adjustment isnt in a supported format', () => {
+		expect(adjustDate(date, '-ms1')).toBe(undefined);
+	});
 	it('subtracts a year from the date', () => {
 		const adjustedDate = new Date('2020-09-20T21:06:51.517Z');
 		expect(adjustDate(date, '-1.0y')).toStrictEqual(adjustedDate);
@@ -29,5 +32,9 @@ describe('Adjust a given date by a given change in duration.', () => {
 	it('subtracts a second from the date', () => {
 		const adjustedDate = new Date('2021-09-20T21:06:50.517Z');
 		expect(adjustDate(date, '-1.0secs')).toStrictEqual(adjustedDate);
+	});
+	it('subtracts a millisecond from the date', () => {
+		const adjustedDate = new Date('2021-09-20T21:06:51.516Z');
+		expect(adjustDate(date, '-1.0ms')).toStrictEqual(adjustedDate);
 	});
 });
