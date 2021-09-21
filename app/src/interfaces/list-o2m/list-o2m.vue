@@ -393,7 +393,13 @@ export default defineComponent({
 				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {
-					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
+					if (
+						item &&
+						typeof item === 'object' &&
+						pkField in item &&
+						pkField in edits &&
+						item[pkField] === edits[pkField]
+					) {
 						return edits;
 					}
 

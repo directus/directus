@@ -19,7 +19,7 @@ export default defineModule({
 			component: NotFound,
 		},
 	],
-	order: 20,
+	order: 30,
 });
 
 function getRoutes(routes: DocsRoutes): RouteRecordRaw[] {

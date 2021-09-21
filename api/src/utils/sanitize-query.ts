@@ -1,6 +1,6 @@
 import { flatten, get, merge, set } from 'lodash';
 import logger from '../logger';
-import { Filter, Meta, Query, Sort } from '../types';
+import { Aggregate, Filter, Meta, Query, Sort } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { parseFilter, deepMap } from '@directus/shared/utils';
 
@@ -17,6 +17,14 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery.fields) {
 		query.fields = sanitizeFields(rawQuery.fields);
+	}
+
+	if (rawQuery.groupBy) {
+		query.group = sanitizeFields(rawQuery.groupBy);
+	}
+
+	if (rawQuery.aggregate) {
+		query.aggregate = sanitizeAggregate(rawQuery.aggregate);
 	}
 
 	if (rawQuery.sort) {
@@ -53,6 +61,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.deep = sanitizeDeep(rawQuery.deep, accountability);
 	}
 
+	if (rawQuery.alias) {
+		query.alias = sanitizeAlias(rawQuery.alias);
+	}
+
 	return query;
 }
 
@@ -83,6 +95,25 @@ function sanitizeSort(rawSort: any) {
 		const column = field.startsWith('-') ? field.substring(1) : field;
 		return { column, order } as Sort;
 	});
+}
+
+function sanitizeAggregate(rawAggregate: any): Aggregate {
+	let aggregate: Aggregate = {};
+
+	if (typeof rawAggregate === 'string') {
+		try {
+			aggregate = JSON.parse(rawAggregate);
+		} catch {
+			logger.warn('Invalid value passed for filter query parameter.');
+		}
+	}
+
+	for (const [operation, fields] of Object.entries(rawAggregate)) {
+		if (typeof fields === 'string') aggregate[operation as keyof Aggregate] = fields.split(',');
+		else if (Array.isArray(fields)) aggregate[operation as keyof Aggregate] = fields as string[];
+	}
+
+	return aggregate as Aggregate;
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
@@ -178,4 +209,18 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 			set(result, path, merge({}, get(result, path, {}), parsedLevel));
 		}
 	}
+}
+
+function sanitizeAlias(rawAlias: any) {
+	let alias: Record<string, string> = rawAlias;
+
+	if (typeof rawAlias === 'string') {
+		try {
+			alias = JSON.parse(rawAlias);
+		} catch (err) {
+			logger.warn('Invalid value passed for alias query parameter.');
+		}
+	}
+
+	return alias;
 }

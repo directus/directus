@@ -1,7 +1,8 @@
 import { RequestError } from '@/api';
 import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
-import dateFormats from './date-formats.yaml';
+import datetimeFormats from './date-formats.yaml';
+import numberFormats from './number-formats.yaml';
 import enUSBase from './translations/en-US.yaml';
 
 export const i18n = createI18n({
@@ -11,8 +12,9 @@ export const i18n = createI18n({
 	messages: {
 		'en-US': enUSBase,
 	},
-	dateTimeFormats: dateFormats,
 	silentTranslationWarn: true,
+	datetimeFormats,
+	numberFormats,
 });
 
 export type Language = keyof typeof availableLanguages;

@@ -54,6 +54,10 @@ data:
   - many_collection: directus_settings
     many_field: public_background
     one_collection: directus_files
+  - many_collection: directus_panels
+    many_field: dashboard
+    one_collection: directus_dashboards
+    one_field: panels
   - many_collection: directus_files
     many_field: modified_by
     one_collection: directus_users

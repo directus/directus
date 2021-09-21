@@ -16,7 +16,7 @@
 				<template #item="{ element, index }">
 					<v-list-item :dense="value.length > 4" block @click="active = index">
 						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
+						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
 					</v-list-item>
@@ -34,6 +34,12 @@
 			@update:model-value="closeDrawer()"
 			@cancel="closeDrawer()"
 		>
+			<template #title>
+				<h1 class="type-title">
+					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+				</h1>
+			</template>
+
 			<template #actions>
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="closeDrawer()">
 					<v-icon name="check" />
@@ -121,6 +127,18 @@ export default defineComponent({
 
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
+		const defaults = computed(() => {
+			const values: Record<string, any> = {};
+
+			for (const field of props.fields) {
+				if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
+					values[field.field!] = field.schema.default_value;
+				}
+			}
+
+			return values;
+		});
+
 		const fieldsWithNames = computed(() =>
 			props.fields?.map((field) => {
 				return {
@@ -144,6 +162,7 @@ export default defineComponent({
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
+			defaults,
 			fieldsWithNames,
 		};
 
