@@ -6,14 +6,15 @@ export type LayoutOptions = {
 };
 
 export type Day = {
-	date: string,
+	date: Date,
 	events: Event[]
 }
 
 export type Event = {
 	id: string | number,
 	title: string,
-	time?: string,
+	time?: Date,
+	item: any,
 	user?: {
 		id: string,
 		first_name: string,

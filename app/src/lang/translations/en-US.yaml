@@ -1476,6 +1476,12 @@ displays:
     both: Both
     circle_label: Show user in a circle
 layouts:
+  timeline:
+    timeline: Timeline
+    date: Date
+    time: Time
+    title: Title
+    user: User
   cards:
     cards: Cards
     image_source: Image Source

@@ -5,14 +5,17 @@ import TimelineSidebar from './sidebar.vue';
 
 import { useI18n } from 'vue-i18n';
 import { toRefs, inject, computed, ref } from 'vue';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection, useFilterFields } from '@directus/shared/composables';
 import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { useRelationsStore } from '@/stores/';
 
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { useSync } from '@directus/shared/composables';
-import { LayoutOptions, LayoutQuery } from './types';
+import { LayoutOptions, LayoutQuery, Day, Event } from './types';
+import user from '@/displays/user';
+import { getRootPath } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'timeline',
@@ -39,6 +42,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { collection } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const {fieldGroups} = useFilterFields(fieldsInCollection, {
+			date: field => field.type === 'date' || field.type === 'dateTime' || field.type === 'timestamp',
+			time: field => field.type === 'time',
+			user: field => {
+				const related = relationsStore.relations.find(
+					(relation) => relation.collection === props.collection &&
+					relation.field === field.field &&
+					relation.related_collection === 'directus_users'
+				);
+
+				return related !== undefined
+			}
+		})
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
@@ -68,28 +85,53 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			searchQuery: searchQuery,
 		});
 
-		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0)) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
+		const timeFieldRequired = computed(() => {
+			const field = fieldsInCollection.value.find(field => field.field === dateField.value)
+
+			return field?.type === 'date'
+		})
+
+		const days = computed(() => {
+			const days: Record<string, Day> = {}
+
+			const dateF = dateField.value
+			const timeF = timeField.value
+			const pkField = primaryKeyField.value?.field
+			const localTitle = title.value
+
+			if(dateF === null || pkField === undefined || localTitle === null) return []
+
+			items.value.forEach(item => {
+				const date = new Date(item[dateF])
+				const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+
+				if(day in days === false) days[day] = {
+					date: date,
+					events: []
 				}
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
-		});
+
+				const user = userField.value ? item[userField.value] : undefined
+
+				if(user !== undefined && user.avatar) {
+					user.image = parseUrl(user.avatar)
+				}
+
+				const time = timeF !== null? new Date(item[timeF]) : date
+
+				days[day].events.push({
+					id: item[pkField],
+					title: localTitle,
+					time,
+					user,
+					item
+				})
+			})
+
+			return Object.values(days)
+		})
 
 		return {
+			days,
 			items,
 			loading,
 			error,
@@ -106,15 +148,27 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			getLinkForItem,
 			sort,
 			info,
-			showingCount,
 			refresh,
 			resetPresetAndRefresh,
-			dateField, timeField, userField
+			dateField, timeField, userField,
+			fieldGroups,
+			timeFieldRequired
 		};
 
 		async function resetPresetAndRefresh() {
 			await props?.resetPreset?.();
 			refresh();
+		}
+
+		function parseUrl(file: Record<string, any>) {
+			if (!file || !file.type) return null;
+			if (file.type.startsWith('image') === false) return null;
+			if (file.type.includes('svg')) return null;
+
+			let key = 'system-medium-cover'
+
+			const url = getRootPath() + `assets/${file.id}?key=${key}&modified=${file.modified_on}`;
+			return addTokenToURL(url);
 		}
 
 		function refresh() {
@@ -130,9 +184,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useLayoutOptions() {
-			const dateField = createViewOption<string | null>('dateField', null);
-			const timeField = createViewOption<string | null>('timeField', null);
-			const userField = createViewOption<string | null>('userField', null);
+			const dateField = createViewOption<string | null>('dateField', fieldGroups.value.date?.[0]?.field ?? null);
+			const timeField = createViewOption<string | null>('timeField', fieldGroups.value.time?.[0]?.field ?? null);
+			const userField = createViewOption<string | null>('userField', fieldGroups.value.user?.[0]?.field ?? null);
 			const title = createViewOption<string | null>('title', null);
 
 			return { dateField, timeField, userField, title };
@@ -153,59 +207,45 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useLayoutQuery() {
-			const page = ref(1)
-
-			const filtersInterval = computed(() => {
-				if (!calendar.value || !startDateField.value) return filters.value;
-	
-				return [
-					...filters.value,
-					{
-						key: 'start_date',
-						field: startDateField.value,
-						operator: 'gte',
-						value: formatISO(calendar.value.view.currentStart),
-						hidden: true,
-					},
-					{
-						key: 'end_date',
-						field: startDateField.value,
-						operator: 'lte',
-						value: formatISO(calendar.value.view.currentEnd),
-						hidden: true,
-					},
-				];
-			});
-
-			const sort = computed({
+			const page = computed({
 				get() {
-					return layoutQuery.value?.sort || primaryKeyField.value?.field || '';
+					return layoutQuery.value?.page || 1;
 				},
-				set(newSort: string) {
+				set(newPage: number) {
 					layoutQuery.value = {
 						...(layoutQuery.value || {}),
-						sort: newSort,
+						page: newPage,
 					};
 				},
 			});
 
-			const limit = ref(-1)
+			const sort = computed(() => {
+				return '-' + (dateField.value ?? primaryKeyField.value?.field) + (timeField.value ?? '')
+			});
+
+			const limit = computed({
+				get() {
+					return layoutQuery.value?.limit || 25;
+				},
+				set(newLimit: number) {
+					layoutQuery.value = {
+						...(layoutQuery.value || {}),
+						page: 1,
+						limit: newLimit,
+					};
+				},
+			});
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];
 				const fields = [primaryKeyField.value.field];
 
-				if (imageSource.value) {
-					fields.push(`${imageSource.value}.modified_on`);
-					fields.push(`${imageSource.value}.type`);
-					fields.push(`${imageSource.value}.filename_disk`);
-					fields.push(`${imageSource.value}.storage`);
-					fields.push(`${imageSource.value}.id`);
-				}
-
-				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
-					fields.push('modified_on');
-					fields.push('type');
+				if(userField.value) {
+					fields.push(`${userField.value}.avatar.modified_on`)
+					fields.push(`${userField.value}.avatar.type`)
+					fields.push(`${userField.value}.avatar.filename_disk`)
+					fields.push(`${userField.value}.avatar.storage`)
+					fields.push(`${userField.value}.avatar.id`)
 				}
 
 				if (sort.value) {

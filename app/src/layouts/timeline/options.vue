@@ -1,19 +1,23 @@
 <template>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.cards.image_source') }}</div>
-		<v-select v-model="imageSourceWritable" show-deselect item-value="field" item-text="name" :items="fileFields" />
+		<div class="type-label">{{ t('layouts.timeline.date') }}</div>
+		<v-select v-model="dateSync" item-value="field" item-text="name" :items="fieldGroups.date" />
+	</div>
+
+	<div class="field" v-if="timeFieldRequired">
+		<div class="type-label">{{ t('layouts.timeline.time') }}</div>
+		<v-select v-model="timeSync" item-value="field" item-text="name" :items="fieldGroups.time" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.cards.title') }}</div>
-		<v-field-template v-model="titleWritable" :collection="collection" />
+		<div class="type-label">{{ t('layouts.timeline.title') }}</div>
+		<v-field-template v-model="titleSync" :collection="collection" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.cards.subtitle') }}</div>
-		<v-field-template v-model="subtitleWritable" :collection="collection" />
+		<div class="type-label">{{ t('layouts.timeline.user') }}</div>
+		<v-select v-model="userSync" item-value="field" item-text="name" :items="fieldGroups.user" />
 	</div>
-
 </template>
 
 <script lang="ts">
@@ -30,45 +34,49 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		icon: {
-			type: String,
-			required: true,
+		fieldGroups: {
+			type: Object as PropType<Record<string, Field[]>>,
+			default: () => ({})
 		},
-		fileFields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		imageSource: {
+		dateField: {
 			type: String,
-			default: null,
+			default: null
+		},
+		timeField: {
+			type: String,
+			default: null
 		},
 		title: {
 			type: String,
-			default: null,
+			default: null
 		},
-		subtitle: {
+		userField: {
 			type: String,
-			default: null,
+			default: null
 		},
-		imageFit: {
-			type: String,
-			required: true,
-		},
+		timeFieldRequired: {
+			type: Boolean,
+			default: false
+		}
 	},
-	emits: ['update:icon', 'update:imageSource', 'update:title', 'update:subtitle', 'update:imageFit'],
+	emits: ['update:dateField', 'update:timeField', 'update:title', 'update:userField'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const iconWritable = useSync(props, 'icon', emit);
-		const imageSourceWritable = useSync(props, 'imageSource', emit);
-		const titleWritable = useSync(props, 'title', emit);
-		const subtitleWritable = useSync(props, 'subtitle', emit);
-		const imageFitWritable = useSync(props, 'imageFit', emit);
+		const dateSync = useSync(props, 'dateField', emit);
+		const timeSync = useSync(props, 'timeField', emit);
+		const titleSync = useSync(props, 'title', emit);
+		const userSync = useSync(props, 'userField', emit);
 
-		return { t, iconWritable, imageSourceWritable, titleWritable, subtitleWritable, imageFitWritable };
+		return { t, dateSync, timeSync, titleSync, userSync };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+
+.nested-options {
+	@include form-grid;
+}
 </style>

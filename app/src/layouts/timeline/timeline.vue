@@ -1,31 +1,54 @@
 <template>
-	<div></div>
+	<div class="timeline">
+		<div class="events">
+			<div v-for="day in days" :key="day.date">
+				Day: {{day.date}}
+				<div v-for="event in day.events" :key="event.id">
+					{{event.time}}
+					<render-template :collection="collection" :fields="fieldsInCollection" :item="event.item" :template="event.title"></render-template>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="pagination">
+				<v-pagination
+					v-if="totalPages > 1"
+					:length="totalPages"
+					:total-visible="7"
+					show-first-last
+					:model-value="page"
+					@update:model-value="toPage"
+				/>
+			</div>
+
+			<div v-if="loading === false && items.length >= 25" class="per-page">
+				<span>{{ t('per_page') }}</span>
+				<v-select
+					:model-value="`${limit}`"
+					:items="['25', '50', '100', '250', '500', '1000']"
+					inline
+					@update:model-value="limitWritable = +$event"
+				/>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, watch, PropType, ref } from 'vue';
-import Day from './day.vue'
+import DayComponent from './day.vue'
 
-import useElementSize from '@/composables/use-element-size';
 import { Field, Item } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { Collection } from '@directus/shared/types';
+import { Day } from './types';
 
 export default defineComponent({
-	components: { Day },
+	components: { day: DayComponent },
 	inheritAttrs: false,
 	props: {
 		collection: {
 			type: String,
-			required: true,
-		},
-		selection: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		selectMode: {
-			type: Boolean,
 			required: true,
 		},
 		readonly: {
@@ -36,6 +59,10 @@ export default defineComponent({
 			type: Array as PropType<Item[]>,
 			required: true,
 		},
+		days: {
+			type: Array as PropType<Day[]>,
+			required: true,
+		},
 		loading: {
 			type: Boolean,
 			required: true,
@@ -43,6 +70,10 @@ export default defineComponent({
 		error: {
 			type: Object as PropType<any>,
 			default: null,
+		},
+		fieldsInCollection: {
+			type: Array as PropType<Item[]>,
+			required: true,
 		},
 		totalPages: {
 			type: Number,
@@ -56,97 +87,18 @@ export default defineComponent({
 			type: Function as PropType<(newPage: number) => void>,
 			required: true,
 		},
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		fieldsInCollection: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
 		limit: {
 			type: Number,
 			required: true,
 		},
-		size: {
-			type: Number,
-			required: true,
-		},
-		primaryKeyField: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
-		icon: {
-			type: String,
-			required: true,
-		},
-		imageSource: {
-			type: String,
-			default: null,
-		},
-		title: {
-			type: String,
-			default: null,
-		},
-		subtitle: {
-			type: String,
-			default: null,
-		},
-		getLinkForItem: {
-			type: Function as PropType<(item: Record<string, any>) => string | undefined>,
-			required: true,
-		},
-		imageFit: {
-			type: String,
-			required: true,
-		},
-		sort: {
-			type: String,
-			required: true,
-		},
-		info: {
-			type: Object as PropType<Collection>,
-			default: null,
-		},
-		isSingleRow: {
-			type: Boolean,
-			required: true,
-		},
-		width: {
-			type: Number,
-			required: true,
-		},
-		activeFilterCount: {
-			type: Number,
-			required: true,
-		},
-		selectAll: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		resetPresetAndRefresh: {
-			type: Function as PropType<() => Promise<void>>,
-			required: true,
-		},
 	},
-	emits: ['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width'],
+	emits: ['update:limit'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const selectionWritable = useSync(props, 'selection', emit);
 		const limitWritable = useSync(props, 'limit', emit);
-		const sizeWritable = useSync(props, 'size', emit);
-		const sortWritable = useSync(props, 'sort', emit);
 
-		const layoutElement = ref<HTMLElement>();
-
-		const { width } = useElementSize(layoutElement);
-
-		watch(width, () => {
-			emit('update:width', width.value);
-		});
-
-		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement };
+		return { t, limitWritable };
 	},
 });
 </script>
