@@ -78,6 +78,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		defaultLanguage: {
+			type: String,
+			default: null,
+		},
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
@@ -300,7 +304,7 @@ export default defineComponent({
 					languages.value = response.data.data;
 
 					if (!firstLang.value) {
-						firstLang.value = response.data.data?.[0]?.[languagesPrimaryKeyField.value];
+						firstLang.value = props.defaultLanguage ?? response.data.data?.[0]?.[languagesPrimaryKeyField.value];
 					}
 
 					if (!secondLang.value) {
