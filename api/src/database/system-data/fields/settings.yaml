@@ -40,6 +40,17 @@ fields:
       translations: Brand Logo
     width: half
 
+  - field: project_language
+    interface: system-language
+    note: Default locale in Admin app before login
+    options:
+      iconRight: language
+      placeholder: en-US
+    translations:
+      language: en-US
+      translations: Default Locale
+    width: half
+
   - field: public_divider
     interface: presentation-divider
     options:

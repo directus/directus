@@ -39,6 +39,7 @@ export class ServerService {
 				'project_name',
 				'project_logo',
 				'project_color',
+				'project_language',
 				'public_foreground',
 				'public_background',
 				'public_note',

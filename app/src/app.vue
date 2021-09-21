@@ -28,6 +28,7 @@ import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
 import setFavicon from '@/utils/set-favicon';
+import { setLanguage } from '@/lang/set-language';
 
 export default defineComponent({
 	setup() {
@@ -76,6 +77,13 @@ export default defineComponent({
 			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
+			}
+		);
+
+		watch(
+			() => serverStore.info?.project?.project_language,
+			(projectLanguage) => {
+				if (!userStore.currentUser) setLanguage(projectLanguage ?? 'en-US');
 			}
 		);
 

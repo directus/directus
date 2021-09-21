@@ -6,6 +6,7 @@ type Info = {
 		project_name: string | null;
 		project_logo: string | null;
 		project_color: string | null;
+		project_language: string | null;
 		public_foreground: string | null;
 		public_background: string | null;
 		public_note: string | null;
