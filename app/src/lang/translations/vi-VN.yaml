@@ -281,6 +281,7 @@ create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 active: Kích hoạt
+copy: Sao chép
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
