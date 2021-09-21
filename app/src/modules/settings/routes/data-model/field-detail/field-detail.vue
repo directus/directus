@@ -133,7 +133,7 @@ import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
@@ -519,6 +519,6 @@ export default defineComponent({
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>

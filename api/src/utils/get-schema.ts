@@ -141,18 +141,20 @@ async function getDatabaseSchema(
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => ({
-				field: column.column_name,
-				defaultValue: getDefaultValue(column) ?? null,
-				nullable: column.is_nullable ?? true,
-				type: column ? getLocalType(column).type : ('alias' as const),
-				dbType: column.data_type,
-				precision: column.numeric_precision || null,
-				scale: column.numeric_scale || null,
-				special: [],
-				note: null,
-				alias: false,
-			})),
+			fields: mapValues(schemaOverview[collection].columns, (column) => {
+				return {
+					field: column.column_name,
+					defaultValue: getDefaultValue(column) ?? null,
+					nullable: column.is_nullable ?? true,
+					type: getLocalType(column).type,
+					dbType: column.data_type,
+					precision: column.numeric_precision || null,
+					scale: column.numeric_scale || null,
+					special: [],
+					note: null,
+					alias: false,
+				};
+			}),
 		};
 	}
 

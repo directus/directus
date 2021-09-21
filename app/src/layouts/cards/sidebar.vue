@@ -13,7 +13,7 @@ import { defineComponent, PropType } from 'vue';
 
 import { LayoutQuery } from './types';
 import { AppFilter } from '@directus/shared/types';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	inheritAttrs: false,

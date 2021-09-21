@@ -20,7 +20,7 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
-email_examples: "admin{'@'}primjer.com, user{'@'}primjer.com..."
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese
@@ -401,9 +401,9 @@ errors:
   RECORD_NOT_UNIQUE: Detektovana je dupla vrijednost
   USER_SUSPENDED: Suspendovan Korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNKNOWN: Neočekivana greška
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne može biti null
+  UNKNOWN: Neočekivana greška
 value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
 create_bookmark: Napravi Oznaku

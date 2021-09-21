@@ -38,7 +38,7 @@ import { defineComponent, ref, PropType, computed } from 'vue';
 import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import filtersToQuery from '@/utils/filters-to-query';
+import { filtersToQuery } from '@directus/shared/utils';
 import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {

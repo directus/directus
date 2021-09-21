@@ -1,3 +1,4 @@
+import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter } from '../types';
 import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
@@ -18,7 +19,7 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 
 		if (val && typeof val === 'string' && val.startsWith('$NOW')) {
 			if (val.includes('(') && val.includes(')')) {
-				const adjustment = val.match(/\(([^)]+)\)/)?.[1];
+				const adjustment = val.match(REGEX_BETWEEN_PARENS)?.[1];
 				if (!adjustment) return new Date();
 				return adjustDate(new Date(), adjustment);
 			}

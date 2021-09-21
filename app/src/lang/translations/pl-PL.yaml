@@ -420,9 +420,9 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNKNOWN: Nieoczekiwany błąd
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
+  UNKNOWN: Nieoczekiwany błąd
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę

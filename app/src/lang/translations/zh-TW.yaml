@@ -303,9 +303,9 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
-  UNKNOWN: 未預期的錯誤
   INTERNAL_SERVER_ERROR: 未預期的錯誤
   NOT_NULL_VIOLATION: 值不能為null
+  UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤

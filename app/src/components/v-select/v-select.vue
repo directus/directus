@@ -23,7 +23,10 @@
 				@click="toggle"
 			>
 				<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
-				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
+				<template #append>
+					<v-icon name="expand_more" :class="{ active }" />
+					<slot name="append" />
+				</template>
 			</v-input>
 		</template>
 
