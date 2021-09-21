@@ -186,7 +186,7 @@ export default defineComponent({
 					if (part.type === 'link') {
 						return {
 							...part,
-							to: part.url,
+							to: part.url || part.to,
 							icon: part.icon,
 							name: part.name,
 						};
@@ -231,7 +231,8 @@ export default defineComponent({
 			let value: SettingsModuleBarLink;
 
 			if (id !== '+') {
-				value = (props.value ?? MODULE_BAR_DEFAULT).find((val) => val.id === id) as SettingsModuleBarLink;
+				value = { ...(props.value ?? MODULE_BAR_DEFAULT).find((val) => val.id === id) } as SettingsModuleBarLink;
+				value.url = value.url ?? value.to;
 			} else {
 				value = {
 					id: nanoid(),

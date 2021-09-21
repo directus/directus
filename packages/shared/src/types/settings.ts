@@ -8,7 +8,8 @@ export type SettingsModuleBarModule = {
 export type SettingsModuleBarLink = {
 	type: 'link';
 	id: string;
-	url: string;
+	url?: string;
+	to?: string;
 	icon: string;
 	name: string;
 	enabled: boolean;

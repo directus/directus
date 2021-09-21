@@ -9,8 +9,8 @@
 				v-tooltip.right="modulePart.name"
 				icon
 				x-large
-				:to="modulePart.to || (modulePart.url && modulePart.url.startsWith('/') ? modulePart.url : undefined)"
-				:href="modulePart.url && modulePart.url.startsWith('/') ? undefined : modulePart.url"
+				:to="modulePart.to"
+				:href="modulePart.url"
 				tile
 				:style="
 					modulePart.color
@@ -57,6 +57,10 @@ export default defineComponent({
 				})
 				.map((modulePart) => {
 					if (modulePart.type === 'link') {
+						if (modulePart.url && modulePart.url.startsWith('/')) {
+							modulePart.to = modulePart.url;
+							delete modulePart.url;
+						}
 						return translate(modulePart);
 					}
 
