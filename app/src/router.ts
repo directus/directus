@@ -64,7 +64,7 @@ export const router = createRouter({
 
 let firstLoad = true;
 
-export const onBeforeEach: NavigationGuard = async (to, from) => {
+export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
