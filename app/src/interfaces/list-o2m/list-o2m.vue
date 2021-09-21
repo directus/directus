@@ -85,7 +85,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { Filter, Field, Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { get, isEqual, sortBy } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';

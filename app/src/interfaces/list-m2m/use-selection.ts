@@ -1,4 +1,3 @@
-import { Filter } from '@directus/shared/types';
 import { get } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
@@ -10,7 +9,6 @@ type UsableSelection = {
 };
 
 export default function useSelection(
-	value: Ref<(string | number | Record<string, any>)[] | null>,
 	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
