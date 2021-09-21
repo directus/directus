@@ -17,6 +17,7 @@ import { Filter } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 import { isNil } from 'lodash';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 export default defineComponent({
 	props: {
@@ -156,7 +157,7 @@ export default defineComponent({
 							[props.function]: [props.field || '*'],
 					  };
 
-				const res = await api.get(`/items/${props.collection}`, {
+				const res = await api.get(getEndpoint(props.collection), {
 					params: {
 						aggregate,
 						filter: props.filter,

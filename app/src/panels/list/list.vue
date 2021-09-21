@@ -38,6 +38,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getEndpoint } from '@/utils/get-endpoint';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -128,7 +129,7 @@ export default defineComponent({
 			try {
 				const sort = props.sortField;
 
-				const res = await api.get(`/items/${props.collection}`, {
+				const res = await api.get(getEndpoint(props.collection), {
 					params: {
 						fields: [
 							primaryKeyField.value.field,
