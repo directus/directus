@@ -26,7 +26,7 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: "administratorius{'@'}pavyzdys.lt, naudotojas{'@'}pavyzdys.lt..."
+email_examples: "administratorius{'@'}example.com, naudotojas{'@'}example.com..."
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai

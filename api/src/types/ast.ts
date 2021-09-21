@@ -45,6 +45,7 @@ export type NestedCollectionNode = M2ONode | O2MNode | M2ANode;
 export type FieldNode = {
 	type: 'field';
 	name: string;
+	fieldKey: string;
 };
 
 export type AST = {

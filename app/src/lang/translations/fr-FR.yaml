@@ -214,6 +214,7 @@ add_m2m_to_collection: 'Ajouter une relation Many-to-Many à "{collection}"'
 choose_a_type: Choisir un type...
 determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
+add_link: Ajouter un lien
 default_value: Valeur par défaut
 standard_field: Champ standard
 single_file: Fichier unique

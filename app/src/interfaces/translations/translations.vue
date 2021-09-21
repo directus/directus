@@ -71,7 +71,7 @@ export default defineComponent({
 			required: true,
 		},
 		primaryKey: {
-			type: String,
+			type: [Number, String],
 			required: true,
 		},
 		languageField: {
@@ -367,7 +367,7 @@ export default defineComponent({
 			}
 
 			async function loadItems() {
-				if (!translationsRelation.value?.field) return;
+				if (!translationsRelation.value?.field || props.primaryKey === '+') return;
 
 				loading.value = true;
 

@@ -3,7 +3,7 @@
  */
 
 import { Knex } from 'knex';
-import { cloneDeep, mapKeys, omitBy } from 'lodash';
+import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash';
 import { Accountability } from '@directus/shared/types';
 import { AST, FieldNode, NestedCollectionNode, PermissionsAction, Query, SchemaOverview } from '../types';
 import { getRelationType } from '../utils/get-relation-type';
@@ -43,7 +43,30 @@ export default async function getASTFromQuery(
 		children: [],
 	};
 
-	const fields = query.fields || ['*'];
+	let fields = ['*'];
+
+	if (query.fields) {
+		fields = query.fields;
+	}
+
+	/**
+	 * When using aggregate functions, you can't have any other regular fields
+	 * selected. This makes sure you never end up in a non-aggregate fields selection error
+	 */
+	if (Object.keys(query.aggregate || {}).length > 0) {
+		fields = [];
+	}
+
+	/**
+	 * Similarly, when grouping on a specific field, you can't have other non-aggregated fields.
+	 * The group query will override the fields query
+	 */
+	if (query.group) {
+		fields = query.group;
+	}
+
+	fields = uniq(fields);
+
 	const deep = query.deep || {};
 
 	// Prevent fields/deep from showing up in the query object in further use
@@ -51,8 +74,26 @@ export default async function getASTFromQuery(
 	delete query.deep;
 
 	if (!query.sort) {
-		const sortField = schema.collections[collection]?.sortField;
-		query.sort = [{ column: sortField || schema.collections[collection].primary, order: 'asc' }];
+		// We'll default to the primary key for the standard sort output
+		let sortField = schema.collections[collection].primary;
+
+		// If a custom manual sort field is configured, use that
+		if (schema.collections[collection]?.sortField) {
+			sortField = schema.collections[collection].sortField as string;
+		}
+
+		// When group by is used, default to the first column provided in the group by clause
+		if (query.group?.[0]) {
+			sortField = query.group[0];
+		}
+
+		query.sort = [{ column: sortField, order: 'asc' }];
+	}
+
+	// When no group by is supplied, but an aggregate function is used, only a single row will be
+	// returned. In those cases, we'll ignore the sort field altogether
+	if (query.aggregate && Object.keys(query.aggregate).length && !query.group?.[0]) {
+		delete query.sort;
 	}
 
 	ast.children = await parseFields(collection, fields, deep);
@@ -70,34 +111,42 @@ export default async function getASTFromQuery(
 
 		const relationalStructure: Record<string, string[] | anyNested> = {};
 
-		for (const field of fields) {
+		for (const fieldKey of fields) {
+			let name = fieldKey;
+
+			const isAlias = (query.alias && name in query.alias) ?? false;
+
+			if (isAlias) {
+				name = query.alias![fieldKey];
+			}
+
 			const isRelational =
-				field.includes('.') ||
+				name.includes('.') ||
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
 				!!schema.relations.find(
-					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === field
+					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === name
 				);
 
 			if (isRelational) {
 				// field is relational
-				const parts = field.split('.');
+				const parts = name.split('.');
 
-				let fieldKey = parts[0];
+				let rootField = parts[0];
 				let collectionScope: string | null = null;
 
 				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
-				if (fieldKey.includes(':')) {
-					const [key, scope] = fieldKey.split(':');
-					fieldKey = key;
+				if (rootField.includes(':')) {
+					const [key, scope] = rootField.split(':');
+					rootField = key;
 					collectionScope = scope;
 				}
 
-				if (fieldKey in relationalStructure === false) {
+				if (rootField in relationalStructure === false) {
 					if (collectionScope) {
-						relationalStructure[fieldKey] = { [collectionScope]: [] };
+						relationalStructure[rootField] = { [collectionScope]: [] };
 					} else {
-						relationalStructure[fieldKey] = [];
+						relationalStructure[rootField] = [];
 					}
 				}
 
@@ -105,30 +154,36 @@ export default async function getASTFromQuery(
 					const childKey = parts.slice(1).join('.');
 
 					if (collectionScope) {
-						if (collectionScope in relationalStructure[fieldKey] === false) {
-							(relationalStructure[fieldKey] as anyNested)[collectionScope] = [];
+						if (collectionScope in relationalStructure[rootField] === false) {
+							(relationalStructure[rootField] as anyNested)[collectionScope] = [];
 						}
 
-						(relationalStructure[fieldKey] as anyNested)[collectionScope].push(childKey);
+						(relationalStructure[rootField] as anyNested)[collectionScope].push(childKey);
 					} else {
-						(relationalStructure[fieldKey] as string[]).push(childKey);
+						(relationalStructure[rootField] as string[]).push(childKey);
 					}
 				}
 			} else {
-				children.push({ type: 'field', name: field });
+				children.push({ type: 'field', name, fieldKey });
 			}
 		}
 
-		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
-			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
-			const relation = getRelation(parentCollection, relationalField);
+		for (const [fieldKey, nestedFields] of Object.entries(relationalStructure)) {
+			let fieldName = fieldKey;
+
+			if (query.alias && fieldKey in query.alias) {
+				fieldName = query.alias[fieldKey];
+			}
+
+			const relatedCollection = getRelatedCollection(parentCollection, fieldName);
+			const relation = getRelation(parentCollection, fieldName);
 
 			if (!relation) continue;
 
 			const relationType = getRelationType({
 				relation,
 				collection: parentCollection,
-				field: relationalField,
+				field: fieldName,
 			});
 
 			if (!relationType) continue;
@@ -148,7 +203,7 @@ export default async function getASTFromQuery(
 					query: {},
 					relatedKey: {},
 					parentKey: schema.collections[parentCollection].primary,
-					fieldKey: relationalField,
+					fieldKey: fieldKey,
 					relation: relation,
 				};
 
@@ -156,10 +211,10 @@ export default async function getASTFromQuery(
 					child.children[relatedCollection] = await parseFields(
 						relatedCollection,
 						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || ['*'],
-						deep?.[`${relationalField}:${relatedCollection}`]
+						deep?.[`${fieldKey}:${relatedCollection}`]
 					);
 
-					child.query[relatedCollection] = getDeepQuery(deep?.[`${relationalField}:${relatedCollection}`] || {});
+					child.query[relatedCollection] = getDeepQuery(deep?.[`${fieldKey}:${relatedCollection}`] || {});
 
 					child.relatedKey[relatedCollection] = schema.collections[relatedCollection].primary;
 				}
@@ -171,12 +226,12 @@ export default async function getASTFromQuery(
 				child = {
 					type: relationType,
 					name: relatedCollection,
-					fieldKey: relationalField,
+					fieldKey: fieldKey,
 					parentKey: schema.collections[parentCollection].primary,
 					relatedKey: schema.collections[relatedCollection].primary,
 					relation: relation,
-					query: getDeepQuery(deep?.[relationalField] || {}),
-					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[relationalField] || {}),
+					query: getDeepQuery(deep?.[fieldKey] || {}),
+					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[fieldKey] || {}),
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
@@ -191,7 +246,18 @@ export default async function getASTFromQuery(
 			}
 		}
 
-		return children;
+		// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
+		const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');
+
+		return children.filter((childNode) => {
+			const existsAsNestedRelational = !!nestedCollectionNodes.find(
+				(nestedCollectionNode) => childNode.fieldKey === nestedCollectionNode.fieldKey
+			);
+
+			if (childNode.type === 'field' && existsAsNestedRelational) return false;
+
+			return true;
+		});
 	}
 
 	async function convertWildcards(parentCollection: string, fields: string[]) {
@@ -217,12 +283,18 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
+				const aliases = Object.keys(query.alias ?? {});
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
-					fields.splice(index, 1, ...fieldsInCollection);
+					fields.splice(index, 1, ...fieldsInCollection, ...aliases);
 				} else {
 					// Set to all allowed fields
-					fields.splice(index, 1, ...allowedFields);
+					const allowedAliases = aliases.filter((fieldKey) => {
+						const name = query.alias![fieldKey];
+						return allowedFields!.includes(name);
+					});
+
+					fields.splice(index, 1, ...allowedFields, ...allowedAliases);
 				}
 			}
 
@@ -244,6 +316,16 @@ export default async function getASTFromQuery(
 
 				const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
+				const aliasFields = Object.keys(query.alias ?? {}).map((fieldKey) => {
+					const name = query.alias![fieldKey];
+
+					if (relationalFields.includes(name)) {
+						return `${fieldKey}.${parts.slice(1).join('.')}`;
+					}
+
+					return fieldKey;
+				});
+
 				fields.splice(
 					index,
 					1,
@@ -252,6 +334,7 @@ export default async function getASTFromQuery(
 							return `${relationalField}.${parts.slice(1).join('.')}`;
 						}),
 						...nonRelationalFields,
+						...aliasFields,
 					]
 				);
 			}

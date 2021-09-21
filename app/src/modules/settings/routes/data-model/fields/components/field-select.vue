@@ -505,8 +505,6 @@ export default defineComponent({
 
 .form-grid {
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
 }
 
 .required {

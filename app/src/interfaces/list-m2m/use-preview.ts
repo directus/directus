@@ -6,6 +6,7 @@ import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to
 import { cloneDeep, get, merge } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from './use-relation';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 type UsablePreview = {
 	tableHeaders: Ref<Header[]>;
@@ -194,11 +195,9 @@ export default function usePreview(
 	) {
 		if (fields === null || fields.length === 0 || primaryKeys === null || primaryKeys.length === 0) return [];
 
-		const endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
-
 		const fieldsToFetch = addRelatedPrimaryKeyToFields(collection, fields);
 
-		const response = await api.get(endpoint, {
+		const response = await api.get(getEndpoint(collection), {
 			params: {
 				fields: fieldsToFetch,
 				[`filter[${filteredField}][_in]`]: primaryKeys.join(','),

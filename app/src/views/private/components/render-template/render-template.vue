@@ -84,6 +84,7 @@ export default defineComponent({
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
+
 					if (value === undefined) return null;
 
 					if (!field) return value;
@@ -115,7 +116,7 @@ export default defineComponent({
 						field: field.field,
 					};
 				})
-				.map((p) => p || null)
+				.map((p) => p ?? null)
 		);
 
 		return { parts, templateEl };

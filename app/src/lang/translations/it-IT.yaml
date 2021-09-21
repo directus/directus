@@ -458,6 +458,7 @@ errors:
   UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
+  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
   UNKNOWN: Errore Imprevisto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
@@ -1064,6 +1065,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

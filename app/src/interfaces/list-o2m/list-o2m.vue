@@ -87,8 +87,7 @@ import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsS
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field, Relation } from '@directus/shared/types';
-import { isEqual, sortBy } from 'lodash';
-import { get } from 'lodash';
+import { get, isEqual, sortBy } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
@@ -394,7 +393,13 @@ export default defineComponent({
 				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {
-					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
+					if (
+						item &&
+						typeof item === 'object' &&
+						pkField in item &&
+						pkField in edits &&
+						item[pkField] === edits[pkField]
+					) {
 						return edits;
 					}
 
