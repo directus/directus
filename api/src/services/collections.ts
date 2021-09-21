@@ -344,7 +344,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -361,7 +361,7 @@ export class CollectionsService {
 			}
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE) {
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
