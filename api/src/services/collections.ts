@@ -330,6 +330,14 @@ export class CollectionsService {
 			await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
 		}
 
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
 		return collectionKey;
 	}
 
@@ -352,6 +360,14 @@ export class CollectionsService {
 				await service.updateOne(collectionKey, data, { autoPurgeCache: false });
 			}
 		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 
 		return collectionKeys;
 	}
