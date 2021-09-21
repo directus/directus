@@ -16,6 +16,7 @@ create_user: צור משתמש
 create_webhook: צור Webhook
 invite_users: הזמן משתמשים
 invite: הזמן
+public: פומבי
 not_allowed: לא מורשה
 directus_version: גרסת דירקטוס
 node_version: Node Version
