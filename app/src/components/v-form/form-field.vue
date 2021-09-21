@@ -11,6 +11,8 @@
 					:batch-active="batchActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
+					:badge="badge"
+					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
@@ -50,7 +52,7 @@
 			</v-card>
 		</v-dialog>
 
-		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="note" />
+		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
 		<small v-if="validationError" class="validation-error">
 			{{ validationMessage }}
@@ -110,6 +112,10 @@ export default defineComponent({
 		autofocus: {
 			type: Boolean,
 			default: false,
+		},
+		badge: {
+			type: String,
+			default: null,
 		},
 	},
 	emits: ['toggle-batch', 'unset', 'update:modelValue'],
@@ -217,12 +223,11 @@ export default defineComponent({
 	position: relative;
 }
 
-.note {
+.type-note {
+	position: relative;
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 
 .invalid {

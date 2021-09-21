@@ -1,23 +1,38 @@
-export function abbreviateNumber(value: number): number | string {
-	if (value >= 1000) {
-		const suffixes = ['', 'K', 'M', 'B', 'T'];
-		const suffixNum = Math.floor(('' + value).length / 3);
-		let shortValue: number = value;
+export function abbreviateNumber(
+	number: number,
+	decimalPlaces = 0,
+	units: string[] = ['K', 'M', 'B', 'T']
+): number | string {
+	const isNegative = number < 0;
 
-		for (let precision = 2; precision >= 1; precision--) {
-			shortValue = parseFloat((suffixNum != 0 ? value / Math.pow(1000, suffixNum) : value).toPrecision(precision));
-			const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
-			if (dotLessShortValue.length <= 2) break;
+	number = Math.abs(number);
+
+	let stringValue = String(number);
+
+	if (number >= 1000) {
+		const precisionScale = Math.pow(10, decimalPlaces);
+
+		for (let i = units.length - 1; i >= 0; i--) {
+			const size = Math.pow(10, (i + 1) * 3);
+
+			if (size <= number) {
+				number = Math.round((number * precisionScale) / size) / precisionScale;
+
+				if (number === 1000 && i < units.length - 1) {
+					number = 1;
+					i++;
+				}
+
+				stringValue = number.toFixed(decimalPlaces) + units[i];
+
+				break;
+			}
 		}
-
-		let valueAsString = String(shortValue);
-
-		if (shortValue % 1 !== 0) {
-			valueAsString = shortValue.toFixed(1);
-		}
-
-		return valueAsString + suffixes[suffixNum];
 	}
 
-	return value;
+	if (isNegative) {
+		stringValue = `-${stringValue}`;
+	}
+
+	return stringValue;
 }

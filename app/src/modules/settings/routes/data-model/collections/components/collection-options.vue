@@ -22,7 +22,7 @@
 					<v-button :disabled="deleting" secondary @click="deleteActive = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :loading="deleting" class="delete" @click="deleteCollection">
+					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
 						{{ t('delete_collection') }}
 					</v-button>
 				</v-card-actions>
@@ -34,7 +34,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
@@ -74,11 +74,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-button.delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
-}
-
 .ctx-toggle {
 	--v-icon-color: var(--foreground-subdued);
 

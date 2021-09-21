@@ -1,25 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
-published: Publicado
 draft: Rascunho
 archived: Arquivado
 edit_field: Editar campo
@@ -55,7 +34,7 @@ create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webgancho
 invite_users: Convidar Usuários
-email_examples: "admin{'@'}exemplo.com, usuário{'@'}exemplo.com..."
+email_examples: "admin{'@'}example.com, usuario{'@'}example.com..."
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
 emails: Emails
@@ -145,9 +124,6 @@ fields_for_role: 'Campos que o cargo {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
 presets_for_role: 'Valores de campo padrões para a função {role}.'
 presentation_and_aliases: Apresentação e pseudônimos
-revision_post_update: Aqui está como este item ficou após a atualização...
-changes_made: Estas são as mudanças específicas que foram feitas...
-no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir campo
@@ -385,7 +361,6 @@ no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
-no_webhooks_copy: Ainda não possui Webhooks.
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
@@ -449,10 +424,10 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Usuário suspenso
   CONTAINS_NULL_VALUES: O campo contém valores nulos
-  UNKNOWN: Erro inesperado
   UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
   NOT_NULL_VIOLATION: Valor não pode ser nulo
+  UNKNOWN: Erro inesperado
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -867,7 +842,6 @@ field_options:
     files_divider_title: Arquivos e Miniaturas
     overrides_divider_title: Substituições de Aplicativos
   directus_activity:
-    login: Entrar
     create: Criar
     update: Alteração
     delete: Excluir

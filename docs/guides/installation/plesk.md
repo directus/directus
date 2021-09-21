@@ -49,15 +49,15 @@ do not need to worry about choosing a specific port. Just use an arbitrary numbe
 Add Directus and your database connector as a dependency. To execute Directus' `bootstrap` command you also have to add
 a script entry for it.
 
-```
+```json
 {
-  "scripts": {
-    "bootstrap": "directus bootstrap"
-  },
-  "dependencies": {
-    "directus": "*",
-    "mysql": "^2.18.1"
-  }
+	"scripts": {
+		"bootstrap": "directus bootstrap"
+	},
+	"dependencies": {
+		"directus": "*",
+		"mysql": "^2.18.1"
+	}
 }
 ```
 
@@ -65,9 +65,10 @@ a script entry for it.
 
 Instead of a start command, Plesk wants a startup file. So create a `index.js` with the following content:
 
-```
-var { default: start } = require('directus/dist/start');
-start();
+```js
+var { startServer } = require('directus/dist/server');
+
+startServer();
 ```
 
 ### 4. Add .npmrc
@@ -99,7 +100,7 @@ You get the console output after the script has run through.
 You may run into an error of argon2 telling you that glibc is missing. If that's the case try adding and running this
 script entry to your package.json:
 
-```
+```json
     "scripts" {
         "argon2-rebuild": "npm rebuild argon2 --build-from-source",
         <...>
