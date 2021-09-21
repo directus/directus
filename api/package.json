@@ -176,7 +176,7 @@
 		"@types/express-pino-logger": "4.0.2",
 		"@types/express-session": "1.17.4",
 		"@types/flat": "5.0.2",
-		"@types/fs-extra": "9.0.12",
+		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.1.1",
 		"@types/jest": "27.0.2",
 		"@types/js-yaml": "4.0.3",
