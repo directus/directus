@@ -519,6 +519,6 @@ export default defineComponent({
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>

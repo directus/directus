@@ -327,9 +327,9 @@ errors:
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
-  UNKNOWN: Lỗi Bất Thường
   INTERNAL_SERVER_ERROR: Lỗi Bất Thường
   NOT_NULL_VIOLATION: Dữ liệu không thể là null
+  UNKNOWN: Lỗi Bất Thường
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang

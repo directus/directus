@@ -377,9 +377,9 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
+  UNKNOWN: Beklenmeyen hata
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur

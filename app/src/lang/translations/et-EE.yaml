@@ -401,9 +401,9 @@ errors:
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
   USER_SUSPENDED: Kasutajakonto on suletud
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
-  UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
+  UNKNOWN: Ootamatu viga
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja

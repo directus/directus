@@ -398,9 +398,9 @@ errors:
   ITEM_NOT_FOUND: Item tidak ditemukan
   ROUTE_NOT_FOUND: Tidak ditemukan
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
-  UNKNOWN: Kesalahan Tidak Terduga
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  UNKNOWN: Kesalahan Tidak Terduga
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
