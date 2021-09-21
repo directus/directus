@@ -32,7 +32,6 @@ enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
-limit: Limit
 group: Gruppe
 and: Und
 or: Oder
@@ -58,7 +57,7 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
-email_examples: "admin{'@'}example.com, benutzer{'@'}example.com..."
+email_examples: "admin{'@'}beispiel.de, benutzer{'@'}beispiel.de..."
 url_example: "https://example.com"
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -404,6 +403,7 @@ display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
+copy: Kopieren
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
@@ -599,6 +599,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+full_screen: Vollbild
 image_url: Bild-Url
 alt_text: Alternativ-Text
 media: Medien
@@ -696,7 +697,6 @@ unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
-page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
   **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_collections_item: >-
@@ -1017,6 +1017,7 @@ delete_field_are_you_sure: >-
 description: Beschreibung
 done: Erledigt
 duplicate: Duplikat
+limit: Limit
 email: E-Mail
 embed: Einbetten
 fallback_icon: Fallback-Symbol
@@ -1065,7 +1066,6 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1435,3 +1435,6 @@ layouts:
     search_this_area: Diesen Bereich durchsuchen
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
+panels:
+  label:
+    name: Label
