@@ -4,7 +4,6 @@ import Joi from 'joi';
 import ms from 'ms';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import getDatabase from '../database';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import {
 	InvalidCredentialsException,

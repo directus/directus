@@ -292,6 +292,11 @@ export default defineComponent({
 			isNew
 		);
 
+		const providers = ref([]);
+		const providersLoading = ref(true);
+
+		onMounted(fetchProviders);
+
 		// These fields will be shown in the sidebar instead
 		const fieldsDenyList = [
 			'id',
@@ -303,43 +308,9 @@ export default defineComponent({
 			'modified_on',
 			'last_access',
 		];
-
 		const fieldsFiltered = ref([]);
 
-		// Populate providers list
-		const providers = ref([]);
-		const providersLoading = ref(true);
-
-		watch(
-			[item, providers, providersLoading],
-			() => {
-				fieldsFiltered.value = fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
-
-				const field = fieldsFiltered.value.find((field) => field.field === 'provider');
-				const provider = item.value?.provider ?? 'default';
-
-				if (field) {
-					field.meta.options = {};
-
-					if (!providersLoading.value) {
-						const defaultValue = { text: t('default'), value: 'default' };
-						const values = providers.value.map((provider) => ({
-							text: formatTitle(provider.name),
-							value: provider.name,
-						}));
-
-						field.meta.readonly = !isNew.value;
-						field.meta.options.choices = [defaultValue, ...values];
-					} else {
-						field.meta.readonly = true;
-						field.meta.options.choices = [{ text: t('loading'), value: provider }];
-					}
-				}
-			},
-			{ immediate: true }
-		);
-
-		onMounted(() => fetchProviders());
+		watch([fields, item, providers, providersLoading], generateFormFields, { immediate: true });
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
@@ -405,6 +376,39 @@ export default defineComponent({
 				unexpectedError(err);
 			} finally {
 				providersLoading.value = false;
+			}
+		}
+
+		function generateFormFields() {
+			let providerField;
+
+			fieldsFiltered.value = fields.value.filter((field: Field) => {
+				if (field.field === 'provider') {
+					providerField = field;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
+
+			if (!providerField) {
+				return;
+			}
+
+			providerField.meta.options = {};
+
+			if (!providersLoading.value) {
+				const defaultValue = { text: t('default'), value: 'default' };
+				const values = providers.value.map((provider) => ({
+					text: formatTitle(provider.name),
+					value: provider.name,
+				}));
+
+				providerField.meta.readonly = !isNew.value;
+				providerField.meta.options.choices = [defaultValue, ...values];
+			} else {
+				const loadingValue = { text: t('loading'), value: item.value?.provider ?? 'default' };
+
+				providerField.meta.readonly = true;
+				providerField.meta.options.choices = [loadingValue];
 			}
 		}
 

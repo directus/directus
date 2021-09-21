@@ -45,4 +45,3 @@ export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'tra
 export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
-

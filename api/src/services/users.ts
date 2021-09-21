@@ -288,14 +288,6 @@ export class UsersService extends ItemsService {
 		}
 
 		const emails = toArray(email);
-		const users = emails.map((email) => ({
-			email,
-			role,
-			status: 'invited',
-		}));
-
-		await this.createMany(users);
-
 		const mailService = new MailService({
 			schema: this.schema,
 			accountability: this.accountability,
@@ -319,6 +311,8 @@ export class UsersService extends ItemsService {
 					},
 				},
 			});
+
+			await this.createOne({ email, role, status: 'invited' });
 		}
 	}
 

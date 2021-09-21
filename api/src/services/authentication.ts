@@ -195,7 +195,7 @@ export class AuthenticationService {
 		 * Sign token with combination of server secret + user password hash
 		 * That way, old tokens are immediately invalidated whenever the user changes their password
 		 */
-		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
+		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
