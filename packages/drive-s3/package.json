@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "2.0.0",
-		"@types/fs-extra": "9.0.12",
+		"@types/fs-extra": "9.0.13",
 		"@types/jest": "27.0.2",
 		"@types/node": "15.12.2",
 		"@types/normalize-path": "3.0.0",
