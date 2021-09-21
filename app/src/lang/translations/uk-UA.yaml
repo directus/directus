@@ -6,7 +6,6 @@ item_revision: Перегляд об'єкта
 duplicate_field: Дублювати поле
 half_width: Ширина ряду на половину
 full_width: Повна ширина
-limit: Обмеження
 group: Група
 and: Й
 or: Або
@@ -276,6 +275,7 @@ delete_field_are_you_sure: >-
 description: Опис
 done: Готово
 duplicate: Дублювати
+limit: Обмеження
 email: Email
 embed: Вбудувати
 field: Поле | Поля
