@@ -28,7 +28,6 @@
 						handler: deactivate,
 						middleware: onClickOutsideMiddleware,
 						disabled: isActive === false || closeOnClick === false,
-						events: ['pointerdown'],
 					}"
 					class="v-menu-popper"
 					:class="{ active: isActive, attached }"
