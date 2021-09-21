@@ -68,7 +68,7 @@
 		"@vue/cli-plugin-vuex": "4.5.13",
 		"@vue/cli-service": "4.5.13",
 		"@vue/compiler-sfc": "3.2.12",
-    "apexcharts": "3.26.3",
+    "apexcharts": "3.28.3",
 		"axios": "0.21.4",
 		"base-64": "1.0.0",
 		"codemirror": "5.63.0",
