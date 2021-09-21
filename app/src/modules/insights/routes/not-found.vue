@@ -4,7 +4,7 @@
 			<insights-navigation />
 		</template>
 
-		<div class="not-found" v-if="!currentDashboard">
+		<div v-if="!currentDashboard" class="not-found">
 			<v-info :title="t('page_not_found')" icon="not_interested">
 				{{ t('page_not_found_body') }}
 			</v-info>

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)" persistent @esc="cancel">
+	<v-dialog :model-value="modelValue" persistent @update:modelValue="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
@@ -10,17 +10,17 @@
 
 			<v-card-text>
 				<div class="fields">
-					<v-input autofocus v-model="values.name" :placeholder="t('dashboard_name')" />
-					<interface-select-icon @input="values.icon = $event" :value="values.icon" />
-					<v-input class="full" v-model="values.note" :placeholder="t('note')" />
+					<v-input v-model="values.name" autofocus :placeholder="t('dashboard_name')" />
+					<interface-select-icon :value="values.icon" @input="values.icon = $event" />
+					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
 				</div>
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button @click="cancel" secondary>
+				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="!values.name" @click="save" :loading="saving">
+				<v-button :disabled="!values.name" :loading="saving" @click="save">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
@@ -40,7 +40,6 @@ import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'DashboardDialog',
-	emits: ['update:modelValue'],
 	props: {
 		modelValue: {
 			type: Boolean,
@@ -51,6 +50,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 

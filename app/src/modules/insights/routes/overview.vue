@@ -28,7 +28,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div class="page-description" v-html="md(t('page_help_insights_overview'))" />
+				<div v-md="t('page_help_insights_overview')" class="page-description" />
 			</sidebar-detail>
 		</template>
 

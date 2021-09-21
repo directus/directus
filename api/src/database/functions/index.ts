@@ -6,7 +6,9 @@ import { HelperMSSQL } from './dialects/mssql';
 import { HelperSQLite } from './dialects/sqlite';
 import { HelperOracle } from './dialects/oracle';
 
-export function FunctionsHelper(knex: Knex) {
+import { HelperFn } from './types';
+
+export function FunctionsHelper(knex: Knex): HelperFn {
 	switch (knex.client.constructor.name) {
 		case 'Client_MySQL':
 			return new HelperMySQL(knex);

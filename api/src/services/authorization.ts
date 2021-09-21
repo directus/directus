@@ -111,10 +111,10 @@ export class AuthorizationService {
 				const allowedFields = permissions.fields || [];
 
 				if (aggregate && allowedFields.includes('*') === false) {
-					for (const [_operation, aliasMap] of Object.entries(aggregate)) {
+					for (const aliasMap of Object.values(aggregate)) {
 						if (!aliasMap) continue;
 
-						for (const [column, _alias] of Object.entries(aliasMap)) {
+						for (const column of Object.keys(aliasMap)) {
 							if (allowedFields.includes(column) === false) throw new ForbiddenException();
 						}
 					}

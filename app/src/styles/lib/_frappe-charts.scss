@@ -11,6 +11,7 @@
 			stroke: var(--border-normal);
 		}
 	}
+
 	.dataset-units {
 		circle {
 			stroke: #fff;
@@ -23,9 +24,11 @@
 			stroke-width: 2px;
 		}
 	}
+
 	.dataset-path {
 		stroke-width: 2px;
 	}
+
 	.path-group {
 		path {
 			fill: none;
@@ -33,20 +36,25 @@
 			stroke-width: 2px;
 		}
 	}
+
 	line.dashed {
 		stroke-dasharray: 5, 3;
 	}
+
 	.axis-line {
 		.specific-value {
 			text-anchor: start;
 		}
+
 		.y-line {
 			text-anchor: end;
 		}
+
 		.x-line {
 			text-anchor: middle;
 		}
 	}
+
 	.legend-dataset-text {
 		font-weight: 600;
 		fill: var(--foreground-normal);
@@ -77,6 +85,7 @@
 		padding: 0;
 		text-align: left;
 		pointer-events: none;
+
 		.title {
 			display: block;
 			margin: 0;
@@ -85,11 +94,13 @@
 			line-height: 1;
 			pointer-events: none;
 		}
+
 		ul {
 			margin: 0;
 			white-space: nowrap;
 			list-style: none;
 		}
+
 		li {
 			display: inline-block;
 			padding: 5px 10px;

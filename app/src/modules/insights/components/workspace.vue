@@ -34,8 +34,7 @@ import InsightsPanel from '../components/panel.vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({
-	name: 'insights-workspace',
-	emits: ['update', 'move', 'delete', 'duplicate'],
+	name: 'InsightsWorkspace',
 	components: { InsightsPanel },
 	props: {
 		panels: {
@@ -55,6 +54,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['update', 'move', 'delete', 'duplicate'],
 	setup(props) {
 		const mainElement = inject('main-element', ref<Element>());
 		const mainElementSize = useElementSize(mainElement);

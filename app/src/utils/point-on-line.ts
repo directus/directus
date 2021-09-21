@@ -3,7 +3,7 @@ type Point = [number, number];
 /**
  * Check if a given X, Y coordinate is on the line between two other points
  */
-export function pointOnLine(current: Point, point1: Point, point2: Point) {
+export function pointOnLine(current: Point, point1: Point, point2: Point): boolean {
 	const [curX, curY] = current;
 	const [p1X, p1Y] = point1;
 	const [p2X, p2Y] = point2;
