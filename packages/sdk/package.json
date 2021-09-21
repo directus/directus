@@ -48,7 +48,7 @@
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "20.0.0",
 		"@rollup/plugin-json": "4.1.0",
-		"@rollup/plugin-node-resolve": "13.0.4",
+		"@rollup/plugin-node-resolve": "13.0.5",
 		"@types/jest": "27.0.2",
 		"argon2": "0.28.2",
 		"dotenv": "10.0.0",
