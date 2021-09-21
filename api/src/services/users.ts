@@ -300,6 +300,9 @@ export class UsersService extends ItemsService {
 			const inviteURL = url ? new Url(url) : new Url(env.PUBLIC_URL).addPath('admin', 'accept-invite');
 			inviteURL.setQuery('token', token);
 
+			// Create user first to verify uniqueness
+			await this.createOne({ email, role, status: 'invited' });
+
 			await mailService.send({
 				to: email,
 				subject: subjectLine,
@@ -311,8 +314,6 @@ export class UsersService extends ItemsService {
 					},
 				},
 			});
-
-			await this.createOne({ email, role, status: 'invited' });
 		}
 	}
 
@@ -330,6 +331,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
+		// Allow unauthenticated update
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
@@ -393,6 +395,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
+		// Allow unauthenticated update
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,

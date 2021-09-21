@@ -71,7 +71,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
-		// Not authenticated:
+		// Allow unauthenticated access
 		const itemsService = new ItemsService(this.collection, {
 			knex: this.knex,
 			schema: this.schema,
