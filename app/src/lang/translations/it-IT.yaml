@@ -32,7 +32,6 @@ enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
-limit: Limite
 group: Gruppo
 and: E
 or: O
@@ -404,6 +403,7 @@ display_template_not_setup: L'opzione del modello di visualizzazione non è conf
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
 active: Attivo
+copy: Copia
 inactive: Disattivato
 users: Utenti
 activity: Attività
@@ -599,6 +599,7 @@ toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+full_screen: Schermo Intero
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
@@ -696,7 +697,6 @@ unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
-page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
 page_help_collections_collection: >-
   **Sfoglia gli elementi** — Elenca tutti gli elementi di {collection} a cui hai accesso. Personalizza il layout, i filtri e l'ordinamento per personalizzare la tua vista e salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_collections_item: >-
@@ -1017,6 +1017,7 @@ delete_field_are_you_sure: >-
 description: Descrizione
 done: Fatto
 duplicate: Duplicare
+limit: Limite
 email: E-mail
 embed: Embed
 fallback_icon: Icona di default
@@ -1065,7 +1066,6 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:
@@ -1435,3 +1435,6 @@ layouts:
     search_this_area: Cerca in quest'area
     clear_data_filter: Rimuovi il filtro sui dati
     clear_location_filter: Rimuovi il filtro sulla posizione
+panels:
+  label:
+    name: Etichetta
