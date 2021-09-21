@@ -30,7 +30,6 @@ enter_a_name: یک نام وارد کنید
 duplicate_field: زمینه های تکراری (Automatic Translation)
 half_width: نصف عرض
 full_width: پهنای کامل
-limit: محدوده
 group: گروه
 and: و
 or: یا
@@ -232,6 +231,7 @@ field_options:
     collection_list:
       fields:
         type_name: نوع
+limit: محدوده
 interfaces:
   presentation-links:
     primary: اصلی
