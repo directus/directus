@@ -134,7 +134,7 @@ export default defineComponent({
 		});
 
 		const splitViewAvailable = computed(() => {
-			return width.value > 960;
+			return width.value > 960 && languageOptions.value.length > 1;
 		});
 
 		const splitViewEnabled = computed(() => {
