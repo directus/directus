@@ -178,7 +178,7 @@
 		"@types/flat": "5.0.2",
 		"@types/fs-extra": "9.0.12",
 		"@types/inquirer": "8.1.1",
-		"@types/jest": "27.0.1",
+		"@types/jest": "27.0.2",
 		"@types/js-yaml": "4.0.3",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.5",
