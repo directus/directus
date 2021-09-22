@@ -1,13 +1,6 @@
 <template>
-	<v-divider show-expand-icon :expand="expand" @click="expand = !expand">
-		<template #icon>
-			<v-icon :name="expand ? 'expand_less' : 'expand_more'" />
-		</template>
-		{{ group.dateFormatted }}
-	</v-divider>
-
-	<transition-expand class="scroll-container">
-		<div v-show="expand">
+	<v-detail v-model="expand" :label="group.dateFormatted" class="revisions-date-group">
+		<div v-show="expand" class="scroll-container">
 			<revision-item
 				v-for="(item, index) in group.revisions"
 				:key="item.id"
@@ -16,7 +9,7 @@
 				@click="$emit('click', item.id)"
 			/>
 		</div>
-	</transition-expand>
+	</v-detail>
 </template>
 
 <script lang="ts">
@@ -35,27 +28,13 @@ export default defineComponent({
 	emits: ['click'],
 	setup() {
 		const expand = ref(true);
-
 		return { expand };
 	},
 });
 </script>
 
-<style lang="scss" scoped>
-.v-divider {
-	position: sticky;
-	top: 0;
-	z-index: 3;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	padding-top: 8px;
-	padding-bottom: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
-	cursor: pointer;
-
-	&:first-of-type {
-		margin-top: 0;
-	}
+<style scoped>
+.revisions-date-group .scroll-container {
+	padding-bottom: 24px;
 }
 </style>
