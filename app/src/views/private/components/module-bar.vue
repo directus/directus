@@ -60,10 +60,10 @@ export default defineComponent({
 					if (modulePart.type === 'link') {
 						const link = omit<Record<string, any>>(modulePart, ['url']);
 
-						if (modulePart.url.startsWith('http')) {
-							link.href = modulePart.url;
-						} else {
+						if (modulePart.url.startsWith('/')) {
 							link.to = modulePart.url;
+						} else {
+							link.href = modulePart.url;
 						}
 
 						return translate(link);
