@@ -1,35 +1,14 @@
 <template>
 	<div class="timeline">
 		<div class="events">
-			<div v-for="day in days" :key="day.date">
+			Hello!!
+			<!-- <div v-for="day in days" :key="day.date">
 				Day: {{day.date}}
 				<div v-for="event in day.events" :key="event.id">
 					{{event.time}}
 					<render-template :collection="collection" :fields="fieldsInCollection" :item="event.item" :template="event.title"></render-template>
 				</div>
-			</div>
-		</div>
-		<div class="footer">
-			<div class="pagination">
-				<v-pagination
-					v-if="totalPages > 1"
-					:length="totalPages"
-					:total-visible="7"
-					show-first-last
-					:model-value="page"
-					@update:model-value="toPage"
-				/>
-			</div>
-
-			<div v-if="loading === false && items.length >= 25" class="per-page">
-				<span>{{ t('per_page') }}</span>
-				<v-select
-					:model-value="`${limit}`"
-					:items="['25', '50', '100', '250', '500', '1000']"
-					inline
-					@update:model-value="limitWritable = +$event"
-				/>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>

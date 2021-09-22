@@ -6,8 +6,10 @@ export type LayoutOptions = {
 };
 
 export type Day = {
-	date: Date,
-	events: Event[]
+	year: number,
+	month: number,
+	day: number,
+	event_count: number,
 }
 
 export type Event = {

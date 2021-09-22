@@ -4,18 +4,17 @@ import TimelineOptions from './options.vue';
 import TimelineSidebar from './sidebar.vue';
 
 import { useI18n } from 'vue-i18n';
-import { toRefs, inject, computed, ref } from 'vue';
+import { toRefs, inject, computed, ref, watch } from 'vue';
 import { useCollection, useFilterFields } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { useRelationsStore } from '@/stores/';
 
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery, Day, Event } from './types';
-import user from '@/displays/user';
 import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
+import api, { addTokenToURL } from '@/api';
+import { AppFilter } from '@directus/shared/types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'timeline',
@@ -28,11 +27,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: () => {},
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const relationsStore = useRelationsStore();
-
-		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
@@ -57,33 +52,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		})
 
-		const fileFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => {
-				if (field.field === '$thumbnail') return true;
-
-				const relation = relationsStore.relations.find((relation) => {
-					return (
-						relation.collection === props.collection &&
-						relation.field === field.field &&
-						relation.related_collection === 'directus_files'
-					);
-				});
-
-				return !!relation;
-			});
-		});
-
 		const { title, dateField, timeField, userField } = useLayoutOptions();
-		const { sort, limit, page, fields } = useLayoutQuery();
+		const { sort, page, fields, filter } = useLayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields: fields,
-			filters: filters,
-			searchQuery: searchQuery,
-		});
+		const {days} = useDays()
 
 		const timeFieldRequired = computed(() => {
 			const field = fieldsInCollection.value.find(field => field.field === dateField.value)
@@ -91,74 +63,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return field?.type === 'date'
 		})
 
-		const days = computed(() => {
-			const days: Record<string, Day> = {}
-
-			const dateF = dateField.value
-			const timeF = timeField.value
-			const pkField = primaryKeyField.value?.field
-			const localTitle = title.value
-
-			if(dateF === null || pkField === undefined || localTitle === null) return []
-
-			items.value.forEach(item => {
-				const date = new Date(item[dateF])
-				const day = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-
-				if(day in days === false) days[day] = {
-					date: date,
-					events: []
-				}
-
-				const user = userField.value ? item[userField.value] : undefined
-
-				if(user !== undefined && user.avatar) {
-					user.image = parseUrl(user.avatar)
-				}
-
-				const time = timeF !== null? new Date(item[timeF]) : date
-
-				days[day].events.push({
-					id: item[pkField],
-					title: localTitle,
-					time,
-					user,
-					item
-				})
-			})
-
-			return Object.values(days)
-		})
-
 		return {
-			days,
-			items,
-			loading,
-			error,
-			totalPages,
 			page,
-			toPage,
-			itemCount,
-			totalCount,
 			fieldsInCollection,
-			limit,
 			primaryKeyField,
-			fileFields,
 			title,
 			getLinkForItem,
 			sort,
 			info,
-			refresh,
-			resetPresetAndRefresh,
 			dateField, timeField, userField,
 			fieldGroups,
-			timeFieldRequired
+			timeFieldRequired,
+			days
 		};
-
-		async function resetPresetAndRefresh() {
-			await props?.resetPreset?.();
-			refresh();
-		}
 
 		function parseUrl(file: Record<string, any>) {
 			if (!file || !file.type) return null;
@@ -169,18 +86,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const url = getRootPath() + `assets/${file.id}?key=${key}&modified=${file.modified_on}`;
 			return addTokenToURL(url);
-		}
-
-		function refresh() {
-			getItems();
-		}
-
-		function toPage(newPage: number) {
-			page.value = newPage;
-			mainElement.value?.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
 		}
 
 		function useLayoutOptions() {
@@ -206,35 +111,58 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		}
 
+		function useDays() {
+			const days = ref<Day[]>([])
+			const loading = ref(false)
+
+			watch([page, collection], () => {
+				fetchDays()
+			}, {immediate: true})
+
+			return {days, fetchDays}
+
+			async function fetchDays() {
+				const collectionPath = collection.value?.startsWith('directus_') ? collection.value.substr(9) : `items/${collection.value}`
+
+				loading.value = true
+
+				const result = await api.get(`/${collectionPath}`, {
+					params: {
+						filter,
+						groupBy: `year(${dateField.value}),month(${dateField.value}),day(${dateField.value})`,
+						'aggregate[count]': '*',
+						limit: -1
+					}
+				})
+
+				days.value = (result.data.data as Record<string, any>[]).map(day => ({
+					year: day[`${dateField.value}_year`],
+					month: day[`${dateField.value}_month`],
+					day: day[`${dateField.value}_day`],
+					event_count: day['count']
+				}))
+
+				loading.value = false
+			}
+		}
+
 		function useLayoutQuery() {
-			const page = computed({
-				get() {
-					return layoutQuery.value?.page || 1;
-				},
-				set(newPage: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: newPage,
-					};
-				},
-			});
+			const page = ref(1)
 
 			const sort = computed(() => {
 				return '-' + (dateField.value ?? primaryKeyField.value?.field) + (timeField.value ?? '')
 			});
 
-			const limit = computed({
-				get() {
-					return layoutQuery.value?.limit || 25;
-				},
-				set(newLimit: number) {
-					layoutQuery.value = {
-						...(layoutQuery.value || {}),
-						page: 1,
-						limit: newLimit,
-					};
-				},
-			});
+			const filter = computed(() => {
+				return [
+					...filters.value,
+					{
+						field: dateField.value,
+						operator: 'between',
+						value: `$NOW(${(page.value - 2) * 30} days),$NOW(${(page.value - 1) * 30} days)`
+					}
+				] as AppFilter[]
+			})
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value || !props.collection) return [];
@@ -265,7 +193,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return [...fields, ...adjustFieldsForDisplays(titleSubtitleFields, props.collection)];
 			});
 
-			return { sort, limit, page, fields };
+			return { sort, page, fields, filter };
 		}
 
 		function getLinkForItem(item: Record<string, any>) {
