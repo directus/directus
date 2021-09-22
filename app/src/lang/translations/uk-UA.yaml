@@ -56,8 +56,6 @@ create_user: Новий користувач
 delete_panel: Видалити панель
 create_webhook: Створити вебхук
 invite_users: Запросити друзів
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
 emails: Електронні адреси
