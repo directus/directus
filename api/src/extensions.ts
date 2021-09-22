@@ -173,7 +173,13 @@ function registerHooks(hooks: Extension[]) {
 				if (!cron || validate(cron) === false) {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				} else {
-					schedule(cron, handler);
+					schedule(cron, async () => {
+						try {
+							await handler();
+						} catch (error: any) {
+							logger.error(error);
+						}
+					});
 				}
 			} else {
 				emitter.on(event, handler);
