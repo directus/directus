@@ -18,6 +18,7 @@
 					:disabled="disabled"
 					small
 					label
+					clickable
 					@click="toggleTag(preset)"
 				>
 					{{ preset }}
@@ -32,6 +33,7 @@
 					class="tag"
 					small
 					label
+					clickable
 					@click="removeTag(val)"
 				>
 					{{ val }}

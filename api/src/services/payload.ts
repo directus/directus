@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
@@ -10,9 +9,11 @@ import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Altera
 import { Accountability } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import { unflatten } from 'flat';
 import { isNativeGeometry } from '../utils/geometry';
 import { getGeometryHelper } from '../database/helpers/geometry';
 import { parse as wktToGeoJSON } from 'wellknown';
+import { generateHash } from '../utils/generate-hash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -48,9 +49,8 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
-
 			if (action === 'create' || action === 'update') {
-				return await argon2.hash(String(value));
+				return await generateHash(String(value));
 			}
 
 			return value;
@@ -124,7 +124,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = toArray(payload);
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -165,6 +165,8 @@ export class PayloadService {
 				}
 			});
 		}
+
+		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
 
 		if (Array.isArray(payload)) {
 			return processedPayload;

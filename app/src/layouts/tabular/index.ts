@@ -11,12 +11,12 @@ import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { debounce, clone } from 'lodash';
-import useCollection from '@/composables/use-collection';
-import useItems from '@/composables/use-items';
+import { useCollection } from '@directus/shared/composables';
+import { useItems } from '@directus/shared/composables';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({

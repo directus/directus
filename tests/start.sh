@@ -1,4 +1,4 @@
 #!/bin/bash
 
-node ./dist/cli/index.js bootstrap;
-node ./dist/start.js;
+node ./cli.js bootstrap;
+node ./start.js;

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<v-notice type="info">
-			{{ t('revision_post_update') }}
+			{{ revision.activity.action === 'create' ? t('revision_post_create') : t('revision_post_update') }}
 			<br />
 			{{ t('no_relational_data') }}
 		</v-notice>

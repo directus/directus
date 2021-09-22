@@ -19,14 +19,16 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+published: Опубліковано
+tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
 maps: Мапи
 item_revision: Перегляд об'єкта
+enter_a_name: Вкажіть назву...
 duplicate_field: Дублювати поле
 half_width: Ширина ряду на половину
 full_width: Повна ширина
-limit: Обмеження
 group: Група
 and: Й
 or: Або
@@ -48,11 +50,12 @@ required: Обов'язкове
 required_for_app_access: Необхідно для доступу в додаток
 requires_value: Потребує значення
 create_preset: Створити шаблон
+create_panel: Створити панель
 create_role: Створити роль
 create_user: Новий користувач
+delete_panel: Видалити панель
 create_webhook: Створити вебхук
 invite_users: Запросити друзів
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
 emails: Електронні адреси
@@ -89,6 +92,8 @@ archive_confirm: Ви впевнені, що хочете додати цей ф
 archive_confirm_count: >-
   Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
 reset_system_permissions_to: 'Скинути налаштування до:'
+unarchive: Розархівувати
+unarchive_confirm: Ви впевнені, що хочете розархівувати цей елемент?
 validationError:
   eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
@@ -276,6 +281,9 @@ fields:
     name: Назва
     status: Статус
 field_options:
+  directus_activity:
+    create: Створити
+    update: Оновити
   directus_collections:
     language: Мова
     archive_divider: Архів
@@ -293,6 +301,7 @@ delete_field_are_you_sure: >-
 description: Опис
 done: Готово
 duplicate: Дублювати
+limit: Обмеження
 email: Email
 embed: Вбудувати
 field: Поле | Поля

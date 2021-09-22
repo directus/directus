@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 
-import useSync from '@/composables/use-sync';
+import { useSync } from '@directus/shared/composables';
 import { AppFilter } from '@directus/shared/types';
 import { LayoutQuery } from './types';
 

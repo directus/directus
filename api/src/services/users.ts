@@ -1,4 +1,3 @@
-import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
@@ -19,6 +18,7 @@ import isUrlAllowed from '../utils/is-url-allowed';
 import { toArray } from '@directus/shared/utils';
 import { Url } from '../utils/url';
 import { AuthenticationService } from './authentication';
+import { generateHash } from '../utils/generate-hash';
 import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
@@ -305,7 +305,7 @@ export class UsersService extends ItemsService {
 				await service.createOne({ email, role, status: 'invited' });
 
 				const payload = { email, scope: 'invite' };
-				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d', issuer: 'directus' });
 				const subjectLine = subject ?? "You've been invited";
 				const inviteURL = url ? new Url(url) : new Url(env.PUBLIC_URL).addPath('admin', 'accept-invite');
 				inviteURL.setQuery('token', token);
@@ -326,7 +326,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 		};
@@ -339,7 +339,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
 		}
 
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
@@ -365,7 +365,7 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
 
 		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
@@ -390,7 +390,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
+		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 		};
@@ -403,7 +403,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		const passwordHashed = await argon2.hash(password);
+		const passwordHashed = await generateHash(password);
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
