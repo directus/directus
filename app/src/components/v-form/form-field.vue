@@ -12,6 +12,7 @@
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
+					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>

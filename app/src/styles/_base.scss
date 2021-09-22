@@ -1,4 +1,6 @@
-* {
+@import './mixins/form-grid.scss';
+
+*:not(svg *) {
 	box-sizing: border-box;
 	margin: 0;
 	color: inherit;
@@ -135,4 +137,8 @@ dd {
 
 dd a {
 	color: var(--primary);
+}
+
+.form-grid {
+	@include form-grid;
 }
