@@ -1,4 +1,5 @@
 # `isEmpty` / `notEmpty`
+
 Checks if the given value is `null` or `undefined`. Can be used in place of a simple "truthy" check:
 
 Before: `if (value) { ... }`
@@ -6,6 +7,7 @@ Before: `if (value) { ... }`
 After: `if (notEmpty(value)) { ... }
 
 ## Usage
+
 ```js
 const a = undefined;
 const b = null;

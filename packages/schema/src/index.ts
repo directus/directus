@@ -1,8 +1,12 @@
-import Knex from 'knex';
-import { SchemaConstructor } from './types/schema';
+import { Knex } from 'knex';
+import { SchemaInspector } from './types/schema';
 
-export default function Schema(knex: Knex) {
-	let constructor: SchemaConstructor;
+interface SchemaInspectorConstructor {
+	new (knex: Knex): SchemaInspector;
+}
+
+export default function Schema(knex: Knex): SchemaInspector {
+	let constructor: SchemaInspectorConstructor;
 
 	switch (knex.client.constructor.name) {
 		case 'Client_MySQL':

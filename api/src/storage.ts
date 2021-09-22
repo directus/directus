@@ -1,13 +1,11 @@
-import { StorageManager, LocalFileSystemStorage, StorageManagerConfig, Storage } from '@directus/drive';
-import env from './env';
-import { validateEnv } from './utils/validate-env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { toArray } from './utils/to-array';
-
-/** @todo dynamically load these storage adapters */
-import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
-import { GoogleCloudStorage } from '@directus/drive-gcs';
+import { LocalFileSystemStorage, Storage, StorageManager, StorageManagerConfig } from '@directus/drive';
 import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
+import { GoogleCloudStorage } from '@directus/drive-gcs';
+import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
+import env from './env';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { toArray } from '@directus/shared/utils';
+import { validateEnv } from './utils/validate-env';
 
 validateEnv(['STORAGE_LOCATIONS']);
 

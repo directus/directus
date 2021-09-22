@@ -1,6 +1,7 @@
 # Custom Layouts <small></small>
 
-> Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages. [Learn more about Layouts](/concept/layouts/).
+> Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages.
+> [Learn more about Layouts](/guides/layouts/).
 
 ## 1. Setup the Boilerplate
 
@@ -16,17 +17,30 @@ src/
 ### src/index.js
 
 ```js
+import { ref } from 'vue';
 import LayoutComponent from './layout.vue';
 
 export default {
 	id: 'custom',
 	name: 'Custom',
+	icon: 'box',
 	component: LayoutComponent,
+	slots: {
+		options: () => null,
+		sidebar: () => null,
+		actions: () => null,
+	},
+	setup() {
+		const name = ref('Custom Layout');
+
+		return { name };
+	},
 };
 ```
 
 - `id` — The unique key for this layout. It is good practice to scope proprietary layouts with an author prefix.
 - `name` — The human-readable name for this layout.
+- `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 - `component` — A reference to your Vue component.
 
 ::: tip TypeScript
@@ -41,11 +55,26 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Layout</div>
+	<div>
+		<p>Name: {{ name }}</p>
+		<p>Collection: {{ collection }}</p>
+	</div>
 </template>
 
 <script>
-export default {};
+export default {
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+	},
+};
 </script>
 ```
 
@@ -58,7 +87,7 @@ The props you can use in an layout are:
 - `filters` (sync) - The user's currently active filters.
 - `search-query` (sync) - The user's current search query.
 
-## 2. Install Dependencies and Configure the Buildchain
+## 2. Install Dependencies
 
 Set up a package.json file by running:
 
@@ -67,28 +96,25 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom layouts's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
+internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
+SDK, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D @directus/extensions-sdk
 ```
 
-You can then use the following Rollup configuration within `rollup.config.js`:
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
 
-```js
-import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import vue from 'rollup-plugin-vue';
-
-export default {
-	input: 'src/index.js',
-	output: {
-		format: 'es',
-		file: 'dist/index.js',
-	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
-};
+```json
+"directus:extension": {
+	"type": "layout",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+}
 ```
 
 ## 3. Develop Your Custom Layout
@@ -100,8 +126,8 @@ The layout itself is simply a Vue component, which provides an blank canvas for 
 To build the layout for use within Directus, run:
 
 ```bash
-npx rollup -c
+npx directus-extension build
 ```
 
-Finally, move the output from your layout's `dist` folder into your project's `/extensions/layouts` folder. Keep in mind
-that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your layout's `dist` folder into your project's `/extensions/layouts/my-custom-layout`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

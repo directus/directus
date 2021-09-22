@@ -1,4 +1,4 @@
-export function addQueryToPath(path: string, query: Record<string, string>) {
+export function addQueryToPath(path: string, query: Record<string, string>): string {
 	const queryParams = [];
 
 	for (const [key, value] of Object.entries(query)) {

@@ -45,7 +45,7 @@
 - collection: directus_presets
   action: create
   validation:
-    - user:
+    user:
       _eq: $CURRENT_USER
 
 - collection: directus_presets
@@ -81,6 +81,7 @@
     - id
     - first_name
     - last_name
+    - last_page
     - email
     - password
     - location

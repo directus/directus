@@ -26,7 +26,7 @@ you to change anything you want on the input.
 | `expand-on-focus` | Renders the textarea at regular input size, and expands to max-height on focus | `false` | `Boolean` |
 | `trim`            | Trim leading and trailing whitespace                                           | `false` | `Boolean` |
 
-Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any
+Note: all other attached attributes are bound to the input HTMLElement in the component. This allows you to attach any
 of the standard HTML attributes like `min`, `length`, or `pattern`.
 
 #### Slots

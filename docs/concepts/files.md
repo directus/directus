@@ -4,8 +4,8 @@
 > organization, private file access, image editing, and on-demand thumbnail generation.
 
 Directus allows you to manage all your files in one place, including documents, images, videos, and more. Files can be
-uploaded to the [File Library](/concepts/application/#file-library) in general, or directly to an item via a
-[Single File](/guides/field-types/single-file) or [Multiple Files](/guides/field-types/multiple-files) field.
+uploaded to the [File Library](/concepts/application/#file-library) in general, or directly to an item via a Single File
+or Multiple Files field.
 
 #### Relevant Guides
 

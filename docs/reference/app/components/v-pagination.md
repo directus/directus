@@ -5,7 +5,7 @@ Add a pagination to a list or similar to allow for access to multiple pages.
 ## Usage
 
 ```html
-<v-pagination v-model="currentPage" :lenght="6" />
+<v-pagination v-model="currentPage" :length="6" />
 ```
 
 ## Reference

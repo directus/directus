@@ -1,12 +1,12 @@
 <template>
 	<div class="updates">
 		<v-notice type="info">
-			{{ $t('changes_made') }}
+			{{ t('changes_made') }}
 			<br />
-			{{ $t('no_relational_data') }}
+			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div class="change" v-for="change in changes" :key="change.name">
+		<div v-for="change in changes" :key="change.name" class="change">
 			<div class="type-label">{{ change.name }}</div>
 			<revisions-drawer-updates-change deleted :changes="change.changes" />
 			<revisions-drawer-updates-change added :changes="change.changes" />
@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import { Revision } from './types';
 import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
@@ -35,6 +36,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const previousRevision = computed(() => {
@@ -51,7 +54,10 @@ export default defineComponent({
 
 			return changedFields
 				.map((fieldKey) => {
-					const name = fieldsStore.getField(props.revision.collection, fieldKey).name;
+					const name = fieldsStore.getField(props.revision.collection, fieldKey)?.name;
+
+					if (!name) return null;
+
 					const currentValue = props.revision.delta[fieldKey];
 					const previousValue = previousRevision.value.data[fieldKey];
 
@@ -59,11 +65,16 @@ export default defineComponent({
 
 					let changes;
 
-					if (typeof currentValue === 'string' && currentValue.length > 25) {
+					if (typeof previousValue === 'string' && typeof currentValue === 'string' && currentValue.length > 25) {
 						changes = diffWordsWithSpace(previousValue, currentValue);
-					} else if (Array.isArray(currentValue)) {
+					} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
 						changes = diffArrays(previousValue, currentValue);
-					} else if (typeof currentValue === 'object') {
+					} else if (
+						previousValue &&
+						currentValue &&
+						typeof currentValue === 'object' &&
+						typeof currentValue === 'object'
+					) {
 						changes = diffJson(previousValue, currentValue);
 					} else {
 						// This is considering the whole thing a change
@@ -84,7 +95,7 @@ export default defineComponent({
 				.filter((change) => change);
 		});
 
-		return { changes, previousRevision };
+		return { t, changes, previousRevision };
 	},
 });
 </script>
@@ -99,7 +110,7 @@ export default defineComponent({
 }
 
 .change-line {
-	margin-bottom: 4px;
+	margin-bottom: 0px;
 }
 
 .v-notice {

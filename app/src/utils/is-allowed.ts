@@ -1,5 +1,5 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import generateJoi from '@/utils/generate-joi';
 
 export function isAllowed(
@@ -7,13 +7,13 @@ export function isAllowed(
 	action: Permission['action'],
 	value: Record<string, any> | null,
 	strict = false
-) {
+): boolean {
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
 
-	if (userStore.isAdmin.value === true) return true;
+	if (userStore.isAdmin === true) return true;
 
-	const permissions = permissionsStore.state.permissions;
+	const permissions = permissionsStore.permissions;
 
 	const permissionInfo = permissions.find(
 		(permission) => permission.action === action && permission.collection === collection

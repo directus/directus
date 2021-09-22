@@ -1,6 +1,7 @@
 # Collections
 
-> Collections are containers for specific groupings of Items. Each collection represents a **table** in your database. [Learn more about Collections](/concepts/collections/).
+> Collections are containers for specific groupings of Items. Each collection represents a **table** in your database.
+> [Learn more about Collections](/concepts/collections/).
 
 ## Creating a Collection
 
@@ -39,23 +40,25 @@ the database, and it will automatically appear within Directus. The first time y
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Configure the following settings:
-	- **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with Translations (see field below).
-	- **Icon** — The icon used throughout the App when referencing this collection
-	- **Note** — A helpful note that explains the collection's purpose
-	- **Display Template** — A [Field Template](#) that creates dynamic titles for the collection's items
-	- **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
-	  collections.
-	- **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
-	  [Collection Detail](/concepts/application/#collection-detail) will be bypassed, and users are taken directly to the [Item Detail](/concepts/application/#item-detail) page.
-	- **Translation** — Allows translating the collection name into different languages. These
-	  [Schema Translations](/concepts/translations/#schema-translations) are important for multilingual projects. You
-	  can also "translate" a collection name into the default language — helpful for renaming technical table names.
+   - **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
+     Translations (see field below).
+   - **Icon** — The icon used throughout the App when referencing this collection
+   - **Note** — A helpful note that explains the collection's purpose
+   - **Display Template** — A [Field Template](#) that creates dynamic titles for the collection's items
+   - **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
+     collections.
+   - **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
+     [Collection Detail](/concepts/application/#collection-detail) will be bypassed, and users are taken directly to the
+     [Item Detail](/concepts/application/#item-detail) page.
+   - **Translation** — Allows translating the collection name into different languages. These
+     [Schema Translations](/concepts/translations/#schema-translations) are important for multilingual projects. You can
+     also "translate" a collection name into the default language — helpful for renaming technical table names.
 3. **Create and configure any fields** within this Collection.
-	- [Creating a Field](/guides/fields/#creating-a-field)
-	- [Updating a Field](/guides/fields/#updating-a-field)
-	- [Deleting a Field](/guides/fields/#deleting-a-field)
-	- [Duplicating a Field](/guides/fields/#duplicating-a-field)
-	- [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
+   - [Creating a Field](/guides/fields/#creating-a-field)
+   - [Updating a Field](/guides/fields/#updating-a-field)
+   - [Deleting a Field](/guides/fields/#deleting-a-field)
+   - [Duplicating a Field](/guides/fields/#duplicating-a-field)
+   - [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
 4. Optional: Configure the [Archive](#archive) and [Sort](#sort) options below.
 
 ### Archive
@@ -87,10 +90,45 @@ The sort feature enables manual drag-and-drop item reordering within the Directu
 [Collection Detail](/concepts/application/#collection-detail) page/modal, and can also be used for sorting items within
 a [Junction Table](/concepts/relationships/#many-to-many-m2m).
 
+To configure manual sorting for a collection:
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Create a field with the **Integer** type
+   - Optional: Set the field to be **Hidden**
+3. Select the field you just created in the **Sort Field** dropdown
+
 ::: tip Automatic Setup
 
 When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this
 field, the collection's sort settings will automatically be configured for you.
+
+:::
+
+::: tip Interface Sorting
+
+To configure manual sorting within an Interface (eg: M2M, O2M, or M2A), configure as above, but also set the **Sort
+Field** on the field's Relationship pane.
+
+:::
+
+## Renaming a Collection
+
+While you can not change the **Key** of a collection via Directus (as of now), you can change its **Name** and
+translations.
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Click the Add New button under **Collection Name Translations**
+3. Choose the desired **Language** (your primary language for "renaming")
+4. Enter a **Translation**
+5. Click the **Save** button
+
+::: tip Special Casing
+
+If you are trying to update the specific casing (uppercase/lowercase) for a word (eg: `Dna` to `DNA`) you will want to
+add the edge-case to the
+[Format Title package](https://github.com/directus/directus/tree/main/packages/format-title/src). If you feel the case
+passes our [80/20 rule](https://docs.directus.io/contributing/introduction/#feature-requests) you should submit a Pull
+Request to the codebase, otherwise you can update this in your instance.
 
 :::
 
@@ -114,6 +152,8 @@ This action is permanent and can not be undone. Please proceed with caution.
 
 ::: tip User Preferences
 
-Any changes made to the Collection Layout Options, page filters, search queries, and advanced filters, are instantly saved to your user preferences. This means that your experience will be the same when logging later, even if using a different device.
+Any changes made to the Collection Layout Options, page filters, search queries, and advanced filters, are instantly
+saved to your user preferences. This means that your experience will be the same when logging later, even if using a
+different device.
 
 :::

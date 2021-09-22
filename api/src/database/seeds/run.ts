@@ -1,15 +1,16 @@
-import Knex, { ColumnBuilder } from 'knex';
 import fse from 'fs-extra';
-import path from 'path';
 import yaml from 'js-yaml';
-import { types } from '../../types';
-import { isObject, merge } from 'lodash';
+import { Knex } from 'knex';
+import { isObject } from 'lodash';
+import path from 'path';
+import { Type, Field } from '@directus/shared/types';
+import { getGeometryHelper } from '../helpers/geometry';
 
 type TableSeed = {
 	table: string;
 	columns: {
 		[column: string]: {
-			type?: typeof types[number];
+			type?: Type;
 			primary?: boolean;
 			nullable?: boolean;
 			default?: any;
@@ -25,7 +26,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {
@@ -39,11 +40,13 @@ export default async function runSeed(database: Knex) {
 
 		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
 
-		const seedData = yaml.safeLoad(yamlRaw) as TableSeed;
+		const seedData = yaml.load(yamlRaw) as TableSeed;
 
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
-				let column: ColumnBuilder;
+				let column: Knex.ColumnBuilder;
+
+				if (columnInfo.type === 'alias' || columnInfo.type === 'unknown') return;
 
 				if (columnInfo.type === 'string') {
 					column = tableBuilder.string(columnName, columnInfo.length);
@@ -53,6 +56,9 @@ export default async function runSeed(database: Knex) {
 					column = tableBuilder.string(columnName);
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
+				} else if (columnInfo.type === 'geometry') {
+					const helper = getGeometryHelper();
+					column = helper.createColumn(tableBuilder, { field: columnName } as Field);
 				} else {
 					column = tableBuilder[columnInfo.type!](columnName);
 				}

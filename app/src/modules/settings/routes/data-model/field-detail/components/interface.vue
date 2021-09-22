@@ -1,47 +1,48 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('interface_setup_title') }}</v-notice>
+		<v-fancy-select v-model="fieldData.meta.interface" class="select" :items="selectItems" />
 
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
-
-		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
-			{{ $t('interface_not_found', { interface: fieldData.meta.interface }) }}
+		<v-notice v-if="fieldData.meta.interface && !selectedInterface" class="not-found" type="danger">
+			{{ t('interface_not_found', { interface: fieldData.meta.interface }) }}
 			<div class="spacer" />
-			<button @click="fieldData.meta.interface = null">{{ $t('reset_interface') }}</button>
+			<button @click="fieldData.meta.interface = null">{{ t('reset_interface') }}</button>
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
 			<v-notice v-if="!selectedInterface.options || selectedInterface.options.length === 0">
-				{{ $t('no_options_available') }}
+				{{ t('no_options_available') }}
 			</v-notice>
 
 			<v-form
 				v-else-if="Array.isArray(selectedInterface.options)"
+				v-model="fieldData.meta.options"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				v-model="fieldData.meta.options"
 			/>
 
 			<component
-				v-model="fieldData.meta.options"
+				:is="`interface-options-${selectedInterface.id}`"
+				v-else
+				:value="fieldData.meta.options"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
 				:new-fields="newFields"
 				:new-collections="newCollections"
-				:is="`interface-options-${selectedInterface.id}`"
-				v-else
+				@input="fieldData.meta.options = $event"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state, availableInterfaces } from '../store';
+import { InterfaceConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -54,26 +55,28 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
-		const interfaces = getInterfaces();
+	setup() {
+		const { t } = useI18n();
+
+		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
 			const type: string = state.fieldData?.type || 'alias';
 
 			const recommendedInterfacesPerType: { [type: string]: string[] } = {
-				string: ['text-input', 'dropdown'],
-				text: ['wysiwyg'],
-				boolean: ['toggle'],
-				integer: ['numeric'],
-				bigInteger: ['numeric'],
-				float: ['numeric'],
-				decimal: ['numeric'],
+				string: ['input', 'select-dropdown'],
+				text: ['input-rich-text-html'],
+				boolean: ['boolean'],
+				integer: ['input'],
+				bigInteger: ['input'],
+				float: ['input'],
+				decimal: ['input'],
 				timestamp: ['datetime'],
 				datetime: ['datetime'],
 				date: ['datetime'],
 				time: ['datetime'],
-				json: ['checkboxes', 'tags'],
-				uuid: ['text-input'],
+				json: ['select-multiple-checkbox', 'tags'],
+				uuid: ['input'],
 				csv: ['tags'],
 			};
 
@@ -114,12 +117,12 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta?.interface);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);
 
-		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
+		return { t, fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

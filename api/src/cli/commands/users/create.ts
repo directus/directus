@@ -1,11 +1,21 @@
 import { getSchema } from '../../../utils/get-schema';
+import { UsersService } from '../../../services';
+import getDatabase from '../../../database';
+import logger from '../../../logger';
 
-export default async function usersCreate({ email, password, role }: any) {
-	const { default: database, schemaInspector } = require('../../../database/index');
-	const { UsersService } = require('../../../services/users');
+export default async function usersCreate({
+	email,
+	password,
+	role,
+}: {
+	email?: string;
+	password?: string;
+	role?: string;
+}): Promise<void> {
+	const database = getDatabase();
 
 	if (!email || !password || !role) {
-		console.error('Email, password, role are required');
+		logger.error('Email, password, role are required');
 		process.exit(1);
 	}
 
@@ -13,12 +23,12 @@ export default async function usersCreate({ email, password, role }: any) {
 		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });
 
-		const id = await service.create({ email, password, role, status: 'active' });
-		console.log(id);
+		const id = await service.createOne({ email, password, role, status: 'active' });
+		process.stdout.write(`${String(id)}\n`);
 		database.destroy();
 		process.exit(0);
-	} catch (err) {
-		console.error(err);
+	} catch (err: any) {
+		logger.error(err);
 		process.exit(1);
 	}
 }

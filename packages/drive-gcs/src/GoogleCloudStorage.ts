@@ -26,6 +26,10 @@ import {
 	Range,
 } from '@directus/drive';
 
+import path from 'path';
+
+import normalize from 'normalize-path';
+
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
 		case 401:
@@ -45,6 +49,7 @@ export class GoogleCloudStorage extends Storage {
 	protected $config: GoogleCloudStorageConfig;
 	protected $driver: GCSDriver;
 	protected $bucket: Bucket;
+	protected $root: string;
 
 	public constructor(config: GoogleCloudStorageConfig) {
 		super();
@@ -52,10 +57,18 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
-	private _file(path: string): File {
-		return this.$bucket.file(path);
+	/**
+	 * Prefixes the given filePath with the storage root location
+	 */
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
+	}
+
+	private _file(filePath: string): File {
+		return this.$bucket.file(this._fullPath(filePath));
 	}
 
 	/**
@@ -68,7 +81,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await srcFile.copy(destFile);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src);
 		}
 	}
@@ -80,14 +93,14 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).delete();
 			return { raw: result, wasDeleted: true };
-		} catch (e) {
-			e = handleError(e, location);
+		} catch (e: any) {
+			const error = handleError(e, location);
 
-			if (e instanceof FileNotFound) {
+			if (error instanceof FileNotFound) {
 				return { raw: undefined, wasDeleted: false };
 			}
 
-			throw e;
+			throw error;
 		}
 	}
 
@@ -105,7 +118,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).exists();
 			return { exists: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -118,7 +131,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0].toString(encoding), raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -130,7 +143,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -146,7 +159,7 @@ export class GoogleCloudStorage extends Storage {
 				expires: Date.now() + expiry * 1000,
 			});
 			return { signedUrl: result[0], raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -162,7 +175,7 @@ export class GoogleCloudStorage extends Storage {
 				modified: new Date(result[0].updated),
 				raw: result,
 			};
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -180,7 +193,7 @@ export class GoogleCloudStorage extends Storage {
 	 * status.
 	 */
 	public getUrl(location: string): string {
-		return `https://storage.googleapis.com/${this.$bucket.name}/${location}`;
+		return `https://storage.googleapis.com/${this.$bucket.name}/${this._fullPath(location)}`;
 	}
 
 	/**
@@ -193,7 +206,7 @@ export class GoogleCloudStorage extends Storage {
 		try {
 			const result = await srcFile.move(destFile);
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, src);
 		}
 	}
@@ -207,14 +220,14 @@ export class GoogleCloudStorage extends Storage {
 
 		try {
 			if (isReadableStream(content)) {
-				const destStream = file.createWriteStream();
+				const destStream = file.createWriteStream({ resumable: false });
 				await pipeline(content, destStream);
 				return { raw: undefined };
 			}
 
 			const result = await file.save(content, { resumable: false });
 			return { raw: result };
-		} catch (e) {
+		} catch (e: any) {
 			throw handleError(e, location);
 		}
 	}
@@ -223,6 +236,8 @@ export class GoogleCloudStorage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let nextQuery: GetFilesOptions | undefined = {
 			prefix,
 			autoPaginate: false,
@@ -237,10 +252,10 @@ export class GoogleCloudStorage extends Storage {
 				for (const file of result[0]) {
 					yield {
 						raw: file.metadata,
-						path: file.name,
+						path: file.name.substring(this.$root.length),
 					};
 				}
-			} catch (e) {
+			} catch (e: any) {
 				throw handleError(e, prefix);
 			}
 		} while (nextQuery);
@@ -249,4 +264,5 @@ export class GoogleCloudStorage extends Storage {
 
 export interface GoogleCloudStorageConfig extends StorageOptions {
 	bucket: string;
+	root?: string;
 }

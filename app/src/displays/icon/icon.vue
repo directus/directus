@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { isHex } from '@/utils/color';
 
 export default defineComponent({
-	name: 'display-icon',
+	name: 'DisplayIcon',
 	props: {
 		value: {
 			type: String,

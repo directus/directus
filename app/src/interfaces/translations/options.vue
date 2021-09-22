@@ -1,20 +1,21 @@
 <template>
-	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.translations.no_collection') }}
+	<v-notice v-if="collection === null" class="full" type="warning">
+		{{ t('interfaces.translations.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
-		<div class="field full">
-			<p class="type-label">{{ $t('interfaces.translations.display_template') }}</p>
-			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
+		<div class="field half">
+			<p class="type-label">{{ t('interfaces.translations.language_field') }}</p>
+			<v-select v-model="languageField" :items="languageCollectionFields" item-text="name" item-value="field" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
-import { Relation } from '@/types/relations';
+import { useI18n } from 'vue-i18n';
+import { Field, Relation } from '@directus/shared/types';
+import { defineComponent, PropType, computed } from 'vue';
+import { useFieldsStore } from '@/stores/';
+
 export default defineComponent({
 	props: {
 		collection: {
@@ -30,42 +31,63 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
-		const template = computed({
+		const { t } = useI18n();
+
+		const fieldsStore = useFieldsStore();
+
+		const languageField = computed({
 			get() {
-				return props.value?.template;
+				return props.value?.languageField;
 			},
 			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					template: newTemplate,
+					languageField: newTemplate,
 				});
 			},
 		});
 
-		const relatedCollection = computed(() => {
+		const translationsRelation = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
-			const relation = props.relations.find(
-				(relation) => relation.one_collection !== props.collection && relation.one_field !== field
+			return (
+				props.relations.find(
+					(relation) => relation.related_collection === props.collection && relation.meta?.one_field === field
+				) ?? null
 			);
-			return relation?.one_collection || null;
 		});
 
-		return { template, relatedCollection };
+		const languageRelation = computed(() => {
+			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+			if (!translationsRelation.value) return null;
+			return (
+				props.relations.find(
+					(relation) =>
+						relation.collection === translationsRelation.value?.collection &&
+						relation.meta?.junction_field === translationsRelation.value?.field
+				) ?? null
+			);
+		});
+
+		const languageCollection = computed(() => languageRelation.value?.related_collection ?? null);
+
+		const languageCollectionFields = computed(() => {
+			if (!languageCollection.value) return [];
+			return fieldsStore.getFieldsForCollection(languageCollection.value);
+		});
+
+		return {
+			t,
+			languageField,
+			languageCollection,
+			languageCollectionFields,
+		};
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

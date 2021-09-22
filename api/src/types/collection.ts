@@ -1,5 +1,5 @@
-import { Field } from './field';
-import { Table } from '@directus/schema/dist/types/table';
+import { Table } from 'knex-schema-inspector/dist/types/table';
+import { Field } from '@directus/shared/types';
 
 export type CollectionMeta = {
 	collection: string;
@@ -8,6 +8,8 @@ export type CollectionMeta = {
 	singleton: boolean;
 	icon: string | null;
 	translations: Record<string, string>;
+	item_duplication_fields: string[] | null;
+	accountability: 'all' | 'accountability' | null;
 };
 
 export type Collection = {

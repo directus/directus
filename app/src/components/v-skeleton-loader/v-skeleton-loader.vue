@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -74,6 +74,30 @@ body {
 	height: var(--input-height-tall);
 }
 
+.block-list-item {
+	width: 100%;
+	height: var(--input-height);
+	border-radius: var(--border-radius);
+
+	@include loader;
+
+	& + & {
+		margin-top: 8px;
+	}
+}
+
+.block-list-item-dense {
+	width: 100%;
+	height: 44px;
+	border-radius: var(--border-radius);
+
+	@include loader;
+
+	& + & {
+		margin-top: 4px;
+	}
+}
+
 .text {
 	flex-grow: 1;
 	height: 12px;
@@ -112,7 +136,7 @@ body {
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	position: absolute;
 	opacity: 0;

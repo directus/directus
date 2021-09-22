@@ -1,12 +1,13 @@
 <template>
 	<img
-		v-if="imageThumbnail"
+		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type.includes('svg') }"
 		:alt="value.title"
+		@error="imgError = true"
 	/>
-	<div ref="previewEl" v-else class="preview" :class="{ 'has-file': value }" :style="{ width: height + 'px' }">
-		<span class="extension" v-if="fileExtension">
+	<div v-else ref="previewEl" class="preview">
+		<span v-if="fileExtension" class="extension">
 			{{ fileExtension }}
 		</span>
 
@@ -15,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import useElementSize from '@/composables/use-element-size';
 import { getRootPath } from '@/utils/get-root-path';
@@ -31,10 +32,12 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Object as PropType<File>,
+			default: null,
 		},
 	},
 	setup(props) {
 		const previewEl = ref<Element>();
+		const imgError = ref(false);
 
 		const fileExtension = computed(() => {
 			if (!props.value) return null;
@@ -50,29 +53,31 @@ export default defineComponent({
 
 		const { height } = useElementSize(previewEl);
 
-		return { fileExtension, imageThumbnail, previewEl, height };
+		return { fileExtension, imageThumbnail, previewEl, height, imgError };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 img {
-	width: auto;
 	height: 100%;
+	object-fit: cover;
 	border-radius: var(--border-radius);
+	aspect-ratio: 1;
 }
 
 .preview {
 	--v-icon-color: var(--foreground-subdued);
 
 	position: relative;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
+	aspect-ratio: 1;
 
 	&.has-file {
 		background-color: var(--primary-alt);

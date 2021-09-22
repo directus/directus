@@ -1,32 +1,39 @@
 <template>
-	<v-menu attached v-model="menuActive">
+	<v-menu v-model="menuActive" attached>
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
+					<span
+						ref="contentEl"
+						class="content"
+						:contenteditable="!disabled"
+						@keydown="onKeyDown"
+						@input="onInput"
+						@click="onClick"
+					>
 						<span class="text" />
 					</span>
+					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline @click="toggle" :disabled="disabled" />
+					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled">
-			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
+		<v-list v-if="!disabled" :mandatory="false">
+			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
-import { useFieldsStore } from '@/stores';
-import { Field } from '@/types/';
 import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
+import { Field, Relation } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -35,9 +42,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
+		},
+		nullable: {
+			type: Boolean,
+			default: true,
 		},
 		collection: {
 			type: String,
@@ -47,17 +58,25 @@ export default defineComponent({
 			type: Number,
 			default: 2,
 		},
+		placeholder: {
+			type: String,
+			default: null,
+		},
+		inject: {
+			type: Object as PropType<{ fields: Field[]; relations: Relation[] }>,
+			default: null,
+		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
 		const contentEl = ref<HTMLElement | null>(null);
 
 		const menuActive = ref(false);
 
-		const { collection } = toRefs(props);
-		const { tree } = useFieldTree(collection);
+		const { collection, inject } = toRefs(props);
+		const { tree } = useFieldTree(collection, true, inject);
 
-		watch(() => props.value, setContent, { immediate: true });
+		watch(() => props.modelValue, setContent, { immediate: true });
 
 		onMounted(() => {
 			if (contentEl.value) {
@@ -78,7 +97,7 @@ export default defineComponent({
 			if (!contentEl.value) return;
 
 			const valueString = getInputValue();
-			emit('input', valueString);
+			emit('update:modelValue', valueString);
 		}
 
 		function onClick(event: MouseEvent) {
@@ -87,7 +106,7 @@ export default defineComponent({
 			if (target.tagName.toLowerCase() !== 'button') return;
 
 			const field = target.dataset.field;
-			emit('input', props.value.replace(`{{${field}}}`, ''));
+			emit('update:modelValue', props.modelValue.replace(`{{${field}}}`, ''));
 
 			const before = target.previousElementSibling;
 			const after = target.nextElementSibling;
@@ -223,34 +242,35 @@ export default defineComponent({
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
-			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
+			const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
-				if (tag) {
-					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
-					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
-				}
+				if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				else if ('textContent' in el) return (acc += el.textContent);
 
 				return (acc += '');
 			}, '');
+
+			if (props.nullable === true && value === '') {
+				return null;
+			}
+
+			return value;
 		}
 
 		function setContent() {
 			if (!contentEl.value) return;
 
-			if (props.value === null || props.value === '') {
+			if (props.modelValue === null || props.modelValue === '') {
 				contentEl.value.innerHTML = '<span class="text"></span>';
 				return;
 			}
 
-			if (props.value !== getInputValue()) {
+			if (props.modelValue !== getInputValue()) {
 				const regex = /({{.*?}})/g;
 
-				const before = null;
-				const after = null;
-
-				const newInnerHTML = props.value
+				const newInnerHTML = props.modelValue
 					.split(regex)
 					.map((part) => {
 						if (part.startsWith('{{') === false) {
@@ -261,7 +281,7 @@ export default defineComponent({
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -271,46 +291,55 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .content {
 	display: block;
 	flex-grow: 1;
 	height: 100%;
 	padding: var(--input-padding) 0;
 	overflow: hidden;
+	font-size: 14px;
 	font-family: var(--family-monospace);
 	white-space: nowrap;
+}
 
-	::v-deep {
-		> * {
-			display: inline-block;
-			white-space: nowrap;
-		}
+:deep(br) {
+	display: none;
+}
 
-		br {
-			display: none;
-		}
+:deep(span) {
+	min-width: 1px;
+	min-height: 1em;
+}
 
-		span {
-			min-width: 1px;
-			min-height: 1em;
-		}
+:deep(button) {
+	margin: -1px 4px 0;
+	padding: 2px 4px 0;
+	color: var(--primary);
+	background-color: var(--primary-alt);
+	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, color;
+	user-select: none;
+}
 
-		button {
-			margin: 0 4px;
-			padding: 0 4px;
-			color: var(--primary);
-			background-color: var(--primary-alt);
-			border-radius: var(--border-radius);
-			transition: var(--fast) var(--transition);
-			transition-property: background-color, color;
-			user-select: none;
+:deep(button:hover) {
+	color: var(--white);
+	background-color: var(--danger);
+}
 
-			&:hover {
-				color: var(--white);
-				background-color: var(--danger);
-			}
-		}
-	}
+.placeholder {
+	position: absolute;
+	top: 50%;
+	left: 14px;
+	color: var(--foreground-subdued);
+	transform: translateY(-50%);
+	user-select: none;
+	pointer-events: none;
+}
+
+.content > :deep(*) {
+	display: inline-block;
+	white-space: nowrap;
 }
 </style>

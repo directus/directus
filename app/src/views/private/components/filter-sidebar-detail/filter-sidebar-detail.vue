@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="$t('advanced_filter')">
+	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="t('advanced_filter')">
 		<field-filter
 			v-for="filter in filters"
 			:key="filter.key"
@@ -14,41 +14,49 @@
 
 		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle, active }">
-				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')" :disabled="loading">
+				<v-input
+					clickable
+					:class="{ active }"
+					readonly
+					:model-value="t('add_filter')"
+					:disabled="loading"
+					@click="toggle"
+				>
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>
 			</template>
 
-			<v-list :multiple="false">
-				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
+			<v-list>
+				<field-list-item v-for="field in fieldTree" :key="field.field" :field="field" @add="addFilterForField" />
 			</v-list>
 		</v-menu>
 
 		<template v-if="showArchiveToggle">
 			<v-divider />
 
-			<v-checkbox v-model="archived" :label="$t('show_archived_items')" />
+			<v-checkbox v-model="archived" :label="t('show_archived_items')" />
 		</template>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch, toRefs } from '@vue/composition-api';
-import { Filter } from '@/types';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
+import { Field, Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
-import { useCollection } from '@/composables/use-collection';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { useCollection } from '@directus/shared/composables';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<Filter[]>,
 			required: true,
 		},
@@ -61,7 +69,10 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const { collection } = toRefs(props);
@@ -72,15 +83,15 @@ export default defineComponent({
 		const localFilters = ref<Filter[]>([]);
 
 		watch(
-			() => props.value,
+			() => props.modelValue,
 			() => {
-				localFilters.value = props.value;
+				localFilters.value = props.modelValue;
 			},
 			{ immediate: true }
 		);
 
 		const syncWithProp = debounce(() => {
-			emit('input', localFilters.value);
+			emit('update:modelValue', localFilters.value);
 		}, 850);
 
 		const filters = computed<Filter[]>({
@@ -101,13 +112,15 @@ export default defineComponent({
 
 		const archived = computed({
 			get() {
-				return props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined;
+				return (
+					props.modelValue.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
+				);
 			},
 			set(showArchived: boolean) {
 				if (!collectionInfo.value?.meta?.archive_field) return;
 
 				if (showArchived === false) {
-					emit('input', [
+					emit('update:modelValue', [
 						...filters.value,
 						{
 							key: 'hide-archived',
@@ -119,26 +132,26 @@ export default defineComponent({
 					]);
 				} else {
 					emit(
-						'input',
+						'update:modelValue',
 						filters.value.filter((filter) => filter.key !== 'hide-archived')
 					);
 				}
 			},
 		});
 
-		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
+		return { t, fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
-			const field = fieldsStore.getField(props.collection, fieldKey);
-			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
+			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
+			const defaultOperator = getFilterOperatorsForType(field.type)[0];
 
-			emit('input', [
-				...props.value,
+			emit('update:modelValue', [
+				...props.modelValue,
 				{
 					key: nanoid(),
 					field: fieldKey,
 					operator: defaultOperator || 'contains',
-					value: '',
+					value: field.type === 'boolean' ? true : '',
 				},
 			]);
 		}

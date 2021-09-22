@@ -103,7 +103,7 @@ export default class StorageManager {
 	/**
 	 * Register a custom driver.
 	 */
-	public registerDriver<T extends Storage>(name: string, driver: StorageConstructor<T>): void {
+	registerDriver<T extends Storage>(name: string, driver: StorageConstructor<T>): void {
 		this._drivers.set(name, driver);
 	}
 }

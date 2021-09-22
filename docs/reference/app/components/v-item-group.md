@@ -18,7 +18,7 @@ elements like a list of cards, or a button group.
 </template>
 
 <script lang="ts">
-	import { defineComponent, ref } from '@vue/composition-api';
+	import { defineComponent, ref } from 'vue';
 
 	export default defineComponent({
 		setup() {
@@ -103,7 +103,7 @@ useful when you're working with a predefined list of items:
 </template>
 
 <script lang="ts">
-	import { defineComponent, ref } from '@vue/composition-api';
+	import { defineComponent, ref } from 'vue';
 
 	export default defineComponent({
 		setup() {

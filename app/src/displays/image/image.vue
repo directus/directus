@@ -1,10 +1,18 @@
 <template>
-	<img v-if="src" :src="src" role="presentation" :alt="value && value.title" :class="{ circle }" />
+	<v-icon v-if="imageError" name="image" />
+	<img
+		v-else-if="src"
+		:src="src"
+		role="presentation"
+		:alt="value && value.title"
+		:class="{ circle }"
+		@error="imageError = true"
+	/>
 	<value-null v-else />
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import ValueNull from '@/views/private/components/value-null';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
@@ -28,14 +36,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const imageError = ref(false);
+
 		const src = computed(() => {
 			if (props.value === null) return null;
 			const url = getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
-
 			return addTokenToURL(url);
 		});
 
-		return { src };
+		return { src, imageError };
 	},
 });
 </script>

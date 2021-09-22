@@ -11,7 +11,7 @@ interface HTMLExpandElement extends HTMLElement {
 	};
 }
 
-export default function (expandedParentClass = '', xAxis = false) {
+export default function (expandedParentClass = '', xAxis = false): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalizeFirst(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 

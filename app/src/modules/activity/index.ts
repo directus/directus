@@ -1,16 +1,16 @@
-import { defineModule } from '@/modules/define';
+import { defineModule } from '@directus/shared/utils';
 import ActivityCollection from './routes/collection.vue';
 import ActivityItem from './routes/item.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'activity',
 	hidden: true,
-	name: 'activity',
+	name: '$t:activity',
 	icon: 'notifications',
 	routes: [
 		{
 			name: 'activity-collection',
-			path: '/',
+			path: '',
 			component: ActivityCollection,
 			props: true,
 			children: [
@@ -24,4 +24,4 @@ export default defineModule(({ i18n }) => ({
 			],
 		},
 	],
-}));
+});

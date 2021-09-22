@@ -1,7 +1,8 @@
 # Config Files
 
 By default, Directus will read the `.env` file located next to your project's `package.json` for it's config. You can
-change the path where this file is read from, including the filename, by setting the `CONFIG_PATH` environment variable before starting Directus.
+change the path where this file is read from, including the filename, by setting the `CONFIG_PATH` environment variable
+before starting Directus.
 
 For example: `CONFIG_PATH="/path/to/config.js" npx directus start`
 
@@ -11,7 +12,7 @@ The config file can be one of the following formats:
 
 ::: tip Configuration Parameters
 
-See [Environment Variables](/reference/environment/variables/) for an overview of all available environment variables.
+See [Environment Variables](/reference/environment-variables/) for an overview of all available environment variables.
 
 :::
 

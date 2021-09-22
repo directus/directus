@@ -1,4 +1,3 @@
-/** @todo finalize */
 export type File = {
 	id: string; // uuid
 	storage: string;

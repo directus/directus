@@ -6,7 +6,7 @@ export function getRootPath(): string {
 	return rootPath;
 }
 
-export function getPublicURL() {
+export function getPublicURL(): string {
 	const path = window.location.href;
 	const parts = path.split('/');
 	const adminIndex = parts.indexOf('admin');

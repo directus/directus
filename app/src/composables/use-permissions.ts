@@ -1,11 +1,20 @@
-import { computed, Ref } from '@vue/composition-api';
-import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from './use-collection';
-import { useUserStore, usePermissionsStore } from '@/stores';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import { Field } from '@directus/shared/types';
+import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { Field } from '@/types';
+import { isAllowed } from '../utils/is-allowed';
+import { useCollection } from '@directus/shared/composables';
 
-export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>) {
+type UsablePermissions = {
+	deleteAllowed: ComputedRef<boolean>;
+	saveAllowed: ComputedRef<boolean>;
+	archiveAllowed: ComputedRef<boolean>;
+	updateAllowed: ComputedRef<boolean>;
+	fields: ComputedRef<Field[]>;
+	revisionsAllowed: ComputedRef<boolean>;
+};
+
+export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>): UsablePermissions {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
@@ -39,7 +48,7 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	const fields = computed(() => {
 		let fields = cloneDeep(rawFields.value);
 
-		if (userStore.state.currentUser?.role?.admin_access === true) return fields;
+		if (userStore.currentUser?.role?.admin_access === true) return fields;
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
 
@@ -75,8 +84,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const revisionsAllowed = computed(() => {
-		if (userStore.state.currentUser?.role?.admin_access === true) return true;
-		return !!permissionsStore.state.permissions.find(
+		if (userStore.currentUser?.role?.admin_access === true) return true;
+		return !!permissionsStore.permissions.find(
 			(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
 		);
 	});

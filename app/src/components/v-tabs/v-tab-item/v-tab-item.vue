@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -16,7 +16,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { active, toggle } = useGroupable({ value: props.value });
+		const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
 		return { active, toggle };
 	},
 });

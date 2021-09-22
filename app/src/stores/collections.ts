@@ -1,28 +1,39 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import { Collection, CollectionRaw } from '@/types';
-import i18n from '@/lang/';
+import { i18n } from '@/lang';
+import { Collection, CollectionRaw } from '@directus/shared/types';
 import { notEmpty } from '@/utils/is-empty/';
-import VueI18n from 'vue-i18n';
-import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { defineStore } from 'pinia';
+import { TranslateResult } from 'vue-i18n';
+import { COLLECTIONS_DENY_LIST } from '@/constants';
+import { orderBy } from 'lodash';
 
-export const useCollectionsStore = createStore({
+export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
 	state: () => ({
 		collections: [] as Collection[],
 	}),
 	getters: {
-		visibleCollections: (state) => {
-			return state.collections
+		visibleCollections(): Collection[] {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
-		hiddenCollections: (state) => {
-			return state.collections
+		hiddenCollections(): Collection[] {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== false);
+		},
+		crudSafeSystemCollections(): Collection[] {
+			return orderBy(
+				this.collections.filter((collection) => {
+					return collection.collection.startsWith('directus_') === true;
+				}),
+				['collection'],
+				['asc']
+			).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false);
 		},
 	},
 	actions: {
@@ -31,22 +42,45 @@ export const useCollectionsStore = createStore({
 
 			const collections: CollectionRaw[] = response.data.data;
 
-			this.state.collections = collections.map((collection: CollectionRaw) => {
-				let name: string | VueI18n.TranslateResult;
+			this.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
+				const color = collection.meta?.color;
+				const name = formatTitle(collection.collection);
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
 					for (let i = 0; i < collection.meta.translations.length; i++) {
-						const { language, translation } = collection.meta.translations[i];
+						const { language, translation, singular, plural } = collection.meta.translations[i];
 
-						i18n.mergeLocaleMessage(language, {
+						i18n.global.mergeLocaleMessage(language, {
 							collection_names: {
 								[collection.collection]: translation,
 							},
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+							collection_names_plural: {
+								[collection.collection]: plural,
+							},
 						});
 					}
+				}
 
-					name = i18n.t(`collection_names.${collection.collection}`);
+				return {
+					...collection,
+					name,
+					icon,
+					color,
+				};
+			});
+
+			this.translateCollections();
+		},
+		translateCollections() {
+			this.collections = this.collections.map((collection: Collection) => {
+				let name: string | TranslateResult;
+
+				if (i18n.global.te(`collection_names.${collection.collection}`)) {
+					name = i18n.global.t(`collection_names.${collection.collection}`);
 				} else {
 					name = formatTitle(collection.collection);
 				}
@@ -54,12 +88,11 @@ export const useCollectionsStore = createStore({
 				return {
 					...collection,
 					name,
-					icon,
 				};
 			});
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
 			try {
@@ -67,9 +100,9 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('update_collection_success'),
+					title: i18n.global.t('update_collection_success'),
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		},
@@ -79,14 +112,14 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('delete_collection_success'),
+					title: i18n.global.t('delete_collection_success'),
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			}
 		},
 		getCollection(collectionKey: string): Collection | null {
-			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
+			return this.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},
 });

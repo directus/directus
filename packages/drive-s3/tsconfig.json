@@ -1,16 +1,32 @@
 {
 	"compilerOptions": {
-		"target": "es2018",
-		"module": "commonjs",
+		"target": "ES2018",
+		"lib": ["ES2018"],
+		"module": "CommonJS",
+		"moduleResolution": "node",
 		"declaration": true,
-		"outDir": "./dist",
+		"declarationMap": true,
 		"strict": true,
+		"noFallthroughCasesInSwitch": true,
 		"esModuleInterop": true,
-		"sourceMap": true,
-		"lib": ["es2018"],
-		"rootDir": "src",
-		"skipLibCheck": true
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedParameters": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"resolveJsonModule": false,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"rootDir": "./src",
+		"outDir": "./dist"
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "tests", "dist"]
+	"include": ["./src/**/*.ts"]
 }

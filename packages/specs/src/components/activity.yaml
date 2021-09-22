@@ -18,11 +18,11 @@ properties:
     description: The user who performed this action.
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Users"
+      - $ref: '../openapi.yaml#/components/schemas/Users'
     nullable: true
   timestamp:
     description: When the action happened.
-    example: "2019-12-05T22:52:09Z"
+    example: '2019-12-05T22:52:09Z'
     type: string
     format: date-time
   ip:
@@ -33,21 +33,24 @@ properties:
         format: ipv4
   user_agent:
     description: User agent string of the browser the user used when the action took place.
-    example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108 Safari/537.36
+    example:
+      Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108
+      Safari/537.36
     type: string
   collection:
     description: Collection identifier in which the item resides.
     oneOf:
       - type: string
-      - $ref: "../openapi.yaml#/components/schemas/Collections"
+      - $ref: '../openapi.yaml#/components/schemas/Collections'
   item:
-    description: Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
-    example: "328"
+    description:
+      Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
+    example: '328'
     type: string
   comment:
     description:
-      User comment. This will store the comments that show up in the right
-      sidebar of the item edit page in the admin app.
+      User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin
+      app.
     example: null
     type: string
     nullable: true

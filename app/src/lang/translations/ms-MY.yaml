@@ -1,6 +1,23 @@
 ---
+edit_field: Sunting halaman
+item_revision: Barang semakan
+duplicate_field: Halaman salinan
 required: Diperlukan
 create_role: Buat Peranan
+invite: Jemputan
+emails: Emel
+connection_excellent: Rangkaian bagus
+connection_good: Rangkaian baik
+connection_fair: Rangkaian sederhana
+connection_poor: Rangkaian lemah
+primary: Utama
+rename_folder: Tukar nama fail
+delete_folder: Padam fail
+prefix: Awalan
+suffix: Akhiran
+reset_bookmark: Tetapkan semula penanda buku
+rename_bookmark: Namakan semula penanda buku
+update_bookmark: Kemas kini penanda buku
 delete_bookmark: Padam Penanda Buku
 create_field: Cipta Medan
 hidden_on_detail: Tersembunyi di Butiran
@@ -33,6 +50,7 @@ activity: Aktiviti
 user_directory: Direktori pengguna
 duration: Durasi
 status: Status
+remove: Buang
 bookmarks: Penandabuku
 back: Kembali
 operators:
@@ -51,6 +69,8 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
@@ -107,9 +127,21 @@ fields:
     note: Nota
   directus_roles:
     description: Penerangan
+  directus_webhooks:
+    name: Nama
+    status: Status
+field_options:
+  directus_activity:
+    create: Cipta
+    update: Kemaskini
+  directus_roles:
+    fields:
+      name_name: Nama
+    collections_name: Koleksi-koleksi
+  directus_webhooks:
+    actions_create: Cipta
+    actions_update: Kemaskini
 comment: Komen
-default: Lalai
-delete: Padam
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
 description: Penerangan
@@ -140,16 +172,16 @@ sign_out_confirm: Adakah anda pasti ingin keluar?
 something_went_wrong: Ada yang salah.
 value: Nilai
 interfaces:
-  collection:
+  presentation-links:
+    primary: Utama
+  system-collection:
     collection: Koleksi
-  collections:
+  system-collections:
     collections: Koleksi-koleksi
   file:
     file: Fail
   files:
     files: Fail-fail
-  numeric:
-    numeric: Angka
   tags:
     tags: Tag
 displays:

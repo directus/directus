@@ -35,12 +35,12 @@ You can add any custom (text) prefix/suffix to the value in the input using the 
 | `nullable`       | When active, sets an empty entry to null                       | `true`   | `Boolean`          |
 | `type`           | Can be `text` or `number`                                      | `'text'` | `String`           |
 | `max`            | The maximum number that can be entered                         | `null`   | `Number`           |
-| `min`            | The minimum number that can be enterd                          | `null`   | `Number`           |
+| `min`            | The minimum number that can be entered                         | `null`   | `Number`           |
 | `step`           | In which unit steps should be counted up or down               | `1`      | `Number`           |
 | `db-safe`        | Make the value save to be used with the DB                     | `false`  | `Boolean`          |
 | `hide-arrows`    | Hide the arrows that are used to increase or decrease a number | `false`  | `Boolean`          |
 
-Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any
+Note: all other attached attributes are bound to the input HTMLElement in the component. This allows you to attach any
 of the standard HTML attributes like `min`, `length`, or `pattern`.
 
 #### Slots
@@ -65,5 +65,5 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 | Event     | Description                       | Value              |
 | --------- | --------------------------------- | ------------------ |
 | `click`   | Fires when the input gets clicked |                    |
-| `keydown` | When a key has been pressen       |                    |
+| `keydown` | When a key has been pressed       |                    |
 | `input`   | Updated the modeled value         | `String or Number` |

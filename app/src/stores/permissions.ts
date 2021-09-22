@@ -1,10 +1,10 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import { Permission } from '@/types';
-import { useUserStore } from '../stores/user';
+import { Permission } from '@directus/shared/types';
 import { parseFilter } from '@/utils/parse-filter';
+import { defineStore } from 'pinia';
+import { useUserStore } from '../stores/user';
 
-export const usePermissionsStore = createStore({
+export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
 	state: () => ({
 		permissions: [] as Permission[],
@@ -14,10 +14,10 @@ export const usePermissionsStore = createStore({
 			const userStore = useUserStore();
 
 			const response = await api.get('/permissions', {
-				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser!.role.id } } },
+				params: { limit: -1, filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
-			this.state.permissions = response.data.data.map((rawPermission: any) => {
+			this.permissions = response.data.data.map((rawPermission: any) => {
 				if (rawPermission.permissions) {
 					rawPermission.permissions = parseFilter(rawPermission.permissions);
 				}
@@ -34,18 +34,23 @@ export const usePermissionsStore = createStore({
 			});
 		},
 		dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		getPermissionsForUser(collection: string, action: Permission['action']) {
 			const userStore = useUserStore();
 			return (
-				this.state.permissions.find(
+				this.permissions.find(
 					(permission) =>
 						permission.action === action &&
 						permission.collection === collection &&
-						permission.role === userStore.state.currentUser?.role?.id
+						permission.role === userStore.currentUser?.role?.id
 				) || null
 			);
+		},
+		hasPermission(collection: string, action: Permission['action']) {
+			const userStore = useUserStore();
+			if (userStore.currentUser?.role?.admin_access === true) return true;
+			return !!this.getPermissionsForUser(collection, action);
 		},
 	},
 });

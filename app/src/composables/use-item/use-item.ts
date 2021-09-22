@@ -1,18 +1,43 @@
 import api from '@/api';
-import { Ref, ref, watch, computed } from '@vue/composition-api';
-import i18n from '@/lang';
-import useCollection from '@/composables/use-collection';
-import { AxiosResponse } from 'axios';
+import { useCollection } from '@directus/shared/composables';
+import { VALIDATION_TYPES } from '@/constants';
+import { i18n } from '@/lang';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { AxiosResponse } from 'axios';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { validatePayload } from '@directus/shared/utils';
+import { Filter, Item, Field } from '@directus/shared/types';
+import { isNil, flatten, merge } from 'lodash';
+import { FailedValidationException } from '@directus/shared/exceptions';
+import { getEndpoint } from '@/utils/get-endpoint';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
-	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+type UsableItem = {
+	edits: Ref<Record<string, any>>;
+	item: Ref<Record<string, any> | null>;
+	error: Ref<any>;
+	loading: Ref<boolean>;
+	saving: Ref<boolean>;
+	refresh: () => void;
+	save: () => Promise<any>;
+	isNew: ComputedRef<boolean>;
+	remove: () => Promise<void>;
+	deleting: Ref<boolean>;
+	archive: () => Promise<void>;
+	isArchived: ComputedRef<boolean | null>;
+	archiving: Ref<boolean>;
+	saveAsCopy: () => Promise<any>;
+	isBatch: ComputedRef<boolean>;
+	getItem: () => Promise<void>;
+	validationErrors: Ref<any[]>;
+};
 
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
+	const { info: collectionInfo, primaryKeyField, fields } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
-	const error = ref(null);
-	const validationErrors = ref([]);
+	const error = ref<any>(null);
+	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
@@ -32,18 +57,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const endpoint = computed(() => {
-		return collection.value.startsWith('directus_')
-			? `/${collection.value.substring(9)}`
-			: `/items/${collection.value}`;
-	});
-
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
-			return endpoint.value;
+			return getEndpoint(collection.value);
 		}
 
-		return `${endpoint.value}/${primaryKey.value}`;
+		return `${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });
@@ -75,7 +94,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -86,21 +105,29 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
+		const errors = validate(edits.value);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
 			let response;
 
 			if (isNew.value === true) {
-				response = await api.post(endpoint.value, edits.value);
+				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
-					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
-					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			}
@@ -108,16 +135,16 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 					.map((err: APIError) => {
 						return err.extensions;
 					});
 
 				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => err?.extensions?.code !== 'FAILED_VALIDATION'
+					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
 				);
 
 				if (otherErrors.length > 0) {
@@ -137,21 +164,33 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
+		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
+
+		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+
 		const newItem: { [field: string]: any } = {
-			...(item.value || {}),
+			...(itemData.data.data || {}),
 			...edits.value,
 		};
 
 		// Make sure to delete the primary key
-		if (primaryKeyField.value && newItem.hasOwnProperty(primaryKeyField.value.field)) {
+		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			delete newItem[primaryKeyField.value.field];
 		}
 
+		const errors = validate(newItem);
+
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
+
 		try {
-			const response = await api.post(endpoint.value, newItem);
+			const response = await api.post(getEndpoint(collection.value), newItem);
 
 			notify({
-				title: i18n.tc('item_create_success', 1),
+				title: i18n.global.t('item_create_success', 1),
 				type: 'success',
 			});
 
@@ -159,7 +198,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
-		} catch (err) {
+		} catch (err: any) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
@@ -206,10 +245,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			});
 
 			notify({
-				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -226,10 +265,10 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			item.value = null;
 
 			notify({
-				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
+				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 			throw err;
 		} finally {
@@ -266,5 +305,65 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = valuesThatAreEqual;
 		}
+	}
+
+	function validate(item: Item) {
+		const validationRules = {
+			_and: [] as Filter['_and'],
+		} as Filter;
+
+		const applyConditions = (field: Field) => {
+			if (field.meta && Array.isArray(field.meta?.conditions)) {
+				const conditions = [...field.meta.conditions].reverse();
+
+				const matchingCondition = conditions.find((condition) => {
+					if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
+					const errors = validatePayload(condition.rule, item, { requireAll: true });
+					return errors.length === 0;
+				});
+
+				if (matchingCondition) {
+					return {
+						...field,
+						meta: merge({}, field.meta || {}, {
+							readonly: matchingCondition.readonly,
+							options: matchingCondition.options,
+							hidden: matchingCondition.hidden,
+							required: matchingCondition.required,
+						}),
+					};
+				}
+
+				return field;
+			} else {
+				return field;
+			}
+		};
+
+		const fieldsWithConditions = fields.value.map((field) => applyConditions(field));
+
+		const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+
+		for (const field of requiredFields) {
+			if (isNew.value === true && isNil(field.schema?.default_value)) {
+				validationRules._and!.push({
+					[field.field]: {
+						_submitted: true,
+					},
+				});
+			}
+
+			validationRules._and!.push({
+				[field.field]: {
+					_nnull: true,
+				},
+			});
+		}
+
+		return flatten(
+			validatePayload(validationRules, item).map((error) =>
+				error.details.map((details) => new FailedValidationException(details).extensions)
+			)
+		);
 	}
 }

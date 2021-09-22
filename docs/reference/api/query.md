@@ -4,8 +4,15 @@ pageClass: page-reference
 
 # Global Query Parameters
 
+<div class="two-up">
+<div class="left">
+
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
+
+</div>
+<div class="right"><p></p>
+<div class="table-of-contents">
 
 - [Fields](#fields)
 - [Filter](#filter)
@@ -13,10 +20,20 @@ pageClass: page-reference
 - [Sort](#sort)
 - [Limit](#limit)
 - [Offset](#offset) / [Page](#page)
+- [Aggregation & Grouping](#aggregation-grouping)
 - [Deep](#deep)
+- [Aliases](#aliases)
+- [Export](#export)
+<p></p>
+- [Functions](#functions)
+<p></p>
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
+
+</div>
+</div>
+</div>
 
 ---
 
@@ -42,10 +59,11 @@ Get all top-level fields\
 Get all top-level fields and all second-level relational fields\
 `*.*`
 
-::: warning Nested Wildcard
+::: tip Performance & Size
 
-While you can theoretically nest wildcards infinitely, it's not recommended for production use. Nested wildcards can
-result in degraded performance, and circular parent-child-parent structures.
+While the fields wildcard is very useful for debugging purposes, we recommend only requesting _specific_ fields for
+production use. By only requesting the fields you really need, you can speed up the request, and reduce the overall
+output size.
 
 :::
 
@@ -73,10 +91,10 @@ Lets say we have a collection `pages` with a many-to-any field called `sections`
 sections.item:headings.title
 sections.item:headings.level
 sections.item:paragraphs.body
-sections.item:videos.body
+sections.item:videos.source
 ```
 
-In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#many-to-any-union-types).
+In GraphQL, this can be achieved using Union Types.
 
 </div>
 <div class="right">
@@ -95,7 +113,7 @@ In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#man
 
 ### GraphQL
 
-n/a
+_Natively supported in GraphQL_
 
 </div>
 </div>
@@ -185,10 +203,8 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 ```graphql
 query {
-	items {
-		users(filter: { first_name: { _eq: "Rijk" } }) {
-			id
-		}
+	users(filter: { first_name: { _eq: "Rijk" } }) {
+		id
 	}
 }
 ```
@@ -231,10 +247,8 @@ Find all items that mention Directus\
 
 ```graphql
 query {
-	items {
-		articles(search: "Directus") {
-			id
-		}
+	articles(search: "Directus") {
+		id
 	}
 }
 ```
@@ -284,10 +298,8 @@ Sort by a "sort" field, followed by publish date descending\
 
 ```graphql
 query {
-	items {
-		articles(sort: ["sort", "-date_created"]) {
-			id
-		}
+	articles(sort: ["sort", "-date_created"]) {
+		id
 	}
 }
 ```
@@ -338,10 +350,8 @@ with caution.
 
 ```graphql
 query {
-	items {
-		articles(limit: 200) {
-			id
-		}
+	articles(limit: 200) {
+		id
 	}
 }
 ```
@@ -366,7 +376,7 @@ Skip the first `n` items in the response. Can be used for pagination.
 
 ### Examples
 
-Get items 100—200\
+Get items 101—200\
 `100`
 
 </div>
@@ -382,10 +392,8 @@ Get items 100—200\
 
 ```graphql
 query {
-	items {
-		articles(offset: 100) {
-			id
-		}
+	articles(offset: 100) {
+		id
 	}
 }
 ```
@@ -430,9 +438,71 @@ Get items 101-200\
 
 ```graphql
 query {
-	items {
-		articles(page: 2) {
-			id
+	articles(page: 2) {
+		id
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Aggregation & Grouping
+
+<div class="two-up">
+<div class="left">
+
+Aggregate functions allow you to perform calculations on a set of values, returning a single result.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+The following aggregation functions are available in Directus:
+
+| Name            | Description                                                   |
+| --------------- | ------------------------------------------------------------- |
+| `count`         | Counts how many items there are                               |
+| `countDistinct` | Counts how many unique items there are                        |
+| `sum`           | Adds together the values in the given field                   |
+| `sumDistinct`   | Adds together the unique values in the given field            |
+| `avg`           | Get the average value of the given field                      |
+| `avgDistinct`   | Get the average value of the unique values in the given field |
+| `min`           | Return the lowest value in the field                          |
+| `max`           | Return the highest value in the field                         |
+
+### Grouping
+
+By default, the above aggregation functions run on the whole dataset. To allow for more flexible reporting, you can
+combine the above aggregation with grouping. Grouping allows for running the aggregation functions based on a shared
+value. This allows for things like _"Average rating per month"_ or _"Total sales of items in the jeans category"_.
+
+The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
+this allows for aggregate reporting per year-month-date.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?aggregate[avg]=cost
+&groupBy[]=author
+&groupBy[]=year(publish_date)
+```
+
+### GraphQL
+
+```graphql
+query {
+	articles_aggregated(groupBy: ["author", "year(publish_date)"]) {
+		group
+		sum {
+			revenue
 		}
 	}
 }
@@ -463,20 +533,20 @@ Limit the nested related articles to 3
 ```json
 {
 	"related_articles": {
-		"limit": 3
+		"_limit": 3
 	}
 }
 ```
 
-Fetch only the `en-US` translations
+Only get 3 related articles, with only the top rated comment nested
 
 ```json
 {
-	"translations": {
-		"filter": {
-			"languages_code": {
-				"_eq": "en-US"
-			}
+	"related_articles": {
+		"_limit": 3,
+		"comments": {
+			"_sort": "rating",
+			"_limit": 1
 		}
 	}
 }
@@ -488,16 +558,168 @@ Fetch only the `en-US` translations
 ### REST API
 
 ```
-?deep[translations][filter][languages_code][_eq]=en-US
+?deep[translations][_filter][languages_code][_eq]=en-US
 
 // or
 
-?deep={ "translations": { "filter": { "languages_code": { "_eq": "en-US" }}}}
+?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
+```
+
+### GraphQL
+
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	members {
+		favorite_games(filter: { name: { _eq: "Mariokart 8" } }) {
+			id
+			featured_image {
+				filename_disk
+			}
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Aliases
+
+<div class="two-up">
+<div class="left">
+
+Aliases allow you rename fields on the fly, and request the same nested data set multiple times using different filters.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?alias[all_translations]=translations
+&alias[dutch_translations]=translations
+&deep[dutch_translations][_filter][code][_eq]=nl-NL
+```
+
+### GraphQL
+
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	articles {
+		dutch_translations: translations(filter: { code: { _eq: "nl-NL" } }) {
+			id
+		}
+
+		all_translations: translations {
+			id
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Export
+
+Save the current API response to a file.
+
+<div class="two-up">
+<div class="left">
+
+Saves the API response to a file. Accepts one of `json`, `csv`, `xml`.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?export=json
+?export=csv
+?export=xml
 ```
 
 ### GraphQL
 
 n/a
+
+</div>
+</div>
+
+---
+
+## Functions
+
+<div class="two-up">
+<div class="left">
+
+Functions allow for "live" modification of values stored in a field. Functions can be used in any query parameter you'd
+normally supply a field key, including fields, aggregation, and filter.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+Functions can be used by wrapping the field key in a JavaScript like syntax, for example:
+
+`timestamp` -> `year(timestamp)`
+
+### DateTime Filters
+
+| Filter    | Description                                              |
+| --------- | -------------------------------------------------------- |
+| `year`    | Extract the year from a datetime/date/timestamp field    |
+| `month`   | Extract the month from a datetime/date/timestamp field   |
+| `week`    | Extract the week from a datetime/date/timestamp field    |
+| `day`     | Extract the day from a datetime/date/timestamp field     |
+| `weekday` | Extract the weekday from a datetime/date/timestamp field |
+| `hour`    | Extract the hour from a datetime/date/timestamp field    |
+| `minute`  | Extract the minute from a datetime/date/timestamp field  |
+| `second`  | Extract the second from a datetime/date/timestamp field  |
+
+::: warning GraphQL
+
+Names aren't allowed to include any special characters in GraphQL, preventing the `()` syntax from being used.
+
+As an alternative, the above functions can be used by appending `_func` at the end of the field name, and using the
+function name as the nested field (see the example on the right).
+
+:::
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?fields=id,title,weekday(date_published)
+&filter[year(date_published)][_eq]=2021
+```
+
+### GraphQL
+
+```graphql
+query {
+	articles(filter: { date_published_func: { year: { _eq: 2021 } } }) {
+		id
+		title
+		date_published_func {
+			weekday
+		}
+	}
+}
+```
 
 </div>
 </div>
@@ -545,5 +767,3 @@ n/a
 
 </div>
 </div>
-
----

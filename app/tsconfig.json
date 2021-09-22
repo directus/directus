@@ -1,18 +1,18 @@
 {
-	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"target": "esnext",
 		"module": "esnext",
 		"strict": true,
 		"jsx": "preserve",
 		"importHelpers": true,
+		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"baseUrl": ".",
-		"types": ["webpack-env"],
+		"types": ["vite/client"],
 		"paths": {
 			"@/*": ["src/*"]
 		},

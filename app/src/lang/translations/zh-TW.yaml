@@ -37,7 +37,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
-public: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -82,8 +81,6 @@ field_validation: 欄位驗證
 permissions_for_role: '角色 {role} 可以 {action} 項目'
 fields_for_role: '角色 {role} 可以 {action} 欄位'
 validation_for_role: '角色 {role} 必須遵守欄位 {action} 規則'
-revision_post_update: 項目更新後看起來像...
-changes_made: 這些是具體的變更部分
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -94,7 +91,6 @@ duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
-schema_setup_title: 此欄位應該如何儲存到資料庫中?
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
 reset_page_preferences: 重設頁面偏好設定
@@ -109,13 +105,11 @@ time: 時間
 uuid: UUID
 hash: 哈希
 create_translations: 創建翻譯
+refresh_interval: 重新整理間隔
+no_refresh: 不要重新整理
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
-configure_m2o: 配置你的多對一關聯...
-configure_o2m: 配置你的一對多關聯...
-configure_m2m: 配置你的多對多關聯...
-configure_m2a: 配置你的多對Any關聯
 add_m2o_to_collection: '新增 多對一 到 "{collection}"'
 add_o2m_to_collection: '新增 一對多 到 "{collection}"'
 add_m2m_to_collection: '新增 多對多 到 "{collection}"'
@@ -168,7 +162,6 @@ item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
-translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
 format: 格式
@@ -184,7 +177,7 @@ move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
-interface: 介面
+interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -206,7 +199,6 @@ months:
 cancel_crop: 取消裁切
 original: 原始
 url: URL
-import: 匯入
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
@@ -264,7 +256,6 @@ no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
-no_webhooks_copy: 這裡還沒有任何 Webhooks。
 all_items: 所有項目
 csv: CSV
 no_collections: 沒有集合
@@ -277,7 +268,6 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
-add_a_new_item: 添加新項目
 add_filter: 新增篩選器
 upper_limit: 上限...
 lower_limit: 下限...
@@ -293,6 +283,7 @@ card_size: 卡片大小
 sort_field: 排序欄位
 sort: 排序
 status: 狀態
+remove: 移除
 toggle_manual_sorting: 啟用手動排序
 bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...
@@ -312,6 +303,8 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
+  INTERNAL_SERVER_ERROR: 未預期的錯誤
+  NOT_NULL_VIOLATION: 值不能為null
   UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
@@ -386,6 +379,8 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+width: 寬度
+height: 高度
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
@@ -404,10 +399,7 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
-  link: 連結
   unlink: 移除連結
-  media: 新增媒體
-  image: 新增圖像
   copy: 複製
   cut: 剪下
   paste: 貼上
@@ -465,7 +457,6 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
-    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題
@@ -527,6 +518,28 @@ fields:
     description: 描述說明
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
+  directus_webhooks:
+    name: 名稱
+    status: 狀態
+field_options:
+  directus_activity:
+    create: 新建
+    update: 更新
+  directus_collections:
+    language: 語言
+    archive_divider: 封存
+    divider: 排序
+  directus_roles:
+    fields:
+      icon_name: 圖示
+      name_name: 名稱
+    collection_list:
+      fields:
+        type_name: 類型
+    collections_name: 資料集
+  directus_webhooks:
+    actions_create: 新建
+    actions_update: 更新
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
@@ -534,11 +547,8 @@ save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
 comment: 評論
-continue: 繼續
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
-default: 預設
-delete: 刪除
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
@@ -589,92 +599,47 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  checkboxes:
-    checkboxes: 複選框
-    allow_other: 允許其他選項
-  code:
+  input-code:
     code: 程式碼
-    line_number: 行號
-  collection:
+  system-collection:
     collection: 集合
-  collections:
+  system-collections:
     collections: 資料集
-  color:
+  select-color:
     color: 顏色
   datetime:
     datetime: 日期時間
-  display-template:
+  system-display-template:
     display-template: 顯示模板
     select_a_collection: 選擇一個集合
-  divider:
+  presentation-divider:
     divider: 分隔線
-  dropdown:
-    allow_other: 允許其他選項
-    allow_other_label: 允許其他值
-    choices_name_placeholder: 輸入名稱...
+  select-dropdown:
     choices_value_placeholder: 請輸入...
-  dropdown-multiselect:
-    dropdown-multiselect: 下拉 (多個)
-    description: 從下拉選單選擇多個值
   file:
     file: 檔案
     description: 選擇或上傳檔案
   files:
     files: 檔案
     description: 選擇或上傳多個檔案
-  hash:
+  input-hash:
     hash: 哈希
-    masked_label: 隱藏真實值
-  icon:
+  select-icon:
     icon: 圖示
-    description: 從下拉清單中選擇圖示
-    search_for_icon: 搜尋圖示...
-  image:
+  file-image:
     image: 圖像
-    description: 選擇或上傳圖像
-  interface:
+  system-interface:
     interface: 介面
-    description: 選擇現有介面
-    placeholder: 選擇一個介面...
-  interface-options:
-    interface-options: 介面選項
-  many-to-many:
-    many-to-many: 多對多
-  many-to-one:
-    many-to-one: 多對一
+  select-dropdown-m2o:
     display_template: 顯示模板
-  markdown:
-    markdown: Markdown
-    description: 輸入和預覽 Markdown
-    customSyntax_label: 新增自訂語法類型
-    customSyntax_add: 新增自訂語法
-    imageToken: 圖像權杖
-  notice:
-    notice: 通知
-    description: 顯示簡短通知
-    text: 在此輸入通知內容...
-  numeric:
-    numeric: 數字
-    description: 輸入一個數字
-    minimum_value: 最小值
-    maximum_value: 最大值
-  one-to-many:
-    one-to-many: 一對多
-    description: 選擇多個關聯項目
-    no_collection: 找不到該集合
-  radio-buttons:
-    radio-buttons: 單選按鈕
-  repeater:
-    repeater: 重複者
-    edit_fields: 編輯欄位
-    field_name_placeholder: 輸入欄位名稱...
-    field_note_placeholder: 輸入欄位備忘...
+  map:
+    zoom: 縮放
+  system-folder:
+    folder: 資料夾
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
     always_show_value: 永遠顯示值
-  slug:
-    slug: 網址片段
   tags:
     tags: 標籤
     description: 選擇或新增標籤
@@ -684,16 +649,7 @@ interfaces:
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
-  text-input:
-    text-input: 文字輸入
-    description: 輸入單行文本
-    trim: 去除內容前後空格
-    trim_label: 修剪開頭與結尾
-    nullable_label: 儲存空值為null
-  textarea:
-    textarea: 文本區
-    description: 輸入多行純文本
-  toggle:
+  boolean:
     toggle: 切換
     label_default: 已啟用
   translations:
@@ -704,9 +660,6 @@ interfaces:
     modes:
       auto: 自動
       dropdown: 下拉選單
-  wysiwyg:
-    toolbar: 工具列
-    custom_formats: 自訂格式
 displays:
   boolean:
     description: 顯示開關狀態

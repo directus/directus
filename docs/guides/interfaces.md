@@ -50,24 +50,34 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Interface</div>
+	<input :value="value" @input="handleChange($event.target.value)" />
 </template>
 
 <script>
-export default {};
+export default {
+	emits: ['input'],
+	props: {
+		value: String,
+	},
+	methods: {
+		handleChange(value) {
+			this.$emit('input', value);
+		},
+	},
+};
 </script>
 ```
 
 #### Available Props
 
-- `value` — The value of the parent field.
-- `width` — The layout width of the parent field. Either `half`, `half-left`, `half-right`, `full`, or `fill`.
-- `type` — The type of the parent field.
-- `collection` — The collection name of the parent field.
-- `field` — The key of the parent field.
-- `primary-key` — The current item's primary key.
+- `value` — The value of the field.
+- `width` — The layout width of the field. Either `half`, `half-right`, `full`, or `fill`.
+- `type` — The type of the field.
+- `collection` — The collection name of the field.
+- `field` — The key of the field.
+- `primaryKey` — The current item's primary key.
 
-## 2. Install Dependencies and Configure the Buildchain
+## 2. Install Dependencies
 
 Set up a package.json file by running:
 
@@ -76,28 +86,25 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom interface's Vue component must first be bundled into a single `index.js` file.
-We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+We recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
+internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
+SDK, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D @directus/extensions-sdk
 ```
 
-You can then use the following Rollup configuration within `rollup.config.js`:
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
 
-```js
-import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import vue from 'rollup-plugin-vue';
-
-export default {
-	input: 'src/index.js',
-	output: {
-		format: 'es',
-		file: 'dist/index.js',
-	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
-};
+```json
+"directus:extension": {
+	"type": "interface",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+}
 ```
 
 ## 3. Develop your Custom Interface
@@ -109,8 +116,9 @@ The interface itself is simply a Vue component, which provides an blank canvas f
 To build the interface for use within Directus, run:
 
 ```bash
-npx rollup -c
+npx directus-extension build
 ```
 
-Finally, move the output from your interface's `dist` folder into your project's `/extensions/interfaces` folder. Keep
-in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your interface's `dist` folder into your project's
+`/extensions/interfaces/my-custom-interface` folder. Keep in mind that the extensions directory is configurable within
+your env file, and may be located elsewhere.

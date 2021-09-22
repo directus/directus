@@ -54,7 +54,7 @@ possible to cache assets for way longer than you would with the actual content.
 ASSETS_CACHE_TTL="7d"
 ```
 
-## oAuth (Single Sign-On / OpenID)
+## oAuth (Single Sign-On (SSO) / OpenID)
 
 Directus' oAuth integration provides a powerful alternative way to authenticate into your project. Directus will ask you
 to login on the external service, and if your user exists in Directus, you'll be logged in automatically.

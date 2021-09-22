@@ -8,7 +8,7 @@ Display a small dot in the corner of the component.
 
 ## Colors
 
-You can set the color, background color and boder color with the `--v-badge-color`, `--v-badge-background-color` and
+You can set the color, background color and border color with the `--v-badge-color`, `--v-badge-background-color` and
 `--v-badge-border-color` css vars respectively:
 
 ```html
@@ -25,7 +25,7 @@ You can set the color, background color and boder color with the `--v-badge-colo
 | ---------- | ---------------------------------------------------------------------------- | ------- | ------------------ |
 | `value`    | The value that will be displayed inside the badge Only 2 characters allowed) | `null`  | `[String, Number]` |
 | `dot`      | Only will show a small dot without any content                               | `false` | `Boolean`          |
-| `bordered` | Shows a border arround the badge                                             | `false` | `Boolean`          |
+| `bordered` | Shows a border around the badge                                              | `false` | `Boolean`          |
 | `left`     | Aligns the badge on the left side                                            | `false` | `Boolean`          |
 | `bottom`   | Aligns the badge on the bottom side                                          | `false` | `Boolean`          |
 | `icon`     | Shows an icon instead of text                                                | `null`  | `String`           |

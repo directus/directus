@@ -1,18 +1,19 @@
 <template>
 	<span
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && hasClick, left, right }]"
-		:role="hasClick ? 'button' : null"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:role="clickable ? 'button' : null"
+		:tabindex="clickable ? 0 : null"
+		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
-		:tabindex="hasClick ? 0 : null"
 	>
-		<component v-if="customIconName" :is="customIconName" />
+		<component :is="customIconName" v-if="customIconName" />
 		<i v-else :class="{ filled }">{{ name }}</i>
 	</span>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
@@ -98,10 +99,19 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: false,
+		},
+		color: {
+			type: String,
+			default: null,
+		},
 		...sizeProps,
 	},
+	emits: ['click'],
 
-	setup(props, { emit, listeners }) {
+	setup(props, { emit }) {
 		const sizeClass = computed<string | null>(() => {
 			if (props.sup) return 'sup';
 			return useSizeClass(props).value;
@@ -112,12 +122,9 @@ export default defineComponent({
 			return null;
 		});
 
-		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
-
 		return {
 			sizeClass,
 			customIconName,
-			hasClick,
 			emitClick,
 		};
 
@@ -207,7 +214,6 @@ body {
 
 	&.left {
 		margin-right: 8px;
-		margin-left: -4px;
 
 		&.small {
 			margin-right: 4px;
@@ -216,8 +222,7 @@ body {
 	}
 
 	&.right {
-		margin-right: -4px;
-		margin-left: 8px;
+		margin-left: 6px;
 
 		&.small {
 			margin-right: 4px;

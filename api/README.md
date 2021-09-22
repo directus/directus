@@ -65,7 +65,8 @@ npm update
 Please report any and all issues [on our GitHub](https://github.com/directus/directus/issues/new).
 
 Pull-requests are more than welcome, and always appreciated. Please be sure to read our
-[Contributors Guide](https://docs.directus.io/contributing/introduction/) before starting work on a new feature/fix, or reach out a member of the Core Team via [GitHub](https://github.com/directus/directus/discussions) or
+[Contributors Guide](https://docs.directus.io/contributing/introduction/) before starting work on a new feature/fix, or
+reach out a member of the Core Team via [GitHub](https://github.com/directus/directus/discussions) or
 [Discord](https://directus.chat) with any questions.
 
 <p>&nbsp;</p>

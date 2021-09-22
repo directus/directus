@@ -1,14 +1,14 @@
 <template>
-	<v-drawer active title="Activity Item" @toggle="close" @cancel="close">
-		<v-progress-circular indeterminate v-if="loading" />
+	<v-drawer :model-value="isOpen" title="Activity Item" @update:model-value="close" @cancel="close">
+		<v-progress-circular v-if="loading" indeterminate />
 
-		<div class="content" v-else-if="error">
+		<div v-else-if="error" class="content">
 			<v-notice type="danger">
 				{{ error }}
 			</v-notice>
 		</div>
 
-		<div class="content" v-else>
+		<div v-else class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">User:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
@@ -35,11 +35,11 @@
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="$t('open')">
+			<v-button v-if="openItemLink" v-tooltip.bottom="t('open')" :to="openItemLink" icon rounded>
 				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity" icon rounded v-tooltip.bottom="$t('done')">
+			<v-button v-tooltip.bottom="t('done')" to="/activity" icon rounded>
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -47,14 +47,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
-import router from '@/router';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
-
-type Values = {
-	[field: string]: any;
-};
+import { useDialogRoute } from '@/composables/use-dialog-route';
 
 type ActivityRecord = {
 	user: {
@@ -71,7 +69,7 @@ type ActivityRecord = {
 };
 
 export default defineComponent({
-	name: 'activity-detail',
+	name: 'ActivityDetail',
 	props: {
 		primaryKey: {
 			type: String,
@@ -79,27 +77,24 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { primaryKey } = toRefs(props);
+		const { t } = useI18n();
+
+		const router = useRouter();
+
+		const isOpen = useDialogRoute();
+
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item || !item.value) return;
-
-			return `/collections/${item.value.collection}/${item.value.item}`;
+			if (!item.value) return;
+			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 
 		watch(() => props.primaryKey, loadActivity, { immediate: true });
 
-		return {
-			item,
-			loading,
-			error,
-			close,
-			openItemLink,
-			userName,
-		};
+		return { t, isOpen, item, loading, error, close, openItemLink, userName };
 
 		async function loadActivity() {
 			loading.value = true;
@@ -123,7 +118,7 @@ export default defineComponent({
 				});
 
 				item.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;

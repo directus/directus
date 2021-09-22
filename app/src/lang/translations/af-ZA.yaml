@@ -23,6 +23,8 @@ operators:
   contains: Bevat
 role: Rol
 create: Skep
+width: Breedte
+height: Hoogte
 wysiwyg_options:
   codeblock: Kode
   table: Tafel
@@ -78,25 +80,25 @@ fields:
     display_template: Modelvorm
   directus_roles:
     description: Beskrywing
+  directus_webhooks:
+    status: Status
+field_options:
+  directus_activity:
+    create: Skep
+  directus_collections:
+    language: Taal
+  directus_webhooks:
+    actions_create: Skep
 comment: Kommentaar
-continue: Gaan Voort
-default: Standaardwaarde
-delete: Verwyder
 description: Beskrywing
 email: E-pos
 password: Wagwoord
 template: Modelvorm
 interfaces:
-  checkboxes:
-    checkboxes: Keuse Boksies
-    allow_other: Laat Ander Toe
-  code:
+  input-code:
     code: Kode
-    line_number: Lyn Nommer
-  collection:
+  system-collection:
     collection: Versameling
-  dropdown:
-    allow_other: Laat Ander Toe
   files:
     files: Lêers
   tags:

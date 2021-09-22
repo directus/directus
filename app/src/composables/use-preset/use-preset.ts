@@ -1,11 +1,33 @@
+import { useCollection } from '@directus/shared/composables';
 import { usePresetsStore, useUserStore } from '@/stores';
-import { ref, Ref, computed, watch } from '@vue/composition-api';
+import { Filter, Preset } from '@directus/shared/types';
 import { debounce, isEqual } from 'lodash';
-import { useCollection } from '@/composables/use-collection';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
-import { Filter, Preset } from '@/types/';
+type UsablePreset = {
+	bookmarkExists: ComputedRef<boolean>;
+	layout: Ref<string | null>;
+	layoutOptions: Ref<Record<string, any>>;
+	layoutQuery: Ref<Record<string, any>>;
+	filters: Ref<readonly Filter[]>;
+	searchQuery: Ref<string | null>;
+	refreshInterval: Ref<number | null>;
+	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
+	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
+	bookmarkTitle: Ref<string | null>;
+	resetPreset: () => Promise<void>;
+	bookmarkSaved: Ref<boolean>;
+	bookmarkIsMine: ComputedRef<boolean>;
+	busy: Ref<boolean>;
+	clearLocalSave: () => void;
+	localPreset: Ref<Partial<Preset>>;
+};
 
-export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
+export function usePreset(
+	collection: Ref<string>,
+	bookmark: Ref<number | null> = ref(null),
+	temporary = false
+): UsablePreset {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
@@ -22,13 +44,14 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
 
 	/**
 	 * Saves the preset to the database
 	 * @param preset The preset that should be saved
 	 */
 	const savePreset = async (preset?: Partial<Preset>) => {
+		if (temporary) return;
 		busy.value = true;
 
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
@@ -130,6 +153,20 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
+	const refreshInterval = computed<number | null>({
+		get() {
+			return localPreset.value.refresh_interval || null;
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				refresh_interval: val,
+			};
+
+			handleChanges();
+		},
+	});
+
 	const searchQuery = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
@@ -166,6 +203,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		layoutQuery,
 		filters,
 		searchQuery,
+		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
 		bookmarkTitle,
@@ -194,6 +232,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout: 'tabular',
 			filters: null,
 			search: null,
+			refresh_interval: null,
 		};
 
 		await savePreset();
@@ -252,8 +291,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 		if (data.id) delete data.id;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		data.user = userStore.state.currentUser!.id;
+		data.user = userStore.currentUser!.id;
 
 		return await savePreset(data);
 	}

@@ -1,55 +1,56 @@
 <template>
 	<v-drawer
 		:title="modalTitle"
-		:active="true"
+		:model-value="isOpen"
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
+		@cancel="close"
 	>
-		<template #sidebar v-if="!loading">
-			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
+		<template v-if="!loading" #sidebar>
+			<tabs v-model:current-tab="currentTab" :tabs="tabs" />
 		</template>
 
-		<div class="content" v-if="!loading">
+		<div v-if="!loading" class="content">
 			<permissions
 				v-if="currentTab[0] === 'permissions'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.permissions"
 			/>
 			<fields
 				v-if="currentTab[0] === 'fields'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.fields"
 			/>
 			<validation
 				v-if="currentTab[0] === 'validation'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.validation"
 			/>
 			<presets
 				v-if="currentTab[0] === 'presets'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.presets"
 			/>
 		</div>
 
-		<template #actions v-if="!loading">
-			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
+		<template v-if="!loading" #actions>
+			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
 		</template>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
-import { Permission, Role } from '@/types';
+import { Permission, Role } from '@directus/shared/types';
 import { useCollectionsStore } from '@/stores/';
-import router from '@/router';
-import i18n from '@/lang';
+import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
 import Tabs from './components/tabs.vue';
 
@@ -59,6 +60,8 @@ import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appMinimalPermissions } from '../app-permissions';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { isPermissionEmpty } from '@/utils/is-permission-empty';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
@@ -72,8 +75,15 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['refresh'],
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
+
+		const isOpen = useDialogRoute();
 
 		const permission = ref<Permission>();
 		const role = ref<Role>();
@@ -81,19 +91,18 @@ export default defineComponent({
 
 		const collectionName = computed(() => {
 			if (!permission.value) return null;
-			return collectionsStore.state.collections.find(
-				(collection) => collection.collection === permission.value!.collection
-			)?.name;
+			return collectionsStore.collections.find((collection) => collection.collection === permission.value!.collection)
+				?.name;
 		});
 
 		const modalTitle = computed(() => {
-			if (loading.value || !permission.value) return i18n.t('loading');
+			if (loading.value || !permission.value) return t('loading');
 
 			if (props.roleKey) {
-				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
+				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 			}
 
-			return i18n.t('public') + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
+			return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
 		});
 
 		watch(() => props.permissionKey, load, { immediate: true });
@@ -107,7 +116,7 @@ export default defineComponent({
 
 			if (['read', 'update', 'delete'].includes(action)) {
 				tabs.push({
-					text: i18n.t('item_permissions'),
+					text: t('item_permissions'),
 					value: 'permissions',
 					hasValue: permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
 				});
@@ -115,7 +124,7 @@ export default defineComponent({
 
 			if (['create', 'read', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.t('field_permissions'),
+					text: t('field_permissions'),
 					value: 'fields',
 					hasValue: permission.value.fields !== null,
 				});
@@ -123,7 +132,7 @@ export default defineComponent({
 
 			if (['create', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.t('field_validation'),
+					text: t('field_validation'),
 					value: 'validation',
 					hasValue: permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
 				});
@@ -131,7 +140,7 @@ export default defineComponent({
 
 			if (['create', 'update'].includes(action)) {
 				tabs.push({
-					text: i18n.t('field_presets'),
+					text: t('field_presets'),
 					value: 'presets',
 					hasValue: permission.value.presets !== null && Object.keys(permission.value.presets).length > 0,
 				});
@@ -165,7 +174,15 @@ export default defineComponent({
 			);
 		});
 
-		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal };
+		return { isOpen, permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
+
+		async function close() {
+			if (permission.value && isPermissionEmpty(permission.value)) {
+				await api.delete(`/permissions/${permission.value.id}`);
+			}
+
+			router.push(`/settings/roles/${props.roleKey || 'public'}`);
+		}
 
 		async function load() {
 			loading.value = true;
@@ -178,7 +195,7 @@ export default defineComponent({
 
 				const response = await api.get(`/permissions/${props.permissionKey}`);
 				permission.value = response.data.data;
-			} catch (err) {
+			} catch (err: any) {
 				if (err?.response?.status === 403) {
 					router.push(`/settings/roles/${props.roleKey || 'public'}`);
 				} else {
