@@ -1,21 +1,21 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="$t('information')" close>
+	<sidebar-detail icon="info_outline" :title="t('information')" close>
 		<dl v-if="!isNew && role">
 			<div>
-				<dt>{{ $t('primary_key') }}</dt>
+				<dt>{{ t('primary_key') }}</dt>
 				<dd>{{ role.id }}</dd>
 			</div>
 		</dl>
 
 		<v-divider />
 
-		<div class="page-description" v-html="md($t('page_help_settings_roles_item'))" />
+		<div v-md="t('page_help_settings_roles_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
-import { md } from '@/utils/md';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -29,7 +29,9 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		return { md };
+		const { t } = useI18n();
+
+		return { t };
 	},
 });
 </script>

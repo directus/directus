@@ -90,19 +90,19 @@ the loading state.
 
 #### CSS Variables
 
-| Variable                                | Default                      |
-| --------------------------------------- | ---------------------------- |
-| `--v-button-width`                      | `auto`                       |
-| `--v-button-height`                     | `44px`                       |
-| `--v-button-color`                      | `var(--foreground-inverted)` |
-| `--v-button-color-hover`                | `var(--foreground-inverted)` |
-| `--v-button-color-activated`            | `var(--foreground-inverted)` |
-| `--v-button-color-disabled`             | `var(--foreground-subdued)`  |
-| `--v-button-background-color`           | `var(--primary)`             |
-| `--v-button-background-color-hover`     | `var(--primary-125)`         |
-| `--v-button-background-color-activated` | `var(--primary)`             |
-| `--v-button-background-color-disabled`  | `var(--background-normal)`   |
-| `--v-button-font-size`                  | `16px`                       |
-| `--v-button-font-weight`                | `600`                        |
-| `--v-button-line-height`                | `22px`                       |
-| `--v-button-min-width`                  | `140px`                      |
+| Variable                               | Default                      |
+| -------------------------------------- | ---------------------------- |
+| `--v-button-width`                     | `auto`                       |
+| `--v-button-height`                    | `44px`                       |
+| `--v-button-color`                     | `var(--foreground-inverted)` |
+| `--v-button-color-hover`               | `var(--foreground-inverted)` |
+| `--v-button-color-active`              | `var(--foreground-inverted)` |
+| `--v-button-color-disabled`            | `var(--foreground-subdued)`  |
+| `--v-button-background-color`          | `var(--primary)`             |
+| `--v-button-background-color-hover`    | `var(--primary-125)`         |
+| `--v-button-background-color-active`   | `var(--primary)`             |
+| `--v-button-background-color-disabled` | `var(--background-normal)`   |
+| `--v-button-font-size`                 | `16px`                       |
+| `--v-button-font-weight`               | `600`                        |
+| `--v-button-line-height`               | `22px`                       |
+| `--v-button-min-width`                 | `140px`                      |

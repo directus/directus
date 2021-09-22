@@ -1,8 +1,8 @@
 <template>
-	<v-notice type="warning" v-if="!relation">
-		{{ $t('relationship_not_setup') }}
+	<v-notice v-if="!relation" type="warning">
+		{{ t('relationship_not_setup') }}
 	</v-notice>
-	<div class="one-to-many" v-else>
+	<div v-else class="one-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
 				v-for="n in (value || []).length || 3"
@@ -12,39 +12,46 @@
 		</template>
 
 		<v-notice v-else-if="sortedItems.length === 0">
-			{{ $t('no_items') }}
+			{{ t('no_items') }}
 		</v-notice>
 
 		<v-list v-else>
 			<draggable
 				:force-fallback="true"
-				:value="sortedItems"
-				@input="sortItems($event)"
+				:model-value="sortedItems"
+				item-key="id"
 				handle=".drag-handle"
 				:disabled="!relation.meta.sort_field"
+				@update:model-value="sortItems($event)"
 			>
-				<v-list-item
-					:dense="sortedItems.length > 4"
-					v-for="item in sortedItems"
-					:key="item.id"
-					block
-					:disabled="disabled || updateAllowed === false"
-					@click="editItem(item)"
-				>
-					<v-icon v-if="relation.meta.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :collection="relation.collection" :item="item" :template="templateWithDefaults" />
-					<div class="spacer" />
-					<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(item)" />
-				</v-list-item>
+				<template #item="{ element }">
+					<v-list-item
+						:dense="sortedItems.length > 4"
+						block
+						:disabled="disabled || updateAllowed === false"
+						@click="editItem(element)"
+					>
+						<v-icon
+							v-if="relation.meta.sort_field"
+							name="drag_handle"
+							class="drag-handle"
+							left
+							@click.stop="() => {}"
+						/>
+						<render-template :collection="relation.collection" :item="element" :template="templateWithDefaults" />
+						<div class="spacer" />
+						<v-icon v-if="!disabled && updateAllowed" name="close" @click.stop="deleteItem(element)" />
+					</v-list-item>
+				</template>
 			</draggable>
 		</v-list>
 
-		<div class="actions" v-if="!disabled">
+		<div v-if="!disabled" class="actions">
 			<v-button v-if="enableCreate && createAllowed && updateAllowed" @click="currentlyEditing = '+'">
-				{{ $t('create_new') }}
+				{{ t('create_new') }}
 			</v-button>
 			<v-button v-if="enableSelect && updateAllowed" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -61,28 +68,27 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
-			:selection="[]"
-			:filters="selectionFilters"
-			@input="stageSelection"
+			:selection="selectedPrimaryKeys"
 			multiple
+			@input="$emit('input', $event.length > 0 ? $event : null)"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, watch, PropType } from 'vue';
 import api from '@/api';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { useCollectionsStore, useRelationsStore, useFieldsStore, usePermissionsStore, useUserStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { Filter, Field, Relation } from '@/types';
-import { isEqual, sortBy } from 'lodash';
-import { get } from 'lodash';
+import { Field, Relation } from '@directus/shared/types';
+import { get, isEqual, sortBy } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
@@ -123,7 +129,10 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -145,12 +154,13 @@ export default defineComponent({
 
 		const { items, loading } = usePreview();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { selectModalActive, selectedPrimaryKeys } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
 
 		const { createAllowed, updateAllowed } = usePermissions();
 
 		return {
+			t,
 			relation,
 			loading,
 			currentlyEditing,
@@ -159,12 +169,11 @@ export default defineComponent({
 			editsAtStart,
 			stageEdits,
 			cancelEdit,
-			stageSelection,
 			selectModalActive,
 			deleteItem,
 			items,
 			sortItems,
-			selectionFilters,
+			selectedPrimaryKeys,
 			sort,
 			sortedItems,
 			get,
@@ -179,8 +188,8 @@ export default defineComponent({
 		}
 
 		function getNewItems() {
-			const pkField = relatedPrimaryKeyField.value.field;
-			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === false) as Record<
 				string,
 				any
@@ -188,8 +197,8 @@ export default defineComponent({
 		}
 
 		function getUpdatedItems() {
-			const pkField = relatedPrimaryKeyField.value.field;
-			if (props.value === null) return [];
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value.filter((item) => typeof item === 'object' && pkField in item === true) as Record<
 				string,
 				any
@@ -197,8 +206,8 @@ export default defineComponent({
 		}
 
 		function getPrimaryKeys() {
-			if (props.value === null) return [];
-			const pkField = relatedPrimaryKeyField.value.field;
+			const pkField = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !pkField) return [];
 			return props.value
 				.map((item) => {
 					if (typeof item === 'object') {
@@ -211,9 +220,8 @@ export default defineComponent({
 		}
 
 		function deleteItem(item: Record<string, any>) {
-			if (props.value === null) return;
-
-			const relatedPrimKey = relatedPrimaryKeyField.value.field;
+			const relatedPrimKey = relatedPrimaryKeyField.value?.field;
+			if (props.value === null || !relatedPrimKey) return;
 
 			if (relatedPrimKey in item === false) {
 				emit(
@@ -285,9 +293,12 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				async () => {
+				async (newVal, oldVal) => {
+					if (isEqual(newVal, oldVal)) return;
+
 					loading.value = true;
-					const pkField = relatedPrimaryKeyField.value.field;
+					const pkField = relatedPrimaryKeyField.value?.field;
+					if (!pkField) return;
 
 					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
 
@@ -337,7 +348,7 @@ export default defineComponent({
 								return item;
 							})
 							.concat(...newItems);
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					} finally {
 						loading.value = false;
@@ -360,13 +371,15 @@ export default defineComponent({
 			return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 
 			function editItem(item: any) {
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (!pkField) return;
 				const hasPrimaryKey = pkField in item;
 
 				const edits = (props.value || []).find(
 					(edit: any) =>
 						typeof edit === 'object' &&
-						edit[relatedPrimaryKeyField.value.field] === item[relatedPrimaryKeyField.value.field]
+						relatedPrimaryKeyField.value?.field &&
+						edit[relatedPrimaryKeyField.value?.field] === item[relatedPrimaryKeyField.value?.field]
 				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
@@ -374,10 +387,17 @@ export default defineComponent({
 			}
 
 			function stageEdits(edits: any) {
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (!pkField) return;
 
 				const newValue = (props.value || []).map((item) => {
-					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
+					if (
+						item &&
+						typeof item === 'object' &&
+						pkField in item &&
+						pkField in edits &&
+						item[pkField] === edits[pkField]
+					) {
 						return edits;
 					}
 
@@ -410,39 +430,13 @@ export default defineComponent({
 			const selectModalActive = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (items.value === null) return [];
-
-				const pkField = relatedPrimaryKeyField.value.field;
+				const pkField = relatedPrimaryKeyField.value?.field;
+				if (items.value === null || !pkField) return [];
 
 				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
 			});
 
-			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = relatedPrimaryKeyField.value.field;
-
-				if (selectedPrimaryKeys.value.length === 0) return [];
-
-				const filter: Filter = {
-					key: 'selection',
-					field: pkField,
-					operator: 'nin',
-					value: selectedPrimaryKeys.value.join(','),
-					locked: true,
-				};
-
-				return [filter];
-			});
-
-			return { stageSelection, selectModalActive, selectionFilters };
-
-			function stageSelection(newSelection: (number | string)[]) {
-				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
-
-				const newVal = [...selection, ...(props.value || [])];
-
-				if (newVal.length === 0) emit('input', null);
-				else emit('input', newVal);
-			}
+			return { selectModalActive, selectedPrimaryKeys };
 		}
 
 		function getDefaultFields(): string[] {
@@ -452,19 +446,19 @@ export default defineComponent({
 
 		function usePermissions() {
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === relatedCollection.value.collection
 				);
 			});
 
 			const updateAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === relatedCollection.value.collection
 				);
 			});

@@ -4,6 +4,7 @@ import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { Webhook } from './types';
+import { pick } from 'lodash';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 
@@ -44,13 +45,23 @@ function createHandler(webhook: Webhook): ListenerFn {
 		const collectionAllowList = webhook.collections.split(',');
 		if (collectionAllowList.includes('*') === false && collectionAllowList.includes(data.collection) === false) return;
 
+		const webhookPayload = pick(data, [
+			'event',
+			'accountability.user',
+			'accountability.role',
+			'collection',
+			'item',
+			'action',
+			'payload',
+		]);
+
 		try {
 			await axios({
 				url: webhook.url,
 				method: webhook.method,
-				data: webhook.data ? data : null,
+				data: webhook.data ? webhookPayload : null,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Webhook "${webhook.name}" (id: ${webhook.id}) failed`);
 			logger.warn(error);
 		}

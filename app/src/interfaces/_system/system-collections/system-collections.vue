@@ -1,18 +1,19 @@
 <template>
 	<v-notice v-if="items.length === 0">
-		{{ $t('no_collections') }}
+		{{ t('no_collections') }}
 	</v-notice>
 	<interface-select-multiple-checkbox
 		v-else
 		:choices="items"
-		@input="$listeners.input"
 		:value="value"
 		:disabled="disabled"
+		@input="$emit('input', $event)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
@@ -30,13 +31,16 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.state.collections;
+			if (props.includeSystem) return collectionsStore.collections;
 
-			return collectionsStore.state.collections.filter(
+			return collectionsStore.collections.filter(
 				(collection) => collection.collection.startsWith('directus_') === false
 			);
 		});
@@ -48,7 +52,7 @@ export default defineComponent({
 			}));
 		});
 
-		return { items };
+		return { t, items };
 	},
 });
 </script>

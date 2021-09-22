@@ -1,33 +1,31 @@
 <template>
-	<div class="render-template" ref="templateEl">
+	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
-		<template v-for="(part, index) in parts">
-			<value-null :key="index" v-if="part === null || part.value === null" />
+		<template v-for="(part, index) in parts" :key="index">
+			<value-null v-if="part === null || part.value === null" />
 			<component
-				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
-				:key="index"
+				v-else-if="typeof part === 'object' && part.component"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
 				:collection="part.collection"
 				:field="part.field"
-				v-bind="part.options"
 			/>
-			<span :key="index" v-else>{{ part }}</span>
+			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { Field } from '@/types';
+import { DisplayConfig, Field } from '@directus/shared/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig, DisplayHandlerFunction } from '@/displays/types';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 
 export default defineComponent({
@@ -43,7 +41,7 @@ export default defineComponent({
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
-			required: true,
+			default: null,
 		},
 		template: {
 			type: String,
@@ -86,6 +84,7 @@ export default defineComponent({
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
+
 					if (value === undefined) return null;
 
 					if (!field) return value;
@@ -102,8 +101,8 @@ export default defineComponent({
 
 					// If the display handler is a function, we parse the value and return the result
 					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler as DisplayHandlerFunction;
-						return handler(value, field.meta?.display_options);
+						const handler = displayInfo.handler;
+						return handler(value, field.meta?.display_options ?? null);
 					}
 
 					return {
@@ -117,7 +116,7 @@ export default defineComponent({
 						field: field.field,
 					};
 				})
-				.map((p) => p || null)
+				.map((p) => p ?? null)
 		);
 
 		return { parts, templateEl };

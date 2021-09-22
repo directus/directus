@@ -373,11 +373,6 @@ module.exports = {
 								type: 'page',
 							},
 							{
-								path: 'reference/app/components/v-button-group',
-								title: 'Button Group',
-								type: 'page',
-							},
-							{
 								path: 'reference/app/components/v-button',
 								title: 'Button',
 								type: 'page',
@@ -809,6 +804,11 @@ module.exports = {
 						type: 'page',
 						path: '/contributing/running-locally',
 						title: 'Running Locally',
+					},
+					{
+						type: 'page',
+						path: '/contributing/github-ci',
+						title: 'GitHub CI',
 					},
 					{
 						type: 'page',

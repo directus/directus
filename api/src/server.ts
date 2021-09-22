@@ -7,10 +7,13 @@ import qs from 'qs';
 import url from 'url';
 import createApp from './app';
 import getDatabase from './database';
-import { emitAsyncSafe } from './emitter';
+import env from './env';
 import logger from './logger';
+import emitter, { emitAsyncSafe } from './emitter';
+import checkForUpdate from 'update-check';
+import pkg from '../package.json';
 
-export default async function createServer(): Promise<http.Server> {
+export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
 
 	server.on('request', function (req: http.IncomingMessage & Request, res: http.ServerResponse) {
@@ -86,9 +89,7 @@ export default async function createServer(): Promise<http.Server> {
 	async function beforeShutdown() {
 		emitAsyncSafe('server.stop.before', { server });
 
-		if ('DIRECTUS_DEV' in process.env) {
-			logger.info('Restarting...');
-		} else {
+		if (env.NODE_ENV !== 'development') {
 			logger.info('Shutting down...');
 		}
 	}
@@ -102,8 +103,40 @@ export default async function createServer(): Promise<http.Server> {
 	async function onShutdown() {
 		emitAsyncSafe('server.stop');
 
-		if (!('DIRECTUS_DEV' in process.env)) {
+		if (env.NODE_ENV !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}
+}
+
+export async function startServer(): Promise<void> {
+	const server = await createServer();
+
+	await emitter.emitAsync('server.start.before', { server });
+
+	const port = env.PORT;
+
+	server
+		.listen(port, () => {
+			checkForUpdate(pkg)
+				.then((update) => {
+					if (update) {
+						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+					}
+				})
+				.catch(() => {
+					// No need to log/warn here. The update message is only an informative nice-to-have
+				});
+
+			logger.info(`Server started at http://localhost:${port}`);
+			emitAsyncSafe('server.start');
+		})
+		.once('error', (err: any) => {
+			if (err?.code === 'EADDRINUSE') {
+				logger.error(`Port ${port} is already in use`);
+				process.exit(1);
+			} else {
+				throw err;
+			}
+		});
 }

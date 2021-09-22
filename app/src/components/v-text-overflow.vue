@@ -1,11 +1,11 @@
 <template>
-	<div class="v-text-overflow" ref="el" v-tooltip="hasEllipsis && text">
+	<div ref="el" v-tooltip="hasEllipsis && text" class="v-text-overflow">
 		{{ text }}
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { useElementSize } from '@/composables/use-element-size';
 
 export default defineComponent({

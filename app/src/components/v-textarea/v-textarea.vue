@@ -8,21 +8,21 @@
 			'has-content': hasContent,
 		}"
 	>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
 		<textarea
-			v-bind="$attrs"
 			v-focus="autofocus"
-			v-on="_listeners"
+			v-bind="$attrs"
 			:placeholder="placeholder"
 			:disabled="disabled"
-			:value="value"
+			:value="modelValue"
+			v-on="listeners"
 		/>
-		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -38,7 +38,7 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -59,30 +59,30 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit, listeners }) {
-		const _listeners = computed(() => ({
-			...listeners,
+	emits: ['update:modelValue'],
+	setup(props, { emit }) {
+		const listeners = computed(() => ({
 			input: emitValue,
 			blur: trimIfEnabled,
 		}));
 
-		const hasContent = computed(() => props.value && props.value.length > 0);
+		const hasContent = computed(() => props.modelValue && props.modelValue.length > 0);
 
-		return { _listeners, hasContent };
+		return { listeners, hasContent };
 
 		function emitValue(event: InputEvent) {
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.nullable === true && value === '') {
-				emit('input', null);
+				emit('update:modelValue', null);
 			} else {
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
 		function trimIfEnabled() {
-			if (props.value && props.trim) {
-				emit('input', props.value.trim());
+			if (props.modelValue && props.trim) {
+				emit('update:modelValue', props.modelValue.trim());
 			}
 		}
 	},

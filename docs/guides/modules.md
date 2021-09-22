@@ -25,7 +25,7 @@ export default {
 	icon: 'box',
 	routes: [
 		{
-			path: '/',
+			path: '',
 			component: ModuleComponent,
 		},
 	],
@@ -35,7 +35,8 @@ export default {
 - `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this module.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
-- `routes` — Details the routes in your module per the Vue router.
+- `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
+  serving as the base path.
 
 ::: tip TypeScript
 
@@ -59,10 +60,9 @@ export default {};
 
 #### Accessing the API from within your extension
 
-The Directus App's Vue app instance provides a field called `system`, which can be injected into Vue components using
-[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `system` field contains
-functions to access Vuex stores, and more importantly, contains a property called `api`, which is an authenticated Axios
-instance. Here's an example of how to use it:
+The Directus App's Vue app instance provides a field called `api`, which can be injected into Vue components using
+[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `api` field contains a property
+called `api`, which is an authenticated Axios instance. Here's an example of how to use it:
 
 ```vue
 <template>
@@ -88,14 +88,14 @@ export default {
 			console.log(this.collections);
 		},
 	},
-	inject: ['system'],
+	inject: ['api'],
 	mounted() {
 		// log the system field so you can see what attributes are available under it
 		// remove this line when you're done.
-		console.log(this.system);
+		console.log(this.api);
 
 		// Get a list of all available collections to use with this module
-		this.system.api.get('/collections?limit=-1').then((res) => {
+		this.api.get('/collections?limit=-1').then((res) => {
 			this.collections = res.data.data;
 		});
 	},
@@ -105,20 +105,20 @@ export default {
 
 In the above example, you can see that:
 
-- The `system` field gets injected into the component and becomes available as an attribute of the component (ie
-  `this.system`)
-- When the component is mounted, it uses `this.system.api.get` to request a list of all available collections
+- The `api` field gets injected into the component and becomes available as an attribute of the component (ie
+  `this.api`)
+- When the component is mounted, it uses `this.api.get` to request a list of all available collections
 - The names of the collections are rendered into a list in the component's template
 - a button is added with a method the logs all the data for the collections to the console
 
 This is just a basic example. A more efficient way to access and work with the list of collections would be to get an
-instance of the `collectionsStore` using `system.useCollectionsStore()`, but that's beyond the scope of this guide
+instance of the `collectionsStore` using `store.useCollectionsStore()`, but that's beyond the scope of this guide
 
 #### Available Props
 
 If you setup a route with a parameter, you can pass it in as a prop.
 
-## 2. Install Dependencies and Configure the Buildchain
+## 2. Install Dependencies
 
 Set up a package.json file by running:
 
@@ -127,36 +127,26 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom module's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
+internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
+SDK, run this command:
 
 ```bash
-npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
+npm i -D @directus/extensions-sdk
 ```
 
-You can then use the following Rollup configuration within `rollup.config.js`:
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
 
-```js
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
-import vue from 'rollup-plugin-vue';
-
-export default {
-	input: 'src/index.js',
-	output: {
-		format: 'es',
-		file: 'dist/index.js',
-	},
-	plugins: [vue(), nodeResolve(), commonjs(), terser()],
-};
+```json
+"directus:extension": {
+	"type": "module",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.92",
+	"hidden": false
+}
 ```
-
-::: tip Building multiple extensions
-
-You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
-See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
-
-:::
 
 ## 3. Develop Your Custom Module
 
@@ -167,7 +157,7 @@ The module itself is simply a Vue component, which provides an blank canvas for 
 To build the module for use within Directus, run:
 
 ```bash
-npx rollup -c
+npx directus-extension build
 ```
 
 Finally, move the output from your module's `dist` folder into your project's `/extensions/modules/my-custom-module`

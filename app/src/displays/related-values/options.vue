@@ -1,19 +1,19 @@
 <template>
-	<v-notice type="warning" v-if="collection === null">
-		{{ $t('interfaces.list-o2m.no_collection') }}
+	<v-notice v-if="collection === null" type="warning">
+		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('display_template') }}</p>
-			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
+			<p class="type-label">{{ t('display_template') }}</p>
+			<v-field-template v-model="template" :collection="relatedCollection" :depth="2" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Relation } from '@/types/relations';
+import { useI18n } from 'vue-i18n';
+import { Field, Relation } from '@directus/shared/types';
+import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -34,7 +34,10 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -68,15 +71,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return { template, relatedCollection };
+		return { t, template, relatedCollection };
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

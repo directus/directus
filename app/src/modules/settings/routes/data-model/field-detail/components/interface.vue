@@ -1,46 +1,48 @@
 <template>
 	<div>
-		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
+		<v-fancy-select v-model="fieldData.meta.interface" class="select" :items="selectItems" />
 
-		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
-			{{ $t('interface_not_found', { interface: fieldData.meta.interface }) }}
+		<v-notice v-if="fieldData.meta.interface && !selectedInterface" class="not-found" type="danger">
+			{{ t('interface_not_found', { interface: fieldData.meta.interface }) }}
 			<div class="spacer" />
-			<button @click="fieldData.meta.interface = null">{{ $t('reset_interface') }}</button>
+			<button @click="fieldData.meta.interface = null">{{ t('reset_interface') }}</button>
 		</v-notice>
 
 		<template v-if="fieldData.meta.interface && selectedInterface">
 			<v-notice v-if="!selectedInterface.options || selectedInterface.options.length === 0">
-				{{ $t('no_options_available') }}
+				{{ t('no_options_available') }}
 			</v-notice>
 
 			<v-form
 				v-else-if="Array.isArray(selectedInterface.options)"
+				v-model="fieldData.meta.options"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				v-model="fieldData.meta.options"
 			/>
 
 			<component
-				v-model="fieldData.meta.options"
+				:is="`interface-options-${selectedInterface.id}`"
+				v-else
+				:value="fieldData.meta.options"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
 				:new-fields="newFields"
 				:new-collections="newCollections"
-				:is="`interface-options-${selectedInterface.id}`"
-				v-else
+				@input="fieldData.meta.options = $event"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs } from 'vue';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
 import { state, availableInterfaces } from '../store';
-import { InterfaceConfig } from '@/interfaces/types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -54,6 +56,8 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
@@ -118,7 +122,7 @@ export default defineComponent({
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);
 
-		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
+		return { t, fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

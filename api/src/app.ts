@@ -1,13 +1,14 @@
 import cookieParser from 'cookie-parser';
 import express, { RequestHandler } from 'express';
-import expressLogger from 'express-pino-logger';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
 import collectionsRouter from './controllers/collections';
+import dashboardsRouter from './controllers/dashboards';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
@@ -15,6 +16,7 @@ import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
+import panelsRouter from './controllers/panels';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -25,12 +27,12 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import { isInstalled, validateDBConnection } from './database';
+import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import { emitAsyncSafe } from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
-import logger from './logger';
+import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import cache from './middleware/cache';
 import { checkIP } from './middleware/check-ip';
@@ -40,24 +42,41 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
+import { validateStorage } from './utils/validate-storage';
 import { register as registerWebhooks } from './webhooks';
 import { session } from './middleware/session';
+import { flushCaches } from './cache';
+import { Url } from './utils/url';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
-	await validateDBConnection();
+	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+		logger.warn('PUBLIC_URL should be a full URL');
+	}
+
+	await validateStorage();
+
+	await validateDatabaseConnection();
+	await validateDatabaseExtensions();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
 
+	if ((await validateMigrations()) === false) {
+		logger.warn(`Database migrations have not all been run`);
+	}
+
+	await flushCaches();
+
 	await initializeExtensions();
 
-	await registerExtensionHooks();
+	registerExtensionHooks();
 
 	const app = express();
 
@@ -71,7 +90,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitAsyncSafe('middlewares.init.before', { app });
 
-	app.use(expressLogger({ logger }) as RequestHandler);
+	app.use(expressLogger);
 
 	app.use((req, res, next) => {
 		(
@@ -100,22 +119,24 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(cors);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	app.get('/', (req, res, next) => {
+		if (env.ROOT_REDIRECT) {
+			res.redirect(env.ROOT_REDIRECT);
+		} else {
+			next();
+		}
+	});
+
+	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
-		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
+		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
-		// Prefix all href/src in the index html with the APIs public path
+		// Set the App's base path according to the APIs public URL
 		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(/href="\//g, `href="${publicUrl}`);
-		html = html.replace(/src="\//g, `src="${publicUrl}`);
-
-		app.get('/', (req, res, next) => {
-			if (env.ROOT_REDIRECT) {
-				res.redirect(env.ROOT_REDIRECT);
-			} else {
-				next();
-			}
-		});
+		html = html.replace(
+			/<meta charset="utf-8" \/>/,
+			`<meta charset="utf-8" />\n\t\t<base href="${adminUrl.toString({ rootRelative: true })}/">`
+		);
 
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
@@ -153,26 +174,29 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);
+	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
-	app.use('/server/', serverRouter);
+	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
-	app.use('/custom', customRouter);
+
+	app.use(customRouter);
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('routes.custom.init.before', { app });
-	await registerExtensionEndpoints(customRouter);
+	registerExtensionEndpoints(customRouter);
 	await emitAsyncSafe('routes.custom.init.after', { app });
 
 	app.use(notFoundHandler);

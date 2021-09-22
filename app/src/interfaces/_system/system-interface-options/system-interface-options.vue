@@ -1,35 +1,35 @@
 <template>
 	<v-notice v-if="!selectedInterface">
-		{{ $t('select_interface') }}
+		{{ t('select_interface') }}
 	</v-notice>
 
 	<v-notice v-else-if="!selectedInterface.options">
-		{{ $t('no_options_available') }}
+		{{ t('no_options_available') }}
 	</v-notice>
 
-	<div class="inset" v-else>
+	<div v-else class="inset">
 		<v-form
 			v-if="Array.isArray(selectedInterface.options)"
 			:fields="selectedInterface.options"
 			primary-key="+"
-			:edits="value"
-			@input="$listeners.input"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
 		/>
 
 		<component
-			:value="value"
-			@input="$listeners.input"
-			:field-data="fieldData"
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else
+			:value="value"
+			@input="$emit('input', $event)"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, inject, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
+import { InterfaceConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -39,29 +39,47 @@ export default defineComponent({
 		},
 		interfaceField: {
 			type: String,
-			required: true,
+			default: null,
+		},
+		interface: {
+			type: String,
+			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
+		const { t } = useI18n();
+
 		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const selectedInterface = computed(() => {
+			if (props.interface) {
+				return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.interface);
+			}
+
 			if (!values.value[props.interfaceField]) return;
 
 			return interfaces.value.find((inter: InterfaceConfig) => inter.id === values.value[props.interfaceField]);
 		});
 
-		return { selectedInterface, values };
+		return { t, selectedInterface, values };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .inset {
-	padding: 8px;
+	--form-horizontal-gap: 24px;
+	--form-vertical-gap: 24px;
+
+	padding: 12px;
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
+
+	:deep(.type-label) {
+		font-size: 1rem;
+	}
 }
 </style>

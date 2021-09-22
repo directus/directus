@@ -1,5 +1,6 @@
 <template>
 	<draggable
+		v-bind="dragOptions"
 		class="drag-area"
 		:class="{ root, drag }"
 		tag="ul"
@@ -7,48 +8,53 @@
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".row"
-		v-bind="dragOptions"
-		@start="drag = true"
-		@end="drag = false"
 		:set-data="hideDragImage"
 		:disabled="disabled"
 		:force-fallback="true"
+		@start="drag = true"
+		@end="drag = false"
 		@change="$emit('change', $event)"
 	>
-		<li class="row" v-for="(item, index) in tree" :key="item.id">
-			<item-preview
-				:item="item"
-				:template="template"
-				:collection="collection"
-				:primary-key-field="primaryKeyField"
-				:disabled="disabled"
-				:parent-field="parentField"
-				@input="replaceItem(index, $event)"
-				@deselect="removeItem(index)"
-			/>
-			<nested-draggable
-				:tree="item[childrenField] || []"
-				:template="template"
-				:collection="collection"
-				:primary-key-field="primaryKeyField"
-				:parent-field="parentField"
-				:children-field="childrenField"
-				:disabled="disabled"
-				@change="$emit('change', $event)"
-				@input="replaceChildren(index, $event)"
-			/>
-		</li>
+		<template #item="{ element, index }">
+			<li class="row">
+				<item-preview
+					:item="element"
+					:template="template"
+					:collection="collection"
+					:primary-key-field="primaryKeyField"
+					:disabled="disabled"
+					:parent-field="parentField"
+					@input="replaceItem(index, $event)"
+					@deselect="removeItem(index)"
+				/>
+				<nested-draggable
+					:tree="element[childrenField] || []"
+					:template="template"
+					:collection="collection"
+					:primary-key-field="primaryKeyField"
+					:parent-field="parentField"
+					:children-field="childrenField"
+					:disabled="disabled"
+					@change="$emit('change', $event)"
+					@input="replaceChildren(index, $event)"
+				/>
+			</li>
+		</template>
 	</draggable>
 </template>
 
 <script lang="ts">
-import draggable from 'vuedraggable';
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import Draggable from 'vuedraggable';
+import { defineComponent, ref, PropType } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 
 export default defineComponent({
-	name: 'nested-draggable',
+	name: 'NestedDraggable',
+	components: {
+		Draggable,
+		ItemPreview,
+	},
 	props: {
 		tree: {
 			required: true,
@@ -84,10 +90,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	components: {
-		draggable,
-		ItemPreview,
-	},
+	emits: ['change', 'input'],
 	setup(props, { emit }) {
 		const drag = ref(false);
 
@@ -174,10 +177,6 @@ export default defineComponent({
 			padding-top: 12px;
 		}
 	}
-}
-
-.flip-list-move {
-	transition: transform 0.5s;
 }
 
 .ghost .preview {

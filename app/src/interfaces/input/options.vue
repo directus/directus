@@ -1,10 +1,12 @@
 <template>
-	<v-form :fields="fields" v-model="options" />
+	<div>
+		<v-form v-model="options" :fields="fields" />
+	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/composition-api';
-import { Field } from '@/types';
+import { computed, defineComponent, PropType } from 'vue';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -17,6 +19,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
 		const options = computed({
 			get() {

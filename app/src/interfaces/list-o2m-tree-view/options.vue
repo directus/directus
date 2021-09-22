@@ -1,29 +1,29 @@
 <template>
-	<v-notice class="full" type="warning" v-if="collection === null">
-		{{ $t('interfaces.list-o2m.no_collection') }}
+	<v-notice v-if="collection === null" class="full" type="warning">
+		{{ t('interfaces.list-o2m.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('interfaces.select-dropdown-m2o.display_template') }}</p>
-			<v-field-template :collection="collection" v-model="template" :depth="1"></v-field-template>
+			<p class="type-label">{{ t('interfaces.select-dropdown-m2o.display_template') }}</p>
+			<v-field-template v-model="template" :collection="collection" :depth="1"></v-field-template>
 		</div>
 
 		<div class="field half-left">
-			<p class="type-label">{{ $t('creating_items') }}</p>
-			<v-checkbox block :label="$t('enable_create_button')" v-model="enableCreate" />
+			<p class="type-label">{{ t('creating_items') }}</p>
+			<v-checkbox v-model="enableCreate" block :label="t('enable_create_button')" />
 		</div>
 
 		<div class="field half-right">
-			<p class="type-label">{{ $t('selecting_items') }}</p>
-			<v-checkbox block :label="$t('enable_select_button')" v-model="enableSelect" />
+			<p class="type-label">{{ t('selecting_items') }}</p>
+			<v-checkbox v-model="enableSelect" block :label="t('enable_select_button')" />
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Relation } from '@/types/relations';
+import { useI18n } from 'vue-i18n';
+import { Field, Relation } from '@directus/shared/types';
+import { defineComponent, PropType, computed } from 'vue';
 export default defineComponent({
 	props: {
 		collection: {
@@ -39,11 +39,14 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const template = computed({
 			get() {
 				return props.value?.displayTemplate;
@@ -80,15 +83,7 @@ export default defineComponent({
 			},
 		});
 
-		return { template, enableCreate, enableSelect };
+		return { t, template, enableCreate, enableSelect };
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

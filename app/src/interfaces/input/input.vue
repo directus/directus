@@ -1,7 +1,7 @@
 <template>
 	<v-input
 		:autofocus="autofocus"
-		:value="value"
+		:model-value="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
@@ -13,10 +13,10 @@
 		:min="min"
 		:max="max"
 		:step="step"
-		@input="$listeners.input"
+		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template #append>
+		<template v-if="(percentageRemaining && percentageRemaining <= 20) || iconRight" #append>
 			<span
 				v-if="percentageRemaining && percentageRemaining <= 20"
 				class="remaining"
@@ -27,17 +27,13 @@
 			>
 				{{ charsRemaining }}
 			</span>
-			<v-icon
-				:class="{ hide: percentageRemaining !== false && percentageRemaining <= 20 }"
-				v-if="iconRight"
-				:name="iconRight"
-			/>
+			<v-icon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
 		</template>
 	</v-input>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -111,6 +107,7 @@ export default defineComponent({
 			default: 1,
 		},
 	},
+	emits: ['input'],
 	setup(props) {
 		const charsRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;
@@ -123,8 +120,8 @@ export default defineComponent({
 		const percentageRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;
 
-			if (!props.length) return false;
-			if (!props.value) return false;
+			if (!props.length) return null;
+			if (!props.value) return null;
 			return 100 - (props.value.length / +props.length) * 100;
 		});
 

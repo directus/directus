@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -55,7 +55,7 @@ body {
 }
 </style>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-notice {
 	display: flex;
 	align-items: center;
@@ -64,47 +64,50 @@ body {
 	min-height: var(--input-height);
 	padding: 12px 16px;
 	color: var(--v-notice-color);
+	line-height: 22px;
 	background-color: var(--v-notice-background-color);
 	border-radius: var(--border-radius);
+}
 
-	.v-icon {
-		--v-icon-color: var(--v-notice-icon-color);
-	}
+.v-icon {
+	--v-icon-color: var(--v-notice-icon-color);
+}
 
-	&.info {
-		--v-notice-icon-color: var(--primary);
-		--v-notice-background-color: var(--background-normal);
-		--v-notice-color: var(--foreground-normal);
-	}
+.v-icon.left {
+	margin-right: 16px;
+}
 
-	&.success {
-		--v-notice-icon-color: var(--success);
-		--v-notice-background-color: var(--success-alt);
-		--v-notice-color: var(--success);
-	}
+.info {
+	--v-notice-icon-color: var(--primary);
+	--v-notice-background-color: var(--background-normal);
+	--v-notice-color: var(--foreground-normal);
+}
 
-	&.warning {
-		--v-notice-icon-color: var(--warning);
-		--v-notice-background-color: var(--warning-alt);
-		--v-notice-color: var(--warning);
-	}
+.success {
+	--v-notice-icon-color: var(--success);
+	--v-notice-background-color: var(--success-alt);
+	--v-notice-color: var(--success);
+}
 
-	&.danger {
-		--v-notice-icon-color: var(--danger);
-		--v-notice-background-color: var(--danger-alt);
-		--v-notice-color: var(--danger);
-	}
+.warning {
+	--v-notice-icon-color: var(--warning);
+	--v-notice-background-color: var(--warning-alt);
+	--v-notice-color: var(--warning);
+}
 
-	&.center {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+.danger {
+	--v-notice-icon-color: var(--danger);
+	--v-notice-background-color: var(--danger-alt);
+	--v-notice-color: var(--danger);
+}
 
-	::v-deep {
-		a {
-			text-decoration: underline;
-		}
-	}
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+:slotted(a) {
+	text-decoration: underline;
 }
 </style>

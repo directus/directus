@@ -2,13 +2,17 @@ import { RequestHandler } from 'express';
 import { Transform, transforms } from 'json2csv';
 import ms from 'ms';
 import { PassThrough } from 'stream';
-import cache from '../cache';
+import { getCache } from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheKey } from '../utils/get-cache-key';
 import { parse as toXML } from 'js2xmlparser';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
+import logger from '../logger';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
+	const { cache } = getCache();
+
 	if (
 		req.method.toLowerCase() === 'get' &&
 		env.CACHE_ENABLED === true &&
@@ -17,22 +21,20 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		res.locals.cache !== false
 	) {
 		const key = getCacheKey(req);
-		await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
-		await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
 
-		const noCacheRequested =
-			req.headers['cache-control']?.includes('no-cache') || req.headers['Cache-Control']?.includes('no-cache');
-
-		// Set cache-control header
-		if (env.CACHE_AUTO_PURGE !== true && noCacheRequested === false) {
-			const maxAge = `max-age=${ms(env.CACHE_TTL as string)}`;
-			const access = !!req.accountability?.role === false ? 'public' : 'private';
-			res.setHeader('Cache-Control', `${access}, ${maxAge}`);
+		try {
+			await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
+			await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
+		} catch (err: any) {
+			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
 
-		if (noCacheRequested) {
-			res.setHeader('Cache-Control', 'no-cache');
-		}
+		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string)));
+		res.setHeader('Vary', 'Origin, Cache-Control');
+	} else {
+		// Don't cache anything by default
+		res.setHeader('Cache-Control', 'no-cache');
+		res.setHeader('Vary', 'Origin, Cache-Control');
 	}
 
 	if (req.sanitizedQuery.export) {

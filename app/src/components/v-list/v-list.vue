@@ -5,16 +5,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
-	model: {
-		prop: 'activeItems',
-		event: 'input',
-	},
 	props: {
-		activeItems: {
+		modelValue: {
 			type: Array as PropType<(number | string)[]>,
 			default: null,
 		},
@@ -31,14 +27,14 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const { activeItems, multiple, mandatory } = toRefs(props);
-
+		const { modelValue, multiple, mandatory } = toRefs(props);
 		useGroupableParent(
 			{
-				selection: activeItems,
+				selection: modelValue,
 				onSelectionChange: (newSelection) => {
-					emit('input', newSelection);
+					emit('update:modelValue', newSelection);
 				},
 			},
 			{
@@ -52,9 +48,10 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-list-padding: 4px 0;
+	--v-list-border-radius: var(--border-radius);
 	--v-list-max-height: none;
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
@@ -65,9 +62,7 @@ body {
 	--v-list-background-color-hover: var(--background-normal);
 	--v-list-background-color-active: var(--background-normal);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-list {
 	position: static;
 	display: block;
@@ -79,15 +74,20 @@ body {
 	overflow: auto;
 	color: var(--v-list-color);
 	line-height: 22px;
-	border-radius: var(--border-radius);
-
-	&.large {
-		--v-list-padding: 12px;
-	}
-
-	::v-deep .v-divider {
-		max-width: calc(100% - 16px);
-		margin: 8px;
-	}
+	list-style: none;
+	border-radius: var(--v-list-border-radius);
 }
+
+.large {
+	--v-list-padding: 12px;
+}
+
+:slotted(.v-divider) {
+	max-width: calc(100% - 16px);
+	margin: 8px;
+}
+
+/* :slotted(*) {
+	pointer-events: all;
+} */
 </style>

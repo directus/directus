@@ -80,10 +80,16 @@ fields:
     display_template: Modelvorm
   directus_roles:
     description: Beskrywing
+  directus_webhooks:
+    status: Status
+field_options:
+  directus_activity:
+    create: Skep
+  directus_collections:
+    language: Taal
+  directus_webhooks:
+    actions_create: Skep
 comment: Kommentaar
-continue: Gaan Voort
-default: Standaardwaarde
-delete: Verwyder
 description: Beskrywing
 email: E-pos
 password: Wagwoord
@@ -91,7 +97,7 @@ template: Modelvorm
 interfaces:
   input-code:
     code: Kode
-  collection:
+  system-collection:
     collection: Versameling
   files:
     files: Lêers

@@ -4,8 +4,8 @@
 			ref="activator"
 			class="v-menu-activator"
 			:class="{ attached }"
-			@pointerenter="onPointerEnter"
-			@pointerleave="onPointerLeave"
+			@pointerenter.stop="onPointerEnter"
+			@pointerleave.stop="onPointerLeave"
 		>
 			<slot
 				name="activator"
@@ -18,45 +18,50 @@
 			/>
 		</div>
 
-		<portal to="menu-outlet">
-			<div
-				v-if="isActive"
-				class="v-menu-popper"
-				:key="id"
-				:id="id"
-				:class="{ active: isActive, attached }"
-				:data-placement="popperPlacement"
-				:style="styles"
-				v-click-outside="{
-					handler: deactivate,
-					middleware: onClickOutsideMiddleware,
-					disabled: isActive === false || closeOnClick === false,
-					events: ['click'],
-				}"
-			>
-				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-				<div class="v-menu-content" @click.stop="onContentClick">
-					<slot
-						:active="isActive"
-						v-bind="{
-							toggle: toggle,
-							active: isActive,
-							activate: activate,
-							deactivate: deactivate,
-						}"
-					/>
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					:id="id"
+					:key="id"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: isActive === false || closeOnClick === false,
+					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div
+						class="v-menu-content"
+						@click.stop="onContentClick"
+						@pointerenter.stop="onPointerEnter"
+						@pointerleave.stop="onPointerLeave"
+					>
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
 				</div>
-			</div>
-		</portal>
+			</transition-bounce>
+		</teleport>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, PropType, computed, watch, nextTick } from 'vue';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
-import Vue from 'vue';
+import { debounce } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -64,7 +69,7 @@ export default defineComponent({
 			type: String as PropType<Placement>,
 			default: 'bottom',
 		},
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -98,6 +103,7 @@ export default defineComponent({
 			default: 0,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const activator = ref<HTMLElement | null>(null);
 		const reference = ref<HTMLElement | null>(null);
@@ -138,9 +144,9 @@ export default defineComponent({
 
 		watch(isActive, (newActive) => {
 			if (newActive === true) {
-				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+				reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
 
-				Vue.nextTick(() => {
+				nextTick(() => {
 					popper.value = document.getElementById(id.value);
 				});
 			}
@@ -175,15 +181,15 @@ export default defineComponent({
 
 			const isActive = computed<boolean>({
 				get() {
-					if (props.value !== undefined) {
-						return props.value;
+					if (props.modelValue !== undefined) {
+						return props.modelValue;
 					}
 
 					return localIsActive.value;
 				},
 				async set(newActive) {
 					localIsActive.value = newActive;
-					emit('input', newActive);
+					emit('update:modelValue', newActive);
 				},
 			});
 
@@ -240,7 +246,18 @@ export default defineComponent({
 		}
 
 		function useEvents() {
-			let timeout: ReturnType<typeof setTimeout> | null = null;
+			const isHovered = ref(false);
+
+			watch(
+				isHovered,
+				debounce((newHoveredState) => {
+					if (newHoveredState) {
+						if (!isActive.value) activate();
+					} else {
+						deactivate();
+					}
+				}, props.delay)
+			);
 
 			return { onClick, onPointerLeave, onPointerEnter };
 
@@ -252,20 +269,12 @@ export default defineComponent({
 
 			function onPointerEnter() {
 				if (props.trigger !== 'hover') return;
-				if (timeout) return;
-				timeout = setTimeout(() => {
-					activate();
-				}, props.delay);
+				isHovered.value = true;
 			}
 
 			function onPointerLeave() {
-				if (hoveringOnPopperContent.value === true) return;
-
 				if (props.trigger !== 'hover') return;
-				if (timeout === null) return;
-				clearTimeout(timeout);
-				deactivate();
-				timeout = null;
+				isHovered.value = false;
 			}
 		}
 	},

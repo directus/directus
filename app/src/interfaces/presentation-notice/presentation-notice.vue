@@ -1,12 +1,13 @@
 <template>
-	<v-notice :icon="icon" :type="color">
-		<div v-html="md(text)" />
-	</v-notice>
+	<div class="presentation-notice">
+		<v-notice :icon="icon" :type="color">
+			<div v-md="text" />
+		</v-notice>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { md } from '@/utils/md';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -22,9 +23,6 @@ export default defineComponent({
 			type: String,
 			default: 'No text configured...',
 		},
-	},
-	setup() {
-		return { md };
 	},
 });
 </script>

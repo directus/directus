@@ -1,5 +1,6 @@
 import BaseJoi, { AnySchema } from 'joi';
 import { Filter } from '../types';
+import { escapeRegExp } from 'lodash';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
@@ -90,6 +91,22 @@ function getJoi(operator: string, value: any) {
 	if (operator === '_ncontains') {
 		// @ts-ignore
 		return Joi.string().ncontains(value);
+	}
+
+	if (operator === '_starts_with') {
+		return Joi.string().pattern(new RegExp(`^${escapeRegExp(value)}.*`), { name: 'starts_with' });
+	}
+
+	if (operator === '_nstarts_with') {
+		return Joi.string().pattern(new RegExp(`^${escapeRegExp(value)}.*`), { name: 'starts_with', invert: true });
+	}
+
+	if (operator === '_ends_with') {
+		return Joi.string().pattern(new RegExp(`.*${escapeRegExp(value)}$`), { name: 'ends_with' });
+	}
+
+	if (operator === '_nends_with') {
+		return Joi.string().pattern(new RegExp(`.*${escapeRegExp(value)}$`), { name: 'ends_with', invert: true });
 	}
 
 	if (operator === '_in') {

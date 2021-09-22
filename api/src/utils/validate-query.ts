@@ -2,9 +2,11 @@ import Joi from 'joi';
 import { isPlainObject } from 'lodash';
 import { InvalidQueryException } from '../exceptions';
 import { Query } from '../types';
+import { stringify } from 'wellknown';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
+	group: Joi.array().items(Joi.string()),
 	sort: Joi.array().items(
 		Joi.object({
 			column: Joi.string(),
@@ -18,7 +20,9 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv', 'xml'),
+	aggregate: Joi.object(),
 	deep: Joi.object(),
+	alias: Joi.object(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {
@@ -26,6 +30,10 @@ export function validateQuery(query: Query): Query {
 
 	if (query.filter && Object.keys(query.filter).length > 0) {
 		validateFilter(query.filter);
+	}
+
+	if (query.alias) {
+		validateAlias(query.alias);
 	}
 
 	if (error) {
@@ -41,8 +49,6 @@ function validateFilter(filter: Query['filter']) {
 	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
-		} else if (isPlainObject(nested)) {
-			validateFilter(nested);
 		} else if (key.startsWith('_')) {
 			const value = nested;
 
@@ -51,6 +57,10 @@ function validateFilter(filter: Query['filter']) {
 				case '_neq':
 				case '_contains':
 				case '_ncontains':
+				case '_starts_with':
+				case '_nstarts_with':
+				case '_ends_with':
+				case '_nends_with':
 				case '_gt':
 				case '_gte':
 				case '_lt':
@@ -70,8 +80,17 @@ function validateFilter(filter: Query['filter']) {
 				case '_nempty':
 					validateBoolean(value, key);
 					break;
+
+				case '_intersects':
+				case '_nintersects':
+				case '_intersects_bbox':
+				case '_nintersects_bbox':
+					validateGeometry(value, key);
+					break;
 			}
-		} else if (isPlainObject(nested) === false && Array.isArray(nested) === false) {
+		} else if (isPlainObject(nested)) {
+			validateFilter(nested);
+		} else if (Array.isArray(nested) === false) {
 			validateFilterPrimitive(nested, '_eq');
 		} else {
 			validateFilter(nested);
@@ -116,4 +135,34 @@ function validateBoolean(value: any, key: string) {
 	}
 
 	return true;
+}
+
+function validateGeometry(value: any, key: string) {
+	try {
+		stringify(value);
+	} catch {
+		throw new InvalidQueryException(`"${key}" has to be a valid GeoJSON object`);
+	}
+
+	return true;
+}
+
+function validateAlias(alias: any) {
+	if (isPlainObject(alias) === false) {
+		throw new InvalidQueryException(`"alias" has to be an object`);
+	}
+
+	for (const [key, value] of Object.entries(alias)) {
+		if (typeof key !== 'string') {
+			throw new InvalidQueryException(`"alias" key has to be a string. "${typeof key}" given.`);
+		}
+
+		if (typeof value !== 'string') {
+			throw new InvalidQueryException(`"alias" value has to be a string. "${typeof key}" given.`);
+		}
+
+		if (key.includes('.') || value.includes('.')) {
+			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+		}
+	}
 }

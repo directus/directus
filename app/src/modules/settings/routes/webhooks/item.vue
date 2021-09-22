@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title">
-		<template #headline>{{ $t('settings_webhooks') }}</template>
+		<template #headline>{{ t('settings_webhooks') }}</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
@@ -17,14 +17,14 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -49,18 +49,18 @@
 		</template>
 
 		<v-form
+			v-model="edits"
 			:loading="loading"
 			:initial-values="item"
 			collection="directus_webhooks"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
-			v-model="edits"
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="md($t('page_help_settings_webhooks_item'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
@@ -68,18 +68,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import { md } from '@/utils/md';
-import i18n from '@/lang';
 
 export default defineComponent({
-	name: 'webhooks-item',
+	name: 'WebhooksItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
 	props: {
 		primaryKey: {
@@ -88,6 +87,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const { primaryKey } = toRefs(props);
 
 		const {
@@ -109,12 +112,13 @@ export default defineComponent({
 		const confirmDelete = ref(false);
 
 		const title = computed(() => {
-			if (loading.value) return i18n.t('loading');
-			if (isNew.value) return i18n.t('creating_webhook');
+			if (loading.value) return t('loading');
+			if (isNew.value) return t('creating_webhook');
 			return item.value?.name;
 		});
 
 		return {
+			t,
 			item,
 			loading,
 			error,
@@ -130,7 +134,6 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			md,
 			title,
 			validationErrors,
 		};

@@ -1,8 +1,21 @@
 import { IStorage } from '../../storage';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
 
 export type AxiosTransportRefreshHandler = () => Promise<void>;
+
+export type AxiosEjector = {
+	eject(): void;
+};
+
+export type AxiosInterceptorFunction<T> = (
+	onFulfilled?: (value: T) => T | Promise<T>,
+	onRejected?: (error: any) => any
+) => AxiosEjector;
+
+export type AxiosInterceptor<T> = {
+	intercept: AxiosInterceptorFunction<T>;
+};
 
 /**
  * Axios transport implementation
@@ -37,10 +50,36 @@ export class AxiosTransport implements ITransport {
 		return this._axios;
 	}
 
-	private async request<T = any, R = any>(
+	get requests(): AxiosInterceptor<AxiosRequestConfig> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.request.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.request.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	get responses(): AxiosInterceptor<AxiosResponse> {
+		return {
+			intercept: (onFulfilled, onRejected) => {
+				const id = this._axios.interceptors.response.use(onFulfilled, onRejected);
+				return {
+					eject: () => {
+						this._axios.interceptors.response.eject(id);
+					},
+				};
+			},
+		};
+	}
+
+	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
-		data?: any,
+		data?: Record<string, any>,
 		options?: TransportOptions
 	): Promise<TransportResponse<T, R>> {
 		try {
@@ -93,10 +132,15 @@ export class AxiosTransport implements ITransport {
 			}
 
 			return content;
-		} catch (err) {
+		} catch (err: any) {
+			if (!err || err instanceof Error === false) {
+				throw err;
+			}
+
 			if (axios.isAxiosError(err)) {
 				const data = err.response?.data;
-				throw new TransportError<T>(err, {
+
+				throw new TransportError<T>(err as AxiosError, {
 					raw: err.response?.data,
 					status: err.response?.status,
 					statusText: err.response?.statusText,
@@ -106,7 +150,8 @@ export class AxiosTransport implements ITransport {
 					errors: data?.errors,
 				});
 			}
-			throw new TransportError<T>(err);
+
+			throw new TransportError<T>(err as Error);
 		}
 	}
 

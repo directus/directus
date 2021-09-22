@@ -1,10 +1,11 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { AbstractServiceOptions, SchemaOverview } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { Query } from '../types/query';
 import { applyFilter, applySearch } from '../utils/apply-query';
-import { parseFilter } from '../utils/parse-filter';
+import { parseFilter } from '@directus/shared/utils';
 
 export class MetaService {
 	knex: Knex;
@@ -47,7 +48,7 @@ export class MetaService {
 
 			const permissions = parseFilter(permissionsRecord.permissions, this.accountability);
 
-			applyFilter(this.schema, dbQuery, permissions, collection);
+			applyFilter(this.knex, this.schema, dbQuery, permissions, collection);
 		}
 
 		const result = await dbQuery;
@@ -77,7 +78,7 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			applyFilter(this.schema, dbQuery, filter, collection);
+			applyFilter(this.knex, this.schema, dbQuery, filter, collection);
 		}
 
 		if (query.search) {

@@ -3,6 +3,7 @@
 		:class="{ margin: icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
+			'--v-divider-color': 'var(--border-subdued)',
 		}"
 		large
 		:inline-title="inlineTitle"
@@ -13,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -39,6 +40,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .margin {
-	margin-top: 20px;
+	margin-top: 40px;
+	margin-bottom: -10px;
 }
 </style>

@@ -1,31 +1,31 @@
 <template>
-	<sidebar-detail icon="save_alt" :title="$t('export_data')">
+	<sidebar-detail icon="save_alt" :title="t('export_data')">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('format') }}</p>
+				<p class="type-label">{{ t('format') }}</p>
 				<v-select
+					v-model="format"
 					:items="[
 						{
-							text: $t('csv'),
+							text: t('csv'),
 							value: 'csv',
 						},
 						{
-							text: $t('json'),
+							text: t('json'),
 							value: 'json',
 						},
 						{
-							text: $t('xml'),
+							text: t('xml'),
 							value: 'xml',
 						},
 					]"
-					v-model="format"
 				/>
-				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
+				<v-checkbox v-model="useFilters" :label="t('use_current_filters_settings')" />
 			</div>
 
 			<div class="field full">
 				<v-button full-width @click="exportData">
-					{{ $t('export_collection', { collection: collection.name }) }}
+					{{ t('export_collection', { collection: collectionName }) }}
 				</v-button>
 			</div>
 		</div>
@@ -33,15 +33,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { Filter } from '@/types';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType, computed } from 'vue';
+import { Filter } from '@directus/shared/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import filtersToQuery from '@/utils/filters-to-query';
+import { filtersToQuery } from '@directus/shared/utils';
+import { useCollectionsStore } from '@/stores/';
 
 type LayoutQuery = {
 	fields?: string[];
 	sort?: string;
+	limit?: number;
 };
 
 export default defineComponent({
@@ -63,14 +66,22 @@ export default defineComponent({
 			required: true,
 		},
 	},
+
 	setup(props) {
+		const { t } = useI18n();
+
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const collectionsStore = useCollectionsStore();
+		const collectionName = computed(() => collectionsStore.getCollection(props.collection).name);
 
-		return { format, useFilters, exportData };
+		return { t, format, useFilters, exportData, collectionName };
 
 		function exportData() {
-			const url = getRootPath() + `items/${props.collection}`;
+			const endpoint = props.collection.startsWith('directus_')
+				? `${props.collection.substring(9)}`
+				: `items/${props.collection}`;
+			const url = getRootPath() + endpoint;
 
 			let params: Record<string, unknown> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
@@ -78,8 +89,10 @@ export default defineComponent({
 			};
 
 			if (useFilters.value === true) {
-				if (props.layoutQuery && props.layoutQuery.sort) params.sort = props.layoutQuery.sort;
-				if (props.layoutQuery && props.layoutQuery.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.sort) params.sort = props.layoutQuery.sort;
+				if (props.layoutQuery?.fields) params.fields = props.layoutQuery.fields;
+				if (props.layoutQuery?.limit) params.limit = props.layoutQuery.limit;
+
 				if (props.searchQuery) params.search = props.searchQuery;
 
 				if (props.filters?.length) {

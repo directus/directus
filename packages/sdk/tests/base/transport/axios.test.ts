@@ -50,7 +50,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				expect(err).toBeInstanceOf(TransportError);
 			}
 		});
@@ -74,7 +74,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
 				expect(terr.response?.status).toBe(403);
@@ -95,7 +95,7 @@ describe('axios transport', function () {
 			try {
 				await transport[method](route);
 				fail();
-			} catch (err) {
+			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
 				expect(terr.response).toBeUndefined();
@@ -123,7 +123,7 @@ describe('axios transport', function () {
 		try {
 			await transport.get('/route');
 			fail();
-		} catch (err) {
+		} catch (err: any) {
 			const terr = err as TransportError;
 			expect(terr).toBeInstanceOf(TransportError);
 			expect(terr.response).toBeUndefined();
@@ -184,5 +184,62 @@ describe('axios transport', function () {
 		storage.auth_token = null;
 		const response3 = await transport.get('/auth');
 		expect(response3.data?.auth).toBe(false);
+	});
+
+	it('can inject and eject request interceptors', async function () {
+		nock(URL)
+			.defaultReplyHeaders({
+				'x-new-header-value': (req) => {
+					return (req.getHeader('x-new-header') || '').toString();
+				},
+			})
+			.get('/test')
+			.times(3)
+			.reply(203);
+
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
+
+		const response1 = await transport.get('/test');
+		expect(response1.headers['x-new-header-value']).toBe('');
+
+		const interceptor1 = transport.requests.intercept((config) => {
+			config.headers['x-new-header'] = 'Testing';
+			return config;
+		});
+
+		const response2 = await transport.get('/test');
+		expect(response2.headers['x-new-header-value']).toBe('Testing');
+
+		interceptor1.eject();
+
+		const response3 = await transport.get('/test');
+		expect(response3.headers['x-new-header-value']).toBe('');
+	});
+
+	it('can inject and eject response interceptors', async function () {
+		nock(URL)
+			.get('/test')
+			.times(3)
+			.reply(203, () => ({ data: 'original data' }));
+
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
+
+		const response1 = await transport.get('/test');
+		expect(response1.data).toBe('original data');
+
+		const interceptor1 = transport.responses.intercept((response) => {
+			response.data = { data: 'injected data' };
+			return response;
+		});
+
+		const response2 = await transport.get('/test');
+		expect(response2.data).toBe('injected data');
+
+		interceptor1.eject();
+
+		const response3 = await transport.get('/test');
+		expect(response3.data).toBe('original data');
 	});
 });

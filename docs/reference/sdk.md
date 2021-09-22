@@ -68,6 +68,29 @@ The storage implementation. See [Storage](#storage) for more information.
 
 Defaults to an instance of `MemoryStorage` when in node.js, and `LocalStorage` when in browsers.
 
+**NOTE:**
+
+If you plan to use multiple SDK instances at once, keep in mind that they will share the Storage across them, leading to
+unpredictable behaviors. This scenario might be a case while writing tests.
+
+For example, the SDK instance that executed last the `login()` method writes the resulting `access_token` into the
+Storage and **overwrites** any prior fetched `access_token` from any other SDK instance. That might mix up your test
+scenario by granting false access rights to your previous logged-in users.
+
+Adding prefixes to your Storage instances would solve this error:
+
+```js
+import { Directus, MemoryStorage } from '@directus/sdk';
+import { randomBytes } from 'crypto';
+
+// ...
+
+const prefix = randomBytes(8).toString('hex');
+const storage = new MemoryStorage(prefix);
+const url = `http://${host}:${port}`;
+const directus = new Directus(url, { storage });
+```
+
 #### `options.transport`
 
 The transport implementation. See [Transport](#transport) for more information.
@@ -78,39 +101,6 @@ Defaults to an instance of `AxiosTransport`.
 
 ```js
 const directus = new Directus('http://api.example.com/');
-```
-
-### Advanced Example
-
-```js
-//
-// WARNING: OK, not exactly a warning, but this isn't needed at all.
-// It's just to illustrate how the SDK is instantiated by default when
-// passing only the URL as the first parameter.
-//
-
-const url = 'http://api.example.com/';
-
-const isBrowser = typeof window !== 'undefined';
-
-// Storage adapter where authentication state (token & expiration) is stored.
-const storage = isBrowser ? new LocalStorage() : new MemoryStorage();
-
-// Transport used to communicate with the server.
-const transport = new AxiosTransport(url, storage, async () => {
-	await auth.refresh(); // This is how axios checks for refresh
-});
-
-// Auth is how authentication is handled, stored, and refreshed.
-const auth = new Auth(transport, storage, {
-	mode: isBrowser ? 'cookie' : 'json',
-});
-
-const directus = new Directus(url, {
-	auth,
-	storage,
-	transport,
-});
 ```
 
 ### Get / Set API URL
@@ -127,6 +117,30 @@ directus.transport.url = 'https://api2.example.com';
 
 You can tap into the transport through `directus.transport`. If you are using the (default) `AxiosTransport`, you can
 access axios through `directus.transport.axios`.
+
+#### Intercepting requests and responses
+
+Axios transport offers a wrapper around Axios interceptors to make it easy for you to inject/eject interceptors.
+
+```ts
+const requestInterceptor = directus.transport.requests.intercept((config) => {
+	config.headers['My-Custom-Header'] = 'Header value';
+	return config;
+});
+
+// If you don't want the interceptor anymore, remove it
+requestInterceptor.eject();
+```
+
+```ts
+const responseInterceptor = directus.transport.responses.intercept((response) => {
+	console.log('Response received', { response });
+	return response;
+});
+
+// If you don't want the interceptor anymore, remove it
+responseInterceptor.eject();
+```
 
 ## Items
 
@@ -466,8 +480,20 @@ await directus.auth.logout();
 
 ### Request a Password Reset
 
+By default, the address defined in `PUBLIC_URL` on `.env` file is used for the link to the reset password page sent in
+the email:
+
 ```js
 await directus.auth.password.request('admin@example.com');
+```
+
+But a custom address can be passed as second argument:
+
+```js
+await directus.auth.password.request(
+	'admin@example.com',
+	'https://myapp.com' // In this case, the link will be https://myapp.com?token=FEE0A...
+);
 ```
 
 ### Reset a Password

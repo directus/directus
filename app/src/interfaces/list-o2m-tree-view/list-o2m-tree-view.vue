@@ -1,6 +1,6 @@
 <template>
-	<v-notice type="warning" v-if="relation.collection !== relation.related_collection">
-		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
+	<v-notice v-if="relation.collection !== relation.related_collection" type="warning">
+		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 
 	<div v-else class="tree-view">
@@ -17,10 +17,10 @@
 			@input="emitValue"
 		/>
 
-		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+		<div v-if="!disabled" class="actions">
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
 			<v-button v-if="enableSelect" @click="selectDrawer = true">
-				{{ $t('add_existing') }}
+				{{ t('add_existing') }}
 			</v-button>
 		</div>
 
@@ -37,26 +37,26 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectDrawer"
+			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
 			:filters="selectionFilters"
-			@input="stageSelection"
 			multiple
+			@input="stageSelection"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, onMounted, watch } from '@vue/composition-api';
-import { useCollection } from '@/composables/use-collection';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, computed, PropType, onMounted, watch } from 'vue';
+import { useCollection } from '@directus/shared/composables';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter } from '@/types';
-import { Relation } from '@/types';
+import { Filter, Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
@@ -96,7 +96,10 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
 
@@ -108,7 +111,7 @@ export default defineComponent({
 		const { addNewActive, addNew } = useAddNew();
 
 		const template = computed(() => {
-			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
+			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`;
 		});
 
 		onMounted(fetchValues);
@@ -117,6 +120,7 @@ export default defineComponent({
 		const dragging = ref(false);
 
 		return {
+			t,
 			relation,
 			openItems,
 			template,
@@ -163,7 +167,7 @@ export default defineComponent({
 					});
 
 					stagedValues.value = response.data.data?.[relation.value.meta!.one_field!] ?? [];
-				} catch (err) {
+				} catch (err: any) {
 					error.value = err;
 				} finally {
 					loading.value = false;
@@ -173,7 +177,7 @@ export default defineComponent({
 			function getFieldsToFetch() {
 				const fields = [
 					...new Set([
-						primaryKeyField.value.field,
+						primaryKeyField.value?.field,
 						relation.value.meta!.one_field,
 						...getFieldsFromTemplate(template.value),
 					]),
@@ -205,7 +209,7 @@ export default defineComponent({
 					return (value || []).map((item, index) => {
 						return {
 							...item,
-							[relation.value.meta!.sort_field!]: index,
+							[relation.value.meta!.sort_field!]: index + 1,
 							[relation.value.meta!.one_field!]: addSort(item[relation.value.meta!.one_field!]),
 						};
 					});
@@ -222,35 +226,35 @@ export default defineComponent({
 		}
 
 		function onDraggableChange() {
-			emit('input', stagedValues.value);
+			emitValue(stagedValues.value);
 		}
 
 		function useSelection() {
 			const selectDrawer = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (stagedValues.value === null) return [];
-
-				const pkField = primaryKeyField.value.field;
+				const pkField = primaryKeyField.value?.field;
+				if (stagedValues.value === null || !pkField || !props.primaryKey) return [];
 
 				return [props.primaryKey, ...getPKs(stagedValues.value)];
 
 				function getPKs(values: Record<string, any>[]): (string | number)[] {
 					const pks = [];
 
-					for (const value of values) {
-						if (!value[pkField]) continue;
-						pks.push(value[pkField]);
-						const childPKs = getPKs(value[relation.value.meta!.one_field!]);
-						pks.push(...childPKs);
-					}
+					if (pkField)
+						for (const value of values) {
+							if (!value[pkField]) continue;
+							pks.push(value[pkField]);
+							const childPKs = getPKs(value[relation.value.meta!.one_field!]);
+							pks.push(...childPKs);
+						}
 
 					return pks;
 				}
 			});
 
 			const selectionFilters = computed<Filter[]>(() => {
-				const pkField = primaryKeyField.value.field;
+				const pkField = primaryKeyField.value?.field;
 
 				if (selectedPrimaryKeys.value.length === 0) return [];
 
@@ -281,7 +285,7 @@ export default defineComponent({
 
 				const fields = [
 					...new Set([
-						primaryKeyField.value.field,
+						primaryKeyField.value?.field,
 						relation.value.meta!.one_field,
 						...getFieldsFromTemplate(template.value),
 					]),
@@ -297,11 +301,13 @@ export default defineComponent({
 					}
 				}
 
+				if (!primaryKeyField.value?.field) return;
+
 				const response = await api.get(`/items/${props.collection}`, {
 					params: {
 						fields: [...fields, ...result],
 						filter: {
-							[primaryKeyField.value.field]: {
+							[primaryKeyField.value?.field]: {
 								_in: selection,
 							},
 						},
@@ -330,25 +336,23 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-::v-deep {
-	ul,
-	li {
-		list-style: none;
-	}
+<style scoped>
+:deep(ul),
+:deep(li) {
+	list-style: none;
+}
 
-	ul {
-		margin-left: 24px;
-		padding-left: 0;
-	}
+:deep(ul) {
+	margin-left: 24px;
+	padding-left: 0;
 }
 
 .actions {
 	margin-top: 12px;
+}
 
-	.v-button + .v-button {
-		margin-left: 12px;
-	}
+.actions .v-button + .v-button {
+	margin-left: 12px;
 }
 
 .existing {

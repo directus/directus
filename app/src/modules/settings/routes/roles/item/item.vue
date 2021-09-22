@@ -1,57 +1,57 @@
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
-		<template #headline>{{ $t('settings_permissions') }}</template>
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+		<template #headline>{{ t('settings_permissions') }}</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @esc="confirmDelete = false">
+			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
 						:disabled="item === null"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
-						<v-button @click="confirmDelete = false" secondary>
-							{{ $t('cancel') }}
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
 						</v-button>
-						<v-button @click="deleteAndQuit" class="action-delete" :loading="deleting">
-							{{ $t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
+				v-tooltip.bottom="t('invite_users')"
 				rounded
 				icon
-				@click="userInviteModalActive = true"
-				v-tooltip.bottom="$t('invite_users')"
 				class="invite-user"
+				@click="userInviteModalActive = true"
 			>
 				<v-icon name="person_add" />
 			</v-button>
 
 			<v-button
+				v-tooltip.bottom="t('save')"
 				rounded
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -65,18 +65,18 @@
 
 		<div class="roles">
 			<v-notice v-if="adminEnabled" type="info">
-				{{ $t('admins_have_all_permissions') }}
+				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
+				v-model="edits"
 				collection="directus_roles"
 				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
-				v-model="edits"
 			/>
 		</div>
 
@@ -88,10 +88,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import { useUserStore } from '@/stores/';
@@ -100,7 +101,7 @@ import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 
 export default defineComponent({
-	name: 'roles-item',
+	name: 'RolesItem',
 	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
 	props: {
 		primaryKey: {
@@ -113,6 +114,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
+		const router = useRouter();
+
 		const userStore = useUserStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
@@ -145,6 +150,7 @@ export default defineComponent({
 		});
 
 		return {
+			t,
 			item,
 			loading,
 			error,

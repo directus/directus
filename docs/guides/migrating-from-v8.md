@@ -5,6 +5,8 @@ There are two ways to migrate from an existing Directus 8.X instance:
 - [Automated Script](#automated-script) (recommended)
 - [Manual Database Export/Import](#manual-database-export-import)
 
+Be sure to check the [Breaking changes](#breaking-changes) if you are consuming the API from an application.
+
 ## Automated Script
 
 We created a (community maintained) script, that will automatically copy over the schema, content, files, users, and
@@ -64,3 +66,9 @@ Once the tables are in, you can start configuring the details of the schema. Thi
 interfaces, displays, and their options for your fields.
 
 This would also be a good time to reconfigure your permissions, to ensure they are accurate.
+
+## Breaking changes
+
+- [Filter operators](/reference/filter-rules.md) have changed, now they are preceeded with an underscore eg:
+  `/items/users?filter[comments.thread.title][like]=Directus` is now
+  `/items/users?filter[comments][thread][title][_like]=Directus`

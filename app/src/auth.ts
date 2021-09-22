@@ -1,8 +1,9 @@
 import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
-import router from '@/router';
+import { router } from '@/router';
 import { useAppStore } from '@/stores';
-import { RawLocation } from 'vue-router';
+import { RouteLocationRaw } from 'vue-router';
+import { idleTracker } from './idle';
 
 export type LoginCredentials = {
 	email: string;
@@ -31,17 +32,47 @@ export async function login(credentials: LoginCredentials): Promise<void> {
 		setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
-	appStore.state.authenticated = true;
+	appStore.authenticated = true;
 
 	await hydrate();
 }
 
 let refreshTimeout: any;
+let idle = false;
+
+// Prevent the auto-refresh when the app isn't in use
+idleTracker.on('idle', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+idleTracker.on('hide', () => {
+	clearTimeout(refreshTimeout);
+	idle = true;
+});
+
+// Restart the autorefresh process when the app is used (again)
+idleTracker.on('active', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
+
+idleTracker.on('show', () => {
+	if (idle === true) {
+		refresh();
+		idle = false;
+	}
+});
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	const appStore = useAppStore();
 
 	try {
+		// Delete the token header if it still exists
+		delete api.defaults.headers.Authorization;
+
 		const response = await api.post('/auth/refresh');
 
 		const accessToken = response.data.data.access_token;
@@ -58,10 +89,10 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		if (response.data.data.expires <= 2100000000) {
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
-		appStore.state.authenticated = true;
+		appStore.authenticated = true;
 
 		return accessToken;
-	} catch (error) {
+	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	}
 }
@@ -96,12 +127,12 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		await api.post(`/auth/logout`);
 	}
 
-	appStore.state.authenticated = false;
+	appStore.authenticated = false;
 
 	await dehydrate();
 
 	if (options.navigate === true) {
-		const location: RawLocation = {
+		const location: RouteLocationRaw = {
 			path: `/login`,
 			query: { reason: options.reason },
 		};

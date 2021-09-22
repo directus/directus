@@ -15,9 +15,12 @@ import {
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from '../services/activity';
-import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
+import { AbstractServiceOptions, Action, SchemaOverview, Session } from '../types';
+import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
 import { merge } from 'lodash';
+import { performance } from 'perf_hooks';
+import { stall } from '../utils/stall';
 
 type AuthenticateOptions = {
 	email: string;
@@ -52,6 +55,9 @@ export class AuthenticationService {
 	async authenticate(
 		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
+		const STALL_TIME = 100;
+		const timeStart = performance.now();
+
 		const settingsService = new SettingsService({
 			knex: this.knex,
 			schema: this.schema,
@@ -59,13 +65,13 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		let user = await this.knex
+		const user = await this.knex
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
-		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
+		const updatedOptions = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
@@ -76,8 +82,8 @@ export class AuthenticationService {
 			database: this.knex,
 		});
 
-		if (updatedUser) {
-			user = updatedUser.length > 0 ? updatedUser.reduce((val, acc) => merge(acc, val)) : user;
+		if (updatedOptions) {
+			options = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : options;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -97,8 +103,10 @@ export class AuthenticationService {
 			emitStatus('fail');
 
 			if (user?.status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
 				throw new UserSuspendedException();
 			} else {
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 		}
@@ -113,7 +121,7 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch (err) {
+			} catch {
 				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 				user.status = 'suspended';
 
@@ -125,17 +133,20 @@ export class AuthenticationService {
 		if (password !== undefined) {
 			if (!user.password) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 
 			if ((await argon2.verify(user.password, password)) === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
 			}
 		}
 
 		if (user.tfa_secret && !otp) {
 			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
 			throw new InvalidOTPException(`"otp" is required`);
 		}
 
@@ -144,13 +155,29 @@ export class AuthenticationService {
 
 			if (otpValid === false) {
 				emitStatus('fail');
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
 
-		const payload = {
+		let payload = {
 			id: user.id,
 		};
+
+		const customClaims = await emitter.emitAsync('auth.jwt.before', payload, {
+			event: 'auth.jwt.before',
+			action: 'jwt',
+			schema: this.schema,
+			payload: payload,
+			accountability: this.accountability,
+			status: 'pending',
+			user: user?.id,
+			database: this.knex,
+		});
+
+		if (customClaims) {
+			payload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
+		}
 
 		/**
 		 * @TODO
@@ -159,6 +186,7 @@ export class AuthenticationService {
 		 */
 		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
@@ -185,11 +213,15 @@ export class AuthenticationService {
 			});
 		}
 
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
+
 		emitStatus('success');
 
 		if (allowedAttempts !== null) {
 			await loginAttemptsLimiter.set(user.id, 0, 0);
 		}
+
+		await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,
@@ -221,6 +253,7 @@ export class AuthenticationService {
 
 		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
+			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
@@ -229,6 +262,8 @@ export class AuthenticationService {
 		await this.knex('directus_sessions')
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
+
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.id });
 
 		return {
 			accessToken,
@@ -248,20 +283,25 @@ export class AuthenticationService {
 	}
 
 	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
-		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
-		const name = `${user.first_name} ${user.last_name}`;
-		return authenticator.keyuri(name, 'Directus', secret);
+		const user = await this.knex.select('email').from('directus_users').where({ id: pk }).first();
+		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
+		return authenticator.keyuri(user.email, project?.project_name || 'Directus', secret);
 	}
 
-	async verifyOTP(pk: string, otp: string): Promise<boolean> {
-		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
+	async verifyOTP(pk: string, otp: string, secret?: string): Promise<boolean> {
+		let tfaSecret: string;
+		if (!secret) {
+			const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
-		if (!user.tfa_secret) {
-			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
+			if (!user.tfa_secret) {
+				throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
+			}
+			tfaSecret = user.tfa_secret;
+		} else {
+			tfaSecret = secret;
 		}
 
-		const secret = user.tfa_secret;
-		return authenticator.check(otp, secret);
+		return authenticator.check(otp, tfaSecret);
 	}
 
 	async verifyPassword(pk: string, password: string): Promise<boolean> {

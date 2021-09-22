@@ -8,7 +8,6 @@ fill_width: Попуни ширину
 required: Захтјева се
 create_role: Креирајте улогу
 emails: Е-мејлови
-public: Јавно
 not_allowed: Није дозвољено
 directus_version: Верзија Директуса
 node_version: Верзија нода
@@ -117,10 +116,21 @@ fields:
     display_template: Шаблон
   directus_roles:
     description: Опис
+  directus_webhooks:
+    name: Име
+    status: Стање
+field_options:
+  directus_activity:
+    create: Креирај
+  directus_collections:
+    language: Језик
+    archive_divider: Архивирај
+  directus_roles:
+    fields:
+      name_name: Име
+  directus_webhooks:
+    actions_create: Креирај
 comment: Коментар
-continue: Настави
-default: Подразумевано
-delete: Обриши
 description: Опис
 done: Завршено
 email: Имејл
@@ -131,7 +141,7 @@ template: Шаблон
 interfaces:
   input-code:
     code: Код
-  collection:
+  system-collection:
     collection: Колекција
   files:
     files: Фајлови

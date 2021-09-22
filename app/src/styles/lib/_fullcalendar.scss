@@ -84,6 +84,7 @@
 
 		&-active {
 			--fc-button-text-color: var(--primary);
+
 			&:hover {
 				--fc-button-text-color: var(--primary) !important;
 			}
@@ -111,5 +112,9 @@
 	.fc-toolbar-title {
 		font-size: inherit !important;
 		@include type-label;
+	}
+
+	.fc-event.selected {
+		color: var(--primary);
 	}
 }

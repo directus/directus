@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, without } from 'lodash';
-import cache from '../cache';
+import { getCache } from '../cache';
+import Keyv from 'keyv';
 import getDatabase from '../database';
 import runAST from '../database/run-ast';
 import emitter, { emitAsyncSafe } from '../emitter';
@@ -8,10 +9,10 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import logger from '../logger';
+import { Accountability } from '@directus/shared/types';
 import {
 	AbstractService,
 	AbstractServiceOptions,
-	Accountability,
 	Action,
 	Item as AnyItem,
 	PermissionsAction,
@@ -20,7 +21,7 @@ import {
 	SchemaOverview,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { toArray } from '../utils/to-array';
+import { toArray } from '@directus/shared/utils';
 import { AuthorizationService } from './authorization';
 import { PayloadService } from './payload';
 
@@ -52,6 +53,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	accountability: Accountability | null;
 	eventScope: string;
 	schema: SchemaOverview;
+	cache: Keyv<any> | null;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -59,6 +61,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
+		this.cache = getCache().cache;
 
 		return this;
 	}
@@ -130,13 +133,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			try {
-				await trx.insert(payloadWithoutAliases).into(this.collection);
-			} catch (err) {
+				const result = await trx.insert(payloadWithoutAliases).into(this.collection).returning(primaryKeyField);
+				primaryKey = primaryKey ?? result[0];
+			} catch (err: any) {
 				throw await translateDatabaseError(err);
 			}
 
-			// When relying on a database auto-incremented ID, we'll have to fetch it from the DB in
-			// order to know what the PK is of the just-inserted item
+			// Most database support returning, those who don't tend to return the PK anyways
+			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+			// fetching it based on the last inserted row
 			if (!primaryKey) {
 				// Fetching it with max should be safe, as we're in the context of the current transaction
 				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
@@ -159,9 +164,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: primaryKey,
 				};
 
-				await trx.insert(activityRecord).into('directus_activity');
-
-				const { id: activityID } = await trx.max('id', { as: 'id ' }).from('directus_activity').first();
+				const activityID = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
 
 				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
@@ -169,13 +172,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						activity: activityID,
 						collection: this.collection,
 						item: primaryKey,
-						data: JSON.stringify(payload),
-						delta: JSON.stringify(payload),
+						data: await payloadService.prepareDelta(payload),
+						delta: await payloadService.prepareDelta(payload),
 					};
 
-					await trx.insert(revisionRecord).into('directus_revisions');
-
-					const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+					const revisionID = (await trx.insert(revisionRecord).into('directus_revisions').returning('id'))[0] as number;
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
@@ -208,8 +209,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKey;
@@ -236,8 +237,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -275,6 +276,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		if (records === null) {
 			throw new ForbiddenException();
 		}
+
+		emitAsyncSafe(`${this.eventScope}.read`, {
+			event: `${this.eventScope}.read`,
+			accountability: this.accountability,
+			collection: this.collection,
+			query,
+			action: 'read',
+			payload: records,
+			schema: this.schema,
+			database: getDatabase(),
+		});
 
 		return records as Item[];
 	}
@@ -329,6 +341,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		};
 
 		const results = await this.readByQuery(queryWithKeys, opts);
+
 		return results;
 	}
 
@@ -429,7 +442,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (Object.keys(payloadWithTypeCasting).length > 0) {
 				try {
 					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
-				} catch (err) {
+				} catch (err: any) {
 					throw await translateDatabaseError(err);
 				}
 			}
@@ -455,10 +468,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityPrimaryKeys: PrimaryKey[] = [];
 
 				for (const activityRecord of activityRecords) {
-					await trx.insert(activityRecord).into('directus_activity');
-					const result = await trx.max('id', { as: 'id' }).from('directus_activity').first();
-					const primaryKey = result.id;
-
+					const primaryKey = (await trx.insert(activityRecord).into('directus_activity').returning('id'))[0] as number;
 					activityPrimaryKeys.push(primaryKey);
 				}
 
@@ -470,18 +480,28 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 					const snapshots = await itemsService.readMany(keys);
 
-					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-						activity: key,
-						collection: this.collection,
-						item: keys[index],
-						data:
-							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithTypeCasting),
-					}));
+					const revisionRecords: {
+						activity: PrimaryKey;
+						collection: string;
+						item: PrimaryKey;
+						data: string;
+						delta: string;
+					}[] = [];
+
+					for (let i = 0; i < activityPrimaryKeys.length; i++) {
+						revisionRecords.push({
+							activity: activityPrimaryKeys[i],
+							collection: this.collection,
+							item: keys[i],
+							data: snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[i]) : JSON.stringify(snapshots),
+							delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+						});
+					}
 
 					for (let i = 0; i < revisionRecords.length; i++) {
-						await trx.insert(revisionRecords[i]).into('directus_revisions');
-						const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+						const revisionID = (
+							await trx.insert(revisionRecords[i]).into('directus_revisions').returning('id')
+						)[0] as number;
 
 						if (opts?.onRevisionCreate) {
 							opts.onRevisionCreate(revisionID);
@@ -501,8 +521,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		if (opts?.emitEvents !== false) {
@@ -566,8 +586,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -650,8 +670,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await cache.clear();
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 
 		if (opts?.emitEvents !== false) {
@@ -694,6 +714,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			for (const [name, field] of fields) {
+				if (this.schema.collections[this.collection].primary === name) {
+					defaults[name] = null;
+					continue;
+				}
+
 				defaults[name] = field.defaultValue;
 			}
 

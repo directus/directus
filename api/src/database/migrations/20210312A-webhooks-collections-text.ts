@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
-import env from '../../env';
+// @ts-ignore
+import Client_Oracledb from 'knex/lib/dialects/oracledb';
 
 async function oracleAlterCollections(knex: Knex, type: string): Promise<void> {
 	await knex.raw('ALTER TABLE "directus_webhooks" ADD "collections__temp" ?', [knex.raw(type)]);
@@ -10,7 +11,7 @@ async function oracleAlterCollections(knex: Knex, type: string): Promise<void> {
 }
 
 export async function up(knex: Knex): Promise<void> {
-	if (env.DB_CLIENT === 'oracledb') {
+	if (knex.client instanceof Client_Oracledb) {
 		await oracleAlterCollections(knex, 'CLOB');
 		return;
 	}
@@ -21,7 +22,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	if (env.DB_CLIENT === 'oracledb') {
+	if (knex.client instanceof Client_Oracledb) {
 		await oracleAlterCollections(knex, 'VARCHAR2(255)');
 		return;
 	}

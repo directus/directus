@@ -1,11 +1,19 @@
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { Ref, ref, watch } from '@vue/composition-api';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, merge } from 'lodash';
+import { Ref, ref, watch } from 'vue';
 import { RelationInfo } from './use-relation';
+import { getEndpoint } from '@/utils/get-endpoint';
+
+type UsablePreview = {
+	tableHeaders: Ref<Header[]>;
+	items: Ref<Record<string, any>[]>;
+	loading: Ref<boolean>;
+	error: Ref<any>;
+};
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -15,7 +23,7 @@ export default function usePreview(
 	getUpdatedItems: () => Record<string, any>[],
 	getNewItems: () => Record<string, any>[],
 	getPrimaryKeys: () => (string | number)[]
-): Record<string, Ref> {
+): UsablePreview {
 	// Using a ref for the table headers here means that the table itself can update the
 	// values if it needs to. This allows the user to manually resize the columns for example
 
@@ -23,7 +31,7 @@ export default function usePreview(
 	const tableHeaders = ref<Header[]>([]);
 	const loading = ref(false);
 	const items = ref<Record<string, any>[]>([]);
-	const error = ref(null);
+	const error = ref<any>(null);
 
 	watch(
 		() => value.value,
@@ -75,14 +83,17 @@ export default function usePreview(
 				// Replace existing items with it's updated counterparts
 				responseData = responseData
 					.map((item) => {
-						const updatedItem = updatedItems.find((updated) => updated[junctionPkField] === item[junctionPkField]);
-						if (updatedItem !== undefined) return updatedItem;
+						const updatedItem = updatedItems.find(
+							(updated) =>
+								get(updated, [junctionField, junctionPkField]) === get(item, [junctionField, junctionPkField])
+						);
+						if (updatedItem !== undefined) return merge(item, updatedItem);
 						return item;
 					})
 					.concat(...newItems);
 
 				items.value = responseData;
-			} catch (err) {
+			} catch (err: any) {
 				error.value = err;
 			} finally {
 				loading.value = false;
@@ -170,7 +181,7 @@ export default function usePreview(
 
 			// Add all items that already had the id of it's related item
 			return data.concat(...getNewSelectedItems(), ...updatedItems);
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		}
 		return [];
@@ -184,11 +195,9 @@ export default function usePreview(
 	) {
 		if (fields === null || fields.length === 0 || primaryKeys === null || primaryKeys.length === 0) return [];
 
-		const endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
-
 		const fieldsToFetch = addRelatedPrimaryKeyToFields(collection, fields);
 
-		const response = await api.get(endpoint, {
+		const response = await api.get(getEndpoint(collection), {
 			params: {
 				fields: fieldsToFetch,
 				[`filter[${filteredField}][_in]`]: primaryKeys.join(','),

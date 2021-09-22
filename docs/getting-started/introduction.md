@@ -18,8 +18,8 @@ developers and an intuitive App for non-technical users.** Written entirely in J
 [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org)), Directus is completely open-source, modular, and
 extensible, allowing it to be fully tailored to the requirements of any project.
 
-The platform can be used for an individual purpose, such as headless content management, or more broadly to democratize an entire organization's data (customers, inventory, business intelligence, 
-projects, etc).
+The platform can be used for an individual purpose, such as headless content management, or more broadly to democratize
+an entire organization's data (customers, inventory, business intelligence, projects, etc).
 
 ::: tip What's in a name?
 
@@ -166,3 +166,8 @@ improve Directus in your language, you can [learn more here](/contributing/trans
 
 Coming in 2021, the [Directus Marketplace](https://directus.market/) will offer a unified portal to extensions created
 by our Core Team and community contributors.
+
+### Awesome List
+
+Head to [awesome-directus](https://github.com/directus-community/awesome-directus) for a list of awesome things related
+to Directus.

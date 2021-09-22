@@ -26,7 +26,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
-public: 公開
 not_allowed: 許可されていない
 directus_version: Directus Version
 os_version: OSバージョン
@@ -188,6 +187,7 @@ modified_on: 修正日時
 sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
+remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
@@ -201,8 +201,8 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
-  UNKNOWN: 予期しないエラーが発生しました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -229,6 +229,8 @@ operators:
 loading: 読み込み中...
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
+drag_file_here: ここにファイルをドラッグ & ドロップ
+click_to_browse: クリックしてローカルフォルダを参照
 layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
@@ -357,15 +359,36 @@ fields:
     description: 説明
     ip_access: IP アクセス
     enforce_tfa: 二段階認証が必要
+  directus_webhooks:
+    name: 名前
+    status: ステータス
+field_options:
+  directus_activity:
+    create: 作成
+    update: 更新
+  directus_collections:
+    collection_setup: コレクションの作成
+    singleton: シングルオブジェクトに設定する
+    language: 言語
+    archive_divider: アーカイブ
+    divider: 並べ替え
+  directus_roles:
+    fields:
+      icon_name: アイコン
+      name_name: 名前
+    collection_list:
+      fields:
+        type_name: タイプ
+    collections_name: コレクション
+  directus_webhooks:
+    actions_create: 作成
+    actions_update: 更新
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
-continue: 続ける
-default: デフォルト
-delete: 削除
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
@@ -425,6 +448,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
+  system-folder:
+    folder: フォルダ
   tags:
     tags: タグ
   translations:

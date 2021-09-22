@@ -1,27 +1,28 @@
 <template>
 	<v-notice v-if="!choices" type="warning">
-		{{ $t('choices_option_configured_incorrectly') }}
+		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<v-select
 		v-else
 		multiple
-		:value="value"
-		@input="$listeners.input"
+		:model-value="value"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
 		:close-on-content-click="false"
+		@update:model-value="$emit('input', $event)"
 	>
-		<template #prepend v-if="icon">
+		<template v-if="icon" #prepend>
 			<v-icon :name="icon" />
 		</template>
 	</v-select>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
 
 type Option = {
 	text: string;
@@ -58,6 +59,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+	},
+	emits: ['input'],
+	setup() {
+		const { t } = useI18n();
+		return { t };
 	},
 });
 </script>

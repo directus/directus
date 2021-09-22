@@ -4,7 +4,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
-import isJWT from '../utils/is-jwt';
+import isDirectusJWT from '../utils/is-directus-jwt';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
@@ -23,12 +23,12 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const database = getDatabase();
 
-	if (isJWT(req.token)) {
+	if (isDirectusJWT(req.token)) {
 		let payload: { id: string };
 
 		try {
-			payload = jwt.verify(req.token, env.SECRET as string) as { id: string };
-		} catch (err) {
+			payload = jwt.verify(req.token, env.SECRET as string, { issuer: 'directus' }) as { id: string };
+		} catch (err: any) {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');
 			} else if (err instanceof JsonWebTokenError) {
@@ -76,10 +76,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
 		req.accountability.app = user.app_access === true || user.app_access == 1;
-	}
-
-	if (req.accountability?.user) {
-		await database('directus_users').update({ last_access: new Date() }).where({ id: req.accountability.user });
 	}
 
 	return next();

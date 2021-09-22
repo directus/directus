@@ -6,18 +6,21 @@
  */
 
 import { getDisplays } from '@/displays';
-import { DisplayConfig } from '@/displays/types';
 import { getInterfaces } from '@/interfaces';
-import { InterfaceConfig } from '@/interfaces/types';
+import {
+	DeepPartial,
+	DisplayConfig,
+	Field,
+	InterfaceConfig,
+	Item,
+	LocalType,
+	Collection,
+	Relation,
+} from '@directus/shared/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Collection, Field, localTypes, Relation, Item } from '@/types';
-import { computed, ComputedRef, reactive, watch, WatchStopHandle } from '@vue/composition-api';
-import { clone, throttle } from 'lodash';
-import Vue from 'vue';
 
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
-const collectionsStore = useCollectionsStore();
+import { clone, throttle } from 'lodash';
+import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
 type GenerationInfo = {
 	name: string;
@@ -40,7 +43,11 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
+function initLocalStore(collection: string, field: string, type: LocalType): void {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+	const collectionsStore = useCollectionsStore();
+
 	const { interfaces } = getInterfaces();
 	const { displays } = getDisplays();
 
@@ -62,13 +69,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter: InterfaceConfig) => {
+			.filter((inter: DisplayConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
+			.sort((a: DisplayConfig, b: DisplayConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	generationInfo = computed(() => {
@@ -152,6 +159,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
 	else if (type === 'o2m') useO2M();
 	else if (type === 'presentation') usePresentation();
+	else if (type === 'group') useGroup();
 	else if (type === 'm2a') useM2A();
 	else useStandard();
 
@@ -304,8 +312,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					$type: 'manyRelated',
 					collection: collectionName,
 					field: fieldName,
-					type: collectionExists(collectionName)
-						? fieldsStore.getPrimaryKeyFieldForCollection(collectionName)?.type
+					type: collectionExists(collection)
+						? fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type
 						: 'integer',
 					schema: {},
 				});
@@ -698,8 +706,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 
 		if (type === 'files') {
-			Vue.nextTick(() => {
-				state.relations[1].related_collection = 'directus_files';
+			nextTick(() => {
+				state.relations[1].related_collection = state.relations[1].related_collection || 'directus_files';
 			});
 		}
 
@@ -1041,6 +1049,15 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		};
 	}
 
+	function useGroup() {
+		delete state.fieldData.schema;
+		state.fieldData.type = 'alias';
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data', 'group'],
+		};
+	}
+
 	function useStandard() {
 		watch(
 			() => state.fieldData.type,
@@ -1059,6 +1076,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					default_value: undefined,
 					max_length: undefined,
 					is_nullable: true,
+					geometry_type: undefined,
 				};
 
 				switch (state.fieldData.type) {
@@ -1078,6 +1096,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.meta.special = ['boolean'];
 						state.fieldData.schema.default_value = false;
 						state.fieldData.schema.is_nullable = false;
+						break;
+					case 'geometry':
+						state.fieldData.meta.special = ['geometry'];
 						break;
 				}
 			}
@@ -1105,6 +1126,7 @@ function clearLocalStore(): void {
 				is_unique: false,
 				numeric_precision: null,
 				numeric_scale: null,
+				geometry_type: undefined,
 			},
 			meta: {
 				hidden: false,

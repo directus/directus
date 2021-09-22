@@ -18,7 +18,6 @@ create_role: Creează Rol
 create_user: Creează utilizator
 create_webhook: Creează Webhook
 invite_users: Invită utilizatori
-email_examples: 'admin@exemplu.com, utilizator@exemplu.com...'
 invite: Invită
 emails: E-mailuri
 connection_excellent: Conexiune excelentă
@@ -36,7 +35,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Deconectat
   SESSION_EXPIRED: Sesiunea a expirat
-public: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
 not_allowed: Nu este permis
 directus_version: Versiune Directus
@@ -142,10 +140,20 @@ fields:
   directus_roles:
     name: Nume de rol
     description: Descriere
+  directus_webhooks:
+    status: Stare
+field_options:
+  directus_activity:
+    create: Creează
+  directus_collections:
+    archive_divider: Arhivează
+  directus_roles:
+    fields:
+      icon_name: Iconiță
+    collections_name: Colecții
+  directus_webhooks:
+    actions_create: Creează
 comment: Comentariu
-continue: Continuă
-default: Implicit
-delete: Ştergeţi
 delete_field_are_you_sure: >-
   Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
 description: Descriere
@@ -159,7 +167,7 @@ icon: Iconiță
 info: Info
 password: Parolă
 interfaces:
-  collection:
+  system-collection:
     collection: Colecție
   system-collections:
     collections: Colecții

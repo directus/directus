@@ -1,12 +1,24 @@
-import { Ref } from '@vue/composition-api';
 import { get, has, isEqual } from 'lodash';
+import { Ref } from 'vue';
 import { RelationInfo } from './use-relation';
+
+type UsableActions = {
+	getJunctionItem: (id: string | number) => string | number | Record<string, any> | null;
+	getNewSelectedItems: () => Record<string, any>[];
+	getNewItems: () => Record<string, any>[];
+	getUpdatedItems: () => Record<string, any>[];
+	getExistingItems: () => (string | number | Record<string, any>)[];
+	getPrimaryKeys: () => (string | number)[];
+	getRelatedPrimaryKeys: () => (string | number)[];
+	getJunctionFromRelatedId: (id: string | number, items: Record<string, any>[]) => Record<string, any> | null;
+	deleteItem: (deletingItem: Record<string, any>) => void;
+};
 
 export default function useActions(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	relation: Ref<RelationInfo>,
 	emit: (newValue: any[] | null) => void
-): Record<string, any> {
+): UsableActions {
 	// Returns the junction item with the given Id.
 	function getJunctionItem(id: string | number) {
 		const { junctionPkField } = relation.value;
@@ -88,6 +100,12 @@ export default function useActions(
 		}, []) as (string | number)[];
 	}
 
+	function getJunctionFromRelatedId(id: string | number, items: Record<string, any>[]) {
+		const { relationPkField, junctionField } = relation.value;
+
+		return items.find((item) => get(item, [junctionField, relationPkField]) === id) || null;
+	}
+
 	function deleteItem(deletingItem: Record<string, any>) {
 		if (value.value === null) return;
 		const { junctionField, relationPkField, junctionPkField } = relation.value;
@@ -119,12 +137,6 @@ export default function useActions(
 			return isEqual(item, deletingItem) === false;
 		});
 		emit(newValue);
-	}
-
-	function getJunctionFromRelatedId(id: string | number, items: Record<string, any>[]) {
-		const { relationPkField, junctionField } = relation.value;
-
-		return items.find((item) => get(item, [junctionField, relationPkField]) === id) || null;
 	}
 
 	return {

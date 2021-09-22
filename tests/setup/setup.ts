@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
@@ -23,7 +25,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 
 	const vendors = getDBsToTest();
 
-	const NODE_VERSION = process.env.TEST_NODE_VERSION || '15-alpine';
+	const NODE_VERSION = process.env.TEST_NODE_VERSION || '16-alpine';
 
 	await new Listr([
 		{
@@ -38,13 +40,17 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 						context: path.resolve(__dirname, '..', '..'),
 						src: ['Dockerfile', ...result],
 					},
-					{ t: 'directus-test-image', buildargs: { NODE_VERSION }, cachefrom: '["directus-test-image"]' }
+					{
+						t: 'directus-test-image',
+						buildargs: { NODE_VERSION },
+						cachefrom: ['directus-test-image'], // Docker now requires this to be an actual array, but Dockerode's types haven't been updated yet
+					} as unknown as Dockerode.ImageBuildOptions
 				);
 
 				await new Promise((resolve, reject) => {
 					docker.modem.followProgress(
 						stream,
-						(err: Error, res: any) => {
+						(err, res) => {
 							if (err) {
 								reject(err);
 							} else {
@@ -80,7 +86,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 									await new Promise((resolve, reject) => {
 										docker.modem.followProgress(
 											stream,
-											(err: Error, res: any) => {
+											(err, res) => {
 												if (err) {
 													reject(err);
 												} else {

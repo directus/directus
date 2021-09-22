@@ -2,51 +2,60 @@
 	<v-menu attached :disabled="disabled">
 		<template #activator="{ active, activate }">
 			<v-input
-				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
 				v-model="searchQuery"
-				@focus="activate"
+				:disabled="disabled"
+				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
+				@focus="activate"
 			>
-				<template #prepend>
-					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />
+				<template v-if="value" #prepend>
+					<v-icon clickable :name="value" :class="{ active: value }" @click="activate" />
 				</template>
 
 				<template #append>
-					<v-icon v-if="value !== null" @click="setIcon(null)" name="close" />
-					<v-icon v-else @click="activate" name="expand_more" class="open-indicator" :class="{ open: active }" />
+					<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
+					<v-icon
+						v-else
+						clickable
+						name="expand_more"
+						class="open-indicator"
+						:class="{ open: active }"
+						@click="activate"
+					/>
 				</template>
 			</v-input>
 		</template>
 
 		<div class="content" :class="width">
-			<template v-for="(group, index) in filteredIcons">
-				<div :key="'icon-group-' + group.name" class="icons" v-if="group.icons.length > 0">
+			<template v-for="(group, index) in filteredIcons" :key="group.name">
+				<div v-if="group.icons.length > 0" class="icons">
 					<v-icon
 						v-for="icon in group.icons"
 						:key="icon"
 						:name="icon"
 						:class="{ active: icon === value }"
+						clickable
 						@click="setIcon(icon)"
 					/>
 				</div>
-				<v-divider :key="'divider-' + group.name" v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
+				<v-divider v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
 			</template>
 		</div>
 	</v-menu>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	props: {
 		value: {
 			type: String,
-			default: 'search',
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -57,7 +66,10 @@ export default defineComponent({
 			default: 'half',
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const searchQuery = ref('');
 
 		const filteredIcons = computed(() => {
@@ -74,13 +86,7 @@ export default defineComponent({
 			});
 		});
 
-		return {
-			icons,
-			setIcon,
-			searchQuery,
-			filteredIcons,
-			formatTitle,
-		};
+		return { t, icons, setIcon, searchQuery, filteredIcons, formatTitle };
 
 		function setIcon(icon: string | null) {
 			searchQuery.value = '';

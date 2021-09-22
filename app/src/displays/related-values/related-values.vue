@@ -6,7 +6,7 @@
 		:disabled="value.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
+			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
 				<span class="label">
 					{{ value.length }}
 					<template v-if="value.length >= 100">+</template>
@@ -16,25 +16,25 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
 				<v-list-item-content>
-					<render-template :template="_template" :item="item" :collection="relatedCollection" />
+					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
 	</v-menu>
-	<render-template v-else :template="_template" :item="value" :collection="relatedCollection" />
+	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
-import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -48,7 +48,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {
@@ -61,34 +61,31 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t, te } = useI18n();
+
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
 		});
 
-		const primaryKeyField = computed(() => {
-			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as unknown as Ref<string>).primaryKeyField.value;
-			}
-			return null;
-		});
+		const { primaryKeyField } = useCollection(relatedCollection);
 
-		const _template = computed(() => {
+		const internalTemplate = computed(() => {
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
 		const unit = computed(() => {
 			if (Array.isArray(props.value)) {
 				if (props.value.length === 1) {
-					if (i18n.te(`collection_names_singular.${relatedCollection.value}`)) {
-						return i18n.t(`collection_names_singular.${relatedCollection.value}`);
+					if (te(`collection_names_singular.${relatedCollection.value}`)) {
+						return t(`collection_names_singular.${relatedCollection.value}`);
 					} else {
-						return i18n.t('item');
+						return t('item');
 					}
 				} else {
-					if (i18n.te(`collection_names_plural.${relatedCollection.value}`)) {
-						return i18n.t(`collection_names_plural.${relatedCollection.value}`);
+					if (te(`collection_names_plural.${relatedCollection.value}`)) {
+						return t(`collection_names_plural.${relatedCollection.value}`);
 					} else {
-						return i18n.t('items');
+						return t('items');
 					}
 				}
 			}
@@ -96,7 +93,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template, unit };
+		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;

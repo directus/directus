@@ -10,7 +10,10 @@ export type Query = {
 	meta?: Meta[];
 	search?: string;
 	export?: 'json' | 'csv' | 'xml';
+	group?: string[];
+	aggregate?: Aggregate;
 	deep?: Record<string, Query>;
+	alias?: Record<string, string>;
 };
 
 export type Sort = {
@@ -22,20 +25,16 @@ export type Filter = {
 	[keyOrOperator: string]: Filter | any;
 };
 
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'contains'
-	| 'ncontains'
-	| 'in'
-	| 'nin'
-	| 'gt'
-	| 'gte'
-	| 'lt'
-	| 'lte'
-	| 'null'
-	| 'nnull'
-	| 'empty'
-	| 'nempty';
-
-export type ValidationOperator = 'required' | 'regex';
+/**
+ * Aggregate operation. Contains column name, and the field alias it should be returned as
+ */
+export type Aggregate = {
+	avg?: string[];
+	avgDistinct?: string[];
+	count?: string[];
+	countDistinct?: string[];
+	sum?: string[];
+	sumDistinct?: string[];
+	min?: string[];
+	max?: string[];
+};

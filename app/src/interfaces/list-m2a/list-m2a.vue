@@ -6,59 +6,61 @@
 
 		<v-list v-else>
 			<v-notice v-if="previewValues.length === 0">
-				{{ $t('no_items') }}
+				{{ t('no_items') }}
 			</v-notice>
 
 			<draggable
 				:force-fallback="true"
-				:value="previewValues"
-				@input="onSort"
+				:model-value="previewValues"
+				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.meta || !o2mRelation.meta.sort_field"
+				@update:model-value="onSort"
 			>
-				<template v-for="item of previewValues">
+				<template #item="{ element }">
 					<v-list-item
-						:key="item.$index"
-						v-if="allowedCollections.includes(item[anyRelation.meta.one_collection_field])"
+						v-if="allowedCollections.includes(element[anyRelation.meta.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
-						@click="editExisting((value || [])[item.$index])"
+						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon
+							v-if="o2mRelation.meta && o2mRelation.meta.sort_field"
 							class="drag-handle"
 							left
 							name="drag_handle"
 							@click.stop
-							v-if="o2mRelation.meta && o2mRelation.meta.sort_field"
 						/>
-						<span class="collection">{{ collections[item[anyRelation.meta.one_collection_field]].name }}:</span>
-						<span v-if="typeof item[anyRelation.field] === 'number' || typeof item[anyRelation.field] === 'string'">
-							{{ item[anyRelation.field] }}
+						<span class="collection">{{ collections[element[anyRelation.meta.one_collection_field]].name }}:</span>
+						<span
+							v-if="typeof element[anyRelation.field] === 'number' || typeof element[anyRelation.field] === 'string'"
+						>
+							{{ element[anyRelation.field] }}
 						</span>
 						<render-template
 							v-else
-							:collection="item[anyRelation.meta.one_collection_field]"
-							:template="templates[item[anyRelation.meta.one_collection_field]]"
-							:item="item[anyRelation.field]"
+							:collection="element[anyRelation.meta.one_collection_field]"
+							:template="templates[element[anyRelation.meta.one_collection_field]]"
+							:item="element[anyRelation.field]"
 						/>
 						<div class="spacer" />
 						<v-icon
 							v-if="!disabled"
 							class="clear-icon"
 							name="clear"
-							@click.stop="deselect((value || [])[item.$index])"
+							@click.stop="deselect((value || [])[element.$index])"
 						/>
 					</v-list-item>
 
-					<v-list-item v-else :key="item.$index" block>
+					<v-list-item v-else block>
 						<v-icon class="invalid-icon" name="warning" left />
-						<span>{{ $t('invalid_item') }}</span>
+						<span>{{ t('invalid_item') }}</span>
 						<div class="spacer" />
 						<v-icon
 							v-if="!disabled"
 							class="clear-icon"
 							name="clear"
-							@click.stop="deselect((value || [])[item.$index])"
+							@click.stop="deselect((value || [])[element.$index])"
 						/>
 					</v-list-item>
 				</template>
@@ -66,50 +68,52 @@
 		</v-list>
 
 		<div class="buttons">
-			<v-menu show-arrow v-if="enableCreate">
+			<v-menu v-if="enableCreate" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button @click="toggle">
-						{{ $t('create_new') }}
+						{{ t('create_new') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
 				<v-list>
 					<v-list-item
-						@click="createNew(collection.collection)"
-						v-for="collection of collections"
-						:key="collection.collection"
+						v-for="availableCollection of collections"
+						:key="availableCollection.collection"
+						clickable
+						@click="createNew(availableCollection.collection)"
 					>
-						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-text-overflow :text="collection.name" />
+						<v-list-item-icon><v-icon :name="availableCollection.icon" /></v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
-			<v-menu show-arrow v-if="enableSelect">
+			<v-menu v-if="enableSelect" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button @click="toggle" class="existing">
-						{{ $t('add_existing') }}
+					<v-button class="existing" @click="toggle">
+						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
 				<v-list>
 					<v-list-item
-						@click="selectingFrom = collection.collection"
-						v-for="collection of collections"
-						:key="collection.collection"
+						v-for="availableCollection of collections"
+						:key="availableCollection.collection"
+						clickable
+						@click="selectingFrom = availableCollection.collection"
 					>
-						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-text-overflow :text="collection.name" />
+						<v-list-item-icon><v-icon :name="availableCollection.icon" /></v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
 		</div>
 
 		<drawer-collection
-			multiple
 			v-if="!disabled && !!selectingFrom"
+			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
 			:selection="[]"
@@ -133,14 +137,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
-import { Relation, Collection } from '@/types/';
+import { Collection, Relation } from '@directus/shared/types';
 import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { isPlainObject, cloneDeep } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -178,7 +183,10 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
@@ -194,6 +202,7 @@ export default defineComponent({
 		watch(props, fetchValues, { immediate: true, deep: true });
 
 		return {
+			t,
 			previewValues,
 			collections,
 			selectingFrom,
@@ -486,7 +495,7 @@ export default defineComponent({
 							[collection]: responses[i].data.data,
 						};
 					}
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

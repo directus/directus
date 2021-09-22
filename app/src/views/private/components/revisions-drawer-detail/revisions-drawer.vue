@@ -1,17 +1,18 @@
 <template>
 	<div>
 		<v-drawer
-			v-model="_active"
-			:title="$t('item_revision')"
-			@cancel="_active = false"
-			:sidebar-label="$t(currentTab[0])"
+			v-model="internalActive"
+			:title="t('item_revision')"
+			icon="change_history"
+			:sidebar-label="t(currentTab[0])"
+			@cancel="internalActive = false"
 		>
 			<template #subtitle>
-				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
+				<revisions-drawer-picker v-model:current="internalCurrent" :revisions="revisions" />
 			</template>
 
 			<template #sidebar>
-				<v-tabs vertical v-model="currentTab">
+				<v-tabs v-model="currentTab" vertical>
 					<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 						{{ tab.text }}
 					</v-tab>
@@ -19,19 +20,19 @@
 			</template>
 
 			<div class="content">
-				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 				<revisions-drawer-updates
 					v-if="currentTab[0] === 'updates_made'"
 					:revision="currentRevision"
 					:revisions="revisions"
 				/>
+				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 			</div>
 
 			<template #actions>
-				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
+				<v-button v-tooltip.bottom="t('revert')" class="revert" icon rounded @click="revert">
 					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="_active = false" icon rounded v-tooltip.bottom="$t('done')">
+				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -40,10 +41,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed, ref } from 'vue';
+import { useSync } from '@directus/shared/composables';
 import { Revision } from './types';
-import i18n from '@/lang';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
@@ -65,17 +66,20 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['revert', 'update:active', 'update:current'],
 	setup(props, { emit }) {
-		const _active = useSync(props, 'active', emit);
-		const _current = useSync(props, 'current', emit);
+		const { t } = useI18n();
 
-		const currentTab = ref(['revision_preview']);
+		const internalActive = useSync(props, 'active', emit);
+		const internalCurrent = useSync(props, 'current', emit);
+
+		const currentTab = ref(['updates_made']);
 
 		const currentRevision = computed(() => {
 			return props.revisions.find((revision) => revision.id === props.current);
 		});
 
-		const previousRevision = computed(() => {
+		const previousRevision = computed<Revision | undefined>(() => {
 			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
 
 			// This is assuming props.revisions is in chronological order from newest to oldest
@@ -84,23 +88,16 @@ export default defineComponent({
 
 		const tabs = [
 			{
-				text: i18n.t('revision_preview'),
-				value: 'revision_preview',
+				text: t('updates_made'),
+				value: 'updates_made',
 			},
 			{
-				text: i18n.t('updates_made'),
-				value: 'updates_made',
+				text: t('revision_preview'),
+				value: 'revision_preview',
 			},
 		];
 
-		return {
-			_active,
-			_current,
-			currentRevision,
-			currentTab,
-			tabs,
-			revert,
-		};
+		return { t, internalActive, internalCurrent, currentRevision, currentTab, tabs, revert };
 
 		function revert() {
 			if (!currentRevision.value) return;
@@ -108,14 +105,14 @@ export default defineComponent({
 			const revertToValues: Record<string, any> = {};
 
 			for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
-				const previousValue = previousRevision.value.data[field];
+				const previousValue = previousRevision.value?.data[field] ?? null;
 				if (isEqual(newValue, previousValue)) continue;
 				revertToValues[field] = previousValue;
 			}
 
 			emit('revert', revertToValues);
 
-			_active.value = false;
+			internalActive.value = false;
 		}
 	},
 });

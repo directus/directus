@@ -1,5 +1,5 @@
 <template>
-	<div class="v-list-group">
+	<li class="v-list-group">
 		<v-list-item
 			class="activator"
 			:active="active"
@@ -7,23 +7,36 @@
 			:exact="exact"
 			:disabled="disabled"
 			:dense="dense"
+			clickable
 			@click="onClick"
 		>
+			<v-list-item-icon
+				v-if="$slots.default && arrowPlacement === 'before'"
+				class="activator-icon"
+				:class="{ active: groupActive }"
+			>
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
+			</v-list-item-icon>
+
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
-				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
+			<v-list-item-icon
+				v-if="$slots.default && arrowPlacement === 'after'"
+				class="activator-icon"
+				:class="{ active: groupActive }"
+			>
+				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-if="groupActive">
+		<ul v-if="groupActive" class="items">
 			<slot />
-		</div>
-	</div>
+		</ul>
+	</li>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -34,7 +47,7 @@ export default defineComponent({
 		},
 		to: {
 			type: String,
-			default: null,
+			default: '',
 		},
 		active: {
 			type: Boolean,
@@ -45,6 +58,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		clickable: {
 			type: Boolean,
 			default: false,
 		},
@@ -60,18 +77,30 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		open: {
+			type: Boolean,
+			default: false,
+		},
+		arrowPlacement: {
+			type: String,
+			default: 'after',
+			validator: (val: string) => ['before', 'after'].includes(val),
+		},
 	},
-	setup(props, { listeners, emit }) {
-		const { active: groupActive, toggle } = useGroupable({
+	emits: ['click'],
+	setup(props, { emit }) {
+		const { active, toggle } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});
+
+		const groupActive = computed(() => active.value || props.open);
 
 		return { groupActive, toggle, onClick };
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
-			if (listeners.click) return emit('click', event);
+			if (props.clickable) return emit('click', event);
 
 			event.stopPropagation();
 			toggle();
@@ -89,6 +118,7 @@ export default defineComponent({
 	}
 
 	.activator-icon {
+		margin-right: 0 !important;
 		color: var(--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
@@ -104,6 +134,7 @@ export default defineComponent({
 
 	.items {
 		padding-left: 16px;
+		list-style: none;
 	}
 }
 </style>

@@ -20,7 +20,6 @@ create_role: Skapa roll
 create_user: Skapa användare
 create_webhook: Skapa webhook
 invite_users: Bjud in användare
-email_examples: 'admin@example.com, user@example.com...'
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
 emails: E-postadresser
@@ -42,7 +41,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utloggad
   SESSION_EXPIRED: Sessionen har upphört
-public: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
 not_allowed: Inte tillåtet
 directus_version: Directus Version
@@ -104,9 +102,6 @@ fields_for_role: 'Fält {role} rollen kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
 presentation_and_aliases: Presentation & alias
-revision_post_update: Så här såg objektet ut efter uppdateringen...
-changes_made: Dessa är de specifika ändringarna som gjordes...
-no_relational_data: Tänk på att detta inte inkluderar datans relationer.
 hide_field_on_detail: Dölj fältet på detaljnivå
 show_field_on_detail: Visa fältet på detaljnivå
 delete_field: Radera fält
@@ -244,7 +239,7 @@ move_to_folder: Flytta till mapp
 move: Flytta
 system: System
 add_field_related: Lägg till fält i relaterad kollektion
-interface: Gränssnitt
+interface_label: Gränssnitt
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
@@ -274,7 +269,6 @@ drag_mode: Dra läge
 cancel_crop: Avbryt beskärning
 original: Ursprunglig
 url: URL
-import: Importera
 file_details: Fildetaljer
 dimensions: Dimensioner
 size: Storlek
@@ -335,7 +329,6 @@ no_files_copy: Det finns inga filer här.
 user_count: 'Inga användare | En användare | {count} användare'
 no_users_copy: Det finns inga användare i denna roll ännu.
 webhooks_count: 'Inga webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Det finns inga webhooks ännu.
 all_items: Alla objekt
 csv: CSV
 no_collections: Inga kollektioner
@@ -359,7 +352,6 @@ documentation: Dokumentation
 sidebar: Sidokolumn
 duration: Varaktighet
 charset: Teckenuppsättning
-second: Sekund
 file_moved: Fil flyttad
 collection_created: Kollektion skapad
 modified_on: Ändrad den
@@ -368,6 +360,7 @@ sort_field: Sortera fält
 add_sort_field: Lägg till sorteringsfält
 sort: Sortera
 status: Status
+remove: Ta bort
 toggle_manual_sorting: Växla manuell sortering
 bookmark_doesnt_exist: Bokmärket finns inte
 bookmark_doesnt_exist_copy: Bokmärket du försöker öppna kunde inte hittas.
@@ -395,8 +388,9 @@ errors:
   ROUTE_NOT_FOUND: Hittades inte
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
-  UNKNOWN: Oväntat fel
   INTERNAL_SERVER_ERROR: Oväntat fel
+  NOT_NULL_VIOLATION: Värdet kan inte vara null
+  UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
@@ -714,6 +708,7 @@ fields:
     theme: Tema
     tfa_secret: Tvåfaktorsautentisering
     status: Status
+    status_active: Aktiv
     role: Roll
     token: Token
     last_page: Sista sidan
@@ -750,6 +745,33 @@ fields:
     users: Användare i rollen
     module_list: Navigering för modul
     collection_list: Navigering för kollektion
+  directus_webhooks:
+    name: Namn
+    status: Status
+field_options:
+  directus_activity:
+    create: Skapa
+    update: Uppdatera
+  directus_collections:
+    collection_setup: Konfiguration av kollektion
+    singleton: Behandla som ett enskilt objekt
+    language: Språk
+    archive_divider: Arkivera
+    divider: Sortera
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Namn
+    collection_list:
+      fields:
+        type_name: Typ
+    collections_name: Kollektioner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Skapa
+    actions_update: Uppdatera
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 do_nothing: Gör ingenting
 generate_and_save_uuid: Generera och spara UUID
@@ -759,13 +781,8 @@ save_current_datetime: Spara aktuellt datum/tid
 block: Blockera
 inline: Infogad
 comment: Kommentera
-continue: Fortsätt
-continue_as: >-
-  <b>{name}</b> är för närvarande autentiserad. Om du känner igen detta konto, tryck fortsätt.
 editing_role: '{role} roll'
 creating_webhook: Skapar Webhook
-default: Standard
-delete: Radera
 delete_are_you_sure: >-
   Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
 delete_field_are_you_sure: >-
@@ -826,7 +843,7 @@ interfaces:
     primary: Primär
   input-code:
     code: Kod
-  collection:
+  system-collection:
     collection: Kollektion
     description: Välj mellan befintliga kollektioner
     include_system_collections: Inkludera systemets kollektioner
@@ -866,6 +883,10 @@ interfaces:
     interface: Gränssnitt
   select-dropdown-m2o:
     display_template: Visningsmall
+  map:
+    zoom: Zooma
+  system-folder:
+    folder: Mapp
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage

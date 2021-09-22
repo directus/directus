@@ -1,32 +1,35 @@
 <template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
+	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ $t('refresh_interval') }}</p>
-				<v-select :items="items" v-model="interval" />
+				<p class="type-label">{{ t('refresh_interval') }}</p>
+				<v-select v-model="interval" :items="items" />
 			</div>
 		</div>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import i18n from '@/lang';
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: Number,
 			default: null,
 		},
 	},
+	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const interval = computed<number | null>({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newVal) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
@@ -53,17 +56,17 @@ export default defineComponent({
 			return intervals.map((seconds) => {
 				if (seconds === null)
 					return {
-						text: i18n.t('no_refresh'),
+						text: t('no_refresh'),
 						value: null,
 					};
 
 				return seconds >= 60 && seconds % 60 === 0
 					? {
-							text: i18n.tc('refresh_interval_minutes', seconds / 60, { minutes: seconds / 60 }),
+							text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 							value: seconds,
 					  }
 					: {
-							text: i18n.tc('refresh_interval_seconds', seconds, { seconds }),
+							text: t('refresh_interval_seconds', { seconds }, seconds),
 							value: seconds,
 					  };
 			});
@@ -71,7 +74,7 @@ export default defineComponent({
 
 		const active = computed(() => interval.value !== null);
 
-		return { active, interval, items };
+		return { t, active, interval, items };
 	},
 });
 </script>

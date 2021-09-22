@@ -4,19 +4,19 @@
 		:icon-on="iconOn"
 		:icon-off="iconOff"
 		:label="label"
-		:input-value="value"
+		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@change="$listeners.input"
 		:style="{
 			'--v-checkbox-color': color,
 		}"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import i18n from '@/lang';
+import { defineComponent } from 'vue';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -30,7 +30,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.t('enabled'),
+			default: i18n.global.t('enabled'),
 		},
 		iconOn: {
 			type: String,
@@ -45,5 +45,6 @@ export default defineComponent({
 			default: '#00C897',
 		},
 	},
+	emits: ['input'],
 });
 </script>

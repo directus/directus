@@ -1,6 +1,6 @@
 <template>
 	<v-divider v-if="section.divider" />
-	<v-list-group :scope="scope" v-else-if="section.children" :dense="dense" :multiple="false" :value="section.to">
+	<v-list-group v-else-if="section.children" :scope="scope" :dense="dense" :multiple="false" :value="section.to">
 		<template #activator>
 			<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 			<v-list-item-content>
@@ -28,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 import { Link, Group } from '@directus/docs';
 
 export default defineComponent({
-	name: 'navigation-list-item',
+	name: 'NavigationListItem',
 	props: {
 		section: {
 			type: Object as PropType<Link | Group>,

@@ -1,5 +1,5 @@
 <template>
-	<v-list class="v-tabs vertical alt-colors" v-if="vertical" large>
+	<v-list v-if="vertical" class="v-tabs vertical alt-colors" large>
 		<slot />
 	</v-list>
 	<div v-else class="v-tabs horizontal">
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs, provide, ref } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
@@ -17,13 +17,14 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
 	},
+	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const { value: selection, vertical } = toRefs(props);
+		const { modelValue: selection, vertical } = toRefs(props);
 
 		provide('v-tabs-vertical', vertical);
 
@@ -40,7 +41,7 @@ export default defineComponent({
 		);
 
 		function update(newSelection: readonly (string | number)[]) {
-			emit('input', newSelection);
+			emit('update:modelValue', newSelection);
 		}
 
 		return { update, items };
@@ -48,27 +49,25 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
+<style scoped>
+:global(body) {
 	--v-tabs-underline-color: var(--foreground-normal);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-tabs.horizontal {
 	position: relative;
 	display: inline-flex;
+}
 
-	::v-deep .v-tab {
-		display: flex;
-		flex-basis: 0px;
-		flex-grow: 1;
-		flex-shrink: 0;
-		align-items: center;
-		justify-content: center;
-		height: 38px;
-		padding: 8px 20px;
-		cursor: pointer;
-	}
+.v-tabs.horizontal :slotted(.v-tab) {
+	display: flex;
+	flex-basis: 0px;
+	flex-grow: 1;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	height: 38px;
+	padding: 8px 20px;
+	cursor: pointer;
 }
 </style>

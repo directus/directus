@@ -1,6 +1,6 @@
 <template>
-	<v-notice type="warning" v-if="!url || !resultsPath || !valuePath">
-		{{ $t('one_or_more_options_are_missing') }}
+	<v-notice v-if="!url" type="warning">
+		{{ t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">
@@ -9,8 +9,8 @@
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:class="font"
-					:value="value"
-					@input="onInput"
+					:model-value="value"
+					@update:model-value="onInput"
 					@focus="activate"
 					@blur="deactivate"
 				>
@@ -29,7 +29,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from 'vue';
 import axios from 'axios';
 import { throttle, get, debounce } from 'lodash';
 import { render } from 'micromustache';
@@ -81,7 +82,10 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const results = ref<string[]>([]);
 
 		const fetchResultsRaw = async (value: string | null) => {
@@ -94,17 +98,19 @@ export default defineComponent({
 
 			try {
 				const result = await axios.get(url);
-				const resultsArray = get(result.data, props.resultsPath);
+				const resultsArray = props.resultsPath ? get(result.data, props.resultsPath) : result.data;
 
 				if (Array.isArray(resultsArray) === false) {
-					console.warn(`Expected results type of array, "${typeof resultsArray}" recieved`);
+					// eslint-disable-next-line no-console
+					console.warn(`Expected results type of array, "${typeof resultsArray}" received`);
 					return;
 				} else {
 					results.value = resultsArray
-						.map((result: Record<string, unknown>) => get(result, props.valuePath))
+						.map((result: Record<string, unknown>) => (props.valuePath ? get(result, props.valuePath) : result))
 						.filter((val: unknown) => val);
 				}
-			} catch (err) {
+			} catch (err: any) {
+				// eslint-disable-next-line no-console
 				console.warn(err);
 			}
 		};
@@ -114,7 +120,7 @@ export default defineComponent({
 				? debounce(fetchResultsRaw, Number(props.rate))
 				: throttle(fetchResultsRaw, Number(props.rate));
 
-		return { results, onInput, emitValue };
+		return { t, results, onInput, emitValue };
 
 		function onInput(value: string) {
 			emitValue(value);

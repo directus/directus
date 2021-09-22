@@ -1,78 +1,78 @@
 <template>
-	<div class="interface-input-rich-text-md" :class="view[0]" ref="markdownInterface">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="view[0]">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.heading')">
+					<v-button v-tooltip="t('wysiwyg_options.heading')" small icon @click="toggle">
 						<v-icon name="title" />
 					</v-button>
 				</template>
 				<v-list>
-					<v-list-item v-for="n in 6" :key="n" @click="edit('heading', { level: n })">
-						<v-list-item-content><v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
+					<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
+						<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
 						<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
 			<v-button
+				v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 				small
 				icon
 				@click="edit('bold')"
-				v-tooltip="$t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 			>
 				<v-icon name="format_bold" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 				small
 				icon
 				@click="edit('italic')"
-				v-tooltip="$t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 			>
 				<v-icon name="format_italic" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 				small
 				icon
 				@click="edit('strikethrough')"
-				v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
-			<v-button small icon @click="edit('listBulleted')" v-tooltip="$t('wysiwyg_options.bullist')">
+			<v-button v-tooltip="t('wysiwyg_options.bullist')" small icon @click="edit('listBulleted')">
 				<v-icon name="format_list_bulleted" />
 			</v-button>
-			<v-button small icon @click="edit('listNumbered')" v-tooltip="$t('wysiwyg_options.numlist')">
+			<v-button v-tooltip="t('wysiwyg_options.numlist')" small icon @click="edit('listNumbered')">
 				<v-icon name="format_list_numbered" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 				small
 				icon
 				@click="edit('blockquote')"
-				v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 			>
 				<v-icon name="format_quote" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 				small
 				icon
 				@click="edit('code')"
-				v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 			>
 				<v-icon name="code" />
 			</v-button>
 			<v-button
+				v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 				small
 				icon
 				@click="edit('link')"
-				v-tooltip="$t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 			>
 				<v-icon name="insert_link" />
 			</v-button>
 
 			<v-menu show-arrow :close-on-content-click="false">
 				<template #activator="{ toggle }">
-					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.table')">
+					<v-button v-tooltip="t('wysiwyg_options.table')" small icon @click="toggle">
 						<v-icon name="table_chart" />
 					</v-button>
 				</template>
@@ -80,12 +80,12 @@
 				<template #default="{ deactivate }">
 					<div class="table-options">
 						<div class="field half">
-							<p class="type-label">{{ $t('rows') }}</p>
-							<v-input :min="1" type="number" v-model="table.rows" />
+							<p class="type-label">{{ t('rows') }}</p>
+							<v-input v-model="table.rows" :min="1" type="number" />
 						</div>
 						<div class="field half">
-							<p class="type-label">{{ $t('columns') }}</p>
-							<v-input :min="1" type="number" v-model="table.columns" />
+							<p class="type-label">{{ t('columns') }}</p>
+							<v-input v-model="table.columns" :min="1" type="number" />
 						</div>
 						<div class="field full">
 							<v-button
@@ -104,41 +104,41 @@
 				</template>
 			</v-menu>
 
-			<v-button @click="imageDialogOpen = true" small icon v-tooltip="$t('wysiwyg_options.image')">
+			<v-button v-tooltip="t('wysiwyg_options.image')" small icon @click="imageDialogOpen = true">
 				<v-icon name="insert_photo" />
 			</v-button>
 
 			<v-button
 				v-for="custom in customSyntax"
+				:key="custom.name"
+				v-tooltip="custom.name"
 				small
 				icon
-				:key="custom.name"
 				@click="edit('custom', custom)"
-				v-tooltip="custom.name"
 			>
 				<v-icon :name="custom.icon" />
 			</v-button>
 
 			<div class="spacer"></div>
 
-			<v-button-group class="view" mandatory v-model="view" rounded>
+			<v-item-group v-model="view" class="view" mandatory rounded>
 				<v-button x-small value="editor">Editor</v-button>
 				<v-button x-small value="preview">Preview</v-button>
-			</v-button-group>
+			</v-item-group>
 		</div>
 
-		<textarea ref="codemirrorEl" :value="value || ''" />
+		<div ref="codemirrorEl"></div>
 
-		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+		<div v-if="view[0] === 'preview'" v-md="markdownString" class="preview-box"></div>
 
-		<v-dialog :active="imageDialogOpen" @esc="imageDialogOpen = null" @toggle="imageDialogOpen = null">
+		<v-dialog :model-value="imageDialogOpen" @esc="imageDialogOpen = null" @update:model-value="imageDialogOpen = null">
 			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onImageUpload" from-url from-library />
+					<v-upload from-url from-library @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="imageDialogOpen = null" secondary>{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = null">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -146,24 +146,14 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	computed,
-	ref,
-	onMounted,
-	onUnmounted,
-	watch,
-	reactive,
-	PropType,
-} from '@vue/composition-api';
-import { sanitize } from 'dompurify';
-import marked from 'marked';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, onMounted, watch, reactive, PropType } from 'vue';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
-import { useEdit, CustomSyntax } from './composables/use-edit';
+import { applyEdit, CustomSyntax, Alteration } from './edits';
 import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -193,10 +183,13 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const markdownInterface = ref<HTMLElement>();
 		const codemirrorEl = ref<HTMLTextAreaElement>();
-		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
+		let codemirror: CodeMirror.Editor | null = null;
 
 		const view = ref(['editor']);
 
@@ -204,40 +197,41 @@ export default defineComponent({
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
-				codemirror.value = CodeMirror.fromTextArea(codemirrorEl.value, {
+				codemirror = CodeMirror(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
 					placeholder: props.placeholder,
+					value: props.value || '',
 				});
 
-				codemirror.value.setValue(props.value || '');
-
-				codemirror.value.on('change', (cm, { origin }) => {
+				codemirror.on('change', (cm, { origin }) => {
 					if (origin === 'setValue') return;
 
 					const content = cm.getValue();
+
 					emit('input', content);
 				});
 			}
 		});
 
-		onUnmounted(() => {
-			codemirror.value?.toTextArea();
-		});
-
 		watch(
 			() => props.value,
 			(newValue) => {
-				if (codemirror.value?.getValue() !== newValue) {
-					codemirror.value?.setValue(props.value || '');
+				if (!codemirror) return;
+
+				const existingValue = codemirror.getValue();
+
+				if (existingValue !== newValue) {
+					codemirror.setValue('');
+					codemirror.clearHistory();
+					codemirror.setValue(newValue ?? '');
+					codemirror.refresh();
 				}
 			}
 		);
 
-		const { edit } = useEdit(codemirror);
-
-		const html = computed(() => {
+		const markdownString = computed(() => {
 			let mdString = props.value || '';
 
 			if (!props.imageToken) {
@@ -251,10 +245,7 @@ export default defineComponent({
 				}
 			}
 
-			const html = marked(mdString);
-			const htmlSanitized = sanitize(html);
-
-			return htmlSanitized;
+			return mdString;
 		});
 
 		const table = reactive({
@@ -276,10 +267,11 @@ export default defineComponent({
 		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
 		return {
+			t,
 			codemirrorEl,
 			edit,
 			view,
-			html,
+			markdownString,
 			table,
 			onImageUpload,
 			imageDialogOpen,
@@ -289,7 +281,7 @@ export default defineComponent({
 		};
 
 		function onImageUpload(image: any) {
-			if (!codemirror.value) return;
+			if (!codemirror) return;
 
 			let url = getPublicURL() + `assets/` + image.id;
 
@@ -297,9 +289,15 @@ export default defineComponent({
 				url += '?access_token=' + props.imageToken;
 			}
 
-			codemirror.value.replaceSelection(`![](${url})`);
+			codemirror.replaceSelection(`![](${url})`);
 
 			imageDialogOpen.value = false;
+		}
+
+		function edit(type: Alteration, options?: Record<string, any>) {
+			if (codemirror) {
+				applyEdit(codemirror, type, options);
+			}
 		}
 	},
 });
@@ -324,31 +322,185 @@ textarea {
 	display: none;
 }
 
-.interface-input-rich-text-md ::v-deep .CodeMirror {
-	border: none;
-	border-radius: 0;
-
-	.CodeMirror-lines {
-		padding: 0 20px;
-
-		&:first-of-type {
-			margin-top: 20px;
-		}
-
-		&:last-of-type {
-			margin-bottom: 20px;
-		}
-	}
-
-	.CodeMirror-scroll {
-		min-height: 300px - 40px;
-	}
+.preview-box {
+	padding: 20px;
 }
 
-.interface-input-rich-text-md.preview {
-	::v-deep .CodeMirror {
-		display: none;
-	}
+.preview-box :deep(h1) {
+	margin-bottom: 0;
+	font-weight: 300;
+	font-size: 44px;
+	font-family: var(--font-serif), serif;
+	line-height: 52px;
+}
+
+.preview-box :deep(h2) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 34px;
+	line-height: 38px;
+}
+
+.preview-box :deep(h3) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 31px;
+}
+
+.preview-box :deep(h4) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 22px;
+	line-height: 28px;
+}
+
+.preview-box :deep(h5) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 26px;
+}
+
+.preview-box :deep(h6) {
+	margin-top: 40px;
+	margin-bottom: 0;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+.preview-box :deep(p) {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-family: var(--font-serif), serif;
+	line-height: 32px;
+}
+
+.preview-box :deep(a) {
+	color: #546e7a;
+}
+
+.preview-box :deep(ul),
+.preview-box :deep(ol) {
+	margin: 24px 0;
+	font-size: 18px;
+	font-family: var(--font-serif), serif;
+	line-height: 34px;
+}
+
+.preview-box :deep(ul ul),
+.preview-box :deep(ol ol),
+.preview-box :deep(ul ol),
+.preview-box :deep(ol ul) {
+	margin: 0;
+}
+
+.preview-box :deep(b),
+.preview-box :deep(strong) {
+	font-weight: 600;
+}
+
+.preview-box :deep(code) {
+	padding: 2px 4px;
+	font-size: 18px;
+	font-family: var(--family-monospace), monospace;
+	line-height: 34px;
+	overflow-wrap: break-word;
+	background-color: #eceff1;
+	border-radius: 4px;
+}
+
+.preview-box :deep(pre) {
+	padding: 20px;
+	overflow: auto;
+	font-size: 18px;
+	font-family: var(--family-monospace), monospace;
+	line-height: 24px;
+	background-color: #eceff1;
+	border-radius: 4px;
+}
+
+.preview-box :deep(blockquote) {
+	margin-left: -10px;
+	padding-left: 10px;
+	font-size: 18px;
+	font-family: var(--font-serif), serif;
+	font-style: italic;
+	line-height: 34px;
+	border-left: 2px solid #546e7a;
+}
+
+.preview-box :deep(blockquote blockquote) {
+	margin-left: 10px;
+}
+
+.preview-box :deep(video),
+.preview-box :deep(iframe),
+.preview-box :deep(img) {
+	max-width: 100%;
+	height: auto;
+	border-radius: 4px;
+}
+
+.preview-box :deep(hr) {
+	margin-top: 52px;
+	margin-bottom: 56px;
+	text-align: center;
+	border: 0;
+	border-top: 2px solid #cfd8dc;
+}
+
+.preview-box :deep(table) {
+	border-collapse: collapse;
+}
+
+.preview-box :deep(table th),
+.preview-box :deep(table td) {
+	padding: 0.4rem;
+	border: 1px solid #cfd8dc;
+}
+
+.preview-box :deep(figure) {
+	display: table;
+	margin: 1rem auto;
+}
+
+.preview-box :deep(figure figcaption) {
+	display: block;
+	margin-top: 0.25rem;
+	color: #999;
+	text-align: center;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror) {
+	border: none;
+	border-radius: 0;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
+	padding: 0 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
+	margin-top: 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
+	margin-bottom: 20px;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-scroll) {
+	min-height: 260px;
+}
+
+.interface-input-rich-text-md.preview :deep(.CodeMirror) {
+	display: none;
 }
 
 .toolbar {
@@ -373,8 +525,8 @@ textarea {
 		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--border-normal);
 		--v-button-color-hover: var(--foreground-normal);
-		--v-button-background-color-activated: var(--border-normal);
-		--v-button-color-activated: var(--foreground-normal);
+		--v-button-background-color-active: var(--border-normal);
+		--v-button-color-active: var(--foreground-normal);
 	}
 }
 
@@ -388,164 +540,6 @@ textarea {
 
 	.v-input {
 		min-width: 100px;
-	}
-}
-
-.preview-box {
-	padding: 20px;
-
-	::v-deep {
-		h1 {
-			margin-bottom: 0;
-			font-weight: 300;
-			font-size: 44px;
-			font-family: var(--font-serif), serif;
-			line-height: 52px;
-		}
-
-		h2 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 34px;
-			line-height: 38px;
-		}
-
-		h3 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 26px;
-			line-height: 31px;
-		}
-
-		h4 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 22px;
-			line-height: 28px;
-		}
-
-		h5 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 18px;
-			line-height: 26px;
-		}
-
-		h6 {
-			margin-top: 40px;
-			margin-bottom: 0;
-			font-weight: 600;
-			font-size: 16px;
-			line-height: 24px;
-		}
-
-		p {
-			margin-top: 20px;
-			margin-bottom: 20px;
-			font-size: 16px;
-			font-family: var(--font-serif), serif;
-			line-height: 32px;
-		}
-
-		a {
-			color: #546e7a;
-		}
-
-		ul,
-		ol {
-			margin: 24px 0;
-			font-size: 18px;
-			font-family: var(--font-serif), serif;
-			line-height: 34px;
-		}
-
-		ul ul,
-		ol ol,
-		ul ol,
-		ol ul {
-			margin: 0;
-		}
-
-		b,
-		strong {
-			font-weight: 600;
-		}
-
-		code {
-			padding: 2px 4px;
-			font-size: 18px;
-			font-family: var(--family-monospace), monospace;
-			line-height: 34px;
-			overflow-wrap: break-word;
-			background-color: #eceff1;
-			border-radius: 4px;
-		}
-
-		pre {
-			padding: 20px;
-			overflow: auto;
-			font-size: 18px;
-			font-family: var(--family-monospace), monospace;
-			line-height: 24px;
-			background-color: #eceff1;
-			border-radius: 4px;
-		}
-
-		blockquote {
-			margin-left: -10px;
-			padding-left: 10px;
-			font-size: 18px;
-			font-family: var(--font-serif), serif;
-			font-style: italic;
-			line-height: 34px;
-			border-left: 2px solid #546e7a;
-
-			blockquote {
-				margin-left: 10px;
-			}
-		}
-
-		video,
-		iframe,
-		img {
-			max-width: 100%;
-			height: auto;
-			border-radius: 4px;
-		}
-
-		hr {
-			margin-top: 52px;
-			margin-bottom: 56px;
-			text-align: center;
-			border: 0;
-			border-top: 2px solid #cfd8dc;
-		}
-
-		table {
-			border-collapse: collapse;
-		}
-
-		table th,
-		table td {
-			padding: 0.4rem;
-			border: 1px solid #cfd8dc;
-		}
-
-		figure {
-			display: table;
-			margin: 1rem auto;
-		}
-
-		figure figcaption {
-			display: block;
-			margin-top: 0.25rem;
-			color: #999;
-			text-align: center;
-		}
 	}
 }
 </style>

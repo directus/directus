@@ -19,17 +19,18 @@
 			<display-color
 				v-for="item in items"
 				:key="item.value"
+				v-tooltip="item.text"
 				:value="item.background"
 				:default-color="defaultBackground"
-				v-tooltip="item.text"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import formatTitle from '@directus/format-title';
+import { translate } from '@/utils/translate-object-values';
 
 type Choice = {
 	value: string;
@@ -66,6 +67,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
+			required: true,
 			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
 		},
 	},
@@ -80,20 +82,32 @@ export default defineComponent({
 			return items.map((item) => {
 				const choice = (props.choices || []).find((choice) => choice.value === item);
 
+				let itemStringValue: string;
+
+				if (typeof item === 'object') {
+					itemStringValue = JSON.stringify(item);
+				} else {
+					if (props.format) {
+						itemStringValue = formatTitle(item);
+					} else {
+						itemStringValue = item;
+					}
+				}
+
 				if (choice === undefined) {
 					return {
 						value: item,
-						text: props.format ? formatTitle(item) : item,
+						text: itemStringValue,
 						foreground: props.defaultForeground,
 						background: props.defaultBackground,
 					};
 				} else {
-					return {
+					return translate({
 						value: item,
-						text: choice.text || (props.format ? formatTitle(item) : item),
+						text: choice.text || itemStringValue,
 						foreground: choice.foreground || props.defaultForeground,
 						background: choice.background || props.defaultBackground,
-					};
+					});
 				}
 			});
 		});

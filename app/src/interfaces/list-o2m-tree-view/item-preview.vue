@@ -2,13 +2,13 @@
 	<div class="preview">
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
-		<div class="actions" v-if="!disabled">
-			<v-icon v-tooltip="$t('edit')" name="launch" @click="editActive = true" />
-			<v-icon v-tooltip="$t('deselect')" name="clear" @click="$emit('deselect')" />
+		<div v-if="!disabled" class="actions">
+			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
+			<v-icon v-tooltip="t('deselect')" name="clear" clickable @click="$emit('deselect')" />
 		</div>
 
 		<drawer-item
-			:active.sync="editActive"
+			v-model:active="editActive"
 			:collection="collection"
 			:primary-key="item[primaryKeyField] || '+'"
 			:edits="item"
@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
@@ -50,9 +51,12 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['deselect', 'input'],
 	setup() {
+		const { t } = useI18n();
+
 		const editActive = ref(false);
-		return { editActive };
+		return { t, editActive };
 	},
 });
 </script>

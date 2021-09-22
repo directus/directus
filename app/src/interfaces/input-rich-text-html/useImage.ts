@@ -1,22 +1,39 @@
 import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
-import { Ref, ref } from '@vue/composition-api';
+import { Ref, ref } from 'vue';
 
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	width?: number;
 	height?: number;
+	previewUrl?: string;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
+type ImageButton = {
+	icon: string;
+	tooltip: string;
+	onAction: (buttonApi: any) => void;
+	onSetup: (buttonApi: any) => () => void;
+};
+
+type UsableImage = {
+	imageDrawerOpen: Ref<boolean>;
+	imageSelection: Ref<ImageSelection | null>;
+	closeImageDrawer: () => void;
+	onImageSelect: (image: Record<string, any>) => void;
+	saveImage: () => void;
+	imageButton: ImageButton;
+};
+
+export default function useImage(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 
 	const imageButton = {
 		icon: 'image',
-		tooltip: i18n.t('wysiwyg_options.image'),
+		tooltip: i18n.global.t('wysiwyg_options.image'),
 		onAction: (buttonApi: any) => {
 			imageDrawerOpen.value = true;
 
@@ -34,6 +51,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Rec
 					alt,
 					width: Number(node.getAttribute('width')) || undefined,
 					height: Number(node.getAttribute('height')) || undefined,
+					previewUrl: addTokenToURL(imageUrl),
 				};
 			} else {
 				imageSelection.value = null;
@@ -71,6 +89,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Rec
 			alt: image.title,
 			width: image.width,
 			height: image.height,
+			previewUrl: addTokenToURL(imageUrl),
 		};
 	}
 

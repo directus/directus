@@ -1,8 +1,8 @@
 <template>
 	<div class="permissions-overview">
 		<h2 class="title type-label">
-			{{ $t('permissions') }}
-			<span class="instant-save">{{ $t('saves_automatically') }}</span>
+			{{ t('permissions') }}
+			<span class="instant-save">{{ t('saves_automatically') }}</span>
 		</h2>
 
 		<div class="table">
@@ -18,7 +18,7 @@
 			/>
 
 			<button class="system-toggle" @click="systemVisible = !systemVisible">
-				{{ $t('system_collections') }}
+				{{ t('system_collections') }}
 				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
 			</button>
 
@@ -36,25 +36,25 @@
 				</div>
 			</transition-expand>
 
-			<span class="reset-toggle" v-if="systemVisible && appAccess">
-				{{ $t('reset_system_permissions_to') }}
-				<button @click="resetActive = 'minimum'">{{ $t('app_access_minimum') }}</button>
+			<span v-if="systemVisible && appAccess" class="reset-toggle">
+				{{ t('reset_system_permissions_to') }}
+				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
 				/
-				<button @click="resetActive = 'recommended'">{{ $t('recommended_defaults') }}</button>
+				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
 			</span>
 		</div>
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
-		<v-dialog @toggle="resetActive = false" :active="!!resetActive" @esc="resetActive = false">
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
-					{{ $t('reset_system_permissions_copy') }}
+					{{ t('reset_system_permissions_copy') }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button @click="resetActive = false" secondary>{{ $t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions(resetActive === 'recommended')" :loading="resetting">
-						{{ $t('reset') }}
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
+						{{ t('reset') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -63,14 +63,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, provide, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, ref, provide, watch } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -90,14 +92,19 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t } = useI18n();
+
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
+			orderBy(
+				collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+				'name'
+			)
 		);
 
 		const systemVisible = ref(false);
@@ -113,6 +120,7 @@ export default defineComponent({
 		provide('refresh-permissions', fetchPermissions);
 
 		return {
+			t,
 			systemVisible,
 			regularCollections,
 			systemCollections,
@@ -150,7 +158,7 @@ export default defineComponent({
 					const response = await api.get('/permissions', { params });
 
 					permissions.value = response.data.data;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;
@@ -169,7 +177,7 @@ export default defineComponent({
 						if (permission.id === id) return response.data.data;
 						return permission;
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
@@ -209,7 +217,7 @@ export default defineComponent({
 					await fetchPermissions();
 
 					resetActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					resetError.value = err;
 				} finally {
 					resetting.value = false;

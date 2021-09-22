@@ -1,25 +1,26 @@
 <template>
 	<v-notice v-if="!collectionField && !collection" type="warning">
-		{{ $t('collection_field_not_setup') }}
+		{{ t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
-		{{ $t('select_a_collection') }}
+		{{ t('select_a_collection') }}
 	</v-notice>
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@input="$listeners.input"
-		:value="value"
+		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
-		:placeholder="placeholder"
+		:placeholder="placeholder || t('select_a_field')"
+		@update:model-value="$emit('input', $event)"
 	/>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject, ref, PropType } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, inject, ref, PropType, watch } from 'vue';
 import { useFieldsStore } from '@/stores';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 
 export default defineComponent({
 	props: {
@@ -51,22 +52,38 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		allowPrimaryKey: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props) {
+	emits: ['input'],
+	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const fieldsStore = useFieldsStore();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
+		const collection = computed(() => values.value[props.collectionField] || props.collection);
+
 		const fields = computed(() => {
 			if (!props.collectionField && !props.collection) return [];
-			return fieldsStore.getFieldsForCollection(values.value[props.collectionField] || props.collection);
+			return fieldsStore.getFieldsForCollection(collection.value);
+		});
+
+		// Reset value whenever the chosen collection changes
+		watch(collection, (newCol, oldCol) => {
+			if (oldCol !== null && newCol !== oldCol) {
+				emit('input', null);
+			}
 		});
 
 		const selectItems = computed(() =>
 			fields.value.map((field: Field) => {
 				let disabled = false;
 
-				if (field?.schema?.is_primary_key === true) disabled = true;
+				if (props.allowPrimaryKey === false && field?.schema?.is_primary_key === true) disabled = true;
 				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
 
 				return {
@@ -77,7 +94,7 @@ export default defineComponent({
 			})
 		);
 
-		return { selectItems, values, fields };
+		return { t, selectItems, values, fields };
 	},
 });
 </script>

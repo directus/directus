@@ -5,16 +5,18 @@
 Directus requires two things to run: [Node.js](https://nodejs.dev) and a Database. For both these system requirements,
 we aim to support the current LTS release (and newer).
 
-To run Directus, you currently need Node 12.12 or newer, and one of the following databases:
+To run Directus, you currently need Node 12.20 or newer, and one of the following databases:
 
-| Database      | Version |
-| ------------- | ------- |
-| PostgreSQL    | 10+     |
-| MySQL         | 5.7.8+  |
-| SQLite        | 3+      |
-| MS-SQL Server | 13.0+   |
-| OracleDB      | 19+     |
-| MariaDB       | 10.2+   |
+| Database              | Version |
+| --------------------- | ------- |
+| PostgreSQL            | 10+     |
+| MySQL                 | 5.7.8+  |
+| SQLite                | 3+      |
+| MS-SQL Server         | 13.0+   |
+| OracleDB<sup>\*</sup> | 19+     |
+| MariaDB               | 10.2+   |
+
+<sup>\*</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
 
 ::: tip Variants
 
@@ -76,3 +78,7 @@ By default, the `create-directus-project` tool will set the file permissions of 
 (0640). If you run Directus from a separate user on your machine, make sure these permissions are correct.
 
 :::
+
+## Configure / Update / Upgrade your Project
+
+See the [Project Guide](/guides/projects/#upgrading-updating-a-project) to learn how to maintain your project further.

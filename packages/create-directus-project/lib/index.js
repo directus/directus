@@ -10,6 +10,7 @@ const ora = require('ora');
 
 const pkg = require('../package.json');
 const checkRequirements = require('./check-requirements');
+const checkForUpdate = require('update-check');
 
 const program = new commander.Command(pkg.name);
 
@@ -29,6 +30,7 @@ async function create(directory) {
 		const stat = await fse.stat(rootPath);
 
 		if (stat.isDirectory() === false) {
+			// eslint-disable-next-line no-console
 			console.log(`Destination ${chalk.red(directory)} already exists and is not a directory.`);
 			process.exit(1);
 		}
@@ -36,6 +38,7 @@ async function create(directory) {
 		const files = await fse.readdir(rootPath);
 
 		if (files.length > 0) {
+			// eslint-disable-next-line no-console
 			console.log(`Destination ${chalk.red(directory)} already exists and is not an empty directory.`);
 			process.exit(1);
 		}
@@ -54,22 +57,63 @@ async function create(directory) {
 
 	const spinner = ora('Installing Directus').start();
 
-	await execa('npm', ['init', '-y'], {
-		cwd: rootPath,
-		stdin: 'ignore',
-	});
+	try {
+		await execa('npm', ['init', '-y'], {
+			cwd: rootPath,
+			stdin: 'ignore',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
 
-	await execa('npm', ['install', 'directus', '--production', '--no-optional'], {
-		cwd: rootPath,
-		stdin: 'ignore',
-	});
+	try {
+		await execa('npm', ['install', 'directus', '--production', '--no-optional'], {
+			cwd: rootPath,
+			stdin: 'ignore',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
 
 	spinner.stop();
 
-	await execa('npx', ['directus', 'init'], {
-		cwd: rootPath,
-		stdio: 'inherit',
-	});
+	try {
+		await execa('npx', ['directus', 'init'], {
+			cwd: rootPath,
+			stdio: 'inherit',
+		});
+	} catch (err) {
+		spinner.fail();
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+		process.exit(1);
+	}
+
+	let update;
+
+	try {
+		update = await checkForUpdate(pkg);
+	} catch (err) {
+		// eslint-disable-next-line no-console
+		console.log(`Error: ${err.stderr}`);
+	}
+
+	if (update) {
+		// eslint-disable-next-line no-console
+		console.log();
+		// eslint-disable-next-line no-console
+		console.log(chalk.yellow.bold(`A new version of \`${pkg.name}\` is available!`));
+		// eslint-disable-next-line no-console
+		console.log('You can update by running: ' + chalk.cyan(`npm i -g ${pkg.name}@latest`));
+		// eslint-disable-next-line no-console
+		console.log();
+	}
 
 	process.exit(0);
 }

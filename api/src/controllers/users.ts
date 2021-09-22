@@ -38,7 +38,7 @@ router.post(
 				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: item };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -86,7 +86,7 @@ router.get(
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				res.locals.payload = { data: { id: req.accountability.user } };
 				return next();
@@ -177,7 +177,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -203,7 +203,7 @@ router.patch(
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -296,7 +296,7 @@ router.post(
 );
 
 router.post(
-	'/me/tfa/enable/',
+	'/me/tfa/generate/',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
@@ -317,9 +317,36 @@ router.post(
 		});
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
-		const { url, secret } = await service.enableTFA(req.accountability.user);
+		const { url, secret } = await service.generateTFA(req.accountability.user);
 
 		res.locals.payload = { data: { secret, otpauth_url: url } };
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/me/tfa/enable/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsException();
+		}
+
+		if (!req.body.secret) {
+			throw new InvalidPayloadException(`"secret" is required`);
+		}
+
+		if (!req.body.otp) {
+			throw new InvalidPayloadException(`"otp" is required`);
+		}
+
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
+
 		return next();
 	}),
 	respond

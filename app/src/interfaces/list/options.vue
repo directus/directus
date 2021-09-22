@@ -1,38 +1,48 @@
 <template>
 	<div class="grid">
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('template') }}</p>
-			<v-input class="input" v-model="template" :placeholder="`{{ field }}`" />
+			<p class="type-label">{{ t('template') }}</p>
+			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="$t('create_new')" />
+			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
+			<v-input v-model="addLabel" class="input" :placeholder="t('create_new')" />
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
-			<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
+			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
+			<repeater
+				:value="repeaterValue"
+				:template="`{{ field }} — {{ interface }}`"
+				:fields="repeaterFields"
+				@input="repeaterValue = $event"
+			/>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './list.vue';
-import { Field, FieldMeta } from '@/types';
-import i18n from '@/lang';
+import { Field, FieldMeta } from '@directus/shared/types';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
+import { DeepPartial } from '@directus/shared/types';
+import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { Repeater },
 	props: {
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 	},
+	emits: ['input'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const repeaterValue = computed({
 			get() {
 				return props.value?.fields?.map((field: Field) => field.meta);
@@ -54,7 +64,7 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
-				name: i18n.tc('field', 1),
+				name: t('field', 1),
 				field: 'field',
 				type: 'string',
 				meta: {
@@ -64,13 +74,13 @@ export default defineComponent({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: i18n.t('interfaces.list.field_name_placeholder'),
+						placeholder: t('interfaces.list.field_name_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.t('field_width'),
+				name: t('field_width'),
 				field: 'width',
 				type: 'string',
 				meta: {
@@ -81,11 +91,11 @@ export default defineComponent({
 						choices: [
 							{
 								value: 'half',
-								text: i18n.t('half_width'),
+								text: t('half_width'),
 							},
 							{
 								value: 'full',
-								text: i18n.t('full_width'),
+								text: t('full_width'),
 							},
 						],
 					},
@@ -93,7 +103,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.t('type'),
+				name: t('type'),
 				field: 'type',
 				type: 'string',
 				meta: {
@@ -101,13 +111,13 @@ export default defineComponent({
 					width: 'half',
 					sort: 4,
 					options: {
-						choices: fieldTypes,
+						choices: translate(fieldTypes),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.t('interface'),
+				name: t('interface_label'),
 				field: 'interface',
 				type: 'string',
 				meta: {
@@ -121,7 +131,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.t('note'),
+				name: t('note'),
 				field: 'note',
 				type: 'string',
 				meta: {
@@ -129,13 +139,13 @@ export default defineComponent({
 					width: 'full',
 					sort: 6,
 					options: {
-						placeholder: i18n.t('interfaces.list.field_note_placeholder'),
+						placeholder: t('interfaces.list.field_note_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.t('options'),
+				name: t('options'),
 				field: 'options',
 				type: 'string',
 				meta: {
@@ -173,7 +183,7 @@ export default defineComponent({
 			},
 		});
 
-		return { repeaterValue, repeaterFields, template, addLabel };
+		return { t, repeaterValue, repeaterFields, template, addLabel };
 	},
 });
 </script>

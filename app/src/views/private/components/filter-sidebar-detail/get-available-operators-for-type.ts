@@ -1,6 +1,7 @@
 import { OperatorType } from './types';
+import { Type } from '@directus/shared/types';
 
-export default function getAvailableOperatorsForType(type: string): OperatorType {
+export default function getAvailableOperatorsForType(type: Type): OperatorType {
 	/**
 	 * @NOTE
 	 * In the filter, you can't filter on the relational field itself, so we don't have to account
@@ -10,49 +11,69 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 	switch (type) {
 		// Text
 		case 'binary':
-		case 'json':
-		case 'array':
-		case 'status':
-		case 'slug':
-		case 'lang':
 		case 'hash':
 		case 'string':
 			return {
-				type: 'text',
-				operators: ['contains', 'ncontains', 'eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+				type,
+				operators: [
+					'contains',
+					'ncontains',
+					'starts_with',
+					'nstarts_with',
+					'ends_with',
+					'nends_with',
+					'eq',
+					'neq',
+					'empty',
+					'nempty',
+					'null',
+					'nnull',
+					'in',
+					'nin',
+				],
 			};
+		// JSON
+		case 'json':
+			return {
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull', 'in', 'nin'],
+			};
+		// UUID
 		case 'uuid':
 			return {
-				type: 'text',
-				operators: ['eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull', 'in', 'nin'],
 			};
 		// Boolean
 		case 'boolean':
 			return {
-				type: 'checkbox',
-				operators: ['eq', 'neq', 'empty', 'nempty'],
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull'],
 			};
 		// Numbers
 		case 'integer':
 		case 'decimal':
-		case 'sort':
 			return {
-				type: 'number',
-				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
+				type,
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'],
 			};
 		// Datetime
-		case 'datetime':
+		case 'dateTime':
 		case 'date':
 		case 'time':
-		case 'datetime_created':
-		case 'datetime_updated':
 			return {
-				type: 'datetime',
-				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
+				type,
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'],
+			};
+		// Geometry
+		case 'geometry':
+			return {
+				type,
+				operators: ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'],
 			};
 		default:
 			return {
-				type: 'unknown',
+				type,
 				operators: [
 					'eq',
 					'neq',
@@ -66,6 +87,8 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 					'nbetween',
 					'empty',
 					'nempty',
+					'null',
+					'nnull',
 					'in',
 					'nin',
 				],

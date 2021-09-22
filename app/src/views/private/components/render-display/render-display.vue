@@ -7,10 +7,10 @@
 		:text="displayInfo.handler(value, options, { type })"
 	/>
 	<component
-		v-else
 		:is="`display-${display}`"
+		v-else
 		v-bind="options"
-		:interface="$props.interface"
+		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
 		:type="type"
@@ -20,10 +20,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig } from '@/displays/types';
+import { DisplayConfig } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { ValueNull },

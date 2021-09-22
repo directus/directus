@@ -1,14 +1,12 @@
 <template>
 	<component
 		:is="component"
-		active-class="active"
 		class="v-list-item"
-		:exact="exact"
-		:to="to"
+		:to="to !== '' ? to : undefined"
 		:class="{
-			active,
+			active: isActiveRoute,
 			dense,
-			link: isClickable,
+			link: isLink,
 			disabled,
 			dashed,
 			block,
@@ -16,17 +14,18 @@
 		}"
 		:href="href"
 		:download="download"
-		:target="component === 'a' ? '_blank' : null"
-		v-on="disabled === false && $listeners"
+		:target="component === 'a' ? '_blank' : undefined"
+		@click="onClick"
 	>
 		<slot />
 	</component>
 </template>
 
 <script lang="ts">
-import { Location } from 'vue-router';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { RouteLocation, useLink, useRoute } from 'vue-router';
+import { defineComponent, PropType, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -39,20 +38,24 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
-			default: null,
+			type: [String, Object] as PropType<string | RouteLocation>,
+			default: '',
 		},
 		href: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
-		active: {
+		clickable: {
 			type: Boolean,
 			default: false,
+		},
+		active: {
+			type: Boolean,
+			default: undefined,
 		},
 		dashed: {
 			type: Boolean,
@@ -62,9 +65,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		query: {
+			type: Boolean,
+			default: false,
+		},
 		download: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		value: {
 			type: [String, Number],
@@ -75,8 +82,13 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners }) {
-		const component = computed<string>(() => {
+	emits: ['click'],
+	setup(props, { emit }) {
+		const route = useRoute();
+
+		const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
+		const component = computed(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
 			return 'li';
@@ -86,9 +98,30 @@ export default defineComponent({
 			value: props.value,
 		});
 
-		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));
+		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
 
-		return { component, isClickable };
+		const isActiveRoute = computed(() => {
+			if (props.active !== undefined) return props.active;
+
+			if (props.to) {
+				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+				if (!props.exact) {
+					return isActive.value && isQueryActive;
+				} else {
+					return isExactActive.value && isQueryActive;
+				}
+			}
+
+			return false;
+		});
+
+		return { component, isLink, isActiveRoute, onClick };
+
+		function onClick(event: PointerEvent) {
+			if (props.disabled === true) return;
+			emit('click', event);
+		}
 	},
 });
 </script>
@@ -97,14 +130,16 @@ export default defineComponent({
 body {
 	--v-list-item-padding-large: 0 8px;
 	--v-list-item-padding: 0 8px 0 calc(8px + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-large: 4px 0;
+	--v-list-item-margin-large: 2px 0;
 	--v-list-item-margin: 2px 0;
 	--v-list-item-min-width: none;
 	--v-list-item-max-width: none;
-	--v-list-item-min-height-large: 40px;
+	--v-list-item-min-height-large: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
+	--v-list-item-border-color: var(--border-subdued);
+	--v-list-item-border-color-hover: var(--border-normal);
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
@@ -177,56 +212,57 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-text-overflow {
+		:deep(.v-text-overflow) {
 			color: var(--foreground-normal);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-text-overflow {
+			:deep(.v-text-overflow) {
 				color: var(--primary);
 			}
 		}
 	}
 
 	&.block {
+		--v-list-item-border-color: var(--border-subdued);
+		--v-list-item-background-color: var(--background-subdued);
+		--v-list-item-background-color-hover: var(--background-subdued);
+		--v-icon-color: var(--foreground-subdued);
+
 		position: relative;
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
 		padding: 8px;
-		background-color: var(--background-subdued);
-		border: 2px solid var(--border-subdued);
+		background-color: var(--v-list-item-background-color);
+		border: var(--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
-		.v-icon {
-			color: var(--foreground-subdued);
+		:slotted(.drag-handle) {
+			cursor: grab;
 
 			&:hover {
-				color: var(--foreground-normal);
+				color: var(--foreground-color);
 			}
 		}
 
-		.drag-handle {
-			cursor: grab;
-		}
-
-		.drag-handle:active {
+		:slotted(.drag-handle:active) {
 			cursor: grabbing;
 		}
 
-		.spacer {
+		:slotted(.spacer) {
 			flex-grow: 1;
 		}
 
 		&:hover {
-			background-color: var(--background-subdued);
-			border: 2px solid var(--border-normal);
+			background-color: var(--v-list-item-background-color-hover);
+			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}
 
 		&.sortable-chosen {
-			border: 2px solid var(--primary) !important;
+			border: var(--border-width) solid var(--primary) !important;
 		}
 
 		& + & {
