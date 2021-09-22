@@ -2,7 +2,9 @@
 	<div class="timeline">
 		<div class="header">
 			<v-icon name="chevron_left" @click="pageSync -= 1" />
-			<span class="timespan">{{ format(startDate, 'd MMM') }} - {{ format(endDate, 'd MMM') }}</span>
+			<span v-if="startDate && endDate" class="timespan">
+				{{ format(startDate, 'd MMM') }} - {{ format(endDate, 'd MMM') }}
+			</span>
 			<v-icon name="chevron_right" @click="pageSync += 1" />
 		</div>
 		<div class="events">
@@ -76,11 +78,16 @@ export default defineComponent({
 
 		const pageSync = useSync(props, 'page', emit);
 
-		const endDate = computed(() => new Date(props.days[0].year, props.days[0].month, props.days[0].day));
+		const endDate = computed(() => {
+			if (props.days.length === 0) return;
+			const day = props.days[0];
+			return new Date(day.year, day.month, day.day);
+		});
 
 		const startDate = computed(() => {
-			const endDay = props.days[props.days.length - 1];
-			return new Date(endDay.year, endDay.month, endDay.day);
+			if (props.days.length === 0) return;
+			const day = props.days.slice(-1)[0];
+			return new Date(day.year, day.month, day.day);
 		});
 
 		return { t, pageSync, format, startDate, endDate };

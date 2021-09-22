@@ -87,12 +87,12 @@ export default defineComponent({
 
 		const { events, loading } = props.useEvents(day, limit, visible);
 
-		const eventsLeft = computed(() => day.value.event_count - events.value.length);
-
 		const placeholderCount = computed(() => {
 			if (loading.value === false && visible.value) return 0;
 			return limit.value - events.value.length;
 		});
+
+		const eventsLeft = computed(() => day.value.event_count - events.value.length - placeholderCount.value);
 
 		const updateVisibility = throttle(() => {
 			if (visible.value) return;
@@ -205,7 +205,7 @@ export default defineComponent({
 			.title {
 				.v-skeleton-loader {
 					width: 300px;
-					height: 16px;
+					height: 20.4px;
 				}
 
 				.template.v-skeleton-loader {
