@@ -50,8 +50,7 @@ export class AuthenticationService {
 	 * to handle password existence checks elsewhere
 	 */
 	async authenticate(
-		options: AuthenticateOptions,
-		...args: any[]
+		options: AuthenticateOptions
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
 		const { identifier, password, ip, userAgent, otp } = options;
 
@@ -146,7 +145,7 @@ export class AuthenticationService {
 
 		if (password !== undefined) {
 			try {
-				await provider.verify({ ...user }, password, ...args);
+				await provider.verify({ ...user }, password);
 			} catch (e) {
 				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);

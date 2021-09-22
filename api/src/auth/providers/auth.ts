@@ -34,10 +34,9 @@ export default abstract class Auth {
 	 *
 	 * @param user User information
 	 * @param password User password
-	 * @param args Optional args
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, password?: string, ...args: any[]): void;
+	abstract verify(user: User, password?: string): void;
 
 	/**
 	 * Handle user session refresh
