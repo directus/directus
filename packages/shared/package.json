@@ -39,7 +39,9 @@
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "rimraf ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental",
-    "prepublishOnly": "npm run cleanup && npm run build"
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"prepublishOnly": "npm run cleanup && npm run build"
 	},
 	"author": "Nicola Krumschmidt",
 	"maintainers": [
