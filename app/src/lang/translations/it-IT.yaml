@@ -53,8 +53,10 @@ required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
 create_preset: Crea Preset
+create_panel: Crea pannello
 create_role: Crea ruolo
 create_user: Crea utente
+delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 invite_users: Invita utenti
 email_examples: "admin{'@'}example.com, user{'@'}example.com..."
@@ -159,9 +161,14 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Linguaggio
+aggregate_function: Funzione di aggregazione
+aggregate_precision: Precisione dell'aggregazione
+group_aggregation: Raggruppamento
+group_precision: Precisione raggruppamento
 global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
+show_zero: Mostra zero
 exposure: Esposizione
 shutter: Otturatore
 iso: ISO
