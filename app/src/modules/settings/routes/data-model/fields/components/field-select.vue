@@ -48,19 +48,25 @@
 				</template>
 			</draggable>
 
-			<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
+			<v-input v-else class="field" :class="{ hidden }" readonly>
 				<template #prepend>
 					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 				</template>
 
 				<template #input>
-					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
-						<span class="name">
-							{{ field.field }}
-							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
-						</span>
-						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+					<div
+						v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name"
+						class="label"
+						@click="openFieldDetail"
+					>
+						<div class="label-inner">
+							<span class="name">
+								{{ field.field }}
+								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
+							</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+						</div>
 					</div>
 				</template>
 
@@ -456,24 +462,33 @@ export default defineComponent({
 	}
 
 	.label {
+		display: flex;
 		flex-grow: 1;
+		align-items: center;
+		align-self: stretch;
 		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
+		cursor: pointer;
 
-		.name {
-			font-family: var(--family-monospace);
-		}
+		.label-inner {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 
-		.interface {
-			display: none;
-			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+			.name {
+				margin-right: 12px;
+				font-family: var(--family-monospace);
+			}
 
-			@media (min-width: 600px) {
-				display: initial;
+			.interface {
+				display: none;
+				color: var(--foreground-subdued);
+				font-family: var(--family-monospace);
+				opacity: 0;
+				transition: opacity var(--fast) var(--transition);
+
+				@media (min-width: 600px) {
+					display: initial;
+				}
 			}
 		}
 	}

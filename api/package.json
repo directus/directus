@@ -132,7 +132,7 @@
 		"openapi3-ts": "^2.0.0",
 		"ora": "^5.4.0",
 		"otplib": "^12.0.1",
-		"pino": "6.13.2",
+		"pino": "6.13.3",
 		"pino-colada": "^2.1.0",
 		"pino-http": "5.8.0",
 		"prettier": "^2.3.1",
