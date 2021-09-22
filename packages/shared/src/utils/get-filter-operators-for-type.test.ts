@@ -22,6 +22,7 @@ describe('', () => {
 			'nin',
 		]);
 	});
+
 	it('returns the filter operators for boolean', () => {
 		expect(getFilterOperatorsForType(TYPES[2])).toStrictEqual(['eq', 'neq', 'null', 'nnull']);
 	});

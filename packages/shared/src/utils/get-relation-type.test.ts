@@ -19,6 +19,7 @@ describe('getRelationType', () => {
 		} as Relation;
 		expect(getRelationType({ relation: mockRelation, collection: 'test', field: 'testField' })).toBe('m2a');
 	});
+
 	it('returns o2m when related_collection is the same as collection and field', () => {
 		const mockRelation = {
 			collection: 'test',

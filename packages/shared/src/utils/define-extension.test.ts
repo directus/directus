@@ -29,18 +29,23 @@ describe('define-extensions', () => {
 	it('return an interface config', () => {
 		expect(defineInterface(interfaceConfig)).toBe(interfaceConfig);
 	});
+
 	it('return a display config', () => {
 		expect(defineDisplay(displayConfig)).toBe(displayConfig);
 	});
+
 	it('return a layout config', () => {
 		expect(defineLayout(layoutConfig)).toBe(layoutConfig);
 	});
+
 	it('return a config', () => {
 		expect(defineModule(interfaceConfig)).toBe(interfaceConfig);
 	});
+
 	it('return a hook config', () => {
 		expect(defineHook(hookHandler)).toBe(hookHandler);
 	});
+
 	it('return an endpoint config', () => {
 		expect(defineEndpoint(endpointConfig)).toBe(endpointConfig);
 	});
