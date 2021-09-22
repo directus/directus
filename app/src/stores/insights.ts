@@ -15,8 +15,8 @@ export const useInsightsStore = defineStore({
 
 			this.dashboards = response.data.data;
 		},
-		dehydrate() {
-			this.reset();
+		async dehydrate() {
+			this.$reset();
 		},
 	},
 });
