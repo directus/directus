@@ -4,101 +4,168 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 
 ## v9.0.0-rc.94 (September 22, 2021)
 
-### 📈  Insights Module
+### 📈 Insights Module
 
-This version includes a beta of the much requested Insights module and Aggregation & Grouping capabilities in the API. You can enable this new module under Project Settings.
+This version includes a beta of the much requested Insights module and Aggregation & Grouping capabilities in the API.
+You can enable this new module under Project Settings.
 
 ### :sparkles: New Features
 
 - **App**
-  - [#8129](https://github.com/directus/directus/pull/8129) List panel ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8009](https://github.com/directus/directus/pull/8009) Add Insights Module & API Aggregation Functionality ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8129](https://github.com/directus/directus/pull/8129) List panel
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8009](https://github.com/directus/directus/pull/8009) Add Insights Module & API Aggregation Functionality
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
 - **API**
-  - [#8009](https://github.com/directus/directus/pull/8009) Add Insights Module & API Aggregation Functionality ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#7906](https://github.com/directus/directus/pull/7906) Add support for custom claims before issuing a JWT. ([@joelbqz](https://github.com/joelbqz))
+  - [#8009](https://github.com/directus/directus/pull/8009) Add Insights Module & API Aggregation Functionality
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7906](https://github.com/directus/directus/pull/7906) Add support for custom claims before issuing a JWT.
+    ([@joelbqz](https://github.com/joelbqz))
 - **Extensions**
-  - [#7856](https://github.com/directus/directus/pull/7856) Add extensions-sdk watch build option ([@Moeriki](https://github.com/Moeriki))
+  - [#7856](https://github.com/directus/directus/pull/7856) Add extensions-sdk watch build option
+    ([@Moeriki](https://github.com/Moeriki))
 
 ### :rocket: Improvements
 
 - **App**
-  - [#8240](https://github.com/directus/directus/pull/8240) Add divider for modules section in project settings ([@licitdev](https://github.com/licitdev))
-  - [#8225](https://github.com/directus/directus/pull/8225) Allow links with custom URL schemes ([@licitdev](https://github.com/licitdev))
-  - [#8180](https://github.com/directus/directus/pull/8180) Change some API calls to use getEndpoint utility ([@azrikahar](https://github.com/azrikahar))
-  - [#8170](https://github.com/directus/directus/pull/8170) Fix having more than 100 languages ([@Nitwel](https://github.com/Nitwel))
-  - [#8097](https://github.com/directus/directus/pull/8097) add error handling for image component ([@azrikahar](https://github.com/azrikahar))
-  - [#8069](https://github.com/directus/directus/pull/8069) Display error when image exceeds `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` limit ([@azrikahar](https://github.com/azrikahar))
-  - [#8051](https://github.com/directus/directus/pull/8051) Show selected items in drawer collection ([@joselcvarela](https://github.com/joselcvarela))
-  - [#7962](https://github.com/directus/directus/pull/7962) Ensure menus closes when another one gets opened ([@azrikahar](https://github.com/azrikahar))
-  - [#6303](https://github.com/directus/directus/pull/6303) Improvement/revision pagination ([@masterwendu](https://github.com/masterwendu))
+  - [#8240](https://github.com/directus/directus/pull/8240) Add divider for modules section in project settings
+    ([@licitdev](https://github.com/licitdev))
+  - [#8225](https://github.com/directus/directus/pull/8225) Allow links with custom URL schemes
+    ([@licitdev](https://github.com/licitdev))
+  - [#8180](https://github.com/directus/directus/pull/8180) Change some API calls to use getEndpoint utility
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8170](https://github.com/directus/directus/pull/8170) Fix having more than 100 languages
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8097](https://github.com/directus/directus/pull/8097) add error handling for image component
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8069](https://github.com/directus/directus/pull/8069) Display error when image exceeds
+    `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION` limit ([@azrikahar](https://github.com/azrikahar))
+  - [#8051](https://github.com/directus/directus/pull/8051) Show selected items in drawer collection
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#7962](https://github.com/directus/directus/pull/7962) Ensure menus closes when another one gets opened
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#6303](https://github.com/directus/directus/pull/6303) Improvement/revision pagination
+    ([@masterwendu](https://github.com/masterwendu))
 - **API**
-  - [#8193](https://github.com/directus/directus/pull/8193) Fix errors thrown in CRON hook not caught ([@licitdev](https://github.com/licitdev))
-  - [#8134](https://github.com/directus/directus/pull/8134) Fix incorrect env ASSETS_TRANSFORM_MAX_CONCURRENT ([@joselcvarela](https://github.com/joselcvarela))
+  - [#8193](https://github.com/directus/directus/pull/8193) Fix errors thrown in CRON hook not caught
+    ([@licitdev](https://github.com/licitdev))
+  - [#8134](https://github.com/directus/directus/pull/8134) Fix incorrect env ASSETS_TRANSFORM_MAX_CONCURRENT
+    ([@joselcvarela](https://github.com/joselcvarela))
 
 ### :bug: Bug Fixes
 
 - **App**
-  - [#8248](https://github.com/directus/directus/pull/8248) Only apply conditional variables in use ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8201](https://github.com/directus/directus/pull/8201) Fix docs module routes from triggering auth refresh ([@licitdev](https://github.com/licitdev))
-  - [#8197](https://github.com/directus/directus/pull/8197) Enable split view only on +2 languages ([@Nitwel](https://github.com/Nitwel))
-  - [#8174](https://github.com/directus/directus/pull/8174) Fix translation interface on new items ([@Nitwel](https://github.com/Nitwel))
-  - [#8169](https://github.com/directus/directus/pull/8169) Fix blank repeater item creation when cancelled ([@licitdev](https://github.com/licitdev))
-  - [#8158](https://github.com/directus/directus/pull/8158) Prevent unsaved changes dialog from appearing after item is deleted ([@azrikahar](https://github.com/azrikahar))
-  - [#8157](https://github.com/directus/directus/pull/8157) Fixed readonly repeater fields from sorting ([@licitdev](https://github.com/licitdev))
-  - [#8130](https://github.com/directus/directus/pull/8130) Fix module bar relative links from opening externally ([@licitdev](https://github.com/licitdev))
-  - [#8115](https://github.com/directus/directus/pull/8115) Fixed missing documentation due to directory-tree update ([@licitdev](https://github.com/licitdev))
-  - [#8066](https://github.com/directus/directus/pull/8066) Fix revision drawer for create events ([@azrikahar](https://github.com/azrikahar))
-  - [#7907](https://github.com/directus/directus/pull/7907) Fix automatic replacement of dynamic variables in field conditions. ([@licitdev](https://github.com/licitdev))
+  - [#8248](https://github.com/directus/directus/pull/8248) Only apply conditional variables in use
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8201](https://github.com/directus/directus/pull/8201) Fix docs module routes from triggering auth refresh
+    ([@licitdev](https://github.com/licitdev))
+  - [#8197](https://github.com/directus/directus/pull/8197) Enable split view only on +2 languages
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8174](https://github.com/directus/directus/pull/8174) Fix translation interface on new items
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#8169](https://github.com/directus/directus/pull/8169) Fix blank repeater item creation when cancelled
+    ([@licitdev](https://github.com/licitdev))
+  - [#8158](https://github.com/directus/directus/pull/8158) Prevent unsaved changes dialog from appearing after item is
+    deleted ([@azrikahar](https://github.com/azrikahar))
+  - [#8157](https://github.com/directus/directus/pull/8157) Fixed readonly repeater fields from sorting
+    ([@licitdev](https://github.com/licitdev))
+  - [#8130](https://github.com/directus/directus/pull/8130) Fix module bar relative links from opening externally
+    ([@licitdev](https://github.com/licitdev))
+  - [#8115](https://github.com/directus/directus/pull/8115) Fixed missing documentation due to directory-tree update
+    ([@licitdev](https://github.com/licitdev))
+  - [#8066](https://github.com/directus/directus/pull/8066) Fix revision drawer for create events
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#7907](https://github.com/directus/directus/pull/7907) Fix automatic replacement of dynamic variables in field
+    conditions. ([@licitdev](https://github.com/licitdev))
 - **API**
-  - [#8241](https://github.com/directus/directus/pull/8241) Replace prettier with simple trim ([@rijkvanzanten](https://github.com/rijkvanzanten))
-  - [#8184](https://github.com/directus/directus/pull/8184) Clear collection cache & schema cache on update ([@azrikahar](https://github.com/azrikahar))
-  - [#8149](https://github.com/directus/directus/pull/8149) Fix large integer string used in filters ([@licitdev](https://github.com/licitdev))
-  - [#8117](https://github.com/directus/directus/pull/8117) Fix the port being duplicated in parsed URLs ([@nickrum](https://github.com/nickrum))
-  - [#8103](https://github.com/directus/directus/pull/8103) Prevent null being converted to empty object in deepMap utility function ([@azrikahar](https://github.com/azrikahar))
+  - [#8241](https://github.com/directus/directus/pull/8241) Replace prettier with simple trim
+    ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#8184](https://github.com/directus/directus/pull/8184) Clear collection cache & schema cache on update
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8149](https://github.com/directus/directus/pull/8149) Fix large integer string used in filters
+    ([@licitdev](https://github.com/licitdev))
+  - [#8117](https://github.com/directus/directus/pull/8117) Fix the port being duplicated in parsed URLs
+    ([@nickrum](https://github.com/nickrum))
+  - [#8103](https://github.com/directus/directus/pull/8103) Prevent null being converted to empty object in deepMap
+    utility function ([@azrikahar](https://github.com/azrikahar))
 
 ### :sponge: Optimizations
 
 - **App**
-  - [#8204](https://github.com/directus/directus/pull/8204) Fix auth token refresh to be on first load only ([@licitdev](https://github.com/licitdev))
-  - [#8185](https://github.com/directus/directus/pull/8185) change computed endpoint to getEndpoint utility ([@azrikahar](https://github.com/azrikahar))
-  - [#8148](https://github.com/directus/directus/pull/8148) Consolidate example domains in translations to example.com ([@azrikahar](https://github.com/azrikahar))
+  - [#8204](https://github.com/directus/directus/pull/8204) Fix auth token refresh to be on first load only
+    ([@licitdev](https://github.com/licitdev))
+  - [#8185](https://github.com/directus/directus/pull/8185) change computed endpoint to getEndpoint utility
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#8148](https://github.com/directus/directus/pull/8148) Consolidate example domains in translations to example.com
+    ([@azrikahar](https://github.com/azrikahar))
 
 ### :memo: Documentation
 
-- [#8242](https://github.com/directus/directus/pull/8242) Add documentation for module bar ([@licitdev](https://github.com/licitdev))
-- [#8192](https://github.com/directus/directus/pull/8192) fix(docs): update link in persistence section ([@gokaygurcan](https://github.com/gokaygurcan))
+- [#8242](https://github.com/directus/directus/pull/8242) Add documentation for module bar
+  ([@licitdev](https://github.com/licitdev))
+- [#8192](https://github.com/directus/directus/pull/8192) fix(docs): update link in persistence section
+  ([@gokaygurcan](https://github.com/gokaygurcan))
 
 ### :package: Dependency Updates
 
-- [#8238](https://github.com/directus/directus/pull/8238) Update dependency pino to v6.13.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8234](https://github.com/directus/directus/pull/8234) Update dependency directory-tree to v3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8226](https://github.com/directus/directus/pull/8226) Update dependency sass to v1.42.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8222](https://github.com/directus/directus/pull/8222) Update dependency @vitejs/plugin-vue to v1.9.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8221](https://github.com/directus/directus/pull/8221) Update dependency knex-schema-inspector to v1.6.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8220](https://github.com/directus/directus/pull/8220) Update dependency @rollup/plugin-node-resolve to v13.0.5 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8219](https://github.com/directus/directus/pull/8219) Update dependency @types/inquirer to v8.1.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8218](https://github.com/directus/directus/pull/8218) Update dependency @types/fs-extra to v9.0.13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8217](https://github.com/directus/directus/pull/8217) Update vue monorepo to v3.2.13 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8215](https://github.com/directus/directus/pull/8215) Update dependency @types/codemirror to v5.60.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8205](https://github.com/directus/directus/pull/8205) Update dependency pino-http to v5.8.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8179](https://github.com/directus/directus/pull/8179) Update dependency sass to v1.42.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8178](https://github.com/directus/directus/pull/8178) Update dependency apexcharts to v3.28.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8177](https://github.com/directus/directus/pull/8177) Pin dependency @types/flat to 5.0.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8172](https://github.com/directus/directus/pull/8172) Update typescript-eslint monorepo to v4.31.2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8171](https://github.com/directus/directus/pull/8171) Update dependency codemirror to v5.63.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8168](https://github.com/directus/directus/pull/8168) Update dependency jest to v27.2.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8167](https://github.com/directus/directus/pull/8167) Update dependency dompurify to v2.3.3 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8136](https://github.com/directus/directus/pull/8136) Update dependency vite to v2.5.10 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8135](https://github.com/directus/directus/pull/8135) Update dependency @vitejs/plugin-vue to v1.8.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8131](https://github.com/directus/directus/pull/8131) Update dependency @types/async to v3.2.8 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8126](https://github.com/directus/directus/pull/8126) Update gatsby monorepo to v3.14.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8120](https://github.com/directus/directus/pull/8120) Update vue monorepo to v3.2.12 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8112](https://github.com/directus/directus/pull/8112) Update dependency eslint-plugin-vue to v7.18.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8102](https://github.com/directus/directus/pull/8102) Update dependency date-fns to v2 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8095](https://github.com/directus/directus/pull/8095) Update dependency vite to v2.5.8 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8094](https://github.com/directus/directus/pull/8094) Update dependency npm to v7.24.0 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#8093](https://github.com/directus/directus/pull/8093) Update dependency sass to v1.41.1 ([@renovate[bot]](https://github.com/apps/renovate))
-- [#7776](https://github.com/directus/directus/pull/7776) Update dependency @popperjs/core to v2.10.1 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8238](https://github.com/directus/directus/pull/8238) Update dependency pino to v6.13.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8234](https://github.com/directus/directus/pull/8234) Update dependency directory-tree to v3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8226](https://github.com/directus/directus/pull/8226) Update dependency sass to v1.42.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8222](https://github.com/directus/directus/pull/8222) Update dependency @vitejs/plugin-vue to v1.9.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8221](https://github.com/directus/directus/pull/8221) Update dependency knex-schema-inspector to v1.6.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8220](https://github.com/directus/directus/pull/8220) Update dependency @rollup/plugin-node-resolve to v13.0.5
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8219](https://github.com/directus/directus/pull/8219) Update dependency @types/inquirer to v8.1.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8218](https://github.com/directus/directus/pull/8218) Update dependency @types/fs-extra to v9.0.13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8217](https://github.com/directus/directus/pull/8217) Update vue monorepo to v3.2.13
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8215](https://github.com/directus/directus/pull/8215) Update dependency @types/codemirror to v5.60.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8205](https://github.com/directus/directus/pull/8205) Update dependency pino-http to v5.8.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8179](https://github.com/directus/directus/pull/8179) Update dependency sass to v1.42.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8178](https://github.com/directus/directus/pull/8178) Update dependency apexcharts to v3.28.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8177](https://github.com/directus/directus/pull/8177) Pin dependency @types/flat to 5.0.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8172](https://github.com/directus/directus/pull/8172) Update typescript-eslint monorepo to v4.31.2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8171](https://github.com/directus/directus/pull/8171) Update dependency codemirror to v5.63.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8168](https://github.com/directus/directus/pull/8168) Update dependency jest to v27.2.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8167](https://github.com/directus/directus/pull/8167) Update dependency dompurify to v2.3.3
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8136](https://github.com/directus/directus/pull/8136) Update dependency vite to v2.5.10
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8135](https://github.com/directus/directus/pull/8135) Update dependency @vitejs/plugin-vue to v1.8.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8131](https://github.com/directus/directus/pull/8131) Update dependency @types/async to v3.2.8
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8126](https://github.com/directus/directus/pull/8126) Update gatsby monorepo to v3.14.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8120](https://github.com/directus/directus/pull/8120) Update vue monorepo to v3.2.12
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8112](https://github.com/directus/directus/pull/8112) Update dependency eslint-plugin-vue to v7.18.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8102](https://github.com/directus/directus/pull/8102) Update dependency date-fns to v2
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8095](https://github.com/directus/directus/pull/8095) Update dependency vite to v2.5.8
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8094](https://github.com/directus/directus/pull/8094) Update dependency npm to v7.24.0
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#8093](https://github.com/directus/directus/pull/8093) Update dependency sass to v1.41.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7776](https://github.com/directus/directus/pull/7776) Update dependency @popperjs/core to v2.10.1
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
 ## v9.0.0-rc.93 (September 17, 2021)
 
