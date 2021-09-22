@@ -5,7 +5,7 @@ describe('getFieldsFromTemplate', () => {
 		expect(getFieldsFromTemplate(null)).toStrictEqual([]);
 	});
 	it('returns fields as an array of strings', () => {
-		expect(getFieldsFromTemplate('{{ field }}')).toBe(['field']);
+		expect(getFieldsFromTemplate('{{ field }}')).toStrictEqual(['field']);
 	});
 	// TODO: Cover line 8
 	// it('returns an empty array when passed an array', () => {
