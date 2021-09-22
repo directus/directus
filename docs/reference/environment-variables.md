@@ -129,9 +129,10 @@ No additional configuration required.
 
 ### Redis
 
-| Variable             | Description                                                           | Default Value |
-| -------------------- | --------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| Variable                     | Description                                                           | Default Value |
+| ---------------------------- | --------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_REDIS`         | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| `RATE_LIMITER_REDIS_CLUSTER` | Whether or not to enable Redis Cluster for multiple Redis nodes.      | ---           |
 
 Alternatively, you can provide the individual connection parameters:
 
@@ -177,9 +178,10 @@ No additional configuration required.
 
 ### Redis
 
-| Variable      | Description                                                           | Default Value |
-| ------------- | --------------------------------------------------------------------- | ------------- |
-| `CACHE_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| Variable              | Description                                                           | Default Value |
+| --------------------- | --------------------------------------------------------------------- | ------------- |
+| `CACHE_REDIS`         | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| `CACHE_REDIS_CLUSTER` | Whether or not to enable Redis Cluster for multiple Redis nodes.      | ---           |
 
 Alternatively, you can provide the individual connection parameters:
 
@@ -211,9 +213,10 @@ No additional configuration required.
 
 ### Redis
 
-| Variable        | Description                                                           | Default Value |
-| --------------- | --------------------------------------------------------------------- | ------------- |
-| `SESSION_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| Variable                | Description                                                           | Default Value |
+| ----------------------- | --------------------------------------------------------------------- | ------------- |
+| `SESSION_REDIS`         | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
+| `SESSION_REDIS_CLUSTER` | Whether or not to enable Redis Cluster for multiple Redis nodes.      | ---           |
 
 Alternatively, you can provide the individual connection parameters:
 
