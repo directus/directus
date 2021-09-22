@@ -71,7 +71,7 @@ export default defineComponent({
 			required: true,
 		},
 		primaryKey: {
-			type: String,
+			type: [Number, String],
 			required: true,
 		},
 		languageField: {
@@ -134,7 +134,7 @@ export default defineComponent({
 		});
 
 		const splitViewAvailable = computed(() => {
-			return width.value > 960;
+			return width.value > 960 && languageOptions.value.length > 1;
 		});
 
 		const splitViewEnabled = computed(() => {
@@ -343,6 +343,26 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
+			const value = computed(() => {
+				const pkField = translationsPrimaryKeyField.value;
+
+				if (pkField === null) return [];
+
+				const value = [...items.value.map((item) => item[pkField])] as (number | string | Record<string, any>)[];
+
+				props.value?.forEach((val) => {
+					if (typeof val !== 'object') return;
+					if (pkField in val) {
+						const index = value.findIndex((v) => v === val[pkField]);
+						value[index] = val;
+					} else {
+						value.push(val);
+					}
+				});
+
+				return value;
+			});
+
 			return { items, firstItem, updateValue, secondItem, firstItemInitial, secondItemInitial, loading, error };
 
 			function getExistingValue(langRef: string | number | undefined | Ref<string | number | undefined>) {
@@ -367,9 +387,7 @@ export default defineComponent({
 			}
 
 			async function loadItems() {
-				const pkField = translationsPrimaryKeyField.value;
-
-				if (pkField === null || !props.value || props.value.length === 0) return;
+				if (!translationsRelation.value?.field || props.primaryKey === '+') return;
 
 				loading.value = true;
 
@@ -379,8 +397,8 @@ export default defineComponent({
 							fields: '*',
 							limit: -1,
 							filter: {
-								[pkField]: {
-									_in: props.value,
+								[translationsRelation.value.field]: {
+									_eq: props.primaryKey,
 								},
 							},
 						},
@@ -405,7 +423,7 @@ export default defineComponent({
 
 				if (pkField === null || langField === null) return;
 
-				let copyValue = cloneDeep(props.value ?? []);
+				let copyValue = cloneDeep(value.value ?? []);
 
 				if (pkField in values === false) {
 					const newIndex = copyValue.findIndex((item) => typeof item === 'object' && item[langField] === lang);

@@ -333,6 +333,16 @@ fields:
                     _neq: 'raster'
                 hidden: true
 
+  - field: modules_divider
+    interface: presentation-divider
+    options:
+      icon: view_module
+      title: $t:modules
+    special:
+      - alias
+      - no-data
+    width: full
+
   - field: module_bar
     interface: system-modules
     special: json

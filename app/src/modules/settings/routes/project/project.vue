@@ -44,7 +44,7 @@ export default defineComponent({
 		const settingsStore = useSettingsStore();
 		const serverStore = useServerStore();
 
-		const { fields } = useCollection(ref('directus_settings'));
+		const { fields } = useCollection('directus_settings');
 
 		const initialValues = ref(clone(settingsStore.settings));
 

@@ -264,6 +264,7 @@ no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始�
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
+copy: 複製
 users: 用戶
 activity: 活動
 webhooks: Webhooks
@@ -303,9 +304,9 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
-  UNKNOWN: 未預期的錯誤
   INTERNAL_SERVER_ERROR: 未預期的錯誤
   NOT_NULL_VIOLATION: 值不能為null
+  UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
