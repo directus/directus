@@ -228,9 +228,9 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
-add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
-add_o2m_to_collection: 'Aggiungi One-to-Many a "{collection}"'
-add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
+add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
+add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
+add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -1141,7 +1141,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Collegamenti del pulsante
+    presentation-links: Pulsanti di collegamento
     links: Collegamenti
     description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
@@ -1415,7 +1415,7 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format_title: Formatta il titolo
-    format_title_label: Maiuscole/minuscole automatiche
+    format_title_label: Maiuscole automatiche
     bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
