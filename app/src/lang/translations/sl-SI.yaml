@@ -424,10 +424,10 @@ errors:
   RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
   USER_SUSPENDED: Uporabnik suspendiran
   CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
-  UNKNOWN: Nepričakovana napaka
   UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
+  UNKNOWN: Nepričakovana napaka
 security: Varnost
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...

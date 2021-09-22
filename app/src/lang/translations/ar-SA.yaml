@@ -419,9 +419,9 @@ errors:
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
-  UNKNOWN: خطأ غير متوقع
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  UNKNOWN: خطأ غير متوقع
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...

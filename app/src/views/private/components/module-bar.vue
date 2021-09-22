@@ -10,7 +10,7 @@
 				icon
 				x-large
 				:to="modulePart.to"
-				:href="modulePart.url"
+				:href="modulePart.href"
 				tile
 				:style="
 					modulePart.color
@@ -35,6 +35,7 @@ import ModuleBarAvatar from './module-bar-avatar/';
 import { useSettingsStore } from '@/stores/';
 import { translate } from '@/utils/translate-object-values';
 import { MODULE_BAR_DEFAULT } from '@/constants';
+import { omit } from 'lodash';
 
 export default defineComponent({
 	components: {
@@ -57,7 +58,15 @@ export default defineComponent({
 				})
 				.map((modulePart) => {
 					if (modulePart.type === 'link') {
-						return translate(modulePart);
+						const link = omit<Record<string, any>>(modulePart, ['url']);
+
+						if (modulePart.url.startsWith('http')) {
+							link.href = modulePart.url;
+						} else {
+							link.to = modulePart.url;
+						}
+
+						return translate(link);
 					}
 
 					const module = registeredModules.value.find((module) => module.id === modulePart.id)!;

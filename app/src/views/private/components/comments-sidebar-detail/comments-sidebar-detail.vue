@@ -25,11 +25,10 @@ import { defineComponent, ref } from 'vue';
 import api from '@/api';
 import { Activity, ActivityByDate } from './types';
 import CommentInput from './comment-input.vue';
-import { groupBy } from 'lodash';
+import { groupBy, orderBy } from 'lodash';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
 import CommentItem from './comment-item.vue';
-import { orderBy } from 'lodash';
 
 export default defineComponent({
 	components: { CommentInput, CommentItem },

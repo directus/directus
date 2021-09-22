@@ -423,10 +423,10 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicat detectat
   USER_SUSPENDED: Usuari suspès
   CONTAINS_NULL_VALUES: El camp conté valors nuls
-  UNKNOWN: Error inesperat
   UNPROCESSABLE_ENTITY: Entitat no processable
   INTERNAL_SERVER_ERROR: Error inesperat
   NOT_NULL_VIOLATION: El valor no pot ser null
+  UNKNOWN: Error inesperat
 security: Seguretat
 value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...

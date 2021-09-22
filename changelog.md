@@ -2,17 +2,23 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
-## v9.0.0-rc.93 (September 16, 2021)
+## v9.0.0-rc.93 (September 17, 2021)
 
 ### :sparkles: New Features
 
 - **App**
   - [#8012](https://github.com/directus/directus/pull/8012) Move module setup to Project Settings
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#7727](https://github.com/directus/directus/pull/7727) Add new translations interface
+    ([@jaycammarano](https://github.com/jaycammarano))
 - **API**
   - [#7939](https://github.com/directus/directus/pull/7939) Add native schema migration capabilities
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
   - [#7833](https://github.com/directus/directus/pull/7833) Add ability to customise database errors
+    ([@smilledge](https://github.com/smilledge))
+  - [#7755](https://github.com/directus/directus/pull/7755) Make Argon2.hash parameters configurable to allow for
+    stronger user password hashes. ([@TonyLovesDevOps](https://github.com/TonyLovesDevOps))
+  - [#7675](https://github.com/directus/directus/pull/7675) Allow custom CLI commands to be added by extensions
     ([@smilledge](https://github.com/smilledge))
 
 ### :rocket: Improvements
@@ -24,6 +30,8 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     ([@azrikahar](https://github.com/azrikahar))
   - :warning: [#7830](https://github.com/directus/directus/pull/7830) Add custom JWTs support for static token
     ([@azrikahar](https://github.com/azrikahar))
+  - [#7676](https://github.com/directus/directus/pull/7676) Update logging in CLI commands
+    ([@smilledge](https://github.com/smilledge))
 - **App**
   - [#7974](https://github.com/directus/directus/pull/7974) Prevent v-input append slot from shrinking
     ([@azrikahar](https://github.com/azrikahar))
@@ -40,6 +48,13 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   - [#7913](https://github.com/directus/directus/pull/7913) Enable "Format JSON Value" to display 'geometry'
     ([@vidhav](https://github.com/vidhav))
   - [#7902](https://github.com/directus/directus/pull/7902) remove auto-open feature for info sidebar
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#7811](https://github.com/directus/directus/pull/7811) Map selection behaviour
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#7140](https://github.com/directus/directus/pull/7140) V button color prop
+    ([@jaycammarano](https://github.com/jaycammarano))
+- **sdk**
+  - [#7815](https://github.com/directus/directus/pull/7815) fix type for deep query with underscore prefix
     ([@azrikahar](https://github.com/azrikahar))
 
 ### :bug: Bug Fixes
@@ -69,6 +84,19 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     ([@azrikahar](https://github.com/azrikahar))
   - [#7840](https://github.com/directus/directus/pull/7840) Fix watcher loop and filters not being applied.
     ([@Oreilles](https://github.com/Oreilles))
+  - [#7816](https://github.com/directus/directus/pull/7816) Apply "in" to query even if array is empty
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#7812](https://github.com/directus/directus/pull/7812) Fix map interface controls not showing
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#7801](https://github.com/directus/directus/pull/7801) Use https for openmaptiles fonts.
+    ([@Oreilles](https://github.com/Oreilles))
+  - [#7800](https://github.com/directus/directus/pull/7800) Fix wrong icon ([@Nitwel](https://github.com/Nitwel))
+  - [#7796](https://github.com/directus/directus/pull/7796) Fix allow false as value in filter
+    ([@Nitwel](https://github.com/Nitwel))
+  - [#7794](https://github.com/directus/directus/pull/7794) Datetime interface "Set to now" sets seconds to 0
+    ([@Moeriki](https://github.com/Moeriki))
+  - [#7754](https://github.com/directus/directus/pull/7754) Fix WYSIWYG field not being cleared after "Save and Create
+    New" ([@azrikahar](https://github.com/azrikahar))
 - **API**
   - [#8056](https://github.com/directus/directus/pull/8056) Don't flush schema cache on content update
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
@@ -78,6 +106,12 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     ([@Nitwel](https://github.com/Nitwel))
   - [#7847](https://github.com/directus/directus/pull/7847) fix default of env var EMAIL_MAILGUN_HOST
     ([@mooori](https://github.com/mooori))
+  - [#7820](https://github.com/directus/directus/pull/7820) make csv imports try to parse values to json
+    ([@azrikahar](https://github.com/azrikahar))
+  - [#7816](https://github.com/directus/directus/pull/7816) Apply "in" to query even if array is empty
+    ([@joselcvarela](https://github.com/joselcvarela))
+  - [#7814](https://github.com/directus/directus/pull/7814) Fix return error for GraphQL mutations
+    ([@joselcvarela](https://github.com/joselcvarela))
 - **Extensions**
   - [#7978](https://github.com/directus/directus/pull/7978) Make type-only dependency versions of shared package less
     strict ([@nickrum](https://github.com/nickrum))
@@ -93,6 +127,29 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   - [#7892](https://github.com/directus/directus/pull/7892) fix readme filename in sync-dockerhub-readme.yml
     ([@azrikahar](https://github.com/azrikahar))
 
+### :sponge: Optimizations
+
+- **App**
+  - [#8078](https://github.com/directus/directus/pull/8078) make i18n shared ([@Nitwel](https://github.com/Nitwel))
+  - [#8059](https://github.com/directus/directus/pull/8059) Move some compositons, utils and types to shared
+    ([@Nitwel](https://github.com/Nitwel))
+- **Misc.**
+  - [#8062](https://github.com/directus/directus/pull/8062) Add return type to useFilterFields
+    ([@nickrum](https://github.com/nickrum))
+- **API**
+  - [#8008](https://github.com/directus/directus/pull/8008) Fix type issue in getCacheKey
+    ([@nickrum](https://github.com/nickrum))
+  - [#8005](https://github.com/directus/directus/pull/8005) Replace require.main check with start script
+    ([@nickrum](https://github.com/nickrum))
+  - [#7841](https://github.com/directus/directus/pull/7841) Use node promisify in sqlite database initialization.
+    ([@Oreilles](https://github.com/Oreilles))
+- **shared**
+  - [#7971](https://github.com/directus/directus/pull/7971) Remove unused LAYOUT_SYMBOL constant
+    ([@nickrum](https://github.com/nickrum))
+- **Docker**
+  - [#7889](https://github.com/directus/directus/pull/7889) Add github action for syncing readme to Docker Hub
+    ([@azrikahar](https://github.com/azrikahar))
+
 ### :memo: Documentation
 
 - [#8067](https://github.com/directus/directus/pull/8067) Make default values have consistent formatting
@@ -106,6 +163,8 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   ([@alesvaupotic](https://github.com/alesvaupotic))
 - [#7965](https://github.com/directus/directus/pull/7965) Add missing words to Database Abstraction
   ([@alesvaupotic](https://github.com/alesvaupotic))
+- [#7925](https://github.com/directus/directus/pull/7925) Add possibility to translate Published, Draft and Archived
+  strings ([@jrvidotti](https://github.com/jrvidotti))
 - [#7915](https://github.com/directus/directus/pull/7915) Docs: update actions for file event
   ([@pgegenfurtner](https://github.com/pgegenfurtner))
 - [#7893](https://github.com/directus/directus/pull/7893) fix readme emoji ([@azrikahar](https://github.com/azrikahar))
@@ -117,6 +176,10 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   ([@azrikahar](https://github.com/azrikahar))
 - [#7821](https://github.com/directus/directus/pull/7821) fix minor typo in api-hooks.md
   ([@azrikahar](https://github.com/azrikahar))
+- [#7798](https://github.com/directus/directus/pull/7798) Fix incorrect database exclude tables environment variable in
+  docs. ([@licitdev](https://github.com/licitdev))
+- [#7795](https://github.com/directus/directus/pull/7795) Update modules docs
+  ([@HarunKilic](https://github.com/HarunKilic))
 
 ### :package: Dependency Updates
 
@@ -204,15 +267,12 @@ _Changes marked with a :warning: contain potential breaking changes depending on
   ([@renovate[bot]](https://github.com/apps/renovate))
 - [#7829](https://github.com/directus/directus/pull/7829) Update dependency axios to v0.21.3
   ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7819](https://github.com/directus/directus/pull/7819) Update dependency knex to v0.95.11
+  ([@renovate[bot]](https://github.com/apps/renovate))
+- [#7817](https://github.com/directus/directus/pull/7817) Update dependency pinia to v2.0.0-rc.7
+  ([@renovate[bot]](https://github.com/apps/renovate))
 
-## v9.0.0-rc.92 (September 2, 2021)
-
-### ⚠️ Potential Breaking Changes
-
-- Custom API endpoints no longer use a `/custom` prefix. Please update your usage of custom endpoints to drop the
-  `/custom` prefix See [#7695](https://github.com/directus/directus/pull/7695)
-- Layouts use a revised setup that relies on props instead of `useState`. See
-  [#7489](https://github.com/directus/directus/pull/7489)
+## v9.0.0-rc.92 (September 17, 2021)
 
 ### :sparkles: New Features
 
@@ -226,6 +286,11 @@ _Changes marked with a :warning: contain potential breaking changes depending on
 - **App**
   - [#7605](https://github.com/directus/directus/pull/7605) Add search result highlighting to tree-view interface
     ([@rijkvanzanten](https://github.com/rijkvanzanten))
+  - [#6643](https://github.com/directus/directus/pull/6643) Add "Edit Collection" link to Left Nav context menu
+    ([@Kematia](https://github.com/Kematia))
+- **Extensions**
+  - [#6881](https://github.com/directus/directus/pull/6881) Add support for typescript extensions to extension-sdk
+    ([@nickrum](https://github.com/nickrum))
 
 ### :rocket: Improvements
 
@@ -266,6 +331,8 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     to customize the endpoint subpath ([@nickrum](https://github.com/nickrum))
   - [#7604](https://github.com/directus/directus/pull/7604) Log localhost url on startup so it's clickable in terminals
     ([@zebapy](https://github.com/zebapy))
+  - [#6923](https://github.com/directus/directus/pull/6923) Use root-relative base url for app and extensions
+    ([@nickrum](https://github.com/nickrum))
 
 ### :bug: Bug Fixes
 
@@ -317,7 +384,6 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     collections ([@azrikahar](https://github.com/azrikahar))
   - :warning: [#7489](https://github.com/directus/directus/pull/7489) Rework layout extension component management
     ([@nickrum](https://github.com/nickrum))
-  - Update WYSIWYG styling ([@benhaynes](https://github.com/benhaynes))
 - **Extensions**
   - [#7624](https://github.com/directus/directus/pull/7624) Enable browser module resolution when building app
     extensions ([@nickrum](https://github.com/nickrum))
@@ -330,6 +396,27 @@ _Changes marked with a :warning: contain potential breaking changes depending on
     in geometry helper ([@Oreilles](https://github.com/Oreilles))
   - [#7553](https://github.com/directus/directus/pull/7553) Fix asset transformation `withEnlargement` type
     ([@azrikahar](https://github.com/azrikahar))
+
+### :sponge: Optimizations
+
+- **App**
+  - [#7717](https://github.com/directus/directus/pull/7717) Use self-closing slot tags everywhere
+    ([@nickrum](https://github.com/nickrum))
+  - [#7603](https://github.com/directus/directus/pull/7603) Make the asset url regex unambiguous
+    ([@nickrum](https://github.com/nickrum))
+  - :warning: [#7489](https://github.com/directus/directus/pull/7489) Rework layout extension component management
+    ([@nickrum](https://github.com/nickrum))
+- **Misc.**
+  - [#7713](https://github.com/directus/directus/pull/7713) Expose package.json from shared and extensions-sdk
+    ([@nickrum](https://github.com/nickrum))
+  - [#7654](https://github.com/directus/directus/pull/7654) Explicitly set catch parameters to any type
+    ([@nickrum](https://github.com/nickrum))
+  - [#7640](https://github.com/directus/directus/pull/7640) Fix typescript issues
+    ([@nickrum](https://github.com/nickrum))
+  - [#7617](https://github.com/directus/directus/pull/7617) Fix lint warnings ([@nickrum](https://github.com/nickrum))
+- **Extensions**
+  - :warning: [#7282](https://github.com/directus/directus/pull/7282) Rename extension-sdk to extensions-sdk
+    ([@nickrum](https://github.com/nickrum))
 
 ### :memo: Documentation
 
