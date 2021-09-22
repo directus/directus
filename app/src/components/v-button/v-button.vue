@@ -269,6 +269,10 @@ export default defineComponent({
 	--v-button-color-hover: var(--danger);
 }
 
+.v-button {
+	display: inline-flex;
+}
+
 .v-button.full-width {
 	display: flex;
 	min-width: 100%;

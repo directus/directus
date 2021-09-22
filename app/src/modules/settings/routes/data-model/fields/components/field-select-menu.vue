@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
-			<v-icon clickable name="more_vert" @click.stop="toggle" />
+			<v-icon clickable name="more_vert" @click="toggle" />
 		</template>
 
 		<v-list>

@@ -32,7 +32,6 @@ enter_a_name: Въвеждане на името...
 duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
-limit: Лимит
 group: Групиране
 and: И
 or: Или
@@ -58,8 +57,6 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 create_webhook: Създаване на уеб-кука
 invite_users: Покана към потребители
-email_examples: "admin{'@'}example.com, potrebitel{'@'}example.com..."
-url_example: "https://example.com"
 invite: Покана
 email_already_invited: Вече е изпратена покана в пощата на "{email}"
 emails: E-пощи
@@ -404,6 +401,7 @@ display_template_not_setup: Опциите за показване на шабл
 collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
 select_a_collection: Избор на колекция
 active: Активен
+copy: Копиране
 inactive: Неактивен
 users: Потребители
 activity: Активности
@@ -599,6 +597,7 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+full_screen: Пълен Екран
 image_url: URL на изображение
 alt_text: Алтернативен текст
 media: Медия
@@ -696,7 +695,6 @@ unsaved_changes: Промените не са запазени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
 keep_editing: Връщане за редакция
-page_help_collections_overview: '**Обзор на колекциите** — Показване на всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на записи** — Показване на всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
 page_help_collections_item: >-
@@ -897,7 +895,7 @@ field_options:
     auth_password_policy:
       none_text: Без - не се препоръчва
       weak_text: Слаба - минимум от 8 символа
-      strong_text: Силна - главни, малки, числа и специални символи
+      strong_text: Силна - главни, малки, числа и специални символи 
     storage_asset_presets:
       fit:
         contain_text: Напасване (запазване на съотношението)
@@ -1017,6 +1015,7 @@ delete_field_are_you_sure: >-
 description: Описание
 done: Готово
 duplicate: Дублиране
+limit: Лимит
 email: Е-поща
 embed: Вграждане
 fallback_icon: Резервна икона
@@ -1065,7 +1064,6 @@ require_value_to_be_set: Изисква стойност при задаване
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 start: Начало
 interfaces:
@@ -1435,3 +1433,6 @@ layouts:
     search_this_area: Търсене в тази зона
     clear_data_filter: Изчистване на филтрирането
     clear_location_filter: Изчистване на локацията
+panels:
+  label:
+    name: Етикет

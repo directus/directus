@@ -29,7 +29,6 @@ enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
-limit: Limit
 group: Skupina
 and: A
 or: Nebo
@@ -55,8 +54,6 @@ create_role: Vytvořit roli
 create_user: Vytvořit uživatele
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
 emails: E-mail
@@ -217,6 +214,7 @@ no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
+copy: Kopírovat
 users: Uživatelé
 activity: Aktivita
 webhooks: Webhooky
@@ -381,6 +379,7 @@ delete_field_are_you_sure: >-
 description: Popis
 done: Hotovo
 duplicate: Duplikovat
+limit: Limit
 email: E-mail
 embed: Vložení
 field: Pole | Pole

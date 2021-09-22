@@ -5,7 +5,6 @@ item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
-limit: Limit
 group: Grupa
 and: I
 or: Lub
@@ -31,7 +30,6 @@ create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
-email_examples: "admin@example.com, użytkownik@example.com..."
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
@@ -370,6 +368,7 @@ display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo sko
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
 active: Aktywne
+copy: Kopiuj
 inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
@@ -555,6 +554,7 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+full_screen: Pełny ekran
 image_url: Adres Url obrazu
 alt_text: Tekst alternatywny
 media: Media
@@ -651,7 +651,6 @@ unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
 keep_editing: Kontynuuj edycję
-page_help_collections_overview: '**Przegląd kolekcji** — Lista wszystkich kolekcji, do których masz dostęp.'
 page_help_collections_collection: >-
   **Przeglądaj przedmioty** — Lista wszystkich {collection} elementów, do których masz dostęp. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 page_help_collections_item: >-
@@ -855,6 +854,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Skończone
 duplicate: Zduplikuj
+limit: Limit
 email: E-Mail
 embed: Osadzony
 fallback_icon: Ikona Fallback
@@ -1214,3 +1214,6 @@ layouts:
     end_date_field: Pole daty zakończenia
   map:
     field: Geometria
+panels:
+  label:
+    name: Etykieta

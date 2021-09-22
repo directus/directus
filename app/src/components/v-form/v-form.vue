@@ -71,6 +71,7 @@ import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
 import FormField from './form-field.vue';
 import { validatePayload } from '@directus/shared/utils';
+import { parseFilter } from '@/utils/parse-filter';
 
 type FieldValues = {
 	[field: string]: any;
@@ -245,8 +246,8 @@ export default defineComponent({
 						const matchingCondition = conditions.find((condition) => {
 							if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
-							const errors = validatePayload(condition.rule, values.value, { requireAll: true });
-
+							const rule = parseFilter(condition.rule);
+							const errors = validatePayload(rule, values.value, { requireAll: true });
 							return errors.length === 0;
 						});
 
