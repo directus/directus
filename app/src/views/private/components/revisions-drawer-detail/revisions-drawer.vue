@@ -2,7 +2,7 @@
 	<div>
 		<v-drawer
 			v-model="internalActive"
-			:title="t('item_revision')"
+			:title="title"
 			icon="change_history"
 			:sidebar-label="t(currentTab[0])"
 			@cancel="internalActive = false"
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref } from 'vue';
+import { defineComponent, PropType, computed, ref, watchEffect } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import { Revision } from './types';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
@@ -75,6 +75,10 @@ export default defineComponent({
 
 		const currentTab = ref(['updates_made']);
 
+		const title = computed(() => {
+			return currentRevision.value?.activity.action === 'create' ? t('item_creation') : t('item_revision');
+		});
+
 		const currentRevision = computed(() => {
 			return props.revisions.find((revision) => revision.id === props.current);
 		});
@@ -86,18 +90,29 @@ export default defineComponent({
 			return props.revisions[currentIndex + 1];
 		});
 
-		const tabs = [
-			{
-				text: t('updates_made'),
-				value: 'updates_made',
-			},
-			{
-				text: t('revision_preview'),
-				value: 'revision_preview',
-			},
-		];
+		const tabs = computed(() => {
+			return currentRevision.value?.activity.action === 'create'
+				? [
+						{
+							text: t('creation_preview'),
+							value: 'revision_preview',
+						},
+				  ]
+				: [
+						{
+							text: t('updates_made'),
+							value: 'updates_made',
+						},
+						{
+							text: t('revision_preview'),
+							value: 'revision_preview',
+						},
+				  ];
+		});
 
-		return { t, internalActive, internalCurrent, currentRevision, currentTab, tabs, revert };
+		watchEffect(() => (currentTab.value = [tabs.value[0].value]));
+
+		return { t, internalActive, internalCurrent, title, currentRevision, currentTab, tabs, revert };
 
 		function revert() {
 			if (!currentRevision.value) return;

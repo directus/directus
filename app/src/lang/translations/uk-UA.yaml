@@ -1,12 +1,34 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: Опубліковано
+tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
 maps: Мапи
 item_revision: Перегляд об'єкта
+enter_a_name: Вкажіть назву...
 duplicate_field: Дублювати поле
 half_width: Ширина ряду на половину
 full_width: Повна ширина
-limit: Обмеження
 group: Група
 and: Й
 or: Або
@@ -28,11 +50,12 @@ required: Обов'язкове
 required_for_app_access: Необхідно для доступу в додаток
 requires_value: Потребує значення
 create_preset: Створити шаблон
+create_panel: Створити панель
 create_role: Створити роль
 create_user: Новий користувач
+delete_panel: Видалити панель
 create_webhook: Створити вебхук
 invite_users: Запросити друзів
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
 emails: Електронні адреси
@@ -69,6 +92,8 @@ archive_confirm: Ви впевнені, що хочете додати цей ф
 archive_confirm_count: >-
   Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
 reset_system_permissions_to: 'Скинути налаштування до:'
+unarchive: Розархівувати
+unarchive_confirm: Ви впевнені, що хочете розархівувати цей елемент?
 validationError:
   eq: Значення повинно бути {valid}
   neq: Значення не може бути {invalid}
@@ -276,6 +301,7 @@ delete_field_are_you_sure: >-
 description: Опис
 done: Готово
 duplicate: Дублювати
+limit: Обмеження
 email: Email
 embed: Вбудувати
 field: Поле | Поля

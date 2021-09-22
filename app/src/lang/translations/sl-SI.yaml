@@ -8,7 +8,6 @@ item_revision: Revizija postavke
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
-limit: Omejitev
 group: Skupina
 and: in
 or: ali
@@ -34,7 +33,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
 emails: E-pošte
@@ -373,6 +371,7 @@ display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
 active: Aktivno
+copy: Kopiraj
 inactive: Neaktivno
 users: Uporabniki
 activity: Aktivnost
@@ -567,6 +566,7 @@ toggle: Preklopi
 icon_on: Prikaži ikono
 icon_off: Skrij ikono
 label: Oznaka
+full_screen: Celozaslonski način
 image_url: URL naslov slike
 alt_text: Nadomestno besedilo
 media: Medijska datoteka
@@ -664,7 +664,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_overview: '**Pregled zbirk** - Spisek vseh zbirk, do katerih imate dostop.'
 page_help_collections_collection: >-
   **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
 page_help_collections_item: >-
@@ -954,6 +953,7 @@ delete_field_are_you_sure: >-
 description: Opis
 done: Opravljeno
 duplicate: Dvojnik
+limit: Omejitev
 email: E-pošta
 embed: Vstavi
 fallback_icon: Nadomestna ikona
@@ -1365,3 +1365,6 @@ layouts:
     cluster_maxzoom: Največja povečava za gruče
     field: Geometrija
     invalid_geometry: Neveljavna geometrija
+panels:
+  label:
+    name: Oznaka

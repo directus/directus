@@ -29,7 +29,6 @@ item_revision: 项目调整
 duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
-limit: 限制
 group: 群组
 and: 和
 or: 或
@@ -55,7 +54,6 @@ create_role: 创建角色
 create_user: 创建用户
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
 emails: 邮箱
@@ -394,6 +392,7 @@ display_template_not_setup: 显示的模板选项配置错误
 collection_field_not_setup: 收藏的字段选项配置错误
 select_a_collection: 选择一个收藏
 active: 激活
+copy: 复制
 inactive: 非活跃
 users: 用户
 activity: 动态
@@ -588,6 +587,7 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+full_screen: 全屏显示
 image_url: 图片 Url
 alt_text: 替代文本
 media: Media
@@ -685,7 +685,6 @@ unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
 keep_editing: 继续编辑
-page_help_collections_overview: '**收藏总览** - 您可以访问的所有收藏列表。'
 page_help_collections_collection: >-
   **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
 page_help_collections_item: >-
@@ -926,6 +925,7 @@ delete_field_are_you_sure: >-
 description: 描述
 done: 已完成
 duplicate: 复制
+limit: 限制
 email: 邮箱
 embed: 嵌入
 fallback_icon: 备用图标
@@ -1315,3 +1315,6 @@ layouts:
   map:
     map: 地图
     field: 几何
+panels:
+  label:
+    name: 标签

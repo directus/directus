@@ -336,6 +336,7 @@ create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
 active: Aktif
+copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
@@ -463,6 +464,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+full_screen: Tam Ekran
 width: Genişlik
 height: Yükseklik
 wysiwyg_options:
@@ -805,3 +807,6 @@ layouts:
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+panels:
+  label:
+    name: Etiket

@@ -32,7 +32,6 @@ enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
-limit: Limit
 group: Gruppe
 and: Und
 or: Oder
@@ -58,8 +57,6 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
-email_examples: "admin{'@'}example.com, benutzer{'@'}example.com..."
-url_example: "https://example.com"
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
@@ -404,6 +401,7 @@ display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
+copy: Kopieren
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
@@ -455,7 +453,7 @@ errors:
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_ENTITY: Fehlerhaftes Element
+  UNPROCESSABLE_ENTITY: Element kann nicht verarbeitet werden
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
@@ -599,6 +597,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+full_screen: Vollbild
 image_url: Bild-Url
 alt_text: Alternativ-Text
 media: Medien
@@ -696,7 +695,6 @@ unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
-page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
   **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_collections_item: >-
@@ -1005,7 +1003,7 @@ referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
-  {name} ist derzeit authentifiziert. Wenn du dieses Konto erkennst, drücke fortfahren.
+  {name} ist derzeit angemeldet. Wenn du dieses Konto kennst, drücke weiter.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default_label: Standard
@@ -1017,6 +1015,7 @@ delete_field_are_you_sure: >-
 description: Beschreibung
 done: Erledigt
 duplicate: Duplikat
+limit: Limit
 email: E-Mail
 embed: Einbetten
 fallback_icon: Fallback-Symbol
@@ -1065,7 +1064,6 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1435,3 +1433,6 @@ layouts:
     search_this_area: Diesen Bereich durchsuchen
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
+panels:
+  label:
+    name: Label

@@ -351,6 +351,7 @@ display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
 active: Aktiivinen
+copy: Kopioi
 users: Käyttäjät
 activity: Tapahtuma
 webhooks: Webhookit
@@ -528,6 +529,7 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+full_screen: Koko näyttö
 image_url: Kuvan URL
 alt_text: Vaihtoehtoinen teksti
 media: Media
@@ -624,7 +626,6 @@ unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
-page_help_collections_overview: '**Kokoelmien Yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
 page_help_collections_collection: >-
   **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_collections_item: >-
@@ -1170,3 +1171,6 @@ layouts:
     calendar: Kalenteri
     start_date_field: Aloituspäivämäärän kenttä
     end_date_field: Päättymispäivämäärän kenttä
+panels:
+  label:
+    name: Tunniste
