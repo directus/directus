@@ -61,8 +61,6 @@ create_user: Create User
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 invite_users: Invite Users
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 emails: Emails
