@@ -1744,7 +1744,7 @@ export class GraphQLService {
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
-				resolve: async (_, { ...args }, { req, res }) => {
+				resolve: async (_, args, { req, res }) => {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
