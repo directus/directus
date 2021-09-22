@@ -10,7 +10,6 @@ import { AbstractServiceOptions, SchemaOverview } from '../../types';
 import { Accountability } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
-import prettier from 'prettier';
 import { Url } from '../../utils/url';
 
 const liquidEngine = new Liquid({
