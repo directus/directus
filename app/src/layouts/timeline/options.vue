@@ -4,7 +4,7 @@
 		<v-select v-model="dateSync" item-value="field" item-text="name" :items="fieldGroups.date" />
 	</div>
 
-	<div class="field" v-if="timeFieldRequired">
+	<div v-if="timeFieldRequired" class="field">
 		<div class="type-label">{{ t('layouts.timeline.time') }}</div>
 		<v-select v-model="timeSync" item-value="field" item-text="name" :items="fieldGroups.time" />
 	</div>
@@ -16,7 +16,7 @@
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.timeline.user') }}</div>
-		<v-select v-model="userSync" item-value="field" item-text="name" :items="fieldGroups.user" />
+		<v-select v-model="userSync" show-deselect item-value="field" item-text="name" :items="fieldGroups.user" />
 	</div>
 </template>
 
@@ -36,28 +36,28 @@ export default defineComponent({
 		},
 		fieldGroups: {
 			type: Object as PropType<Record<string, Field[]>>,
-			default: () => ({})
+			default: () => ({}),
 		},
 		dateField: {
 			type: String,
-			default: null
+			default: null,
 		},
 		timeField: {
 			type: String,
-			default: null
+			default: null,
 		},
 		title: {
 			type: String,
-			default: null
+			default: null,
 		},
 		userField: {
 			type: String,
-			default: null
+			default: null,
 		},
 		timeFieldRequired: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	emits: ['update:dateField', 'update:timeField', 'update:title', 'update:userField'],
 	setup(props, { emit }) {

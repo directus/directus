@@ -1,25 +1,234 @@
 <template>
-    <div></div>
+	<div ref="dayElement" class="day">
+		<div class="day-date">
+			<div class="date">{{ format(date, 'd MMM') }}</div>
+			<div class="week-day">{{ format(date, 'iii') }}</div>
+		</div>
+		<div class="events">
+			<div v-for="event in events" :key="event.id" class="event" @click="toEvent(event)">
+				<v-avatar
+					v-if="event?.user"
+					v-tooltip.bottom="`${event.user.first_name} ${event.user.last_name}`"
+					class="avatar"
+				>
+					<img v-if="event.user.image" :src="event.user.image" />
+					<v-icon v-else name="person" />
+				</v-avatar>
+				<span class="title">
+					<render-template
+						:collection="collection"
+						:fields="fieldsInCollection"
+						:item="event.item"
+						:template="event.title"
+					></render-template>
+					<div class="time">{{ format(event.time, 'h:mmaaa') }}</div>
+				</span>
+				<v-icon name="open_in_new" class="icon" />
+			</div>
+			<div v-for="index in placeholderCount" :key="index" class="event">
+				<v-skeleton-loader v-if="userField !== null" type="avatar" />
+				<span class="title">
+					<v-skeleton-loader type="text" class="template" />
+					<v-skeleton-loader type="text" class="time" />
+				</span>
+				<v-icon name="open_in_new" class="icon" />
+			</div>
+			<div v-if="eventsLeft > 0 && visible" class="show-more" @click="loadMore">
+				{{ t('layouts.timeline.show_more', { count: eventsLeft }) }}
+			</div>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+// import {useElementVisibility} from '@vueuse/core'
+import { defineComponent, PropType, computed, toRefs, ref, onMounted, onUnmounted } from 'vue';
+import { Day, Event } from './types';
+import { format } from 'date-fns';
+import { useI18n } from 'vue-i18n';
+import { UseEvents } from '.';
+import { Field } from '@directus/shared/types';
+import { router } from '@/router';
+import { throttle } from 'lodash';
 
 export default defineComponent({
 	inheritAttrs: false,
 	props: {
-		itemCount: {
-			type: Number,
-			default: null,
+		day: {
+			type: Object as PropType<Day>,
+			required: true,
 		},
-		showingCount: {
+		useEvents: {
+			type: Function as PropType<UseEvents>,
+			required: true,
+		},
+		collection: {
 			type: String,
 			required: true,
 		},
+		fieldsInCollection: {
+			type: Array as PropType<Field[]>,
+			required: true,
+		},
+		userField: {
+			type: String,
+			default: null,
+		},
+	},
+	setup(props) {
+		const { t } = useI18n();
+		const { day } = toRefs(props);
+
+		const dayElement = ref<HTMLDivElement>();
+		const visible = ref(false);
+		const limit = ref(Math.min(5, day.value.event_count));
+
+		const date = computed(() => new Date(props.day.year, props.day.month, props.day.day));
+
+		const { events, loading } = props.useEvents(day, limit, visible);
+
+		const eventsLeft = computed(() => day.value.event_count - events.value.length);
+
+		const placeholderCount = computed(() => {
+			if (loading.value === false && visible.value) return 0;
+			return limit.value - events.value.length;
+		});
+
+		const updateVisibility = throttle(() => {
+			if (visible.value) return;
+
+			const document = window.document;
+			if (!dayElement.value) {
+				visible.value = false;
+			} else {
+				const rect = dayElement.value.getBoundingClientRect();
+
+				visible.value =
+					rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+					rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
+					rect.bottom >= 0 &&
+					rect.right >= 0;
+			}
+		}, 200);
+
+		onMounted(() => {
+			updateVisibility();
+			document.getElementById('main-content')?.addEventListener('scroll', updateVisibility);
+		});
+
+		onUnmounted(() => {
+			document.getElementById('main-content')?.removeEventListener('scroll', updateVisibility);
+		});
+
+		return {
+			date,
+			format,
+			t,
+			events,
+			loadMore,
+			toEvent,
+			placeholderCount,
+			eventsLeft,
+			dayElement,
+			visible,
+			limit,
+			loading,
+		};
+
+		function toEvent(event: Event) {
+			router.push(`/collections/${props.collection}/${event.id}`);
+		}
+
+		function loadMore() {
+			limit.value += Math.min(50, eventsLeft.value);
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+.day {
+	display: flex;
 
+	.day-date {
+		min-width: 90px;
+
+		.date {
+			font-weight: 700;
+			font-size: 18px;
+			transition: color var(--transition) var(--fast);
+		}
+
+		.week-day {
+			margin-top: -4px;
+			color: var(--foreground-subdued);
+			font-weight: 600;
+			font-size: 16px;
+		}
+	}
+
+	&:hover .day-date .date {
+		color: var(--primary);
+	}
+
+	.events {
+		flex: 1;
+
+		.event {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+			padding: 8px 16px;
+			border: var(--border-width) solid var(--border-subdued);
+			border-radius: var(--border-radius);
+			cursor: pointer;
+			transition: all var(--transition) var(--fast);
+
+			.icon {
+				margin-left: auto;
+				color: var(--foreground-subdued);
+			}
+
+			&:hover {
+				border-color: var(--border-normal);
+
+				.icon {
+					color: var(--foreground-normal);
+				}
+			}
+
+			.avatar {
+				margin-right: 10px;
+				border-radius: 24px;
+			}
+
+			.title {
+				.v-skeleton-loader {
+					width: 300px;
+					height: 16px;
+				}
+
+				.template.v-skeleton-loader {
+					margin-bottom: 8px;
+				}
+
+				.time {
+					color: var(--foreground-subdued);
+				}
+			}
+		}
+
+		.show-more {
+			margin-bottom: 16px;
+			color: var(--foreground-normal);
+			font-weight: 600;
+			cursor: pointer;
+			transition: color var(--transition) var(--fast);
+
+			&:hover {
+				color: var(--foreground-normal-alt);
+			}
+		}
+	}
+}
 </style>

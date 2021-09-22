@@ -106,6 +106,14 @@ body {
 	@include loader;
 }
 
+.avatar {
+	width: 48px;
+	height: 48px;
+	border-radius: 24px;
+
+	@include loader;
+}
+
 .list-item-icon {
 	display: flex;
 	align-items: center;

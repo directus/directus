@@ -1482,6 +1482,7 @@ layouts:
     time: Time
     title: Title
     user: User
+    show_more: +{count} More Items
   cards:
     cards: Cards
     image_source: Image Source
