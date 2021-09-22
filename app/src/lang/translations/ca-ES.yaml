@@ -32,7 +32,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
 invite_users: Convidar usuaris
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
 emails: Correus electrònics
