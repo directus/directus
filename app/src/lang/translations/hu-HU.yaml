@@ -54,7 +54,6 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
 emails: Emailek
