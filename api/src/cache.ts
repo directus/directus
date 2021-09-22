@@ -61,7 +61,7 @@ function getConfig(
 			});
 			config.store = new KeyvAnyRedis(client);
 		} else {
-			const client = new Redis(env.CACHE_REDIS || assign({ commandTimeout: 500 }, getConfigFromEnv('CACHE_REDIS_')));
+			const client = new Redis(env.CACHE_REDIS || assign(getConfigFromEnv('CACHE_REDIS_'), { commandTimeout: 500 }));
 			config.store = new KeyvAnyRedis(client);
 		}
 	}
