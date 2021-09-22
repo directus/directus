@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field, Relation } from '@/types';
+import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
@@ -75,11 +75,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

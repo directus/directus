@@ -23,10 +23,9 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
-import { Field } from '@/types';
+import { DisplayConfig, Field } from '@directus/shared/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import { DisplayConfig, DisplayHandlerFunction } from '@/displays/types';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 
 export default defineComponent({
@@ -85,6 +84,7 @@ export default defineComponent({
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
+
 					if (value === undefined) return null;
 
 					if (!field) return value;
@@ -101,8 +101,8 @@ export default defineComponent({
 
 					// If the display handler is a function, we parse the value and return the result
 					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler as DisplayHandlerFunction;
-						return handler(value, field.meta?.display_options);
+						const handler = displayInfo.handler;
+						return handler(value, field.meta?.display_options ?? null);
 					}
 
 					return {
@@ -116,7 +116,7 @@ export default defineComponent({
 						field: field.field,
 					};
 				})
-				.map((p) => p || null)
+				.map((p) => p ?? null)
 		);
 
 		return { parts, templateEl };

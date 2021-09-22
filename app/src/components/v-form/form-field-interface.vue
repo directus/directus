@@ -23,6 +23,7 @@
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
+			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
 			@input="$emit('update:modelValue', $event)"
@@ -37,10 +38,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {

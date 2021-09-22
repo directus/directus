@@ -83,6 +83,8 @@
 				:collection="collection"
 				:type="localType"
 			/>
+
+			<setup-conditions v-if="currentTab[0] === 'conditions'" :collection="collection" :type="localType" />
 		</div>
 
 		<template #actions>
@@ -125,16 +127,17 @@ import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
 import SetupDisplay from './components/display.vue';
+import SetupConditions from './components/conditions.vue';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
-import { localTypes } from '@/types';
+import { LocalType } from '@directus/shared/types';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -149,6 +152,7 @@ export default defineComponent({
 		SetupTranslations,
 		SetupInterface,
 		SetupDisplay,
+		SetupConditions,
 	},
 	props: {
 		collection: {
@@ -160,7 +164,7 @@ export default defineComponent({
 			required: true,
 		},
 		type: {
-			type: String as PropType<typeof localTypes[number]>,
+			type: String as PropType<LocalType>,
 			default: null,
 		},
 	},
@@ -248,7 +252,7 @@ export default defineComponent({
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: t('interface'),
+						text: t('interface_label'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
@@ -283,6 +287,12 @@ export default defineComponent({
 						]
 					);
 				}
+
+				tabs.push({
+					text: t('conditions'),
+					value: 'conditions',
+					disabled: interfaceDisplayDisabled(),
+				});
 
 				return tabs;
 			});
@@ -424,7 +434,7 @@ export default defineComponent({
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
-			} catch (err) {
+			} catch (err: any) {
 				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'CONTAINS_NULL_VALUES') {
 					nullValueOverride.value = state.fieldData?.schema?.default_value || null;
 					nullValuesDialog.value = true;
@@ -476,7 +486,7 @@ export default defineComponent({
 
 					nullValuesDialog.value = false;
 					return saveField();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					nullOverrideSaving.value = false;
@@ -509,6 +519,6 @@ export default defineComponent({
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>

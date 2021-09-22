@@ -6,10 +6,12 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
+import { AbstractServiceOptions, SchemaOverview } from '../../types';
+import { Accountability } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
 import prettier from 'prettier';
+import { Url } from '../../utils/url';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -99,16 +101,15 @@ export class MailService {
 		};
 
 		function getProjectLogoURL(logoID?: string) {
-			let projectLogoURL = env.PUBLIC_URL;
-			if (projectLogoURL.endsWith('/') === false) {
-				projectLogoURL += '/';
-			}
+			const projectLogoUrl = new Url(env.PUBLIC_URL);
+
 			if (logoID) {
-				projectLogoURL += `assets/${logoID}`;
+				projectLogoUrl.addPath('assets', logoID);
 			} else {
-				projectLogoURL += `admin/img/directus-white.png`;
+				projectLogoUrl.addPath('admin', 'img', 'directus-white.png');
 			}
-			return projectLogoURL;
+
+			return projectLogoUrl.toString();
 		}
 	}
 }

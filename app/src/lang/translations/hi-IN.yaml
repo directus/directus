@@ -20,7 +20,7 @@ create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
-email_examples: "good"
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
 emails: इमेल्स
@@ -42,7 +42,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: साइंड आउट
   SESSION_EXPIRED: समय बीत गया
-public: पब्लिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
 not_allowed: अनुमति नहीं हैं
 directus_version: Directus वर्शन
@@ -104,7 +103,6 @@ fields_for_role: 'फ़ील्ड्स जो {role} भूमिका {action
 validation_for_role: 'फील्ड {action} नियमों जो {role} भूमिका पालन करना चाहिए'
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
-revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
 language: भाषा
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
@@ -173,6 +171,8 @@ card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: सॉर्ट
+errors:
+  NOT_NULL_VIOLATION: मान null नहीं हो सकता
 flip_horizontal: फ्लिप हॉरिजॉन्टल
 one_item: '1 समान'
 font: फ़ॉन्ट
@@ -217,7 +217,22 @@ fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
-delete: Delete
+  directus_webhooks:
+    name: नाम
+field_options:
+  directus_activity:
+    create: Create
+    update: Update
+  directus_collections:
+    language: भाषा
+    archive_divider: आर्काइव
+    divider: सॉर्ट
+  directus_roles:
+    fields:
+      name_name: नाम
+  directus_webhooks:
+    actions_create: Create
+    actions_update: Update
 interfaces:
   presentation-links:
     primary: प्राइमरी

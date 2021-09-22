@@ -8,7 +8,7 @@ fields:
     interface: presentation-divider
     options:
       icon: box
-      title: Collection Setup
+      title: $t:field_options.directus_collections.collection_setup
     width: full
 
   - field: collection
@@ -32,7 +32,7 @@ fields:
   - field: color
     interface: select-color
     options:
-      placeholder: Choose a color...
+      placeholder: $t:field_options.directus_collections.note_placeholder
     width: half
 
   - field: display_template
@@ -45,7 +45,7 @@ fields:
     special: boolean
     interface: boolean
     options:
-      label: Hide within the App
+      label: $t:field_options.directus_collections.hidden_label
     width: half
 
   - field: singleton
@@ -102,7 +102,7 @@ fields:
     interface: presentation-divider
     options:
       icon: archive
-      title: Archive
+      title: $t:field_options.directus_collections.archive_divider
     width: full
 
   - field: archive_field
@@ -110,14 +110,14 @@ fields:
     options:
       collectionField: collection
       allowNone: true
-      placeholder: Choose a field...
+      placeholder: $t:field_options.directus_collections.archive_field
     width: half
 
   - field: archive_app_filter
     interface: boolean
     special: boolean
     options:
-      label: Enable App Archive Filter
+      label: $t:field_options.directus_collections.archive_app_filter
     width: half
 
   - field: archive_value
@@ -125,7 +125,7 @@ fields:
     options:
       font: monospace
       iconRight: archive
-      placeholder: Value set when archiving...
+      placeholder: $t:field_options.directus_collections.archive_value
     width: half
 
   - field: unarchive_value
@@ -133,7 +133,7 @@ fields:
     options:
       font: monospace
       iconRight: unarchive
-      placeholder: Value set when unarchiving...
+      placeholder: $t:field_options.directus_collections.unarchive_value
     width: half
 
   - field: sort_divider
@@ -143,14 +143,14 @@ fields:
     interface: presentation-divider
     options:
       icon: sort
-      title: Sort
+      title: $t:field_options.directus_collections.divider
     width: full
 
   - field: sort_field
     interface: system-field
     options:
       collectionField: collection
-      placeholder: Choose a field...
+      placeholder: $t:field_options.directus_collections.sort_field
       typeAllowList:
         - float
         - decimal
@@ -165,7 +165,7 @@ fields:
     interface: presentation-divider
     options:
       icon: admin_panel_settings
-      title: Accountability
+      title: $t:field_options.directus_collections.accountability_divider
     width: full
 
   - field: accountability

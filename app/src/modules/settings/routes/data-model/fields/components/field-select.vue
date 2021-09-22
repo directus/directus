@@ -48,19 +48,25 @@
 				</template>
 			</draggable>
 
-			<v-input v-else class="field" :class="{ hidden }" readonly clickable @click="openFieldDetail">
+			<v-input v-else class="field" :class="{ hidden }" readonly>
 				<template #prepend>
 					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 				</template>
 
 				<template #input>
-					<div v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name" class="label">
-						<span class="name">
-							{{ field.field }}
-							<v-icon v-if="field.schema && field.schema.is_nullable === false" name="star" class="required" sup />
-						</span>
-						<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-						<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+					<div
+						v-tooltip="interfaceName ? `${field.name} (${interfaceName})` : field.name"
+						class="label"
+						@click="openFieldDetail"
+					>
+						<div class="label-inner">
+							<span class="name">
+								{{ field.field }}
+								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
+							</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+						</div>
 					</div>
 				</template>
 
@@ -123,7 +129,7 @@
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" class="delete" @click="deleteField">{{ t('delete') }}</v-button>
+						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -134,7 +140,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
-import { Field } from '@/types';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import { useRouter } from 'vue-router';
@@ -142,7 +147,7 @@ import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { InterfaceConfig } from '@/interfaces/types';
+import { Field, InterfaceConfig } from '@directus/shared/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -289,7 +294,7 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					duplicating.value = false;
@@ -457,24 +462,33 @@ export default defineComponent({
 	}
 
 	.label {
+		display: flex;
 		flex-grow: 1;
+		align-items: center;
+		align-self: stretch;
 		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
+		cursor: pointer;
 
-		.name {
-			font-family: var(--family-monospace);
-		}
+		.label-inner {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 
-		.interface {
-			display: none;
-			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+			.name {
+				margin-right: 12px;
+				font-family: var(--family-monospace);
+			}
 
-			@media (min-width: 600px) {
-				display: initial;
+			.interface {
+				display: none;
+				color: var(--foreground-subdued);
+				font-family: var(--family-monospace);
+				opacity: 0;
+				transition: opacity var(--fast) var(--transition);
+
+				@media (min-width: 600px) {
+					display: initial;
+				}
 			}
 		}
 	}
@@ -506,13 +520,6 @@ export default defineComponent({
 
 .form-grid {
 	--form-vertical-gap: 24px;
-
-	@include form-grid;
-}
-
-.delete {
-	--v-button-background-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-125);
 }
 
 .required {

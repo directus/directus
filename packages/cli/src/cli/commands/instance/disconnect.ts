@@ -50,7 +50,7 @@ export default command(
 				storage: new InstanceStorage(params.name, config.system),
 			});
 			await sdk.auth.logout();
-		} catch (_) {
+		} catch {
 			// pass
 		}
 

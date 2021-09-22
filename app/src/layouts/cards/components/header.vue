@@ -54,8 +54,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Field } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Field } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -146,8 +146,8 @@ export default defineComponent({
 	margin-bottom: 36px;
 	padding: 0 8px;
 	background-color: var(--background-page);
-	border-top: 2px solid var(--border-subdued);
-	border-bottom: 2px solid var(--border-subdued);
+	border-top: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--border-width) solid var(--border-subdued);
 	box-shadow: 0 0 0 2px var(--background-page);
 }
 
@@ -204,8 +204,7 @@ export default defineComponent({
 		}
 
 		&:hover {
-			--v-icon-color: var(--foreground-normal);
-
+			color: var(--foreground-normal);
 			cursor: pointer;
 		}
 	}

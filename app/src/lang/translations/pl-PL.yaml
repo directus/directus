@@ -1,10 +1,14 @@
 ---
 edit_field: Edytuj pole
+maps: Mapy
 item_revision: Wersja elementu
 duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
+limit: Limit
 group: Grupa
+and: I
+or: Lub
 fill_width: Szerokość wypełnienia
 field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
@@ -13,6 +17,7 @@ role_name: Nazwa roli
 branch: Gałąź
 leaf: Arkusz
 indeterminate: Nieokreślony
+edit_collection: Edytuj kolekcję
 exclusive: Ekskluzywny
 children: Podrzędne
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
@@ -48,7 +53,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
-public: Publiczny
+public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
@@ -94,6 +99,8 @@ no_access: Brak dostępu
 use_custom: Użyj niestandardowych
 nullable: Bez wartości
 allow_null_value: Zezwalaj na wartość NULL
+allow_multiple: Zezwalaj na wiele
+allow_multiple_to_be_open: Zezwalaj na otwieranie wielu
 enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
 field_standard: Standard
 field_presentation: Prezentacja i aliasy
@@ -114,9 +121,6 @@ fields_for_role: 'Pola roli {role} mogą {action}.'
 validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
 presentation_and_aliases: Prezentacja i aliasy
-revision_post_update: Oto jak wyglądał ten element po aktualizacji...
-changes_made: To są konkretne zmiany, które zostały wprowadzone...
-no_relational_data: Pamiętaj, że nie obejmuje to danych relacyjnych.
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
@@ -157,6 +161,7 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
+geometry: Geometria
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -257,7 +262,7 @@ move_to_folder: Przenieś do folderu
 move: Przenieś
 system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
-interface: Interfejs
+interface_label: Interfejs
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
@@ -287,7 +292,7 @@ drag_mode: Tryb przeciągania
 cancel_crop: Anuluj przycinanie
 original: Oryginalny
 url: Adres URL
-import: Importuj
+import_label: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
@@ -353,8 +358,8 @@ no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
-no_webhooks_copy: Brak webhooków.
 all_items: Wszystkie elementy
+any: Dowolny
 csv: CSV
 no_collections: Brak kolekcji
 create_collection: Stwórz kolekcję
@@ -365,6 +370,7 @@ display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo sko
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
 active: Aktywne
+inactive: Nieaktywny
 users: Użytkownicy
 activity: Aktywność
 webhooks: Webhooki
@@ -377,7 +383,6 @@ documentation: Dokumentacja
 sidebar: Pasek boczny
 duration: Czas trwania
 charset: Zestaw znaków
-second: Drugi
 file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
@@ -415,8 +420,9 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNKNOWN: Nieoczekiwany błąd
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
+  NOT_NULL_VIOLATION: Wartość nie może być pusta
+  UNKNOWN: Nieoczekiwany błąd
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
@@ -468,6 +474,7 @@ color: Kolor
 circle: Okrąg
 empty_item: Pusty element
 log_in_with: 'Zaloguj się za pomocą {provider}'
+advanced_settings: Zaawansowane Ustawienia
 advanced_filter: Filtr zaawansowany
 delete_advanced_filter: Usuń filtr
 change_advanced_filter_operator: Zmień operatora
@@ -506,6 +513,7 @@ upload_files_success: 'Przesłano {count} plików'
 upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
+interface_options: Opcje interfejsu
 layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
@@ -747,7 +755,9 @@ fields:
     language: Język
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
+    admin_options: Opcje administratora
     status: Status
+    status_active: Aktywne
     role: Rola
     token: Token
     last_page: Ostatnia strona
@@ -784,11 +794,39 @@ fields:
     users: Użytkownicy w roli
     module_list: Moduł Nawigacji
     collection_list: Kolekcja Nawigacji
+  directus_webhooks:
+    name: Nazwa
+    status: Status
 field_options:
+  directus_activity:
+    create: Stwórz
+    update: Zaktualizuj
   directus_collections:
     track_activity_revisions: Śledź aktywność i rewizje
     only_track_activity: Tylko Śledź Aktywność
     do_not_track_anything: Nie śledź niczego
+    collection_setup: Ustawienia kolekcji
+    singleton: Traktuj jako pojedynczy obiekt
+    language: Język
+    archive_divider: Archiwum
+    divider: Sortuj
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Nazwa
+      name_placeholder: Wprowadź tytuł...
+    collection_list:
+      fields:
+        type_name: Typ
+    collections_name: Kolekcje
+  directus_users:
+    admin_divider: Opcje administratora
+    status_dropdown_active: Aktywne
+  directus_webhooks:
+    status_options_active: Aktywne
+    status_options_inactive: Nieaktywny
+    actions_create: Stwórz
+    actions_update: Zaktualizuj
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 do_nothing: Nic nie rób
 generate_and_save_uuid: Generuj i zapisz UUID
@@ -806,13 +844,10 @@ referential_action_cascade: Usuń {collection} element (kaskada)
 referential_action_set_null: Pola oznaczone jako bez wartości {field}
 referential_action_set_default: Ustaw {field} na wartość domyślną
 choose_action: Wybierz akcję
-continue: Kontynuuj
 continue_as: >-
   {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
 creating_webhook: Tworzenie Webhooka
-default: Domyślnie
-delete: Usuń
 delete_are_you_sure: >-
   Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
 delete_field_are_you_sure: >-
@@ -867,7 +902,6 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   presentation-links:
@@ -983,6 +1017,8 @@ interfaces:
     box: Blok / Inline
     imageToken: Token obrazu
     imageToken_label: Jaki (statyczny) token dodać do źródeł obrazów
+  map:
+    zoom: Powiększ
   presentation-notice:
     notice: Informacja
     description: Wyświetl krótką informacje
@@ -991,6 +1027,8 @@ interfaces:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
+  system-folder:
+    folder: Folder
   select-radio:
     radio-buttons: Pola wyboru
     description: Wybierz jeden lub wiele obiektów
@@ -1068,9 +1106,6 @@ interfaces:
     value_path: Ścieżka bazowa
     trigger: Wyzwalacz
     rate: Oceń
-  group-raw:
-    name: Surowe pola
-    description: Pokaż pola jako normalne.
 displays:
   boolean:
     boolean: Wartość logiczna
@@ -1177,3 +1212,5 @@ layouts:
     calendar: Kalendarz
     start_date_field: Pole daty rozpoczęcia
     end_date_field: Pole daty zakończenia
+  map:
+    field: Geometria

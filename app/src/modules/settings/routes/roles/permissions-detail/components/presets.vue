@@ -4,7 +4,7 @@
 			{{
 				t('presets_for_role', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public'),
+					role: role ? role.name : t('public_label'),
 				})
 			}}
 		</v-notice>
@@ -15,8 +15,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Permission, Role } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

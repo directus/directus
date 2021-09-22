@@ -37,7 +37,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
-public: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
@@ -82,8 +81,6 @@ field_validation: 欄位驗證
 permissions_for_role: '角色 {role} 可以 {action} 項目'
 fields_for_role: '角色 {role} 可以 {action} 欄位'
 validation_for_role: '角色 {role} 必須遵守欄位 {action} 規則'
-revision_post_update: 項目更新後看起來像...
-changes_made: 這些是具體的變更部分
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
@@ -180,7 +177,7 @@ move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
-interface: 介面
+interface_label: 介面
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -202,7 +199,6 @@ months:
 cancel_crop: 取消裁切
 original: 原始
 url: URL
-import: 匯入
 file_details: 檔案詳細資訊
 dimensions: 尺寸
 size: 尺寸
@@ -260,7 +256,6 @@ no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
 webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
-no_webhooks_copy: 這裡還沒有任何 Webhooks。
 all_items: 所有項目
 csv: CSV
 no_collections: 沒有集合
@@ -308,8 +303,9 @@ errors:
   INVALID_QUERY: 無效的查詢
   ITEM_NOT_FOUND: 找不到項目
   ROUTE_NOT_FOUND: 找不到
-  UNKNOWN: 未預期的錯誤
   INTERNAL_SERVER_ERROR: 未預期的錯誤
+  NOT_NULL_VIOLATION: 值不能為null
+  UNKNOWN: 未預期的錯誤
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
@@ -522,6 +518,28 @@ fields:
     description: 描述說明
     enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
+  directus_webhooks:
+    name: 名稱
+    status: 狀態
+field_options:
+  directus_activity:
+    create: 新建
+    update: 更新
+  directus_collections:
+    language: 語言
+    archive_divider: 封存
+    divider: 排序
+  directus_roles:
+    fields:
+      icon_name: 圖示
+      name_name: 名稱
+    collection_list:
+      fields:
+        type_name: 類型
+    collections_name: 資料集
+  directus_webhooks:
+    actions_create: 新建
+    actions_update: 更新
 no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
 do_nothing: 無動作
 generate_and_save_uuid: 產生並儲存 UUID
@@ -529,11 +547,8 @@ save_current_user_id: 儲存當前使用者 ID
 save_current_user_role: 儲存當前使用者角色
 save_current_datetime: 儲存當前日期/時間
 comment: 評論
-continue: 繼續
 editing_role: '{role} 角色'
 creating_webhook: 建立 Webhook
-default: 預設
-delete: 刪除
 delete_are_you_sure: >-
   此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
@@ -617,6 +632,10 @@ interfaces:
     interface: 介面
   select-dropdown-m2o:
     display_template: 顯示模板
+  map:
+    zoom: 縮放
+  system-folder:
+    folder: 資料夾
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字

@@ -30,8 +30,8 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -87,7 +87,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import useCollection from '@/composables/use-collection/';
+import { useCollection } from '@directus/shared/composables';
 import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';

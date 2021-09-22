@@ -38,8 +38,8 @@ Containers are ephemeral, and this means that whenever you stop a container, all
 be removed [unless you persist them](https://docs.docker.com/storage/) when creating your container.
 
 Directus image by default
-[will use the following locations](https://github.com/directus/directus/blob/main/.github/actions/build-images/rootfs/directus/images/main/Dockerfile#L93-L96)
-for data persistence (note that these can be changed through environment variables)
+[will use the following locations](https://github.com/directus/directus/blob/main/docker/Dockerfile#L56-L60) for data
+persistence (note that these can be changed through environment variables)
 
 - `/directus/uploads` for uploads
 - `/directus/database` (only when using SQLite and not configured to a different folder)
@@ -108,9 +108,33 @@ services:
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
 
+      # Make sure to set this in production
+      # (see https://docs.directus.io/reference/environment-variables/#general)
+      # PUBLIC_URL: 'https://directus.example.com'
+
 networks:
   directus:
 ```
+
+### Updating with Docker Compose
+
+If you are not using the `latest` tag for directus you need to adjust your `docker-compose.yml` file to increment the
+tag version number, e.g.
+
+```
+-   image: directus/directus:9.0.0-rc.89
++   image: directus/directus:9.0.0-rc.90
+```
+
+You can then issue the following two commands (from your docker-compose root):
+
+```
+docker-compose pull
+docker-compose up -d
+```
+
+The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have
+started you will be on the newest version (or the version you specified).
 
 ## Supported Databases
 

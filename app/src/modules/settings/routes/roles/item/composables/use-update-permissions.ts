@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Collection, Permission } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { inject, ref, Ref } from 'vue';
 
@@ -47,7 +47,7 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -63,7 +63,7 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				await refresh?.();
@@ -83,7 +83,7 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete(`/permissions/${permission.id}`);
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();
@@ -116,7 +116,7 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				} else {
@@ -129,7 +129,7 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err) {
+					} catch (err: any) {
 						unexpectedError(err);
 					}
 				}
@@ -147,7 +147,7 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
-		} catch (err) {
+		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			await refresh?.();

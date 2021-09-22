@@ -43,15 +43,14 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
-import { Field } from '@/types';
-import { Filter } from '@directus/shared/types';
+import { Field, Filter } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
 import FieldListItem from './field-list-item.vue';
-import { useCollection } from '@/composables/use-collection';
-import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { useCollection } from '@directus/shared/composables';
+import { getFilterOperatorsForType } from '@directus/shared/utils';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
@@ -144,7 +143,7 @@ export default defineComponent({
 
 		function addFilterForField(fieldKey: string) {
 			const field = fieldsStore.getField(props.collection, fieldKey) as Field;
-			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
+			const defaultOperator = getFilterOperatorsForType(field.type)[0];
 
 			emit('update:modelValue', [
 				...props.modelValue,

@@ -7,38 +7,49 @@ import {
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackage,
-} from '@directus/shared/utils';
-import { APP_EXTENSION_TYPES, APP_SHARED_DEPS } from '@directus/shared/constants';
+} from '@directus/shared/utils/node';
+import {
+	API_EXTENSION_PACKAGE_TYPES,
+	API_EXTENSION_TYPES,
+	APP_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_TYPES,
+} from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
 import logger from './logger';
-import { HookRegisterFunction, EndpointRegisterFunction } from './types';
+import { HookConfig, EndpointConfig } from './types';
 import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
 import { schedule, validate } from 'node-cron';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { rollup } from 'rollup';
 // @TODO Remove this once a new version of @rollup/plugin-virtual has been released
 // @ts-expect-error
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
+import { Url } from './utils/url';
+import getModuleDefault from './utils/get-module-default';
 
 let extensions: Extension[] = [];
 let extensionBundles: Partial<Record<AppExtensionType, string>> = {};
+const registeredHooks: string[] = [];
 
 export async function initializeExtensions(): Promise<void> {
 	try {
-		await ensureExtensionDirs(env.EXTENSIONS_PATH);
+		await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
 		extensions = await getExtensions();
-	} catch (err) {
+	} catch (err: any) {
 		logger.warn(`Couldn't load extensions`);
 		logger.warn(err);
 	}
 
-	if (!('DIRECTUS_DEV' in process.env)) {
+	if (env.SERVE_APP) {
 		extensionBundles = await generateExtensionBundles();
 	}
 
@@ -71,8 +82,14 @@ export function registerExtensionHooks(): void {
 }
 
 async function getExtensions(): Promise<Extension[]> {
-	const packageExtensions = await getPackageExtensions('.');
-	const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
+	const packageExtensions = await getPackageExtensions(
+		'.',
+		env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_EXTENSION_PACKAGE_TYPES
+	);
+	const localExtensions = await getLocalExtensions(
+		env.EXTENSIONS_PATH,
+		env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES
+	);
 
 	return [...packageExtensions, ...localExtensions];
 }
@@ -107,14 +124,15 @@ async function generateExtensionBundles() {
 
 async function getSharedDepsMapping(deps: string[]) {
 	const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist'));
-	const adminUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL + 'admin' : env.PUBLIC_URL + '/admin';
 
 	const depsMapping: Record<string, string> = {};
 	for (const dep of deps) {
 		const depName = appDir.find((file) => dep.replace(/\//g, '_') === file.substring(0, file.indexOf('.')));
 
 		if (depName) {
-			depsMapping[dep] = `${adminUrl}/${depName}`;
+			const depUrl = new Url(env.PUBLIC_URL).addPath('admin', depName);
+
+			depsMapping[dep] = depUrl.toString({ rootRelative: true });
 		} else {
 			logger.warn(`Couldn't find shared extension dependency "${dep}"`);
 		}
@@ -127,7 +145,7 @@ function registerHooks(hooks: Extension[]) {
 	for (const hook of hooks) {
 		try {
 			registerHook(hook);
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Couldn't register hook "${hook.name}"`);
 			logger.warn(error);
 		}
@@ -135,25 +153,33 @@ function registerHooks(hooks: Extension[]) {
 
 	function registerHook(hook: Extension) {
 		const hookPath = path.resolve(hook.path, hook.entrypoint || '');
-		const hookInstance: HookRegisterFunction | { default?: HookRegisterFunction } = require(hookPath);
+		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
 
-		let register: HookRegisterFunction = hookInstance as HookRegisterFunction;
-		if (typeof hookInstance !== 'function') {
-			if (hookInstance.default) {
-				register = hookInstance.default;
-			}
+		// Make sure hooks are only registered once
+		if (registeredHooks.includes(hookPath)) {
+			return;
+		} else {
+			registeredHooks.push(hookPath);
 		}
 
-		const events = register({ services, exceptions, env, database: getDatabase(), getSchema });
+		const register = getModuleDefault(hookInstance);
+
+		const events = register({ services, exceptions, env, database: getDatabase(), logger, getSchema });
 
 		for (const [event, handler] of Object.entries(events)) {
 			if (event.startsWith('cron(')) {
-				const cron = event.match(/\(([^)]+)\)/)?.[1];
+				const cron = event.match(REGEX_BETWEEN_PARENS)?.[1];
 
 				if (!cron || validate(cron) === false) {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				} else {
-					schedule(cron, handler);
+					schedule(cron, async () => {
+						try {
+							await handler();
+						} catch (error: any) {
+							logger.error(error);
+						}
+					});
 				}
 			} else {
 				emitter.on(event, handler);
@@ -166,7 +192,7 @@ function registerEndpoints(endpoints: Extension[], router: Router) {
 	for (const endpoint of endpoints) {
 		try {
 			registerEndpoint(endpoint);
-		} catch (error) {
+		} catch (error: any) {
 			logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 			logger.warn(error);
 		}
@@ -174,18 +200,16 @@ function registerEndpoints(endpoints: Extension[], router: Router) {
 
 	function registerEndpoint(endpoint: Extension) {
 		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint || '');
-		const endpointInstance: EndpointRegisterFunction | { default?: EndpointRegisterFunction } = require(endpointPath);
+		const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
 
-		let register: EndpointRegisterFunction = endpointInstance as EndpointRegisterFunction;
-		if (typeof endpointInstance !== 'function') {
-			if (endpointInstance.default) {
-				register = endpointInstance.default;
-			}
-		}
+		const mod = getModuleDefault(endpointInstance);
+
+		const register = typeof mod === 'function' ? mod : mod.handler;
+		const pathName = typeof mod === 'function' ? endpoint.name : mod.id;
 
 		const scopedRouter = express.Router();
-		router.use(`/${endpoint.name}/`, scopedRouter);
+		router.use(`/${pathName}`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database: getDatabase(), getSchema });
+		register(scopedRouter, { services, exceptions, env, database: getDatabase(), logger, getSchema });
 	}
 }

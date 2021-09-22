@@ -1,4 +1,4 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({

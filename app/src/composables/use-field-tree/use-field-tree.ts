@@ -1,8 +1,8 @@
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
-import { Field, Relation } from '@/types';
-import { getRelationType } from '@/utils/get-relation-type';
+import { Field, Relation } from '@directus/shared/types';
+import { getRelationType } from '@directus/shared/utils';
 import { cloneDeep, orderBy } from 'lodash';
-import { computed, Ref, ComputedRef } from 'vue';
+import { Ref, ref, watch } from 'vue';
 
 type FieldOption = { name: string; field: string; key: string; children?: FieldOption[]; group?: string };
 
@@ -13,22 +13,31 @@ export default function useFieldTree(
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true,
 	depth = 3
-): { tree: ComputedRef<FieldOption[]> } {
+): { tree: Ref<FieldOption[]> } {
 	const fieldsStore = useFieldsStore();
 	const collectionsStore = useCollectionsStore();
 	const relationsStore = useRelationsStore();
 
-	const tree = computed(() => {
-		if (!collection.value) return [];
-		return parseLevel(collection.value, null);
-	});
+	const tree = ref<FieldOption[]>([]);
+
+	watch(
+		collection,
+		(newCollection) => {
+			if (!newCollection) {
+				tree.value = [];
+				return;
+			}
+			tree.value = parseLevel(newCollection, null);
+		},
+		{ immediate: true }
+	);
 
 	return { tree };
 
 	function parseLevel(collection: string, parentPath: string | null, level = 0) {
 		const fieldsInLevel = orderBy(
 			[
-				...cloneDeep(fieldsStore.getFieldsForCollectionAlphabetical(collection)),
+				...cloneDeep(fieldsStore.getFieldsForCollection(collection)),
 				...(inject?.value?.fields.filter((field) => field.collection === collection) || []),
 			]
 				.filter((field: Field) => {

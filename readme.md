@@ -1,6 +1,4 @@
-<br>
-
-<p align="center"><img width="400" alt="Logo" src="https://user-images.githubusercontent.com/522079/89687381-23943700-d8ce-11ea-9a4d-ae3eae136423.png"></p>
+<p align="center"><img alt="Logo" src="https://user-images.githubusercontent.com/522079/127886783-ae6b4ec6-e2ad-4615-8df9-d77c33e92d7e.png"></p>
 
 <br>
 
@@ -48,7 +46,7 @@ important to keep your projects up-to-date.
 
 <br>
 
-## :rocket: One-Click Deployments
+## 🚀 One-Click Deployments
 
 If you would like to completely avoid the manual installation process, the following self-hosted one-click apps will
 handle the heavy-lifting for you. While Directus is always completely free, you will likely need to pay for these

@@ -69,8 +69,7 @@
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
-			:selection="[]"
-			:filters="selectionFilters"
+			:selection="selectedPrimaryKeys"
 			multiple
 			@input="stageSelection"
 		/>
@@ -101,10 +100,9 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
-import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -160,7 +158,7 @@ export default defineComponent({
 			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
-				const parts = relatedDisplayTemplate.split(regex).filter((p: DisplayConfig) => p);
+				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
 
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;
@@ -199,7 +197,8 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
+		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(items, relationInfo, emitter);
+
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		const { createAllowed, selectAllowed } = usePermissions();
@@ -222,7 +221,7 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			selectionFilters,
+			selectedPrimaryKeys,
 			items,
 			relationInfo,
 			relatedPrimaryKey,

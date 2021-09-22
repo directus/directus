@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Relation, Collection, Field } from '@/types';
+import { Field, Collection, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
 			default: () => [],
 		},
 		value: {
-			type: Object as PropType<any>,
+			type: Object as PropType<Record<string, any>>,
 			default: null,
 		},
 		newCollections: {
@@ -121,11 +121,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
-.form-grid {
-	@include form-grid;
-}
-</style>

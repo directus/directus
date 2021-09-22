@@ -26,7 +26,7 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: "administratorius{'@'}pavyzdys.lt, naudotojas{'@'}pavyzdys.lt..."
+email_examples: "administratorius{'@'}example.com, naudotojas{'@'}example.com..."
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai
@@ -48,7 +48,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Atsijungti
   SESSION_EXPIRED: Sesijos laikas baigėsi
-public: Vieša
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
 not_allowed: Neleidžiama
 directus_version: Directus versija
@@ -114,9 +113,6 @@ fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
 validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
 presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
-revision_post_update: Taip šis elementas atrodė po paskutinio atnaujinimo...
-changes_made: Tai yra konkretūs atlikti pakeitimai...
-no_relational_data: Atminkite, kad neįtraukiami sąryšių duomenys.
 hide_field_on_detail: Slėpti lauką detalėse
 show_field_on_detail: Rodyti lauką detalėse
 delete_field: Trinti lauką
@@ -255,7 +251,7 @@ move_to_folder: Perkelti į aplanką
 move: Perkelti
 system: Sistema
 add_field_related: Pridėti lauką į susijusią kolekciją
-interface: Sąsaja
+interface_label: Sąsaja
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
@@ -279,7 +275,6 @@ drag_mode: Vilkimo režimas
 cancel_crop: Atšaukti apkarpymą
 original: Originalas
 url: URL
-import: Importuoti
 file_details: Failo duomenys
 dimensions: Matmenys
 size: Dydis
@@ -340,7 +335,6 @@ no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
 webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
-no_webhooks_copy: Dar nėra sukurta "Webhook"ų.
 all_items: Visi elementai
 csv: CSV
 no_collections: Nėra kolekcijų
@@ -364,7 +358,6 @@ documentation: Dokumentacija
 sidebar: Šoninė juosta
 duration: Trukmė
 charset: Simbolių rinkinys
-second: Sekundė(-s)
 file_moved: Failas perkeltas
 collection_created: Kolekcija sukurta
 modified_on: Pakeista
@@ -398,8 +391,9 @@ errors:
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
   ROUTE_NOT_FOUND: Nerasta
-  UNKNOWN: Nenumatyta klaida
   INTERNAL_SERVER_ERROR: Nenumatyta klaida
+  NOT_NULL_VIOLATION: Reikšmė negali būti null
+  UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
@@ -681,6 +675,7 @@ fields:
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
     status: Būsena
+    status_active: Aktyvus
     role: Vaidmuo
     last_page: Paskutinis puslapis
     last_access: Paskutinė prieiga
@@ -715,6 +710,33 @@ fields:
     users: Vartotojai grupėje
     module_list: Modulių navigacija
     collection_list: Kolekcijų navigacija
+  directus_webhooks:
+    name: Pavadinimas
+    status: Būsena
+field_options:
+  directus_activity:
+    create: Kurti
+    update: Atnaujinti
+  directus_collections:
+    collection_setup: Kolekcijos konfigūracija
+    singleton: Laikyti vienu objektu
+    language: Kalba
+    archive_divider: Archyvuoti
+    divider: Rūšiuoti
+  directus_roles:
+    fields:
+      icon_name: Ikona
+      name_name: Pavadinimas
+    collection_list:
+      fields:
+        type_name: Tipas
+    collections_name: Kolekcijos
+  directus_users:
+    status_dropdown_active: Aktyvus
+  directus_webhooks:
+    status_options_active: Aktyvus
+    actions_create: Kurti
+    actions_update: Atnaujinti
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID
@@ -724,11 +746,8 @@ save_current_datetime: Išsaugoti dabartinį datą/laiką
 block: Blokas
 inline: Toje pačioje eilutėje
 comment: Komentaras
-continue: Tęsti
 editing_role: '{role} grupė'
 creating_webhook: Kuriamas Webhook'ą
-default: Numatytasis
-delete: Pašalinti
 delete_are_you_sure: >-
   Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
 delete_field_are_you_sure: >-
@@ -829,6 +848,10 @@ interfaces:
     interface: Sąsaja
   select-dropdown-m2o:
     display_template: Rodymo šablonas
+  map:
+    zoom: Padidinti
+  system-folder:
+    folder: Aplankas
   tags:
     tags: Žymos
     whitespace: Matomi tarpai

@@ -16,12 +16,12 @@
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
 				<v-list-item-content>
 					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
@@ -31,9 +31,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, Ref } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {
@@ -67,12 +67,7 @@ export default defineComponent({
 			return getRelatedCollection(props.collection, props.field);
 		});
 
-		const primaryKeyField = computed(() => {
-			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as unknown as Ref<string>).primaryKeyField.value;
-			}
-			return null;
-		});
+		const { primaryKeyField } = useCollection(relatedCollection);
 
 		const internalTemplate = computed(() => {
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;

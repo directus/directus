@@ -26,6 +26,7 @@ import { i18n } from '@/lang';
 type Option = {
 	text: string;
 	value: string | number | boolean;
+	children?: Option[];
 };
 
 export default defineComponent({

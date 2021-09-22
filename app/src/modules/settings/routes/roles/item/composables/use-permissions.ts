@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission } from '@/types';
+import { Permission } from '@directus/shared/types';
 import { ref, Ref, watch } from 'vue';
 
 type UsablePermissions = {
@@ -42,7 +42,7 @@ export default function usePermissions(role: Ref<number>): UsablePermissions {
 			});
 
 			permissions.value = response.data.data;
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -60,7 +60,7 @@ export default function usePermissions(role: Ref<number>): UsablePermissions {
 			}
 
 			await fetchPermissions();
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		}
 	}
@@ -76,7 +76,7 @@ export default function usePermissions(role: Ref<number>): UsablePermissions {
 			}
 
 			await fetchPermissions();
-		} catch (err) {
+		} catch (err: any) {
 			error.value = err;
 		}
 	}

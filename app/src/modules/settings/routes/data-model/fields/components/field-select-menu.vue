@@ -1,7 +1,7 @@
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
-			<v-icon clickable name="more_vert" @click.stop="toggle" />
+			<v-icon clickable name="more_vert" @click="toggle" />
 		</template>
 
 		<v-list>
@@ -78,7 +78,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { getLocalTypeForField } from '../../get-local-type';
 

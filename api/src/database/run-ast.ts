@@ -2,10 +2,15 @@ import { Knex } from 'knex';
 import { clone, cloneDeep, pick, uniq } from 'lodash';
 import { PayloadService } from '../services/payload';
 import { Item, Query, SchemaOverview } from '../types';
-import { AST, FieldNode, NestedCollectionNode } from '../types/ast';
+import { AST, FieldNode, NestedCollectionNode, M2ONode } from '../types/ast';
+import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
-import { toArray } from '../utils/to-array';
+import { getColumn } from '../utils/get-column';
+import { stripFunction } from '../utils/strip-function';
+import { toArray } from '@directus/shared/utils';
 import getDatabase from './index';
+import { isNativeGeometry } from '../utils/geometry';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 type RunASTOptions = {
 	/**
@@ -55,14 +60,15 @@ export default async function runAST(
 
 	async function run(collection: string, children: (NestedCollectionNode | FieldNode)[], query: Query) {
 		// Retrieve the database columns to select in the current AST
-		const { columnsToSelect, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
+		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
 			collection,
-			children
+			children,
+			query
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, columnsToSelect, query, options?.nested);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, options?.nested);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -101,7 +107,8 @@ export default async function runAST(
 async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
-	children: (NestedCollectionNode | FieldNode)[]
+	children: (NestedCollectionNode | FieldNode)[],
+	query: Query
 ) {
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
@@ -111,8 +118,18 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field') {
-			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelectInternal.push(child.name);
+			const fieldKey = stripFunction(child.name);
+
+			if (columnsInCollection.includes(fieldKey) || fieldKey === '*') {
+				columnsToSelectInternal.push(child.name); // maintain original name here (includes functions)
+
+				if (query.alias) {
+					columnsToSelectInternal.push(
+						...Object.entries(query.alias)
+							.filter(([_key, value]) => value === child.name)
+							.map(([key]) => key)
+					);
+				}
 			}
 
 			continue;
@@ -121,7 +138,7 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelectInternal.push(child.relation.field);
+			columnsToSelectInternal.push(child.fieldKey);
 		}
 
 		if (child.type === 'm2a') {
@@ -132,27 +149,66 @@ async function parseCurrentLevel(
 		nestedCollectionNodes.push(child);
 	}
 
-	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+	const isAggregate = (query.group || (query.aggregate && Object.keys(query.aggregate).length > 0)) ?? false;
+
+	/** Always fetch primary key in case there's a nested relation that needs it. Aggregate payloads
+	 * can't have nested relational fields
+	 */
+	if (isAggregate === false && columnsToSelectInternal.includes(primaryKeyField) === false) {
 		columnsToSelectInternal.push(primaryKeyField);
 	}
 
 	/** Make sure select list has unique values */
 	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
-	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
+	const fieldNodes = columnsToSelect.map(
+		(column: string) =>
+			children.find((childNode) => childNode.type === 'field' && childNode.fieldKey === column) ?? {
+				type: 'field',
+				name: column,
+				fieldKey: column,
+			}
+	) as FieldNode[];
+
+	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
+}
+
+function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
+	const helper = getGeometryHelper();
+
+	return function (fieldNode: FieldNode | M2ONode): Knex.Raw<string> {
+		let field;
+
+		if (fieldNode.type === 'field') {
+			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
+		} else {
+			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
+		}
+
+		let alias = undefined;
+
+		if (fieldNode.name !== fieldNode.fieldKey) {
+			alias = fieldNode.fieldKey;
+		}
+
+		if (isNativeGeometry(field)) {
+			return helper.asText(table, field.field);
+		}
+
+		return getColumn(knex, table, fieldNode.name, alias);
+	};
 }
 
 function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
-	columns: string[],
+	fieldNodes: FieldNode[],
 	query: Query,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
-
+	const preProcess = getColumnPreprocessor(knex, schema, table);
+	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
@@ -164,7 +220,7 @@ function getDBQuery(
 		delete queryCopy.limit;
 	}
 
-	applyQuery(table, dbQuery, queryCopy, schema);
+	applyQuery(knex, table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
@@ -195,11 +251,19 @@ function applyParentFilters(
 			});
 
 			if (relatedM2OisFetched === false) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.field });
+				nestedNode.children.push({
+					type: 'field',
+					name: nestedNode.relation.field,
+					fieldKey: nestedNode.relation.field,
+				});
 			}
 
 			if (nestedNode.relation.meta?.sort_field) {
-				nestedNode.children.push({ type: 'field', name: nestedNode.relation.meta.sort_field });
+				nestedNode.children.push({
+					type: 'field',
+					name: nestedNode.relation.meta.sort_field,
+					fieldKey: nestedNode.relation.meta.sort_field,
+				});
 			}
 
 			nestedNode.query = {
@@ -377,11 +441,21 @@ function removeTemporaryFields(
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 		for (const child of ast.children) {
-			if (child.type === 'field') {
-				fields.push(child.name);
-			} else {
-				fields.push(child.fieldKey);
+			fields.push(child.fieldKey);
+
+			if (child.type !== 'field') {
 				nestedCollectionNodes.push(child);
+			}
+		}
+
+		// Make sure any requested aggregate fields are included
+		if (ast.query?.aggregate) {
+			for (const [operation, aggregateFields] of Object.entries(ast.query.aggregate)) {
+				if (!fields) continue;
+
+				if (operation === 'count' && aggregateFields.includes('*')) fields.push('count');
+
+				fields.push(...aggregateFields.map((field) => `${operation}.${field}`));
 			}
 		}
 
@@ -402,7 +476,9 @@ function removeTemporaryFields(
 				);
 			}
 
-			item = fields.length > 0 ? pick(rawItem, fields) : rawItem[primaryKeyField];
+			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
+
+			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}

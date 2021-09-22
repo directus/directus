@@ -32,7 +32,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: 로그아웃
   SESSION_EXPIRED: 세션 만료
-public: 공개
 not_allowed: 허용되지 않음
 validationError:
   unique: 생산Key는 유일해야만 합니다.
@@ -87,7 +86,7 @@ submit: 확인
 move_to_folder: 폴더로 이동
 move: 이동
 system: 시스템
-interface: 인터페이스
+interface_label: 인터페이스
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -125,6 +124,13 @@ fields:
     translation: 항목 명 번역
   directus_roles:
     name: 권한 이름
+field_options:
+  directus_collections:
+    language: 언어
+  directus_roles:
+    collection_list:
+      fields:
+        type_name: 타입
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력

@@ -166,3 +166,8 @@ improve Directus in your language, you can [learn more here](/contributing/trans
 
 Coming in 2021, the [Directus Marketplace](https://directus.market/) will offer a unified portal to extensions created
 by our Core Team and community contributors.
+
+### Awesome List
+
+Head to [awesome-directus](https://github.com/directus-community/awesome-directus) for a list of awesome things related
+to Directus.

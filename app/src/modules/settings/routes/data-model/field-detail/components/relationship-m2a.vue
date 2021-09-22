@@ -338,7 +338,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
 
 import { state, generationInfo } from '../store';
@@ -375,9 +375,21 @@ export default defineComponent({
 
 		const availableCollections = computed(() => {
 			return orderBy(
-				collectionsStore.collections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === false;
-				}),
+				[
+					...collectionsStore.collections.filter((collection) => {
+						return collection.collection.startsWith('directus_') === false;
+					}),
+					{
+						divider: true,
+					},
+					{
+						name: t('system'),
+						selectable: false,
+						children: collectionsStore.collections.filter((collection) => {
+							return collection.collection.startsWith('directus_') === true;
+						}),
+					},
+				],
 				['collection'],
 				['asc']
 			);

@@ -30,8 +30,8 @@ export default {
 		sidebar: () => null,
 		actions: () => null,
 	},
-	setup(props) {
-		const name = ref('Custom layout state');
+	setup() {
+		const name = ref('Custom Layout');
 
 		return { name };
 	},
@@ -55,19 +55,24 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>{{ name }} - Collection: {{ props.collection }}</div>
+	<div>
+		<p>Name: {{ name }}</p>
+		<p>Collection: {{ collection }}</p>
+	</div>
 </template>
 
 <script>
-import { toRefs } from 'vue';
-import { useLayoutState } from '@directus/extension-sdk';
-
 export default {
-	setup() {
-		const layoutState = useLayoutState();
-		const { props, name } = toRefs(layoutState.value);
-
-		return { props, name };
+	inheritAttrs: false,
+	props: {
+		collection: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true,
+		},
 	},
 };
 </script>
@@ -91,12 +96,25 @@ npm init -y
 ```
 
 To be read by the Admin App, your custom layouts's Vue component must first be bundled into a single `index.js` file. We
-recommend bundling your code using the directus-extension CLI from our `@directus/extension-sdk` package. The CLI
+recommend bundling your code using the directus-extension CLI from our `@directus/extensions-sdk` package. The CLI
 internally uses a Rollup configuration tailored specifically to bundling Directus extensions. To install the Extension
 SDK, run this command:
 
 ```bash
-npm i -D @directus/extension-sdk
+npm i -D @directus/extensions-sdk
+```
+
+For the directus-extension CLI to recognize the extension type, the input path and the output path, add this field to
+the root of the `package.json` file:
+
+```json
+"directus:extension": {
+	"type": "layout",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+}
 ```
 
 ## 3. Develop Your Custom Layout

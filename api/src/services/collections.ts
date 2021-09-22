@@ -7,22 +7,16 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import logger from '../logger';
-import { FieldsService, RawField } from '../services/fields';
+import { FieldsService } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import Keyv from 'keyv';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	CollectionMeta,
-	FieldMeta,
-	SchemaOverview,
-} from '../types';
+import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
+import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
 
 export type RawCollection = {
 	collection: string;
 	fields?: RawField[];
-	meta?: Partial<CollectionMeta>;
+	meta?: Partial<CollectionMeta> | null;
 };
 
 export class CollectionsService {
@@ -213,6 +207,11 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
+		/**
+		 * The collections as known in the schema cache.
+		 */
+		const knownCollections = Object.keys(this.schema.collections);
+
 		for (const table of tablesInDatabase) {
 			const collection: Collection = {
 				collection: table.name,
@@ -220,7 +219,12 @@ export class CollectionsService {
 				schema: table,
 			};
 
-			collections.push(collection);
+			// By only returning collections that are known in the schema cache, we prevent weird
+			// situations where the collections endpoint returns different info from every other
+			// collection
+			if (knownCollections.includes(table.name)) {
+				collections.push(collection);
+			}
 		}
 
 		return collections;
@@ -272,6 +276,8 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
+		const knownCollections = Object.keys(this.schema.collections);
+
 		for (const table of tables) {
 			const collection: Collection = {
 				collection: table.name,
@@ -279,7 +285,12 @@ export class CollectionsService {
 				schema: table,
 			};
 
-			collections.push(collection);
+			// By only returning collections that are known in the schema cache, we prevent weird
+			// situations where the collections endpoint returns different info from every other
+			// collection
+			if (knownCollections.includes(table.name)) {
+				collections.push(collection);
+			}
 		}
 
 		return collections;
@@ -319,13 +330,21 @@ export class CollectionsService {
 			await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
 		}
 
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
+
 		return collectionKey;
 	}
 
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -341,6 +360,14 @@ export class CollectionsService {
 				await service.updateOne(collectionKey, data, { autoPurgeCache: false });
 			}
 		});
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		if (this.schemaCache) {
+			await this.schemaCache.clear();
+		}
 
 		return collectionKeys;
 	}
@@ -401,15 +428,6 @@ export class CollectionsService {
 
 				// Delete related m2o fields that point to current collection
 				if (relation.related_collection === collectionKey) {
-					await fieldsService.deleteField(relation.collection, relation.field);
-				}
-
-				const isM2O = relation.collection === collectionKey;
-
-				// Delete any fields that have a relationship to/from the current collection
-				if (isM2O && relation.related_collection && relation.meta?.one_field) {
-					await fieldsService.deleteField(relation.related_collection!, relation.meta.one_field);
-				} else {
 					await fieldsService.deleteField(relation.collection, relation.field);
 				}
 			}

@@ -1,11 +1,11 @@
-import { defineDisplay } from '@/displays/define';
+import { defineDisplay } from '@directus/shared/utils';
 import DisplayJsonValue from './formatted-json-value.vue';
 
 export default defineDisplay({
 	id: 'formatted-json-value',
 	name: '$t:displays.formatted-json-value.formatted-json-value',
 	description: '$t:displays.formatted-json-value.description',
-	types: ['json'],
+	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
 	handler: DisplayJsonValue,
 	options: [
