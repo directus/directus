@@ -54,7 +54,6 @@ create_role: 创建角色
 create_user: 创建用户
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
 emails: 邮箱
