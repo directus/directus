@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="value === null" />
+	<value-null v-if="value === null || !info" />
 	<div v-else>
 		<v-icon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}
@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
-import useCollection from '@/composables/use-collection';
+import { defineComponent, toRefs } from 'vue';
+import { useCollection } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

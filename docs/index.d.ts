@@ -1,18 +1,16 @@
-export type File = {
-	type: 'file';
-	size: number;
-	path: string;
+export type DocsFile = {
 	name: string;
-	extension: string;
+	path: string;
+	import: () => Promise<{ default: string }>;
 };
 
-export type Directory = {
-	type: 'directory';
-	size: number;
-	path: string;
+export type DocsFolder = {
 	name: string;
-	children: (Directory | File)[];
+	path: string;
+	children: DocsRoutes;
 };
+
+export type DocsRoutes = (DocsFolder | DocsFile)[];
 
 export type Link = {
 	name: string;
@@ -30,9 +28,5 @@ export type Divider = {
 	divider: true;
 };
 
-export const files: Directory;
-
-export const nav: {
-	app: (Group | Link | Divider)[];
-	web: (Group | Link | Divider)[];
-};
+declare const docs: DocsRoutes;
+export default docs;

@@ -7,6 +7,9 @@
 @import 'type-styles';
 @import 'lib/codemirror';
 @import 'lib/cropperjs';
+@import 'lib/highlight';
+@import 'lib/fullcalendar';
+@import 'lib/frappe-charts';
 
 body.light {
 	@include light;

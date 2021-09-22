@@ -1,5 +1,5 @@
-import { ItemsService } from './items';
 import { AbstractServiceOptions } from '../types';
+import { ItemsService } from './items';
 
 /**
  * @TODO only return activity of the collections you have access to

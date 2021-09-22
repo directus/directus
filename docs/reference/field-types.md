@@ -1,3 +1,0 @@
-# Field Types
-
-@TODO

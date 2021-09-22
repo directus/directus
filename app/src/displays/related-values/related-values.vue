@@ -1,30 +1,39 @@
 <template>
 	<value-null v-if="!relatedCollection" />
-	<v-menu v-else-if="type.toLowerCase() === 'o2m' || type.toLowerCase() === 'm2m'" show-arrow :disabled="value.length === 0">
+	<v-menu
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(type.toLowerCase())"
+		show-arrow
+		:disabled="value.length === 0"
+	>
 		<template #activator="{ toggle }">
-			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label">{{ $tc('item_count', value.length) }}</span>
+			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
+				<span class="label">
+					{{ value.length }}
+					<template v-if="value.length >= 100">+</template>
+					{{ unit }}
+				</span>
 			</span>
 		</template>
 
-		<v-list>
-			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
+		<v-list class="links">
+			<v-list-item v-for="item in value" :key="item[primaryKeyField]">
 				<v-list-item-content>
-					<render-template :template="template" :item="item" :collection="relatedCollection" />
+					<render-template :template="internalTemplate" :item="item" :collection="relatedCollection" />
 				</v-list-item-content>
 				<v-list-item-icon>
-					<v-icon name="launch" small />
+					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
 	</v-menu>
-	<render-template v-else :template="template" :item="value" :collection="relatedCollection" />
+	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, computed, PropType } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import ValueNull from '@/views/private/components/value-null';
 
 export default defineComponent({
@@ -39,12 +48,12 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: [Array, Object] as PropType<any | any[]>,
+			type: [Array, Object] as PropType<Record<string, any> | Record<string, any>[]>,
 			default: null,
 		},
 		template: {
 			type: String,
-			required: true,
+			default: null,
 		},
 		type: {
 			type: String,
@@ -52,23 +61,45 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { t, te } = useI18n();
+
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
 		});
 
-		const primaryKeyField = computed(() => {
-			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as Ref<string>).primaryKeyField.value;
-			}
+		const { primaryKeyField } = useCollection(relatedCollection);
+
+		const internalTemplate = computed(() => {
+			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem };
+		const unit = computed(() => {
+			if (Array.isArray(props.value)) {
+				if (props.value.length === 1) {
+					if (te(`collection_names_singular.${relatedCollection.value}`)) {
+						return t(`collection_names_singular.${relatedCollection.value}`);
+					} else {
+						return t('item');
+					}
+				} else {
+					if (te(`collection_names_plural.${relatedCollection.value}`)) {
+						return t(`collection_names_plural.${relatedCollection.value}`);
+					} else {
+						return t('items');
+					}
+				}
+			}
+
+			return null;
+		});
+
+		return { relatedCollection, primaryKeyField, getLinkForItem, internalTemplate, unit };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
 			const primaryKey = item[primaryKeyField.value.field];
 
-			return `/collections/${relatedCollection.value}/${primaryKey}`;
+			return `/collections/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
 		}
 	},
 });
@@ -108,5 +139,11 @@ export default defineComponent({
 
 .subdued {
 	color: var(--foreground-subdued);
+}
+
+.links {
+	.v-list-item-content {
+		height: var(--v-list-item-min-height);
+	}
 }
 </style>

@@ -1,11 +1,11 @@
-import { defineDisplay } from '@/displays/define';
-import { types } from '@/types';
+import { defineDisplay } from '@directus/shared/utils';
+import { TYPES } from '@directus/shared/constants';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'raw',
-	name: i18n.t('displays.raw.raw'),
+	name: '$t:displays.raw.raw',
 	icon: 'code',
 	handler: (value) => value,
 	options: [],
-	types: types,
-}));
+	types: TYPES,
+});

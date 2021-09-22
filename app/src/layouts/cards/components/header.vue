@@ -1,26 +1,27 @@
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div class="selected" v-if="_selection.length > 0" @click="_selection = []">
+			<div v-if="internalSelection.length > 0" class="selected" @click="internalSelection = []">
 				<v-icon name="cancel" outline />
-				<span class="label">{{ $tc('n_items_selected', _selection.length) }}</span>
+				<span class="label">{{ t('n_items_selected', internalSelection.length) }}</span>
 			</div>
-			<button class="select-all" v-else @click="$emit('select-all')">
+			<button v-else class="select-all" @click="$emit('select-all')">
 				<v-icon name="check_circle" outline />
-				<span class="label">{{ $t('select_all') }}</span>
+				<span class="label">{{ t('select_all') }}</span>
 			</button>
 		</div>
 		<div class="end">
 			<v-icon
+				v-tooltip.top="t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
-				v-tooltip.top="$t('card_size')"
+				clickable
 				@click="toggleSize"
 			/>
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div class="sort-selector" v-tooltip.top="$t('sort_field')" @click="toggle">
+					<div v-tooltip.top="t('sort_field')" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</div>
 				</template>
@@ -31,17 +32,19 @@
 						:key="field.field"
 						:disabled="field.disabled"
 						:active="field.field === sortKey"
-						@click="_sort = field.field"
+						clickable
+						@click="internalSort = field.field"
 					>
 						<v-list-item-content>{{ field.name }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
 			<v-icon
+				v-tooltip.top="t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
-				v-tooltip.top="$t('sort_direction')"
+				clickable
 				@click="toggleDescending"
 			/>
 		</div>
@@ -49,9 +52,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '../../../types';
-import useSync from '../../../composables/use-sync';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType, computed } from 'vue';
+import { Field } from '@directus/shared/types';
+import { useSync } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
@@ -72,10 +76,13 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
+	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
 	setup(props, { emit }) {
-		const _size = useSync(props, 'size', emit);
-		const _sort = useSync(props, 'sort', emit);
-		const _selection = useSync(props, 'selection', emit);
+		const { t } = useI18n();
+
+		const internalSize = useSync(props, 'size', emit);
+		const internalSort = useSync(props, 'sort', emit);
+		const internalSelection = useSync(props, 'selection', emit);
 		const descending = computed(() => props.sort.startsWith('-'));
 
 		const sortKey = computed(() => (props.sort.startsWith('-') ? props.sort.substring(1) : props.sort));
@@ -90,35 +97,36 @@ export default defineComponent({
 				.map((field) => ({
 					field: field.field,
 					name: field.name,
-					disabled: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type),
+					disabled: ['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation'].includes(field.type),
 				}));
 		});
 
 		return {
+			t,
 			toggleSize,
 			descending,
 			toggleDescending,
 			sortField,
-			_size,
-			_sort,
-			_selection,
+			internalSize,
+			internalSort,
+			internalSelection,
 			sortKey,
 			fieldsWithoutFake,
 		};
 
 		function toggleSize() {
 			if (props.size >= 2 && props.size < 5) {
-				_size.value++;
+				internalSize.value++;
 			} else {
-				_size.value = 2;
+				internalSize.value = 2;
 			}
 		}
 
 		function toggleDescending() {
 			if (descending.value === true) {
-				_sort.value = _sort.value.substring(1);
+				internalSort.value = internalSort.value.substring(1);
 			} else {
-				_sort.value = '-' + _sort.value;
+				internalSort.value = '-' + internalSort.value;
 			}
 		}
 	},
@@ -138,8 +146,8 @@ export default defineComponent({
 	margin-bottom: 36px;
 	padding: 0 8px;
 	background-color: var(--background-page);
-	border-top: 2px solid var(--border-subdued);
-	border-bottom: 2px solid var(--border-subdued);
+	border-top: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--border-width) solid var(--border-subdued);
 	box-shadow: 0 0 0 2px var(--background-page);
 }
 
@@ -190,13 +198,13 @@ export default defineComponent({
 
 	.sort-direction {
 		transition: color var(--fast) var(--transition);
+
 		&.descending {
 			transform: scaleY(-1);
 		}
 
 		&:hover {
-			--v-icon-color: var(--foreground-normal);
-
+			color: var(--foreground-normal);
 			cursor: pointer;
 		}
 	}

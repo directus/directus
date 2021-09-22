@@ -1,31 +1,31 @@
 <template>
-	<v-dialog :active="active" @toggle="$listeners.toggle" persistent @esc="cancel">
+	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
 		<v-card>
-			<v-card-title>{{ $t('edit_bookmark') }}</v-card-title>
+			<v-card-title>{{ t('edit_bookmark') }}</v-card-title>
 
 			<v-card-text>
 				<v-input
-					autofocus
-					@keyup.enter="$emit('save', bookmarkName)"
 					v-model="bookmarkName"
-					:placeholder="$t('bookmark_name')"
+					autofocus
+					:placeholder="t('bookmark_name')"
+					@keyup.enter="$emit('save', bookmarkName)"
 				/>
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button @click="cancel" secondary>
-					{{ $t('cancel') }}
+				<v-button secondary @click="cancel">
+					{{ t('cancel') }}
 				</v-button>
 				<v-button
 					:disabled="bookmarkName === null || bookmarkName.length === 0"
-					@click="$emit('save', bookmarkName)"
 					:loading="saving"
+					@click="$emit('save', bookmarkName)"
 				>
-					{{ $t('save') }}
+					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -33,15 +33,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -54,7 +51,10 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	emits: ['save', 'update:modelValue'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
+
 		const bookmarkName = ref(props.name);
 
 		watch(
@@ -62,10 +62,10 @@ export default defineComponent({
 			(newName: string) => (bookmarkName.value = newName)
 		);
 
-		return { bookmarkName, cancel };
+		return { t, bookmarkName, cancel };
 
 		function cancel() {
-			emit('toggle', false);
+			emit('update:modelValue', false);
 		}
 	},
 });

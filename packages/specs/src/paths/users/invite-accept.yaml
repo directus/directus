@@ -1,0 +1,36 @@
+post:
+  summary: Accept User Invite
+  description: Accepts and enables an invited user using a JWT invitation token.
+  operationId: acceptInvite
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+              example: eyJh...KmUk
+              description: Accept invite token.
+            password:
+              type: string
+              description: Password of the user.
+              format: password
+              example: d1r3ctu5
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Users'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Users

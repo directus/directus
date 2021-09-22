@@ -1,15 +1,18 @@
 <template>
-	<private-view :title="title" ref="view">
-		<template #headline>Documentation</template>
-
+	<private-view :title="title">
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon>
 				<v-icon name="info" />
 			</v-button>
 		</template>
 
+		<template #title>
+			<h1 class="type-title">{{ title }}</h1>
+			<v-chip v-if="modularExtension" disabled small>Modular Extension</v-chip>
+		</template>
+
 		<template #navigation>
-			<docs-navigation :path="path" />
+			<docs-navigation :path="route.path" />
 		</template>
 
 		<div class="docs-content selectable">
@@ -17,82 +20,88 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="$t('information')" close>
-				<div class="page-description" v-html="marked($t('page_help_docs_global'))" />
+			<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<div v-md="t('page_help_docs_global')" class="page-description" />
 			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, defineAsyncComponent, ref, computed, watch } from 'vue';
+import { useRoute, RouteLocation } from 'vue-router';
 import DocsNavigation from '../components/navigation.vue';
-import Markdown from '../components/markdown.vue';
-import marked from 'marked';
 
-async function getMarkdownForPath(path: string) {
-	const pathParts = path.split('/');
+const Markdown = defineAsyncComponent(() => import('../components/markdown.vue'));
 
-	while (pathParts.includes('docs')) {
-		pathParts.shift();
-	}
+async function getMarkdownForRoute(route: RouteLocation): Promise<string> {
+	const importDocs = route.meta.import as () => Promise<{ default: string }>;
 
-	let docsPath = pathParts.join('/');
-
-	// Home
-	if (!docsPath) {
-		docsPath = 'readme';
-	}
-
-	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
-
+	const mdModule = await importDocs();
 	return mdModule.default;
 }
 
 export default defineComponent({
 	name: 'StaticDocs',
 	components: { DocsNavigation, Markdown },
-	async beforeRouteEnter(to, from, next) {
-		const md = await getMarkdownForPath(to.path);
-
-		next((vm: any) => {
-			vm.markdown = md;
-			vm.path = to.path;
-		});
-	},
-	async beforeRouteUpdate(to, from, next) {
-		this.markdown = await getMarkdownForPath(to.path);
-		this.path = to.path;
-		next();
-	},
 	setup() {
-		const path = ref<string | null>(null);
-		const markdown = ref('');
-		const view = ref<Vue>();
+		const { t } = useI18n();
 
+		const route = useRoute();
+
+		const markdown = ref('');
 		const title = computed(() => {
-			const firstLine = markdown.value.split('\n').shift();
-			return firstLine?.substring(2).trim();
+			const lines = markdown.value.split('\n');
+			const line = lines.find((line) => line.startsWith('# '));
+
+			if (line === undefined) return null;
+
+			return line.substring(2).replaceAll('<small></small>', '').trim();
+		});
+
+		const modularExtension = computed(() => {
+			const lines = markdown.value.split('\n');
+			const line = lines.find((line) => line.startsWith('# '));
+			return line?.includes('<small></small>') || false;
 		});
 
 		const markdownWithoutTitle = computed(() => {
 			const lines = markdown.value.split('\n');
-			lines.shift();
+
+			for (let i = 0; i < lines.length; i++) {
+				if (lines[i].startsWith('# ')) {
+					lines.splice(i, 1);
+					break;
+				}
+			}
+
 			return lines.join('\n');
 		});
 
-		onUpdated(() => {
-			view.value?.$data.contentEl?.scrollTo({ top: 0 });
-		});
+		watch(
+			() => route.path,
+			async () => {
+				markdown.value = await getMarkdownForRoute(route);
+			},
+			{ immediate: true, flush: 'post' }
+		);
 
-		return { markdown, title, markdownWithoutTitle, view, marked, path };
+		return { t, route, markdown, title, markdownWithoutTitle, modularExtension };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .docs-content {
-	max-width: 740px;
 	padding: 0 var(--content-padding) var(--content-padding-bottom);
+}
+
+.v-chip {
+	--v-chip-background-color: var(--v-chip-background-color-hover);
+	--v-chip-color: var(--v-chip-color-hover);
+
+	margin-left: 12px;
+	cursor: default !important;
 }
 </style>

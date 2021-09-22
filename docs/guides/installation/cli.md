@@ -1,50 +1,84 @@
 # Installing from CLI
 
-## 1. Confirm Minimum Requirements are Met
+## 1. Confirm Minimum Requirements
 
-**The only requirements for Directus is an actively maintained version of
-[Node.js](https://nodejs.org/en/about/releases/).** Currently that is v10+, however in April 2021, node v10 will leave
-_Maintenance Long-Term Support (LTS)_ status, and node v12+ will become the new minimum requirement.
+Directus requires two things to run: [Node.js](https://nodejs.dev) and a Database. For both these system requirements,
+we aim to support the current LTS release (and newer).
 
-### Databases
+To run Directus, you currently need Node 12.20 or newer, and one of the following databases:
 
-Directus currently supports the following databases, with our minimum version being based on each vendor's official
-support/LTS.
+| Database              | Version |
+| --------------------- | ------- |
+| PostgreSQL            | 10+     |
+| MySQL                 | 5.7.8+  |
+| SQLite                | 3+      |
+| MS-SQL Server         | 13.0+   |
+| OracleDB<sup>\*</sup> | 19+     |
+| MariaDB               | 10.2+   |
 
-| Database      | Version |
-| ------------- | ------- |
-| PostgreSQL    | 10+     |
-| MySQL         | 5.7.8+  |
-| SQLite        | 3+      |
-| MS-SQL Server | 13.0+   |
-| OracleDB      | TBD     |
-| MariaDB       | 10.2+   |
+<sup>\*</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
 
-<!-- prettier-ignore-start -->
-::: tip
-Variants In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).
+::: tip Variants
+
+In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), **AWS
+Redshift** (PostgreSQL), and **MariaDB**.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Apple Silicon
+
+When installing Directus on an Apple-made ARM CPU, make sure you have `libvips` installed. See
+[Apple M1](https://sharp.pixelplumbing.com/install#apple-m1).
+
+:::
 
 ## 2. Create a Project
 
-Create a new Directus project by running the following npm command.
+Navigate to the directory where you wish to create a new Directus project. The new project and directory will be created
+inside the current directory. Create a new Directus project by running the following npm command.
 
 ```bash
 npx create-directus-project my-project
 ```
 
-<!-- prettier-ignore-start -->
 ::: warning
-Except for SQLite, the database must already be running before creating your Directus
-project.
+
+Except for SQLite, the database must already be running before creating your Directus project.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## 3. Start your Project
 
-To start Directus, simply run the following command in your project directory.
+To start Directus, navigate to the project directory, _my-project_.
+
+```bash
+cd my-project
+```
+
+Run the following command in your project directory.
 
 ```bash
 npx directus start
 ```
+
+## 4. View your Project
+
+The default port used by Directus is 8055. To view your project locally, go to
+[http://localhost:8055](http://localhost:8055) in your browser.
+
+::: tip Changing Port
+
+If you want to use a different port, use [the `PORT` environment variable](/reference/environment-variables/#general).
+
+:::
+
+::: tip .env Permissions
+
+By default, the `create-directus-project` tool will set the file permissions of the generated `.env` to `-rw-r-----`
+(0640). If you run Directus from a separate user on your machine, make sure these permissions are correct.
+
+:::
+
+## Configure / Update / Upgrade your Project
+
+See the [Project Guide](/guides/projects/#upgrading-updating-a-project) to learn how to maintain your project further.

@@ -1,9 +1,83 @@
 ---
+edit_field: Редагувати поле
+conditions: Умови
+maps: Мапи
+item_revision: Перегляд об'єкта
+duplicate_field: Дублювати поле
+half_width: Ширина ряду на половину
 full_width: Повна ширина
+limit: Обмеження
+group: Група
+and: Й
+or: Або
+fill_width: Ширина заповнення
+field_name_translations: Переклад назви поля
+enter_password_to_enable_tfa: Введіть свій пароль, щоб увімкнути двофакторну аутентифікацію
+add_field: Додати поле
+role_name: Назва ролі
+branch: Гілка
+leaf: Відгалуження
+indeterminate: Не вдалось визначити
+edit_collection: Редагувати збірку
+exclusive: Винятково
+children: Дочірні елементи
+db_only_click_to_configure: 'Можливе використання лише бази даних: натисніть для налаштування '
+show_archived_items: Показати архівні елементи
+edited: Значення відредаговано
 required: Обов'язкове
+required_for_app_access: Необхідно для доступу в додаток
+requires_value: Потребує значення
+create_preset: Створити шаблон
 create_role: Створити роль
+create_user: Новий користувач
+create_webhook: Створити вебхук
+invite_users: Запросити друзів
+email_examples: "admin{'@'}example.com, user{'@'}example.com..."
+invite: Запросити
+email_already_invited: Користувача "{email}" вже запрошено
+emails: Електронні адреси
+connection_excellent: Ідеальне з'єднання
+connection_good: Хороше з'єднання
+connection_fair: Нормальне з'єднання
+connection_poor: Слабке з'єднання
+primary: Стандартно
+rename_folder: Перейменувати папку
+delete_folder: Видалити папку
+prefix: Префікс
+suffix: Суфікс
+reset_bookmark: Скинути закладку
+rename_bookmark: Перейменувати закладку
+update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
+delete_bookmark_copy: >-
+  Ви впевнені, що хочете видалити закладку "{bookmark}"? Цю дію не можливо буде скасувати.
+logoutReason:
+  SIGN_OUT: Виконано вихід
+  SESSION_EXPIRED: Час сеансу минув
+public_label: Загальнодоступний
+public_description: Контролює, які дані API є доступними без входу в особистий кабінет.
+not_allowed: Заборонено
 directus_version: Версія Directus
+node_version: Версія Node
+node_uptime: Час роботи Node
+os_type: Тип ОС
+os_version: Версія ОС
+os_uptime: Час роботи ОС
+os_totalmem: Пам'ять операційної системи
+archive: Архів
+archive_confirm: Ви впевнені, що хочете додати цей файл до архіву?
+archive_confirm_count: >-
+  Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
+reset_system_permissions_to: 'Скинути налаштування до:'
+validationError:
+  eq: Значення повинно бути {valid}
+  neq: Значення не може бути {invalid}
+  in: Значення повинно бути одним з {valid}
+  nin: Значення не може бути одним з {invalid}
+  contains: Значення повинно містити {substring}
+  ncontains: Значення не може містити {substring}
+  gt: Значення має бути більше {valid}
+  gte: Значення має бути більше або дорівнювати {valid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
@@ -58,6 +132,7 @@ save_as_copy: Зберегти копію
 comments: Коментарі
 request_feature: Запит на нову функцію
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+csv: CSV
 create_collection: Створити колекцію
 users: Користувачі
 activity: Активність
@@ -66,11 +141,17 @@ field_width: Ширина поля
 user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
+status: Статус
+remove: Видалити
+errors:
+  ROUTE_NOT_FOUND: Не знайдено
+create_bookmark: Створити закладку
 bookmarks: Закладки
 back: Назад
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
+font: Шрифт
 monospace: Моноширинний шрифт
 divider: Розділювач
 color: Колір
@@ -91,7 +172,10 @@ on_update: При оновленні
 read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
+width: Ширина
+height: Висота
 wysiwyg_options:
+  codeblock: Код
   remove: Видалити
   table: Таблиця
 dropdown: Випадаюче меню
@@ -114,57 +198,79 @@ collection: Колекція
 collections: Колекції
 fields:
   directus_activity:
+    item: Первинний ключ елемента
     action: Дія
     collection: Колекція
-    item: Первинний ключ елемента
-    user: Дія від
     timestamp: Час події
-    edited_on: Змінено
-    comment_deleted_on: Коментар видалено
-    ip: IP адреса
-    user_agent: Ідентифікатор браузера
+    user: Дія від
     comment: Коментар
+    user_agent: Ідентифікатор браузера
+    ip: IP адреса
+  directus_collections:
+    collection: Колекція
+    icon: Іконка
+    note: Примітка
+    hidden: Приховано
   directus_files:
     title: Заголовок
+    description: Опис
     tags: Теги
     location: Розташування
-    description: Опис
-    private_hash: Приватний хеш
-    checksum: Контрольна сума
-    uploaded_on: Завантажено
+    metadata: Метадані
+    filesize: Розмір файлу
+    modified_on: Час зміни
+    created_on: Створено
+    created_by: Автор
+    embed: Вбудувати
     uploaded_by: Завантажено
     width: Ширина
+    uploaded_on: Завантажено
     height: Висота
     duration: Тривалість
-    filesize: Розмір файлу
-    metadata: Метадані
   directus_users:
-    status: Статус
     first_name: Ім'я
     last_name: Прізвище
     email: Email
-    email_notifications: Сповіщення по Email
     password: Пароль
-    role: Роль
-    company: Компанія
-    title: Заголовок
-    timezone: Часовий пояс
-    language: Мова
     avatar: Аватар
+    location: Розташування
+    title: Заголовок
+    description: Опис
+    tags: Теги
+    language: Мова
     theme: Тема
     tfa_secret: Двофакторна автентифікація
+    status: Статус
+    role: Роль
   directus_settings:
     project_name: Назва проекту
   directus_fields:
     note: Примітка
     hidden: Приховано
+    translation: Переклад назви поля
     display_template: Шаблон
   directus_roles:
+    name: Назва ролі
     description: Опис
+  directus_webhooks:
+    name: Назва
+    status: Статус
+field_options:
+  directus_activity:
+    create: Створити
+    update: Оновити
+  directus_collections:
+    language: Мова
+    archive_divider: Архів
+  directus_roles:
+    fields:
+      icon_name: Іконка
+      name_name: Назва
+    collections_name: Колекції
+  directus_webhooks:
+    actions_create: Створити
+    actions_update: Оновити
 comment: Коментар
-continue: Далі
-default: За замовчуванням
-delete: Видалити
 delete_field_are_you_sure: >-
   Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
 description: Опис
@@ -207,44 +313,32 @@ template: Шаблон
 translation: Переклад
 value: Значення
 interfaces:
-  checkboxes:
-    checkboxes: Прапорці
-  code:
+  presentation-links:
+    primary: Стандартно
+  input-code:
     code: Код
-    line_number: Номери рядків
-  collection:
+  system-collection:
     collection: Колекція
-  collections:
+  system-collections:
     collections: Колекції
-  color:
+  select-color:
     color: Колір
   datetime:
     datetime: Дата й час
-  divider:
+  presentation-divider:
     divider: Розділювач
   file:
     file: Файл
   files:
     files: Файли
-  icon:
+  select-icon:
     icon: Іконка
-  many-to-one:
-    many-to-one: Багато до одного
-  numeric:
-    numeric: Цифровий
-  one-to-many:
-    one-to-many: Один до багатьох
   tags:
     tags: Теги
-  text-input:
-    text-input: Текстове поле
-    trim: Обрізувати пробіли
   user:
     user: Користувач
     modes:
       dropdown: Випадаюче меню
-  wysiwyg:
-    custom_formats: Власне форматування
 displays:
   collection:
     collection: Колекція

@@ -26,7 +26,6 @@ CACHE_ENABLED=false
 ## File Storage
 
 STORAGE_LOCATIONS="local"
-STORAGE_LOCAL_PUBLIC_URL="/uploads"
 STORAGE_LOCAL_DRIVER="local"
 STORAGE_LOCAL_ROOT="./uploads"
 
@@ -39,6 +38,7 @@ ACCESS_TOKEN_TTL="15m"
 REFRESH_TOKEN_TTL="7d"
 REFRESH_TOKEN_COOKIE_SECURE=false
 REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
+REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 
 ####################################################################################################
 ## SSO (OAuth) Providers

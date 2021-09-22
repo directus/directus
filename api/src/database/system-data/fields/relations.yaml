@@ -10,16 +10,10 @@ fields:
   - field: many_field
     width: half
 
-  - field: many_primary
-    width: half
-
   - field: one_collection
     width: half
 
   - field: one_field
-    width: half
-
-  - field: one_primary
     width: half
 
   - field: one_collection_field
@@ -30,4 +24,10 @@ fields:
     width: half
 
   - field: junction_field
+    width: half
+
+  - field: sort_field
+    width: half
+
+  - field: one_deselect_action
     width: half

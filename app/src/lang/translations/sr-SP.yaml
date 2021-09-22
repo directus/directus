@@ -1,6 +1,24 @@
 ---
+edit_field: Уреди поља
+item_revision: Ревизија итема
+duplicate_field: Дуплирај поље
+half_width: Пола ширине
+full_width: Пуна ширина
+fill_width: Попуни ширину
+required: Захтјева се
 create_role: Креирајте улогу
+emails: Е-мејлови
+not_allowed: Није дозвољено
 directus_version: Верзија Директуса
+node_version: Верзија нода
+node_uptime: Вријеме рада нода
+os_type: Тип OS-а
+os_version: Верзија OS-а
+os_uptime: Вријеме рада OS-а
+os_totalmem: Меморија OS-а
+archive: Архивирај
+unarchive: Деархивирај
+unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
 language: Језик
 create_field: Креирајте поље
 text: Текст
@@ -32,13 +50,17 @@ create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
 duration: Трајање
+status: Стање
 bookmarks: Сачуване странице
 back: Назад
 operators:
   contains: Садржи
 role: Рола
 create: Креирај
+width: Ширина
+height: Висина
 wysiwyg_options:
+  codeblock: Код
   table: Табела
 choices: Избори
 deselect: Поништи избор
@@ -52,48 +74,63 @@ cancel: Откажи
 collection: Колекција
 fields:
   directus_activity:
+    item: Примарни кључ ставке
     action: Акција
     collection: Колекција
-    item: Примарни кључ ставке
-    user: Акција од стране
     timestamp: Акција укључена
-    edited_on: Уређивање укључено
-    comment_deleted_on: Коментар обрисан укључено
-    ip: ИП адреса
-    user_agent: Кориснички агент
+    user: Акција од стране
     comment: Коментар
+    user_agent: Кориснички агент
+    ip: ИП адреса
+  directus_collections:
+    collection: Колекција
   directus_files:
     title: Наслов
+    description: Опис
     tags: Ознаке
     location: Локација
-    description: Опис
+    metadata: Мета подаци
+    filesize: Veličina
+    created_on: Креирано
+    created_by: Креирао
+    embed: Угради
     width: Ширина
     height: Висина
     duration: Трајање
-    filesize: Veličina
-    metadata: Мета подаци
   directus_users:
-    status: Стање
     first_name: Име
     last_name: Презиме
     email: Имејл
     password: Лозинка
-    role: Рола
-    company: Компанија
-    title: Наслов
-    timezone: Временска зона
-    language: Језик
     avatar: Аватар
+    location: Локација
+    title: Наслов
+    description: Опис
+    tags: Ознаке
+    language: Језик
     theme: Тема
     tfa_secret: Дво-факторска аутентификација
+    status: Стање
+    role: Рола
   directus_fields:
     display_template: Шаблон
   directus_roles:
     description: Опис
+  directus_webhooks:
+    name: Име
+    status: Стање
+field_options:
+  directus_activity:
+    create: Креирај
+  directus_collections:
+    language: Језик
+    archive_divider: Архивирај
+  directus_roles:
+    fields:
+      name_name: Име
+  directus_webhooks:
+    actions_create: Креирај
 comment: Коментар
-continue: Настави
-default: Подразумевано
-delete: Обриши
 description: Опис
 done: Завршено
 email: Имејл
@@ -102,12 +139,9 @@ my_activity: Моја активност
 password: Лозинка
 template: Шаблон
 interfaces:
-  checkboxes:
-    checkboxes: Поља за потврду
-  code:
+  input-code:
     code: Код
-    line_number: Број линија
-  collection:
+  system-collection:
     collection: Колекција
   files:
     files: Фајлови

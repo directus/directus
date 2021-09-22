@@ -2,10 +2,9 @@
  * Custom properties on the req object in express
  */
 
-import { Permission } from './permissions';
+import { Accountability } from '@directus/shared/types';
 import { Query } from './query';
-import { Accountability } from './accountability';
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import { SchemaOverview } from './schema';
 
 export {};
 
@@ -19,7 +18,6 @@ declare global {
 
 			accountability?: Accountability;
 			singleton?: boolean;
-			permissions?: Permission;
 		}
 	}
 }

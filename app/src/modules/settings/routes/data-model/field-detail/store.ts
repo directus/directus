@@ -5,64 +5,57 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
-import { clone, throttle } from 'lodash';
-import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { InterfaceConfig } from '@/interfaces/types';
-import { DisplayConfig } from '@/displays/types';
-import { Field, localTypes } from '@/types';
-import Vue from 'vue';
+import { getInterfaces } from '@/interfaces';
+import {
+	DeepPartial,
+	DisplayConfig,
+	Field,
+	InterfaceConfig,
+	Item,
+	LocalType,
+	Collection,
+	Relation,
+} from '@directus/shared/types';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
-const collectionsStore = useCollectionsStore();
+import { clone, throttle } from 'lodash';
+import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
-let state: any;
+type GenerationInfo = {
+	name: string;
+	type: 'collection' | 'field';
+};
+
+let state: {
+	fieldData: DeepPartial<Field>;
+	relations: DeepPartial<Relation>[];
+	newCollections: DeepPartial<Collection & { fields?: DeepPartial<Field>[]; $type?: string }>[];
+	newFields: DeepPartial<Field & { $type?: string }>[];
+	updateFields: DeepPartial<Field & { $type?: string }>[];
+	newRows: Record<string, Item[]>;
+	autoFillJunctionRelation: boolean;
+};
+
 let availableInterfaces: ComputedRef<InterfaceConfig[]>;
 let availableDisplays: ComputedRef<DisplayConfig[]>;
+let generationInfo: ComputedRef<GenerationInfo[]>;
 
-export { state, availableInterfaces, availableDisplays, initLocalStore, clearLocalStore };
+export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
-	const interfaces = getInterfaces();
-	const displays = getDisplays();
+function initLocalStore(collection: string, field: string, type: LocalType): void {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+	const collectionsStore = useCollectionsStore();
 
-	state = reactive<any>({
-		fieldData: {
-			field: '',
-			type: 'string',
-			schema: {
-				default_value: undefined,
-				max_length: undefined,
-				is_nullable: true,
-				numeric_precision: null,
-				numeric_scale: null,
-			},
-			meta: {
-				hidden: false,
-				interface: undefined,
-				options: undefined,
-				display: undefined,
-				display_options: undefined,
-				readonly: false,
-				special: undefined,
-				note: undefined,
-			},
-		},
-		relations: [],
-		newCollections: [],
-		newFields: [],
-		updateFields: [],
-		newRows: {},
+	const { interfaces } = getInterfaces();
+	const { displays } = getDisplays();
 
-		autoFillJunctionRelation: true,
-	});
+	clearLocalStore();
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
 		return interfaces.value
-			.filter((inter) => {
+			.filter((inter: InterfaceConfig) => {
 				// Filter out all system interfaces
 				if (inter.system === true) return false;
 
@@ -71,18 +64,47 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter) => {
+			.filter((inter: DisplayConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: DisplayConfig, b: DisplayConfig) => (a.name > b.name ? 1 : -1));
+	});
+
+	generationInfo = computed(() => {
+		return [
+			...state.newCollections.map(
+				(newCollection): GenerationInfo => ({
+					name: newCollection.collection!,
+					type: 'collection',
+				})
+			),
+			...state.newCollections
+				.filter((newCollection) => !!newCollection.fields)
+				.map((newCollection) =>
+					newCollection.fields!.map((field) => ({ ...field, collection: newCollection.collection }))
+				)
+				.flat()
+				.map(
+					(newField): GenerationInfo => ({
+						name: `${newField.collection}.${newField.field}`,
+						type: 'field',
+					})
+				),
+			...state.newFields.map(
+				(newField): GenerationInfo => ({
+					name: `${newField.collection}.${newField.field}`,
+					type: 'field',
+				})
+			),
+		];
 	});
 
 	const isExisting = field !== '+';
@@ -96,11 +118,22 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		state.fieldData.meta = existingField.meta;
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
+
+		// Make sure every relation has a schema we can operate on
+		for (const relation of state.relations) {
+			if (!relation.schema) {
+				relation.schema = {
+					on_delete: 'SET NULL',
+				};
+			}
+		}
 	} else {
+		state.autoFillJunctionRelation = true;
+
 		watch(
 			() => availableInterfaces.value,
 			() => {
-				if (availableInterfaces.value.length === 1) {
+				if (availableInterfaces.value.length === 1 && state.fieldData.meta) {
 					state.fieldData.meta.interface = availableInterfaces.value[0].id;
 				}
 			}
@@ -109,7 +142,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch(
 			() => availableDisplays.value,
 			() => {
-				if (availableDisplays.value.length === 1) {
+				if (availableDisplays.value.length === 1 && state.fieldData.meta) {
 					state.fieldData.meta.display = availableDisplays.value[0].id;
 				}
 			}
@@ -117,7 +150,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	}
 
 	// Auto generate translations
-	if (isExisting === false && type === 'translations') {
+	if (isExisting === false && type === 'translations' && state.fieldData.meta) {
 		state.fieldData.meta.interface = 'translations';
 	}
 
@@ -126,6 +159,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
 	else if (type === 'o2m') useO2M();
 	else if (type === 'presentation') usePresentation();
+	else if (type === 'group') useGroup();
 	else if (type === 'm2a') useM2A();
 	else useStandard();
 
@@ -135,11 +169,12 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 			state.relations = [
 				{
-					many_collection: collection,
-					many_field: '',
-					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
-					one_collection: 'directus_files',
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					collection: collection,
+					field: '',
+					related_collection: 'directus_files',
+					meta: {
+						sort_field: null,
+					},
 				},
 			];
 		}
@@ -147,24 +182,26 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].many_field = state.fieldData.field;
+				state.relations[0].field = state.fieldData.field;
 			}
 		);
 	}
 
 	function useM2O() {
 		const syncNewCollectionsM2O = throttle(() => {
-			const collectionName = state.relations[0].one_collection;
+			const collectionName = state.relations[0].related_collection;
 
-			if (collectionExists(collectionName)) {
+			if (!collectionName || collectionExists(collectionName)) {
 				state.newCollections = [];
 			} else {
+				const pkFieldName = state.newCollections?.[0]?.fields?.[0]?.field || 'id';
+
 				state.newCollections = [
 					{
 						collection: collectionName,
 						fields: [
 							{
-								field: state.relations[0].one_primary,
+								field: pkFieldName,
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
@@ -183,31 +220,46 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		if (isExisting === false) {
 			state.relations = [
 				{
-					many_collection: collection,
-					many_field: '',
-					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
-					one_collection: '',
-					one_primary: '',
+					collection: collection,
+					field: '',
+					related_collection: '',
+					meta: {
+						sort_field: null,
+					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				},
 			];
 		}
 
 		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
+				}
+			}
+		);
+
+		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].many_field = state.fieldData.field;
+				state.relations[0].field = state.fieldData.field;
 			}
 		);
 
 		// Make sure to keep the current m2o field type in sync with the primary key of the
 		// selected related collection
 		watch(
-			() => state.relations[0].one_collection,
+			() => state.relations[0].related_collection,
 			() => {
-				if (collectionExists(state.relations[0].one_collection)) {
-					const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
+				if (state.relations[0].related_collection && collectionExists(state.relations[0].related_collection)) {
+					const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].related_collection);
 					state.fieldData.type = field.type;
-					state.relations[0].one_primary = field.field;
 				} else {
 					state.fieldData.type = 'integer';
 				}
@@ -216,140 +268,36 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		// Sync the "auto generate related o2m"
 		watch(
-			() => state.relations[0].one_collection,
+			() => state.relations[0].related_collection,
 			() => {
-				if (state.newFields.length > 0) {
-					state.newFields[0].collection = state.relations[0].one_collection;
+				if (state.newFields.length > 0 && state.relations[0].related_collection) {
+					state.newFields[0].collection = state.relations[0].related_collection;
 				}
 			}
 		);
 
-		watch([() => state.relations[0].one_collection, () => state.relations[0].one_primary], syncNewCollectionsM2O);
+		watch([() => state.relations[0].related_collection], syncNewCollectionsM2O);
 	}
 
 	function useO2M() {
 		delete state.fieldData.schema;
-		state.fieldData.type = null;
+		state.fieldData.type = 'alias';
 
-		const syncNewCollectionsO2M = throttle(() => {
-			const collectionName = state.relations[0].many_collection;
-			const fieldName = state.relations[0].many_field;
+		const syncNewCollectionsO2M = throttle(([collectionName, fieldName, sortField]) => {
+			state.newCollections = state.newCollections.filter((col: any) => ['related'].includes(col.$type) === false);
+			state.newFields = state.newFields.filter((field) => ['manyRelated', 'sort'].includes(field.$type!) === false);
 
-			if (collectionExists(collectionName)) {
-				state.newCollections = [];
-			} else {
-				state.newCollections = [
-					{
-						collection: collectionName,
-						fields: [
-							{
-								field: 'id',
-								type: 'integer',
-								schema: {
-									has_auto_increment: true,
-									is_primary_key: true,
-								},
-								meta: {
-									hidden: true,
-								},
-							},
-						],
-					},
-				];
-
-				state.relations[0].many_primary = 'id';
-			}
-
-			if (collectionExists(collectionName)) {
-				if (fieldExists(collectionName, fieldName)) {
-					state.newFields = [];
-				} else {
-					state.newFields = [
-						{
-							$type: 'manyRelated',
-							collection: collectionName,
-							field: fieldName,
-							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
-							schema: {},
-						},
-					];
-				}
-			} else {
-				state.newFields = [
-					{
-						$type: 'manyRelated',
-						collection: collectionName,
-						field: fieldName,
-						type: 'integer',
-						schema: {},
-					},
-				];
-			}
-		}, 50);
-
-		if (!isExisting) {
-			state.fieldData.meta.special = ['o2m'];
-
-			state.relations = [
-				{
-					many_collection: '',
-					many_field: '',
-					many_primary: '',
-
-					one_collection: collection,
-					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
-				},
-			];
-		}
-
-		watch(
-			() => state.fieldData.field,
-			() => {
-				state.relations[0].one_field = state.fieldData.field;
-			}
-		);
-
-		watch(
-			() => state.relations[0].many_collection,
-			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-						state.relations[0].many_collection
-					).field;
-				}
-			}
-		);
-
-		watch([() => state.relations[0].many_collection, () => state.relations[0].many_field], syncNewCollectionsO2M);
-	}
-
-	function useM2M() {
-		delete state.fieldData.schema;
-		state.fieldData.type = null;
-
-		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
-			state.newCollections = state.newCollections.filter(
-				(col: any) => ['junction', 'related'].includes(col.$type) === false
-			);
-			state.newFields = state.newFields.filter(
-				(field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false
-			);
-
-			if (collectionExists(junctionCollection) === false) {
+			if (collectionName && collectionExists(collectionName) === false) {
 				state.newCollections.push({
-					$type: 'junction',
-					collection: junctionCollection,
-					meta: {
-						hidden: true,
-						icon: 'import_export',
-					},
+					$type: 'related',
+					collection: collectionName,
 					fields: [
 						{
 							field: 'id',
 							type: 'integer',
 							schema: {
 								has_auto_increment: true,
+								is_primary_key: true,
 							},
 							meta: {
 								hidden: true,
@@ -357,98 +305,127 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						},
 					],
 				});
-
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
 			}
 
-			if (fieldExists(junctionCollection, manyCurrent) === false) {
+			if (fieldName && fieldExists(collectionName, fieldName) === false) {
 				state.newFields.push({
-					$type: 'manyCurrent',
-					collection: junctionCollection,
-					field: manyCurrent,
-					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+					$type: 'manyRelated',
+					collection: collectionName,
+					field: fieldName,
+					type: collectionExists(collection)
+						? fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type
+						: 'integer',
+					schema: {},
+				});
+			}
+
+			if (sortField && fieldExists(collectionName, sortField) === false) {
+				state.newFields.push({
+					$type: 'sort',
+					collection: collectionName,
+					field: sortField,
+					type: 'integer',
 					schema: {},
 					meta: {
 						hidden: true,
 					},
 				});
 			}
+		}, 50);
 
-			if (fieldExists(junctionCollection, manyRelated) === false) {
-				if (type === 'translations') {
-					state.newFields.push({
-						$type: 'manyRelated',
-						collection: junctionCollection,
-						field: manyRelated,
-						type: collectionExists(relatedCollection)
-							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
-							: 'string',
-						schema: {},
-						meta: {
-							hidden: true,
-						},
-					});
-				} else {
-					state.newFields.push({
-						$type: 'manyRelated',
-						collection: junctionCollection,
-						field: manyRelated,
-						type: collectionExists(relatedCollection)
-							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
-							: 'integer',
-						schema: {},
-						meta: {
-							hidden: true,
-						},
-					});
+		if (!isExisting) {
+			state.fieldData.meta = {
+				...(state.fieldData.meta || {}),
+				special: ['o2m'],
+			};
+
+			state.relations = [
+				{
+					collection: '',
+					field: '',
+					related_collection: collection,
+					meta: {
+						one_field: state.fieldData.field,
+						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
+				},
+			];
+		}
+
+		watch(
+			() => state.relations[0].collection,
+			() => {
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
 				}
 			}
+		);
 
-			if (collectionExists(relatedCollection) === false) {
-				if (type === 'translations') {
+		watch(
+			() => state.fieldData.field,
+			() => {
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: state.fieldData.field,
+				};
+			}
+		);
+
+		watch(
+			[() => state.relations[0].collection, () => state.relations[0].field, () => state.relations[0].meta?.sort_field],
+			([collectionName, fieldName, sortField]) => {
+				syncNewCollectionsO2M([collectionName, fieldName, sortField]);
+				syncOnDeleteTrigger(collectionName, fieldName);
+			}
+		);
+
+		/**
+		 * Syncs the on_delete value of the existing relationship with the new o2m one, so you don't
+		 * accidentally override it
+		 */
+		function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
+			if (!collection || !field) return;
+
+			const existingRelation = relationsStore.getRelationForField(collection, field) || {};
+			if (!existingRelation) return;
+
+			state.relations[0].schema = {
+				on_delete: existingRelation.schema?.on_delete || 'SET NULL',
+			};
+		}
+	}
+
+	function useM2M() {
+		delete state.fieldData.schema;
+		state.fieldData.type = 'alias';
+
+		const syncNewCollectionsM2M = throttle(
+			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
+				state.newCollections = state.newCollections.filter(
+					(col: any) => ['junction', 'related'].includes(col.$type) === false
+				);
+				state.newFields = state.newFields.filter(
+					(field) => ['manyCurrent', 'manyRelated', 'sort'].includes(field.$type!) === false
+				);
+
+				if (collectionExists(junctionCollection) === false) {
 					state.newCollections.push({
-						$type: 'related',
-						collection: relatedCollection,
+						$type: 'junction',
+						collection: junctionCollection,
 						meta: {
-							icon: 'translate',
+							hidden: true,
+							icon: 'import_export',
 						},
 						fields: [
 							{
-								field: state.relations[1].one_primary,
-								type: 'string',
-								schema: {
-									is_primary_key: true,
-								},
-								meta: {
-									interface: 'text-input',
-									options: {
-										iconLeft: 'vpn_key',
-									},
-									width: 'half',
-								},
-							},
-							{
-								field: 'name',
-								type: 'string',
-								schema: {},
-								meta: {
-									interface: 'text-input',
-									options: {
-										iconLeft: 'translate',
-									},
-									width: 'half',
-								},
-							},
-						],
-					});
-				} else {
-					state.newCollections.push({
-						$type: 'related',
-						collection: relatedCollection,
-						fields: [
-							{
-								field: state.relations[1].one_primary,
+								field: 'id',
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
@@ -460,145 +437,277 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						],
 					});
 				}
-			}
 
-			if (type === 'translations') {
-				if (collectionExists(relatedCollection) === false) {
-					state.newRows = {
-						[relatedCollection]: [
-							{
-								code: 'en-US',
-								name: 'English',
-							},
-							{
-								code: 'de-DE',
-								name: 'German',
-							},
-							{
-								code: 'fr-FR',
-								name: 'French',
-							},
-							{
-								code: 'ru-RU',
-								name: 'Russian',
-							},
-							{
-								code: 'es-ES',
-								name: 'Spanish',
-							},
-							{
-								code: 'it-IT',
-								name: 'Italian',
-							},
-							{
-								code: 'pt-BR',
-								name: 'Portuguese',
-							},
-						],
-					};
-				} else {
-					state.newRows = {};
+				if (fieldExists(junctionCollection, manyCurrent) === false) {
+					state.newFields.push({
+						$type: 'manyCurrent',
+						collection: junctionCollection,
+						field: manyCurrent,
+						type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
 				}
-			}
-		}, 50);
+
+				if (fieldExists(junctionCollection, manyRelated) === false) {
+					if (type === 'translations') {
+						state.newFields.push({
+							$type: 'manyRelated',
+							collection: junctionCollection,
+							field: manyRelated,
+							type: collectionExists(relatedCollection)
+								? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+								: 'string',
+							schema: {},
+							meta: {
+								hidden: true,
+							},
+						});
+					} else {
+						state.newFields.push({
+							$type: 'manyRelated',
+							collection: junctionCollection,
+							field: manyRelated,
+							type: collectionExists(relatedCollection)
+								? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+								: 'integer',
+							schema: {},
+							meta: {
+								hidden: true,
+							},
+						});
+					}
+				}
+
+				if (collectionExists(relatedCollection) === false) {
+					if (type === 'translations') {
+						state.newCollections.push({
+							$type: 'related',
+							collection: relatedCollection,
+							meta: {
+								icon: 'translate',
+							},
+							fields: [
+								{
+									field: 'code',
+									type: 'string',
+									schema: {
+										is_primary_key: true,
+									},
+									meta: {
+										interface: 'input',
+										options: {
+											iconLeft: 'vpn_key',
+										},
+										width: 'half',
+									},
+								},
+								{
+									field: 'name',
+									type: 'string',
+									schema: {},
+									meta: {
+										interface: 'input',
+										options: {
+											iconLeft: 'translate',
+										},
+										width: 'half',
+									},
+								},
+							],
+						});
+					} else {
+						state.newCollections.push({
+							$type: 'related',
+							collection: relatedCollection,
+							fields: [
+								{
+									field: 'id',
+									type: 'integer',
+									schema: {
+										has_auto_increment: true,
+									},
+									meta: {
+										hidden: true,
+									},
+								},
+							],
+						});
+					}
+				}
+
+				if (type === 'translations') {
+					if (collectionExists(relatedCollection) === false) {
+						state.newRows = {
+							[relatedCollection]: [
+								{
+									code: 'en-US',
+									name: 'English',
+								},
+								{
+									code: 'de-DE',
+									name: 'German',
+								},
+								{
+									code: 'fr-FR',
+									name: 'French',
+								},
+								{
+									code: 'ru-RU',
+									name: 'Russian',
+								},
+								{
+									code: 'es-ES',
+									name: 'Spanish',
+								},
+								{
+									code: 'it-IT',
+									name: 'Italian',
+								},
+								{
+									code: 'pt-BR',
+									name: 'Portuguese',
+								},
+							],
+						};
+					} else {
+						state.newRows = {};
+					}
+				}
+
+				if (sortField && fieldExists(junctionCollection, sortField) === false) {
+					state.newFields.push({
+						$type: 'sort',
+						collection: junctionCollection,
+						field: sortField,
+						type: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+			},
+			50
+		);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = [type];
+			state.fieldData.meta = {
+				...(state.fieldData.meta || {}),
+				special: [type],
+			};
 
 			state.relations = [
 				{
-					many_collection: '',
-					many_field: '',
-					many_primary: '',
-					one_collection: collection,
-					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					collection: '',
+					field: '',
+					related_collection: collection,
+					meta: {
+						one_field: state.fieldData.field,
+						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				},
 				{
-					many_collection: '',
-					many_field: '',
-					many_primary: '',
-					one_collection: '',
-					one_field: null,
-					one_primary: '',
+					collection: '',
+					field: '',
+					related_collection: '',
+					meta: {
+						one_field: null,
+						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				},
 			];
 		}
 
 		watch(
-			() => state.relations[0].many_collection,
+			() => state.relations[0].collection,
 			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-					state.relations[0].many_primary = pkField;
-					state.relations[1].many_primary = pkField;
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
 				}
 			}
 		);
 
 		watch(
-			() => state.relations[0].many_field,
+			() => state.relations[1].collection,
 			() => {
-				state.relations[1].junction_field = state.relations[0].many_field;
-			}
-		);
-
-		watch(
-			() => state.relations[1].many_field,
-			() => {
-				state.relations[0].junction_field = state.relations[1].many_field;
-			}
-		);
-
-		watch(
-			() => state.relations[1].one_collection,
-			() => {
-				if (collectionExists(state.relations[1].one_collection)) {
-					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-						state.relations[1].one_collection
-					)?.field;
+				if (state.relations[1].collection === state.relations[1].related_collection) {
+					state.relations[1].schema = {
+						...state.relations[1].schema,
+						on_delete: 'NO ACTION',
+					};
 				}
+			}
+		);
+
+		watch(
+			() => state.relations[0].field,
+			() => {
+				state.relations[1].meta = {
+					...(state.relations[1].meta || {}),
+					junction_field: state.relations[0].field,
+				};
+			}
+		);
+
+		watch(
+			() => state.relations[1].field,
+			() => {
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					junction_field: state.relations[1].field,
+				};
 			}
 		);
 
 		watch(
 			[
-				() => state.relations[0].many_collection,
-				() => state.relations[0].many_field,
-				() => state.relations[1].many_field,
-				() => state.relations[1].one_collection,
+				() => state.relations[0].collection,
+				() => state.relations[0].field,
+				() => state.relations[1].field,
+				() => state.relations[1].related_collection,
+				() => state.relations[0].meta?.sort_field,
 			],
-			syncNewCollectionsM2M
+			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
+				syncNewCollectionsM2M([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]);
+				syncOnDeleteTrigger(junctionCollection, manyCurrent);
+			}
 		);
 
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].one_field = state.fieldData.field;
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: state.fieldData.field,
+				};
 
-				if (collectionExists(state.fieldData.field) && type !== 'translations') {
-					state.relations[0].many_collection = getAutomaticJunctionCollectionName(
-						state.relations[0].one_collection,
-						state.relations[1].one_collection
-					);
-					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-					state.relations[1].one_collection = state.fieldData.field;
-
-					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
-					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-
-					if (state.relations[0].many_field === state.relations[1].many_field) {
-						state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
-					}
+				/**
+				 * When the pane is opened, if the current fieldname is the actual name of a related collection, we auto-fill all
+				 * the fields as if that related collection was already selected
+				 */
+				if (state.fieldData.field && collectionExists(state.fieldData.field) && type !== 'translations') {
+					autoFillFields(state.fieldData.field);
 				}
 			}
 		);
 
 		if (type === 'files') {
-			Vue.nextTick(() => {
-				state.relations[1].one_collection = 'directus_files';
-				state.relations[1].one_primary = 'id';
+			nextTick(() => {
+				state.relations[1].related_collection = state.relations[1].related_collection || 'directus_files';
 			});
 		}
 
@@ -610,28 +719,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				(startWatching) => {
 					if (startWatching) {
 						stop = watch(
-							[() => state.relations[1].one_collection, () => state.relations[1].one_primary],
-							([newRelatedCollection, newRelatedPrimary]: string[]) => {
-								if (newRelatedCollection) {
-									state.relations[0].many_collection = getAutomaticJunctionCollectionName(
-										state.relations[0].one_collection,
-										state.relations[1].one_collection
-									);
-									state.relations[1].many_collection = getAutomaticJunctionCollectionName(
-										state.relations[0].one_collection,
-										state.relations[1].one_collection
-									);
-									state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-								}
-
-								if (newRelatedPrimary) {
-									state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-								}
-
-								if (state.relations[0].many_field === state.relations[1].many_field) {
-									state.relations[1].many_field = `${state.relations[1].one_collection}_related_${state.relations[1].one_primary}`;
-								}
-							}
+							() => state.relations[1].related_collection,
+							(newRelatedCollection) => autoFillFields(newRelatedCollection)
 						);
 					} else {
 						stop?.();
@@ -643,33 +732,71 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		if (type === 'translations') {
 			watch(
-				() => state.relations[0].many_collection,
-				(newManyCollection: string) => {
-					state.relations[1].many_collection = newManyCollection;
+				() => state.relations[0].collection,
+				(newManyCollection) => {
+					state.relations[1].collection = newManyCollection;
 				},
 				{ immediate: true }
 			);
 
-			state.relations[0].many_collection = `${collection}_translations`;
+			if (isExisting === false) {
+				state.relations[0].collection = `${collection}_translations`;
+				state.relations[0].field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+				state.relations[1].related_collection = 'languages';
 
-			state.relations[0].many_field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
+				const relatedPKField =
+					fieldsStore.getPrimaryKeyFieldForCollection(state.relations[1].related_collection)?.field || 'id';
+				state.relations[1].field = `${state.relations[1].related_collection}_${relatedPKField}`;
 
-			state.relations[1].one_collection = 'languages';
-
-			if (collectionExists('languages')) {
-				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection('languages')?.field;
-			} else {
-				state.relations[1].one_primary = 'code';
+				state.fieldData.field = 'translations';
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: 'translations',
+				};
 			}
-
-			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-
-			state.fieldData.field = 'translations';
-			state.relations[0].one_field = 'translations';
 		}
 
-		function getAutomaticJunctionCollectionName(left: string, right: string) {
-			let index = 2;
+		function autoFillFields(relatedCollection: string | null | undefined) {
+			const currentPKField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
+
+			if (!relatedCollection) {
+				state.relations[0].collection = undefined;
+				state.relations[1].collection = undefined;
+
+				state.relations[0].related_collection = collection;
+				state.relations[1].related_collection = undefined;
+
+				state.relations[0].field = undefined;
+				state.relations[1].field = undefined;
+			} else {
+				const junctionCollection = getAutomaticJunctionCollectionName(collection, relatedCollection);
+				const relatedPKField =
+					fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ||
+					state.newCollections?.find((collection) => collection.$type === 'related')?.fields?.[0]?.field ||
+					'id';
+
+				state.relations[0].collection = junctionCollection;
+				state.relations[1].collection = junctionCollection;
+
+				state.relations[0].related_collection = collection;
+				state.relations[1].related_collection = relatedCollection;
+
+				state.relations[0].field = `${collection}_${currentPKField}`;
+				state.relations[1].field = `${relatedCollection}_${relatedPKField}`;
+
+				if (state.relations[0].field === state.relations[1].field) {
+					state.relations[1].field = `related_${state.relations[1].field}`;
+				}
+			}
+		}
+
+		/**
+		 * Generate junction collection name for two given collections. Most of the time, it'll just
+		 * combine the two with a `_`. It'll check if that collection already exists, and append an
+		 * index if the junction collection already exists and is used for something else
+		 */
+		function getAutomaticJunctionCollectionName(collectionA: string, collectionB: string) {
+			let index = 0;
 			let name = getName(index);
 
 			while (collectionExists(name)) {
@@ -680,151 +807,201 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			return name;
 
 			function getName(index: number) {
-				const name = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+				let name = `${collectionA}_${collectionB}`;
+
+				if (name.startsWith('directus_')) {
+					name = 'junction_' + name;
+				}
+
 				if (index) return name + '_' + index;
 				return name;
 			}
+		}
+
+		/**
+		 * Syncs the on_delete value of the existing relationship with the new m2m one, so you don't
+		 * accidentally override it
+		 */
+		function syncOnDeleteTrigger(collection?: string | null, field?: string | null) {
+			if (!collection || !field) return;
+
+			const existingRelation = relationsStore.getRelationForField(collection, field) || {};
+			if (!existingRelation) return;
+
+			state.relations[0].schema = {
+				on_delete: existingRelation.schema?.on_delete || 'SET NULL',
+			};
 		}
 	}
 
 	function useM2A() {
 		delete state.fieldData.schema;
-		state.fieldData.type = null;
+		state.fieldData.type = 'alias';
 
-		const syncNewCollectionsM2A = throttle(([junctionCollection, manyCurrent, manyRelated, oneCollectionField]) => {
-			state.newCollections = state.newCollections.filter(
-				(col: any) => ['junction', 'related'].includes(col.$type) === false
-			);
+		const syncNewCollectionsM2A = throttle(
+			([junctionCollection, manyCurrent, manyRelated, oneCollectionField, sortField]) => {
+				state.newCollections = state.newCollections.filter(
+					(col: any) => ['junction', 'related'].includes(col.$type) === false
+				);
 
-			state.newFields = state.newFields.filter(
-				(field: Partial<Field> & { $type: string }) =>
-					['manyCurrent', 'manyRelated', 'collectionField'].includes(field.$type) === false
-			);
+				state.newFields = state.newFields.filter(
+					(field) => ['manyCurrent', 'manyRelated', 'collectionField', 'sort'].includes(field.$type!) === false
+				);
 
-			if (collectionExists(junctionCollection) === false) {
-				state.newCollections.push({
-					$type: 'junction',
-					collection: junctionCollection,
-					meta: {
-						hidden: true,
-						icon: 'import_export',
-					},
-					fields: [
-						{
-							field: 'id',
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
-							},
-							meta: {
-								hidden: true,
-							},
+				if (collectionExists(junctionCollection) === false) {
+					state.newCollections.push({
+						$type: 'junction',
+						collection: junctionCollection,
+						meta: {
+							hidden: true,
+							icon: 'import_export',
 						},
-					],
-				});
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								meta: {
+									hidden: true,
+								},
+							},
+						],
+					});
+				}
 
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
-			}
+				if (fieldExists(junctionCollection, manyCurrent) === false) {
+					state.newFields.push({
+						$type: 'manyCurrent',
+						collection: junctionCollection,
+						field: manyCurrent,
+						type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 
-			if (fieldExists(junctionCollection, manyCurrent) === false) {
-				state.newFields.push({
-					$type: 'manyCurrent',
-					collection: junctionCollection,
-					field: manyCurrent,
-					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
+				if (fieldExists(junctionCollection, manyRelated) === false) {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						// We'll have to save the foreign key as a string, as that's the only way to safely
+						// be able to store the PK of multiple typed collections
+						type: 'string',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 
-			if (fieldExists(junctionCollection, manyRelated) === false) {
-				state.newFields.push({
-					$type: 'manyRelated',
-					collection: junctionCollection,
-					field: manyRelated,
-					// We'll have to save the foreign key as a string, as that's the only way to safely
-					// be able to store the PK of multiple typed collections
-					type: 'string',
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
+				if (fieldExists(junctionCollection, oneCollectionField) === false) {
+					state.newFields.push({
+						$type: 'collectionField',
+						collection: junctionCollection,
+						field: oneCollectionField,
+						type: 'string', // directus_collections.collection is a string
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 
-			if (fieldExists(junctionCollection, oneCollectionField) === false) {
-				state.newFields.push({
-					$type: 'collectionField',
-					collection: junctionCollection,
-					field: oneCollectionField,
-					type: 'string', // directus_collections.collection is a string
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
-		}, 50);
+				if (sortField && fieldExists(junctionCollection, sortField) === false) {
+					state.newFields.push({
+						$type: 'sort',
+						collection: junctionCollection,
+						field: sortField,
+						type: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+			},
+			50
+		);
 
 		if (!isExisting) {
-			state.fieldData.meta.special = [type];
+			state.fieldData.meta = {
+				...(state.fieldData.meta || {}),
+				special: [type],
+			};
 
 			state.relations = [
 				{
-					many_collection: '',
-					many_field: '',
-					many_primary: '',
-					one_collection: collection,
-					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					collection: '',
+					field: '',
+					related_collection: collection,
+					meta: {
+						one_field: state.fieldData.field,
+						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
+					schema: {
+						on_delete: 'SET NULL',
+					},
 				},
 				{
-					many_collection: '',
-					many_field: '',
-					many_primary: '',
-					one_collection: null,
-					one_field: null,
-					one_primary: null,
-					one_allowed_collections: [],
-					one_collection_field: '',
+					collection: '',
+					field: '',
+					related_collection: null,
+					meta: {
+						one_field: null,
+						one_allowed_collections: [],
+						one_collection_field: '',
+						sort_field: null,
+						one_deselect_action: 'nullify',
+					},
 				},
 			];
 		}
 
 		watch(
-			() => state.relations[0].many_collection,
+			() => state.relations[0].collection,
 			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-					state.relations[0].many_primary = pkField;
-					state.relations[1].many_primary = pkField;
+				if (state.relations[0].collection === state.relations[0].related_collection) {
+					state.relations[0].schema = {
+						...state.relations[0].schema,
+						on_delete: 'NO ACTION',
+					};
 				}
 			}
 		);
 
 		watch(
-			() => state.relations[0].many_field,
+			() => state.relations[0].field,
 			() => {
-				state.relations[1].junction_field = state.relations[0].many_field;
+				state.relations[1].meta = {
+					...(state.relations[1].meta || {}),
+					junction_field: state.relations[0].field,
+				};
 			}
 		);
 
 		watch(
-			() => state.relations[1].many_field,
+			() => state.relations[1].field,
 			() => {
-				state.relations[0].junction_field = state.relations[1].many_field;
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					junction_field: state.relations[1].field,
+				};
 			}
 		);
 
 		watch(
 			[
-				() => state.relations[0].many_collection,
-				() => state.relations[0].many_field,
-				() => state.relations[1].many_field,
-				() => state.relations[1].one_collection_field,
+				() => state.relations[0].collection,
+				() => state.relations[0].field,
+				() => state.relations[1].field,
+				() => state.relations[1].meta?.one_collection_field,
+				() => state.relations[0].meta?.sort_field,
 			],
 			syncNewCollectionsM2A
 		);
@@ -832,11 +1009,14 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch(
 			() => state.fieldData.field,
 			() => {
-				state.relations[0].one_field = state.fieldData.field;
+				state.relations[0].meta = {
+					...(state.relations[0].meta || {}),
+					one_field: state.fieldData.field,
+				};
 
 				if (state.autoFillJunctionRelation) {
-					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
-					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
+					state.relations[0].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
+					state.relations[1].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
 				}
 			}
 		);
@@ -845,11 +1025,15 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.autoFillJunctionRelation,
 			() => {
 				if (state.autoFillJunctionRelation === true) {
-					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
-					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
-					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
-					state.relations[1].one_collection_field = 'collection';
-					state.relations[1].many_field = 'item';
+					const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field || 'id';
+					state.relations[0].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
+					state.relations[1].collection = `${state.relations[0].related_collection}_${state.fieldData.field}`;
+					state.relations[0].field = `${state.relations[0].related_collection}_${currentPrimaryKeyField}`;
+					state.relations[1].meta = {
+						...(state.relations[1].meta || {}),
+						one_collection_field: 'collection',
+					};
+					state.relations[1].field = 'item';
 				}
 			},
 			{ immediate: true }
@@ -858,27 +1042,49 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	function usePresentation() {
 		delete state.fieldData.schema;
-		state.fieldData.type = null;
+		state.fieldData.type = 'alias';
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data'],
+		};
+	}
 
-		state.fieldData.meta.special = ['alias', 'no-data'];
+	function useGroup() {
+		delete state.fieldData.schema;
+		state.fieldData.type = 'alias';
+		state.fieldData.meta = {
+			...(state.fieldData.meta || {}),
+			special: ['alias', 'no-data', 'group'],
+		};
 	}
 
 	function useStandard() {
 		watch(
 			() => state.fieldData.type,
 			() => {
-				state.fieldData.meta.interface = null;
-				state.fieldData.meta.options = null;
-				state.fieldData.meta.display = null;
-				state.fieldData.meta.display_options = null;
-				state.fieldData.meta.special = null;
-				state.fieldData.schema.default_value = undefined;
-				state.fieldData.schema.max_length = undefined;
-				state.fieldData.schema.is_nullable = true;
+				state.fieldData.meta = {
+					...(state.fieldData.meta || {}),
+					interface: null,
+					options: null,
+					display: null,
+					display_options: null,
+					special: null,
+				};
+
+				state.fieldData.schema = {
+					...(state.fieldData.schema || {}),
+					default_value: undefined,
+					max_length: undefined,
+					is_nullable: true,
+					geometry_type: undefined,
+				};
 
 				switch (state.fieldData.type) {
 					case 'uuid':
 						state.fieldData.meta.special = ['uuid'];
+						break;
+					case 'hash':
+						state.fieldData.meta.special = ['hash'];
 						break;
 					case 'json':
 						state.fieldData.meta.special = ['json'];
@@ -890,6 +1096,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						state.fieldData.meta.special = ['boolean'];
 						state.fieldData.schema.default_value = false;
 						state.fieldData.schema.is_nullable = false;
+						break;
+					case 'geometry':
+						state.fieldData.meta.special = ['geometry'];
 						break;
 				}
 			}
@@ -905,6 +1114,37 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	}
 }
 
-function clearLocalStore() {
-	state = null;
+function clearLocalStore(): void {
+	state = reactive({
+		fieldData: {
+			field: '',
+			type: 'string',
+			schema: {
+				default_value: undefined,
+				max_length: undefined,
+				is_nullable: true,
+				is_unique: false,
+				numeric_precision: null,
+				numeric_scale: null,
+				geometry_type: undefined,
+			},
+			meta: {
+				hidden: false,
+				interface: undefined,
+				options: undefined,
+				display: undefined,
+				display_options: undefined,
+				readonly: false,
+				special: undefined,
+				note: undefined,
+			},
+		},
+		relations: [],
+		newCollections: [],
+		newFields: [],
+		updateFields: [],
+		newRows: {},
+
+		autoFillJunctionRelation: false,
+	});
 }
