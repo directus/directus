@@ -311,7 +311,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
-add_field_related: Aggiungi il campo alla raccolta correlata
+add_field_related: Crea campo corrispondente
 interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
@@ -528,7 +528,7 @@ hide_hidden_collections: Nascondi le collezioni nascoste
 show_header: Mostra intestazione
 unmanaged_collections: Raccolte Non Configurate
 system_collections: Raccolte di Sistema
-placeholder: Placeholder
+placeholder: Segnaposto
 icon_left: Icona a sinistra
 icon_right: Icona a destra
 count_other_revisions: '{count} altre revisioni'
