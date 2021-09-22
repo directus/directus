@@ -33,7 +33,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
 emails: E-pošte
