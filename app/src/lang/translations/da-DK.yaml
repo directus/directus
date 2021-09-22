@@ -26,7 +26,6 @@ create_role: Opret Rolle
 create_user: Opret bruger
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
-email_examples: "admin{'@'}example.com, bruger{'@'}example.com..."
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
 emails: E-mail

@@ -8,7 +8,6 @@ item_revision: Revisió de l'element
 duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
-limit: Límit
 group: Grup
 and: I
 or: O
@@ -33,7 +32,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 create_webhook: Crear Webhook
 invite_users: Convidar usuaris
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
 emails: Correus electrònics
@@ -372,6 +370,7 @@ display_template_not_setup: L'opció de plantilla de disposió no està configur
 collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
 active: Activa
+copy: Copia
 inactive: Inactiva
 users: Usuaris
 activity: Activitat
@@ -566,6 +565,7 @@ toggle: Canvia
 icon_on: Icona activada
 icon_off: Icona desactivada
 label: Etiqueta
+full_screen: Pantalla completa
 image_url: URL de la imatge
 alt_text: Text alternatiu
 media: Mèdia
@@ -663,7 +663,6 @@ unsaved_changes: Canvis no desats
 unsaved_changes_copy: Estàs segur que vols sortir d'aquesta pàgina?
 discard_changes: Descarta els canvis
 keep_editing: Continua editant
-page_help_collections_overview: '** Visió general de les col·leccions **: Llistes de totes les col·leccions a les quals tens accés.'
 page_help_collections_collection: >-
   ** Cerca elements **: Llista de tots els elements de {collection} als quals tens accés. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes diferents configuracions per accedir-hi ràpidament.
 page_help_collections_item: >-
@@ -904,6 +903,7 @@ delete_field_are_you_sure: >-
 description: Descripció
 done: Fet
 duplicate: Duplicat
+limit: Límit
 email: Correu electrònic
 embed: Inclou
 fallback_icon: Icona de reserva
@@ -1315,3 +1315,6 @@ layouts:
     cluster_maxzoom: Zoom màxim per clustering
     field: Geometria
     invalid_geometry: Geometria invàlida
+panels:
+  label:
+    name: Etiqueta

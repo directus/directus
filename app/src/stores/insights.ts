@@ -9,14 +9,18 @@ export const useInsightsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get('/dashboards', {
-				params: { limit: -1, fields: ['*', 'panels.*'], sort: ['name'] },
-			});
+			try {
+				const response = await api.get('/dashboards', {
+					params: { limit: -1, fields: ['*', 'panels.*'], sort: ['name'] },
+				});
 
-			this.dashboards = response.data.data;
+				this.dashboards = response.data.data;
+			} catch {
+				this.dashboards = [];
+			}
 		},
-		dehydrate() {
-			this.reset();
+		async dehydrate() {
+			this.$reset();
 		},
 	},
 });

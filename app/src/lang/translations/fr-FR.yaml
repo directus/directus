@@ -29,7 +29,6 @@ item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
-limit: Limite
 group: Groupe
 and: Et
 or: Ou
@@ -55,7 +54,6 @@ create_role: Créer un rôle
 create_user: Créer un utilisateur
 create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
 emails: E-mails
@@ -399,6 +397,7 @@ display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
 active: Actif
+copy: Copier
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
@@ -593,6 +592,7 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+full_screen: Plein écran
 image_url: Url de l’image
 alt_text: Texte alternatif
 media: Média
@@ -690,7 +690,6 @@ unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
-page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
   **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_collections_item: >-
@@ -1010,6 +1009,7 @@ delete_field_are_you_sure: >-
 description: Description
 done: Fait
 duplicate: Dupliquer
+limit: Limite
 email: E-mail
 embed: Encapsulation
 fallback_icon: Icône par défaut
@@ -1408,3 +1408,6 @@ layouts:
     map: Carte
     field: Géométrie
     search_this_area: Chercher dans cette zone
+panels:
+  label:
+    name: Étiquette

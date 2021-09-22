@@ -264,6 +264,7 @@ no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始�
 no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
+copy: 複製
 users: 用戶
 activity: 活動
 webhooks: Webhooks

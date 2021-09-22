@@ -22,6 +22,7 @@
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+modules: Moduli
 module_bar: Barra del modulo
 tile_size: Dimensione della casella
 edit_field: Modifica campo
@@ -32,7 +33,6 @@ enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
 half_width: Metà larghezza
 full_width: Larghezza Massima
-limit: Limite
 group: Gruppo
 and: E
 or: O
@@ -54,12 +54,12 @@ required: Obbligatorio
 required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
 create_preset: Crea Preset
+create_panel: Crea pannello
 create_role: Crea ruolo
 create_user: Crea utente
+delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 invite_users: Invita utenti
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
@@ -160,9 +160,22 @@ field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Linguaggio
+aggregate_function: Funzione di aggregazione
+aggregate_precision: Precisione dell'aggregazione
+group_aggregation: Raggruppamento
+group_precision: Precisione raggruppamento
 global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 camera: Camera
+show_zero: Mostra zero
+sum: Somma
+sum_distinct: Somma valori unici
+avg: Media
+avg_distinct: Media valori unici
+count: Quantità
+count_distinct: Quantità valori unici
+min: Minimo
+max: Massimo
 exposure: Esposizione
 shutter: Otturatore
 iso: ISO
@@ -180,7 +193,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Data
+date_range: Intervallo di date
 datetime: DateTime
+precision: Precisione
 decimal: Decimal
 float: Float
 integer: Integer
@@ -212,9 +227,9 @@ new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
-add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
-add_o2m_to_collection: 'Aggiungi One-to-Many a "{collection}"'
-add_m2m_to_collection: 'Aggiungi Many-to-Many a "{collection}"'
+add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
+add_o2m_to_collection: 'Aggiungi O2M a "{collection}"'
+add_m2m_to_collection: 'Aggiungi M2M a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -249,6 +264,7 @@ raw_value: Valore grezzo
 edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella valore
+clear_changes: Annulla modifiche
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
 notifications: Notifiche
@@ -294,7 +310,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
-add_field_related: Aggiungi il campo alla raccolta correlata
+add_field_related: Crea campo corrispondente
 interface_label: Interfaccia
 today: Oggi
 yesterday: Ieri
@@ -403,11 +419,21 @@ relationship_not_setup: La relazione non è stata configurata correttamente
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
+select_a_field: Seleziona un campo
 active: Attivo
+move_to: Sposta in...
+copy: Copia
+copy_to: Copia in...
+no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
 users: Utenti
 activity: Attività
 webhooks: Webhooks
+decimals: Decimali
+value_decimals: Valore decimali
+min_value: Valore minimo
+max_value: Valore massimo
+automatic: Automatico
 field_width: Larghezza del Campo
 add_filter: Aggiungi Filtro
 upper_limit: Limite superiore...
@@ -475,6 +501,7 @@ no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amminis
 password_reset_sent: Ti abbiamo inviato un link sicuro per reimpostare la tua password
 password_reset_successful: Password reimpostata con successo
 back: Indietro
+filter: Filtro
 editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
@@ -497,9 +524,10 @@ visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
 show_hidden_collections: Mostra le collezioni nascoste
 hide_hidden_collections: Nascondi le collezioni nascoste
+show_header: Mostra intestazione
 unmanaged_collections: Raccolte Non Configurate
 system_collections: Raccolte di Sistema
-placeholder: Placeholder
+placeholder: Segnaposto
 icon_left: Icona a sinistra
 icon_right: Icona a destra
 count_other_revisions: '{count} altre revisioni'
@@ -512,6 +540,7 @@ color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
 log_in_with: 'Accedi con {provider}'
+conditional_styles: Stili Condizionali
 advanced_settings: Impostazioni avanzate
 advanced_filter: Filtro Avanzato
 delete_advanced_filter: Elimina filtro
@@ -594,11 +623,37 @@ read: Lettura
 update: Modifica
 select_fields: Seleziona campi
 format_text: Formato testo
+format_value: Formatta il valore
+abbreviate_value: Abbrevia il valore
+operator: Operatore
 bold: Grassetto
 toggle: Interrutore
 icon_on: Icona attivato
 icon_off: Icona disattivato
 label: Etichetta
+insights: Approfondimenti (Beta)
+dashboard: Bacheca
+panel: Pannello
+panel_options: Opzioni del pannello
+panel_header: Intestazione del pannello
+panel_name_placeholder: Dai un nome a questo pannello...
+panel_note_placeholder: Dettagli opzionali di questo pannello...
+panel_delete_confirm: Sei sicuro di voler eliminare questo pannello? Questa azione non può essere annullata.
+dashboard_delete_confirm: Sei sicuro di voler eliminare questa bacheca? Questa azione non può essere annullata.
+edit_dashboard: Modifica bacheca
+delete_dashboard: Elimina bacheca
+visible: Visibile
+prefix_placeholder: Testo prima del valore...
+suffix_placeholder: Testo dopo il valore...
+decimals_placeholder: Numero di decimali...
+no_dashboards: Nessuna bacheca
+no_dashboards_copy: Non hai ancora bacheche.
+no_data: Nessun dato
+create_dashboard: Crea bacheca
+dashboard_name: Nome della bacheca
+full_screen: Schermo Intero
+edit_panels: Modifica pannelli
+fit_to_screen: Adatta allo schermo
 image_url: URL immagine
 alt_text: Testo alternativo
 media: Media
@@ -695,6 +750,9 @@ layout_setup: Configurazione Layout
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
+discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai fatto?
+show_x_axis: Mostra asse X
+show_y_axis: Mostra asse Y
 keep_editing: Continua a modificare
 page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
 page_help_collections_collection: >-
@@ -725,6 +783,8 @@ page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per crear
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
+page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
+page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -1017,6 +1077,7 @@ delete_field_are_you_sure: >-
 description: Descrizione
 done: Fatto
 duplicate: Duplicare
+limit: Limite
 email: E-mail
 embed: Embed
 fallback_icon: Icona di default
@@ -1079,7 +1140,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Collegamenti del pulsante
+    presentation-links: Pulsanti di collegamento
     links: Collegamenti
     description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
@@ -1353,7 +1414,7 @@ displays:
     formatted-value: Valore Formattato
     description: Mostra una versione formattata del testo
     format_title: Formatta il titolo
-    format_title_label: Maiuscole/minuscole automatiche
+    format_title_label: Maiuscole automatiche
     bold_label: Usa lo stile grassetto
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
@@ -1435,3 +1496,19 @@ layouts:
     search_this_area: Cerca in quest'area
     clear_data_filter: Rimuovi il filtro sui dati
     clear_location_filter: Rimuovi il filtro sulla posizione
+panels:
+  metric:
+    name: Metrica
+    description: Mostra un singolo valore basato su una query
+    field: Campo
+  time_series:
+    name: Serie temporali
+    description: Disegna un grafico a linee basato su valori nel tempo
+    date_field: Campo data
+    value_field: Campo valore
+  label:
+    name: Etichetta
+    description: Mostra del testo
+  list:
+    name: Elenco
+    description: Filtra ed elenca i campi da una collezione

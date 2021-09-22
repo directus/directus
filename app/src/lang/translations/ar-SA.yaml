@@ -6,7 +6,6 @@ item_revision: التعديلات على العنصر
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
-limit: الحد
 group: المجموعة
 and: و
 or: أو
@@ -32,7 +31,6 @@ create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
 create_webhook: إنشاء Webhook
 invite_users: دعوة مستخدمين
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
 emails: البريد الإلكتروني
@@ -368,6 +366,7 @@ display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
 active: مفعل
+copy: نسخ
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
@@ -619,7 +618,6 @@ unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
 keep_editing: استمر في التحرير
-page_help_collections_overview: '**نظرة عامة للمجموعات** - قوائم جميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -793,6 +791,7 @@ delete_field_are_you_sure: >-
 description: التفاصيل
 done: تم
 duplicate: مكرر
+limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
 field: حقل | حقول
@@ -1049,3 +1048,6 @@ layouts:
     end_date_field: حقل تاريخ الإنتهاء
   map:
     field: الأشكال الهندسية
+panels:
+  label:
+    name: تسمية

@@ -20,7 +20,6 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
 emails: Email adrese
@@ -352,6 +351,7 @@ display_template_not_setup: Šablon za grafički prikaz nije ispravno konfiguris
 collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
 active: Aktivan
+copy: Kopiraj
 users: Korisnici
 activity: Aktivnost
 webhooks: Webhooks
@@ -531,6 +531,7 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
 media: Medij
@@ -627,7 +628,6 @@ unsaved_changes: Nesačuvane izmjene
 unsaved_changes_copy: Da li ste sigurni da želite da napustite ovu stranicu?
 discard_changes: Poništi Promjene
 keep_editing: Nastavi uređivanje
-page_help_collections_overview: '**Pregled Kolekcija** - Lista svih kolekcija kojima imate pristup.'
 page_help_collections_collection: >-
   **Pretraga Stavki** — Lista svih {collection} stavki kojima imate pristup. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
 page_help_collections_item: >-
@@ -1178,3 +1178,6 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+panels:
+  label:
+    name: Oznaka
