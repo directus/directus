@@ -22,6 +22,7 @@
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+modules: Moduli
 module_bar: Barra del modulo
 tile_size: Dimensione della casella
 edit_field: Modifica campo
@@ -59,8 +60,6 @@ create_user: Crea utente
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
 invite_users: Invita utenti
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://example.com"
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
 emails: Email
