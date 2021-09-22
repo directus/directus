@@ -117,7 +117,7 @@
 		"json2csv": "^5.0.3",
 		"jsonwebtoken": "^8.5.1",
 		"keyv": "^4.0.3",
-		"knex": "^0.95.6",
+		"knex": "^0.95.11",
 		"knex-schema-inspector": "1.6.1",
 		"liquidjs": "^9.25.0",
 		"lodash": "^4.17.21",
