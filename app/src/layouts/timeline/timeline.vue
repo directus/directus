@@ -30,6 +30,7 @@ import { format } from 'date-fns';
 import { Item } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { Day } from './types';
+import { adjustDate } from '@directus/shared/utils';
 
 export default defineComponent({
 	components: { day: DayComponent },
@@ -79,15 +80,11 @@ export default defineComponent({
 		const pageSync = useSync(props, 'page', emit);
 
 		const endDate = computed(() => {
-			if (props.days.length === 0) return;
-			const day = props.days[0];
-			return new Date(day.year, day.month, day.day);
+			return adjustDate(new Date(), `${(props.page - 1) * 30} days`);
 		});
 
 		const startDate = computed(() => {
-			if (props.days.length === 0) return;
-			const day = props.days.slice(-1)[0];
-			return new Date(day.year, day.month, day.day);
+			return adjustDate(new Date(), `${(props.page - 2) * 30 + 1} days`);
 		});
 
 		return { t, pageSync, format, startDate, endDate };

@@ -131,7 +131,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					{
 						field: dateField.value,
 						operator: 'between',
-						value: `$NOW(${(page.value - 2) * 30} days),$NOW(${(page.value - 1) * 30} days)`,
+						value: `$NOW(${(page.value - 2) * 30 + 1} days),$NOW(${(page.value - 1) * 30} days)`,
 					},
 				] as AppFilter[];
 			});

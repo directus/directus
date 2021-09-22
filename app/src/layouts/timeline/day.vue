@@ -82,7 +82,7 @@ export default defineComponent({
 		const visible = ref(false);
 		const limit = ref(Math.min(5, day.value.event_count));
 
-		const date = computed(() => new Date(props.day.year, props.day.month, props.day.day));
+		const date = computed(() => new Date(props.day.year, props.day.month - 1, props.day.day));
 
 		const { events, loading } = props.useEvents(day, limit, visible);
 
