@@ -23,6 +23,7 @@
 published: Published
 draft: Draft
 archived: Archived
+modules: Modules
 module_bar: Module Bar
 tile_size: Tile Size
 edit_field: Edit Field
