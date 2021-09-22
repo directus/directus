@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-// import {useElementVisibility} from '@vueuse/core'
 import { defineComponent, PropType, computed, toRefs, ref, onMounted, onUnmounted } from 'vue';
 import { Day, Event } from './types';
 import { format } from 'date-fns';
