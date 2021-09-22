@@ -55,8 +55,6 @@ create_role: Үүрэг үүсгэх
 create_user: Хэрэглэгч үүсгэх
 create_webhook: Webhook үүсгэх
 invite_users: Хэрэглэгч урих
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
-url_example: "https://jishee.com"
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
 emails: Имэйл
