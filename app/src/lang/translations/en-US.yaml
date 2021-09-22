@@ -29,6 +29,7 @@ tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 maps: Maps
+item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
@@ -154,6 +155,7 @@ fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
 presentation_and_aliases: Presentation & Aliases
+revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
@@ -290,6 +292,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 private_user: Private User
+creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
