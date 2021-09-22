@@ -29,7 +29,6 @@ create_role: Crear Rol
 create_user: Crear usuario
 create_webhook: Crear un webhook(conección)
 invite_users: Invitar usuarios
-email_examples: "admin{'@'}example.com, usuario{'@'}example.com..."
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
 emails: Correos electrónicos
@@ -363,6 +362,7 @@ display_template_not_setup: La opción de plantilla de Presentación está mal c
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
 active: Activo
+copy: Copiar
 users: Usuarios
 activity: Actividad
 webhooks: Webhooks
@@ -549,6 +549,7 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+full_screen: Pantalla Completa
 image_url: Url de la imagen
 alt_text: Texto Alternativo
 media: Medios
@@ -645,7 +646,6 @@ unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Estás seguro de que quieres salir de esta página?'
 discard_changes: Descartar los cambios
 keep_editing: Sigue editando
-page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
 page_help_collections_collection: >-
   **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_collections_item: >-
@@ -1186,3 +1186,6 @@ layouts:
     calendar: Calendario
     start_date_field: Campo Fecha de Inicio
     end_date_field: Campo Fecha de Fin
+panels:
+  label:
+    name: Etiqueta

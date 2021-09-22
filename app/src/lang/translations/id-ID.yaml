@@ -6,7 +6,6 @@ item_revision: Revisi Item
 duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
-limit: Batas
 group: Grup
 and: Dan
 or: Atau
@@ -562,6 +561,7 @@ delete_field_are_you_sure: >-
 description: Deskripsi
 done: Selesai
 duplicate: Gandakan
+limit: Batas
 email: Email
 embed: Lampirkan
 file: Berkas

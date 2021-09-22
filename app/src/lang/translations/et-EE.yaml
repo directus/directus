@@ -352,6 +352,7 @@ display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
 active: aktiivne
+copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
 webhooks: Webhooks
@@ -531,6 +532,7 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
 media: Meedia
@@ -627,7 +629,6 @@ unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
-page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
 page_help_collections_collection: >-
   **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
 page_help_collections_item: >-
@@ -1180,3 +1181,6 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+panels:
+  label:
+    name: Silt
