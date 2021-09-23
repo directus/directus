@@ -1391,6 +1391,12 @@ interfaces:
     start_open: Start Open
     start_closed: Start Closed
 displays:
+  translations:
+    translations: Translations
+    description: Preview translations
+    enable: Enable
+    user_language: Use current user language
+    default_language: Default Language
   boolean:
     boolean: Boolean
     description: Display on and off states

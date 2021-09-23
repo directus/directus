@@ -95,7 +95,7 @@ import { get } from 'lodash';
 import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
-import useRelation from './use-relation';
+import useRelation from '@/composables/use-m2m';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
