@@ -3,17 +3,7 @@
 import { Knex } from 'knex';
 import { User } from '../types';
 
-export interface AuthConstructor {
-	/**
-	 * Auth constructor
-	 *
-	 * @param knex Database driver
-	 * @param args Optional config args
-	 */
-	new (knex: Knex, ...args: any[]): Auth;
-}
-
-export default abstract class Auth {
+export abstract class AuthDriver {
 	knex: Knex;
 
 	constructor(knex: Knex) {
