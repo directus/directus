@@ -44,7 +44,7 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException
 	 */
-	refresh(_user: User): void {
+	async refresh(_user: User): Promise<void> {
 		/* Optional */
 	}
 
@@ -54,7 +54,7 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException
 	 */
-	logout(_user: User): void {
+	async logout(_user: User): Promise<void> {
 		/* Optional */
 	}
 
@@ -64,7 +64,7 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	createUser(_user: Partial<User>): void {
+	async createUser(_user: Partial<User>): Promise<void> {
 		/* Optional */
 	}
 
@@ -74,7 +74,7 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	updateUser(_user: Partial<User>): void {
+	async updateUser(_user: Partial<User>): Promise<void> {
 		/* Optional */
 	}
 
@@ -84,7 +84,7 @@ export default abstract class Auth {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	deleteUser(_user: User): void {
+	async deleteUser(_user: User): Promise<void> {
 		/* Optional */
 	}
 }
