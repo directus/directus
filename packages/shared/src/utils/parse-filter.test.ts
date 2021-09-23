@@ -31,6 +31,29 @@ describe('', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it('returns the filter includes an _in it parses the filter with a deepMap', () => {
+		const mockFilter = {
+			_and: [
+				{
+					status: {
+						_in: 'published,draft',
+					},
+				},
+			],
+		} as Filter;
+		const mockResult = {
+			_and: [
+				{
+					status: {
+						_in: ['published', 'draft'],
+					},
+				},
+			],
+		} as Filter;
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
 	it('returns the date', () => {
 		const mockFilter = {
 			_and: [
