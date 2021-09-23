@@ -7,7 +7,7 @@
 			v-model:headers="tableHeadersWritable"
 			class="table"
 			fixed-header
-			:show-select="readonly ? false : selection !== undefined"
+			:show-select="showSelect ? showSelect : selection !== undefined"
 			show-resize
 			must-sort
 			:sort="tableSort"
@@ -84,7 +84,7 @@ import { useI18n } from 'vue-i18n';
 import { ComponentPublicInstance, defineComponent, PropType, ref } from 'vue';
 import { useSync } from '@directus/shared/composables';
 import useShortcut from '@/composables/use-shortcut';
-import { Field, Item, Collection } from '@directus/shared/types';
+import { Field, Item, Collection, ShowSelect } from '@directus/shared/types';
 import { HeaderRaw } from '@/components/v-table/types';
 
 export default defineComponent({
@@ -105,6 +105,10 @@ export default defineComponent({
 		tableHeaders: {
 			type: Array as PropType<HeaderRaw[]>,
 			required: true,
+		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'none',
 		},
 		items: {
 			type: Array as PropType<Item[]>,

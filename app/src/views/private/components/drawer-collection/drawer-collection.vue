@@ -9,6 +9,7 @@
 		v-model:search-query="searchQuery"
 		:collection="collection"
 		select-mode
+		:show-select="multiple ? 'multiple' : 'one'"
 	>
 		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
 			<template #subtitle>

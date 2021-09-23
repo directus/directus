@@ -38,3 +38,5 @@ interface LayoutContext {
 export type LayoutState<T, Options, Query> = {
 	props: LayoutProps<Options, Query>;
 } & T;
+
+export type ShowSelect = 'none' | 'one' | 'multiple';
