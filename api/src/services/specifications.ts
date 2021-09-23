@@ -2,7 +2,15 @@ import formatTitle from '@directus/format-title';
 import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
+import {
+	OpenAPIObject,
+	OperationObject,
+	ParameterObject,
+	PathItemObject,
+	ReferenceObject,
+	SchemaObject,
+	TagObject,
+} from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
 import getDatabase from '../database';
@@ -174,7 +182,14 @@ class OASSpecsService implements SpecificationSubService {
 								);
 
 							if (hasPermission) {
-								paths[path][method] = operation;
+								if ('parameters' in pathItem) {
+									paths[path][method] = {
+										...operation,
+										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
+									};
+								} else {
+									paths[path][method] = operation;
+								}
 							}
 						}
 					}
@@ -202,6 +217,7 @@ class OASSpecsService implements SpecificationSubService {
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
+									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase['parameters']) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
@@ -258,6 +274,8 @@ class OASSpecsService implements SpecificationSubService {
 									description: detailBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
+									parameters:
+										'parameters' in detailBase ? this.filterCollectionFromParams(detailBase['parameters']) : [],
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
@@ -355,6 +373,12 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		return components;
+	}
+
+	private filterCollectionFromParams(
+		parameters: (ParameterObject | ReferenceObject)[]
+	): (ParameterObject | ReferenceObject)[] {
+		return parameters.filter((param) => param?.$ref !== '#/components/parameters/Collection');
 	}
 
 	private getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
