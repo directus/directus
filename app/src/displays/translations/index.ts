@@ -8,6 +8,7 @@ import { useFieldsStore, useRelationsStore } from '@/stores';
 
 type Options = {
 	template: string;
+	languageField: string;
 };
 
 export default defineDisplay({
@@ -21,33 +22,38 @@ export default defineDisplay({
 	groups: ['m2m'],
 	fields: (options: Options | null, { field, collection }) => {
 		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore()
-		const relations = relationsStore.getRelationsForField(collection, field)
+		const relationsStore = useRelationsStore();
+		const relations = relationsStore.getRelationsForField(collection, field);
 
 		const translationsRelation = relations.find(
-			(relation) =>
-				relation.related_collection === collection &&
-				relation.meta?.one_field === field
-		)
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+		);
 
 		const languagesRelation = relations.find((relation) => relation !== translationsRelation);
 
-		const relatedCollection = translationsRelation?.related_collection
+		const translationCollection = translationsRelation?.related_collection;
+		const languagesCollection = languagesRelation?.related_collection;
 
-		if (!relatedCollection) return [];
+		if (!translationCollection || !languagesCollection) return [];
 
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
+		const translationsPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(translationCollection);
+		const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
 
 		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection as unknown as string)
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
 			: [];
 
-		if (primaryKeyField && !fields.includes(primaryKeyField.field)) {
-			fields.push(primaryKeyField.field);
+		if (translationsPrimaryKeyField && !fields.includes(translationsPrimaryKeyField.field)) {
+			fields.push(translationsPrimaryKeyField.field);
 		}
 
-		if(languagesRelation?.field && !fields.includes(languagesRelation.field))
-			fields.push(languagesRelation.field)
+		if (languagesRelation?.field && !fields.includes(languagesRelation.field)) {
+			fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
+
+			if (options?.languageField) {
+				fields.push(`${languagesRelation.field}.${options.languageField}`);
+			}
+		}
 
 		return fields;
 	},

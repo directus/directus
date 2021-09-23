@@ -9,17 +9,21 @@
 		</div>
 		<div class="field half">
 			<p class="type-label">{{ t('displays.translations.user_language') }}</p>
-			<v-checkbox block v-model="userLanguage" :label="t('displays.translations.enable')" />
+			<v-checkbox v-model="userLanguage" block :label="t('displays.translations.enable')" />
 		</div>
-		<div class="field half">
+		<div class="field half-right">
 			<p class="type-label">{{ t('displays.translations.default_language') }}</p>
 			<v-select
 				v-model="defaultLanguage"
 				show-deselect
 				:items="languages"
-				:item-text="langCode.field"
+				:item-text="languageField ?? langCode.field"
 				:item-value="langCode.field"
 			/>
+		</div>
+		<div class="field half">
+			<p class="type-label">{{ t('displays.translations.language_field') }}</p>
+			<v-select v-model="languageField" :items="languageFields" item-text="name" item-value="field" />
 		</div>
 	</div>
 </template>
@@ -28,7 +32,6 @@
 import { useI18n } from 'vue-i18n';
 import { Field, Relation } from '@directus/shared/types';
 import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
-import { useCollection } from '@directus/shared/composables';
 import api from '@/api';
 import useRelation from '@/composables/use-m2m';
 
@@ -54,9 +57,21 @@ export default defineComponent({
 	emits: ['input'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-		const {collection} = toRefs(props)
+		const { collection } = toRefs(props);
 
-		const field = computed(() => props.fieldData.field)
+		const field = computed(() => props.fieldData.field);
+
+		const languageField = computed({
+			get() {
+				return props.value?.languageField;
+			},
+			set(newVal: string) {
+				emit('input', {
+					...(props.value || {}),
+					languageField: newVal,
+				});
+			},
+		});
 
 		const defaultLanguage = computed({
 			get() {
@@ -97,11 +112,12 @@ export default defineComponent({
 		const {
 			junctionCollection: translationsCollection,
 			relationCollection: languagesCollection,
-			relationPrimaryKeyField: langCode
+			relationPrimaryKeyField: langCode,
+			relationFields: languageFields,
 		} = useRelation(collection, field);
 
 		const languages = ref<Record<string, any>[]>([]);
-			watch(
+		watch(
 			languagesCollection,
 			async (newCollection) => {
 				const response = await api.get(`items/${newCollection.collection}`, {
@@ -122,7 +138,9 @@ export default defineComponent({
 			userLanguage,
 			languages,
 			defaultLanguage,
-			langCode
+			langCode,
+			languageField,
+			languageFields,
 		};
 	},
 });

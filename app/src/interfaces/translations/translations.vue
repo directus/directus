@@ -212,7 +212,7 @@ export default defineComponent({
 						text: language[props.languageField ?? languagesPrimaryKeyField.value.field],
 						value: langCode,
 						edited: edits !== undefined,
-						progress: (filledFields / totalFields) * 100,
+						progress: Math.round((filledFields / totalFields) * 100),
 						max: totalFields,
 						current: filledFields,
 					};

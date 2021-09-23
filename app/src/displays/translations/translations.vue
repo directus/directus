@@ -1,21 +1,29 @@
 <template>
 	<value-null v-if="!junctionCollection.collection" />
-	<v-menu
-		show-arrow
-		:disabled="value.length === 0"
-	>
+	<v-menu show-arrow :disabled="value.length === 0">
 		<template #activator="{ toggle }">
 			<span class="toggle" @click.stop="toggle">
 				<span class="label">
-					<render-template :template="internalTemplate" :item="displayItem" :collection="junctionCollection.collection" />
+					<render-template
+						:template="internalTemplate"
+						:item="displayItem"
+						:collection="junctionCollection.collection"
+					/>
 				</span>
 			</span>
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyField.field]">
+			<v-list-item v-for="item in translations" :key="item.id">
 				<v-list-item-content>
-					<render-template :template="internalTemplate" :item="item" :collection="junctionCollection.collection" />
+					<div class="header">
+						<div class="lang">
+							<v-icon name="translate" small />
+							{{ item.lang }}
+						</div>
+						<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
+					</div>
+					<render-template :template="internalTemplate" :item="item.item" :collection="junctionCollection.collection" />
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>
@@ -27,6 +35,7 @@ import { defineComponent, computed, PropType, ref, watch, toRef, toRefs } from '
 import ValueNull from '@/views/private/components/value-null';
 import useRelation from '@/composables/use-m2m';
 import { useUserStore } from '@/stores';
+import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -53,7 +62,11 @@ export default defineComponent({
 		},
 		defaultLanguage: {
 			type: String,
-			default: null
+			default: null,
+		},
+		languageField: {
+			type: String,
+			default: null,
 		},
 		type: {
 			type: String,
@@ -61,29 +74,91 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const {collection, field} = toRefs(props)
+		const { collection, field } = toRefs(props);
 
-		const {junctionPrimaryKeyField: primaryKeyField, junctionCollection, relation} = useRelation(collection, field)
+		const {
+			junctionPrimaryKeyField: primaryKeyField,
+			junctionCollection,
+			relation,
+			junctionFields,
+			relationPrimaryKeyField,
+		} = useRelation(collection, field);
 
 		const internalTemplate = computed(() => {
-			return props.template || junctionCollection.value?.meta?.display_template || `{{ ${primaryKeyField.value!.field} }}`;
+			return (
+				props.template || junctionCollection.value?.meta?.display_template || `{{ ${primaryKeyField.value!.field} }}`
+			);
 		});
 
 		const displayItem = computed(() => {
-			let item = props.value.find(val => val[relation.value.field] === props.defaultLanguage) ?? props.value[0]
+			const langPkField = relationPrimaryKeyField.value?.field;
+			if (!langPkField) return {};
 
-			if(props.userLanguage) {
-				const user = useUserStore()
-				item = props.value.find(val => val[relation.value.field] === user.currentUser?.language) ?? item
+			let item =
+				props.value.find((val) => val[relation.value.field][langPkField] === props.defaultLanguage) ?? props.value[0];
+
+			if (props.userLanguage) {
+				const user = useUserStore();
+				item = props.value.find((val) => val[relation.value.field][langPkField] === user.currentUser?.language) ?? item;
 			}
-			return item ?? {}
-		})
+			return item ?? {};
+		});
 
-		return { primaryKeyField, internalTemplate, junctionCollection, displayItem };
+		const writableFields = computed(() =>
+			junctionFields.value.filter(
+				(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+			)
+		);
+
+		const translations = computed(() =>
+			props.value.map((item) => {
+				const filledFields = writableFields.value.filter((field) => {
+					return field.field in item && notEmpty(item[field.field]);
+				}).length;
+
+				return {
+					id: item[primaryKeyField.value?.field ?? 'id'],
+					lang: item[relation.value.field][props.languageField ?? relationPrimaryKeyField.value?.field],
+					progress: Math.round((filledFields / writableFields.value.length) * 100),
+					item,
+				};
+			})
+		);
+
+		return { primaryKeyField, internalTemplate, junctionCollection, displayItem, translations };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+.v-list {
+	width: 300px;
+}
 
+.header {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--foreground-subdued);
+	font-size: 12px;
+
+	.v-progress-linear {
+		flex: 1;
+		width: unset;
+		max-width: 100px;
+	}
+}
+
+.v-list-item-content {
+	padding-top: 4px;
+	padding-bottom: 2px;
+}
+
+.v-list-item:not(:first-child) {
+	.header {
+		padding-top: 8px;
+		border-top: var(--border-width) solid var(--border-subdued);
+	}
+}
 </style>

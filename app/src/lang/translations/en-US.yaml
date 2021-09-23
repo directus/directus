@@ -1397,6 +1397,7 @@ displays:
     enable: Enable
     user_language: Use current user language
     default_language: Default Language
+    language_field: Language Field
   boolean:
     boolean: Boolean
     description: Display on and off states
