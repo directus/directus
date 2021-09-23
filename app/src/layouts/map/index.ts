@@ -270,7 +270,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function pushSelection(ids: Array<string | number>) {
-			selection.value = Array.from(new Set(selection.value.concat(ids)));
+			const uniqueSelection = new Set(ids);
+
+			if (selection.value.some((id) => uniqueSelection.has(id))) {
+				selection.value = selection.value.filter((id) => !uniqueSelection.has(id));
+				return;
+			}
+
+			selection.value = [...selection.value, ...uniqueSelection];
 		}
 
 		function handleSelect({ ids, replace }: { ids: Array<string | number>; replace: boolean }) {
