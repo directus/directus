@@ -164,6 +164,3 @@ fields:
     options:
       iconRight: account_circle
     interface: input
-
-  - field: auth_data
-    hidden: true
