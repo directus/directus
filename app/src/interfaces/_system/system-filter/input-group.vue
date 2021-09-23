@@ -68,7 +68,7 @@ export default defineComponent({
 	props: {
 		field: {
 			type: Object as PropType<FilterField>,
-			default: null,
+			required: true,
 		},
 		collection: {
 			type: String,

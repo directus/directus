@@ -31,23 +31,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
-		is: {
-			type: String,
-			default: undefined,
-		},
-		type: {
-			type: String,
-			default: undefined,
-		},
-		value: {
-			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
-			default: undefined,
-		},
+		is: String,
+		type: String,
+		value: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
 	},
 	emits: ['input'],
 	setup(props) {

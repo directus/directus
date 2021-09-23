@@ -31,10 +31,7 @@ export default defineComponent({
 			type: Object as PropType<FieldTree>,
 			required: true,
 		},
-		depth: {
-			type: Number,
-			default: undefined,
-		},
+		depth: Number,
 	},
 	emits: ['add'],
 	setup() {

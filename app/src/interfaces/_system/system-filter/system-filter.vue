@@ -60,7 +60,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Object as PropType<Record<string, any>>,
-			default: null,
+			required: true,
 		},
 		disabled: {
 			type: Boolean,

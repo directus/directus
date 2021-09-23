@@ -14,7 +14,7 @@
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="element.type === 'logic'" class="node logic">
-					<div class="header" @mouseenter="enter(index)" @mouseleave="leave(index)">
+					<div class="header" @mouseenter="enter(index)" @mouseleave="leave()">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
 						<div class="logic-type" :class="{ blue: element.name === '_or' }">
 							<span v-tooltip="t('interfaces.filter.change_value')" class="key" @click="toggleLogic(index)">
@@ -40,7 +40,7 @@
 					/>
 				</div>
 				<div v-else block class="node field">
-					<div class="header" @mouseenter="enter(index)" @mouseleave="leave(index)">
+					<div class="header" @mouseenter="enter(index)" @mouseleave="leave()">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
 						<v-select
 							v-tooltip="element.name"
@@ -99,7 +99,7 @@ export default defineComponent({
 	props: {
 		tree: {
 			type: Array as PropType<FilterTree>,
-			default: null,
+			required: true,
 		},
 		collection: {
 			type: String,
@@ -144,7 +144,7 @@ export default defineComponent({
 			hover.value = index;
 		}
 
-		function leave(index: number) {
+		function leave() {
 			hover.value = -1;
 		}
 
