@@ -334,10 +334,8 @@ router.get(
 				// Do nothing
 			});
 
-			/**
-			 * The default auth provider should allow auth by email. If that ever
-			 * changes, this will need to be addressed
-			 */
+			// The default auth provider should allow auth by email. If that ever
+			// changes, this will need to be addressed
 			authResponse = await authenticationService.authenticate({
 				identifier: email,
 				provider: DEFAULT_AUTH_PROVIDER,

@@ -305,7 +305,7 @@ export default defineComponent({
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
-				// These fields should only be ediable when creating new users
+				// These fields should only be editable when creating new users
 				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
 					field.meta.readonly = true;
 				}
