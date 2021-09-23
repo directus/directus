@@ -1,14 +1,47 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: प्रकाशित
+tile_size: टाइल आकार
 edit_field: एडिट फील्ड
+conditions: शर्तेँ
+maps: मानचित्र
 item_revision: आइटम संशोधन
+enter_a_name: कोई नाम प्रविष्ट करें
 duplicate_field: डुप्लिकेट फ़ील्ड
 half_width: आधी चौड़ाई
 full_width: पुरी चौड़ाई
+group: समूह
+and: और
+or: या
 fill_width: संपूर्ण चौड़ाई
 field_name_translations: फ़ील्ड नाम अनुवाद
 enter_password_to_enable_tfa: टू-फैक्टर ऑथेंटिकेशन को सक्षम करने के लिए अपना पासवर्ड दर्ज करें
 add_field: नया क्षेत्र
 role_name: भूमिका नाम
+branch: शाखा
+leaf: पत्ता
+edit_collection: कलेक्शन संपादित करें
+exclusive: विशेष
+children: बच्चे
 db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें '
 show_archived_items: आर्काइव आइटम दिखाएं
 edited: डेटा संपादित
@@ -16,11 +49,11 @@ required: आवश्यक
 required_for_app_access: ऐप एक्सेस के लिए आवश्यक
 requires_value: डेटा की आवश्यकता है
 create_preset: प्रीसेट बनाएं
+create_panel: पैनल बनाएँ
 create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
 emails: इमेल्स
@@ -42,6 +75,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: साइंड आउट
   SESSION_EXPIRED: समय बीत गया
+public_label: सार्वजनिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
 not_allowed: अनुमति नहीं हैं
 directus_version: Directus वर्शन
@@ -103,10 +137,16 @@ fields_for_role: 'फ़ील्ड्स जो {role} भूमिका {action
 validation_for_role: 'फील्ड {action} नियमों जो {role} भूमिका पालन करना चाहिए'
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
+revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
 language: भाषा
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
+show_zero: शून्य दिखाओ
+avg: औसत
+count: गिनती
+min: न्यूनतम
+max: अधिकतम
 exposure: एक्सपोज़र
 shutter: शटर
 iso: ISO
@@ -124,6 +164,7 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: तिथि सीमा
 datetime: DateTime
 decimal: Decimal
 float: Float

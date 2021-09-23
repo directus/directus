@@ -26,7 +26,6 @@ create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
 create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
-email_examples: "administratorius{'@'}example.com, naudotojas{'@'}example.com..."
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
 emails: El. pašto adresai
@@ -346,6 +345,7 @@ display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinkt
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
 select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
+copy: Kopijuoti
 users: Vartotojai
 activity: Veiksmas
 webhooks: '„Webhook“''ai'
@@ -510,6 +510,7 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
 wysiwyg_options:
@@ -582,7 +583,6 @@ unsaved_changes: Neįrašyti pakeitimai
 unsaved_changes_copy: Ar tikrai norite išeiti iš šio puslapio?
 discard_changes: Atšaukti pakeitimus
 keep_editing: Redaguoti toliau
-page_help_collections_overview: '**Kolekcijų peržiūra** — Rodomos visos kolekcijos, prie kurių turite prieigą.'
 page_help_collections_collection: >-
   **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
@@ -954,3 +954,6 @@ layouts:
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+panels:
+  label:
+    name: Žyma

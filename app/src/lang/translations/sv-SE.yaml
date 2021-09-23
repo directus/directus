@@ -340,6 +340,7 @@ display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurera
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
 active: Aktiv
+copy: Kopiera
 users: Användare
 activity: Händelser
 webhooks: Webhooks
@@ -513,6 +514,7 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+full_screen: Helskärm
 image_url: Bild-URL
 alt_text: Alternativ text
 media: Media
@@ -605,7 +607,6 @@ unsaved_changes: Osparade ändringar
 unsaved_changes_copy: Är du säker på att du vill lämna denna sida?
 discard_changes: Ignorera ändringar
 keep_editing: Fortsätt redigera
-page_help_collections_overview: '**Översikt kollektioner** — Lista över alla kollektioner du har tillgång till.'
 page_help_collections_collection: >-
   **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_collections_item: >-
@@ -1021,3 +1022,6 @@ layouts:
     comfortable: Bekväm
     compact: Kompakt
     cozy: Mysig
+panels:
+  label:
+    name: Etikett

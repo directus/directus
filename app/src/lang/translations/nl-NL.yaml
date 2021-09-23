@@ -29,7 +29,6 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 create_webhook: Webhook Aanmaken
 invite_users: Gebruikers Uitnodigen
-email_examples: "admin{'@'}example.com, gebruiker{'@'}example.com..."
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 emails: E-mails
@@ -364,6 +363,7 @@ display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
 active: Actief
+copy: Kopieer
 users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
@@ -549,6 +549,7 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+full_screen: Volledig scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
@@ -645,7 +646,6 @@ unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
   **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
@@ -1116,3 +1116,6 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+panels:
+  label:
+    name: Label

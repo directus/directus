@@ -1,24 +1,32 @@
 ---
 edit_field: Sửa trường
+conditions: Điều kiện
+maps: Bản đồ
 item_revision: Xem Phiên bản
 duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+and: Và
+or: Hoặc
 fill_width: Rộng toàn bộ
 field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+edit_collection: Chỉnh sửa Bộ sưu tập
+children: Trẻ em
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
 show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc
 required_for_app_access: Yêu Cầu cho Kết Nối
 requires_value: Giá trị bắt buộc
 create_preset: Tạo Định dạng
+create_panel: Tạo bảng
 create_role: Tạo vai trò (phân quyền)
 create_user: Tạo Người dùng
+delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
 invite_users: Mời Người dùng
 invite: Mời
@@ -281,6 +289,7 @@ create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 active: Kích hoạt
+copy: Sao chép
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks

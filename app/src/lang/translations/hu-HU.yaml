@@ -29,7 +29,6 @@ item_revision: Nézet revíziója
 duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
-limit: Korlát
 group: Csoport
 and: És
 or: Vagy
@@ -55,7 +54,6 @@ create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
 create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
-email_examples: "admin{'@'}example.com, user{'@'}example.com..."
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
 emails: Emailek
@@ -393,6 +391,7 @@ display_template_not_setup: A megjelenítő sablon nem megfelelően van beállí
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
 active: Aktív
+copy: Másolás
 inactive: Inaktív
 users: Felhasználók
 activity: Tevékenységek
@@ -585,6 +584,7 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+full_screen: Teljes képernyő
 image_url: Kép URL
 alt_text: Alternatív szöveg
 media: Média
@@ -682,7 +682,6 @@ unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
 keep_editing: Szerkesztés folytatása
-page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
 page_help_collections_collection: >-
   **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
 page_help_collections_item: >-
@@ -982,6 +981,7 @@ delete_field_are_you_sure: >-
 description: Leírás
 done: Kész
 duplicate: Duplikálás
+limit: Korlát
 email: Email
 embed: Beágyazás
 fallback_icon: Tartalék ikon
@@ -1390,3 +1390,6 @@ layouts:
     invalid_geometry: Érvénytelen geometria
     auto_location_filter: Mindig szűrje az adatokat a határok megtekintéséhez
     search_this_area: Keresés ezen a területen
+panels:
+  label:
+    name: Címke
