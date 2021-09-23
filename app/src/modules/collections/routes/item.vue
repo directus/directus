@@ -153,7 +153,7 @@
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
-			:primary-key="primaryKey || '+'"
+			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 		/>
 
