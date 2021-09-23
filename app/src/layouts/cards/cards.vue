@@ -6,6 +6,7 @@
 				v-model:selection="selectionWritable"
 				v-model:sort="sortWritable"
 				:fields="fieldsInCollection"
+				:show-select="showSelect"
 				@select-all="selectAll"
 			/>
 
@@ -87,7 +88,7 @@ import CardsHeader from './components/header.vue';
 import useElementSize from '@/composables/use-element-size';
 import { Field, Item } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { Collection } from '@directus/shared/types';
+import { Collection, ShowSelect } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
@@ -100,6 +101,10 @@ export default defineComponent({
 		selection: {
 			type: Array as PropType<Item[]>,
 			required: true,
+		},
+		showSelect: {
+			type: String as PropType<ShowSelect>,
+			default: 'multiple',
 		},
 		selectMode: {
 			type: Boolean,
