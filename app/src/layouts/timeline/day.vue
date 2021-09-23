@@ -1,8 +1,10 @@
 <template>
-	<div ref="dayElement" class="day">
+	<div ref="dayElement" class="day" :class="{ first: day.day === 1 }">
 		<div class="day-date">
-			<div class="date">{{ format(date, 'd MMM') }}</div>
-			<div class="week-day">{{ format(date, 'iii') }}</div>
+			<div class="sticky">
+				<div class="date">{{ format(date, 'd MMM') }}</div>
+				<div class="week-day">{{ format(date, 'iii') }}</div>
+			</div>
 		</div>
 		<div class="events">
 			<div v-for="event in events" :key="event.id" class="event" @click="toEvent(event)">
@@ -21,7 +23,7 @@
 						:item="event.item"
 						:template="event.title"
 					></render-template>
-					<div class="time">{{ format(event.time, 'h:mmaaa') }}</div>
+					<div v-tooltip="format(event.time, 'PPP h:mm:ss a')" class="time">{{ format(event.time, 'h:mmaaa') }}</div>
 				</span>
 				<v-icon name="open_in_new" class="icon" />
 			</div>
@@ -102,11 +104,11 @@ export default defineComponent({
 			} else {
 				const rect = dayElement.value.getBoundingClientRect();
 
+				const visibilityOffset = 500;
+
 				visible.value =
-					rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-					rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
-					rect.bottom >= 0 &&
-					rect.right >= 0;
+					rect.top <= (window.innerHeight || document.documentElement.clientHeight) + visibilityOffset &&
+					rect.bottom >= -visibilityOffset;
 			}
 		}, 200);
 
@@ -147,7 +149,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .day {
+	position: inherit;
+	margin-bottom: 32px;
 	display: flex;
+
+	&.first {
+		border-bottom: var(--border-width) solid var(--border-subdued);
+		padding-bottom: 10px;
+		margin-bottom: 22px;
+	}
+
+	.sticky {
+		position: sticky;
+		top: 68px;
+	}
 
 	.day-date {
 		min-width: 90px;
@@ -155,7 +170,7 @@ export default defineComponent({
 		.date {
 			font-weight: 700;
 			font-size: 18px;
-			transition: color var(--transition) var(--fast);
+			color: var(--foreground-normal-alt);
 		}
 
 		.week-day {
@@ -166,17 +181,13 @@ export default defineComponent({
 		}
 	}
 
-	&:hover .day-date .date {
-		color: var(--primary);
-	}
-
 	.events {
 		flex: 1;
 
 		.event {
 			display: flex;
 			align-items: center;
-			margin-bottom: 10px;
+			margin-bottom: 12px;
 			padding: 8px 16px;
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: var(--border-radius);
@@ -213,12 +224,16 @@ export default defineComponent({
 
 				.time {
 					color: var(--foreground-subdued);
+
+					&.v-skeleton-loader {
+						width: 100px;
+						height: 20.4px;
+					}
 				}
 			}
 		}
 
 		.show-more {
-			margin-bottom: 16px;
 			color: var(--foreground-normal);
 			font-weight: 600;
 			cursor: pointer;

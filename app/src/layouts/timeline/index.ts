@@ -250,13 +250,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						user.image = parseUrl(user.avatar);
 					}
 
-					const date = new Date(event[dateF]);
-					const time = timeFieldRequired.value && timeF ? new Date(event[timeF]) : date;
+					const date = new Date(timeFieldRequired.value && timeF ? event[dateF] + ' ' + event[timeF] : event[dateF]);
 
 					events.value.push({
 						id: event[pkField],
 						title: localTitle,
-						time,
+						time: date,
 						user,
 						item: event,
 					});

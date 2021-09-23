@@ -99,6 +99,7 @@ export default defineComponent({
 	.header {
 		display: flex;
 		align-items: center;
+		justify-content: flex-end;
 		margin-bottom: 20px;
 		font-weight: 600;
 		font-size: 18px;
