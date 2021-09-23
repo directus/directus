@@ -6,6 +6,7 @@
 
 		<v-list v-if="value && value.length > 0">
 			<draggable
+				:disabled="disabled"
 				:force-fallback="true"
 				:model-value="value"
 				item-key="id"
@@ -13,9 +14,9 @@
 				@update:model-value="$emit('input', $event)"
 			>
 				<template #item="{ element, index }">
-					<v-list-item :dense="value.length > 4" block @click="active = index">
-						<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
+					<v-list-item :dense="value.length > 4" block @click="openItem(index)">
+						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
 					</v-list-item>
@@ -30,11 +31,17 @@
 			:model-value="drawerOpen"
 			:title="displayValue || headerPlaceholder"
 			persistent
-			@update:model-value="closeDrawer()"
-			@cancel="closeDrawer()"
+			@update:model-value="checkDiscard()"
+			@cancel="checkDiscard()"
 		>
+			<template #title>
+				<h1 class="type-title">
+					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+				</h1>
+			</template>
+
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="closeDrawer()">
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="saveItem(active)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -45,10 +52,23 @@
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
 					primary-key="+"
-					@update:model-value="updateValues(active, $event)"
+					@update:model-value="trackEdits($event)"
 				/>
 			</div>
 		</v-drawer>
+
+		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave()">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -61,6 +81,7 @@ import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 import formatTitle from '@directus/format-title';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { Draggable },
@@ -116,9 +137,21 @@ export default defineComponent({
 			return false;
 		});
 
-		const activeItem = computed(() => (active.value !== null ? value.value[active.value] : null));
+		const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
+
+		const defaults = computed(() => {
+			const values: Record<string, any> = {};
+
+			for (const field of props.fields) {
+				if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
+					values[field.field!] = field.schema.default_value;
+				}
+			}
+
+			return values;
+		});
 
 		const fieldsWithNames = computed(() =>
 			props.fields?.map((field) => {
@@ -128,6 +161,10 @@ export default defineComponent({
 				};
 			})
 		);
+
+		const isNewItem = ref(false);
+		const edits = ref({});
+		const confirmDiscard = ref(false);
 
 		return {
 			t,
@@ -143,8 +180,48 @@ export default defineComponent({
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
+			defaults,
 			fieldsWithNames,
+			isNewItem,
+			edits,
+			confirmDiscard,
+			openItem,
+			saveItem,
+			trackEdits,
+			checkDiscard,
+			discardAndLeave,
 		};
+
+		function openItem(index: number) {
+			isNewItem.value = false;
+
+			edits.value = { ...props.value[index] };
+			active.value = index;
+		}
+
+		function saveItem(index: number) {
+			isNewItem.value = false;
+
+			updateValues(index, edits.value);
+			closeDrawer();
+		}
+
+		function trackEdits(updatedValues: any) {
+			Object.assign(edits.value, updatedValues);
+		}
+
+		function checkDiscard() {
+			if (active.value !== null && !isEqual(edits.value, props.value[active.value])) {
+				confirmDiscard.value = true;
+			} else {
+				closeDrawer();
+			}
+		}
+
+		function discardAndLeave() {
+			closeDrawer();
+			confirmDiscard.value = false;
+		}
 
 		function updateValues(index: number, updatedValues: any) {
 			emitValue(
@@ -167,6 +244,8 @@ export default defineComponent({
 		}
 
 		function addNew() {
+			isNewItem.value = true;
+
 			const newDefaults: any = {};
 
 			props.fields.forEach((field) => {
@@ -180,6 +259,7 @@ export default defineComponent({
 				emitValue([newDefaults]);
 			}
 
+			edits.value = { ...newDefaults };
 			active.value = (props.value || []).length;
 		}
 
@@ -200,6 +280,10 @@ export default defineComponent({
 		}
 
 		function closeDrawer() {
+			if (isNewItem.value) {
+				emitValue(props.value.slice(0, -1));
+			}
+
 			active.value = null;
 		}
 	},

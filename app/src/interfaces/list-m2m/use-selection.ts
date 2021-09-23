@@ -1,4 +1,3 @@
-import { Filter } from '@directus/shared/types';
 import { get } from 'lodash';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
@@ -7,11 +6,9 @@ type UsableSelection = {
 	stageSelection: (newSelection: (number | string)[]) => void;
 	selectModalActive: Ref<boolean>;
 	selectedPrimaryKeys: ComputedRef<(string | number)[]>;
-	selectionFilters: ComputedRef<Filter[]>;
 };
 
 export default function useSelection(
-	value: Ref<(string | number | Record<string, any>)[] | null>,
 	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
@@ -32,34 +29,14 @@ export default function useSelection(
 		return selectedKeys;
 	});
 
-	const selectionFilters = computed<Filter[]>(() => {
-		const { relationPkField } = relation.value;
-
-		if (selectedPrimaryKeys.value.length === 0) return [];
-
-		const filter: Filter = {
-			key: 'selection',
-			field: relationPkField,
-			operator: 'nin',
-			value: selectedPrimaryKeys.value.join(','),
-			locked: true,
-		};
-
-		return [filter];
-	});
-
 	function stageSelection(newSelection: (number | string)[]) {
 		const { junctionField } = relation.value;
 
-		const selection = newSelection.reduce((acc, item) => {
-			if (selectedPrimaryKeys.value.includes(item) === false) acc.push({ [junctionField]: item });
-			return acc;
-		}, [] as Record<string, any>[]);
+		const selection = newSelection.map((item) => ({ [junctionField]: item }));
 
-		const newVal = [...selection, ...(value.value || [])];
-		if (newVal.length === 0) emit(null);
-		else emit(newVal);
+		if (selection.length === 0) emit(null);
+		else emit(selection);
 	}
 
-	return { stageSelection, selectModalActive, selectedPrimaryKeys, selectionFilters };
+	return { stageSelection, selectModalActive, selectedPrimaryKeys };
 }
