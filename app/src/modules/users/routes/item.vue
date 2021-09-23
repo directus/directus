@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance, onMounted } from 'vue';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
 import { setLanguage } from '@/lang/set-language';
@@ -197,7 +197,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
 import unsavedChanges from '@/composables/unsaved-changes';
-import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -292,11 +291,6 @@ export default defineComponent({
 			isNew
 		);
 
-		const providers = ref([]);
-		const providersLoading = ref(true);
-
-		onMounted(fetchProviders);
-
 		// These fields will be shown in the sidebar instead
 		const fieldsDenyList = [
 			'id',
@@ -308,9 +302,16 @@ export default defineComponent({
 			'modified_on',
 			'last_access',
 		];
-		const fieldsFiltered = ref([]);
 
-		watch([fields, item, providers, providersLoading], generateFormFields, { immediate: true });
+		const fieldsFiltered = computed(() => {
+			return fields.value.filter((field: Field) => {
+				// These fields should only be ediable when creating new users
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+					field.meta.readonly = true;
+				}
+				return !fieldsDenyList.includes(field.field);
+			});
+		});
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
@@ -365,50 +366,6 @@ export default defineComponent({
 			revisionsAllowed,
 			validationErrors,
 		};
-
-		async function fetchProviders() {
-			providersLoading.value = true;
-
-			try {
-				const response = await api.get('/auth/');
-				providers.value = response.data.data?.map((name: string) => name);
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				providersLoading.value = false;
-			}
-		}
-
-		function generateFormFields() {
-			let providerField;
-
-			fieldsFiltered.value = fields.value.filter((field: Field) => {
-				if (field.field === 'provider') {
-					providerField = field;
-				}
-				return !fieldsDenyList.includes(field.field);
-			});
-
-			if (providerField) {
-				providerField.meta.options = {};
-
-				if (!providersLoading.value) {
-					const defaultValue = { text: t('default'), value: 'default' };
-					const values = providers.value.map((provider) => ({
-						text: formatTitle(provider.name),
-						value: provider.name,
-					}));
-
-					providerField.meta.readonly = !isNew.value;
-					providerField.meta.options.choices = [defaultValue, ...values];
-				} else {
-					const loadingValue = { text: t('loading'), value: item.value?.provider ?? 'default' };
-
-					providerField.meta.readonly = true;
-					providerField.meta.options.choices = [loadingValue];
-				}
-			}
-		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [

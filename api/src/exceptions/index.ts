@@ -1,4 +1,3 @@
-export * from './driver-not-supported';
 export * from './forbidden';
 export * from './graphql-validation';
 export * from './hit-rate-limit';

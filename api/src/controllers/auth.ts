@@ -15,6 +15,7 @@ import grantConfig from '../grant';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
+import getAuthProviders from '../utils/get-auth-providers';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
@@ -22,7 +23,7 @@ import logger from '../logger';
 const router = Router();
 
 const loginSchema = Joi.object({
-	email: Joi.string().required(),
+	email: Joi.string().email().required(),
 	password: Joi.string().required(),
 	mode: Joi.string().valid('cookie', 'json'),
 	otp: Joi.string(),
@@ -80,7 +81,7 @@ const loginHandler = async (req: any, res: any, next: any) => {
 
 router.post('/login', asyncHandler(loginHandler), respond);
 
-router.post('/:provider/login', asyncHandler(loginHandler), respond);
+router.post('/login/:provider', asyncHandler(loginHandler), respond);
 
 router.post(
 	'/refresh',
@@ -223,14 +224,7 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const providers = toArray(env.AUTH_PROVIDERS);
-		const providerData = providers
-			.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`])
-			.map((provider) => ({
-				name: provider,
-				driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
-			}));
-		res.locals.payload = { data: env.AUTH_PROVIDERS ? providerData : null };
+		res.locals.payload = { data: getAuthProviders() };
 		return next();
 	}),
 	respond

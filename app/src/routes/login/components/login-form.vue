@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="text" :placeholder="t('email')" />
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
 		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
 		<transition-expand>
@@ -22,6 +22,7 @@
 		</div>
 
 		<auth-links v-if="!provider" />
+		<sso-links v-if="!provider" />
 	</form>
 </template>
 
@@ -29,7 +30,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import authLinks from '../auth-links.vue';
+import authLinks from './auth-links.vue';
+import ssoLinks from './sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -42,7 +44,7 @@ type Credentials = {
 };
 
 export default defineComponent({
-	components: { authLinks },
+	components: { authLinks, ssoLinks },
 	props: {
 		provider: {
 			type: String,

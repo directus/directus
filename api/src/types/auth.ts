@@ -7,16 +7,6 @@ export interface User {
 	status: 'active' | 'suspended' | 'invited';
 	role: string | null;
 	provider: string;
-	alternate_identifier: string | null;
+	external_identifier: string | null;
 	auth_data: string | null;
-}
-
-export interface AuthProviderConfig {
-	driver: string;
-	config: Record<string, any>;
-}
-
-export interface AuthManagerConfig {
-	default?: string;
-	providers?: Record<string, AuthProviderConfig>;
 }

@@ -1,75 +1,65 @@
 import getDatabase from './database';
 import env from './env';
 import logger from './logger';
-import AuthManager from './auth/auth-manager';
-import { AuthConstructor, LocalAuth } from './auth/providers';
-import { AuthManagerConfig } from './types';
+import Auth from './auth/auth';
+import { LocalAuth } from './auth/drivers';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
+import { InvalidConfigException } from './exceptions';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from '@directus/shared/utils';
 
-const getAuthConfig = (): AuthManagerConfig => {
-	const config: AuthManagerConfig = {
-		default: DEFAULT_AUTH_PROVIDER,
-		providers: {
-			[DEFAULT_AUTH_PROVIDER]: {
-				driver: 'local',
-				config: {},
-			},
-		},
-	};
+const providers: Map<string, Auth> = new Map();
 
-	if (env.AUTH_PROVIDERS) {
-		const providers = toArray(env.AUTH_PROVIDERS);
-
-		if (providers.includes(DEFAULT_AUTH_PROVIDER)) {
-			logger.error(`Cannot override "${DEFAULT_AUTH_PROVIDER}" auth provider.`);
-			process.exit(1);
-		}
-
-		providers.forEach((provider: string) => {
-			provider = provider.trim();
-
-			const authConfig = {
-				driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
-				config: getConfigFromEnv(`AUTH_${provider.toUpperCase()}_`),
-			};
-
-			delete authConfig.config.driver;
-
-			config.providers![provider] = authConfig;
-		});
+export const getAuthProvider = (provider: string): Auth => {
+	if (!providers.has(provider)) {
+		throw new InvalidConfigException('Auth provider not configured', { provider });
 	}
-
-	return config;
+	return providers.get(provider) as Auth;
 };
 
-const registerDrivers = (manager: AuthManager): void => {
-	const usedDrivers: string[] = [];
+const registerProviders = (): void => {
+	// Register default provider
+	providers.set(DEFAULT_AUTH_PROVIDER, getProviderInstance('local', {}) as Auth);
 
-	for (const [key, value] of Object.entries(env)) {
-		if ((key.startsWith('AUTH') && key.endsWith('DRIVER')) === false) continue;
-		if (value && usedDrivers.includes(value) === false) usedDrivers.push(value);
+	if (!env.AUTH_PROVIDERS) {
+		return;
 	}
 
-	usedDrivers.forEach((driver) => {
-		const authDriver = getAuthDriver(driver);
+	// Register configured providers
+	const providerKeys = toArray(env.AUTH_PROVIDERS);
 
-		if (authDriver) {
-			manager.registerDriver(driver, authDriver);
+	if (providerKeys.includes(DEFAULT_AUTH_PROVIDER)) {
+		logger.error(`Cannot override "${DEFAULT_AUTH_PROVIDER}" auth provider.`);
+		process.exit(1);
+	}
+
+	providerKeys.forEach((key: string) => {
+		key = key.trim();
+
+		const { driver, ...config } = getConfigFromEnv(`AUTH_${key.toUpperCase()}_`);
+
+		if (!driver) {
+			logger.warn(`Missing driver definition for "${key}" auth provider.`);
+			return;
 		}
+
+		const provider = getProviderInstance(driver, { provider: key, ...config });
+
+		if (!provider) {
+			logger.warn(`Invalid "${driver}" auth driver.`);
+			return;
+		}
+
+		providers.set(key, provider);
 	});
 };
 
-const getAuthDriver = (driver: string): AuthConstructor | undefined => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getProviderInstance = (driver: string, config: Record<string, any>): Auth | undefined => {
 	switch (driver) {
 		case 'local':
-			return LocalAuth;
+			return new LocalAuth(getDatabase());
 	}
 };
 
-const auth = new AuthManager(getDatabase(), getAuthConfig());
-
-registerDrivers(auth);
-
-export default auth;
+registerProviders();

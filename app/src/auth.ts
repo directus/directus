@@ -14,7 +14,7 @@ export type LoginCredentials = {
 export async function login(credentials: LoginCredentials, provider?: string): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(provider ? `/auth/${provider}/login` : '/auth/login', {
+	const response = await api.post(provider ? `/auth/login/${provider}` : '/auth/login', {
 		...credentials,
 		mode: 'cookie',
 	});

@@ -22,7 +22,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
-import { LoginForm } from './components/login-form/';
+import LoginForm from './components/login-form.vue';
 import ContinueAs from './components/continue-as/';
 import { useAppStore } from '@/stores';
 

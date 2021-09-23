@@ -152,10 +152,14 @@ fields:
       relative: true
 
   - field: provider
-    interface: select-dropdown
     width: half
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:default
+          value: default
 
-  - field: alternate_identifier
+  - field: external_identifier
     width: half
     options:
       iconRight: account_circle

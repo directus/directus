@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import getDatabase from '../database';
 import env from '../env';
-import auth from '../auth';
+import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
@@ -148,7 +148,7 @@ export class UsersService extends ItemsService {
 		 */
 		await Promise.all(
 			data.map(async (user) => {
-				const provider = auth.getProvider(user.provider ?? DEFAULT_AUTH_PROVIDER);
+				const provider = getAuthProvider(user.provider ?? DEFAULT_AUTH_PROVIDER);
 				await provider.createUser({ ...user });
 			})
 		);
@@ -200,6 +200,10 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
 		}
 
+		if (data.external_identifier !== undefined) {
+			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+		}
+
 		/**
 		 * Sync with auth provider
 		 */
@@ -207,7 +211,7 @@ export class UsersService extends ItemsService {
 
 		await Promise.all(
 			users.map(async (user) => {
-				const provider = auth.getProvider(user.provider);
+				const provider = getAuthProvider(user.provider);
 				await provider.updateUser({
 					...data,
 					...user,
@@ -245,7 +249,7 @@ export class UsersService extends ItemsService {
 				'status',
 				'role',
 				'provider',
-				'alternate_identifier',
+				'external_identifier',
 				'auth_data'
 			)
 			.from('directus_users')
@@ -253,7 +257,7 @@ export class UsersService extends ItemsService {
 
 		await Promise.all(
 			users.map(async (user: User) => {
-				const provider = auth.getProvider(user.provider);
+				const provider = getAuthProvider(user.provider);
 				await provider.deleteUser({ ...user });
 			})
 		);

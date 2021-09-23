@@ -1,7 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 
 export class InvalidConfigException extends BaseException {
-	constructor(message = 'Invalid config', provider?: string) {
-		super(message, 500, 'INVALID_CONFIG', { provider });
+	constructor(message = 'Invalid config', extensions?: Record<string, any>) {
+		super(message, 503, 'INVALID_CONFIG', extensions);
 	}
 }

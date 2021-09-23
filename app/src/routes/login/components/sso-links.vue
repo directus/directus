@@ -1,11 +1,11 @@
 <template>
-	<div class="auth-links">
+	<div class="sso-links">
 		<template v-if="providers?.length">
 			<v-divider />
 
-			<router-link v-for="provider in providers" :key="provider.name" class="auth-link" :to="provider.link">
+			<a v-for="provider in providers" :key="provider.name" class="sso-link" :href="provider.link">
 				{{ t('log_in_with', { provider: provider.name }) }}
-			</router-link>
+			</a>
 		</template>
 	</div>
 </template>
@@ -14,6 +14,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, onMounted } from 'vue';
 import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 
@@ -32,11 +33,11 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const authResponse = await api.get('/auth/');
+				const response = await api.get('/auth/oauth/');
 
-				providers.value = authResponse.data.data?.map((provider: Record<string, any>) => ({
-					name: formatTitle(provider.name),
-					link: `/login?driver=${provider.driver}&provider=${provider.name}`,
+				providers.value = response.data.data?.map((providerName: string) => ({
+					name: formatTitle(providerName),
+					link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
 				}));
 			} catch (err: any) {
 				unexpectedError(err);
@@ -53,7 +54,7 @@ export default defineComponent({
 	margin: 24px 0;
 }
 
-.auth-link {
+.sso-link {
 	display: block;
 	display: flex;
 	align-items: center;

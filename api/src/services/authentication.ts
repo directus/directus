@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import getDatabase from '../database';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import auth from '../auth';
+import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { InvalidCredentialsException, InvalidOTPException, UserSuspendedException } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
@@ -58,7 +58,7 @@ export class AuthenticationService {
 		const timeStart = performance.now();
 
 		const providerName = options.provider ?? DEFAULT_AUTH_PROVIDER;
-		const provider = auth.getProvider(providerName);
+		const provider = getAuthProvider(providerName);
 
 		const user = await this.knex
 			.select<User & { tfa_secret: string | null }>(
@@ -71,7 +71,7 @@ export class AuthenticationService {
 				'role',
 				'tfa_secret',
 				'provider',
-				'alternate_identifier',
+				'external_identifier',
 				'auth_data'
 			)
 			.from('directus_users')
@@ -256,7 +256,7 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.alternate_identifier',
+				'u.external_identifier',
 				'u.auth_data'
 			)
 			.from('directus_sessions as s')
@@ -268,7 +268,7 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const provider = auth.getProvider(record.provider);
+		const provider = getAuthProvider(record.provider);
 		await provider.refresh({ ...record });
 
 		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
@@ -304,7 +304,7 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.alternate_identifier',
+				'u.external_identifier',
 				'u.auth_data'
 			)
 			.from('directus_sessions as s')
@@ -313,7 +313,7 @@ export class AuthenticationService {
 			.first();
 
 		if (user) {
-			const provider = auth.getProvider(user.provider);
+			const provider = getAuthProvider(user.provider);
 			await provider.logout({ ...user });
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
@@ -331,7 +331,7 @@ export class AuthenticationService {
 				'status',
 				'role',
 				'provider',
-				'alternate_identifier',
+				'external_identifier',
 				'auth_data'
 			)
 			.from('directus_users')
@@ -342,7 +342,7 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const provider = auth.getProvider(user.provider);
+		const provider = getAuthProvider(user.provider);
 		await provider.verify({ ...user }, password);
 	}
 }
