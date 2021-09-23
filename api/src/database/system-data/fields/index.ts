@@ -3,7 +3,7 @@ import { merge } from 'lodash';
 import path from 'path';
 import formatTitle from '@directus/format-title';
 import { FieldMeta } from '@directus/shared/types';
-import getAuthProviders from '../../../utils/get-auth-providers';
+import { getAuthProviders } from '../../../utils/get-auth-providers';
 import { requireYAML } from '../../../utils/require-yaml';
 
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));

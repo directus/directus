@@ -8,5 +8,4 @@ export interface User {
 	role: string | null;
 	provider: string;
 	external_identifier: string | null;
-	auth_data: string | null;
 }

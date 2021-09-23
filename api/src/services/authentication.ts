@@ -14,7 +14,7 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge } from 'lodash';
+import { merge, omit } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
@@ -71,8 +71,7 @@ export class AuthenticationService {
 				'role',
 				'tfa_secret',
 				'provider',
-				'external_identifier',
-				'auth_data'
+				'external_identifier'
 			)
 			.from('directus_users')
 			.where('id', await provider.userID(identifier))
@@ -129,7 +128,6 @@ export class AuthenticationService {
 		});
 
 		if (allowedAttempts !== null) {
-			// @ts-ignore - See https://github.com/animir/node-rate-limiter-flexible/issues/109
 			loginAttemptsLimiter.points = allowedAttempts;
 
 			try {
@@ -189,15 +187,11 @@ export class AuthenticationService {
 			payload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
 		}
 
-		/**
-		 * @TODO
-		 * Sign token with combination of server secret + user password hash
-		 * That way, old tokens are immediately invalidated whenever the user changes their password
-		 */
 		const accessToken = jwt.sign(payload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
+
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
 
@@ -248,6 +242,7 @@ export class AuthenticationService {
 		const record = await this.knex
 			.select<Session & User>(
 				's.expires',
+				's.data',
 				'u.id',
 				'u.first_name',
 				'u.last_name',
@@ -256,8 +251,7 @@ export class AuthenticationService {
 				'u.status',
 				'u.role',
 				'u.provider',
-				'u.external_identifier',
-				'u.auth_data'
+				'u.external_identifier'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -269,7 +263,7 @@ export class AuthenticationService {
 		}
 
 		const provider = getAuthProvider(record.provider);
-		await provider.refresh({ ...record });
+		await provider.refresh(omit(record, 'expires'), record.data);
 
 		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -295,7 +289,7 @@ export class AuthenticationService {
 
 	async logout(refreshToken: string): Promise<void> {
 		const user = await this.knex
-			.select<User>(
+			.select<User & Session>(
 				'u.id',
 				'u.first_name',
 				'u.last_name',
@@ -305,7 +299,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				's.data'
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -314,7 +308,7 @@ export class AuthenticationService {
 
 		if (user) {
 			const provider = getAuthProvider(user.provider);
-			await provider.logout({ ...user });
+			await provider.logout(omit(user, 'data'), user.data);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
@@ -331,8 +325,7 @@ export class AuthenticationService {
 				'status',
 				'role',
 				'provider',
-				'external_identifier',
-				'auth_data'
+				'external_identifier'
 			)
 			.from('directus_users')
 			.where('id', userID)

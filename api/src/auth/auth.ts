@@ -26,7 +26,7 @@ export abstract class AuthDriver {
 	 * @param password User password
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, password?: string): void;
+	abstract verify(user: User, password?: string): Promise<void>;
 
 	/**
 	 * Handle user session refresh
@@ -34,7 +34,7 @@ export abstract class AuthDriver {
 	 * @param user User information
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User): Promise<void> {
+	async refresh(_user: User, _sessionData: Record<string, any> | null): Promise<void> {
 		/* Optional */
 	}
 
@@ -44,7 +44,7 @@ export abstract class AuthDriver {
 	 * @param user User information
 	 * @throws InvalidCredentialsException
 	 */
-	async logout(_user: User): Promise<void> {
+	async logout(_user: User, _sessionData: Record<string, any> | null): Promise<void> {
 		/* Optional */
 	}
 

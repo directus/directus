@@ -6,7 +6,7 @@ interface AuthProvider {
 	driver: string;
 }
 
-export default (): AuthProvider[] | null => {
+export function getAuthProviders(): AuthProvider[] | null {
 	if (!env.AUTH_PROVIDERS) {
 		return null;
 	}
@@ -17,4 +17,4 @@ export default (): AuthProvider[] | null => {
 			name: provider,
 			driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
 		}));
-};
+}

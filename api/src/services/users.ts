@@ -249,8 +249,7 @@ export class UsersService extends ItemsService {
 				'status',
 				'role',
 				'provider',
-				'external_identifier',
-				'auth_data'
+				'external_identifier'
 			)
 			.from('directus_users')
 			.whereIn('id', keys);

@@ -2,7 +2,7 @@ import getDatabase from './database';
 import env from './env';
 import logger from './logger';
 import { AuthDriver } from './auth/auth';
-import { LocalAuth } from './auth/drivers';
+import { LocalAuthDriver } from './auth/drivers/';
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { InvalidConfigException } from './exceptions';
 import { getConfigFromEnv } from './utils/get-config-from-env';
@@ -28,7 +28,7 @@ export function getAuthProvider(provider: string): AuthDriver {
 function getProviderInstance(driver: string, config: Record<string, any>): AuthDriver | undefined {
 	switch (driver) {
 		case 'local':
-			return new LocalAuth(getDatabase());
+			return new LocalAuthDriver(getDatabase(), config);
 	}
 }
 
