@@ -1,9 +1,9 @@
 import argon2 from 'argon2';
-import Auth from '../auth';
+import { AuthDriver } from '../auth';
 import { User } from '../../types';
 import { InvalidCredentialsException } from '../../exceptions';
 
-export class LocalAuth extends Auth {
+export class LocalAuth extends AuthDriver {
 	/**
 	 * Get user id by email
 	 */
