@@ -3,7 +3,7 @@ import Auth from '../auth';
 import { User } from '../../types';
 import { InvalidCredentialsException } from '../../exceptions';
 
-export default class LocalAuth extends Auth {
+export class LocalAuth extends Auth {
 	/**
 	 * Get user id by email
 	 */

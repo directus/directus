@@ -1,1 +1,1 @@
-export { default as LocalAuth } from './local';
+export * from './local';
