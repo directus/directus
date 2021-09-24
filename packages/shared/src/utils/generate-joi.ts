@@ -1,4 +1,4 @@
-import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema } from 'joi';
+import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
 import { escapeRegExp, merge } from 'lodash';
 import { FieldFilter } from '../types/filter';
 
@@ -103,6 +103,7 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		const getAnySchema = () => schema[key] ?? Joi.any();
 		const getStringSchema = () => (schema[key] ?? Joi.string()) as StringSchema;
 		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
+		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
 		if (operator === '_eq') {
 			schema[key] = getAnySchema().equal(compareValue);
@@ -155,19 +156,27 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_gt') {
-			schema[key] = getNumberSchema().greater(Number(compareValue));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().greater(compareValue)
+				: getDateSchema().greater(compareValue);
 		}
 
 		if (operator === '_gte') {
-			schema[key] = getNumberSchema().min(Number(compareValue));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().min(compareValue)
+				: getDateSchema().min(compareValue);
 		}
 
 		if (operator === '_lt') {
-			schema[key] = getNumberSchema().less(Number(compareValue));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().less(compareValue)
+				: getDateSchema().less(compareValue);
 		}
 
 		if (operator === '_lte') {
-			schema[key] = getNumberSchema().max(Number(compareValue));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().max(compareValue)
+				: getDateSchema().max(compareValue);
 		}
 
 		if (operator === '_null') {
@@ -187,13 +196,23 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		}
 
 		if (operator === '_between') {
-			const values = compareValue as [number, number];
-			schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
+			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+				const values = compareValue as [number, number];
+				schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
+			} else {
+				const values = compareValue as [string, string];
+				schema[key] = getDateSchema().greater(values[0]).less(values[1]);
+			}
 		}
 
 		if (operator === '_nbetween') {
-			const values = compareValue as [number, number];
-			schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
+			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+				const values = compareValue as [number, number];
+				schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
+			} else {
+				const values = compareValue as [string, string];
+				schema[key] = getDateSchema().less(values[0]).greater(values[1]);
+			}
 		}
 
 		if (operator === '_submitted') {
