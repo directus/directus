@@ -11,7 +11,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node: ['16']
+    name: Node ${{ matrix.node }} sample
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -22,7 +25,15 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: ${{ matrix.node }}
+
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Cache node modules
         uses: actions/cache@v2
