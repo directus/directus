@@ -1,7 +1,6 @@
 import { defineDisplay } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import getRelatedCollection from '@/utils/get-related-collection';
 import options from './options.vue';
 import DisplayTranslations from './translations.vue';
 import { useFieldsStore, useRelationsStore } from '@/stores';
