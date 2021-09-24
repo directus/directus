@@ -157,7 +157,7 @@ fields:
     readonly: true
     options:
       choices:
-        - text: $t:default
+        - text: $t:default_provider
           value: default
 
   - field: external_identifier
