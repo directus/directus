@@ -28,8 +28,8 @@ tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
-item_creation: Eintrag erstellt
-item_revision: Eintrag überarbeitet
+item_creation: Element erstellt
+item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -55,8 +55,10 @@ required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert
 create_preset: Vorlage erstellen
+create_panel: Panel erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+delete_panel: Panel löschen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 invite: Einladen
@@ -100,7 +102,7 @@ the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindest
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
-unarchive_confirm: Möchten Sie diesen Eintrag wirklich aus dem Archiv zurückholen?
+unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
 unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
@@ -121,7 +123,7 @@ validationError:
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
   regex: Wert hat nicht das richtige Format
-all_access: Zugriff auf alles
+all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 nullable: Nullbar
@@ -145,11 +147,11 @@ field_validation: Feldüberprüfung
 field_presets: Feldvorgaben
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
-validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
+validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
-revision_post_create: So sah der Eintrag bei der Erstellung aus.
-revision_post_update: So sieht der Eintrag nach der Überarbeitung aus.
+revision_post_create: So sah dieses Element bei der Erstellung aus.
+revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
 hide_field_on_detail: In Detailansicht ausblenden
@@ -243,7 +245,7 @@ m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
-invalid_item: Ungültiger Eintrag
+invalid_item: Ungültiges Element
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -270,7 +272,7 @@ undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
-page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+page_not_found_body: Die Seite, nach der Sie gesucht haben, wurde nicht gefunden.
 confirm_revert: Zurücksetzen bestätigen
 confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
@@ -284,13 +286,14 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 private_user: Privater Benutzer
-revision_preview: Überarbeitungs Vorschau
-updates_made: Erfolgte Updates
+creation_preview: Erstellungs-Vorschau
+revision_preview: Überarbeitungs-Vorschau
+updates_made: Erfolgte Aktualisierungen
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
-item_create_success: Eintrag erstellt | Einträge erstellt
+item_create_success: Element erstellt | Elemente erstellt
 item_update_success: Element aktualisiert | Elemente aktualisiert
-item_delete_success: Eintrag gelöscht | Einträge gelöscht
+item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
@@ -323,7 +326,7 @@ date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
 month: Monat
 year: Jahr
-select_all: Alles auswählen
+select_all: Alle auswählen
 months:
   january: Januar
   february: Februar
@@ -377,13 +380,13 @@ creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen 
 auto_increment_integer: Automatisch erhöhter Integer-Wert
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
-save_and_create_new: Speichern und Neues anlegen
-save_and_stay: Speichern und Bleiben
+save_and_create_new: Speichern und neues Element anlegen
+save_and_stay: Speichern und auf der Seite bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
-creating_items: Eintrag erstellen
+creating_items: Elemente erstellen
 enable_create_button: Knopf zum Erstellen aktivieren
-selecting_items: Einträge auswählen
+selecting_items: Elemente auswählen
 enable_select_button: Knopf zum Auswählen aktivieren
 comments: Kommentare
 no_comments: Noch keine Kommentare
@@ -424,6 +427,7 @@ active: Aktiv
 move_to: Verschieben nach...
 copy: Kopieren
 copy_to: Kopieren nach...
+no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
@@ -473,13 +477,13 @@ errors:
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_QUERY: Ungültige anfrage
-  ITEM_LIMIT_REACHED: Elementlimit erreicht
+  ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_ENTITY: Element kann nicht verarbeitet werden
+  UNPROCESSABLE_ENTITY: Unverarbeitbare Anfrage
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
@@ -588,7 +592,7 @@ collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Systemfelder
 value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
-create_item: Eintrag erstellen
+create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
@@ -683,7 +687,7 @@ wysiwyg_options:
   redo: Wiederherstellen
   remove: Löschen
   removeformat: Formatierung entfernen
-  selectall: Alles auswählen
+  selectall: Alle auswählen
   table: Tabelle
   visualaid: Unsichtbare Elemente anzeigen
   source_code: Quellcode bearbeiten
@@ -697,7 +701,7 @@ deselect_all: Alle abwählen
 other: Andere...
 adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
-creating_in: 'Eintrag in {collection} erstellen'
+creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
@@ -720,14 +724,16 @@ editing_preset: Preset bearbeiten
 layout_preview: Layoutvorschau
 layout_setup: Einrichtung Layout
 unsaved_changes: Nicht gespeicherte Änderungen
-unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
+unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
+show_x_axis: X-Achse anzeigen
+show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_collections_item: >-
-  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+  **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
   **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
@@ -741,7 +747,7 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection: '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
+page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1026,13 +1032,13 @@ relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
-referential_action_cascade: Lösche das {collection} Element (Cascade)
+referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
-  {name} ist derzeit angemeldet. Wenn du dieses Konto kennst, drücke weiter.
+  {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default_label: Standard
@@ -1083,7 +1089,7 @@ select_interface: Wähle eine Schnittstelle
 settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
-sign_out_confirm: Bist Du sicher, dass Du Dich ausloggen möchtest?
+sign_out_confirm: Möchten Sie sich wirklich abmelden?
 something_went_wrong: Irgendwas ist schief gelaufen...
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
@@ -1463,5 +1469,18 @@ layouts:
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
 panels:
+  metric:
+    name: Metrik
+    description: Zeige einen einzelnen Wert basierend auf einer Abfrage
+    field: Feld
+  time_series:
+    name: Zeitreihen
+    description: Liniendiagramm anhand von Werten im Laufe der Zeit anzeigen
+    date_field: Datums-Feld
+    value_field: Wert-Feld
   label:
     name: Label
+    description: Einen Text anzeigen
+  list:
+    name: Liste
+    description: Filtern und Auflisten von Feldern von einer Sammlung
