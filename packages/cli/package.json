@@ -23,8 +23,6 @@
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
-		"test": "jest --coverage",
-		"test:watch": "jest --coverage --watchAll",
 		"profile": "clinic flame -- node ./bin/directus"
 	},
 	"keywords": [
