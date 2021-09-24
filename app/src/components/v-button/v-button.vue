@@ -271,6 +271,7 @@ export default defineComponent({
 
 .v-button {
 	display: inline-flex;
+	align-items: center;
 }
 
 .v-button.full-width {
