@@ -56,10 +56,10 @@ export default defineComponent({
 			},
 		});
 
-		const {
-			relationCollection: languageCollection,
-			relationFields: languageCollectionFields,
-		} = useRelation(collection, field);
+		const { relationCollection: languageCollection, relationFields: languageCollectionFields } = useRelation(
+			collection,
+			field
+		);
 
 		return {
 			t,
