@@ -225,7 +225,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		try {
 			if (isReadableStream(content)) {
 				const result = await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
-					blobHTTPHeaders: { blobContentType: type || 'application/octet-stream' },
+					blobHTTPHeaders: { blobContentType: type ?? 'application/octet-stream' },
 				});
 				return { raw: result };
 			}
