@@ -18,14 +18,6 @@ import { merge } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
-type AuthenticateOptions = {
-	identifier: string;
-	provider: string;
-	ip?: string | null;
-	userAgent?: string | null;
-	otp?: string;
-};
-
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 
 export class AuthenticationService {
@@ -50,15 +42,13 @@ export class AuthenticationService {
 	 * @param options
 	 */
 	async login(
-		options: AuthenticateOptions,
-		payload: Record<string, any>
+		providerName: string = DEFAULT_AUTH_PROVIDER,
+		payload: Record<string, any>,
+		otp?: string
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
-		const { identifier, otp } = options;
-
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
 
-		const providerName = options.provider ?? DEFAULT_AUTH_PROVIDER;
 		const provider = getAuthProvider(providerName);
 
 		const user = await this.knex
@@ -75,15 +65,15 @@ export class AuthenticationService {
 				'external_identifier'
 			)
 			.from('directus_users')
-			.where('id', await provider.getUserID(identifier, payload))
+			.where('id', await provider.getUserID(payload))
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedOptions = await emitter.emitAsync('auth.login.before', options, {
+		const updatedOptions = await emitter.emitAsync('auth.login.before', {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
-			payload: options,
+			payload: payload,
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
@@ -91,15 +81,15 @@ export class AuthenticationService {
 		});
 
 		if (updatedOptions) {
-			options = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : options;
+			payload = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : payload;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', options, {
+			emitAsyncSafe('auth.login', {
 				event: 'auth.login',
 				action: 'login',
 				schema: this.schema,
-				payload: options,
+				payload: payload,
 				accountability: this.accountability,
 				status,
 				user: user?.id,
@@ -270,7 +260,7 @@ export class AuthenticationService {
 		const session = { token, expires, data };
 
 		const provider = getAuthProvider(user.provider);
-		await provider.refresh({ ...user }, session);
+		await provider.refresh({ ...user }, session.data);
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -321,7 +311,7 @@ export class AuthenticationService {
 			const session = { token, expires, data };
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout({ ...user }, session);
+			await provider.logout({ ...user }, session.data);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}

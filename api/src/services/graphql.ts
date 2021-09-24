@@ -1754,12 +1754,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.login({
-						...args,
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						identifier: args.email,
-					});
+					const result = await authenticationService.login('local', args, args?.otp);
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,

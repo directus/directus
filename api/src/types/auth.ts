@@ -10,8 +10,10 @@ export interface User {
 	external_identifier: string | null;
 }
 
+export type SessionData = Record<string, any> | null;
+
 export interface Session {
 	token: string;
 	expires: Date;
-	data: Record<string, any> | null;
+	data: SessionData;
 }

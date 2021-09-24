@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { Knex } from 'knex';
-import { User, Session } from '../types';
+import { User, SessionData } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
@@ -17,7 +17,7 @@ export abstract class AuthDriver {
 	 * @throws InvalidCredentialsException
 	 * @return User id of the identifier
 	 */
-	abstract getUserID(identifier: string | number, payload: Record<string, any>): Promise<string>;
+	abstract getUserID(payload: Record<string, any>): Promise<string>;
 
 	/**
 	 * Verify user password
@@ -26,7 +26,7 @@ export abstract class AuthDriver {
 	 * @param password User password
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, password?: string): void;
+	abstract verify(user: User, password?: string): Promise<void>;
 
 	/**
 	 * Check with the (external) provider if the user is allowed entry to Directus
@@ -35,7 +35,7 @@ export abstract class AuthDriver {
 	 * @param _payload Any data that the user might've provided
 	 * @throws InvalidCredentialsException
 	 */
-	async login(_user: User, _payload: Record<string, any>): Promise<Record<string, any> | null> {
+	async login(_user: User, _payload: Record<string, any>): Promise<SessionData | null> {
 		/* Optional, though should probably be set */
 		return null;
 	}
@@ -47,7 +47,7 @@ export abstract class AuthDriver {
 	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, _session: Session): Promise<void> {
+	async refresh(_user: User, _sessionData: SessionData): Promise<void> {
 		/* Optional */
 	}
 
@@ -58,7 +58,7 @@ export abstract class AuthDriver {
 	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async logout(_user: User, _session: Session): Promise<void> {
+	async logout(_user: User, _sessionData: SessionData): Promise<void> {
 		/* Optional */
 	}
 }

@@ -14,15 +14,15 @@ export class LocalAuthDriver extends AuthDriver {
 	/**
 	 * Get user id by email
 	 */
-	async getUserID(email: string): Promise<string> {
-		if (!email) {
+	async getUserID(payload: Record<string, any>): Promise<string> {
+		if (!payload.email) {
 			throw new InvalidCredentialsException();
 		}
 
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['email', payload.email.toLowerCase()])
 			.first();
 
 		if (!user) {
@@ -77,11 +77,9 @@ export function createLocalAuthRouter(): Router {
 			const mode = req.body.mode || 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				{
-					identifier: req.body.email,
-					provider: req.params.provider,
-				},
-				req.body
+				'local',
+				req.body,
+				req.body?.otp
 			);
 
 			const payload = {
