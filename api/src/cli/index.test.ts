@@ -4,7 +4,6 @@ import { createCli } from '.';
 
 jest.mock('../env', () => ({
 	...jest.requireActual('../env').default,
-	LOG_LEVEL: 'silent',
 	EXTENSIONS_PATH: '',
 	SERVE_APP: false,
 }));
