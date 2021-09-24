@@ -8,7 +8,6 @@ import Joi from 'joi';
 import asyncHandler from '../../utils/async-handler';
 import env from '../../env';
 import ms from 'ms';
-import { Knex } from 'knex';
 import { respond } from '../../middleware/respond';
 
 export class LocalAuthDriver extends AuthDriver {
