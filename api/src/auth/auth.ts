@@ -35,7 +35,7 @@ export abstract class AuthDriver {
 	 * @param _payload Any data that the user might've provided
 	 * @throws InvalidCredentialsException
 	 */
-	async login(_user: User, _payload: Record<string, any>): Promise<SessionData | null> {
+	async login(_user: User, _payload: Record<string, any>): Promise<SessionData> {
 		/* Optional, though should probably be set */
 		return null;
 	}
