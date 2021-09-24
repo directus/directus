@@ -28,8 +28,8 @@ tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
-item_creation: Element erstellen
-item_revision: Element Revision
+item_creation: Eintrag erstellt
+item_revision: Eintrag überarbeitet
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -100,7 +100,7 @@ the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindest
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
-unarchive_confirm: Sind Sie sicher, dass dieses Element aus dem Archiv zurückgeholt werden soll?
+unarchive_confirm: Möchten Sie diesen Eintrag wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
 unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
@@ -148,8 +148,8 @@ fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
-revision_post_create: So sah das Element bei der Erstellung aus.
-revision_post_update: So sieht dieses Element nach dem Update aus.
+revision_post_create: So sah der Eintrag bei der Erstellung aus.
+revision_post_update: So sieht der Eintrag nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
 hide_field_on_detail: In Detailansicht ausblenden
@@ -243,7 +243,7 @@ m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
-invalid_item: Ungültiges Element
+invalid_item: Ungültiger Eintrag
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -290,7 +290,7 @@ leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
 item_create_success: Eintrag erstellt | Einträge erstellt
 item_update_success: Element aktualisiert | Elemente aktualisiert
-item_delete_success: Element gelöscht | Elemente gelöscht
+item_delete_success: Eintrag gelöscht | Einträge gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
@@ -381,9 +381,9 @@ save_and_create_new: Speichern und Neues anlegen
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
-creating_items: Elemente erstellen
+creating_items: Eintrag erstellen
 enable_create_button: Knopf zum Erstellen aktivieren
-selecting_items: Elemente auswählen
+selecting_items: Einträge auswählen
 enable_select_button: Knopf zum Auswählen aktivieren
 comments: Kommentare
 no_comments: Noch keine Kommentare
@@ -697,7 +697,7 @@ deselect_all: Alle abwählen
 other: Andere...
 adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
-creating_in: 'Erstelle Element in {collection}'
+creating_in: 'Eintrag in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
