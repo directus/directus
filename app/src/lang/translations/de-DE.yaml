@@ -126,13 +126,13 @@ validationError:
 all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
-nullable: Nullbar
+nullable: NULL-Werte
 allow_null_value: NULL-Wert erlauben
 allow_multiple: Mehrere zulassen
 allow_multiple_to_be_open: Gleichzeitiges Öffnen erlauben
 enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
-field_presentation: Darstellung & Aliasse
+field_presentation: Darstellung & Aliase
 field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
@@ -144,12 +144,12 @@ field_group: Feldgruppe
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
-field_presets: Feldvorgaben
+field_presets: Feld-Vorlagen
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
-presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
-presentation_and_aliases: Darstellung & Aliasse
+presets_for_role: 'Standardwert für die {role} Rolle.'
+presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
@@ -157,7 +157,7 @@ no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten si
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
-fields_and_layout: Felder & Layout
+fields_and_layout: Felder & Ansicht
 field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
@@ -272,7 +272,7 @@ undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
-page_not_found_body: Die Seite, nach der Sie gesucht haben, wurde nicht gefunden.
+page_not_found_body: Die Seite scheint nicht zu existieren.
 confirm_revert: Zurücksetzen bestätigen
 confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
@@ -433,6 +433,7 @@ users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
 decimals: Dezimalstellen
+value_decimals: Wert Dezimalstellen
 min_value: Minimalwert
 max_value: Maximalwert
 automatic: Automatisch
@@ -494,7 +495,7 @@ bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
-presets: Voreinstellungen
+presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
 unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
@@ -526,6 +527,7 @@ visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
 show_hidden_collections: Ausgeblendete Sammlungen anzeigen
 hide_hidden_collections: Sammlungen ausblenden
+show_header: Titel anzeigen
 unmanaged_collections: Nicht konfigurierte Sammlungen
 system_collections: Systemsammlungen
 placeholder: Platzhalter
@@ -541,6 +543,7 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 log_in_with: 'Einloggen mit {provider}'
+conditional_styles: Bedingte Stile
 advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
@@ -585,7 +588,7 @@ upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
-layout_options: Layout-Optionen
+layout_options: Optionen für Ansicht
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
@@ -612,9 +615,9 @@ saves_automatically: Wird automatisch gespeichert
 role: Rolle
 rule: Regel
 user: Benutzer
-no_presets: Keine Voreinstellungen
-no_presets_copy: Es wurden noch keine Voreinstellungen oder Lesezeichen gespeichert.
-no_presets_cta: Voreinstellung hinzufügen
+no_presets: Keine Vorlagen
+no_presets_copy: Es wurden noch keine Vorlagen oder Lesezeichen gespeichert.
+no_presets_cta: Vorlage hinzufügen
 presets_only: Nur Vorlagen
 create: Erstellen
 on_create: Beim Erstellen
@@ -623,13 +626,37 @@ read: Lesen
 update: Aktualisieren
 select_fields: Fielder auswählen
 format_text: Text formatieren
+format_value: Wert formatieren
+abbreviate_value: Wert abkürzen
+operator: Operator
 bold: Fett
 toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+insights: Einblicke (Beta)
+dashboard: Dashboard
+panel: Panel
+panel_options: Panel-Optionen
+panel_header: Panel-Titel
+panel_name_placeholder: Dieses Panel benennen...
+panel_note_placeholder: Optionale Details zu diesem Panel...
+panel_delete_confirm: Möchten Sie dieses Panel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+dashboard_delete_confirm: Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+edit_dashboard: Dashboard bearbeiten
+delete_dashboard: Dashboard löschen
 visible: Sichtbar
+prefix_placeholder: Text vor Wert...
+suffix_placeholder: Text nach Wert...
+decimals_placeholder: Anzahl der Nachkommastellen...
+no_dashboards: Keine Dashboards
+no_dashboards_copy: Sie haben noch keine Dashboards.
+no_data: Keine Daten
+create_dashboard: Dashboard erstellen
+dashboard_name: Name des Dashboards
 full_screen: Vollbild
+edit_panels: Panel bearbeiten
+fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
 media: Medien
@@ -713,36 +740,37 @@ settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
-scope: Scope
+scope: Bereich
 select: Auswählen...
-layout: Layout
+layout: Ansicht
 tree_view: Baumansicht
 changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
-preset_name_placeholder: Dient als Standard wenn leer...
+preset_name_placeholder: Standardwert, wenn leer...
 preset_search_placeholder: Suchabfrage...
-editing_preset: Preset bearbeiten
-layout_preview: Layoutvorschau
-layout_setup: Einrichtung Layout
+editing_preset: Vorlage bearbeiten
+layout_preview: Vorschau der Ansicht
+layout_setup: Einrichtung Ansicht
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
+discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
 show_x_axis: X-Achse anzeigen
 show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_collections_item: >-
   **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
   **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
-  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten sind.
+  **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: "**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts."
+page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
 page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
@@ -750,20 +778,22 @@ page_help_settings_datamodel_fields: >-
 page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
-  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+  **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
 page_help_settings_presets_item: >-
-  **Preset-Detail** — Ein Formular zur Verwaltung von Lesezeichen und Sammlung-Presets.
-page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Listet alle Webhooks im Projekt auf.'
+  **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
+page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
-page_help_users_collection: '**Benutzerverzeichnis** — Listet alle Benutzer in diesem Projekt auf.'
+page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
+page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alles
 none: Kein/e
-no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
+no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
@@ -781,12 +811,12 @@ directus_collection:
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_permissions: Zugriffsrechte für jede Rolle
-  directus_presets: Voreinstellungen für Sammlung und Lesezeichen
+  directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
   directus_roles: Berechtigungsgruppen für Systembenutzer
   directus_sessions: Sitzungsinformation
-  directus_settings: Projektkonfiguration
+  directus_settings: Projekt-Konfiguration
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
 fields:
@@ -878,10 +908,10 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
-    project_name: Projektname
-    project_url: Projekt URL
-    project_color: Projekt Farbe
-    project_logo: Projekt Logo
+    project_name: Projekt-Name
+    project_url: Projekt-URL
+    project_color: Projekt-Farbe
+    project_logo: Projekt-Logo
     public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -890,7 +920,7 @@ fields:
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Vorschaubilder
     storage_default_folder: Standardspeicherordner
-    storage_asset_presets: Asset-Presets
+    storage_asset_presets: Asset-Vorlagen
     storage_asset_transform: Asset-Transformierung
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
@@ -934,7 +964,7 @@ field_options:
     storage_asset_presets:
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
-        cover_text: Abdeckung (erzwingt exakte Grösse)
+        cover_text: Cover (erzwingt exakte Größe)
         fit_text: Passform innen
         outside_text: Passform außen
     additional_transforms: Zusätzliche Umwandlungen
@@ -1099,6 +1129,7 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1114,8 +1145,8 @@ interfaces:
   presentation-links:
     presentation-links: Button-Links
     links: Links
-    description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
-    style: Style
+    description: Konfigurierbare Link-Buttons für dynamische URLs
+    style: Stil
     primary: Primär
     link: Links
     button: Buttons
@@ -1150,7 +1181,7 @@ interfaces:
     color: Farbe
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
-    preset_colors: Preset-Farben
+    preset_colors: Farben für Vorlage
     preset_colors_add_label: Farbe hinzufügen...
     name_placeholder: Farbnamen eingeben...
   datetime:
@@ -1446,7 +1477,7 @@ layouts:
     fields: Felder
     spacing: Abstand
     comfortable: Groß
-    compact: Klein
+    compact: Kompakt
     cozy: Mittel
   calendar:
     calendar: Kalender
@@ -1454,7 +1485,7 @@ layouts:
     end_date_field: Datumsfeld Ende
   map:
     map: Karte
-    basemap: Basemap
+    basemap: Basiskarte
     layers: Ebenen
     edit_custom_layers: Ebenen bearbeiten
     cluster_options: Clustering-Optionen
