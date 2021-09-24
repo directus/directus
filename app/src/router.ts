@@ -19,8 +19,9 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		path: '/login',
 		component: LoginRoute,
 		props: (route) => ({
-			ssoErrorCode: route.query.error ? route.query.code : null,
 			logoutReason: route.query.reason,
+			driver: route.query.driver,
+			provider: route.query.provider,
 		}),
 		meta: {
 			public: true,
