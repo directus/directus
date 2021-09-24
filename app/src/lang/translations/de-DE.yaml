@@ -85,12 +85,12 @@ logoutReason:
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Betriebszeit
+directus_version: Directus-Version
+node_version: Node-Version
+node_uptime: Node-Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
-os_uptime: '» Betriebszeit'
+os_uptime: System-Betriebszeit
 os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -410,7 +410,7 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
-no_webhooks_copy: Es wurden noch keine Webhooks erstellt. Beginnen Sie.
+no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -769,7 +769,7 @@ page_help_docs_global: >-
 page_help_files_collection: >-
   **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
-  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+  **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
 page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
 page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
@@ -791,11 +791,11 @@ page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwalt
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
-all: Alles
+all: Alle
 none: Kein/e
 no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
 batch_delete_confirm: >-
-  Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
@@ -807,7 +807,7 @@ directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
   directus_fields: Weitere Felder und Metadaten
-  directus_files: Metadaten für alle verwalteten Anlagen
+  directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_permissions: Zugriffsrechte für jede Rolle
@@ -919,9 +919,9 @@ fields:
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Vorschaubilder
-    storage_default_folder: Standardspeicherordner
-    storage_asset_presets: Asset-Vorlagen
-    storage_asset_transform: Asset-Transformierung
+    storage_default_folder: Standardordner
+    storage_asset_presets: Vorlagen für Dateien
+    storage_asset_transform: Transformierung von Dateien
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
@@ -955,7 +955,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
     project_logo_note: Login & Logo Hintergrund
-    public_note_placeholder: Eine kurze, öffentliche Nachricht welche die Formatierung mittels Markdown unterstützt...
+    public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
       none_text: Keine - Nicht empfohlen
@@ -964,7 +964,7 @@ field_options:
     storage_asset_presets:
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
-        cover_text: Cover (erzwingt exakte Größe)
+        cover_text: Abdecken (erzwingt exakte Größe)
         fit_text: Passform innen
         outside_text: Passform außen
     additional_transforms: Zusätzliche Umwandlungen
