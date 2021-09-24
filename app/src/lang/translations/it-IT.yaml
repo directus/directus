@@ -28,6 +28,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 maps: Mappe
+item_creation: Creazione elemento
 item_revision: Revisione elemento
 enter_a_name: Inserisci un nome...
 duplicate_field: Campo duplicato
@@ -149,6 +150,7 @@ fields_for_role: 'Campi che il ruolo {role} può {action}.'
 validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare alla {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 presentation_and_aliases: Presentazione e Alias
+revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
@@ -284,6 +286,7 @@ revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 private_user: Utenti privati
+creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
 updates_made: Aggiornamenti Completati
 leave_comment: Lascia un commento...
@@ -1076,7 +1079,7 @@ delete_field_are_you_sure: >-
   Sei sicuro di voler cancellare il campo "{field}"? Questa azione non può essere annullata.
 description: Descrizione
 done: Fatto
-duplicate: Duplicare
+duplicate: Duplica
 limit: Limite
 email: E-mail
 embed: Embed
@@ -1126,6 +1129,7 @@ require_value_to_be_set: Richiedi di impostare il valore
 translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 interfaces:

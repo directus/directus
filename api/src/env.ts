@@ -163,6 +163,15 @@ function getEnvVariableValue(variableValue: string, variableType: string) {
 	return variableValue.split(`${variableType}:`)[1];
 }
 
+function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | number | RegExp> {
+	return envArray.map((item: string) => {
+		if (isEnvSyntaxPrefixPresent(item)) {
+			return getEnvironmentValueByType(item);
+		}
+		return item;
+	});
+}
+
 function getEnvironmentValueByType(envVariableString: string) {
 	const variableType = getVariableType(envVariableString);
 	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
@@ -171,7 +180,7 @@ function getEnvironmentValueByType(envVariableString: string) {
 		case 'number':
 			return toNumber(envVariableValue);
 		case 'array':
-			return toArray(envVariableValue);
+			return getEnvironmentValueWithPrefix(toArray(envVariableValue));
 		case 'regex':
 			return new RegExp(envVariableValue);
 		case 'string':
@@ -179,6 +188,10 @@ function getEnvironmentValueByType(envVariableString: string) {
 		case 'json':
 			return tryJSON(envVariableValue);
 	}
+}
+
+function isEnvSyntaxPrefixPresent(value: string): boolean {
+	return acceptedEnvTypes.some((envType) => value.includes(`${envType}:`));
 }
 
 function processValues(env: Record<string, any>) {
@@ -205,7 +218,7 @@ function processValues(env: Record<string, any>) {
 
 		// Convert values with a type prefix
 		// (see https://docs.directus.io/reference/environment-variables/#environment-syntax-prefix)
-		if (typeof value === 'string' && acceptedEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+		if (typeof value === 'string' && isEnvSyntaxPrefixPresent(value)) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}

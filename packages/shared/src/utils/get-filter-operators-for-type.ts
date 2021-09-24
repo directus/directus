@@ -18,6 +18,8 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 				'neq',
 				'empty',
 				'nempty',
+				'null',
+				'nnull',
 				'in',
 				'nin',
 			];
@@ -59,7 +61,7 @@ export function getFilterOperatorsForType(type: Type): ClientFilterOperator[] {
 			];
 
 		case 'geometry':
-			return ['eq', 'neq', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [

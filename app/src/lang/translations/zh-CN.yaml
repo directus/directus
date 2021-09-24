@@ -22,6 +22,7 @@
 published: 已发布
 draft: 草稿
 archived: 已存档
+modules: 模块
 edit_field: 编辑
 conditions: 条件
 maps: 地图
@@ -587,7 +588,24 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+panel: 面板
+panel_name_placeholder: 命名此面板...
+panel_note_placeholder: 面板的详细配置...
+panel_delete_confirm: 您确定要删除? 此操作无法撤消。
+dashboard_delete_confirm: 您确定要删除? 此操作无法撤消。
+edit_dashboard: 编辑仪表板
+delete_dashboard: 删除
+visible: 可见
+prefix_placeholder: 前缀
+suffix_placeholder: 后缀
+decimals_placeholder: 小数位数...
+no_dashboards: 没有仪表盘
+no_data: 没有数据
+create_dashboard: 创建Dashboard
+dashboard_name: Dashboard名称
 full_screen: 全屏显示
+edit_panels: 编辑面板
+fit_to_screen: 自适应
 image_url: 图片 Url
 alt_text: 替代文本
 media: Media
@@ -684,7 +702,11 @@ layout_setup: 布局设置
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
+discard_changes_copy: 您确定要放弃所有更改吗？
+show_x_axis: 显示 X 轴
+show_y_axis: 显示 Y 轴
 keep_editing: 继续编辑
+page_help_collections_overview: '**模型总览** - 您可以访问的所有模型列表。'
 page_help_collections_collection: >-
   **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
 page_help_collections_item: >-
@@ -727,6 +749,8 @@ collections: 收藏
 singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
+directus_collection:
+  directus_users: 平台系统用户
 fields:
   directus_activity:
     item: 项目主键
