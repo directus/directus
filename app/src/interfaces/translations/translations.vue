@@ -52,7 +52,6 @@ import { computed, defineComponent, PropType, Ref, ref, toRefs, watch, unref } f
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { Relation } from '@directus/shared/types';
 import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { cloneDeep, isEqual, assign } from 'lodash';

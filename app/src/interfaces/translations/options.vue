@@ -40,7 +40,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const { collection } = toRefs(props);
-		const fieldsStore = useFieldsStore();
 
 		const field = computed(() => props.fieldData.field);
 
