@@ -145,6 +145,10 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	font-size: 12px;
 
+	.lang {
+		font-weight: 600;
+	}
+
 	.v-icon {
 		margin-right: 4px;
 	}
