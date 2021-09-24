@@ -723,6 +723,7 @@ unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
+page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
   **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
 page_help_collections_item: >-
