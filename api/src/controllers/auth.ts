@@ -24,7 +24,7 @@ const router = Router();
 
 const authProviders = getAuthProviders();
 
-authProviders.forEach((authProvider) => {
+for (const authProvider of authProviders) {
 	let authRouter: Router | undefined;
 
 	switch (authProvider.driver) {
@@ -34,11 +34,11 @@ authProviders.forEach((authProvider) => {
 
 	if (!authRouter) {
 		logger.warn(`Couldn't create login router for auth provider "${authProvider.name}"`);
-		return;
+		continue;
 	}
 
 	router.use(`/login/${authProvider.name}`, authRouter);
-});
+}
 
 router.use('/login', createLocalAuthRouter());
 
