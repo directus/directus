@@ -40,7 +40,7 @@ jobs:
         run: npm install
 
       - name: Build Dependencies
-        run: npm build
+        run: npm run build
 
       - name: Run Tests
         run: npm run test
