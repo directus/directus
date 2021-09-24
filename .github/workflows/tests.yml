@@ -44,3 +44,5 @@ jobs:
 
       - name: Run Tests
         run: npm run test
+        env:
+          SECRET: TEST_SECRET
