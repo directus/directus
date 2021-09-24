@@ -20,10 +20,13 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 published: Zveřejněno
+modules: Moduly
+module_bar: Panel modulů
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 maps: Mapy
+item_creation: Vytvoření položky
 item_revision: Revize položky
 enter_a_name: Zadejte název...
 duplicate_field: Duplikovat pole
@@ -50,8 +53,10 @@ required: Povinné
 required_for_app_access: Vyžadováno pro přístup k aplikacím
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvořit šablonu
+create_panel: Vytvořit panel
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
 invite: Pozvat

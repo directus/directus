@@ -22,12 +22,14 @@
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+modules: Module
 module_bar: Modulleiste
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
-item_revision: Element Revision
+item_creation: Element erstellt
+item_revision: Element überarbeitet
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -53,8 +55,10 @@ required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert
 create_preset: Vorlage erstellen
+create_panel: Panel erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+delete_panel: Panel löschen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 invite: Einladen
@@ -81,12 +85,12 @@ logoutReason:
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Betriebszeit
+directus_version: Directus-Version
+node_version: Node-Version
+node_uptime: Node-Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
-os_uptime: '» Betriebszeit'
+os_uptime: System-Betriebszeit
 os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -98,7 +102,7 @@ the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindest
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
-unarchive_confirm: Sind Sie sicher, dass dieses Element aus dem Archiv zurückgeholt werden soll?
+unarchive_confirm: Möchten Sie dieses Element wirklich aus dem Archiv zurückholen?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
 unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
@@ -119,16 +123,16 @@ validationError:
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
   regex: Wert hat nicht das richtige Format
-all_access: Zugriff auf alles
+all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
-nullable: Nullbar
+nullable: NULL-Werte
 allow_null_value: NULL-Wert erlauben
 allow_multiple: Mehrere zulassen
 allow_multiple_to_be_open: Gleichzeitiges Öffnen erlauben
 enter_value_to_replace_nulls: Bitte geben Sie einen neuen Wert ein, um alle NULLs zu ersetzen, die derzeit in diesem Feld liegen.
 field_standard: Standard
-field_presentation: Darstellung & Aliasse
+field_presentation: Darstellung & Aliase
 field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
@@ -140,26 +144,40 @@ field_group: Feldgruppe
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
-field_presets: Feldvorgaben
+field_presets: Feld-Vorlagen
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
-validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
-presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
-presentation_and_aliases: Darstellung & Aliasse
-revision_post_update: So sieht dieses Element nach dem Update aus.
+validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
+presets_for_role: 'Standardwert für die {role} Rolle.'
+presentation_and_aliases: Darstellung & Aliase
+revision_post_create: So sah dieses Element bei der Erstellung aus.
+revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
-fields_and_layout: Felder & Layout
+fields_and_layout: Felder & Ansicht
 field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+aggregate_function: Aggregations-Funktion
+aggregate_precision: Aggregations-Präzision
+group_aggregation: Gruppen-Aggregation
+group_precision: Gruppen-Präzision
 global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
+show_zero: Null anzeigen
+sum: Summe
+sum_distinct: Summe, unterschiedliche Werte
+avg: Mittelwert
+avg_distinct: Mittelwert, unterschiedliche Werte
+count: Anzahl
+count_distinct: Anzahl, unterschiedliche Werte
+min: Min
+max: Max
 exposure: Belichtung
 shutter: Blende
 iso: ISO
@@ -177,7 +195,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Datum
+date_range: Zeitspanne
 datetime: Datum mit Uhrzeit
+precision: Präzision
 decimal: Dezimal
 float: Float
 integer: Integer
@@ -246,12 +266,13 @@ raw_value: Rohwert
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
+clear_changes: Änderungen löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
-page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+page_not_found_body: Die Seite scheint nicht zu existieren.
 confirm_revert: Zurücksetzen bestätigen
 confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
@@ -265,11 +286,12 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 private_user: Privater Benutzer
-revision_preview: Überarbeitungs Vorschau
-updates_made: Erfolgte Updates
+creation_preview: Erstellungs-Vorschau
+revision_preview: Überarbeitungs-Vorschau
+updates_made: Erfolgte Aktualisierungen
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
-item_create_success: Eintrag erstellt | Einträge erstellt
+item_create_success: Element erstellt | Elemente erstellt
 item_update_success: Element aktualisiert | Elemente aktualisiert
 item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
@@ -304,7 +326,7 @@ date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
 month: Monat
 year: Jahr
-select_all: Alles auswählen
+select_all: Alle auswählen
 months:
   january: Januar
   february: Februar
@@ -358,8 +380,8 @@ creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen 
 auto_increment_integer: Automatisch erhöhter Integer-Wert
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
-save_and_create_new: Speichern und Neues anlegen
-save_and_stay: Speichern und Bleiben
+save_and_create_new: Speichern und neues Element anlegen
+save_and_stay: Speichern und auf der Seite bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
@@ -388,7 +410,7 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
-no_webhooks_copy: Es wurden noch keine Webhooks erstellt. Beginnen Sie.
+no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
 all_items: Alle Elemente
 any: Irgendein
 csv: CSV
@@ -400,12 +422,21 @@ relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfigurie
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
+select_a_field: Feld auswählen
 active: Aktiv
+move_to: Verschieben nach...
 copy: Kopieren
+copy_to: Kopieren nach...
+no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
+decimals: Dezimalstellen
+value_decimals: Wert Dezimalstellen
+min_value: Minimalwert
+max_value: Maximalwert
+automatic: Automatisch
 field_width: Feldbreite
 add_filter: Filter hinzufügen
 upper_limit: Obere Grenze...
@@ -447,13 +478,13 @@ errors:
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_QUERY: Ungültige anfrage
-  ITEM_LIMIT_REACHED: Elementlimit erreicht
+  ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_ENTITY: Element kann nicht verarbeitet werden
+  UNPROCESSABLE_ENTITY: Unverarbeitbare Anfrage
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
@@ -464,7 +495,7 @@ bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
-presets: Voreinstellungen
+presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
 unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
@@ -473,6 +504,7 @@ no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
 password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
+filter: Filter
 editing_image: Bild bearbeiten
 square: Quadratisch
 free: Frei
@@ -495,6 +527,7 @@ visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
 show_hidden_collections: Ausgeblendete Sammlungen anzeigen
 hide_hidden_collections: Sammlungen ausblenden
+show_header: Titel anzeigen
 unmanaged_collections: Nicht konfigurierte Sammlungen
 system_collections: Systemsammlungen
 placeholder: Platzhalter
@@ -510,6 +543,7 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 log_in_with: 'Einloggen mit {provider}'
+conditional_styles: Bedingte Stile
 advanced_settings: Erweiterte Einstellungen
 advanced_filter: Erweiterter Filter
 delete_advanced_filter: Filter zurücksetzen
@@ -554,14 +588,14 @@ upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
-layout_options: Layout-Optionen
+layout_options: Optionen für Ansicht
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Systemfelder
 value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
-create_item: Eintrag erstellen
+create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
@@ -577,13 +611,13 @@ replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
 no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
-saves_automatically: Automatisch speichern
+saves_automatically: Wird automatisch gespeichert
 role: Rolle
 rule: Regel
 user: Benutzer
-no_presets: Keine Voreinstellungen
-no_presets_copy: Es wurden noch keine Voreinstellungen oder Lesezeichen gespeichert.
-no_presets_cta: Voreinstellung hinzufügen
+no_presets: Keine Vorlagen
+no_presets_copy: Es wurden noch keine Vorlagen oder Lesezeichen gespeichert.
+no_presets_cta: Vorlage hinzufügen
 presets_only: Nur Vorlagen
 create: Erstellen
 on_create: Beim Erstellen
@@ -592,12 +626,37 @@ read: Lesen
 update: Aktualisieren
 select_fields: Fielder auswählen
 format_text: Text formatieren
+format_value: Wert formatieren
+abbreviate_value: Wert abkürzen
+operator: Operator
 bold: Fett
 toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+insights: Einblicke (Beta)
+dashboard: Dashboard
+panel: Panel
+panel_options: Panel-Optionen
+panel_header: Panel-Titel
+panel_name_placeholder: Dieses Panel benennen...
+panel_note_placeholder: Optionale Details zu diesem Panel...
+panel_delete_confirm: Möchten Sie dieses Panel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+dashboard_delete_confirm: Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+edit_dashboard: Dashboard bearbeiten
+delete_dashboard: Dashboard löschen
+visible: Sichtbar
+prefix_placeholder: Text vor Wert...
+suffix_placeholder: Text nach Wert...
+decimals_placeholder: Anzahl der Nachkommastellen...
+no_dashboards: Keine Dashboards
+no_dashboards_copy: Sie haben noch keine Dashboards.
+no_data: Keine Daten
+create_dashboard: Dashboard erstellen
+dashboard_name: Name des Dashboards
 full_screen: Vollbild
+edit_panels: Panel bearbeiten
+fit_to_screen: An Bildschirmgröße anpassen
 image_url: Bild-Url
 alt_text: Alternativ-Text
 media: Medien
@@ -655,7 +714,7 @@ wysiwyg_options:
   redo: Wiederherstellen
   remove: Löschen
   removeformat: Formatierung entfernen
-  selectall: Alles auswählen
+  selectall: Alle auswählen
   table: Tabelle
   visualaid: Unsichtbare Elemente anzeigen
   source_code: Quellcode bearbeiten
@@ -669,7 +728,7 @@ deselect_all: Alle abwählen
 other: Andere...
 adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
-creating_in: 'Erstelle Element in {collection}'
+creating_in: 'Element in {collection} erstellen'
 editing_in: 'Bearbeite Element in {collection}'
 creating_unit: 'Erstelle {unit}'
 editing_unit: 'Bearbeite {unit}'
@@ -681,56 +740,62 @@ settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
-scope: Scope
+scope: Bereich
 select: Auswählen...
-layout: Layout
+layout: Ansicht
 tree_view: Baumansicht
 changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
-preset_name_placeholder: Dient als Standard wenn leer...
+preset_name_placeholder: Standardwert, wenn leer...
 preset_search_placeholder: Suchabfrage...
-editing_preset: Preset bearbeiten
-layout_preview: Layoutvorschau
-layout_setup: Einrichtung Layout
+editing_preset: Vorlage bearbeiten
+layout_preview: Vorschau der Ansicht
+layout_setup: Einrichtung Ansicht
 unsaved_changes: Nicht gespeicherte Änderungen
-unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
+unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
+discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
+show_x_axis: X-Achse anzeigen
+show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
+page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_collections_item: >-
-  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+  **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
   **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
-  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten sind.
+  **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
-  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+  **Dateibibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
-  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: "**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts."
+  **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
 page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection: '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
+page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
-  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+  **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
 page_help_settings_presets_item: >-
-  **Preset-Detail** — Ein Formular zur Verwaltung von Lesezeichen und Sammlung-Presets.
-page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Listet alle Webhooks im Projekt auf.'
+  **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
+page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
-page_help_users_collection: '**Benutzerverzeichnis** — Listet alle Benutzer in diesem Projekt auf.'
+page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
+page_help_insights_overview: '**Insights** — Liste der Dashboards, auf welche Sie Zugriff haben.'
+page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
-all: Alles
+all: Alle
 none: Kein/e
-no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
+no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
 batch_delete_confirm: >-
-  Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 collection: Sammlung
@@ -742,16 +807,16 @@ directus_collection:
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
   directus_fields: Weitere Felder und Metadaten
-  directus_files: Metadaten für alle verwalteten Anlagen
+  directus_files: Metadaten für alle verwalteten Dateien
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_permissions: Zugriffsrechte für jede Rolle
-  directus_presets: Voreinstellungen für Sammlung und Lesezeichen
+  directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
   directus_roles: Berechtigungsgruppen für Systembenutzer
   directus_sessions: Sitzungsinformation
-  directus_settings: Projektkonfiguration
+  directus_settings: Projekt-Konfiguration
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
 fields:
@@ -843,10 +908,10 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     transforms_note: Der Name der Sharp-Methode und die dazugehörigen Argumente. Auf https://sharp.pixelplumbing.com/api-constructor können weitere Informationen gefunden werden.
     additional_transforms: Zusätzliche Umwandlungen
-    project_name: Projektname
-    project_url: Projekt URL
-    project_color: Projekt Farbe
-    project_logo: Projekt Logo
+    project_name: Projekt-Name
+    project_url: Projekt-URL
+    project_color: Projekt-Farbe
+    project_logo: Projekt-Logo
     public_pages: Öffentliche Seiten
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
@@ -854,9 +919,9 @@ fields:
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Vorschaubilder
-    storage_default_folder: Standardspeicherordner
-    storage_asset_presets: Asset-Presets
-    storage_asset_transform: Asset-Transformierung
+    storage_default_folder: Standardordner
+    storage_asset_presets: Vorlagen für Dateien
+    storage_asset_transform: Transformierung von Dateien
     overrides: App-Überschreibungen
     custom_css: Benutzerdefiniertes CSS
   directus_fields:
@@ -890,7 +955,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
     project_logo_note: Login & Logo Hintergrund
-    public_note_placeholder: Eine kurze, öffentliche Nachricht welche die Formatierung mittels Markdown unterstützt...
+    public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
       none_text: Keine - Nicht empfohlen
@@ -899,7 +964,7 @@ field_options:
     storage_asset_presets:
       fit:
         contain_text: Enthalten (Seitenverhältnis beibehalten)
-        cover_text: Abdeckung (erzwingt exakte Grösse)
+        cover_text: Abdecken (erzwingt exakte Größe)
         fit_text: Passform innen
         outside_text: Passform außen
     additional_transforms: Zusätzliche Umwandlungen
@@ -997,13 +1062,13 @@ relational_triggers: Relationale Trigger
 referential_action_field_label_m2o: Beim Löschen von {collection}...
 referential_action_field_label_o2m: Beim Abwählen von {collection}...
 referential_action_no_action: Löschen verhindern
-referential_action_cascade: Lösche das {collection} Element (Cascade)
+referential_action_cascade: Lösche das Element in {collection} (Cascade)
 referential_action_set_null: '{field} auf Null setzen'
 referential_action_set_default: '{field} au Standardwert setzen'
 choose_action: Aktion auswählen
 continue_label: Weiter
 continue_as: >-
-  {name} ist derzeit angemeldet. Wenn du dieses Konto kennst, drücke weiter.
+  {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default_label: Standard
@@ -1054,7 +1119,7 @@ select_interface: Wähle eine Schnittstelle
 settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
-sign_out_confirm: Bist Du sicher, dass Du Dich ausloggen möchtest?
+sign_out_confirm: Möchten Sie sich wirklich abmelden?
 something_went_wrong: Irgendwas ist schief gelaufen...
 sort_direction: Sortierreihenfolge
 sort_asc: Aufsteigend sortieren
@@ -1064,6 +1129,7 @@ require_value_to_be_set: Wert muss gesetzt werden
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 interfaces:
@@ -1079,8 +1145,8 @@ interfaces:
   presentation-links:
     presentation-links: Button-Links
     links: Links
-    description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
-    style: Style
+    description: Konfigurierbare Link-Buttons für dynamische URLs
+    style: Stil
     primary: Primär
     link: Links
     button: Buttons
@@ -1115,7 +1181,7 @@ interfaces:
     color: Farbe
     description: Farbwert eingeben oder auswählen
     placeholder: Farbe wählen...
-    preset_colors: Preset-Farben
+    preset_colors: Farben für Vorlage
     preset_colors_add_label: Farbe hinzufügen...
     name_placeholder: Farbnamen eingeben...
   datetime:
@@ -1411,7 +1477,7 @@ layouts:
     fields: Felder
     spacing: Abstand
     comfortable: Groß
-    compact: Klein
+    compact: Kompakt
     cozy: Mittel
   calendar:
     calendar: Kalender
@@ -1419,7 +1485,7 @@ layouts:
     end_date_field: Datumsfeld Ende
   map:
     map: Karte
-    basemap: Basemap
+    basemap: Basiskarte
     layers: Ebenen
     edit_custom_layers: Ebenen bearbeiten
     cluster_options: Clustering-Optionen
@@ -1434,5 +1500,18 @@ layouts:
     clear_data_filter: Datenfilter löschen
     clear_location_filter: Standortfilter löschen
 panels:
+  metric:
+    name: Metrik
+    description: Zeige einen einzelnen Wert basierend auf einer Abfrage
+    field: Feld
+  time_series:
+    name: Zeitreihen
+    description: Liniendiagramm anhand von Werten im Laufe der Zeit anzeigen
+    date_field: Datums-Feld
+    value_field: Wert-Feld
   label:
     name: Label
+    description: Einen Text anzeigen
+  list:
+    name: Liste
+    description: Filtern und Auflisten von Feldern von einer Sammlung
