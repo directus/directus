@@ -27,14 +27,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: restore lerna
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-
       - name: Cache node modules
         uses: actions/cache@v2
         env:
