@@ -95,11 +95,13 @@ export default defineComponent({
 			if (!langPkField) return {};
 
 			let item =
-				props.value.find((val) => val[relation.value.field][langPkField] === props.defaultLanguage) ?? props.value[0];
+				props.value.find((val) => val?.[relation.value.field]?.[langPkField] === props.defaultLanguage) ??
+				props.value[0];
 
 			if (props.userLanguage) {
 				const user = useUserStore();
-				item = props.value.find((val) => val[relation.value.field][langPkField] === user.currentUser?.language) ?? item;
+				item =
+					props.value.find((val) => val?.[relation.value.field]?.[langPkField] === user.currentUser?.language) ?? item;
 			}
 			return item ?? {};
 		});
@@ -113,12 +115,12 @@ export default defineComponent({
 		const translations = computed(() =>
 			props.value.map((item) => {
 				const filledFields = writableFields.value.filter((field) => {
-					return field.field in item && notEmpty(item[field.field]);
+					return field.field in item && notEmpty(item?.[field.field]);
 				}).length;
 
 				return {
-					id: item[primaryKeyField.value?.field ?? 'id'],
-					lang: item[relation.value.field][props.languageField ?? relationPrimaryKeyField.value?.field],
+					id: item?.[primaryKeyField.value?.field ?? 'id'],
+					lang: item?.[relation.value.field]?.[props.languageField ?? relationPrimaryKeyField.value?.field],
 					progress: Math.round((filledFields / writableFields.value.length) * 100),
 					item,
 				};
@@ -143,10 +145,15 @@ export default defineComponent({
 	color: var(--foreground-subdued);
 	font-size: 12px;
 
+	.v-icon {
+		margin-right: 4px;
+	}
+
 	.v-progress-linear {
 		flex: 1;
 		width: unset;
 		max-width: 100px;
+		border-radius: 4px;
 	}
 }
 
