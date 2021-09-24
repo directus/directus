@@ -11,14 +11,14 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 	date = clone(date);
 
 	const match =
-		/^((?:-|\+)?\d*?\.?\d+?) *?(milliseconds|msecs|ms|seconds|secs|s|minutes|mins|m|hours|hrs|h|days|d|weeks|w|months|mth|mo|years|yrs|y)$/i.exec(
+		/^((?:-|\+)?\d*?\.?\d+?) *?(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mth|mo|years?|yrs?|y)?$/i.exec(
 			adjustment.trim()
 		);
 
-	if (!match || !match[1] || !match[2]) return;
+	if (!match || !match[1]) return;
 
 	const amount = parseFloat(match[1]);
-	const type = match[2].toLowerCase();
+	const type = (match[2] ?? 'days').toLowerCase();
 
 	switch (type) {
 		case 'years':
