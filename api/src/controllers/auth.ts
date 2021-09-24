@@ -24,23 +24,21 @@ const router = Router();
 
 const authProviders = getAuthProviders();
 
-if (authProviders) {
-	for (const authProvider of authProviders) {
-		let authProviderRouter: Router | null = null;
+authProviders.forEach((authProvider) => {
+	let authRouter: Router | undefined;
 
-		switch (authProvider.driver) {
-			case 'local':
-				authProviderRouter = createLocalAuthRouter();
-		}
-
-		if (!authProviderRouter) {
-			logger.warn(`Couldn't create login router for auth provider "${authProvider.name}"`);
-			continue;
-		}
-
-		router.use(`/login/${authProvider.name}`, authProviderRouter);
+	switch (authProvider.driver) {
+		case 'local':
+			authRouter = createLocalAuthRouter();
 	}
-}
+
+	if (!authRouter) {
+		logger.warn(`Couldn't create login router for auth provider "${authProvider.name}"`);
+		return;
+	}
+
+	router.use(`/login/${authProvider.name}`, authRouter);
+});
 
 router.use('/login', createLocalAuthRouter());
 
@@ -185,7 +183,7 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		res.locals.payload = { data: getAuthProviders() ?? [] };
+		res.locals.payload = { data: getAuthProviders() };
 		return next();
 	}),
 	respond

@@ -9,3 +9,9 @@ export interface User {
 	provider: string;
 	external_identifier: string | null;
 }
+
+export interface Session {
+	token: string;
+	expires: Date;
+	data: Record<string, any> | null;
+}

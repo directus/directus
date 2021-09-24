@@ -143,6 +143,16 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy(passwords);
 		}
 
+		for (const user of data) {
+			if (user.provider !== undefined) {
+				throw new InvalidPayloadException(`You can't set the "provider" value manually.`);
+			}
+
+			if (user.external_identifier !== undefined) {
+				throw new InvalidPayloadException(`You can't set the "external_identifier" value manually.`);
+			}
+		}
+
 		/**
 		 * Sync with auth provider
 		 */

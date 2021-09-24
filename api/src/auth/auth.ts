@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { Knex } from 'knex';
-import { User } from '../types';
+import { User, Session } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;
 
-	constructor(knex: Knex) {
+	constructor(knex: Knex, _config: Record<string, any>) {
 		this.knex = knex;
 	}
 
@@ -26,15 +26,16 @@ export abstract class AuthDriver {
 	 * @param password User password
 	 * @throws InvalidCredentialsException
 	 */
-	abstract verify(user: User, password?: string): Promise<void>;
+	abstract verify(user: User, password?: string): void;
 
 	/**
 	 * Handle user session refresh
 	 *
 	 * @param user User information
+	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async refresh(_user: User, _sessionData: Record<string, any> | null): Promise<void> {
+	refresh(_user: User, _session: Session): void {
 		/* Optional */
 	}
 
@@ -42,9 +43,10 @@ export abstract class AuthDriver {
 	 * Handle user session termination
 	 *
 	 * @param user User information
+	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	async logout(_user: User, _sessionData: Record<string, any> | null): Promise<void> {
+	logout(_user: User, _session: Session): void {
 		/* Optional */
 	}
 
@@ -54,7 +56,7 @@ export abstract class AuthDriver {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	async createUser(_user: Partial<User>): Promise<void> {
+	createUser(_user: Partial<User>): void {
 		/* Optional */
 	}
 
@@ -64,7 +66,7 @@ export abstract class AuthDriver {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	async updateUser(_user: Partial<User>): Promise<void> {
+	updateUser(_user: Partial<User>): void {
 		/* Optional */
 	}
 
@@ -74,7 +76,7 @@ export abstract class AuthDriver {
 	 * @param user User information
 	 * @throws InvalidCredentialsException, InvalidPayloadException
 	 */
-	async deleteUser(_user: User): Promise<void> {
+	deleteUser(_user: User): void {
 		/* Optional */
 	}
 }

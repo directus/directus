@@ -12,11 +12,6 @@ import { Knex } from 'knex';
 import { respond } from '../../middleware/respond';
 
 export class LocalAuthDriver extends AuthDriver {
-	// Config could be used in the future for selecting what field to use as the identifier
-	constructor(knex: Knex, _config: Record<string, any>) {
-		super(knex);
-	}
-
 	/**
 	 * Get user id by email
 	 */

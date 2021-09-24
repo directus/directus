@@ -154,6 +154,7 @@ fields:
   - field: provider
     width: half
     interface: select-dropdown
+    readonly: true
     options:
       choices:
         - text: $t:default
@@ -164,3 +165,4 @@ fields:
     options:
       iconRight: account_circle
     interface: input
+    readonly: true

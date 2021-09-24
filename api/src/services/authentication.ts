@@ -14,7 +14,7 @@ import { TFAService } from './tfa';
 import { AbstractServiceOptions, Action, SchemaOverview, Session, User } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge, omit } from 'lodash';
+import { merge } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
@@ -241,6 +241,7 @@ export class AuthenticationService {
 
 		const record = await this.knex
 			.select<Session & User>(
+				's.token',
 				's.expires',
 				's.data',
 				'u.id',
@@ -262,10 +263,14 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const provider = getAuthProvider(record.provider);
-		await provider.refresh(omit(record, 'expires'), record.data);
+		const { token, expires, data, ...user } = record;
 
-		const accessToken = jwt.sign({ id: record.id }, env.SECRET as string, {
+		const session = { token, expires, data };
+
+		const provider = getAuthProvider(user.provider);
+		await provider.refresh({ ...user }, session);
+
+		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
@@ -277,18 +282,18 @@ export class AuthenticationService {
 			.update({ token: newRefreshToken, expires: refreshTokenExpiration })
 			.where({ token: refreshToken });
 
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.id });
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
 
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
 			expires: ms(env.ACCESS_TOKEN_TTL as string),
-			id: record.id,
+			id: user.id,
 		};
 	}
 
 	async logout(refreshToken: string): Promise<void> {
-		const user = await this.knex
+		const record = await this.knex
 			.select<User & Session>(
 				'u.id',
 				'u.first_name',
@@ -299,6 +304,8 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
+				's.token',
+				's.expires',
 				's.data'
 			)
 			.from('directus_sessions as s')
@@ -306,9 +313,13 @@ export class AuthenticationService {
 			.where('s.token', refreshToken)
 			.first();
 
-		if (user) {
+		if (record) {
+			const { token, expires, data, ...user } = record;
+
+			const session = { token, expires, data };
+
 			const provider = getAuthProvider(user.provider);
-			await provider.logout(omit(user, 'data'), user.data);
+			await provider.logout({ ...user }, session);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}

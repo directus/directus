@@ -6,11 +6,7 @@ interface AuthProvider {
 	driver: string;
 }
 
-export function getAuthProviders(): AuthProvider[] | null {
-	if (!env.AUTH_PROVIDERS) {
-		return null;
-	}
-
+export function getAuthProviders(): AuthProvider[] {
 	return toArray(env.AUTH_PROVIDERS)
 		.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`])
 		.map((provider) => ({
