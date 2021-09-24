@@ -61,7 +61,7 @@
 		"@types/ms": "0.7.31",
 		"@types/qrcode": "1.4.1",
 		"@types/wellknown": "0.5.1",
-		"@vitejs/plugin-vue": "1.9.1",
+		"@vitejs/plugin-vue": "1.9.2",
 		"@vue/cli-plugin-babel": "4.5.13",
 		"@vue/cli-plugin-router": "4.5.13",
 		"@vue/cli-plugin-typescript": "4.5.13",
