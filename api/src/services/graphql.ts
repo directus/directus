@@ -1754,7 +1754,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.authenticate({
+					const result = await authenticationService.login({
 						...args,
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),

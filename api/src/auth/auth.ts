@@ -11,13 +11,13 @@ export abstract class AuthDriver {
 	}
 
 	/**
-	 * Get user id by unique identifier
+	 * Get user id for a given provider payload
 	 *
-	 * @param identifier Unique user identifier
+	 * @param payload Any data that the user might've provided
 	 * @throws InvalidCredentialsException
 	 * @return User id of the identifier
 	 */
-	abstract userID(identifier: string): Promise<string>;
+	abstract getUserID(identifier: string | number, payload: Record<string, any>): Promise<string>;
 
 	/**
 	 * Verify user password
@@ -29,13 +29,25 @@ export abstract class AuthDriver {
 	abstract verify(user: User, password?: string): void;
 
 	/**
+	 * Check with the (external) provider if the user is allowed entry to Directus
+	 *
+	 * @param _user User information
+	 * @param _payload Any data that the user might've provided
+	 * @throws InvalidCredentialsException
+	 */
+	async login(_user: User, _payload: Record<string, any>): Promise<Record<string, any> | null> {
+		/* Optional, though should probably be set */
+		return null;
+	}
+
+	/**
 	 * Handle user session refresh
 	 *
 	 * @param user User information
 	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	refresh(_user: User, _session: Session): void {
+	async refresh(_user: User, _session: Session): Promise<void> {
 		/* Optional */
 	}
 
@@ -46,37 +58,7 @@ export abstract class AuthDriver {
 	 * @param session Session data
 	 * @throws InvalidCredentialsException
 	 */
-	logout(_user: User, _session: Session): void {
-		/* Optional */
-	}
-
-	/**
-	 * Handle create user. Can be used to sync user data with external providers
-	 *
-	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidPayloadException
-	 */
-	createUser(_user: Partial<User>): void {
-		/* Optional */
-	}
-
-	/**
-	 * Handle update user. Can be used to sync user data with external providers
-	 *
-	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidPayloadException
-	 */
-	updateUser(_user: Partial<User>): void {
-		/* Optional */
-	}
-
-	/**
-	 * Handle delete user. Can be used to sync user data with external providers
-	 *
-	 * @param user User information
-	 * @throws InvalidCredentialsException, InvalidPayloadException
-	 */
-	deleteUser(_user: User): void {
+	async logout(_user: User, _session: Session): Promise<void> {
 		/* Optional */
 	}
 }

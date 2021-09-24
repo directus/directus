@@ -14,7 +14,11 @@ export class LocalAuthDriver extends AuthDriver {
 	/**
 	 * Get user id by email
 	 */
-	async userID(email: string): Promise<string> {
+	async getUserID(email: string): Promise<string> {
+		if (!email) {
+			throw new InvalidCredentialsException();
+		}
+
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
@@ -35,6 +39,11 @@ export class LocalAuthDriver extends AuthDriver {
 		if (!user.password || !(await argon2.verify(user.password, password as string))) {
 			throw new InvalidCredentialsException();
 		}
+	}
+
+	async login(user: User, payload: Record<string, any>): Promise<null> {
+		await this.verify(user, payload.password);
+		return null;
 	}
 }
 
@@ -67,16 +76,13 @@ export function createLocalAuthRouter(): Router {
 
 			const mode = req.body.mode || 'json';
 
-			const ip = req.ip;
-			const userAgent = req.get('user-agent');
-
-			const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-				...req.body,
-				ip,
-				userAgent,
-				identifier: req.body.email,
-				provider: req.params.provider,
-			});
+			const { accessToken, refreshToken, expires } = await authenticationService.login(
+				{
+					identifier: req.body.email,
+					provider: req.params.provider,
+				},
+				req.body
+			);
 
 			const payload = {
 				data: { access_token: accessToken, expires },

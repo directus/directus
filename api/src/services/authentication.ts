@@ -20,12 +20,10 @@ import { stall } from '../utils/stall';
 
 type AuthenticateOptions = {
 	identifier: string;
-	password?: string;
-	provider?: string;
+	provider: string;
 	ip?: string | null;
 	userAgent?: string | null;
 	otp?: string;
-	[key: string]: any;
 };
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
@@ -48,11 +46,14 @@ export class AuthenticationService {
 	 *
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
+	 *
+	 * @param options
 	 */
-	async authenticate(
-		options: AuthenticateOptions
+	async login(
+		options: AuthenticateOptions,
+		payload: Record<string, any>
 	): Promise<{ accessToken: any; refreshToken: any; expires: any; id?: any }> {
-		const { identifier, password, ip, userAgent, otp } = options;
+		const { identifier, otp } = options;
 
 		const STALL_TIME = 100;
 		const timeStart = performance.now();
@@ -74,7 +75,7 @@ export class AuthenticationService {
 				'external_identifier'
 			)
 			.from('directus_users')
-			.where('id', await provider.userID(identifier))
+			.where('id', await provider.getUserID(identifier, payload))
 			.andWhere('provider', providerName)
 			.first();
 
@@ -141,14 +142,14 @@ export class AuthenticationService {
 			}
 		}
 
-		if (password !== undefined) {
-			try {
-				await provider.verify({ ...user }, password);
-			} catch (e) {
-				emitStatus('fail');
-				await stall(STALL_TIME, timeStart);
-				throw e;
-			}
+		let sessionData: Record<string, any> | null = null;
+
+		try {
+			sessionData = await provider.login(user, payload);
+		} catch (e) {
+			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
+			throw e;
 		}
 
 		if (user.tfa_secret && !otp) {
@@ -168,15 +169,15 @@ export class AuthenticationService {
 			}
 		}
 
-		let payload = {
+		let tokenPayload = {
 			id: user.id,
 		};
 
-		const customClaims = await emitter.emitAsync('auth.jwt.before', payload, {
+		const customClaims = await emitter.emitAsync('auth.jwt.before', tokenPayload, {
 			event: 'auth.jwt.before',
 			action: 'jwt',
 			schema: this.schema,
-			payload: payload,
+			payload: tokenPayload,
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
@@ -184,10 +185,10 @@ export class AuthenticationService {
 		});
 
 		if (customClaims) {
-			payload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
+			tokenPayload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
 		}
 
-		const accessToken = jwt.sign(payload, env.SECRET as string, {
+		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
 			issuer: 'directus',
 		});
@@ -199,8 +200,9 @@ export class AuthenticationService {
 			token: refreshToken,
 			user: user.id,
 			expires: refreshTokenExpiration,
-			ip,
-			user_agent: userAgent,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+			data: sessionData,
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());

@@ -153,16 +153,6 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		/**
-		 * Sync with auth provider
-		 */
-		await Promise.all(
-			data.map(async (user) => {
-				const provider = getAuthProvider(user.provider ?? DEFAULT_AUTH_PROVIDER);
-				await provider.createUser({ ...user });
-			})
-		);
-
 		return await super.createMany(data, opts);
 	}
 
@@ -214,21 +204,6 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
 		}
 
-		/**
-		 * Sync with auth provider
-		 */
-		const users = await this.knex.select('id', 'provider').from('directus_users').whereIn('id', keys);
-
-		await Promise.all(
-			users.map(async (user) => {
-				const provider = getAuthProvider(user.provider);
-				await provider.updateUser({
-					...data,
-					...user,
-				});
-			})
-		);
-
 		return await super.updateMany(keys, data, opts);
 	}
 
@@ -245,32 +220,6 @@ export class UsersService extends ItemsService {
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		await this.checkRemainingAdminExistence(keys);
-
-		/**
-		 * Sync with auth provider
-		 */
-		const users = await this.knex
-			.select<User[]>(
-				'id',
-				'first_name',
-				'last_name',
-				'email',
-				'password',
-				'status',
-				'role',
-				'provider',
-				'external_identifier'
-			)
-			.from('directus_users')
-			.whereIn('id', keys);
-
-		await Promise.all(
-			users.map(async (user: User) => {
-				const provider = getAuthProvider(user.provider);
-				await provider.deleteUser({ ...user });
-			})
-		);
-
 		await super.deleteMany(keys, opts);
 
 		return keys;
