@@ -12,10 +12,12 @@ import { ItemsService, MutationOptions } from '../services/items';
 import Keyv from 'keyv';
 import { AbstractServiceOptions, Collection, CollectionMeta, SchemaOverview } from '../types';
 import { Accountability, FieldMeta, RawField } from '@directus/shared/types';
+import { Table } from 'knex-schema-inspector/dist/types/table';
 
 export type RawCollection = {
 	collection: string;
 	fields?: RawField[];
+	schema?: Partial<Table> | null;
 	meta?: Partial<CollectionMeta> | null;
 };
 
@@ -48,83 +50,90 @@ export class CollectionsService {
 
 		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
 
-		// Directus heavily relies on the primary key of a collection, so we have to make sure that
-		// every collection that is created has a primary key. If no primary key field is created
-		// while making the collection, we default to an auto incremented id named `id`
-		if (!payload.fields)
-			payload.fields = [
-				{
-					field: 'id',
-					type: 'integer',
-					meta: {
-						hidden: true,
-						interface: 'numeric',
-						readonly: true,
-					},
-					schema: {
-						is_primary_key: true,
-						has_auto_increment: true,
-					},
-				},
-			];
+		if (payload.collection.startsWith('directus_')) {
+			throw new InvalidPayloadException(`Collections can't start with "directus_"`);
+		}
 
-		// Ensure that every field meta has the field/collection fields filled correctly
-		payload.fields = payload.fields.map((field) => {
-			if (field.meta) {
-				field.meta = {
-					...field.meta,
-					field: field.field,
-					collection: payload.collection!,
-				};
-			}
+		const existingCollections: string[] = [
+			...((await this.knex.select('collection').from('directus_collections'))?.map(({ collection }) => collection) ??
+				[]),
+			...Object.keys(this.schema.collections),
+		];
 
-			return field;
-		});
+		if (existingCollections.includes(payload.collection)) {
+			throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
+		}
 
 		// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 		// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 		// transactions.
 		await this.knex.transaction(async (trx) => {
-			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+			if (payload.meta) {
+				const collectionItemsService = new ItemsService('directus_collections', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
 
-			// This operation is locked to admin users only, so we don't have to worry about the order
-			// of operations here with regards to permissions checks
-
-			const collectionItemsService = new ItemsService('directus_collections', {
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
-			const fieldItemsService = new ItemsService('directus_fields', {
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
-			if (payload.collection.startsWith('directus_')) {
-				throw new InvalidPayloadException(`Collections can't start with "directus_"`);
+				await collectionItemsService.createOne({
+					...payload.meta,
+					collection: payload.collection,
+				});
 			}
 
-			if (payload.collection in this.schema.collections) {
-				throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
-			}
+			if (payload.schema) {
+				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-			await trx.schema.createTable(payload.collection, (table) => {
-				for (const field of payload.fields!) {
-					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-						fieldsService.addColumnToTable(table, field);
+				const fieldItemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				// Directus heavily relies on the primary key of a collection, so we have to make sure that
+				// every collection that is created has a primary key. If no primary key field is created
+				// while making the collection, we default to an auto incremented id named `id`
+				if (!payload.fields)
+					payload.fields = [
+						{
+							field: 'id',
+							type: 'integer',
+							meta: {
+								hidden: true,
+								interface: 'numeric',
+								readonly: true,
+							},
+							schema: {
+								is_primary_key: true,
+								has_auto_increment: true,
+							},
+						},
+					];
+
+				// Ensure that every field meta has the field/collection fields filled correctly
+				payload.fields = payload.fields.map((field) => {
+					if (field.meta) {
+						field.meta = {
+							...field.meta,
+							field: field.field,
+							collection: payload.collection!,
+						};
 					}
-				}
-			});
 
-			await collectionItemsService.createOne({
-				...(payload.meta || {}),
-				collection: payload.collection,
-			});
+					return field;
+				});
 
-			const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
-			await fieldItemsService.createMany(fieldPayloads);
+				await trx.schema.createTable(payload.collection, (table) => {
+					for (const field of payload.fields!) {
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							fieldsService.addColumnToTable(table, field);
+						}
+					}
+				});
+
+				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+				await fieldItemsService.createMany(fieldPayloads);
+			}
 
 			return payload.collection;
 		});
@@ -196,10 +205,7 @@ export class CollectionsService {
 			});
 		}
 
-		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-
 		const meta = (await collectionItemsService.readByQuery({
-			filter: { collection: { _in: tablesToFetchInfoFor } },
 			limit: -1,
 		})) as CollectionMeta[];
 
@@ -207,24 +213,14 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
-		/**
-		 * The collections as known in the schema cache.
-		 */
-		const knownCollections = Object.keys(this.schema.collections);
-
-		for (const table of tablesInDatabase) {
+		for (const collectionMeta of meta) {
 			const collection: Collection = {
-				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
-				schema: table,
+				collection: collectionMeta.collection,
+				meta: collectionMeta,
+				schema: tablesInDatabase.find((table) => table.name === collectionMeta.collection) ?? null,
 			};
 
-			// By only returning collections that are known in the schema cache, we prevent weird
-			// situations where the collections endpoint returns different info from every other
-			// collection
-			if (knownCollections.includes(table.name)) {
-				collections.push(collection);
-			}
+			collections.push(collection);
 		}
 
 		return collections;
@@ -265,10 +261,8 @@ export class CollectionsService {
 		}
 
 		const tablesInDatabase = await this.schemaInspector.tableInfo();
-		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
 
 		const meta = (await collectionItemsService.readByQuery({
-			filter: { collection: { _in: collectionKeys } },
 			limit: -1,
 		})) as CollectionMeta[];
 
@@ -276,21 +270,14 @@ export class CollectionsService {
 
 		const collections: Collection[] = [];
 
-		const knownCollections = Object.keys(this.schema.collections);
-
-		for (const table of tables) {
+		for (const collectionMeta of meta) {
 			const collection: Collection = {
-				collection: table.name,
-				meta: meta.find((systemInfo) => systemInfo?.collection === table.name) || null,
-				schema: table,
+				collection: collectionMeta.collection,
+				meta: collectionMeta,
+				schema: tablesInDatabase.find((table) => table.name === collectionMeta.collection) ?? null,
 			};
 
-			// By only returning collections that are known in the schema cache, we prevent weird
-			// situations where the collections endpoint returns different info from every other
-			// collection
-			if (knownCollections.includes(table.name)) {
-				collections.push(collection);
-			}
+			collections.push(collection);
 		}
 
 		return collections;
