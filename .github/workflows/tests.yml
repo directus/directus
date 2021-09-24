@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,6 +38,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Build Dependencies
+        run: npm build
 
       - name: Run Tests
         run: npm run test
