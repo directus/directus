@@ -22,11 +22,13 @@
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+modules: Module
 module_bar: Modulleiste
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 maps: Karten
+item_creation: Element erstellen
 item_revision: Element Revision
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
@@ -146,6 +148,7 @@ fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 presentation_and_aliases: Darstellung & Aliasse
+revision_post_create: So sah das Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach dem Update aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
@@ -157,9 +160,22 @@ field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+aggregate_function: Aggregations-Funktion
+aggregate_precision: Aggregations-Präzision
+group_aggregation: Gruppen-Aggregation
+group_precision: Gruppen-Präzision
 global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
+show_zero: Null anzeigen
+sum: Summe
+sum_distinct: Summe, unterschiedliche Werte
+avg: Mittelwert
+avg_distinct: Mittelwert, unterschiedliche Werte
+count: Anzahl
+count_distinct: Anzahl, unterschiedliche Werte
+min: Min
+max: Max
 exposure: Belichtung
 shutter: Blende
 iso: ISO
@@ -177,7 +193,9 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Datum
+date_range: Zeitspanne
 datetime: Datum mit Uhrzeit
+precision: Präzision
 decimal: Dezimal
 float: Float
 integer: Integer
@@ -246,6 +264,7 @@ raw_value: Rohwert
 edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
+clear_changes: Änderungen löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
@@ -400,12 +419,19 @@ relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfigurie
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
+select_a_field: Feld auswählen
 active: Aktiv
+move_to: Verschieben nach...
 copy: Kopieren
+copy_to: Kopieren nach...
 inactive: Inaktiv
 users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
+decimals: Dezimalstellen
+min_value: Minimalwert
+max_value: Maximalwert
+automatic: Automatisch
 field_width: Feldbreite
 add_filter: Filter hinzufügen
 upper_limit: Obere Grenze...
@@ -473,6 +499,7 @@ no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
 password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
+filter: Filter
 editing_image: Bild bearbeiten
 square: Quadratisch
 free: Frei
@@ -577,7 +604,7 @@ replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
 no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
 clear_filters: Filter löschen
-saves_automatically: Automatisch speichern
+saves_automatically: Wird automatisch gespeichert
 role: Rolle
 rule: Regel
 user: Benutzer
@@ -597,6 +624,7 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 label: Label
+visible: Sichtbar
 full_screen: Vollbild
 image_url: Bild-Url
 alt_text: Alternativ-Text
