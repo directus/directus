@@ -102,7 +102,7 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
+					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -116,7 +116,7 @@
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div v-if="item.email" class="email">
+						<div class="email">
 							<v-icon name="alternate_email" small outline />
 							{{ item.email }}
 						</div>
@@ -304,13 +304,7 @@ export default defineComponent({
 		];
 
 		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => {
-				// These fields should only be editable when creating new users
-				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
-					field.meta.readonly = true;
-				}
-				return !fieldsDenyList.includes(field.field);
-			});
+			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 		});
 
 		const { formFields } = useFormFields(fieldsFiltered);

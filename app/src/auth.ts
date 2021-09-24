@@ -8,13 +8,12 @@ import { idleTracker } from './idle';
 export type LoginCredentials = {
 	email: string;
 	password: string;
-	otp?: string;
 };
 
-export async function login(credentials: LoginCredentials, provider?: string): Promise<void> {
+export async function login(credentials: LoginCredentials): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post(provider ? `/auth/login/${provider}` : '/auth/login', {
+	const response = await api.post(`/auth/login`, {
 		...credentials,
 		mode: 'cookie',
 	});

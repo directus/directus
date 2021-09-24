@@ -1,6 +1,6 @@
 <template>
 	<div class="sso-links">
-		<template v-if="providers?.length">
+		<template v-if="providers && providers.length > 0">
 			<v-divider />
 
 			<a v-for="provider in providers" :key="provider.name" class="sso-link" :href="provider.link">
@@ -16,7 +16,6 @@ import { defineComponent, ref, onMounted } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
 
 export default defineComponent({
 	setup() {
@@ -35,10 +34,12 @@ export default defineComponent({
 			try {
 				const response = await api.get('/auth/oauth/');
 
-				providers.value = response.data.data?.map((providerName: string) => ({
-					name: formatTitle(providerName),
-					link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
-				}));
+				providers.value = response.data.data?.map((providerName: string) => {
+					return {
+						name: providerName,
+						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
+					};
+				});
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {

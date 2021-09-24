@@ -10,28 +10,22 @@
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-
 		<div class="buttons">
 			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-			<router-link v-if="!provider" to="/reset-password" class="auth-link">
+			<router-link to="/reset-password" class="forgot-password">
 				{{ t('forgot_password') }}
-			</router-link>
-			<router-link v-else to="/login" class="auth-link">
-				{{ t('back') }}
 			</router-link>
 		</div>
 
-		<auth-links v-if="!provider" />
-		<sso-links v-if="!provider" />
+		<sso-links />
 	</form>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch, toRefs } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import authLinks from './auth-links.vue';
-import ssoLinks from './sso-links.vue';
+import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -44,19 +38,12 @@ type Credentials = {
 };
 
 export default defineComponent({
-	components: { authLinks, ssoLinks },
-	props: {
-		provider: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
+	components: { ssoLinks },
+	setup() {
 		const { t } = useI18n();
 
 		const router = useRouter();
 
-		const { provider } = toRefs(props);
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
@@ -69,19 +56,12 @@ export default defineComponent({
 			if (requiresTFA.value === true) requiresTFA.value = false;
 		});
 
-		watch(provider, () => {
-			email.value = null;
-			password.value = null;
-			error.value = null;
-			otp.value = null;
-			requiresTFA.value = false;
-		});
-
 		const errorFormatted = computed(() => {
 			// Show "Wrong username or password" for wrongly formatted emails as well
 			if (error.value === 'INVALID_PAYLOAD') {
 				return translateAPIError('INVALID_CREDENTIALS');
 			}
+
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
@@ -105,7 +85,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, provider.value);
+				await login(credentials);
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;
@@ -136,7 +116,7 @@ export default defineComponent({
 	justify-content: space-between;
 }
 
-.auth-link {
+.forgot-password {
 	color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
