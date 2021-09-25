@@ -219,6 +219,7 @@ export default defineComponent({
 				await api.post(`/collections`, {
 					collection: collectionName.value,
 					fields: [getPrimaryKeyField(), ...getSystemFields()],
+					schema: {},
 					meta: {
 						sort_field: sortField.value,
 						archive_field: archiveField.value,

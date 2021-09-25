@@ -193,6 +193,12 @@ export class CollectionsService {
 
 		let tablesInDatabase = await this.schemaInspector.tableInfo();
 
+		let meta = (await collectionItemsService.readByQuery({
+			limit: -1,
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
+
 		if (this.accountability && this.accountability.admin !== true) {
 			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
 				.filter((permission) => {
@@ -203,13 +209,11 @@ export class CollectionsService {
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
 			});
+
+			meta = meta.filter((collectionMeta) => {
+				return collectionsYouHavePermissionToRead.includes(collectionMeta.collection);
+			});
 		}
-
-		const meta = (await collectionItemsService.readByQuery({
-			limit: -1,
-		})) as CollectionMeta[];
-
-		meta.push(...systemCollectionRows);
 
 		const collections: Collection[] = [];
 
@@ -221,6 +225,18 @@ export class CollectionsService {
 			};
 
 			collections.push(collection);
+		}
+
+		for (const table of tablesInDatabase) {
+			const exists = !!collections.find(({ collection }) => collection === table.name);
+
+			if (!exists) {
+				collections.push({
+					collection: table.name,
+					schema: table,
+					meta: null,
+				});
+			}
 		}
 
 		return collections;
@@ -238,12 +254,6 @@ export class CollectionsService {
 	 * Read many collections by name
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
 		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = this.schema.permissions.filter((permission) => {
 				return permission.action === 'read' && collectionKeys.includes(permission.collection);
@@ -260,27 +270,8 @@ export class CollectionsService {
 			}
 		}
 
-		const tablesInDatabase = await this.schemaInspector.tableInfo();
-
-		const meta = (await collectionItemsService.readByQuery({
-			limit: -1,
-		})) as CollectionMeta[];
-
-		meta.push(...systemCollectionRows);
-
-		const collections: Collection[] = [];
-
-		for (const collectionMeta of meta) {
-			const collection: Collection = {
-				collection: collectionMeta.collection,
-				meta: collectionMeta,
-				schema: tablesInDatabase.find((table) => table.name === collectionMeta.collection) ?? null,
-			};
-
-			collections.push(collection);
-		}
-
-		return collections;
+		const collections = await this.readByQuery();
+		return collections.filter(({ collection }) => collectionKeys.includes(collection));
 	}
 
 	/**

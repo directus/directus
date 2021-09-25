@@ -1,4 +1,4 @@
-import { TranslateResult } from 'vue-i18n';
+import { Table } from 'knex-schema-inspector/dist/types/table';
 
 type Translations = {
 	language: string;
@@ -7,29 +7,31 @@ type Translations = {
 	plural: string;
 };
 
-export interface CollectionRaw {
+export type CollectionMeta = {
 	collection: string;
-	meta: {
-		note: string | null;
-		hidden: boolean;
-		singleton: boolean;
-		icon: string | null;
-		color: string | null;
-		translations: Translations[] | null;
-		display_template: string | null;
-		sort_field: string | null;
-		archive_field: string | null;
-		archive_value: string | null;
-		unarchive_value: string | null;
-		archive_app_filter: boolean;
-		item_duplication_fields: string[] | null;
-		accountability: 'all' | 'activity' | null;
-	} | null;
-	schema: Record<string, any>;
+	note: string | null;
+	hidden: boolean;
+	singleton: boolean;
+	icon: string | null;
+	color: string | null;
+	translations: Translations[] | null;
+	display_template: string | null;
+	sort_field: string | null;
+	archive_field: string | null;
+	archive_value: string | null;
+	unarchive_value: string | null;
+	archive_app_filter: boolean;
+	item_duplication_fields: string[] | null;
+	accountability: 'all' | 'activity' | null;
+	sort: number | null;
+	group: string | null;
+	collapse: 'open' | 'closed' | 'locked';
+};
+
+export interface Collection {
+	collection: string;
+	meta: CollectionMeta | null;
+	schema: Table | null;
 }
 
-export interface Collection extends CollectionRaw {
-	name: string | TranslateResult;
-	icon: string;
-	color?: string | null;
-}
+export type CollectionType = 'alias' | 'table' | 'unknown';

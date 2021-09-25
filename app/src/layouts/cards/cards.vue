@@ -87,7 +87,7 @@ import CardsHeader from './components/header.vue';
 import useElementSize from '@/composables/use-element-size';
 import { Field, Item } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { Collection } from '@directus/shared/types';
+import { Collection } from '@/types';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
