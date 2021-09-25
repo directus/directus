@@ -750,6 +750,8 @@ singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
 directus_collection:
+  directus_files: 文件资源元数据
+  directus_settings: 项目配置
   directus_users: 平台系统用户
 fields:
   directus_activity:
