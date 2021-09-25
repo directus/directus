@@ -23,10 +23,14 @@ published: 已发布
 draft: 草稿
 archived: 已存档
 modules: 模块
+module_bar: 模块栏
+tile_size: 裁剪尺寸
 edit_field: 编辑
 conditions: 条件
 maps: 地图
+item_creation: 新建
 item_revision: 项目调整
+enter_a_name: 请输入名称...
 duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
@@ -51,8 +55,10 @@ required: 必填
 required_for_app_access: 应用程序访问所需的
 requires_value: 必填值
 create_preset: 创建预设
+create_panel: 新建
 create_role: 创建角色
 create_user: 创建用户
+delete_panel: 删除
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
@@ -144,6 +150,10 @@ fields_for_role: '{role} 角色能够 {action} 字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
 presets_for_role: '{role} 角色的默认值。'
 presentation_and_aliases: 别名
+revision_post_create: 这是新建项目后看起来的样子。
+revision_post_update: 这是更新后该项目的外观。
+changes_made: 下面是本次修订中所作的具体修改。
+no_relational_data: 请记住，此处不包括关系数据。
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
 delete_field: 删除
@@ -152,9 +162,22 @@ field_create_success: '创建字段: "{field}"'
 field_update_success: '更新字段: "{field}"'
 duplicate_where_to: 您想要复制此字段到哪？
 language: 语言
+aggregate_function: 聚合函数
+aggregate_precision: 聚合精度
+group_aggregation: Group聚合
+group_precision: Group精度
 global: 全局
 admins_have_all_permissions: 管理员拥有所有权限
 camera: 摄像头
+show_zero: 显示0
+sum: Sum
+sum_distinct: Sum Distinct
+avg: 平均值
+avg_distinct: Average Distinct
+count: Count
+count_distinct: Count Distinct
+min: 最小值
+max: 最大值
 exposure: 过期
 shutter: 快门
 iso: ISO
@@ -172,7 +195,9 @@ alias: 别名
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: 时间段
 datetime: DateTime
+precision: 精度
 decimal: Decimal
 float: Float
 integer: Integer
@@ -210,6 +235,8 @@ add_m2m_to_collection: '添加多对多到"{collection}"'
 choose_a_type: 选择类型...
 determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
+add_link: 添加链接
+custom_link: 自定义链接
 default_value: 默认值
 standard_field: 标准字段
 single_file: 单个文件
@@ -239,6 +266,7 @@ raw_value: 原始值
 edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
 clear_value: 清除
+clear_changes: 清除更改
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
@@ -258,6 +286,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 private_user: 私人用户
+creation_preview: 创建预览
 revision_preview: 修订预览
 updates_made: 更新完成
 leave_comment: 发表评论...
@@ -381,6 +410,7 @@ no_files_copy: 没有任何文件。
 user_count: '没有用户 | 一个用户 | {count} 个用户'
 no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
+no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 all_items: 所有项目
 any: 任意
 csv: CSV
@@ -392,12 +422,21 @@ relationship_not_setup: 关系配置不正确
 display_template_not_setup: 显示的模板选项配置错误
 collection_field_not_setup: 收藏的字段选项配置错误
 select_a_collection: 选择一个收藏
+select_a_field: 选择字段
 active: 激活
+move_to: 移动到...
 copy: 复制
+copy_to: 复制到...
+no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
-activity: 动态
+activity: 活动
 webhooks: Webhook
+decimals: 小数
+value_decimals: 小数的值
+min_value: 最小值
+max_value: 最大值
+automatic: 自动
 field_width: 字段宽度
 add_filter: 添加过滤器
 upper_limit: 上限...
@@ -448,6 +487,7 @@ errors:
   UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
+  ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
   UNKNOWN: 未知错误
 security: 安全
 value_hashed: 哈希值
@@ -464,6 +504,7 @@ no_app_access_copy: 此用户不允许使用管理员应用程序。
 password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
+filter: 筛选
 editing_image: 编辑图像
 square: 正方形
 free: 自由的
@@ -486,6 +527,7 @@ visible_collections: 显示收藏
 hidden_collections: 隐藏收藏
 show_hidden_collections: 展开隐藏收藏
 hide_hidden_collections: 不显示隐藏收藏
+show_header: 显示页头
 unmanaged_collections: 未配置的收藏
 system_collections: 系统收藏
 placeholder: 占位文本
@@ -501,6 +543,7 @@ color: 颜色
 circle: 圆圈
 empty_item: 空项
 log_in_with: '使用 {provider} 登录'
+conditional_styles: 条件
 advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
@@ -583,12 +626,19 @@ read: 查看
 update: 更新
 select_fields: 选择字段
 format_text: 格式化文本
+format_value: 格式化
+abbreviate_value: 缩写
+operator: 运算符
 bold: 加粗
 toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+insights: 洞察(测试)
+dashboard: 控制面板
 panel: 面板
+panel_options: 选项
+panel_header: 面板标题
 panel_name_placeholder: 命名此面板...
 panel_note_placeholder: 面板的详细配置...
 panel_delete_confirm: 您确定要删除? 此操作无法撤消。
@@ -600,6 +650,7 @@ prefix_placeholder: 前缀
 suffix_placeholder: 后缀
 decimals_placeholder: 小数位数...
 no_dashboards: 没有仪表盘
+no_dashboards_copy: 您还没有任何工作台。
 no_data: 没有数据
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
@@ -735,6 +786,8 @@ page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
   **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
+page_help_insights_overview: '**Insights** — 您可以访问的工作台列表。'
+page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -744,15 +797,28 @@ no_layout_collection_selected_yet: 尚未选择布局/收藏
 batch_delete_confirm: >-
   您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
 cancel: 取消
+no_upscale: 不要放大图片
 collection: 收藏
 collections: 收藏
 singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
 directus_collection:
+  directus_activity: 所有事件操作日志
+  directus_collections: 其他集合配置和元数据
+  directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
+  directus_folders: 虚拟文件目录
+  directus_migrations: 您的数据库版本是
+  directus_permissions: 每个角色的访问权限
+  directus_presets: 书签/预设默认值
+  directus_relations: 元数据和关系配置
+  directus_revisions: 数据快照
+  directus_roles: 系统用户权限组
+  directus_sessions: 用户会话信息
   directus_settings: 项目配置
   directus_users: 平台系统用户
+  directus_webhooks: 基于事件的 HTTP 请求配置
 fields:
   directus_activity:
     item: 项目主键
@@ -830,6 +896,17 @@ fields:
     last_page: 尾页
     last_access: 上次访问
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: 栅格化
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 样式
+    mapbox_key: Mapbox 访问令牌
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
+    additional_transforms: 其它转换
     project_name: 项目名称
     project_url: 项目URL
     project_color: 项目颜色
@@ -875,7 +952,15 @@ fields:
     actions: 操作
 field_options:
   directus_settings:
+    project_name_placeholder: 我的项目
     security_divider_title: 安全
+    additional_transforms: 其它转换
+    transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
+    mapbox_key: Mapbox 访问令牌
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: 栅格化
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 样式
     files_divider_title: 文件和缩略图
     overrides_divider_title: 应用设置覆盖
   directus_activity:
@@ -1340,7 +1425,33 @@ layouts:
     end_date_field: 结束日期
   map:
     map: 地图
+    basemap: 底图
+    layers: 图层
+    edit_custom_layers: 编辑图层
+    cluster_options: 集群选项
+    cluster: 开启集群中
+    cluster_radius: 集群半径
+    cluster_minpoints: 集群最小尺寸
+    cluster_maxzoom: 集群的最大缩放
     field: 几何
+    invalid_geometry: 无效几何图形
+    auto_location_filter: 总是筛选数据以查看边框
+    search_this_area: 搜索此区域
+    clear_data_filter: 清除过滤器
+    clear_location_filter: 清除过滤器
 panels:
+  metric:
+    name: 公制
+    description: 基于查询显示单个值
+    field: 字段
+  time_series:
+    name: 时间系列
+    description: 根据一段时间的值渲染线形图
+    date_field: 日期字段
+    value_field: 值字段
   label:
     name: 标签
+    description: 显示一些文本
+  list:
+    name: 列表
+    description: 从数据模型中筛选并展示列表
