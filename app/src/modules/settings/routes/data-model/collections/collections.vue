@@ -59,16 +59,16 @@
 				<v-list-item
 					v-for="collection of tableCollections"
 					:key="collection.collection"
+					v-tooltip="t('db_only_click_to_configure')"
 					class="collection-row hidden"
 					block
 					clickable
-					@click="openCollection(collection)"
 				>
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
 
-					<div class="collection-name">
+					<div class="collection-name" @click="openCollection(collection)">
 						<v-icon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
 					</div>

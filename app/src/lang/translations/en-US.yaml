@@ -49,7 +49,7 @@ indeterminate: Indeterminate
 edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
-db_only_click_to_configure: 'Database Only: Click to Configure '
+db_only_click_to_configure: 'Database Only: Click to Configure'
 show_archived_items: Show Archived Items
 edited: Value Edited
 required: Required
