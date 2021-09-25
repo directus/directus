@@ -18,3 +18,4 @@ app/public/img/docs/*
 *.tsbuildinfo
 .e2e-containers.json
 coverage
+TODO

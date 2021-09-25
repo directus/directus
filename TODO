@@ -1,6 +1,0 @@
-- [x] Add migration for adding fields to collections
-- [ ] Update collections service to work with meta _or_ schema (no longer rely on tableInfo as single source of truth)
-- [x] Allow posting without schema
-- [ ] Update app to always create "Tables" with schema = {} (just like fields)
-- [ ] Add "GetCollectionType" util to shared
-- [ ] Make sure updateOne in collections service allows for replacing collections when old type !== new type
