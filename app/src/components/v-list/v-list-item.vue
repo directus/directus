@@ -11,6 +11,7 @@
 			dashed,
 			block,
 			large,
+			clickable,
 		}"
 		:href="href"
 		:download="download"
@@ -226,7 +227,7 @@ body {
 
 	&.block {
 		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--background-subdued);
+		--v-list-item-background-color: var(--background-page);
 		--v-list-item-background-color-hover: var(--background-subdued);
 		--v-icon-color: var(--foreground-subdued);
 
@@ -256,7 +257,7 @@ body {
 			flex-grow: 1;
 		}
 
-		&:hover {
+		&.clickable:hover {
 			background-color: var(--v-list-item-background-color-hover);
 			border: var(--border-width) solid var(--v-list-item-border-color-hover);
 		}

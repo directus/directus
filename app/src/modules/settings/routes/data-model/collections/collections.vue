@@ -19,7 +19,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="items.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
+			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')" center>
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -27,60 +27,55 @@
 				</template>
 			</v-info>
 
-			<v-table
-				v-else
-				v-model:headers="tableHeaders"
-				:items="items"
-				show-resize
-				fixed-header
-				item-key="collection"
-				@click:row="openCollection"
-			>
-				<template #[`item.icon`]="{ item }">
-					<v-icon
-						class="icon"
-						:class="{
-							hidden: (item.meta && item.meta.hidden) || false,
-							system: item.collection.startsWith('directus_'),
-							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
-						}"
-						:name="item.icon"
-						:color="item.color"
-					/>
-				</template>
+			<v-list v-else>
+				<draggable
+					:animation="150"
+					:force-fallback="true"
+					:model-value="collections"
+					item-key="collection"
+					handle=".drag-handle"
+					@update:model-value="onSort"
+				>
+					<template #item="{ element }">
+						<v-list-item class="collection-row" block clickable :class="{ hidden: element.meta?.hidden }">
+							<v-list-item-icon>
+								<v-icon class="drag-handle" name="drag_handle" />
+							</v-list-item-icon>
+							<div class="collection-name" @click="openCollection(element)">
+								<v-icon
+									:color="element.meta?.hidden ? 'var(--foreground-subdued)' : element.color"
+									class="collection-icon"
+									:name="element.meta?.hidden ? 'visibility_off' : element.icon"
+								/>
+								<span class="collection-name">{{ element.name }}</span>
+							</div>
+							<collection-options :collection="element" />
+						</v-list-item>
+					</template>
+				</draggable>
+			</v-list>
 
-				<template #[`item.name`]="{ item }">
-					<v-text-overflow
-						class="collection"
-						:class="{
-							hidden: (item.meta && item.meta.hidden) || false,
-							system: item.collection.startsWith('directus_'),
-							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
-						}"
-						:text="item.collection"
-					/>
-				</template>
+			<v-list>
+				<v-list-item
+					v-for="collection of tableCollections"
+					:key="collection.collection"
+					class="collection-row hidden"
+					block
+					clickable
+					@click="openCollection(collection)"
+				>
+					<v-list-item-icon>
+						<v-icon name="add" />
+					</v-list-item-icon>
 
-				<template #[`item.note`]="{ item }">
-					<span v-if="item.meta === null" class="note">
-						{{ t('db_only_click_to_configure') }}
-					</span>
-					<span v-else class="note">
-						{{ item.meta.note }}
-					</span>
-				</template>
+					<div class="collection-name">
+						<v-icon class="collection-icon" name="dns" />
+						<span class="collection-name">{{ collection.name }}</span>
+					</div>
 
-				<template #item-append="{ item }">
-					<v-icon
-						v-if="!item.meta && item.collection.startsWith('directus_') === false"
-						v-tooltip="t('db_only_click_to_configure')"
-						small
-						class="no-meta"
-						name="report_problem"
-					/>
-					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
-				</template>
-			</v-table>
+					<collection-options :collection="collection" />
+				</v-list-item>
+			</v-list>
 		</div>
 
 		<router-view name="add" />
@@ -89,28 +84,26 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
-			<collections-filter v-model="activeTypes" />
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import { HeaderRaw } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
 import { useRouter } from 'vue-router';
-import { sortBy } from 'lodash';
+import { sortBy, merge } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
-import CollectionsFilter from './components/collections-filter.vue';
 import { translate } from '@/utils/translate-object-values';
-
-const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
+import Draggable from 'vuedraggable';
+import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
 
 export default defineComponent({
-	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
+	components: { SettingsNavigation, CollectionOptions, Draggable },
 	setup() {
 		const { t } = useI18n();
 
@@ -118,117 +111,89 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 
-		const tableHeaders = ref<HeaderRaw[]>([
-			{
-				text: '',
-				value: 'icon',
-				width: 42,
-				sortable: false,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				width: 240,
-			},
-			{
-				text: t('note'),
-				value: 'note',
-				width: 360,
-			},
-		]);
+		const collections = computed(() => {
+			return translate(
+				sortBy(
+					collectionsStore.collections.filter(
+						(collection) => collection.collection.startsWith('directus_') === false && collection.meta
+					),
+					['meta.sort', 'collection']
+				)
+			);
+		});
+
+		const tableCollections = computed(() => {
+			return translate(
+				sortBy(
+					collectionsStore.collections.filter(
+						(collection) =>
+							collection.collection.startsWith('directus_') === false &&
+							!!collection.meta === false &&
+							collection.schema
+					),
+					['meta.sort', 'collection']
+				)
+			);
+		});
+
+		const systemCollections = computed(() => {
+			return translate(
+				sortBy(
+					collectionsStore.collections
+						.filter((collection) => collection.collection.startsWith('directus_') === true)
+						.map((collection) => ({ ...collection, icon: 'settings' })),
+					'collection'
+				)
+			);
+		});
+
+		return { t, collections, tableCollections, systemCollections, openCollection, onSort };
 
 		function openCollection({ collection }: Collection) {
 			router.push(`/settings/data-model/${collection}`);
 		}
 
-		const { items } = useItems();
+		async function onSort(newValue: Collection[]) {
+			const valueWithSortValues = newValue.map((collection, index) => merge(collection, { meta: { sort: index + 1 } }));
 
-		return { t, tableHeaders, items, openCollection, activeTypes };
-
-		function useItems() {
-			const visible = computed(() => {
-				return sortBy(
-					collectionsStore.collections.filter(
-						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
-					),
-					'collection'
+			collectionsStore.collections = collectionsStore.collections.map((collection) => {
+				const updated = valueWithSortValues.find(
+					(updatedCollection) => updatedCollection.collection === collection.collection
 				);
+
+				return updated || collection;
 			});
 
-			const hidden = computed(() => {
-				return sortBy(
-					collectionsStore.collections
-						.filter(
-							(collection) =>
-								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
-						)
-						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
-					'collection'
+			try {
+				await Promise.all(
+					valueWithSortValues.map((collection) =>
+						api.patch(`/collections/${collection.collection}`, { meta: { sort: collection.meta.sort } })
+					)
 				);
-			});
-
-			const system = computed(() => {
-				return sortBy(
-					collectionsStore.collections
-						.filter((collection) => collection.collection.startsWith('directus_') === true)
-						.map((collection) => ({ ...collection, icon: 'settings' })),
-					'collection'
-				);
-			});
-
-			const unmanaged = computed(() => {
-				return sortBy(
-					collectionsStore.collections
-						.filter((collection) => collection.collection.startsWith('directus_') === false)
-						.filter((collection) => collection.meta === null)
-						.map((collection) => ({ ...collection, icon: 'dns' })),
-					'collection'
-				);
-			});
-
-			const items = computed(() => {
-				const items = [];
-
-				if (activeTypes.value.includes('visible')) {
-					items.push(visible.value);
-				}
-
-				if (activeTypes.value.includes('unmanaged')) {
-					items.push(unmanaged.value);
-				}
-
-				if (activeTypes.value.includes('hidden')) {
-					items.push(hidden.value);
-				}
-
-				if (activeTypes.value.includes('system')) {
-					items.push(translate(system.value));
-				}
-
-				return items.flat();
-			});
-
-			return { items };
+			} catch (err) {
+				unexpectedError(err);
+			}
 		}
 	},
 });
 </script>
 
 <style scoped>
-.icon :deep(i) {
-	vertical-align: baseline;
+.collection-row.hidden {
+	--v-list-item-color: var(--foreground-subdued);
 }
 
-.icon.hidden :deep(i) {
-	color: var(--foreground-subdued);
-}
-
-.icon.system :deep(i) {
-	color: var(--primary);
-}
-
-.collection {
+.collection-name {
+	flex-grow: 1;
 	font-family: var(--family-monospace);
+}
+
+.collection-icon {
+	margin-right: 8px;
+}
+
+.drag-handle {
+	cursor: grab;
 }
 
 .hidden {

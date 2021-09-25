@@ -1,6 +1,7 @@
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
 import { computed, ComputedRef, Ref, ref } from 'vue';
+import { orderBy } from 'lodash';
 
 export type NavItem = {
 	collection: string;
@@ -9,6 +10,7 @@ export type NavItem = {
 	icon: string;
 	color: string | null | undefined;
 	note: string | null;
+	sort: number | null;
 };
 
 export type NavItemGroup = {
@@ -27,6 +29,7 @@ function collectionToNavItem(collection: Collection): NavItem {
 		icon: collection.meta?.icon || 'label',
 		color: collection.meta?.color,
 		note: collection.meta?.note || null,
+		sort: collection.meta?.sort || null,
 		to: `/collections/${collection.collection}`,
 	};
 }
@@ -65,21 +68,11 @@ export default function useNavigation(searchQuery?: Ref<string | null>): UsableN
 	});
 
 	const navItems = computed<NavItem[]>(() => {
-		return collectionsStore.visibleCollections
-			.map(collectionToNavItem)
-			.sort((navA: NavItem, navB: NavItem) => {
-				return navA.name > navB.name ? 1 : -1;
-			})
-			.filter(search);
+		return orderBy(collectionsStore.visibleCollections.map(collectionToNavItem).filter(search), ['sort', 'name']);
 	});
 
 	const hiddenNavItems = computed<NavItem[]>(() => {
-		return collectionsStore.hiddenCollections
-			.map(collectionToNavItem)
-			.sort((navA: NavItem, navB: NavItem) => {
-				return navA.name > navB.name ? 1 : -1;
-			})
-			.filter(search);
+		return orderBy(collectionsStore.hiddenCollections.map(collectionToNavItem).filter(search), ['sort', 'name']);
 	});
 
 	if (!activeGroups) {
