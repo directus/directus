@@ -52,7 +52,7 @@
 		"@types/diff": "5.0.1",
 		"@types/dompurify": "2.2.3",
 		"@types/geojson": "7946.0.8",
-		"@types/lodash": "4.14.173",
+		"@types/lodash": "4.14.174",
 		"@types/mapbox__mapbox-gl-draw": "1.2.3",
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.1",
 		"@types/markdown-it": "12.2.1",
