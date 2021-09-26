@@ -42,7 +42,7 @@ router.post(
 				const result = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: result || null };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -97,10 +97,6 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
 
-		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
-		}
-
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -111,6 +107,7 @@ router.get(
 		res.locals.payload = {
 			data: result || null,
 		};
+
 		return next();
 	}),
 	respond
@@ -147,7 +144,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -180,7 +177,7 @@ router.patch(
 		try {
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

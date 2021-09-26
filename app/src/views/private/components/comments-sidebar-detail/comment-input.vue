@@ -7,8 +7,6 @@
 		expand-on-focus
 	>
 		<template #append>
-			<!-- <v-icon name="alternate_email" class="add-mention" />
-			<v-icon name="insert_emoticon" class="add-emoji" /> -->
 			<v-button
 				:disabled="!newCommentContent || newCommentContent.length === 0"
 				:loading="saving"
@@ -74,7 +72,7 @@ export default defineComponent({
 					title: t('post_comment_success'),
 					type: 'success',
 				});
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;

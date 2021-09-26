@@ -3,8 +3,11 @@ import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { InvalidQueryException } from '../exceptions';
-import { Filter, Query, Relation, SchemaOverview } from '../types';
+import { Aggregate, Filter, Query, Relation, SchemaOverview } from '../types';
+import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import { getColumn } from './get-column';
 import { getRelationType } from './get-relation-type';
+import { getGeometryHelper } from '../database/helpers/geometry';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -12,6 +15,7 @@ const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
  * Apply the Query to a given Knex query builder instance
  */
 export default function applyQuery(
+	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
@@ -22,7 +26,7 @@ export default function applyQuery(
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
 				...sort,
-				column: `${collection}.${sort.column}`,
+				column: getColumn(knex, collection, sort.column, false) as any,
 			}))
 		);
 	}
@@ -40,11 +44,19 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
+		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
 
 	if (query.search) {
 		applySearch(schema, dbQuery, query.search, collection);
+	}
+
+	if (query.group) {
+		dbQuery.groupBy(query.group.map(applyFunctionToColumnName));
+	}
+
+	if (query.aggregate) {
+		applyAggregate(dbQuery, query.aggregate);
 	}
 }
 
@@ -86,7 +98,9 @@ export default function applyQuery(
  *   )
  * ```
  */
+
 export function applyFilter(
+	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
@@ -98,7 +112,7 @@ export function applyFilter(
 	const aliasMap: Record<string, string> = {};
 
 	addJoins(rootQuery, rootFilter, collection);
-	addWhereClauses(rootQuery, rootFilter, collection);
+	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
@@ -215,6 +229,7 @@ export function applyFilter(
 	}
 
 	function addWhereClauses(
+		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
 		filter: Filter,
 		collection: string,
@@ -231,7 +246,7 @@ export function applyFilter(
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery[logical].where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+						addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
 					});
 				});
 
@@ -274,6 +289,7 @@ export function applyFilter(
 					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
+						knex,
 						relation!.collection,
 						subQueryKnex,
 						{
@@ -287,26 +303,32 @@ export function applyFilter(
 		}
 
 		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+			const [table, column] = key.split('.');
+
+			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
+			const selectionRaw = getColumn(knex, table, column, false) as any;
+
+			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
+			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
+
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
 			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(key);
+				dbQuery[logical].whereNull(selectionRaw);
 			}
 
 			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
-				dbQuery[logical].whereNotNull(key);
+				dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
 			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
+					query.where(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
+					query.where(key, '!=', '');
 				});
 			}
 
@@ -320,24 +342,22 @@ export function applyFilter(
 				// reported as [undefined].
 				// We need to remove any undefined values, as they are useless
 				compareValue = compareValue.filter((val) => val !== undefined);
-				// And ignore the result filter if there are no values in it
-				if (compareValue.length === 0) return;
 			}
 
 			if (operator === '_eq') {
-				dbQuery[logical].where({ [key]: compareValue });
+				dbQuery[logical].where(selectionRaw, '=', compareValue);
 			}
 
 			if (operator === '_neq') {
-				dbQuery[logical].whereNot({ [key]: compareValue });
+				dbQuery[logical].whereNot(selectionRaw, compareValue);
 			}
 
 			if (operator === '_contains') {
-				dbQuery[logical].where(key, 'like', `%${compareValue}%`);
+				dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_ncontains') {
-				dbQuery[logical].whereNot(key, 'like', `%${compareValue}%`);
+				dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_starts_with') {
@@ -357,33 +377,33 @@ export function applyFilter(
 			}
 
 			if (operator === '_gt') {
-				dbQuery[logical].where(key, '>', compareValue);
+				dbQuery[logical].where(selectionRaw, '>', compareValue);
 			}
 
 			if (operator === '_gte') {
-				dbQuery[logical].where(key, '>=', compareValue);
+				dbQuery[logical].where(selectionRaw, '>=', compareValue);
 			}
 
 			if (operator === '_lt') {
-				dbQuery[logical].where(key, '<', compareValue);
+				dbQuery[logical].where(selectionRaw, '<', compareValue);
 			}
 
 			if (operator === '_lte') {
-				dbQuery[logical].where(key, '<=', compareValue);
+				dbQuery[logical].where(selectionRaw, '<=', compareValue);
 			}
 
 			if (operator === '_in') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereIn(key, value as string[]);
+				dbQuery[logical].whereIn(selectionRaw, value as string[]);
 			}
 
 			if (operator === '_nin') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereNotIn(key, value as string[]);
+				dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
 			}
 
 			if (operator === '_between') {
@@ -392,7 +412,7 @@ export function applyFilter(
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereBetween(key, value);
+				dbQuery[logical].whereBetween(selectionRaw, value);
 			}
 
 			if (operator === '_nbetween') {
@@ -401,7 +421,24 @@ export function applyFilter(
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereNotBetween(key, value);
+				dbQuery[logical].whereNotBetween(selectionRaw, value);
+			}
+
+			const geometryHelper = getGeometryHelper();
+
+			if (operator == '_intersects') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects(key, compareValue));
+			}
+
+			if (operator == '_nintersects') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects(key, compareValue));
+			}
+			if (operator == '_intersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.intersects_bbox(key, compareValue));
+			}
+
+			if (operator == '_nintersects_bbox') {
+				dbQuery[logical].whereRaw(geometryHelper.nintersects_bbox(key, compareValue));
 			}
 		}
 
@@ -485,6 +522,50 @@ export async function applySearch(
 			}
 		});
 	});
+}
+
+export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate): void {
+	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (!fields) continue;
+
+		for (const field of fields) {
+			if (operation === 'avg') {
+				dbQuery.avg(field, { as: `avg->${field}` });
+			}
+
+			if (operation === 'avgDistinct') {
+				dbQuery.avgDistinct(field, { as: `avgDistinct->${field}` });
+			}
+
+			if (operation === 'count') {
+				if (field === '*') {
+					dbQuery.count('*', { as: 'count' });
+				} else {
+					dbQuery.count(field, { as: `count->${field}` });
+				}
+			}
+
+			if (operation === 'countDistinct') {
+				dbQuery.countDistinct(field, { as: `countDistinct->${field}` });
+			}
+
+			if (operation === 'sum') {
+				dbQuery.sum(field, { as: `sum->${field}` });
+			}
+
+			if (operation === 'sumDistinct') {
+				dbQuery.sumDistinct(field, { as: `sumDistinct->${field}` });
+			}
+
+			if (operation === 'min') {
+				dbQuery.min(field, { as: `min->${field}` });
+			}
+
+			if (operation === 'max') {
+				dbQuery.max(field, { as: `max->${field}` });
+			}
+		}
+	}
 }
 
 function getFilterPath(key: string, value: Record<string, any>) {

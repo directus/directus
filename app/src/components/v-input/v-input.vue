@@ -20,7 +20,7 @@
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue"
+					:value="modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
 				/>
 			</slot>
@@ -152,7 +152,7 @@ export default defineComponent({
 			keydown: processValue,
 			blur: (e: Event) => {
 				trimIfEnabled();
-				attrs?.onBlur?.(e);
+				if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 			},
 			focus: (e: PointerEvent) => emit('focus', e),
 		}));
@@ -215,7 +215,7 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
+			if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
 				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}
@@ -223,7 +223,7 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
-			if (props.nullable === true && !value) {
+			if (props.nullable === true && value === '') {
 				emit('update:modelValue', null);
 				return;
 			}
@@ -379,6 +379,7 @@ body {
 		}
 
 		.append {
+			flex-shrink: 0;
 			margin-left: 8px;
 		}
 	}

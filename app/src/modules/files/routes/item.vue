@@ -15,7 +15,7 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -33,8 +33,8 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -387,7 +387,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			try {
 				await save();
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -453,7 +453,7 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;

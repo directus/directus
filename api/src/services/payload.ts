@@ -1,14 +1,19 @@
-import argon2 from 'argon2';
-import { format, formatISO, parse, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import Joi from 'joi';
 import { Knex } from 'knex';
-import { clone, cloneDeep, isObject, isPlainObject, omit } from 'lodash';
+import { clone, cloneDeep, isObject, isPlainObject, omit, isNil } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, Item, PrimaryKey, Query, SchemaOverview, Alterations } from '../types';
+import { Accountability } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
+import { unflatten } from 'flat';
+import { isNativeGeometry } from '../utils/geometry';
+import { getGeometryHelper } from '../database/helpers/geometry';
+import { parse as wktToGeoJSON } from 'wellknown';
+import { generateHash } from '../utils/generate-hash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -18,17 +23,8 @@ type Transformers = {
 		value: any;
 		payload: Partial<Item>;
 		accountability: Accountability | null;
+		specials: string[];
 	}) => Promise<any>;
-};
-
-type Alterations = {
-	create: {
-		[key: string]: any;
-	}[];
-	update: {
-		[key: string]: any;
-	}[];
-	delete: (number | string)[];
 };
 
 /**
@@ -50,19 +46,11 @@ export class PayloadService {
 		return this;
 	}
 
-	/**
-	 * @todo allow this to be extended
-	 *
-	 * @todo allow these extended special types to have "field dependencies"?
-	 * f.e. the file-links transformer needs the id and filename_download to be fetched from the DB
-	 * in order to work
-	 */
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
-
 			if (action === 'create' || action === 'update') {
-				return await argon2.hash(String(value));
+				return await generateHash(String(value));
 			}
 
 			return value;
@@ -124,8 +112,7 @@ export class PayloadService {
 		},
 		async csv({ action, value }) {
 			if (!value) return;
-			if (action === 'read') return value.split(',');
-
+			if (action === 'read' && Array.isArray(value) === false) return value.split(',');
 			if (Array.isArray(value)) return value.join(',');
 			return value;
 		},
@@ -137,7 +124,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const processedPayload = toArray(payload);
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -164,17 +151,22 @@ export class PayloadService {
 			})
 		);
 
-		await this.processDates(processedPayload, action);
+		this.processGeometries(processedPayload, action);
+		this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
-					if (Array.isArray(value) || (typeof value === 'object' && value instanceof Date !== true && value !== null)) {
-						record[key] = JSON.stringify(value);
+					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
+						if (!value.isRawInstance) {
+							record[key] = JSON.stringify(value);
+						}
 					}
 				}
 			});
 		}
+
+		processedPayload = processedPayload.map((item: Record<string, any>) => unflatten(item, { delimiter: '->' }));
 
 		if (Array.isArray(payload)) {
 			return processedPayload;
@@ -201,6 +193,7 @@ export class PayloadService {
 					value,
 					payload,
 					accountability,
+					specials: fieldSpecials,
 				});
 			}
 		}
@@ -209,13 +202,39 @@ export class PayloadService {
 	}
 
 	/**
+	 * Native geometries are stored in custom binary format. We need to insert them with
+	 * the function st_geomfromtext. For this to work, that function call must not be
+	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
+	 * to check if the value is a raw instance before stringifying it in the next step.
+	 */
+	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+		const helper = getGeometryHelper();
+
+		const process =
+			action == 'read'
+				? (value: any) => {
+						if (typeof value === 'string') return wktToGeoJSON(value);
+				  }
+				: (value: any) => helper.fromGeoJSON(typeof value == 'string' ? JSON.parse(value) : value);
+
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+		const geometryColumns = fieldsInCollection.filter(([_, field]) => isNativeGeometry(field));
+
+		for (const [name] of geometryColumns) {
+			for (const payload of payloads) {
+				if (payload[name]) {
+					payload[name] = process(payload[name]);
+				}
+			}
+		}
+
+		return payloads;
+	}
+	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(
-		payloads: Partial<Record<string, any>>[],
-		action: Action
-	): Promise<Partial<Record<string, any>>[]> {
+	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
@@ -230,7 +249,7 @@ export class PayloadService {
 
 		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
-				let value = payload[name];
+				let value: number | string | Date = payload[name];
 
 				if (value === null || value === '0000-00-00') {
 					payload[name] = null;
@@ -240,32 +259,54 @@ export class PayloadService {
 				if (!value) continue;
 
 				if (action === 'read') {
-					if (typeof value === 'string') value = new Date(value);
+					if (typeof value === 'number' || typeof value === 'string') {
+						value = new Date(value);
+					}
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = formatISO(value);
+						const newValue = value.toISOString();
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
-						// Strip off the Z at the end of a non-timezone datetime value
-						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
+						const year = String(value.getUTCFullYear());
+						const month = String(value.getUTCMonth() + 1).padStart(2, '0');
+						const date = String(value.getUTCDate()).padStart(2, '0');
+						const hours = String(value.getUTCHours()).padStart(2, '0');
+						const minutes = String(value.getUTCMinutes()).padStart(2, '0');
+						const seconds = String(value.getUTCSeconds()).padStart(2, '0');
+
+						const newValue = `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
+						const [year, month, day] = value.toISOString().substr(0, 10).split('-');
+
 						// Strip off the time / timezone information from a date-only value
-						const newValue = format(value, 'yyyy-MM-dd');
+						const newValue = `${year}-${month}-${day}`;
 						payload[name] = newValue;
 					}
 				} else {
-					if (value instanceof Date === false) {
+					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
-							const newValue = parse(value, 'yyyy-MM-dd', new Date());
-							payload[name] = newValue;
+							const [date] = value.split('T');
+							const [year, month, day] = date.split('-');
+
+							payload[name] = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
 						}
 
-						if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
+						if (dateColumn.type === 'dateTime') {
+							const [date, time] = value.split('T');
+							const [year, month, day] = date.split('-');
+							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
+
+							payload[name] = new Date(
+								Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds))
+							);
+						}
+
+						if (dateColumn.type === 'timestamp') {
 							const newValue = parseISO(value);
 							payload[name] = newValue;
 						}
@@ -478,7 +519,8 @@ export class PayloadService {
 				schema: this.schema,
 			});
 
-			const relatedRecords: Partial<Item>[] = [];
+			const recordsToUpsert: Partial<Item>[] = [];
+			const savedPrimaryKeys: PrimaryKey[] = [];
 
 			// Nested array of individual items
 			if (Array.isArray(payload[relation.meta!.one_field!])) {
@@ -488,14 +530,29 @@ export class PayloadService {
 					let record = cloneDeep(relatedRecord);
 
 					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
-						const exists = !!(await this.knex
-							.select(relatedPrimaryKeyField)
+						const existingRecord = await this.knex
+							.select(relatedPrimaryKeyField, relation.field)
 							.from(relation.collection)
 							.where({ [relatedPrimaryKeyField]: record })
-							.first());
+							.first();
 
-						if (exists === false) {
+						if (!!existingRecord === false) {
 							throw new ForbiddenException();
+						}
+
+						// If the related item is already associated to the current item, and there's no
+						// other updates (which is indicated by the fact that this is just the PK, we can
+						// ignore updating this item. This makes sure we don't trigger any update logic
+						// for items that aren't actually being updated. NOTE: We use == here, as the
+						// primary key might be reported as a string instead of number, coming from the
+						// http route, and or a bigInteger in the DB
+						if (
+							isNil(existingRecord[relation.field]) === false &&
+							(existingRecord[relation.field] == parent ||
+								existingRecord[relation.field] == payload[currentPrimaryKeyField])
+						) {
+							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
+							continue;
 						}
 
 						record = {
@@ -503,15 +560,17 @@ export class PayloadService {
 						};
 					}
 
-					relatedRecords.push({
+					recordsToUpsert.push({
 						...record,
 						[relation.field]: parent || payload[currentPrimaryKeyField],
 					});
 				}
 
-				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords, {
-					onRevisionCreate: (id) => revisions.push(id),
-				});
+				savedPrimaryKeys.push(
+					...(await itemsService.upsertMany(recordsToUpsert, {
+						onRevisionCreate: (id) => revisions.push(id),
+					}))
+				);
 
 				const query: Query = {
 					filter: {
@@ -613,5 +672,23 @@ export class PayloadService {
 		}
 
 		return { revisions };
+	}
+
+	/**
+	 * Transforms the input partial payload to match the output structure, to have consistency
+	 * between delta and data
+	 */
+	async prepareDelta(data: Partial<Item>): Promise<string> {
+		let payload = cloneDeep(data);
+
+		for (const key in payload) {
+			if (payload[key]?.isRawInstance) {
+				payload[key] = payload[key].bindings[0];
+			}
+		}
+
+		payload = await this.processValues('read', payload);
+
+		return JSON.stringify(payload);
 	}
 }

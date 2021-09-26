@@ -1,6 +1,6 @@
 {
 	"labels": ["Dependencies"],
-	"extends": ["config:base"],
+	"extends": ["config:base", ":disableDependencyDashboard"],
 	"force": {
 		"constraints": {
 			"node": ">=16.0.0",

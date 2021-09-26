@@ -41,7 +41,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Kirjauduttu ulos
   SESSION_EXPIRED: Istunto vanheutunut
-public: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
 not_allowed: Ei sallittu
 directus_version: Directus-versio
@@ -106,9 +105,6 @@ fields_for_role: 'Kentät joita {role} rooli voi {action}.'
 validation_for_role: 'Kentän sääntöjä {action} roolille {role} on noudatettava.'
 presets_for_role: 'Kentän oletusarvot roolille {role}.'
 presentation_and_aliases: Esitystapa & aliakset
-revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
-changes_made: Nämä ovat mutokset jotka tarkalleenottaen tehtiin...
-no_relational_data: Muista, että tämä ei sisällä relaatiotietoja.
 hide_field_on_detail: Piilota kenttä yksityiskohdissa
 show_field_on_detail: Näytä kenttä yksityiskohdissa
 delete_field: Poista kenttä
@@ -249,7 +245,7 @@ move_to_folder: Siirrä kansioon
 move: Siirrä
 system: Järjestelmä
 add_field_related: Lisää kenttä liittyvään kokoelmaan
-interface: Käyttöliittymä
+interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
@@ -279,7 +275,6 @@ drag_mode: Raahaustila
 cancel_crop: Peruuta rajaus
 original: Alkuperäinen
 url: URL
-import: Tuo
 file_details: Tiedoston tiedot
 dimensions: Mitat
 size: Koko
@@ -345,7 +340,6 @@ no_files_copy: Täällä ei ole tiedostoja.
 user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
 no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
 webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
-no_webhooks_copy: Webhookkeja ei ole vielä.
 all_items: Kaikki kohteet
 csv: CSV
 no_collections: Ei kokoelmia
@@ -357,6 +351,7 @@ display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
 active: Aktiivinen
+copy: Kopioi
 users: Käyttäjät
 activity: Tapahtuma
 webhooks: Webhookit
@@ -369,7 +364,6 @@ documentation: Dokumentaatio
 sidebar: Sivupalkki
 duration: Kesto
 charset: Merkistö
-second: Sekunti
 file_moved: Tiedosto siirretty
 collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
@@ -407,8 +401,9 @@ errors:
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   USER_SUSPENDED: Käyttäjä jäädytetty
   CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  UNKNOWN: Odottamaton virhe
   INTERNAL_SERVER_ERROR: Odottamaton virhe
+  NOT_NULL_VIOLATION: Arvo ei voi olla null
+  UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
@@ -534,6 +529,7 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+full_screen: Koko näyttö
 image_url: Kuvan URL
 alt_text: Vaihtoehtoinen teksti
 media: Media
@@ -630,7 +626,6 @@ unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
-page_help_collections_overview: '**Kokoelmien Yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
 page_help_collections_collection: >-
   **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_collections_item: >-
@@ -735,6 +730,7 @@ fields:
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
+    status_active: Aktiivinen
     role: Rooli
     token: Token
     last_page: Viimeinen sivu
@@ -771,11 +767,37 @@ fields:
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
     collection_list: Kokoelman navigointi
+  directus_webhooks:
+    name: Nimi
+    status: Tila
 field_options:
+  directus_activity:
+    create: Luo
+    update: Päivitä
   directus_collections:
     track_activity_revisions: Seuraa tapahtumia ja versioita
     only_track_activity: Seuraa vain tapahtumia
     do_not_track_anything: Älä seuraa mitään
+    collection_setup: Kokoelman asetukset
+    singleton: Käsittele yhtenä objektina
+    language: Kieli
+    archive_divider: Arkistoi
+    divider: Järjestä
+  directus_roles:
+    fields:
+      icon_name: Kuvake
+      name_name: Nimi
+      name_placeholder: Syötä otsikko...
+    collection_list:
+      fields:
+        type_name: Tyyppi
+    collections_name: Kokoelmat
+  directus_users:
+    status_dropdown_active: Aktiivinen
+  directus_webhooks:
+    status_options_active: Aktiivinen
+    actions_create: Luo
+    actions_update: Päivitä
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
 generate_and_save_uuid: Luo ja tallenna UUID
@@ -788,11 +810,8 @@ comment: Kommentti
 relational_triggers: Relatiiviset käynnistimet
 referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
-continue: Jatka
 editing_role: '{role} rooli'
 creating_webhook: Luodaan webhook
-default: Oletus
-delete: Poista
 delete_are_you_sure: >-
   Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
 delete_field_are_you_sure: >-
@@ -957,6 +976,8 @@ interfaces:
     box: Lohko / rivillä
     imageToken: Kuvatunnus
     imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
+  map:
+    zoom: Lähennä
   presentation-notice:
     notice: Ilmoitus
     description: Näytä lyhyt ilmoitus
@@ -1150,3 +1171,6 @@ layouts:
     calendar: Kalenteri
     start_date_field: Aloituspäivämäärän kenttä
     end_date_field: Päättymispäivämäärän kenttä
+panels:
+  label:
+    name: Tunniste

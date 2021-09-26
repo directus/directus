@@ -66,8 +66,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
-import { Permission } from '@directus/shared/types';
-import { Collection } from '@/types';
+import { Permission, Collection } from '@directus/shared/types';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';
@@ -111,18 +110,14 @@ export default defineComponent({
 
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 			if (permission.value === undefined) return 'none';
-			if (hasAll() === true) return 'all';
+			if (
+				permission.value.fields?.includes('*') &&
+				Object.keys(permission.value.permissions || {}).length === 0 &&
+				Object.keys(permission.value.validation || {}).length === 0
+			)
+				return 'all';
 
 			return 'custom';
-
-			function hasAll() {
-				if (!permission.value) return false;
-				if (permission.value.fields?.includes('*') === false) return false;
-				if (Object.keys(permission.value.permissions || {}).length > 0) return false;
-				if (Object.keys(permission.value.validation || {}).length > 0) return false;
-
-				return true;
-			}
 		});
 
 		const saving = ref(false);

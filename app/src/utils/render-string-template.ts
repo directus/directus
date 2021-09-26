@@ -1,25 +1,32 @@
-import { render } from 'micromustache';
-import { computed, ComputedRef, Ref } from 'vue';
-import { getFieldsFromTemplate } from './get-fields-from-template';
+import { render, renderFn, get } from 'micromustache';
+import { computed, ComputedRef, Ref, unref } from 'vue';
+import { getFieldsFromTemplate } from '@directus/shared/utils';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
 	displayValue: ComputedRef<string | false>;
 };
 
+function resolve(path: string, scope: any) {
+	const value = get(scope, path);
+	return typeof value === 'object' ? JSON.stringify(value) : value;
+}
+
 export function renderStringTemplate(
 	template: Ref<string | null> | string,
-	item: Ref<Record<string, any> | undefined | null>
+	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
 ): StringTemplate {
-	const templateString = computed(() => (typeof template === 'string' ? template : template.value));
+	const values = unref(item);
 
-	const fieldsInTemplate = computed(() => getFieldsFromTemplate(templateString.value));
+	const templateString = unref(template);
+
+	const fieldsInTemplate = computed(() => getFieldsFromTemplate(templateString));
 
 	const displayValue = computed(() => {
-		if (!item.value || !templateString.value || !fieldsInTemplate.value) return false;
+		if (!values || !templateString || !fieldsInTemplate.value) return false;
 
 		try {
-			return render(templateString.value, item.value, { propsExist: true });
+			return renderFn(templateString, resolve, values, { propsExist: true });
 		} catch {
 			return false;
 		}

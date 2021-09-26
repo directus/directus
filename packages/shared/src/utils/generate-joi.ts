@@ -1,8 +1,13 @@
-import BaseJoi, { AnySchema } from 'joi';
+import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
 import { escapeRegExp, merge } from 'lodash';
 import { FieldFilter } from '../types/filter';
 
-const Joi = BaseJoi.extend({
+interface StringSchema extends BaseStringSchema {
+	contains(substring: string): this;
+	ncontains(substring: string): this;
+}
+
+const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
 	base: BaseJoi.string(),
 	messages: {
@@ -87,106 +92,137 @@ export function generateJoi(filter: FieldFilter, options?: JoiOptions): AnySchem
 		throw new Error(`[generateJoi] Filter doesn't contain filter rule. Passed filter: ${JSON.stringify(filter)}`);
 	}
 
-	const isField = key.startsWith('_') === false;
-
-	if (isField) {
+	if (Object.keys(value)[0]?.startsWith('_') === false) {
+		schema[key] = Joi.object({
+			[key]: generateJoi(value as FieldFilter, options),
+		});
+	} else {
 		const operator = Object.keys(value)[0];
+		const compareValue = Object.values(value)[0];
+
+		const getAnySchema = () => schema[key] ?? Joi.any();
+		const getStringSchema = () => (schema[key] ?? Joi.string()) as StringSchema;
+		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
+		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
 		if (operator === '_eq') {
-			schema[key] = Joi.any().equal(Object.values(value)[0]);
+			schema[key] = getAnySchema().equal(compareValue);
 		}
 
 		if (operator === '_neq') {
-			schema[key] = Joi.any().not(Object.values(value)[0]);
+			schema[key] = getAnySchema().not(compareValue);
 		}
 
 		if (operator === '_contains') {
-			schema[key] = Joi.string().contains(Object.values(value)[0]);
+			schema[key] = getStringSchema().contains(compareValue);
 		}
 
 		if (operator === '_ncontains') {
-			schema[key] = Joi.string().ncontains(Object.values(value)[0]);
+			schema[key] = getStringSchema().ncontains(compareValue);
 		}
 
 		if (operator === '_starts_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 			});
 		}
 
 		if (operator === '_nstarts_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`^${escapeRegExp(Object.values(value)[0] as string)}.*`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue as string)}.*`), {
 				name: 'starts_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_ends_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 			});
 		}
 
 		if (operator === '_nends_with') {
-			schema[key] = Joi.string().pattern(new RegExp(`.*${escapeRegExp(Object.values(value)[0] as string)}$`), {
+			schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue as string)}$`), {
 				name: 'ends_with',
 				invert: true,
 			});
 		}
 
 		if (operator === '_in') {
-			schema[key] = Joi.any().equal(...(Object.values(value)[0] as (string | number)[]));
+			schema[key] = getAnySchema().equal(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_nin') {
-			schema[key] = Joi.any().not(...(Object.values(value)[0] as (string | number)[]));
+			schema[key] = getAnySchema().not(...(compareValue as (string | number)[]));
 		}
 
 		if (operator === '_gt') {
-			schema[key] = Joi.number().greater(Number(Object.values(value)[0]));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().greater(compareValue)
+				: getDateSchema().greater(compareValue);
 		}
 
 		if (operator === '_gte') {
-			schema[key] = Joi.number().min(Number(Object.values(value)[0]));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().min(compareValue)
+				: getDateSchema().min(compareValue);
 		}
 
 		if (operator === '_lt') {
-			schema[key] = Joi.number().less(Number(Object.values(value)[0]));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().less(compareValue)
+				: getDateSchema().less(compareValue);
 		}
 
 		if (operator === '_lte') {
-			schema[key] = Joi.number().max(Number(Object.values(value)[0]));
+			schema[key] = Number.isSafeInteger(compareValue)
+				? getNumberSchema().max(compareValue)
+				: getDateSchema().max(compareValue);
 		}
 
 		if (operator === '_null') {
-			schema[key] = Joi.any().valid(null);
+			schema[key] = getAnySchema().valid(null);
 		}
 
 		if (operator === '_nnull') {
-			schema[key] = Joi.any().invalid(null);
+			schema[key] = getAnySchema().invalid(null);
 		}
 
 		if (operator === '_empty') {
-			schema[key] = Joi.any().valid('');
+			schema[key] = getAnySchema().valid('');
 		}
 
 		if (operator === '_nempty') {
-			schema[key] = Joi.any().invalid('');
+			schema[key] = getAnySchema().invalid('');
 		}
 
 		if (operator === '_between') {
-			const values = Object.values(value)[0] as number[];
-			schema[key] = Joi.number().greater(values[0]).less(values[1]);
+			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+				const values = compareValue as [number, number];
+				schema[key] = getNumberSchema().greater(values[0]).less(values[1]);
+			} else {
+				const values = compareValue as [string, string];
+				schema[key] = getDateSchema().greater(values[0]).less(values[1]);
+			}
 		}
 
 		if (operator === '_nbetween') {
-			const values = Object.values(value)[0] as number[];
-			schema[key] = Joi.number().less(values[0]).greater(values[1]);
+			if (compareValue.every((value: any) => Number.isSafeInteger(value))) {
+				const values = compareValue as [number, number];
+				schema[key] = getNumberSchema().less(values[0]).greater(values[1]);
+			} else {
+				const values = compareValue as [string, string];
+				schema[key] = getDateSchema().less(values[0]).greater(values[1]);
+			}
 		}
-	} else {
-		schema[key] = Joi.object({
-			[key]: generateJoi(value as FieldFilter, options),
-		});
+
+		if (operator === '_submitted') {
+			schema[key] = getAnySchema().required();
+		}
+
+		if (operator === '_regex') {
+			const wrapped = compareValue.startsWith('/') && compareValue.endsWith('/');
+			schema[key] = getStringSchema().regex(new RegExp(wrapped ? compareValue.slice(1, -1) : compareValue));
+		}
 	}
 
 	schema[key] = schema[key] ?? Joi.any();

@@ -33,8 +33,7 @@ import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType }
 import FieldListItem from './field-list-item.vue';
 import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 
 export default defineComponent({
 	components: { FieldListItem },
@@ -247,10 +246,8 @@ export default defineComponent({
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
-				if (tag) {
-					if (tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
-					if (tag.toLowerCase() === 'span') return (acc += el.textContent);
-				}
+				if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
+				else if ('textContent' in el) return (acc += el.textContent);
 
 				return (acc += '');
 			}, '');

@@ -9,6 +9,7 @@ const tree = dirTree('.', {
 	extensions: /\.md$/,
 	exclude: /(node_modules|.vuepress|.vscode|dist)/,
 	normalizePath: true,
+	attributes: ['type', 'extension'],
 });
 
 const index = `export default ${generateIndex(tree.children)};`;

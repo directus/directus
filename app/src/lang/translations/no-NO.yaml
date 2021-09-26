@@ -40,7 +40,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Utlogget
   SESSION_EXPIRED: Økt utløpt
-public: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
 not_allowed: Ikke tillatt
 directus_version: Directus versjon
@@ -100,9 +99,6 @@ fields_for_role: 'Felter {role} rollen kan {action}.'
 validation_for_role: 'Felt {action} regler {role} rollen må følge.'
 presets_for_role: 'Felt standardverdi for rollen {role}.'
 presentation_and_aliases: Presentation & Aliaser
-revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen...
-changes_made: Dette er de spesifikke endringene som ble gjort...
-no_relational_data: Husk at dette ikke inkluderer relasjonsdata.
 hide_field_on_detail: Skjul felt ved detaljert visning
 show_field_on_detail: Vis felt ved detaljert visning
 delete_field: Slett felt
@@ -240,7 +236,7 @@ move_to_folder: Flytt til mappe
 move: Flytt
 system: System
 add_field_related: Legg til felt til relatert kolleksjon
-interface: Grensesnitt
+interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
@@ -282,7 +278,6 @@ no_files_copy: Det er ingen filer her.
 user_count: 'Ingen brukere | En bruker | {count} brukere'
 no_users_copy: Det er ingen brukere i denne rollen enda.
 webhooks_count: 'Ingen Webhooks | En Webhook | {count} Webhooks'
-no_webhooks_copy: Det finnes ingen webhooks ennå.
 all_items: Alle elementer
 csv: CSV
 no_collections: Ingen kolleksjoner
@@ -306,7 +301,6 @@ documentation: Dokumentasjon
 sidebar: Sidepanel
 duration: Varighet
 charset: Charset
-second: Sekund
 file_moved: Fil Flyttet
 collection_created: Kolleksjon opprettet
 modified_on: Modifisert den
@@ -336,6 +330,7 @@ errors:
   FORBIDDEN: Forbudt
   INVALID_CREDENTIALS: Feil brukernavn eller passord
   INVALID_OTP: Feil engangspassord
+  NOT_NULL_VIOLATION: Verdien kan ikke være null
 bookmarks: Bokmerke
 back: Tilbake
 operators:
@@ -404,6 +399,7 @@ fields:
     tags: Etiketter
     language: Språk
     status: Status
+    status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
   directus_settings:
@@ -415,10 +411,29 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
+field_options:
+  directus_activity:
+    create: Opprett
+    update: Oppdater
+  directus_collections:
+    language: Språk
+    archive_divider: Arkiv
+    divider: Sorter
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collections_name: Kolleksjoner
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    actions_create: Opprett
+    actions_update: Oppdater
 comment: Kommenter
-continue: Fortsett
-default: Standard
-delete: Slett
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse

@@ -1,13 +1,13 @@
 import path from 'path';
 import fse from 'fs-extra';
-import { Extension, ExtensionManifestRaw } from '../../types';
+import { Extension, ExtensionManifestRaw, ExtensionPackageType, ExtensionType } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, EXTENSION_TYPES } from '../../constants';
+import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY } from '../../constants';
 import { pluralize } from '../pluralize';
 import { validateExtensionManifest } from '../validate-extension-manifest';
 
-export async function getPackageExtensions(root: string): Promise<Extension[]> {
+export async function getPackageExtensions(root: string, types: readonly ExtensionPackageType[]): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
@@ -31,35 +31,37 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 				throw new Error(`The extension manifest of "${extensionName}" is not valid.`);
 			}
 
-			if (extensionManifest[EXTENSION_PKG_KEY].type === 'pack') {
-				const extensionChildren = Object.keys(extensionManifest.dependencies ?? {}).filter((dep) =>
-					EXTENSION_NAME_REGEX.test(dep)
-				);
+			if (types.includes(extensionManifest[EXTENSION_PKG_KEY].type)) {
+				if (extensionManifest[EXTENSION_PKG_KEY].type === 'pack') {
+					const extensionChildren = Object.keys(extensionManifest.dependencies ?? {}).filter((dep) =>
+						EXTENSION_NAME_REGEX.test(dep)
+					);
 
-				const extension: Extension = {
-					path: extensionPath,
-					name: extensionName,
-					version: extensionManifest.version,
-					type: extensionManifest[EXTENSION_PKG_KEY].type,
-					host: extensionManifest[EXTENSION_PKG_KEY].host,
-					children: extensionChildren,
-					local: false,
-					root: root === undefined,
-				};
+					const extension: Extension = {
+						path: extensionPath,
+						name: extensionName,
+						version: extensionManifest.version,
+						type: extensionManifest[EXTENSION_PKG_KEY].type,
+						host: extensionManifest[EXTENSION_PKG_KEY].host,
+						children: extensionChildren,
+						local: false,
+						root: root === undefined,
+					};
 
-				extensions.push(extension);
-				extensions.push(...(await listExtensionsChildren(extension.children || [], extension.path)));
-			} else {
-				extensions.push({
-					path: extensionPath,
-					name: extensionName,
-					version: extensionManifest.version,
-					type: extensionManifest[EXTENSION_PKG_KEY].type,
-					entrypoint: extensionManifest[EXTENSION_PKG_KEY].path,
-					host: extensionManifest[EXTENSION_PKG_KEY].host,
-					local: false,
-					root: root === undefined,
-				});
+					extensions.push(extension);
+					extensions.push(...(await listExtensionsChildren(extension.children || [], extension.path)));
+				} else {
+					extensions.push({
+						path: extensionPath,
+						name: extensionName,
+						version: extensionManifest.version,
+						type: extensionManifest[EXTENSION_PKG_KEY].type,
+						entrypoint: extensionManifest[EXTENSION_PKG_KEY].path,
+						host: extensionManifest[EXTENSION_PKG_KEY].host,
+						local: false,
+						root: root === undefined,
+					});
+				}
 			}
 		}
 
@@ -67,10 +69,10 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 	}
 }
 
-export async function getLocalExtensions(root: string): Promise<Extension[]> {
+export async function getLocalExtensions(root: string, types: readonly ExtensionType[]): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
-	for (const extensionType of EXTENSION_TYPES) {
+	for (const extensionType of types) {
 		const typeDir = pluralize(extensionType);
 		const typePath = path.resolve(root, typeDir);
 

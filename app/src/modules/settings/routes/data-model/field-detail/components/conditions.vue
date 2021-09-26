@@ -55,6 +55,11 @@ export default defineComponent({
 					interface: 'input-code',
 					options: {
 						language: 'json',
+						placeholder: `{
+	"myField": {
+		"_eq": "Some Text"
+	}
+}`,
 					},
 				},
 			},
@@ -78,6 +83,18 @@ export default defineComponent({
 					interface: 'boolean',
 					options: {
 						label: t('hidden_on_detail'),
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'required',
+				name: t('required'),
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: t('require_value_to_be_set'),
 					},
 					width: 'half',
 				},

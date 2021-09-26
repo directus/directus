@@ -35,7 +35,7 @@
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -50,8 +50,8 @@
 					<v-button secondary @click="confirmDelete = false">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button class="action-delete" :loading="deleting" @click="remove">
-						{{ t('delete') }}
+					<v-button kind="danger" :loading="deleting" @click="remove">
+						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -117,7 +117,7 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					deleting.value = false;

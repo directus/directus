@@ -33,7 +33,7 @@ export default defineInterface({
 	description: '$t:interfaces.input-code.description',
 	icon: 'code',
 	component: InterfaceCode,
-	types: ['string', 'json', 'text'],
+	types: ['string', 'json', 'text', 'geometry'],
 	options: [
 		{
 			field: 'language',

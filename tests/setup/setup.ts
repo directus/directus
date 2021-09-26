@@ -40,13 +40,17 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 						context: path.resolve(__dirname, '..', '..'),
 						src: ['Dockerfile', ...result],
 					},
-					{ t: 'directus-test-image', buildargs: { NODE_VERSION }, cachefrom: '["directus-test-image"]' }
+					{
+						t: 'directus-test-image',
+						buildargs: { NODE_VERSION },
+						cachefrom: ['directus-test-image'], // Docker now requires this to be an actual array, but Dockerode's types haven't been updated yet
+					} as unknown as Dockerode.ImageBuildOptions
 				);
 
 				await new Promise((resolve, reject) => {
 					docker.modem.followProgress(
 						stream,
-						(err: Error, res: any) => {
+						(err, res) => {
 							if (err) {
 								reject(err);
 							} else {
@@ -82,7 +86,7 @@ export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 									await new Promise((resolve, reject) => {
 										docker.modem.followProgress(
 											stream,
-											(err: Error, res: any) => {
+											(err, res) => {
 												if (err) {
 													reject(err);
 												} else {

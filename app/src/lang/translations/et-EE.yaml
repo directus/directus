@@ -1,4 +1,5 @@
 ---
+archived: Arhiveeritud
 edit_field: Muuda välja
 item_revision: Kirje parandamine
 duplicate_field: Korduv väli
@@ -41,7 +42,6 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
-public: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
@@ -51,7 +51,7 @@ os_type: OS Tüüp
 os_version: OS Versioon
 os_uptime: OS Ülevaloleku aeg
 os_totalmem: OS Mälu
-archive: Arhiveeri
+archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
@@ -106,9 +106,6 @@ fields_for_role: '{role} rollil lubatud väljade {action}.'
 validation_for_role: 'Tegevuse {action} jaoks on vajalik roll {role}.'
 presets_for_role: 'Välja vaikeväärtuseks on {role} roll.'
 presentation_and_aliases: Kujundus ja aliased
-revision_post_update: Sellisena paistis see objekt pärast uuendamist...
-changes_made: Tehti sellised parandused...
-no_relational_data: Pea meeles, et see ei sisalda seotud andmeid.
 hide_field_on_detail: Peida väli detailvaates
 show_field_on_detail: Näita detailvaates
 delete_field: Kustuta väli
@@ -249,7 +246,7 @@ move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
-interface: Kasutajaliides
+interface_label: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -279,7 +276,6 @@ drag_mode: Lohistusrežiim
 cancel_crop: Tühista lõikamine
 original: Originaal
 url: URL
-import: Impordi
 file_details: Faili Üksikasjad
 dimensions: Mõõtmed
 size: Suurus
@@ -345,7 +341,6 @@ no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
 no_users_copy: Selles rollis pole ühtegi kasutajat.
 webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
-no_webhooks_copy: Webhooke ei leitud.
 all_items: Kõik kirjed
 csv: CSV
 no_collections: Andmekogusid pole
@@ -357,6 +352,7 @@ display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
 active: aktiivne
+copy: Kopeeri
 users: Kasutajad
 activity: Tegevus
 webhooks: Webhooks
@@ -369,7 +365,6 @@ documentation: Dokumentatsioon
 sidebar: Külgmenüü
 duration: Kestus
 charset: Sümbolid
-second: sekundit
 file_moved: Fail on liigutatud
 collection_created: Andmekogu on lisatud
 modified_on: Muudetud
@@ -407,8 +402,9 @@ errors:
   RECORD_NOT_UNIQUE: Kirje pole unikaalne
   USER_SUSPENDED: Kasutajakonto on suletud
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
-  UNKNOWN: Ootamatu viga
   INTERNAL_SERVER_ERROR: Ootamatu viga
+  NOT_NULL_VIOLATION: Väärtus ei saa olla null
+  UNKNOWN: Ootamatu viga
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -536,6 +532,7 @@ toggle: Lülita
 icon_on: Ikoon sees
 icon_off: Ikoon väljas
 label: Silt
+full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
 media: Meedia
@@ -632,7 +629,6 @@ unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
-page_help_collections_overview: '**Andmekogude ülevaade** — Nimekiri andmekogudest, millele sul on ligipääs'
 page_help_collections_collection: >-
   **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
 page_help_collections_item: >-
@@ -694,7 +690,7 @@ fields:
     hidden: Peidetud
     singleton: Üksik
     translations: Andmekogu nimetuste tõlked
-    archive_app_filter: Arhiveeri rakenduse filter
+    archive_app_filter: Arhiveerimisfilter
     archive_value: Arhiveeri väärtus
     unarchive_value: Aktiveeri väärtus
     sort_field: Sorteerimisväli
@@ -737,6 +733,8 @@ fields:
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
+    status_active: aktiivne
+    status_archived: Arhiveeritud
     role: Roll
     token: Kontrollkood
     last_page: Viimane leht
@@ -773,11 +771,38 @@ fields:
     users: Kasutajad selles rollis
     module_list: Moodulite näitamine
     collection_list: Andmekogude näitamine
+  directus_webhooks:
+    name: Nimi
+    status: Staatus
 field_options:
+  directus_activity:
+    create: Loo
+    update: Uuenda
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
     do_not_track_anything: Ära jälgi midagi
+    collection_setup: Andmekogu seadistus
+    singleton: Käsitle üksiku objektina
+    language: Keel
+    archive_divider: Arhiiv
+    divider: Sorteeri
+  directus_roles:
+    fields:
+      icon_name: Ikoon
+      name_name: Nimi
+      name_placeholder: Sisesta pealkiri...
+    collection_list:
+      fields:
+        type_name: Tüüp
+    collections_name: Kogud
+  directus_users:
+    status_dropdown_active: aktiivne
+    status_dropdown_archived: Arhiveeritud
+  directus_webhooks:
+    status_options_active: aktiivne
+    actions_create: Loo
+    actions_update: Uuenda
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -795,11 +820,8 @@ referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
 referential_action_set_null: Nulli {field} väli
 referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
-continue: Continue
 editing_role: '{role} roll'
 creating_webhook: Loo veebikonks
-default: Vaikimisi
-delete: Kustuta
 delete_are_you_sure: >-
   See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-
@@ -964,6 +986,8 @@ interfaces:
     box: Plokk / Tekstisisene
     imageToken: Pildi kood
     imageToken_label: Milline (staatiline) kood lisada piltide allikatele
+  map:
+    zoom: Suurenda
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -1157,3 +1181,6 @@ layouts:
     calendar: Kalender
     start_date_field: Alguse kuupäev
     end_date_field: Lõpu kuupäev
+panels:
+  label:
+    name: Silt

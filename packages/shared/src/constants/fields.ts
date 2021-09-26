@@ -16,8 +16,20 @@ export const TYPES = [
 	'uuid',
 	'hash',
 	'csv',
+	'geometry',
 	'unknown',
 ] as const;
+
+export const GEOMETRY_TYPES = [
+	'Point',
+	'LineString',
+	'Polygon',
+	'MultiPoint',
+	'MultiLineString',
+	'MultiPolygon',
+] as const;
+
+export const GEOMETRY_FORMATS = ['native', 'geojson', 'wkt', 'lnglat'] as const;
 
 export const LOCAL_TYPES = [
 	'standard',

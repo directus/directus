@@ -14,7 +14,7 @@
 			<v-dialog v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -32,8 +32,8 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-delete" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete') }}
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -66,7 +66,7 @@
 						<v-button secondary @click="confirmArchive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button class="action-archive" :loading="archiving" @click="toggleArchive">
+						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? t('unarchive') : t('archive') }}
 						</v-button>
 					</v-card-actions>
@@ -190,7 +190,7 @@ import { Field } from '@directus/shared/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -224,7 +224,7 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const { info: collectionInfo } = useCollection(ref('directus_users'));
+		const { info: collectionInfo } = useCollection('directus_users');
 
 		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
@@ -388,7 +388,7 @@ export default defineComponent({
 				const savedItem: Record<string, any> = await save();
 				await setLang(savedItem);
 
-				revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.refresh?.();
 
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -474,7 +474,7 @@ export default defineComponent({
 						: null;
 
 					roleName.value = response.data.data?.role?.name;
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					loading.value = false;

@@ -37,7 +37,7 @@ router.post(
 				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
 				res.locals.payload = { data: record };
 			}
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -114,7 +114,7 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}
@@ -140,7 +140,7 @@ router.patch(
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
 			}

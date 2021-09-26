@@ -1,5 +1,5 @@
 import { useCollectionsStore, useUserStore } from '@/stores/';
-import { Collection } from '@/types';
+import { Collection } from '@directus/shared/types';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 
 export type NavItem = {
@@ -52,11 +52,12 @@ export default function useNavigation(searchQuery?: Ref<string | null>): UsableN
 			const group: NavItemGroup = {
 				name: groupRaw.group_name,
 				accordion: groupRaw.accordion,
-				items: groupRaw.collections
-					.map(({ collection }) => collectionsStore.getCollection(collection) as Collection)
-					.filter((collection) => !!collection)
-					.map(collectionToNavItem)
-					.filter(search),
+				items:
+					groupRaw.collections
+						?.map(({ collection }) => collectionsStore.getCollection(collection) as Collection)
+						.filter((collection) => !!collection)
+						.map(collectionToNavItem)
+						.filter(search) ?? [],
 			};
 
 			return group;

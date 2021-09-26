@@ -1,14 +1,20 @@
 ---
 edit_field: Rediger Felt
+conditions: Betingelser
 item_revision: Genstandsrevision
 duplicate_field: Dupliker Felt
 half_width: Halv Bredde
 full_width: Fuld Bredde
+group: Gruppe
+and: Og
+or: Eller
 fill_width: Fuld Bredde
 field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
 add_field: Tilføj Felt
 role_name: Rollenavn
+exclusive: Eksklusiv
+children: Underordnede
 db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
 show_archived_items: Vis arkiverede element
 edited: Værdi Ændret
@@ -21,6 +27,7 @@ create_user: Opret bruger
 create_webhook: Opret Webhook
 invite_users: Inviter brugere
 invite: Inviter
+email_already_invited: Email "{email}" er allerede blevet inviteret
 emails: E-mail
 connection_excellent: Udmærket forbindelse
 connection_good: God forbindelse
@@ -40,7 +47,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
-public: Offentlig
+public_label: Offentlig
 public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
 not_allowed: Ikke tilladt
 directus_version: Directus Version
@@ -79,9 +86,16 @@ validationError:
   null: Værdien skal være null
   nnull: Værdien kan ikke være null
   required: Værdi er påkrævet
+  unique: Værdien skal være unik
+  regex: Værdien har ikke det korrekte format
 all_access: Alle Adgang
 no_access: Ingen Adgang
 use_custom: Brug Brugerdefineret
+nullable: Nullbar
+allow_null_value: Tillad NULL værdi
+allow_multiple: Tillad Flere
+allow_multiple_to_be_open: Tillad åbning af flere
+enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_m2o: M2O Forhold
@@ -97,9 +111,6 @@ fields_for_role: 'Felter {role} Rollen kan {action}.'
 validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
 presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
 presentation_and_aliases: Presentation & Aliases
-revision_post_update: Her er hvad dette element så ud som, efter opdateringen...
-changes_made: Disse er de specifikke ændringer, der blev lavet...
-no_relational_data: Husk, at dette ikke omfatter relationelle data.
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
 delete_field: Slet Felt
@@ -130,6 +141,7 @@ boolean: Boolean
 date: Dato
 text: Tekst
 auto_generate: Auto- Generér
+new_field: 'Nyt felt'
 add_note: Tilføj en nyttig note til brugere...
 default_value: Standardværdi
 next: Næste
@@ -142,8 +154,10 @@ clear_value: Nulstil værdi
 reset_to_default: Nulstil til standard
 undo_changes: Fortryd ændringer
 notifications: Notifikationer
+show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
+settings_update_success: Indstillinger opdateret
 title: Titel
 revision_delta_created: Oprettet
 revision_delta_created_externally: Oprettet Eksternt
@@ -161,8 +175,15 @@ item_create_success: Element oprettet | Elementer oprettet
 item_update_success: Element opdateret | Elementer opdateret
 this_collection: Denne Samling
 related_collection: Relateret Samling
+export_data: Eksporter data
 format: Format
+last_page: Sidste side
 submit: Send
+system: System
+delete_comment: Slet kommentar
+month: Måned
+year: År
+select_all: Vælg alle
 months:
   january: Januar
   february: Februar
@@ -176,7 +197,14 @@ months:
   october: Oktober
   november: November
   december: December
+drag_mode: Træktilstand
+cancel_crop: Annuller beskæring
+original: Original
+url: URL
+import_label: Importér
+dimensions: Dimensioner
 created: Oprettet
+modified: Ændret
 checksum: Kontrolsum
 owner: Ejer
 download: Download
@@ -198,6 +226,8 @@ duration: Varighed
 modified_on: Ændringsdato
 status: Status
 remove: Fjern
+errors:
+  NOT_NULL_VIOLATION: Værdien kan ikke være null
 bookmarks: Foretrukne
 back: Tilbage
 placeholder: Placeholder
@@ -213,6 +243,7 @@ operators:
   ncontains: Indeholder ikke
   empty: Er tom
 loading: Indlæser...
+value_unique: Værdien skal være unik
 no_results: Ingen resultater
 role: Rolle
 create: Opret
@@ -225,6 +256,7 @@ height: Højde
 wysiwyg_options:
   codeblock: Kode
   remove: Fjern
+  selectall: Vælg alle
   table: Tabel
 choices: Valgmuligheder
 deselect: Afmarkér
@@ -289,6 +321,7 @@ fields:
     tfa_secret: To-faktor godkendelse
     status: Status
     role: Rolle
+    last_page: Sidste side
   directus_settings:
     project_name: Projektnavn
   directus_fields:
@@ -299,10 +332,25 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_webhooks:
+    name: Navn
+    status: Status
+field_options:
+  directus_activity:
+    create: Opret
+    update: Opdater
+  directus_collections:
+    language: Sprog
+    archive_divider: Arkiver
+  directus_roles:
+    fields:
+      icon_name: Ikon
+      name_name: Navn
+    collections_name: Samlinger
+  directus_webhooks:
+    actions_create: Opret
+    actions_update: Opdater
 comment: Kommenter
-continue: Forsæt
-default: Standard
-delete: Slet
 delete_field_are_you_sure: >-
   Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
 description: Beskrivelse

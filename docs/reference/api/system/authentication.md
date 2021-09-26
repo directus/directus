@@ -341,7 +341,7 @@ List all the configured oAuth providers.
 ::: tip Configuring oAuth
 
 To learn more about setting up oAuth providers, see
-[Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-openid).
+[Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-sso-openid).
 
 :::
 

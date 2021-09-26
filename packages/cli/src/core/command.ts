@@ -75,7 +75,7 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 					help: await help.displayCommandHelp(command),
 				};
 			}
-		} catch (error) {
+		} catch (error: any) {
 			return await handleError(error);
 		}
 
@@ -94,7 +94,7 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 				result: result,
 				help: helpData,
 			};
-		} catch (error) {
+		} catch (error: any) {
 			return await handleError(error);
 		}
 	};

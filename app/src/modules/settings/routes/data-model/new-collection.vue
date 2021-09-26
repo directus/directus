@@ -124,8 +124,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, reactive } from 'vue';
 import api from '@/api';
-import { Relation } from '@/types';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
@@ -248,7 +247,7 @@ export default defineComponent({
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (err) {
+			} catch (err: any) {
 				unexpectedError(err);
 			} finally {
 				saving.value = false;
@@ -317,15 +316,15 @@ export default defineComponent({
 						options: {
 							choices: [
 								{
-									text: 'Published',
+									text: '$t:published',
 									value: 'published',
 								},
 								{
-									text: 'Draft',
+									text: '$t:draft',
 									value: 'draft',
 								},
 								{
-									text: 'Archived',
+									text: '$t:archived',
 									value: 'archived',
 								},
 							],

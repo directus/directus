@@ -1,11 +1,12 @@
-import { Language } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
+import { getBasemapSources } from '@/utils/geometry/basemap';
 import {
 	useAppStore,
 	useCollectionsStore,
 	useFieldsStore,
 	useLatencyStore,
+	useInsightsStore,
 	usePermissionsStore,
 	usePresetsStore,
 	useRelationsStore,
@@ -35,6 +36,7 @@ export function useStores(
 		useLatencyStore,
 		useRelationsStore,
 		usePermissionsStore,
+		useInsightsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
@@ -61,9 +63,12 @@ export async function hydrate(stores = useStores()): Promise<void> {
 		if (userStore.currentUser?.role) {
 			await Promise.all(stores.filter(({ $id }) => $id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
-			await setLanguage((userStore.currentUser?.language as Language) || 'en-US');
+
+			await setLanguage(userStore.currentUser?.language ?? 'en-US');
 		}
-	} catch (error) {
+
+		appStore.basemap = getBasemapSources()[0].name;
+	} catch (error: any) {
 		appStore.error = error;
 	} finally {
 		appStore.hydrating = false;

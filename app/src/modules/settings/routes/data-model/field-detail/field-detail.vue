@@ -133,7 +133,7 @@ import api from '@/api';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import useCollection from '@/composables/use-collection';
+import { useCollection } from '@directus/shared/composables';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 import formatTitle from '@directus/format-title';
@@ -252,7 +252,7 @@ export default defineComponent({
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: t('interface'),
+						text: t('interface_label'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
@@ -434,7 +434,7 @@ export default defineComponent({
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
-			} catch (err) {
+			} catch (err: any) {
 				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'CONTAINS_NULL_VALUES') {
 					nullValueOverride.value = state.fieldData?.schema?.default_value || null;
 					nullValuesDialog.value = true;
@@ -486,7 +486,7 @@ export default defineComponent({
 
 					nullValuesDialog.value = false;
 					return saveField();
-				} catch (err) {
+				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
 					nullOverrideSaving.value = false;
@@ -519,6 +519,6 @@ export default defineComponent({
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>
