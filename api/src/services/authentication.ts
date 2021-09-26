@@ -253,7 +253,9 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const { expires, data: sessionData, ...user } = record;
+		delete record.expires;
+
+		const { data: sessionData, ...user } = record;
 
 		const provider = getAuthProvider(user.provider);
 		await provider.refresh(clone(user), sessionData);
