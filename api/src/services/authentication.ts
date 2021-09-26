@@ -133,7 +133,7 @@ export class AuthenticationService {
 		let sessionData: SessionData = null;
 
 		try {
-			sessionData = await provider.login(user, cloneDeep(payload));
+			sessionData = await provider.login(clone(user), cloneDeep(payload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
