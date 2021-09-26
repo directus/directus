@@ -274,7 +274,6 @@ export class AuthenticationService {
 	}
 
 	async logout(refreshToken: string): Promise<void> {
-		
 		await emitter.emitAsync('auth.logout.before', refreshToken, {
 			event: 'auth.logout.before',
 			action: 'logout',
