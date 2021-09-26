@@ -274,7 +274,28 @@ export class AuthenticationService {
 	}
 
 	async logout(refreshToken: string): Promise<void> {
+		
+		await emitter.emitAsync('auth.logout.before', refreshToken, {
+			event: 'auth.logout.before',
+			action: 'logout',
+			schema: this.schema,
+			payload: refreshToken,
+			accountability: this.accountability,
+			user: null,
+			database: this.knex,
+		});
+
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
+
+		emitAsyncSafe('auth.logout', refreshToken, {
+			event: 'auth.logout',
+			action: 'logout',
+			schema: this.schema,
+			payload: refreshToken,
+			accountability: this.accountability,
+			user: null,
+			database: this.knex,
+		});
 	}
 
 	generateTFASecret(): string {
