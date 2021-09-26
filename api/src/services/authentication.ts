@@ -253,8 +253,6 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		delete record.expires;
-
 		const { data: sessionData, ...user } = record;
 
 		const provider = getAuthProvider(user.provider);
