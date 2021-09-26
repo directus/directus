@@ -3,7 +3,6 @@ import grant from 'grant';
 import ms from 'ms';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import {
 	InvalidCredentialsException,
 	RouteNotFoundException,
@@ -293,12 +292,9 @@ router.get(
 				// Do nothing
 			});
 
-			// The default auth provider should allow auth by email. If that ever
-			// changes, this will need to be addressed
-			authResponse = await authenticationService.authenticate({
-				identifier: email,
-				provider: DEFAULT_AUTH_PROVIDER,
-			});
+			// Workaround to use the default local auth provider to validate
+			// the email and login without a password.
+			authResponse = await authenticationService.login(undefined, { identifier: email });
 		} catch (error: any) {
 			emitStatus('fail');
 

@@ -8,13 +8,13 @@ import { InvalidConfigException } from './exceptions';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from '@directus/shared/utils';
 
-const providerKeys = toArray(env.AUTH_PROVIDERS);
+const providerNames = toArray(env.AUTH_PROVIDERS);
 
 const providers: Map<string, AuthDriver> = new Map();
 
 export function getAuthProvider(provider: string): AuthDriver {
 	// When providers haven't been registered yet
-	if (providerKeys.length !== providers.size) {
+	if (providerNames.length !== providers.size) {
 		registerProviders();
 	}
 
@@ -41,28 +41,28 @@ function registerProviders() {
 	}
 
 	// Register configured providers
-	if (providerKeys.includes(DEFAULT_AUTH_PROVIDER)) {
-		logger.error(`Cannot override "${DEFAULT_AUTH_PROVIDER}" auth provider.`);
-		process.exit(1);
-	}
+	providerNames.forEach((name: string) => {
+		name = name.trim();
 
-	providerKeys.forEach((key: string) => {
-		key = key.trim();
+		if (name === DEFAULT_AUTH_PROVIDER) {
+			logger.error(`Cannot override "${DEFAULT_AUTH_PROVIDER}" auth provider.`);
+			process.exit(1);
+		}
 
-		const { driver, ...config } = getConfigFromEnv(`AUTH_${key.toUpperCase()}_`);
+		const { driver, ...config } = getConfigFromEnv(`AUTH_${name.toUpperCase()}_`);
 
 		if (!driver) {
-			logger.warn(`Missing driver definition for "${key}" auth provider.`);
+			logger.warn(`Missing driver definition for "${name}" auth provider.`);
 			return;
 		}
 
-		const provider = getProviderInstance(driver, { provider: key, ...config });
+		const provider = getProviderInstance(driver, { provider: name, ...config });
 
 		if (!provider) {
 			logger.warn(`Invalid "${driver}" auth driver.`);
 			return;
 		}
 
-		providers.set(key, provider);
+		providers.set(name, provider);
 	});
 }

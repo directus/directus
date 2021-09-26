@@ -11,10 +11,10 @@ import { InvalidCredentialsException, InvalidOTPException, UserSuspendedExceptio
 import { createRateLimiter } from '../rate-limiter';
 import { ActivityService } from './activity';
 import { TFAService } from './tfa';
-import { AbstractServiceOptions, Action, SchemaOverview, Session, User } from '../types';
+import { AbstractServiceOptions, Action, SchemaOverview, Session, User, SessionData } from '../types';
 import { Accountability } from '@directus/shared/types';
 import { SettingsService } from './settings';
-import { merge } from 'lodash';
+import { merge, clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
 import { stall } from '../utils/stall';
 
@@ -38,8 +38,6 @@ export class AuthenticationService {
 	 *
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
-	 *
-	 * @param options
 	 */
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
@@ -65,11 +63,11 @@ export class AuthenticationService {
 				'external_identifier'
 			)
 			.from('directus_users')
-			.where('id', await provider.getUserID(payload))
+			.where('id', await provider.getUserID(cloneDeep(payload)))
 			.andWhere('provider', providerName)
 			.first();
 
-		const updatedOptions = await emitter.emitAsync('auth.login.before', {
+		const updatedPayload = await emitter.emitAsync('auth.login.before', {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
@@ -80,8 +78,8 @@ export class AuthenticationService {
 			database: this.knex,
 		});
 
-		if (updatedOptions) {
-			payload = updatedOptions.length > 0 ? updatedOptions.reduce((acc, val) => merge(acc, val), {}) : payload;
+		if (updatedPayload) {
+			payload = updatedPayload.length > 0 ? updatedPayload.reduce((acc, val) => merge(acc, val), {}) : payload;
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -132,10 +130,10 @@ export class AuthenticationService {
 			}
 		}
 
-		let sessionData: Record<string, any> | null = null;
+		let sessionData: SessionData = null;
 
 		try {
-			sessionData = await provider.login(user, payload);
+			sessionData = await provider.login(user, cloneDeep(payload));
 		} catch (e) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -175,7 +173,8 @@ export class AuthenticationService {
 		});
 
 		if (customClaims) {
-			tokenPayload = customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), payload) : payload;
+			tokenPayload =
+				customClaims.length > 0 ? customClaims.reduce((acc, val) => merge(acc, val), tokenPayload) : tokenPayload;
 		}
 
 		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
@@ -233,7 +232,6 @@ export class AuthenticationService {
 
 		const record = await this.knex
 			.select<Session & User>(
-				's.token',
 				's.expires',
 				's.data',
 				'u.id',
@@ -255,12 +253,10 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
-		const { token, expires, data, ...user } = record;
-
-		const session = { token, expires, data };
+		const { expires, data: sessionData, ...user } = record;
 
 		const provider = getAuthProvider(user.provider);
-		await provider.refresh({ ...user }, session.data);
+		await provider.refresh(clone(user), sessionData);
 
 		const accessToken = jwt.sign({ id: user.id }, env.SECRET as string, {
 			expiresIn: env.ACCESS_TOKEN_TTL,
@@ -296,8 +292,6 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				's.token',
-				's.expires',
 				's.data'
 			)
 			.from('directus_sessions as s')
@@ -306,12 +300,10 @@ export class AuthenticationService {
 			.first();
 
 		if (record) {
-			const { token, expires, data, ...user } = record;
-
-			const session = { token, expires, data };
+			const { data: sessionData, ...user } = record;
 
 			const provider = getAuthProvider(user.provider);
-			await provider.logout({ ...user }, session.data);
+			await provider.logout(clone(user), sessionData);
 
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
@@ -339,6 +331,6 @@ export class AuthenticationService {
 		}
 
 		const provider = getAuthProvider(user.provider);
-		await provider.verify({ ...user }, password);
+		await provider.verify(clone(user), password);
 	}
 }

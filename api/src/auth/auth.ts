@@ -34,6 +34,7 @@ export abstract class AuthDriver {
 	 * @param _user User information
 	 * @param _payload Any data that the user might've provided
 	 * @throws InvalidCredentialsException
+	 * @returns Data to be stored with the session
 	 */
 	async login(_user: User, _payload: Record<string, any>): Promise<SessionData> {
 		/* Optional, though should probably be set */
@@ -43,8 +44,8 @@ export abstract class AuthDriver {
 	/**
 	 * Handle user session refresh
 	 *
-	 * @param user User information
-	 * @param session Session data
+	 * @param _user User information
+	 * @param _sessionData Session data
 	 * @throws InvalidCredentialsException
 	 */
 	async refresh(_user: User, _sessionData: SessionData): Promise<void> {
@@ -54,9 +55,8 @@ export abstract class AuthDriver {
 	/**
 	 * Handle user session termination
 	 *
-	 * @param user User information
-	 * @param session Session data
-	 * @throws InvalidCredentialsException
+	 * @param _user User information
+	 * @param _sessionData Session data
 	 */
 	async logout(_user: User, _sessionData: SessionData): Promise<void> {
 		/* Optional */

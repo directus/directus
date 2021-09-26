@@ -42,7 +42,9 @@ export class LocalAuthDriver extends AuthDriver {
 	}
 
 	async login(user: User, payload: Record<string, any>): Promise<null> {
-		await this.verify(user, payload.password);
+		if (payload.password) {
+			await this.verify(user, payload.password);
+		}
 		return null;
 	}
 }
@@ -72,12 +74,15 @@ export function createLocalAuthRouter(): Router {
 			});
 
 			const { error } = loginSchema.validate(req.body);
-			if (error) throw new InvalidPayloadException(error.message);
+
+			if (error) {
+				throw new InvalidPayloadException(error.message);
+			}
 
 			const mode = req.body.mode || 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				'local',
+				undefined, // Will default to DEFAULT_AUTH_PROVIDER
 				req.body,
 				req.body?.otp
 			);
