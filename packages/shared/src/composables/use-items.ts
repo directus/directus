@@ -162,8 +162,8 @@ export function useItems(collection: Ref<string | null>, query: Query, fetchOnIn
 		// Make sure all fields that are used to filter are fetched
 		if (fields.value.includes('*') === false) {
 			filters.value.forEach((filter) => {
-				if (fieldsToFetch.includes(filter.field as string) === false) {
-					fieldsToFetch.push(filter.field as string);
+				if (fieldsToFetch.includes((filter as any).field as string) === false) {
+					fieldsToFetch.push((filter as any).field as string);
 				}
 			});
 		}

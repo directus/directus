@@ -4,9 +4,9 @@
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
-			<node
+			<nodes
 				v-else
-				v-model:tree="innerValue"
+				v-model:filter="innerValue"
 				:collection="collectionName"
 				:depth="1"
 				@add-node="addNode($event)"
@@ -26,36 +26,48 @@
 
 <script lang="ts">
 import { useFieldsStore } from '@/stores';
-import { get, set, isEqual, debounce } from 'lodash';
-import { defineComponent, ref, PropType, watch } from 'vue';
+import { get, set } from 'lodash';
+import { defineComponent, PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { FilterOperator } from '@directus/shared/types';
-import Node from './node.vue';
+import { Filter } from '@directus/shared/types';
+import Nodes from './nodes.vue';
 
-export type FilterTree = FilterNode[];
+export function getNodeName(node: Filter) {
+	return Object.keys(node)[0];
+}
 
-export type FilterNode = FilterField | FilterLogic;
+export function getField(node: Record<string, any>): string {
+	const name = getNodeName(node);
+	if (name.startsWith('_')) return '';
+	const subFields = getField(node[name]);
+	return subFields !== '' ? `${name}.${subFields}` : name;
+}
 
-export type FilterLogic = {
-	type: 'logic';
-	name: LogicOperators;
-	values: FilterTree;
-};
+export function getComparator(node: Record<string, any>): string {
+	return getNodeName(get(node, getField(node)));
+}
 
-export type FilterField = {
-	type: 'field';
-	name: string;
-	comparator: FilterOperators;
-	value: any;
-};
+export function fieldToFilter(field: string, operator: string, value: any) {
+	return fieldToFilterR(field.split('.'));
 
-export type LogicOperators = '_and' | '_or';
+	function fieldToFilterR(sections: string[]): Record<string, any> {
+		const section = sections.shift();
 
-export type FilterOperators = `_${FilterOperator}`;
+		if (section !== undefined) {
+			return {
+				[section]: fieldToFilterR(sections),
+			};
+		} else {
+			return {
+				[operator]: value,
+			};
+		}
+	}
+}
 
 export default defineComponent({
 	components: {
-		Node,
+		Nodes,
 	},
 	props: {
 		value: {
@@ -73,118 +85,58 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
-		const innerValue = ref<FilterTree>([]);
 		const { t } = useI18n();
 		const fieldsStore = useFieldsStore();
 
-		watch(
-			() => props.value,
-			(newVal) => {
-				if (newVal === null) {
-					innerValue.value = [];
-					return;
+		const innerValue = computed<Filter[]>({
+			get() {
+				const name = getNodeName(props.value);
+
+				if (name === '_and') {
+					return props.value['_and'];
+				} else {
+					return [props.value];
 				}
-				const newFilter = constructFilterTree(newVal);
-				if (isEqual(innerValue.value, newFilter) === false && newFilter.type === 'logic')
-					innerValue.value = newFilter.values;
 			},
-			{ immediate: true }
-		);
+			set(newVal) {
+				emit('input', { _and: newVal });
+			},
+		});
 
-		watch(
-			innerValue,
-			debounce((newVal: FilterTree) => {
-				const newFilter = deconstructFilterTree({
-					type: 'logic',
-					name: '_and',
-					values: newVal,
-				});
-				if (isEqual(newFilter, props.value) === false) emit('input', newFilter);
-			}, 200),
-			{ deep: true }
-		);
-
-		return { t, innerValue, deconstructFilterTree, constructFilterTree, addNode, removeNode };
+		return { t, addNode, removeNode, innerValue };
 
 		function addNode(type: 'logic' | 'field') {
-			const list = innerValue.value;
-
 			if (type === 'logic') {
-				list.push({
-					type: 'logic',
-					name: '_and',
-					values: [],
-				});
+				innerValue.value = [
+					...innerValue.value,
+					{
+						_and: [],
+					},
+				];
 			} else {
-				list.push({
-					type: 'field',
-					name: fieldsStore.getPrimaryKeyFieldForCollection(props.collectionName).field,
-					comparator: '_eq',
-					value: 0,
-				});
+				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(props.collectionName).field;
+				innerValue.value = [
+					...innerValue.value,
+					{
+						[pkField]: {
+							_eq: 0,
+						},
+					},
+				];
 			}
-			innerValue.value = list;
 		}
 
-		function removeNode(ids: number[]) {
+		function removeNode(ids: string[]) {
 			const id = ids.pop();
 			if (ids.length === 0) {
-				innerValue.value = innerValue.value.filter((node, index) => index !== id);
+				innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
 				return;
 			}
-			let list = get(innerValue.value, idsToPath(ids)) as FilterTree;
+			let list = get(innerValue.value, ids.join('.')) as Filter[];
 
-			list = list.filter((node, index) => index !== id);
+			list = list.filter((node, index) => index !== Number(id));
 
-			innerValue.value = set(innerValue.value, idsToPath(ids), list);
-		}
-
-		function idsToPath(id: number[]) {
-			return id.map((v) => `[${v}]`).join('.values.') + '.values';
-		}
-
-		function deconstructFilterTree(tree: FilterNode): Record<string, any> | null {
-			if (tree === undefined) return null;
-			if (tree.type === 'logic') {
-				return {
-					[tree.name]: tree.values.map((value) => deconstructFilterTree(value)),
-				};
-			} else {
-				if (!tree.name) return null;
-				return set({}, tree.name, {
-					[tree.comparator]: tree.value,
-				});
-			}
-		}
-
-		function constructFilterTree(tree: Record<string, any>, id = [0]): FilterNode {
-			const key = Object.keys(tree)[0];
-			if (key.startsWith('_') && Array.isArray(tree[key]) && key) {
-				return {
-					type: 'logic',
-					name: key as LogicOperators,
-					values: (tree[key] as Record<string, any>[]).map((subTree, index) =>
-						constructFilterTree(subTree, [...id, index])
-					),
-				};
-			} else {
-				let destructTree = tree;
-				let fieldList = [];
-				let key = Object.keys(destructTree)[0];
-
-				while (key.startsWith('_') === false) {
-					fieldList.push(key);
-					destructTree = destructTree[key];
-					key = Object.keys(destructTree)[0];
-				}
-
-				return {
-					type: 'field',
-					name: fieldList.join('.'),
-					comparator: key as FilterOperators,
-					value: destructTree[key],
-				};
-			}
+			innerValue.value = set(innerValue.value, ids.join('.'), list);
 		}
 	},
 });

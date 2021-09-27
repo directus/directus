@@ -2,6 +2,7 @@
 	<span v-if="type === 'boolean'" class="preview" @click="$emit('input', !value)">{{ value }}</span>
 	<input
 		v-else-if="is === 'interface-input'"
+		:type="type"
 		:value="value"
 		:style="{ width }"
 		placeholder="--"

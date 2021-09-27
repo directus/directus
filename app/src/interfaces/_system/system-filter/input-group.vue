@@ -14,7 +14,7 @@
 				'_nstarts_with',
 				'_ends_with',
 				'_nends_with',
-			].includes(field.comparator)
+			].includes(getComparator(field))
 		"
 	>
 		<input-component
@@ -25,7 +25,7 @@
 		></input-component>
 	</template>
 	<div
-		v-else-if="['_in', '_nin'].includes(field.comparator)"
+		v-else-if="['_in', '_nin'].includes(getComparator(field))"
 		class="list"
 		:class="{ moveComma: interfaceType === 'interface-input' }"
 	>
@@ -38,7 +38,7 @@
 			></input-component>
 		</div>
 	</div>
-	<template v-else-if="['_between', '_nbetween'].includes(field.comparator)" class="between">
+	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
 		<input-component
 			:is="interfaceType"
 			:type="fieldInfo.type"
@@ -56,18 +56,19 @@
 </template>
 
 <script lang="ts">
-import { FilterField } from './system-filter.vue';
 import { computed, defineComponent, PropType } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { useI18n } from 'vue-i18n';
-import { clone } from 'lodash';
+import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
+import { FieldFilter } from '@directus/shared/types';
+import { fieldToFilter, getComparator, getField, getNodeName } from './system-filter.vue';
 
 export default defineComponent({
 	components: { InputComponent },
 	props: {
 		field: {
-			type: Object as PropType<FilterField>,
+			type: Object as PropType<FieldFilter>,
 			required: true,
 		},
 		collection: {
@@ -81,7 +82,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const fieldInfo = computed(() => {
-			return fieldsStore.getField(props.collection, props.field.name);
+			return fieldsStore.getField(props.collection, getField(props.field));
 		});
 
 		const interfaceType = computed(() => {
@@ -110,21 +111,28 @@ export default defineComponent({
 
 		const value = computed<any | any[]>({
 			get() {
-				if (['_in', '_nin'].includes(props.field.comparator)) {
-					return [...(props.field.value as string[]).filter((val) => val !== null && val !== ''), null];
+				const fieldPath = getField(props.field);
+				const comparator = getComparator(props.field);
+
+				const value = get(props.field, `${fieldPath}.${comparator}`);
+				if (['_in', '_nin'].includes(getComparator(props.field))) {
+					return [...(value as string[]).filter((val) => val !== null && val !== ''), null];
 				} else {
-					return props.field.value;
+					return value;
 				}
 			},
 			set(newVal) {
-				const newField = clone(props.field);
+				const fieldPath = getField(props.field);
+				const comparator = getComparator(props.field);
 
-				if (['_in', '_nin'].includes(props.field.comparator)) {
-					newField.value = (newVal as string[]).filter((val) => val !== null && val !== '');
+				let value;
+
+				if (['_in', '_nin'].includes(comparator)) {
+					value = (newVal as string[]).filter((val) => val !== null && val !== '');
 				} else {
-					newField.value = newVal;
+					value = newVal;
 				}
-				emit('update:field', newField);
+				emit('update:field', fieldToFilter(fieldPath, comparator, value));
 			},
 		});
 
@@ -134,7 +142,7 @@ export default defineComponent({
 			value.value = newArray;
 		}
 
-		return { t, fieldInfo, interfaceType, value, setValueAt };
+		return { t, fieldInfo, interfaceType, value, setValueAt, getComparator };
 	},
 });
 </script>
