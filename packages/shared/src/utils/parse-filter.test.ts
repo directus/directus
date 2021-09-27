@@ -55,6 +55,9 @@ describe('', () => {
 	});
 
 	it('returns the date', () => {
+		jest.useFakeTimers();
+		jest.setSystemTime(new Date(1632431505992));
+
 		const mockFilter = {
 			_and: [
 				{

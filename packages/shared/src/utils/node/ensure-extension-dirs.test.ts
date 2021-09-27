@@ -2,7 +2,7 @@ import { ensureExtensionDirs } from '.';
 import { EXTENSION_TYPES } from '../../constants/extensions';
 import { ExtensionType } from '../../types';
 
-describe('', () => {
+describe('ensureExtensionDirs', () => {
 	const types = EXTENSION_TYPES as readonly ExtensionType[];
 	it('returns undefined if the folders exist', async () => {
 		expect(await ensureExtensionDirs('./extension', types)).toBe(undefined);
