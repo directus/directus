@@ -834,6 +834,7 @@ fields:
     collection: Raccolta
     icon: Icona
     note: Nota
+    color: Colore
     display_template: Display Template
     hidden: Nascosto
     singleton: Singleton
