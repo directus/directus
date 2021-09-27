@@ -56,6 +56,8 @@ const defaults: Record<string, any> = {
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
 
+	AUTH_PROVIDERS: '',
+
 	OAUTH_PROVIDERS: '',
 
 	EXTENSIONS_PATH: './extensions',
