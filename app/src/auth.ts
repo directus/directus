@@ -60,7 +60,7 @@ idleTracker.on(
 			refresh();
 			idle = false;
 		}
-	}, 500)
+	}, 1000)
 );
 
 idleTracker.on(
@@ -70,7 +70,7 @@ idleTracker.on(
 			refresh();
 			idle = false;
 		}
-	}, 500)
+	}, 1000)
 );
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
