@@ -176,6 +176,7 @@ csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+copy: コピー
 users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
@@ -201,8 +202,8 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
-  UNKNOWN: 予期しないエラーが発生しました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -254,6 +255,7 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+full_screen: 全画面表示
 width: 幅
 height: 高さ
 wysiwyg_options:
@@ -310,6 +312,7 @@ fields:
   directus_collections:
     icon: アイコン
     note: 備考
+    color: 色
     hidden: 非表示
     singleton: シングルトン
     sort_field: フィールドの並べ替え

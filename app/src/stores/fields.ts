@@ -5,7 +5,6 @@ import { notEmpty } from '@/utils/is-empty/';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
-import { parseFilter } from '@/utils/parse-filter';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -86,13 +85,6 @@ export const useFieldsStore = defineStore({
 						},
 					});
 				}
-			}
-
-			if (field.meta?.conditions) {
-				field.meta.conditions = field.meta.conditions.map((condition) => ({
-					...condition,
-					rule: parseFilter(condition.rule),
-				}));
 			}
 
 			return {

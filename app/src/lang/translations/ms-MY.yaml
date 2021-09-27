@@ -97,6 +97,7 @@ fields:
   directus_collections:
     collection: Koleksi
     note: Nota
+    color: Warna
   directus_files:
     title: Tajuk
     description: Penerangan

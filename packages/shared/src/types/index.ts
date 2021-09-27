@@ -12,6 +12,7 @@ export * from './items';
 export * from './layouts';
 export * from './misc';
 export * from './modules';
+export * from './panels';
 export * from './permissions';
 export * from './presets';
 export * from './relations';

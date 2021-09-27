@@ -1,3 +1,253 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+published: منتشر شد
 module_bar: ماژول
+tile_size: اندازه آجر
 edit_field: ویرایش فیلد
+conditions: مزایای همکاری
+maps: نقشه ها
+item_revision: مشاهده ویرایش ها
+enter_a_name: یک نام وارد کنید
+duplicate_field: زمینه های تکراری (Automatic Translation)
+half_width: نصف عرض
+full_width: پهنای کامل
+group: گروه
+and: و
+or: یا
+fill_width: پهنای کامل
+field_name_translations: ترجمه‌های نام فیلد
+enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی ، رمز عبور خود را وارد کنید
+add_field: افزودن فیلد
+role_name: نام نقش
+branch: شاخه
+leaf: برگ
+indeterminate: نامشخص
+edit_collection: ویرایش مجموعه
+exclusive: انحصاری
+children: همراه با کودک
+db_only_click_to_configure: 'فقط پایگاه داده: برای پیکربندی کلیک کنید '
+show_archived_items: نشان دادن یادداشت‌های بایگانی شده
+edited: ارزش ویرایش شد
+required: الزامی
+required_for_app_access: برای دسترسی به برنامه مورد نیاز است
+requires_value: مقدار موردنیاز
+create_preset: ایجاد ایستگاه از پیش تنظیم شده
+create_role: افزودن نقش
+create_user: ایجاد کاربر
+create_webhook: به روزرسانی webhook
+invite_users: دعوت کاربران
+invite: دعوت
+email_already_invited: این آدرس ایمیل قبلا دعوت شده است
+emails: پست الکترونیکی
+connection_excellent: اتصال عالی
+connection_good: اتصال خوب
+connection_fair: اتصال عادلانه
+connection_poor: اتصال ضعیف
+primary: اصلی
+rename_folder: Rename Folder
+delete_folder: حذف پوشه
+prefix: پيشوند
+suffix: پسوند
+reset_bookmark: بازنشانی نشانک
+nullable: قابل خواندن
+allow_null_value: مقدار NULL را مجاز کنید
+allow_multiple: امکان چندین انتخاب
+allow_multiple_to_be_open: اجازه دهید Multiple باز شود
+enter_value_to_replace_nulls: لطفاً یک مقدار جدید برای جایگزینی هر گونه NULL موجود در این قسمت وارد کنید.
+field_standard: استاندارد
+field_presentation: ارائه و نام مستعار
+field_file: فیلتر تک
+field_files: چندین فیلتر
+field_m2o: نسبت
+field_m2a: نسبت
+field_o2m: نسبت
+field_m2m: نسبت
+field_translations: ترجمه‌ها
+field_group: گروه میدانی
+item_permissions: مجوزهای مورد
+field_permissions: مجوزهای مورد
+field_validation: اعتبار سنجی فیلد
+field_presets: ایستگاه از پیش تنظیم شده
+presentation_and_aliases: ارائه و نام مستعار
+revision_post_update: در اینجا این مورد پس از بروزرسانی چگونه بود.
+changes_made: در زیر تغییرات خاصی است که در این تجدید نظر ایجاد شده است.
+no_relational_data: به خاطر داشته باشید که داده های رابطه ای در اینجا گنجانده نشده است.
+hide_field_on_detail: مخفی کردن زمینه در جزئیات
+show_field_on_detail: نمایش قسمت روی جزئیات
+delete_field: حذف فیلد
+fields_and_layout: ویرایش فیلد
+duplicate_where_to: دوست دارید این قسمت را به کجا کپی کنید?
+language: زبان
+global: سراسری
+admins_have_all_permissions: مدیران همه مجوزها را دارند
+camera: دوربین
+exposure: نوردهی
+shutter: شاتر
+iso: ISO
+focal_length: درێژیی تیشکۆیی
+schema_setup_key: نام ستون پایگاه داده این فیلد و کلید API
+create_field: ایجاد فیلد(Field)
+reset_page_preferences: بازنشانی تنظیمات برنامه
+hidden_field: فیلدهای غیرفعال
+hidden_on_detail: مخفی کردن زمینه در جزئیات
+disabled_editing_value: غیرفعال کردن مقدار ویرایش
+key: کلید
+alias: نام مستعار
+bigInteger: عدد صحیح بزرگ
+boolean: بولین
+single_file: فیلتر تک
+multiple_files: چندین فیلتر
+m2o_relationship: رابطه بسیار به یک
+o2m_relationship: رابطه بسیار به یک
+m2m_relationship: رابطه بسیار به یک
+m2a_relationship: رابطه بسیار به یک
+invalid_item: نامعتبر است
+next: بعدی
+field_name: نام فیلد
+translations: ترجمه‌ها
+note: شرح
+enter_a_value: یک مقدار وارد کنید...
+enter_a_placeholder: محل نگهدار را وارد کنید...
+length: طول
+precision_scale: دقت و مقیاس
+readonly: فقط خواندنی
+unique: منحصربه‌فرد
+updated_on: به روز شده در
+updated_by: به روز شده توسط
+primary_key: کلید اصلی
+foreign_key: کلید خارجی
+finish_setup: پایان راه‌اندازی
+dismiss: نادیده گرفتن
+raw_value: مقدار خام
+edit_raw_value: ویرایش مقدار
+enter_raw_value: یک مقدار وارد کنید...
+clear_value: مقدار روشن است
+reset_to_default: بازگردانی به حالت پیش فرض
+undo_changes: برگرداندن تغییرات به حالت قبل
+notifications: اعلانات
+show_all_activity: نمایش فعالیت های اخیر
+page_not_found: برگه یافت نشد
+page_not_found_body: ظاهراً صفحه ای که بدنبال آن هستید وجود ندارد.
+confirm_revert: بازگشت را تأیید کنید
+confirm_revert_body: با این کار مورد به حالت انتخاب شده برمی گردد.
+display: نمایش
+settings_update_success: تنظیمات بروزرسانی شد
+title: عنوان
+revision_delta_created: ایجاد شد
+revision_delta_created_externally: ایجاد شده در خارج
+revision_delta_deleted: حذف شده
+revision_delta_reverted: بازگردانده شد
+revision_delta_other: نسخه جدید
+private_user: کاربر خصوصی
+revision_preview: پیش نمایش ویرایش
+updates_made: حالت ارتقاء
+leave_comment: درج پیغام...
+post_comment_success: دیدگاه منتشر شد
+cancel_crop: لغو برش
+original: اصیل و اصلی
+url: نشانی ‌URL
+import_label: وارد کردن
+file_details: جزئیات فایل
+dimensions: ابعاد
+size: سایز
+created: ایجاد شد
+modified: دستکاری شده
+checksum: کنترلی
+owner: مالک
+edited_by: ویرایش شده توسط
+folder: Folder
+zoom: بزرگنمايی
+download: بارگیری
+open: باز
+open_in_new_window: باز کردن در پنجره جدید
+foreground_color: رنگ روی‌زمینه
+background_color: رنگ زمینه
+upload_from_device: بارگذاری فایل از دستگاه
+choose_from_library: گزینش از کتاب‌خانه
+import_from_url: درون‌برد فایل از
+replace_from_device: بارگذاری فایل از دستگاه
+replace_from_library: گزینش از کتاب‌خانه
+replace_from_url: بارگذاری فایل از دستگاه
+no_file_selected: هیچ فایلی انتخاب نشده است
+download_file: دانلود فایل
+collection_key: مجموعه (Automatic Translation)
+name: نام
+primary_key_field: '~فیلدهای کلید اصلی'
+type: نوع
+creating_new_collection: ایجاد مجموعه جدید
+created_by: ایجاد شده توسط
+created_on: ایجاد شده در
+creating_collection_info: نام مجموعه را بگذارید و قسمت "کلید" منحصر به فرد آن را تنظیم کنید...
+creating_collection_system: هر یک از این زمینه های اختیاری را فعال و تغییر نام دهید.
+auto_increment_integer: عدد صحیح افزایش خودکار
+generated_uuid: UUID تولید شده
+manual_string: رشته به صورت دستی وارد شده است
+wysiwyg_options:
+  forecolor: رنگ روی‌زمینه
+  backcolor: رنگ زمینه
+fields:
+  directus_collections:
+    note: شرح
+  directus_files:
+    title: عنوان
+    created_on: ایجاد شده در
+    created_by: ایجاد شده توسط
+    folder: Folder
+  directus_users:
+    title: عنوان
+    language: زبان
+  directus_fields:
+    note: شرح
+    translation: ترجمه‌های نام فیلد
+  directus_roles:
+    name: نام نقش
+  directus_webhooks:
+    name: نام
+field_options:
+  directus_collections:
+    language: زبان
+  directus_roles:
+    fields:
+      name_name: نام
+    collection_list:
+      fields:
+        type_name: نوع
+limit: محدوده
+interfaces:
+  presentation-links:
+    primary: اصلی
+  select-dropdown:
+    choices_value_placeholder: یک مقدار وارد کنید...
+  map:
+    zoom: بزرگنمايی
+  system-folder:
+    folder: Folder
+displays:
+  boolean:
+    boolean: بولین
+  labels:
+    choices_value_placeholder: یک مقدار وارد کنید...
+  user:
+    name: نام
+layouts:
+  cards:
+    title: عنوان

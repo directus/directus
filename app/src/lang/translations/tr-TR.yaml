@@ -336,6 +336,7 @@ create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
 active: Aktif
+copy: Kopyala
 users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
@@ -377,9 +378,9 @@ errors:
   RECORD_NOT_UNIQUE: Kopya değer tespit edildi
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNKNOWN: Beklenmeyen hata
   INTERNAL_SERVER_ERROR: Beklenmeyen hata
   NOT_NULL_VIOLATION: Değer null olamaz
+  UNKNOWN: Beklenmeyen hata
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
@@ -463,6 +464,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+full_screen: Tam Ekran
 width: Genişlik
 height: Yükseklik
 wysiwyg_options:
@@ -548,6 +550,7 @@ fields:
     collection: Koleksiyon
     icon: İkon
     note: Not
+    color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
     sort_field: Sıralama Alanı
@@ -805,3 +808,6 @@ layouts:
     comfortable: Geniş
     compact: Sıkışık
     cozy: Normal
+panels:
+  label:
+    name: Etiket

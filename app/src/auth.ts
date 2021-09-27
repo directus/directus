@@ -2,6 +2,7 @@ import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@/stores';
+import { debounce } from 'lodash';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 
@@ -52,19 +53,25 @@ idleTracker.on('hide', () => {
 });
 
 // Restart the autorefresh process when the app is used (again)
-idleTracker.on('active', () => {
-	if (idle === true) {
-		refresh();
-		idle = false;
-	}
-});
+idleTracker.on(
+	'active',
+	debounce(() => {
+		if (idle === true) {
+			refresh();
+			idle = false;
+		}
+	}, 1000)
+);
 
-idleTracker.on('show', () => {
-	if (idle === true) {
-		refresh();
-		idle = false;
-	}
-});
+idleTracker.on(
+	'show',
+	debounce(() => {
+		if (idle === true) {
+			refresh();
+			idle = false;
+		}
+	}, 1000)
+);
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	const appStore = useAppStore();

@@ -100,7 +100,7 @@ properties:
             - tiff
         transforms:
           description: Additional transformations to apply
-          type: list
+          type: array
           nullable: true
           items:
             type: object
