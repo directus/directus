@@ -768,6 +768,7 @@ fields:
     collection: Коллекция
     icon: Иконка
     note: Заметка
+    color: Цвет
     display_template: Шаблон отображения
     hidden: Скрыто
     singleton: Синглтон

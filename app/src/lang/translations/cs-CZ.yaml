@@ -314,6 +314,7 @@ fields:
     collection: Kategorie
     icon: Ikona
     note: Poznámka
+    color: Barva
     hidden: Skryté
   directus_files:
     title: Název

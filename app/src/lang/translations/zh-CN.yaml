@@ -766,6 +766,7 @@ fields:
     collection: 收藏
     icon: 图标
     note: 注释
+    color: 颜色
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一

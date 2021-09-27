@@ -289,6 +289,7 @@ fields:
     collection: Samling
     icon: Ikon
     note: Kommentar
+    color: Farve
     hidden: Skjult
   directus_files:
     title: Titel

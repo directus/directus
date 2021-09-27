@@ -685,6 +685,7 @@ fields:
     collection: Kolekcija
     icon: Ikonica
     note: Napomena
+    color: Boja
     display_template: Šablon za Prikaz
     hidden: Sakriveno
     singleton: Singleton

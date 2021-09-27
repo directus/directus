@@ -664,6 +664,7 @@ fields:
     collection: Kollektion
     icon: Ikon
     note: Anteckning
+    color: Färg
     display_template: Visningsmall
     hidden: Dold
     singleton: Singleton

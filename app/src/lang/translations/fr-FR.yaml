@@ -764,6 +764,7 @@ fields:
     collection: Collection
     icon: Icône
     note: Remarque
+    color: Couleur
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton

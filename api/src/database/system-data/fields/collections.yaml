@@ -21,7 +21,7 @@ fields:
   - field: note
     interface: input
     options:
-      placeholder: A description of this collection...
+      placeholder: $t:field_options.directus_collections.note_placeholder
     width: half
 
   - field: icon
@@ -32,7 +32,7 @@ fields:
   - field: color
     interface: select-color
     options:
-      placeholder: $t:field_options.directus_collections.note_placeholder
+      placeholder: $t:interfaces.select-color.placeholder
     width: half
 
   - field: display_template
@@ -52,7 +52,7 @@ fields:
     special: boolean
     interface: boolean
     options:
-      label: Treat as single object
+      label: $t:singleton_label
     width: half
 
   - field: translations
