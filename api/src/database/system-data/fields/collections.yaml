@@ -21,7 +21,7 @@ fields:
   - field: note
     interface: input
     options:
-      placeholder: A description of this collection...
+      placeholder: $t:field_options.directus_collections.note_placeholder
     width: half
 
   - field: icon
