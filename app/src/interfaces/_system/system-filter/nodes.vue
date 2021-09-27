@@ -13,7 +13,7 @@
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header" @mouseenter="enter(index)" @mouseleave="leave()">
+					<div class="header">
 						<v-icon name="drag_indicator" class="drag-handle"></v-icon>
 						<v-select
 							v-tooltip="filterInfo[index].field"
@@ -215,13 +215,21 @@ export default defineComponent({
 
 		function updateField(index: number, newField: string) {
 			const nodeInfo = filterInfo.value[index];
+			const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
+			const newFieldInfo = fieldsStore.getField(props.collection, newField);
 
 			if (nodeInfo.isField === false) return;
 
 			const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-			const value = get(nodeInfo.node, valuePath);
+			let value = get(nodeInfo.node, valuePath);
+			let comparator = nodeInfo.comparator;
 
-			filterSync.value[index] = fieldToFilter(newField, nodeInfo.comparator, value);
+			if (oldFieldInfo?.type !== newFieldInfo?.type) {
+				value = null;
+				comparator = getCompareOptions(newField)[0].value;
+			}
+
+			filterSync.value[index] = fieldToFilter(newField, comparator, value);
 		}
 
 		function updateNode(index: number, field: Filter) {
