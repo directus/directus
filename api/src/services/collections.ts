@@ -298,8 +298,6 @@ export class CollectionsService {
 
 	/**
 	 * Update a single collection by name
-	 *
-	 * Note: only supports updating `meta`
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -315,7 +313,7 @@ export class CollectionsService {
 		const payload = data as Partial<Collection>;
 
 		if (!payload.meta) {
-			throw new InvalidPayloadException(`"meta" key is required`);
+			return collectionKey;
 		}
 
 		const exists = !!(await this.knex

@@ -1,4 +1,4 @@
-name: Run linters
+name: Run tests
 
 on:
   push:
@@ -9,9 +9,12 @@ on:
       - main
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node: ['16']
+    name: Node ${{ matrix.node }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -22,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: ${{ matrix.node }}
 
       - name: Cache node modules
         uses: actions/cache@v2
@@ -39,5 +42,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run linters
-        run: npm run lint
+      - name: Build Dependencies
+        run: npm run build
+
+      - name: Run Tests
+        run: npm run test
+        env:
+          SECRET: TEST_SECRET

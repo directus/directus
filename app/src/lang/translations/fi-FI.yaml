@@ -683,6 +683,7 @@ fields:
     collection: Kokoelma
     icon: Kuvake
     note: Muistiinpano
+    color: Väri
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton

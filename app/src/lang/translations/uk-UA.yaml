@@ -235,6 +235,7 @@ fields:
     collection: Колекція
     icon: Іконка
     note: Примітка
+    color: Колір
     hidden: Приховано
   directus_files:
     title: Заголовок

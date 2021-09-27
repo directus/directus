@@ -247,6 +247,7 @@ wysiwyg_options:
 settings_webhooks: Webhooks
 fields:
   directus_collections:
+    color: Color
     sort_field: Sort Field
   directus_files:
     modified_on: संशोधन का समय

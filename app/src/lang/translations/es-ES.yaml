@@ -702,6 +702,7 @@ fields:
     collection: Colección
     icon: Ícono
     note: Nota
+    color: Color
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
