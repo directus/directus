@@ -8,7 +8,7 @@ describe('ensureExtensionDirs', () => {
 		expect(await ensureExtensionDirs('./extension', types)).toBe(undefined);
 	});
 
-	it('throws an error when I folder cant be opened', () => {
+	it('throws an error when a folder cant be opened', () => {
 		expect(async () => {
 			await ensureExtensionDirs('/.', types);
 		}).rejects.toThrow(`Extension folder "/interfaces" couldn't be opened`);
