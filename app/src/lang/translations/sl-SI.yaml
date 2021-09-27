@@ -722,6 +722,7 @@ fields:
     collection: Zbirka
     icon: Ikona
     note: Opomba
+    color: Barva
     display_template: Prikaži predlogo
     hidden: Skrito
     singleton: En zapis
