@@ -686,6 +686,7 @@ fields:
     collection: Kogud
     icon: Ikoon
     note: Märkus
+    color: Värv
     display_template: Vaate mall
     hidden: Peidetud
     singleton: Üksik
