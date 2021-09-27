@@ -639,6 +639,7 @@ fields:
     collection: Rinkinys
     icon: Ikona
     note: Pastaba
+    color: Spalva
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas

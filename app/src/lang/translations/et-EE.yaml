@@ -640,7 +640,7 @@ page_help_docs_global: >-
 page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
-  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
+  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm
 page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
 page_help_settings_datamodel_collections: >-
   **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
@@ -686,6 +686,7 @@ fields:
     collection: Kogud
     icon: Ikoon
     note: Märkus
+    color: Värv
     display_template: Vaate mall
     hidden: Peidetud
     singleton: Üksik

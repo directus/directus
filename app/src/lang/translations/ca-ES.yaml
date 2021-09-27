@@ -598,7 +598,7 @@ wysiwyg_options:
   superscript: Superíndex
   codeblock: Codi
   blockquote: Bloc de cita
-  bullist: Llista amb vinyetes 
+  bullist: Llista amb vinyetes
   numlist: Llista ordenada
   hr: Regle horitzontal
   link: Afegeix / Edita l'enllaç
@@ -720,6 +720,7 @@ fields:
     collection: Coŀlecció
     icon: Icona
     note: Nota
+    color: Color
     display_template: Mostra la plantilla
     hidden: Amagat
     singleton: Singleton

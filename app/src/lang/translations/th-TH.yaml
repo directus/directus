@@ -744,6 +744,7 @@ fields:
     collection: คอลเลกชัน
     icon: ไอคอน
     note: หมายเหตุ
+    color: สี
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
