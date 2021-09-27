@@ -1,6 +1,11 @@
 import { ensureExtensionDirs } from '.';
 import { EXTENSION_TYPES } from '../../constants/extensions';
 import { ExtensionType } from '../../types';
+import { remove } from 'fs-extra';
+
+afterEach(() => {
+	remove('./extension');
+});
 
 describe('ensureExtensionDirs', () => {
 	const types = EXTENSION_TYPES as readonly ExtensionType[];
