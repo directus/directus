@@ -1,8 +1,11 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { Collection } from '@directus/shared/types';
-import { computed, Ref } from 'vue';
+import { computed, Ref, ComputedRef } from 'vue';
 
-export default function usePermissions(junctionCollection: Ref<Collection>, relationCollection: Ref<Collection>) {
+export default function usePermissions(
+	junctionCollection: Ref<Collection>,
+	relationCollection: Ref<Collection>
+): { createAllowed: ComputedRef<boolean>; selectAllowed: ComputedRef<boolean> } {
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
 
