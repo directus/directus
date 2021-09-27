@@ -5,7 +5,23 @@ import { SchemaInspector } from '../types/schema';
 
 export default class Postgres extends KnexPostgres implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
-		const [columnsResult, primaryKeysResult, geometryColumnsResult] = await Promise.all([
+		type RawColumn = {
+			table_name: string;
+			column_name: string;
+			default_value: string;
+			data_type: string;
+			max_length: number | null;
+			is_identity: boolean;
+			is_nullable: boolean;
+		};
+
+		type RawGeometryColumn = {
+			table_name: string;
+			column_name: string;
+			data_type: string;
+		};
+
+		const [columnsResult, primaryKeysResult] = await Promise.all([
 			// Only select columns from BASE TABLEs to exclude views (Postgres views
 			// cannot have primary keys so they cannot be used)
 			this.knex.raw(
@@ -46,9 +62,15 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
       `,
 				[this.explodedSchema.join(',')]
 			),
-			this.knex
-				.raw(
-					`
+		]);
+
+		const columns: RawColumn[] = columnsResult.rows;
+		const primaryKeys = primaryKeysResult.rows;
+		const geometryColumns: RawGeometryColumn[] = await new Promise((resolve) => {
+			if (!columns.some((col) => col.table_name === 'geometry_columns')) return resolve([]);
+
+			const result = this.knex.raw(
+				`
 		WITH geometries as (
 			select * from geometry_columns
 			union
@@ -63,14 +85,11 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 	        AND t.table_type = 'BASE TABLE'
         WHERE f_table_schema in (?)
       `,
-					[this.explodedSchema.join(',')]
-				)
-				.catch(() => undefined),
-		]);
+				[this.explodedSchema.join(',')]
+			);
 
-		const columns = columnsResult.rows;
-		const primaryKeys = primaryKeysResult.rows;
-		const geometryColumns = geometryColumnsResult?.rows || [];
+			resolve(result.then((r) => r.rows));
+		});
 
 		const overview: SchemaOverview = {};
 
