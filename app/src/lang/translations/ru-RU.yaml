@@ -22,11 +22,13 @@
 published: Опубликовано
 draft: Черновик
 archived: В архиве
+modules: Модули
 module_bar: Панель модулей
 tile_size: Размер тайла
 edit_field: Редактировать поле
 conditions: Условия
 maps: Карты
+item_creation: Создание элемента
 item_revision: Редакция
 enter_a_name: Введите название...
 duplicate_field: Клонировать поле
@@ -53,8 +55,10 @@ required: Необходимые
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
+create_panel: Создать панель
 create_role: Создать роль
 create_user: Создать пользователя
+delete_panel: Удалить панель
 create_webhook: Создать веб-хук
 invite_users: Пригласить пользователей
 invite: Пригласить
@@ -121,7 +125,7 @@ validationError:
   regex: Значение имеет некорректный формат
 all_access: Полный доступ
 no_access: Нет Доступа
-use_custom: Использовать Свой
+use_custom: Настраиваемый
 nullable: Разрешить NULL значение
 allow_null_value: Разрешить NULL значение
 allow_multiple: Разрешить несколько
@@ -146,6 +150,7 @@ fields_for_role: 'Поля, которые Роль {role} может {action}.'
 validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
 presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
 presentation_and_aliases: Представление и Алиасы
+revision_post_create: Вот как этот элемент выглядел когда он был создан.
 revision_post_update: Вот как этот элемент выглядел после обновления.
 changes_made: Ниже приведены конкретные изменения, внесенные в эту редакцию.
 no_relational_data: Имейте в виду, что реляционные данные здесь не включены.
@@ -157,9 +162,22 @@ field_create_success: 'Создано поле: "{field}"'
 field_update_success: 'Обновлено поле: "{field}"'
 duplicate_where_to: Куда вы хотите дублировать это поле?
 language: Язык
+aggregate_function: Агрегирующая функцию
+aggregate_precision: Точность агрегирования
+group_aggregation: Агрегация группы
+group_precision: Точность группы
 global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
+show_zero: Показать нулевое
+sum: Сумма
+sum_distinct: Сумма уникальных
+avg: Среднее
+avg_distinct: Среднее Уникальных
+count: Количество
+count_distinct: Количество уникальных
+min: Мин
+max: Макс
 exposure: Экспозиция
 shutter: Затвор
 iso: ISO
@@ -177,7 +195,9 @@ alias: Алиас
 bigInteger: Big Integer
 boolean: Логическое
 date: Дата
+date_range: Диапазон дат
 datetime: ДатаВремя
+precision: Точность
 decimal: Десятичная
 float: Десятичное
 integer: Целое
@@ -246,6 +266,7 @@ raw_value: Сырое значение
 edit_raw_value: Редактировать Сырое Значение
 enter_raw_value: Введите сырое значение...
 clear_value: Очистить значение
+clear_changes: Сбросить изменения
 reset_to_default: Вернуться к настройкам по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
@@ -265,6 +286,7 @@ revision_delta_reverted: Возвращено
 revision_delta_other: Ревизия
 revision_delta_by: '{date} пользователем {user}'
 private_user: Скрытый Пользователь
+creation_preview: Предпросмотр
 revision_preview: Просмотр Ревизии
 updates_made: Обновления Выполнены
 leave_comment: Оставить комментарий...
@@ -400,12 +422,21 @@ relationship_not_setup: Связь не была настроена правил
 display_template_not_setup: Опция шаблона отображения настроена некорректно
 collection_field_not_setup: Опция поля коллекции настроена некорректно
 select_a_collection: Выберите Коллекцию
+select_a_field: Выберите поле
 active: Активный
+move_to: Переместить в...
 copy: Копировать
+copy_to: Скопировать в...
+no_other_dashboards_copy: У вас пока нет других Досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
 webhooks: Веб-хуки
+decimals: Десятичные
+value_decimals: Значение (десятичное)
+min_value: Мин. значение
+max_value: Макс. значение
+automatic: Автоматически
 field_width: Ширина поля
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
@@ -456,6 +487,7 @@ errors:
   UNPROCESSABLE_ENTITY: Необрабатываемый объект
   INTERNAL_SERVER_ERROR: Неожиданная Ошибка
   NOT_NULL_VIOLATION: Значение не может быть null
+  ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
   UNKNOWN: Неожиданная Ошибка
 security: Безопасность
 value_hashed: Значение Безопасно Хэшировано
@@ -472,6 +504,7 @@ no_app_access_copy: Этому пользователю не разрешено 
 password_reset_sent: Мы отправили вам безопасную ссылку для сброса пароля
 password_reset_successful: Пароль успешно сброшен
 back: Назад
+filter: Фильтр
 editing_image: Редактирование Изображения
 square: Квадрат
 free: Свободный
@@ -494,6 +527,7 @@ visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
 show_hidden_collections: Показать скрытые коллекции
 hide_hidden_collections: Скрыть скрытые коллекции
+show_header: Показать заголовок
 unmanaged_collections: Ненастроенные Коллекции
 system_collections: Системные коллекции
 placeholder: Плейсхолдер
@@ -509,6 +543,7 @@ color: Цвет
 circle: Круг
 empty_item: Пустой Элемент
 log_in_with: 'Войти с помощью {provider}'
+conditional_styles: Условные стили
 advanced_settings: Дополнительные настройки
 advanced_filter: Расширенный Фильтр
 delete_advanced_filter: Удалить Фильтр
@@ -591,12 +626,37 @@ read: Чтение
 update: Обновить
 select_fields: Выбрать поля
 format_text: Форматировать Текст
+format_value: Формат значения
+abbreviate_value: Значение кратко
+operator: Оператор
 bold: Жирный
 toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+insights: Прогнозы (бета)
+dashboard: Доска
+panel: Панель
+panel_options: Параметры панели
+panel_header: Заголовок панели
+panel_name_placeholder: Назовите эту панель...
+panel_note_placeholder: Дополнительная информация об этой панели...
+panel_delete_confirm: Вы уверены, что хотите удалить эту панель? Это действие не может быть отменено.
+dashboard_delete_confirm: Вы уверены, что хотите удалить эту доску? Это действие не может быть отменено.
+edit_dashboard: Редактировать доску
+delete_dashboard: Удалить доску
+visible: Видимый
+prefix_placeholder: Текст перед значением...
+suffix_placeholder: Текст после значения...
+decimals_placeholder: Количество знаков после запятой...
+no_dashboards: Нет досок
+no_dashboards_copy: У вас пока нет ни одной доски.
+no_data: Нет данных
+create_dashboard: Создать доску
+dashboard_name: Имя Доски
 full_screen: Во Весь Экран
+edit_panels: Редактировать панели
+fit_to_screen: По размеру экрана
 image_url: URL изображения
 alt_text: Альтернативный текст
 media: Медиа
@@ -693,7 +753,11 @@ layout_setup: Настройка Макета
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
+discard_changes_copy: Вы хотите отменить все внесённые изменения?
+show_x_axis: Показать ось X
+show_y_axis: Показать ось Y
 keep_editing: Продолжить Редактирование
+page_help_collections_overview: '**Обзор Коллекций** — Список всех коллекций, к которым у вас есть доступ.'
 page_help_collections_collection: >-
   **Просмотр Элементов** — Список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_collections_item: >-
@@ -722,6 +786,8 @@ page_help_settings_webhooks_item: '**Карточка Веб-хука** — Фо
 page_help_users_collection: '**Папка Пользователей** — Список всех системных пользователей в этом проекте.'
 page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
+page_help_insights_overview: '**Откровения** — список досок, к которым у вас есть доступ.'
+page_help_insights_dashboard: '**Доска** — Рабочее пространство для управления одной или несколькими панелями'
 activity_feed: Лента Активности
 add_new: Создать
 create_new: Создать
@@ -1064,6 +1130,7 @@ require_value_to_be_set: Требовать установки значения
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 start: Начало
 interfaces:
@@ -1274,6 +1341,8 @@ interfaces:
   translations:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
+    toggle_split_view: Переключить Раздельный Вид
+    language_field: Поле Языка
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Дерево можно выбрать для рекурсивных отношений
@@ -1432,5 +1501,18 @@ layouts:
     clear_data_filter: Очистить фильтр данных
     clear_location_filter: Очистить фильтр местоположения
 panels:
+  metric:
+    name: Метрика
+    description: Показать одно значение на основе запроса
+    field: Поле
+  time_series:
+    name: Последовательности
+    description: Отображение линейного графика на основе значений по времени
+    date_field: Поле Дата
+    value_field: Поле значения
   label:
     name: Метка
+    description: Показать немного текста
+  list:
+    name: Список
+    description: Фильтр и список полей из коллекции

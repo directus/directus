@@ -23,10 +23,14 @@ published: 已发布
 draft: 草稿
 archived: 已存档
 modules: 模块
+module_bar: 模块栏
+tile_size: 裁剪尺寸
 edit_field: 编辑
 conditions: 条件
 maps: 地图
+item_creation: 新建
 item_revision: 项目调整
+enter_a_name: 请输入名称...
 duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
@@ -41,7 +45,7 @@ role_name: 角色名称
 branch: 分支
 leaf: Leaf
 indeterminate: 不确定的状态
-edit_collection: 编辑收藏
+edit_collection: 编辑模型
 exclusive: 唯一的
 children: 子页面
 db_only_click_to_configure: '仅限数据库：点击配置 '
@@ -51,8 +55,10 @@ required: 必填
 required_for_app_access: 应用程序访问所需的
 requires_value: 必填值
 create_preset: 创建预设
+create_panel: 新建
 create_role: 创建角色
 create_user: 创建用户
+delete_panel: 删除
 create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
@@ -91,7 +97,7 @@ archive_confirm: 您确定要归档所选吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限：'
-reset_system_permissions_copy: 此操作将覆盖您可能应用到系统收藏中的自定义权限。确定吗？
+reset_system_permissions_copy: 此操作将覆盖您可能应用到系统模型中的自定义权限。确定吗？
 the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 app_access_minimum: 最小权限
 recommended_defaults: 推荐设置
@@ -144,6 +150,10 @@ fields_for_role: '{role} 角色能够 {action} 字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
 presets_for_role: '{role} 角色的默认值。'
 presentation_and_aliases: 别名
+revision_post_create: 这是新建项目后看起来的样子。
+revision_post_update: 这是更新后该项目的外观。
+changes_made: 下面是本次修订中所作的具体修改。
+no_relational_data: 请记住，此处不包括关系数据。
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
 delete_field: 删除
@@ -152,9 +162,22 @@ field_create_success: '创建字段: "{field}"'
 field_update_success: '更新字段: "{field}"'
 duplicate_where_to: 您想要复制此字段到哪？
 language: 语言
+aggregate_function: 聚合函数
+aggregate_precision: 聚合精度
+group_aggregation: Group聚合
+group_precision: Group精度
 global: 全局
 admins_have_all_permissions: 管理员拥有所有权限
 camera: 摄像头
+show_zero: 显示0
+sum: Sum
+sum_distinct: Sum Distinct
+avg: 平均值
+avg_distinct: Average Distinct
+count: Count
+count_distinct: Count Distinct
+min: 最小值
+max: 最大值
 exposure: 过期
 shutter: 快门
 iso: ISO
@@ -172,7 +195,9 @@ alias: 别名
 bigInteger: Big Integer
 boolean: Boolean
 date: Date
+date_range: 时间段
 datetime: DateTime
+precision: 精度
 decimal: Decimal
 float: Float
 integer: Integer
@@ -199,17 +224,19 @@ to_manually_setup_translations: 手动设置翻译。
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
-no_collections_found: 未找到任何收藏
-new_data_alert: '以下将在您的数据模型中创建：'
-search_collection: 搜索数据模型...
+no_collections_found: 未找到任何模型
+new_data_alert: '以下将在您的模型中创建：'
+search_collection: 搜索模型...
 new_field: '新建字段'
-new_collection: '新建数据模型'
+new_collection: '新建模型'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
 add_m2m_to_collection: '添加多对多到"{collection}"'
 choose_a_type: 选择类型...
 determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
+add_link: 添加链接
+custom_link: 自定义链接
 default_value: 默认值
 standard_field: 标准字段
 single_file: 单个文件
@@ -239,6 +266,7 @@ raw_value: 原始值
 edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
 clear_value: 清除
+clear_changes: 清除更改
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
@@ -258,6 +286,7 @@ revision_delta_reverted: Reverted
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 private_user: 私人用户
+creation_preview: 创建预览
 revision_preview: 修订预览
 updates_made: 更新完成
 leave_comment: 发表评论...
@@ -265,11 +294,11 @@ post_comment_success: 评论已发布
 item_create_success: 条目已创建 | 条目已创建
 item_update_success: 条目已更新 | 条目已更新
 item_delete_success: 项目已删除 | 项目已删除
-this_collection: 此收藏集
-related_collection: 相关收藏集
-related_collections: 相关收藏集
-translations_collection: 翻译收藏
-languages_collection: 语言收藏
+this_collection: 该模型
+related_collection: 相关模型
+related_collections: 相关模型
+translations_collection: 翻译模型
+languages_collection: 语言模型
 export_data: 导出数据
 format: 格式
 use_current_filters_settings: 使用当前筛选器和设置
@@ -284,7 +313,7 @@ submit: 提交
 move_to_folder: 移动到文件夹
 move: 移动
 system: 系统
-add_field_related: 将字段添加到关联收藏
+add_field_related: 将字段添加到关联的模型
 interface_label: 接口
 today: 今天
 yesterday: 昨天
@@ -339,11 +368,11 @@ replace_from_library: 从库中替换文件
 replace_from_url: 从 URL 中替换文件
 no_file_selected: 未选择文件
 download_file: 下载文件
-collection_key: 收藏的键
+collection_key: 模型的主键
 name: 名称
 primary_key_field: 主键字段
 type: 类型
-creating_new_collection: 创建收藏
+creating_new_collection: 新建模型
 created_by: 创建自
 created_on: 创建于
 creating_collection_info: 命名集合并设置唯一键字段...
@@ -375,29 +404,39 @@ display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
 list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
-no_items_copy: 此收藏中没有项目。
+no_items_copy: 该模型中没有数据。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
 no_files_copy: 没有任何文件。
 user_count: '没有用户 | 一个用户 | {count} 个用户'
 no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
+no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 all_items: 所有项目
 any: 任意
 csv: CSV
-no_collections: 没有任何收藏
-create_collection: 创建收藏
-no_collections_copy_admin: 您还没有任何收藏。点击下面的按钮开始操作。
-no_collections_copy: 您还没有任何收藏。请联系您的系统管理员。
+no_collections: 没有任何模型
+create_collection: 新建模型
+no_collections_copy_admin: 您还没有任何模型。点击下面的按钮开始新建。
+no_collections_copy: 您还没有任何可用的模型。请联系您的系统管理员。
 relationship_not_setup: 关系配置不正确
 display_template_not_setup: 显示的模板选项配置错误
-collection_field_not_setup: 收藏的字段选项配置错误
-select_a_collection: 选择一个收藏
+collection_field_not_setup: 该模型的字段配置错误
+select_a_collection: 选择模型
+select_a_field: 选择字段
 active: 激活
+move_to: 移动到...
 copy: 复制
+copy_to: 复制到...
+no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
-activity: 动态
+activity: 活动
 webhooks: Webhook
+decimals: 小数
+value_decimals: 小数的值
+min_value: 最小值
+max_value: 最大值
+automatic: 自动
 field_width: 字段宽度
 add_filter: 添加过滤器
 upper_limit: 上限...
@@ -409,7 +448,7 @@ duration: 持续时间
 charset: 字符集
 second: 秒
 file_moved: 文件已移动
-collection_created: 收藏已创建
+collection_created: 模型已创建
 modified_on: 修改于
 card_size: 卡片大小
 sort_field: 排序字段
@@ -420,7 +459,7 @@ remove: 移除
 toggle_manual_sorting: 切换手动排序
 bookmark_doesnt_exist: 书签不存在
 bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
-bookmark_doesnt_exist_cta: 返回收藏
+bookmark_doesnt_exist_cta: 返回模型
 select_an_item: 选择一个项目...
 edit: 编辑
 enabled: 已启用
@@ -432,7 +471,7 @@ account_created_successfully: 账号成功创建！
 auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
-  COLLECTION_NOT_FOUND: "收藏不存在"
+  COLLECTION_NOT_FOUND: "模型不存在"
   FIELD_NOT_FOUND: 空格未找到
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
@@ -448,6 +487,7 @@ errors:
   UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
+  ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
   UNKNOWN: 未知错误
 security: 安全
 value_hashed: 哈希值
@@ -464,6 +504,7 @@ no_app_access_copy: 此用户不允许使用管理员应用程序。
 password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
 password_reset_successful: 密码重置成功。
 back: 后退
+filter: 筛选
 editing_image: 编辑图像
 square: 正方形
 free: 自由的
@@ -472,22 +513,23 @@ flip_vertical: 垂直翻转
 aspect_ratio: 宽高比
 rotate: 旋转
 all_users: 全部用户
-delete_collection: 删除收藏
-update_collection_success: 收藏已更新
-delete_collection_success: 收藏已删除
+delete_collection: 删除模型
+update_collection_success: 模型已更新
+delete_collection_success: 模型已删除
 start_end_of_count_items: '{count} 个项目中的 {start}-{end}'
 start_end_of_count_filtered_items: '已过滤后{count} 个项目中的 {start}-{end}'
 one_item: '1项'
 one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
-  您确定要删除此收藏吗？这将删除收藏及其中的所有项目。此操作是永久性的。
-collections_shown: 收藏展开
-visible_collections: 显示收藏
-hidden_collections: 隐藏收藏
-show_hidden_collections: 展开隐藏收藏
-hide_hidden_collections: 不显示隐藏收藏
-unmanaged_collections: 未配置的收藏
-system_collections: 系统收藏
+  您确定要删除此模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
+collections_shown: 展开模型
+visible_collections: 显示模型
+hidden_collections: 隐藏模型
+show_hidden_collections: 显示/隐藏模型
+hide_hidden_collections: 不显示隐藏的模型
+show_header: 显示页头
+unmanaged_collections: 未配置的模型
+system_collections: 系统模型
 placeholder: 占位文本
 icon_left: 左图标
 icon_right: 右图标
@@ -501,6 +543,7 @@ color: 颜色
 circle: 圆圈
 empty_item: 空项
 log_in_with: '使用 {provider} 登录'
+conditional_styles: 条件
 advanced_settings: 高级设置
 advanced_filter: 高级过滤器
 delete_advanced_filter: 删除过滤器
@@ -548,7 +591,7 @@ interface_options: 接口选项
 layout_options: 布局选项
 rows: 行
 columns: 列
-collection_setup: 收藏设置
+collection_setup: 模型设置
 optional_system_fields: 可选系统字段
 value_unique: 值必须唯一
 all_activity: 所有活动的
@@ -583,12 +626,19 @@ read: 查看
 update: 更新
 select_fields: 选择字段
 format_text: 格式化文本
+format_value: 格式化
+abbreviate_value: 缩写
+operator: 运算符
 bold: 加粗
 toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+insights: 洞察(测试)
+dashboard: 控制面板
 panel: 面板
+panel_options: 选项
+panel_header: 面板标题
 panel_name_placeholder: 命名此面板...
 panel_note_placeholder: 面板的详细配置...
 panel_delete_confirm: 您确定要删除? 此操作无法撤消。
@@ -600,6 +650,7 @@ prefix_placeholder: 前缀
 suffix_placeholder: 后缀
 decimals_placeholder: 小数位数...
 no_dashboards: 没有仪表盘
+no_dashboards_copy: 您还没有任何工作台。
 no_data: 没有数据
 create_dashboard: 创建Dashboard
 dashboard_name: Dashboard名称
@@ -721,41 +772,58 @@ page_help_files_item: >-
   **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
 page_help_settings_project: "**项目设置** — — 你的项目的全局配置选项。"
 page_help_settings_datamodel_collections: >-
-  **数据模型: 收藏** - 列出所有可用的收藏。这包括可见、隐藏和系统收藏，以及可以添加的数据库表（当前还未加入并管理）。
+  **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
 page_help_settings_datamodel_fields: >-
-  **数据模型: Collection** — 用于管理此收藏及其字段的表单
+  **数据模型: Collection** — 用于管理此模型及其字段的表单
 page_help_settings_roles_collection: '**Browse Roles** - 列出管理员、公共和自定义用户角色。'
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
   **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
 page_help_settings_presets_item: >-
-  **预设详细信息** - 管理书签和默认收藏预设的表格。
+  **预设详细信息** - 管理书签和默认模型预设的表单。
 page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
   **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
+page_help_insights_overview: '**Insights** — 您可以访问的工作台列表。'
+page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
 all: 全部
 none: 无
-no_layout_collection_selected_yet: 尚未选择布局/收藏
+no_layout_collection_selected_yet: 尚未选择布局/模型
 batch_delete_confirm: >-
   您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
 cancel: 取消
-collection: 收藏
-collections: 收藏
+no_upscale: 不要放大图片
+collection: 数据模型
+collections: 数据模型
 singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
 directus_collection:
+  directus_activity: 所有事件操作日志
+  directus_collections: 其他集合配置和元数据
+  directus_fields: 其他字段配置和元数据
+  directus_files: 文件资源元数据
+  directus_folders: 虚拟文件目录
+  directus_migrations: 您的数据库版本是
+  directus_permissions: 每个角色的访问权限
+  directus_presets: 书签/预设默认值
+  directus_relations: 元数据和关系配置
+  directus_revisions: 数据快照
+  directus_roles: 系统用户权限组
+  directus_sessions: 用户会话信息
+  directus_settings: 项目配置
   directus_users: 平台系统用户
+  directus_webhooks: 基于事件的 HTTP 请求配置
 fields:
   directus_activity:
     item: 项目主键
     action: 操作
-    collection: 收藏
+    collection: 数据模型
     timestamp: 操作于
     user: 操作人
     comment: 注释
@@ -763,14 +831,14 @@ fields:
     ip: IP 地址
     revisions: 修订版本
   directus_collections:
-    collection: 收藏
+    collection: 数据模型
     icon: 图标
     note: 注释
     color: 颜色
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
-    translations: 收藏名称翻译
+    translations: 模型名称的翻译
     archive_app_filter: 后台Admin App中归档数据过滤器
     archive_value: 归档值
     unarchive_value: 取消归档值
@@ -820,6 +888,7 @@ fields:
     admin_options: 管理员设置
     status: 状态
     status_draft: 草稿
+    status_invited: 已邀请
     status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档
@@ -829,6 +898,17 @@ fields:
     last_page: 尾页
     last_access: 上次访问
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_raster: 栅格化
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 样式
+    mapbox_key: Mapbox 访问令牌
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
+    additional_transforms: 其它转换
     project_name: 项目名称
     project_url: 项目URL
     project_color: 项目颜色
@@ -846,8 +926,8 @@ fields:
     overrides: 应用设置覆盖
     custom_css: 自定义 CSS
   directus_fields:
-    collection: 收藏名称
-    icon: 收藏 Icon
+    collection: 模型名称
+    icon: 图标
     note: 注释
     hidden: 隐藏
     singleton: 单一
@@ -863,7 +943,7 @@ fields:
     enforce_tfa: 请求两步验证
     users: 角色中的用户
     module_list: 模块导航
-    collection_list: 收藏导航
+    collection_list: 模型导航
   directus_webhooks:
     name: 名称
     method: 方法
@@ -874,10 +954,31 @@ fields:
     actions: 操作
 field_options:
   directus_settings:
+    project_name_placeholder: 我的项目
+    project_logo_note: 登录和Logo背景
+    public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
+    auth_password_policy:
+      none_text: 无 — 不推荐使用
+      weak_text: 弱 - 最少 8 个字符
+      strong_text: 强度 - 大写/小写/数字/特殊符号
+    storage_asset_presets:
+      fit:
+        contain_text: Contain (等比例)
+        cover_text: 裁剪（强制大小）
+        fit_text: 自适应（短边）
+        outside_text: 自适应（长边）
+    additional_transforms: 其它转换
+    transforms_note: Sharp 方法名称及其参数。 有关更多信息，请参阅 https://sharp.pixelplumbing.com/api-constructor。
+    mapbox_key: Mapbox 访问令牌
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: 栅格化
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox 样式
     files_divider_title: 文件和缩略图
     overrides_divider_title: 应用设置覆盖
   directus_activity:
+    login: 登录
     create: 创建
     update: 更新
     delete: 删除
@@ -885,21 +986,48 @@ field_options:
     track_activity_revisions: 跟踪活动和历史修改版本
     only_track_activity: 仅跟踪活动
     do_not_track_anything: 不跟踪任何内容
-    collection_setup: 收藏设置
+    collection_setup: 模型设置
+    note_placeholder: 此模型的简介...
+    hidden_label: 在管理菜单中隐藏
     singleton: 视为单个对象
     language: 语言
+    translation: 请输入翻译...
     archive_divider: 存档
+    archive_field: 选择字段...
+    archive_app_filter: 启用归档功能
+    archive_value: 归档时设定的值...
+    unarchive_value: 解除归档时设定的值...
     divider: 排序
+    sort_field: 选择字段...
+    accountability_divider: 访问控制
+  directus_files:
+    title: 唯一的标题...
+    description: 可选描述...
+    location: 可选位置...
+    storage_divider: 文件名
+    filename_disk: 服务端的名称...
+    filename_download: 下载时的文件名
   directus_roles:
+    name: 角色名称...
+    description: 角色介绍...
+    ip_access: 添加允许的 IP 地址，留空表示允许所有...
     fields:
       icon_name: 图标
       name_name: 名称
       name_placeholder: 输入标题...
+      link_name: 链接
+      link_placeholder: 相对或绝对的 URL...
     collection_list:
+      group_name_addLabel: 新建分组...
       fields:
+        group_name: 分组名称
+        group_placeholder: 分组标签
         type_name: 类型
-    collections_name: 收藏
-    collections_addLabel: 添加到收藏集...
+        choices_always: 总是展开
+        choices_start_open: 默认打开
+        choices_start_collapsed: 默认收起
+    collections_name: 数据模型
+    collections_addLabel: 添加到模型...
   directus_users:
     preferences_divider: 用户设置
     dropdown_auto: 自动 (系统主题)
@@ -907,6 +1035,7 @@ field_options:
     dropdown_dark: 暗色模式
     admin_divider: 管理员设置
     status_dropdown_draft: 草稿
+    status_dropdown_invited: 已邀请
     status_dropdown_active: 激活
     status_dropdown_suspended: 已停用
     status_dropdown_archived: 已存档
@@ -919,7 +1048,9 @@ field_options:
     actions_create: 创建
     actions_update: 更新
     actions_delete: 删除
+    actions_login: 登录
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
+no_value: 没有值
 do_nothing: 什么都不做
 generate_and_save_uuid: 生成并保存 UUID
 save_current_user_id: 保存当前用户 ID
@@ -965,7 +1096,7 @@ normal: 标准
 success: 成功
 warning: 警示
 danger: 危险
-junction_collection: 交叉收藏
+junction_collection: 交叉模型
 latency: 延迟
 login: 登录
 my_activity: 操作记录
@@ -999,6 +1130,7 @@ require_value_to_be_set: 需要设置值
 translation: 翻译
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 interfaces:
@@ -1010,6 +1142,7 @@ interfaces:
     first_opened: 最早打开
     all_opened: 全部已打开
     accordion_mode: 折叠模式
+    max_one_section_open: 最多展开 1 项
   presentation-links:
     presentation-links: 按钮链接
     links: 链接
@@ -1038,13 +1171,13 @@ interfaces:
     line_number: 行号
     placeholder: 在此输入
   system-collection:
-    collection: 收藏
-    description: 在现有收藏之间选择
-    include_system_collections: 包含系统收藏
+    collection: 数据模型
+    description: 在现有模型之间选择
+    include_system_collections: 包含系统模型
   system-collections:
-    collections: 收藏
-    description: 在现有收藏之间选择
-    include_system_collections: 包含系统收藏
+    collections: 数据模型
+    description: 在现有模型之间选择
+    include_system_collections: 包含系统模型
   select-color:
     color: 颜色
     description: 输入或选择颜色
@@ -1061,9 +1194,9 @@ interfaces:
   system-display-template:
     display-template: 显示模板
     description: 混合静态文本和动态字段值
-    collection_field: 收藏字段
-    collection_field_not_setup: 收藏的字段选项配置错误
-    select_a_collection: 选择一个收藏
+    collection_field: 模型字段
+    collection_field_not_setup: 该模型的字段配置错误
+    select_a_collection: 选择模型
   presentation-divider:
     divider: 分隔线
     description: 标记字段并分成多个部分
@@ -1135,6 +1268,7 @@ interfaces:
     invalid_options: 无效选项
     invalid_format: 无效格式 ({format})
     unexpected_geometry: 需要 {expected}，但收到 {got}。
+    fit_bounds: 自适应
     native: 原生
     geojson: GeoJSON
     lnglat: 经度、纬度
@@ -1206,7 +1340,9 @@ interfaces:
     label_default: 已启用
   translations:
     display_template: 显示模板
-    no_collection: 暂无收藏
+    no_collection: 暂无模型
+    toggle_split_view: 切换视图
+    language_field: 语言字段
   list-o2m-tree-view:
     description: 递归显示树状图
     recursive_only: 树状图仅适用于递归关系。
@@ -1231,6 +1367,17 @@ interfaces:
     value_path: 值路径
     trigger: 触发器
     rate: Rate
+  group-raw:
+    name: 原始组
+    description: 渲染字段为
+  group-detail:
+    name: 详情
+    description: 渲染字段为可折叠部分
+    show_header: 显示分组名称
+    header_icon: 图标
+    header_color: 颜色
+    start_open: 默认打开
+    start_closed: 默认收起
 displays:
   boolean:
     boolean: Boolean
@@ -1244,9 +1391,9 @@ displays:
     color_on: 启用颜色
     color_off: 禁用颜色
   collection:
-    collection: 收藏
-    description: 显示收藏
-    icon_label: 显示收藏的图标
+    collection: 数据模型
+    description: 显示模型
+    icon_label: 显示模型的图标
   color:
     color: 颜色
     description: 显示一个彩色的圆点
@@ -1339,7 +1486,33 @@ layouts:
     end_date_field: 结束日期
   map:
     map: 地图
+    basemap: 底图
+    layers: 图层
+    edit_custom_layers: 编辑图层
+    cluster_options: 集群选项
+    cluster: 开启集群中
+    cluster_radius: 集群半径
+    cluster_minpoints: 集群最小尺寸
+    cluster_maxzoom: 集群的最大缩放
     field: 几何
+    invalid_geometry: 无效几何图形
+    auto_location_filter: 总是筛选数据以查看边框
+    search_this_area: 搜索此区域
+    clear_data_filter: 清除过滤器
+    clear_location_filter: 清除过滤器
 panels:
+  metric:
+    name: 公制
+    description: 基于查询显示单个值
+    field: 字段
+  time_series:
+    name: 时间系列
+    description: 根据一段时间的值渲染线形图
+    date_field: 日期字段
+    value_field: 值字段
   label:
     name: 标签
+    description: 显示一些文本
+  list:
+    name: 列表
+    description: 筛选并列出表模型中的字段

@@ -22,10 +22,14 @@
 published: Publié
 draft: Brouillon
 archived: Archivé
+modules: Modules
+module_bar: Barre de modules
 edit_field: Modifier le champ
 conditions: Conditions
 maps: Cartes
+item_creation: Création d'article
 item_revision: Historique de l'article
+enter_a_name: Entrez un nom...
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Largeur de colonne
@@ -50,8 +54,10 @@ required: Obligatoire
 required_for_app_access: Obligatoire pour l'accès à l'application
 requires_value: La valeur est obligatoire
 create_preset: Créer un préréglage
+create_panel: Créer un panneau
 create_role: Créer un rôle
 create_user: Créer un utilisateur
+delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
 invite_users: Inviter des utilisateurs
 invite: Inviter
@@ -143,6 +149,7 @@ fields_for_role: 'Champs dont l''action « {action} » peut être effectué par 
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presentation_and_aliases: Présentation & Alias
+revision_post_create: Voici à quoi ressemblait cet article lors de sa création.
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Gardez à l'esprit que les données relationnelles ne sont pas incluses ici.
@@ -154,9 +161,22 @@ field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
 language: Langue
+aggregate_function: Fonction d'agrégat
+aggregate_precision: Précision globale
+group_aggregation: Agrégation de groupe
+group_precision: Précision de groupe
 global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
+show_zero: Afficher zéro
+sum: Somme
+sum_distinct: Somme distincte
+avg: Moyenne
+avg_distinct: Moyenne Distinct
+count: Compter
+count_distinct: Compte distinct
+min: Min
+max: Max
 exposure: Exposition
 shutter: Obturateur
 iso: ISO
@@ -174,7 +194,9 @@ alias: Alias
 bigInteger: Grand entier
 boolean: Booléen
 date: Date
+date_range: Plage de dates
 datetime: Date et heure
+precision: Précision
 decimal: Décimale
 float: Décimal
 integer: Entier
@@ -213,6 +235,7 @@ choose_a_type: Choisir un type...
 determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
 add_link: Ajouter un lien
+custom_link: Lien personnalisé
 default_value: Valeur par défaut
 standard_field: Champ standard
 single_file: Fichier unique
@@ -242,6 +265,7 @@ raw_value: Valeur brute
 edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
 clear_value: Effacer la valeur
+clear_changes: Effacer les modifications
 reset_to_default: Rétablir les paramètres par défaut
 undo_changes: Annuler les modifications
 notifications: Notifications
@@ -261,6 +285,7 @@ revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 private_user: Utilisateur privé
+creation_preview: Aperçu de la création
 revision_preview: Aperçu de l'historique
 updates_made: Mises à jour réalisées
 leave_comment: Laisser un commentaire…
@@ -396,12 +421,21 @@ relationship_not_setup: La relation n'a pas été configurée correctement
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
+select_a_field: Sélectionnez un champ
 active: Actif
+move_to: Déménager à...
 copy: Copier
+copy_to: Déménager à...
+no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
+decimals: Décimales
+value_decimals: Valeur décimales
+min_value: Valeur minimale
+max_value: Valeur max
+automatic: Automatique
 field_width: Largeur du champ
 add_filter: Ajouter un filtre
 upper_limit: Limite supérieure...
@@ -452,6 +486,7 @@ errors:
   UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
   UNKNOWN: Erreur inconnue
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
@@ -468,6 +503,7 @@ no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'applicatio
 password_reset_sent: Nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
+filter: Filtre
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -490,6 +526,7 @@ visible_collections: Collections visibles
 hidden_collections: Collections masquées
 show_hidden_collections: Afficher les collections cachées
 hide_hidden_collections: Masquer les collections cachées
+show_header: Afficher en-tête
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
 placeholder: Placeholder
@@ -505,6 +542,7 @@ color: Couleur
 circle: Cercle
 empty_item: Élément vide
 log_in_with: 'Se connecter avec {provider}'
+conditional_styles: Styles conditionnels
 advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
@@ -587,11 +625,22 @@ read: Lecture
 update: Mettre à jour
 select_fields: Sélectionner des champs
 format_text: Format du texte
+format_value: Valeur de formatage
+abbreviate_value: Valeur abrégée
+operator: Opérateur
 bold: Gras
 toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+insights: Connaissances (Beta)
+dashboard: Dashboard
+panel: Panneau
+panel_options: Options de panneau
+panel_header: En-tête de panneau
+panel_name_placeholder: Nommez ce panneau...
+panel_note_placeholder: Détails facultatifs sur ce panneau...
+panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
 full_screen: Plein écran
 image_url: Url de l’image
 alt_text: Texte alternatif
