@@ -1,16 +1,22 @@
 import { ensureExtensionDirs } from '.';
 import { EXTENSION_TYPES } from '../../constants/extensions';
 import { ExtensionType } from '../../types';
-import { removeSync } from 'fs-extra';
+import { dirSync, SynchrounousResult } from 'tmp';
+
+let rootDir: SynchrounousResult;
+
+beforeEach(() => {
+	rootDir = dirSync({ unsafeCleanup: true });
+});
 
 afterEach(() => {
-	removeSync('./extensionTestFolder');
+	rootDir.removeCallback();
 });
 
 describe('ensureExtensionDirs', () => {
 	const types = EXTENSION_TYPES as readonly ExtensionType[];
 	it('returns undefined if the folders exist', async () => {
-		expect(await ensureExtensionDirs('./extensionTestFolder', types)).toBe(undefined);
+		expect(await ensureExtensionDirs(rootDir.name, types)).toBe(undefined);
 	});
 
 	it('throws an error when a folder cant be opened', () => {
