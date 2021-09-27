@@ -31,26 +31,21 @@
 				<draggable
 					:animation="150"
 					:force-fallback="true"
-					:model-value="collections"
+					:model-value="rootCollections"
+					:group="{ name: 'collections' }"
+					:swap-threshold="0.5"
+					class="root-drag-container"
 					item-key="collection"
 					handle=".drag-handle"
-					@update:model-value="onSort"
+					@update:model-value="onSort($event, true)"
 				>
 					<template #item="{ element }">
-						<v-list-item class="collection-row" block clickable :class="{ hidden: element.meta?.hidden }">
-							<v-list-item-icon>
-								<v-icon class="drag-handle" name="drag_handle" />
-							</v-list-item-icon>
-							<div class="collection-name" @click="openCollection(element)">
-								<v-icon
-									:color="element.meta?.hidden ? 'var(--foreground-subdued)' : element.color"
-									class="collection-icon"
-									:name="element.meta?.hidden ? 'visibility_off' : element.icon"
-								/>
-								<span class="collection-name">{{ element.name }}</span>
-							</div>
-							<collection-options :collection="element" />
-						</v-list-item>
+						<collection-item
+							:collection="element"
+							:collections="collections"
+							@setNestedSort="onSort"
+							@toggleCollapsed="toggleCollapsed"
+						/>
 					</template>
 				</draggable>
 			</v-list>
@@ -94,20 +89,18 @@ import { defineComponent, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
-import { useRouter } from 'vue-router';
-import { sortBy, merge } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
+import { sortBy, merge } from 'lodash';
+import CollectionItem from './components/collection-item.vue';
 import { translate } from '@/utils/translate-object-values';
 import Draggable from 'vuedraggable';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
 
 export default defineComponent({
-	components: { SettingsNavigation, CollectionOptions, Draggable },
+	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable },
 	setup() {
 		const { t } = useI18n();
-
-		const router = useRouter();
 
 		const collectionsStore = useCollectionsStore();
 
@@ -120,6 +113,10 @@ export default defineComponent({
 					['meta.sort', 'collection']
 				)
 			);
+		});
+
+		const rootCollections = computed(() => {
+			return collections.value.filter((collection) => !collection.meta?.group);
 		});
 
 		const tableCollections = computed(() => {
@@ -147,27 +144,45 @@ export default defineComponent({
 			);
 		});
 
-		return { t, collections, tableCollections, systemCollections, openCollection, onSort };
+		return { t, collections, tableCollections, systemCollections, onSort, rootCollections, toggleCollapsed };
 
-		function openCollection({ collection }: Collection) {
-			router.push(`/settings/data-model/${collection}`);
+		async function toggleCollapsed(collectionKey: string, collapse: 'open' | 'closed') {
+			collectionsStore.collections = collectionsStore.collections.map((collection) => {
+				if (collection.collection === collectionKey) {
+					return merge({}, collection, { meta: { collapse } });
+				}
+
+				return collection;
+			});
+
+			try {
+				await api.patch(`/collections/${collectionKey}`, {
+					meta: { collapse },
+				});
+			} catch (err) {
+				unexpectedError(err);
+			}
 		}
 
-		async function onSort(newValue: Collection[]) {
-			const valueWithSortValues = newValue.map((collection, index) => merge(collection, { meta: { sort: index + 1 } }));
+		async function onSort(updates: Collection[], removeGroup = false) {
+			const updatesWithSortValue = updates.map((collection, index) =>
+				merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
+			);
 
 			collectionsStore.collections = collectionsStore.collections.map((collection) => {
-				const updated = valueWithSortValues.find(
+				const updatedValues = updatesWithSortValue.find(
 					(updatedCollection) => updatedCollection.collection === collection.collection
 				);
 
-				return updated || collection;
+				return updatedValues ? merge({}, collection, updatedValues) : collection;
 			});
 
 			try {
 				await Promise.all(
-					valueWithSortValues.map((collection) =>
-						api.patch(`/collections/${collection.collection}`, { meta: { sort: collection.meta.sort } })
+					updatesWithSortValue.map((collection) =>
+						api.patch(`/collections/${collection.collection}`, {
+							meta: { sort: collection.meta.sort, group: collection.meta.group },
+						})
 					)
 				);
 			} catch (err) {
@@ -179,7 +194,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.collection-row.hidden {
+.padding-box {
+	padding: var(--content-padding);
+	padding-top: 0;
+}
+
+.root-drag-container {
+	padding: 8px 0;
+	overflow: hidden;
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--warning);
+	--v-button-background-color-disabled: var(--warning-10);
+}
+
+.collection-item.hidden {
 	--v-list-item-color: var(--foreground-subdued);
 }
 
@@ -192,41 +222,18 @@ export default defineComponent({
 	margin-right: 8px;
 }
 
-.drag-handle {
-	cursor: grab;
-}
-
-.hidden {
+.hidden .collection-name {
 	color: var(--foreground-subdued);
 }
+</style>
 
-.system {
-	color: var(--primary);
+<style>
+.sortable-ghost {
+	background-color: var(--primary-alt);
+	border-radius: var(--border-radius);
 }
 
-.note {
-	color: var(--foreground-subdued);
-}
-
-.padding-box {
-	padding: var(--content-padding);
-	padding-top: 0;
-}
-
-.v-table {
-	--v-table-sticky-offset-top: 64px;
-
-	display: contents;
-}
-
-.header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
-}
-
-.no-meta {
-	--v-icon-color: var(--warning);
-
-	margin-right: 4px;
+.sortable-ghost > * {
+	opacity: 0;
 }
 </style>
