@@ -1,10 +1,10 @@
 import { ensureExtensionDirs } from '.';
 import { EXTENSION_TYPES } from '../../constants/extensions';
 import { ExtensionType } from '../../types';
-import { remove } from 'fs-extra';
+import { removeSync } from 'fs-extra';
 
 afterEach(() => {
-	remove('./extensionTestFolder');
+	removeSync('./extensionTestFolder');
 });
 
 describe('ensureExtensionDirs', () => {
