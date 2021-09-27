@@ -720,6 +720,7 @@ fields:
     collection: Coŀlecció
     icon: Icona
     note: Nota
+    color: Color
     display_template: Mostra la plantilla
     hidden: Amagat
     singleton: Singleton
