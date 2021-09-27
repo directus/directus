@@ -47,7 +47,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
-	name: 'InterfaceGroupRaw',
+	name: 'InterfaceGroupDetail',
 	props: {
 		field: {
 			type: Object as PropType<Field>,
