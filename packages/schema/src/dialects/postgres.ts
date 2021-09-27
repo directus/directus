@@ -66,30 +66,47 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 
 		const columns: RawColumn[] = columnsResult.rows;
 		const primaryKeys = primaryKeysResult.rows;
-		const geometryColumns: RawGeometryColumn[] = await new Promise((resolve) => {
-			if (!columns.some((col) => col.table_name === 'geometry_columns')) return resolve([]);
+		let geometryColumns: RawGeometryColumn[] = [];
 
-			const result = this.knex.raw(
-				`
-		WITH geometries as (
-			select * from geometry_columns
-			union
-			select * from geography_columns
-		)
-        SELECT f_table_name as table_name
-			, f_geometry_column as column_name
-			, type as data_type
-        FROM geometries g
-        JOIN information_schema.tables t
-	        ON g.f_table_name = t.table_name
-	        AND t.table_type = 'BASE TABLE'
-        WHERE f_table_schema in (?)
-      `,
+		// Before we fetch the available geometry types, we'll have to ensure PostGIS exists
+		// in the first place. If we don't, the transaction would error out due to the exception in
+		// SQL, which we can't catch in JS.
+		const hasPostGIS = (
+			await this.knex.raw(
+				`SELECT EXISTS (
+				SELECT
+				FROM
+					pg_proc p
+					JOIN pg_namespace n ON p.pronamespace = n.oid
+				WHERE
+					n.nspname IN(?)
+					AND p.oid::regprocedure::varchar = 'postgis_version()'
+			);`,
+				[this.explodedSchema.join(',')]
+			)
+		)?.rows?.[0]?.exists;
+
+		if (hasPostGIS) {
+			const result = await this.knex.raw<{ rows: RawGeometryColumn[] }>(
+				`WITH geometries as (
+					select * from geometry_columns
+					union
+					select * from geography_columns
+				)
+				SELECT f_table_name as table_name
+					, f_geometry_column as column_name
+					, type as data_type
+				FROM geometries g
+				JOIN information_schema.tables t
+					ON g.f_table_name = t.table_name
+					AND t.table_type = 'BASE TABLE'
+				WHERE f_table_schema in (?)
+				`,
 				[this.explodedSchema.join(',')]
 			);
 
-			resolve(result.then((r) => r.rows));
-		});
+			geometryColumns = result.rows;
+		}
 
 		const overview: SchemaOverview = {};
 
