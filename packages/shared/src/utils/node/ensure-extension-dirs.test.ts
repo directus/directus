@@ -4,13 +4,13 @@ import { ExtensionType } from '../../types';
 import { remove } from 'fs-extra';
 
 afterEach(() => {
-	remove('./extension');
+	remove('./extensionTestFolder');
 });
 
 describe('ensureExtensionDirs', () => {
 	const types = EXTENSION_TYPES as readonly ExtensionType[];
 	it('returns undefined if the folders exist', async () => {
-		expect(await ensureExtensionDirs('./extension', types)).toBe(undefined);
+		expect(await ensureExtensionDirs('./extensionTestFolder', types)).toBe(undefined);
 	});
 
 	it('throws an error when a folder cant be opened', () => {
