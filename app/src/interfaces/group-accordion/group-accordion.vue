@@ -13,7 +13,7 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
-			:group="field.meta.id"
+			:group="field.meta.field"
 			:multiple="accordionMode === false"
 			@apply="$emit('apply', $event)"
 			@toggleAll="toggleAll"
