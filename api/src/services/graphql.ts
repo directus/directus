@@ -77,6 +77,7 @@ import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 import { generateHash } from '../utils/generate-hash';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -1740,7 +1741,6 @@ export class GraphQLService {
 				args: {
 					email: GraphQLNonNull(GraphQLString),
 					password: GraphQLNonNull(GraphQLString),
-					provider: GraphQLString,
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
@@ -1754,7 +1754,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const result = await authenticationService.login('local', args, args?.otp);
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 					if (args.mode === 'cookie') {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,

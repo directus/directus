@@ -49,7 +49,7 @@ export class LocalAuthDriver extends AuthDriver {
 	}
 }
 
-export function createLocalAuthRouter(): Router {
+export function createLocalAuthRouter(provider: string): Router {
 	const router = Router();
 
 	const loginSchema = Joi.object({
@@ -82,7 +82,7 @@ export function createLocalAuthRouter(): Router {
 			const mode = req.body.mode || 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				undefined, // Will default to DEFAULT_AUTH_PROVIDER
+				provider,
 				req.body,
 				req.body?.otp
 			);

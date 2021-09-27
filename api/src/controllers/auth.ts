@@ -18,6 +18,7 @@ import getEmailFromProfile from '../utils/get-email-from-profile';
 import { toArray } from '@directus/shared/utils';
 import logger from '../logger';
 import { createLocalAuthRouter } from '../auth/drivers';
+import { DEFAULT_AUTH_PROVIDER } from '../constants';
 
 const router = Router();
 
@@ -28,7 +29,7 @@ for (const authProvider of authProviders) {
 
 	switch (authProvider.driver) {
 		case 'local':
-			authRouter = createLocalAuthRouter();
+			authRouter = createLocalAuthRouter(authProvider.name);
 	}
 
 	if (!authRouter) {
@@ -39,7 +40,7 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-router.use('/login', createLocalAuthRouter());
+router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 
 router.post(
 	'/refresh',
