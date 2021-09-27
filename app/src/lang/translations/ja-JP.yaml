@@ -312,6 +312,7 @@ fields:
   directus_collections:
     icon: アイコン
     note: 備考
+    color: 色
     hidden: 非表示
     singleton: シングルトン
     sort_field: フィールドの並べ替え
