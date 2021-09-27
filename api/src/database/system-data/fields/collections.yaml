@@ -52,7 +52,7 @@ fields:
     special: boolean
     interface: boolean
     options:
-      label: Treat as single object
+      label: $t:singleton_label
     width: half
 
   - field: translations
