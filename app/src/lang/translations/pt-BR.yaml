@@ -721,6 +721,7 @@ fields:
     collection: Coleção
     icon: Ícone
     note: Nota
+    color: Cor
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
