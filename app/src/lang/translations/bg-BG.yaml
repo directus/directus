@@ -769,6 +769,7 @@ fields:
     collection: Колекция
     icon: Икона
     note: Бележка
+    color: Цвят
     display_template: Шаблон при показване
     hidden: Скриване
     singleton: Сек
