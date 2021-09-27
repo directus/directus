@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.94",
+	"version": "9.0.0-rc.95",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
