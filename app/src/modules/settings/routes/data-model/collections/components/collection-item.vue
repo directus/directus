@@ -19,7 +19,7 @@
 				name="expand_more"
 				clickable
 				@click="
-					$emit('toggleCollapsed', collection.collection, collection.meta?.collapse === 'open' ? 'closed' : 'open')
+					$emit('toggleCollapsed', { collectionKey: collection.collection, collapse: collapsed ? 'open' : 'closed' })
 				"
 			/>
 			<collection-options :collection="collection" />
@@ -27,11 +27,10 @@
 
 		<draggable
 			v-if="!collapsed"
-			:animation="150"
 			:force-fallback="true"
 			:model-value="nestedCollections"
 			:group="{ name: 'collections' }"
-			:swap-threshold="0.5"
+			:swap-threshold="0.3"
 			class="drag-container"
 			item-key="collection"
 			handle=".drag-handle"
@@ -42,6 +41,7 @@
 					:collection="element"
 					:collections="collections"
 					@setNestedSort="$emit('setNestedSort', $event)"
+					@toggleCollapsed="$emit('toggleCollapsed', $event)"
 				/>
 			</template>
 		</draggable>

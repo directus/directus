@@ -29,11 +29,10 @@
 
 			<v-list v-else>
 				<draggable
-					:animation="150"
 					:force-fallback="true"
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
-					:swap-threshold="0.5"
+					:swap-threshold="0.3"
 					class="root-drag-container"
 					item-key="collection"
 					handle=".drag-handle"
@@ -146,7 +145,13 @@ export default defineComponent({
 
 		return { t, collections, tableCollections, systemCollections, onSort, rootCollections, toggleCollapsed };
 
-		async function toggleCollapsed(collectionKey: string, collapse: 'open' | 'closed') {
+		async function toggleCollapsed({
+			collectionKey,
+			collapse,
+		}: {
+			collectionKey: string;
+			collapse: 'open' | 'closed';
+		}) {
 			collectionsStore.collections = collectionsStore.collections.map((collection) => {
 				if (collection.collection === collectionKey) {
 					return merge({}, collection, { meta: { collapse } });
