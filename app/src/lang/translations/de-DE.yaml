@@ -834,6 +834,7 @@ fields:
     collection: Sammlung
     icon: Symbol
     note: Notiz
+    color: Farbe
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
     singleton: Einzelnes Element

@@ -721,6 +721,7 @@ fields:
     collection: Coleção
     icon: Ícone
     note: Nota
+    color: Cor
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
@@ -826,7 +827,7 @@ fields:
     collection_list: Navegação da Coleção
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     data_label: Enviar Dados do Evento

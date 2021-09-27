@@ -740,6 +740,7 @@ fields:
     collection: Gyűjtemény
     icon: Ikon
     note: Jegyzet
+    color: Szín
     display_template: Megjelenítési sablon
     hidden: Rejtett
     singleton: Egyedüli

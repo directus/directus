@@ -708,6 +708,7 @@ fields:
     collection: Kolekcja
     icon: Ikona
     note: Notatka
+    color: Kolor
     display_template: Wyświetl szablon
     hidden: Ukryte
     singleton: Singleton

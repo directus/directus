@@ -489,6 +489,7 @@ fields:
     collection: Koleksi
     icon: Ikon
     note: Catatan
+    color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
     sort_field: Sortir Baris

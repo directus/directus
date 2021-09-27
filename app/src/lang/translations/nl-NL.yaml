@@ -703,6 +703,7 @@ fields:
     collection: Collectie
     icon: Icoon
     note: Notitie
+    color: Kleur
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton

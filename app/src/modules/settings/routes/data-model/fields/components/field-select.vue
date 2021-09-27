@@ -192,7 +192,7 @@ export default defineComponent({
 
 		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 
-		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.id));
+		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.meta?.field));
 
 		return {
 			t,
@@ -315,7 +315,7 @@ export default defineComponent({
 				field: field.field,
 				meta: {
 					sort: index + 1,
-					group: props.field.meta!.id,
+					group: props.field.meta!.field,
 				},
 			}));
 

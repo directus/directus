@@ -550,6 +550,7 @@ fields:
     collection: Koleksiyon
     icon: İkon
     note: Not
+    color: Renk
     display_template: Görüntüleme Şablonu
     hidden: Gizli
     sort_field: Sıralama Alanı

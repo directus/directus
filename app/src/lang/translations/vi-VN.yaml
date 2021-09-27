@@ -490,6 +490,7 @@ fields:
     collection: Danh mục
     icon: Biểu tượng
     note: Ghi chú
+    color: Màu sắc
     display_template: Mẫu hiển thị
     hidden: Ẩn
     sort_field: Sắp xếp theo trường

@@ -672,6 +672,7 @@ fields:
     collection: المجموعة
     icon: أيقونة
     note: ملحوظة
+    color: لون
     display_template: عرض القالب
     hidden: مخفي
     translations: ترجمات تسمية المجموعات
