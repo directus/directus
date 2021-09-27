@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node: ['16']
-    name: Node ${{ matrix.node }} sample
+    name: Node ${{ matrix.node }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Dependencies
         run: npm run build
