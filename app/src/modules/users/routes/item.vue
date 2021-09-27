@@ -102,7 +102,7 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
+					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="t('avatar')" />
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -116,7 +116,7 @@
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email">
+						<div v-if="item.email" class="email">
 							<v-icon name="alternate_email" small outline />
 							{{ item.email }}
 						</div>
