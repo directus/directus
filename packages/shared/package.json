@@ -59,6 +59,7 @@
 		"knex-schema-inspector": "*",
 		"lodash": "4.17.21",
 		"pino": "*",
+		"tmp": "^0.2.1",
 		"vue": "3",
 		"vue-i18n": "9",
 		"vue-router": "4"
