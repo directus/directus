@@ -423,11 +423,19 @@ collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
 select_a_field: Sélectionnez un champ
 active: Actif
+move_to: Déménager à...
 copy: Copier
+copy_to: Déménager à...
+no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
+decimals: Décimales
+value_decimals: Valeur décimales
+min_value: Valeur minimale
+max_value: Valeur max
+automatic: Automatique
 field_width: Largeur du champ
 add_filter: Ajouter un filtre
 upper_limit: Limite supérieure...
@@ -478,6 +486,7 @@ errors:
   UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
   UNKNOWN: Erreur inconnue
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
@@ -494,6 +503,7 @@ no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'applicatio
 password_reset_sent: Nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
+filter: Filtre
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -516,6 +526,7 @@ visible_collections: Collections visibles
 hidden_collections: Collections masquées
 show_hidden_collections: Afficher les collections cachées
 hide_hidden_collections: Masquer les collections cachées
+show_header: Afficher en-tête
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
 placeholder: Placeholder
@@ -531,6 +542,7 @@ color: Couleur
 circle: Cercle
 empty_item: Élément vide
 log_in_with: 'Se connecter avec {provider}'
+conditional_styles: Styles conditionnels
 advanced_settings: Paramètres Avancés
 advanced_filter: Filtre avancé
 delete_advanced_filter: Supprimer le filtre
@@ -613,11 +625,22 @@ read: Lecture
 update: Mettre à jour
 select_fields: Sélectionner des champs
 format_text: Format du texte
+format_value: Valeur de formatage
+abbreviate_value: Valeur abrégée
+operator: Opérateur
 bold: Gras
 toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
+insights: Connaissances (Beta)
+dashboard: Dashboard
+panel: Panneau
+panel_options: Options de panneau
+panel_header: En-tête de panneau
+panel_name_placeholder: Nommez ce panneau...
+panel_note_placeholder: Détails facultatifs sur ce panneau...
+panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
 full_screen: Plein écran
 image_url: Url de l’image
 alt_text: Texte alternatif
