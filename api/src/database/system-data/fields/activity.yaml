@@ -26,7 +26,7 @@ fields:
           foreground: 'var(--danger)'
           background: 'var(--danger-25)'
         - text: $t:field_options.directus_activity.login
-          value: authenticate
+          value: login
           foreground: 'var(--purple)'
           background: 'var(--purple-25)'
     width: half
