@@ -66,18 +66,26 @@ export async function getSchema(options?: {
 		permissions = permissionsForRole.map((permissionRaw) => {
 			if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
 				permissionRaw.permissions = JSON.parse(permissionRaw.permissions);
+			} else if (permissionRaw.permissions === null) {
+				permissionRaw.permissions = {};
 			}
 
 			if (permissionRaw.validation && typeof permissionRaw.validation === 'string') {
 				permissionRaw.validation = JSON.parse(permissionRaw.validation);
+			} else if (permissionRaw.validation === null) {
+				permissionRaw.validation = {};
 			}
 
 			if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
 				permissionRaw.presets = JSON.parse(permissionRaw.presets);
+			} else if (permissionRaw.presets === null) {
+				permissionRaw.presets = {};
 			}
 
 			if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
 				permissionRaw.fields = permissionRaw.fields.split(',');
+			} else if (permissionRaw.fields === null) {
+				permissionRaw.fields = [];
 			}
 
 			return permissionRaw;
