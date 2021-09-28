@@ -48,6 +48,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
+import useShortcut from '@/composables/use-shortcut';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 
@@ -70,6 +71,10 @@ export default defineComponent({
 		const noEdits = computed<boolean>(() => edits.value === null || Object.keys(edits.value).length === 0);
 
 		const saving = ref(false);
+
+		useShortcut('meta+s', () => {
+			if (!noEdits.value) save();
+		});
 
 		const isSavable = computed(() => {
 			if (noEdits.value === true) return false;

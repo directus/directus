@@ -142,6 +142,7 @@ import { getLayouts } from '@/layouts';
 import { useRouter, onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@/composables/use-layout';
+import useShortcut from '@/composables/use-shortcut';
 import unsavedChanges from '@/composables/unsaved-changes';
 
 type FormattedPreset = {
@@ -197,6 +198,10 @@ export default defineComponent({
 		const layout = computed(() => values.value.layout);
 
 		const { layoutWrapper } = useLayout(layout);
+
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) save();
+		});
 
 		const isSavable = computed(() => {
 			if (hasEdits.value === true) return true;

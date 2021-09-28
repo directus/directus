@@ -112,6 +112,7 @@ import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
+import useShortcut from '@/composables/use-shortcut';
 import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
@@ -163,6 +164,10 @@ export default defineComponent({
 			return !!values.app_access;
 		});
 
+		useShortcut('meta+s', () => {
+			if (hasEdits.value) saveAndStay();
+		});
+
 		const isSavable = computed(() => {
 			if (hasEdits.value === true) return true;
 			return hasEdits.value;
@@ -211,6 +216,11 @@ export default defineComponent({
 		 * update the userstore to make sure the role information is accurate with the latest changes
 		 * in case we're changing the current user's role
 		 */
+
+		async function saveAndStay() {
+			await save();
+			await userStore.hydrate();
+		}
 
 		async function saveAndQuit() {
 			await save();
