@@ -46,7 +46,7 @@
 		</v-list>
 
 		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="showUpload = true">{{ t('upload_file') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
@@ -63,36 +63,62 @@
 			:circular-field="junction.field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
-		/>
+		>
+			<template #actions>
+				<v-button
+					v-if="currentlyEditing !== '+' && relationCollection.collection === 'directus_files'"
+					secondary
+					rounded
+					icon
+					download
+					:href="downloadUrl"
+				>
+					<v-icon name="download" />
+				</v-button>
+			</template>
+		</drawer-item>
 
 		<drawer-collection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationCollection.collection"
-			:selection="selectedPrimaryKeys"
+			:selection="[]"
+			:filters="selectionFilters"
 			multiple
 			@input="stageSelection"
 		/>
+
+		<v-dialog v-if="!disabled" v-model="showUpload">
+			<v-card>
+				<v-card-title>{{ t('upload_file') }}</v-card-title>
+				<v-card-text><v-upload multiple from-url @input="onUpload" /></v-card-text>
+				<v-card-actions>
+					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, toRefs } from 'vue';
+import { defineComponent, computed, PropType, toRefs, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
 import Draggable from 'vuedraggable';
 
-import useActions from './use-actions';
-import useRelation from './use-relation';
-import usePreview from './use-preview';
-import useEdit from './use-edit';
-import usePermissions from './use-permissions';
-import useSelection from './use-selection';
-import useSort from './use-sort';
+import useActions from '../list-m2m/use-actions';
+import useRelation from '../list-m2m/use-relation';
+import usePreview from '../list-m2m/use-preview';
+import useEdit from '../list-m2m/use-edit';
+import useSelection from '../list-m2m/use-selection';
+import useSort from '../list-m2m/use-sort';
+import usePermissions from '../list-m2m/use-permissions';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { getRootPath } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -184,11 +210,17 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit, relatedPrimaryKey, editModalActive } =
 			useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectedPrimaryKeys } = useSelection(items, relationInfo, emitter);
-
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		const { createAllowed, selectAllowed } = usePermissions(junctionCollection, relationCollection);
+
+		const { showUpload, onUpload } = useUpload();
+
+		const downloadUrl = computed(() => {
+			if (relatedPrimaryKey.value === null || relationCollection.value.collection !== 'directus_files') return;
+			return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}`);
+		});
 
 		return {
 			t,
@@ -206,7 +238,7 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			selectedPrimaryKeys,
+			selectionFilters,
 			items,
 			relationInfo,
 			relatedPrimaryKey,
@@ -218,10 +250,32 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			onUpload,
+			showUpload,
+			downloadUrl,
 		};
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
+		}
+
+		function useUpload() {
+			const showUpload = ref(false);
+
+			return { showUpload, onUpload };
+
+			function onUpload(files: Record<string, any>[]) {
+				showUpload.value = false;
+				if (files.length === 0) return;
+				const { junctionField } = relationInfo.value;
+				const filesAsJunctionRows = files.map((file) => {
+					return {
+						[junctionField]: file.id,
+					};
+				});
+
+				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
+			}
 		}
 	},
 });

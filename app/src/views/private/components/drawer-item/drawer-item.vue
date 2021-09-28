@@ -13,6 +13,7 @@
 		</template>
 
 		<template #actions>
+			<slot name="actions" />
 			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
