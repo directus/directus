@@ -34,7 +34,7 @@ await directus.auth.login({
 });
 
 // ... before fetching items
-const articles = await directus.items('articles').readMany();
+const articles = await directus.items('article').readMany();
 
 console.log({
 	items: articles.data,
@@ -155,7 +155,7 @@ const { Directus } = require('@directus/sdk');
 
 const directus = new Directus('https://api.example.com');
 
-const articles = directus.items('articles');
+const articles = directus.items('article');
 ```
 
 > TypeScript
@@ -189,7 +189,7 @@ type MyBlog = {
 const directus = new Directus<MyBlog>('https://directus.myblog.com');
 
 // typeof(article) is a partial "Article"
-const article = await directus.items('articles').readOne(10);
+const articles = await directus.items('article').readOne(10);
 
 // Error TS2322: "hello" is not assignable to type "boolean".
 // post.published = 'hello';
@@ -315,7 +315,7 @@ await directus.activity.readOne(15, { fields: ['action'] });
 
 ```js
 await directus.activity.comments.create({
-	collection: 'articles',
+	collection: 'article',
 	item: 15,
 	comment: 'Hello, world!',
 });
@@ -747,7 +747,7 @@ await directus.utils.hash.verify('My String', '$argon2i$v=19$m=4096,t=3,p=1$A5uo
 ### Sort Items in a Collection
 
 ```js
-await directus.utils.sort('articles', 15, 42);
+await directus.utils.sort('article', 15, 42);
 ```
 
 This will move item `15` to the position of item `42`, and move everything in between one "slot" up.
