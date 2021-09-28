@@ -4,7 +4,7 @@ import { Extension } from '../../types/extensions';
 
 describe('generateExtensionsEntry', () => {
 	const type = APP_EXTENSION_TYPES[4];
-	it('returns the extension entry number when the type matches the extension type', () => {
+	it('returns an extension entrypoint exporting all extensions with a type that matches the provided type', () => {
 		const mockExtension = [
 			{ path: './extensions', name: 'mockExtension', type: 'panel', local: true, root: true },
 		] as Extension[];
