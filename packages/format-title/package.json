@@ -13,23 +13,18 @@
 		"conjunctions",
 		"prepositions"
 	],
-	"main": "dist/esm/index.js",
-	"module": "dist/esm/index.js",
-	"unpkg": "dist/esm/index.js",
-	"types": "dist/esm/index.d.ts",
-	"files": [
-		"dist"
-	],
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"author": "rijkvanzanten <rijkvanzanten@me.com>",
 	"repository": "directus/directus",
 	"license": "MIT",
 	"type": "module",
 	"engines": {
-		"node": ">=6.0.0"
+		"node": ">=12.0.0"
 	},
 	"scripts": {
 		"prebuild": "rimraf dist",
-		"build": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
+		"build": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist",
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"devDependencies": {
