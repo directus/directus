@@ -299,6 +299,24 @@ export class AuthenticationService {
 			.where('s.token', refreshToken)
 			.first();
 
+		await emitter.emitAsync('auth.logout.before', refreshToken, {
+			event: 'auth.logout.before',
+			action: 'logout',
+			schema: this.schema,
+			payload: refreshToken,
+			accountability: this.accountability,
+			user: null,
+			database: this.knex,
+		});
+		emitAsyncSafe('auth.logout', refreshToken, {
+			event: 'auth.logout',
+			action: 'logout',
+			schema: this.schema,
+			payload: refreshToken,
+			accountability: this.accountability,
+			user: null,
+			database: this.knex,
+		});
 		if (record) {
 			const { data: sessionData, ...user } = record;
 
