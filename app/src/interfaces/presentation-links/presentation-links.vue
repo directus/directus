@@ -9,6 +9,7 @@
 			:disabled="disabled"
 			:icon="!link.label"
 			:href="link.url"
+			:to="link.to"
 		>
 			<v-icon v-if="link.icon" left :name="link.icon" />
 			<span v-if="link.label">{{ link.label }}</span>
@@ -25,6 +26,7 @@ type Link = {
 	label: string;
 	type: string;
 	url?: string;
+	to?: string;
 };
 
 export default defineComponent({
@@ -42,10 +44,17 @@ export default defineComponent({
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const linksParsed = computed(() => {
-			return props.links.map((link) => ({
-				...link,
-				url: render(link.url ?? '', values.value),
-			}));
+			return props.links.map((link) => {
+				const linkValue = render(link.url ?? '', values.value);
+				if (linkValue.startsWith('/')) {
+					link.to = linkValue;
+					delete link.url;
+				} else {
+					link.url = linkValue;
+				}
+
+				return link;
+			});
 		});
 
 		return {
