@@ -13,5 +13,5 @@ export async function down(knex: Knex): Promise<void> {
 		.update({
 			action: 'authenticate',
 		})
-		.where('interface', '=', 'login');
+		.where('action', '=', 'login');
 }
